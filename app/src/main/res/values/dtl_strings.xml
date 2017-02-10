@@ -111,4 +111,15 @@
    <string name="filter_merchant_food">Food</string>
    <string name="filter_merchant_entertainment">Entertainment</string>
    <string name="filter_merchant_spa">Spas</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">RATE AND REVIEW</string>
+   <string name="first_reviews_text">Be the first to review this location</string>
+   <string name="reviews_text">Reviews</string>
+   <string name="without_reviews_text">0 Reviews</string>
+   <string name="year_ago_text">%1$d years ago</string>
+   <string name="months_ago_text">%1$d months ago</string>
+   <string name="days_ago_text">%1$d days ago</string>
+   <string name="hours_ago_text">%1$d hours ago</string>
+   <string name="min_ago_text">%1$d min ago</string>
+   <string name="sec_ago_text">%1$d sec ago</string>
 </resources>

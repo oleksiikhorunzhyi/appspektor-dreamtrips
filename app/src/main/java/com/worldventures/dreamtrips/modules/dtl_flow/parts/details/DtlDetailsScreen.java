@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;

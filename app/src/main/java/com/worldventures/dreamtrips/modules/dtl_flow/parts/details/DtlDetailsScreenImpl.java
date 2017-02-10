@@ -13,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,12 +51,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -84,9 +79,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    private MerchantWorkingHoursInflater merchantHoursInflater;
    private MerchantInflater merchantInfoInflater;
    private Merchant merchant;
-
-   public static int SIZE_COMMENTS = 7;
-   public static final float RATING_MERCHANT = 2.5f;
 
    @Override
    public DtlDetailsPresenter createPresenter() {
@@ -153,12 +145,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @OnClick(R.id.tv_read_all_review)
    public void onClickReadAllReviews() {
       getPresenter().showAllReviews();
-   }
-
-   //TODO: Button Dummy
-   @OnClick(R.id.button_see_list_reviews)
-   public void showAllReviews() {
-      getPresenter().addNewComments(RATING_MERCHANT, SIZE_COMMENTS, ReviewObject.getDummies(SIZE_COMMENTS));
    }
 
    @Override

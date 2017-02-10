@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,152 +24,148 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-/**
- * Created by Andres Rubiano Del Chiaro on 19/09/2016.
- */
 
 public class ReviewAdapter
-        extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder>
-{
+      extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder> {
 
-    private ArrayList<ReviewObject> mItems = new ArrayList<>();
-    private ImageLoaderHelper imageLoaderHelper;
-    private Context context;
+   private ArrayList<ReviewObject> mItems = new ArrayList<>();
+   private ImageLoaderHelper imageLoaderHelper;
+   private Context context;
 
-    public ReviewAdapter(Context context) {
-        this.context = context;
-        this.imageLoaderHelper= new ImageLoaderHelper(ImageLoaderHelper.GLIDE);
-    }
+   private static final String TAG = "ReviewAdapter";
+   private static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+   private static final String UTC = "UTC";
 
-    @Override
-    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
-        return new RecyclerViewHolder(v);
-    }
+   public ReviewAdapter(Context context) {
+      this.context = context;
+      this.imageLoaderHelper = new ImageLoaderHelper(ImageLoaderHelper.GLIDE);
+   }
 
-    public void addAll(List<ReviewObject> items) {
-        int pos = getItemCount();
-        mItems.addAll(items);
-        notifyItemRangeInserted(pos, mItems.size());
-    }
+   @Override
+   public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
+      return new RecyclerViewHolder(v);
+   }
 
-    @Override
-    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-        holder.bind(position);
-    }
+   public void addAll(List<ReviewObject> items) {
+      int pos = getItemCount();
+      mItems.addAll(items);
+      notifyItemRangeInserted(pos, mItems.size());
+   }
 
-    @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
+   @Override
+   public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+      holder.bind(position);
+   }
 
-
-    class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mAvatar;
-        private TextView mUserName;
-        private TextView mCommentWrote;
-        private RatingBar mRating;
-        private TextView mComment;
+   @Override
+   public int getItemCount() {
+      return mItems.size();
+   }
 
 
-        public RecyclerViewHolder(View itemView) {
-            super(itemView);
-            mAvatar = (ImageView) itemView.findViewById(R.id.ivItemReview);
-            mUserName = (TextView) itemView.findViewById(R.id.tvUserName);
-            mCommentWrote = (TextView) itemView.findViewById(R.id.tvCommentWrote);
-            mComment = (TextView) itemView.findViewById(R.id.tvComment);
-            mRating = (RatingBar) itemView.findViewById(R.id.rbRating);
-        }
-
-       public void bind(int position) {
-           String urlImage = mItems.get(position).getUrlImageUser();
-           try{
-               if (!urlImage.equalsIgnoreCase("null")){
-                   imageLoaderHelper.getLoader().load(
-                         urlImage,
-                         mAvatar);
-               } else {
-                   mAvatar.setImageResource(R.drawable.noavatar_small);
-               }
-           } catch (Exception e){
-               e.printStackTrace();
-               mAvatar.setImageResource(R.drawable.noavatar_small);
-           }
-            mUserName.setText(String.valueOf(mItems.get(position).getNameUser()));
-           try {
-               mCommentWrote.setText(getCorrectTimeWrote(mItems.get(position).getTimeWrote()));
-           } catch (ParseException e) {
-               e.printStackTrace();
-           }
-           mComment.setText(mItems.get(position).getComment());
-            mRating.setRating((mItems.get(position).getRatingCommentUser()) );
-        }
-
-        private String getCorrectTimeWrote(String timeWrote) throws ParseException {
-            int time = 0;
-            String info = "";
-
-            Calendar calendar = getCorrectTime(timeWrote);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd HH:mm:ss");
-            Calendar localCalendar = Calendar.getInstance();
+   class RecyclerViewHolder extends RecyclerView.ViewHolder {
+      private ImageView mAvatar;
+      private TextView mUserName;
+      private TextView mCommentWrote;
+      private RatingBar mRating;
+      private TextView mComment;
 
 
-            time = getDifferenceTime(localCalendar, calendar, Calendar.YEAR);
-            //Year
-            if (time > 0){
-                info = time + " years ago";
+      public RecyclerViewHolder(View itemView) {
+         super(itemView);
+         mAvatar = (ImageView) itemView.findViewById(R.id.ivItemReview);
+         mUserName = (TextView) itemView.findViewById(R.id.tvUserName);
+         mCommentWrote = (TextView) itemView.findViewById(R.id.tvCommentWrote);
+         mComment = (TextView) itemView.findViewById(R.id.tvComment);
+         mRating = (RatingBar) itemView.findViewById(R.id.rbRating);
+      }
+
+      public void bind(int position) {
+         String urlImage = mItems.get(position).getUrlImageUser();
+         try {
+            if (!urlImage.equalsIgnoreCase("null")) {
+               imageLoaderHelper.getLoader().load(
+                     urlImage,
+                     mAvatar);
             } else {
-                //Month
-                time = getDifferenceTime(localCalendar, calendar, Calendar.MONTH);
-                if (time > 0){
-                    info = time + " months ago";
-                } else {
-                    //days
-                    time = getDifferenceTime(localCalendar, calendar, Calendar.DAY_OF_MONTH);
-                    if (time > 0){
-                        info = time + " days ago";
-                    } else {
-                        //hours
-                        time = getDifferenceTime(localCalendar, calendar, Calendar.HOUR_OF_DAY);
-                        if (time > 0){
-                            info = time + " hours ago";
-                        } else {
-                            //min
-                            time = getDifferenceTime(localCalendar, calendar, Calendar.MINUTE);
-                            if (time > 0){
-                                info = time + " min ago";
-                            } else {
-                                //seg
-                                time = getDifferenceTime(localCalendar, calendar, Calendar.SECOND);
-                                if (time > 0){
-                                    info = time + " sec ago";
-                                }
-                            }
+               mAvatar.setImageResource(R.drawable.noavatar_small);
+            }
+         } catch (Exception e) {
+            e.printStackTrace();
+            mAvatar.setImageResource(R.drawable.noavatar_small);
+         }
+         mUserName.setText(String.valueOf(mItems.get(position).getNameUser()));
+         try {
+            mCommentWrote.setText(getCorrectTimeWrote(mItems.get(position).getTimeWrote()));
+         } catch (ParseException e) {
+            e.printStackTrace();
+         }
+         mComment.setText(mItems.get(position).getComment());
+         mRating.setRating((mItems.get(position).getRatingCommentUser()));
+      }
+
+      private String getCorrectTimeWrote(String timeWrote) throws ParseException {
+
+         String info = "";
+         Calendar calendar = getCorrectTime(timeWrote);
+         Calendar localCalendar = Calendar.getInstance();
+         Resources res = context.getResources();
+         int time = getDifferenceTime(localCalendar, calendar, Calendar.YEAR);
+         //Year
+         if (time > 0) {
+            info = String.format(res.getString(R.string.year_ago_text), time);
+         } else {
+            //Month
+            time = getDifferenceTime(localCalendar, calendar, Calendar.MONTH);
+            if (time > 0) {
+               info = String.format(res.getString(R.string.months_ago_text), time);
+            } else {
+               //days
+               time = getDifferenceTime(localCalendar, calendar, Calendar.DAY_OF_MONTH);
+               if (time > 0) {
+                  info = String.format(res.getString(R.string.days_ago_text), time);
+               } else {
+                  //hours
+                  time = getDifferenceTime(localCalendar, calendar, Calendar.HOUR_OF_DAY);
+                  if (time > 0) {
+                     info = time + context.getResources().getString(R.string.hours_ago_text);
+                  } else {
+                     //min
+                     time = getDifferenceTime(localCalendar, calendar, Calendar.MINUTE);
+                     if (time > 0) {
+                        info = String.format(res.getString(R.string.min_ago_text), time);
+                     } else {
+                        //seg
+                        time = getDifferenceTime(localCalendar, calendar, Calendar.SECOND);
+                        if (time > 0) {
+                           info = String.format(res.getString(R.string.sec_ago_text), time);
                         }
-                    }
-                }
+                     }
+                  }
+               }
             }
-            return info;
-        }
+         }
+         return info;
+      }
 
-        private Calendar getCorrectTime(@NonNull String dateToConvert){
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            df.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = null;
-            try {
-                date = df.parse(dateToConvert);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            df.setTimeZone(TimeZone.getDefault());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar;
-        }
+      private Calendar getCorrectTime(@NonNull String dateToConvert) {
+         SimpleDateFormat df = new SimpleDateFormat(PATTERN);
+         df.setTimeZone(TimeZone.getTimeZone(UTC));
+         Date date = null;
+         try {
+            date = df.parse(dateToConvert);
+         } catch (ParseException e) {
+            Log.e(TAG,e.getMessage());
+         }
+         df.setTimeZone(TimeZone.getDefault());
+         Calendar calendar = Calendar.getInstance();
+         calendar.setTime(date);
+         return calendar;
+      }
 
-        private int getDifferenceTime(@NonNull Calendar localTime, @NonNull Calendar commentTime, int typeToCompare){
-            return localTime.get(typeToCompare) - commentTime.get(typeToCompare);
-        }
-    }
+      private int getDifferenceTime(@NonNull Calendar localTime, @NonNull Calendar commentTime, int typeToCompare) {
+         return localTime.get(typeToCompare) - commentTime.get(typeToCompare);
+      }
+   }
 }

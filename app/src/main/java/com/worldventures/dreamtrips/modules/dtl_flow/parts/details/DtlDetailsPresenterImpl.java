@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -66,7 +65,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
-
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;
@@ -284,28 +282,33 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    @Override
-   public void addNewComments(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
+   public void addNewComments(ReviewMerchantsAction action) {
       //List Review have not to be null
-      if (listReviews != null){
-         //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
-         if (countReview == 0){
-            getView().addNoCommentsAndReviews();
-         } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
-            //If list size is major or equals 3, must be show read all message button
-            getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBussinessRule(listReviews));
-            getView().showButtonAllRateAndReview();
-            getView().setTextRateAndReviewButton(countReview);
-         } else {
-            //if it doesn't, only show the comment in the same screen
-            getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
-            getView().hideButtonAllRateAndReview();
+      if (!action.getResult().getTotal().equals("")) {
+         ArrayList<ReviewObject> listReviews = ReviewObject.getReviewListLimit(action.getResult().getReviews());
+         if (listReviews != null && !listReviews.isEmpty()) {
+            //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
+            int countReview = action.getResult().getTotal();
+            float ratingMerchant = action.getResult().getRatingAvarage().floatValue();
+            if (countReview == 0) {
+               getView().addNoCommentsAndReviews();
+            } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
+               //If list size is major or equals 3, must be show read all message button
+               getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBussinessRule(listReviews));
+               getView().showButtonAllRateAndReview();
+               getView().setTextRateAndReviewButton(countReview);
+            } else {
+               //if it doesn't, only show the comment in the same screen
+               getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
+               getView().hideButtonAllRateAndReview();
+            }
          }
       }
    }
 
-   private ArrayList<ReviewObject> getListReviewByBussinessRule(@NonNull ArrayList<ReviewObject> reviews){
+   private ArrayList<ReviewObject> getListReviewByBussinessRule(@NonNull ArrayList<ReviewObject> reviews) {
       ArrayList<ReviewObject> newListReviews = new ArrayList<>();
-      for (int i=0; i<MAX_SIZE_TO_SHOW_BUTTON; i++){
+      for (int i = 0; i < MAX_SIZE_TO_SHOW_BUTTON; i++) {
          newListReviews.add(reviews.get(i));
       }
       return newListReviews;
@@ -317,8 +320,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ReviewMerchantsAction>()
-                  .onSuccess(this::onMerchantsLoaded)
-                  .onFail(this::onMerchantsLoadingError));
+                  .onSuccess(this::onMerchantsLoaded));
       reviewActionPipe.send(ReviewMerchantsAction.create(ImmutableReviewsMerchantsActionParams
             .builder()
             .brandId(BRAND_ID)
@@ -327,10 +329,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
-      addNewComments(action.getResult().getRatingAvarage().floatValue(), action.getResult().getTotal(),
-            ReviewObject.getReviewListLimit(action.getResult().getReviews()));
-   }
-
-   private void onMerchantsLoadingError(ReviewMerchantsAction action, Throwable throwable) {
+      addNewComments(action);
    }
 }

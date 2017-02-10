@@ -216,12 +216,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.openComments(feedItem, isVisibleOnScreen(), isTabletLandscape());
    }
 
-   @Optional
-   @OnClick(R.id.tv_search_friends)
-   public void onFriendsSearchClicked() {
-      fragmentWithFeedDelegate.openFriendsSearch();
-   }
-
    protected abstract void initialToolbar();
 
    protected abstract BaseDelegateAdapter createAdapter();

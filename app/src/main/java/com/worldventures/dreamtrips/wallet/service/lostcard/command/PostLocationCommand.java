@@ -78,7 +78,7 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
       final WalletLocation lastLocation = Queryable.from(locationRepository.getWalletLocations())
             .sort((smartCardLocation1, smartCardLocation2)
                   -> smartCardLocation1.createdAt().compareTo(smartCardLocation2.createdAt()))
-            .first();
+            .last();
       final WalletLocation postedLocation = ImmutableWalletLocation.builder()
             .from(lastLocation)
             .postedAt(Calendar.getInstance().getTime())

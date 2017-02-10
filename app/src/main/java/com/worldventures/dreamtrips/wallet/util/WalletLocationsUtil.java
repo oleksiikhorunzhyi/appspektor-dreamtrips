@@ -15,6 +15,6 @@ public class WalletLocationsUtil {
       return Queryable.from(smartCardLocations)
             .distinct()
             .sort((smartCardLocation1, smartCardLocation2) -> smartCardLocation1.createdAt().compareTo(smartCardLocation2.createdAt()))
-            .first();
+            .last();
    }
 }

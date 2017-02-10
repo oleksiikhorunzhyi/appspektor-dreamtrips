@@ -30,7 +30,6 @@ public class LostCardManager {
    private void observeConnection() {
       subscriptions.add(locationInteractor.connectActionPipe()
             .observeSuccess()
-            .debounce(1, TimeUnit.SECONDS)
             .subscribe(connectAction ->  triggerLocation(WalletLocationType.CONNECT)));
 
       subscriptions.add(locationInteractor.disconnectPipe()

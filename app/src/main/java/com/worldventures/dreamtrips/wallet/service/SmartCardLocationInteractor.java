@@ -13,12 +13,13 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledT
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import io.techery.janet.ActionPipe;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.schedulers.Schedulers;
 
 public final class SmartCardLocationInteractor {
 
-   private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
+   private final ActionPipe<ConnectAction> connectionPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<WalletLocationCommand> walletLocationCommandPipe;
    private final ActionPipe<PostLocationCommand> postLocationPipe;
@@ -32,8 +33,8 @@ public final class SmartCardLocationInteractor {
    private final ActionPipe<FetchPlacesNearbyCommand> fetchPlacesNearbyCommandActionPipe;
 
    public SmartCardLocationInteractor(SessionActionPipeCreator pipeCreator) {
-      connectionPipe = pipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
-      disconnectPipe = pipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
+      connectionPipe = pipeCreator.createPipe(ConnectAction.class);
+      disconnectPipe = pipeCreator.createPipe(DisconnectAction.class);
 
       walletLocationCommandPipe = pipeCreator.createPipe(WalletLocationCommand.class, Schedulers.io());
 
@@ -48,7 +49,7 @@ public final class SmartCardLocationInteractor {
       fetchPlacesNearbyCommandActionPipe = pipeCreator.createPipe(FetchPlacesNearbyCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
+   public ActionPipe<ConnectAction> connectActionPipe() {
       return connectionPipe;
    }
 

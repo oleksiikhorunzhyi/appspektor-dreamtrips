@@ -30,7 +30,7 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
 
    @Override
    protected void run(CommandCallback<List<WalletLocation>> callback) throws Throwable {
-      Observable.concat(getStoredLocation(), getHistoricalLocation())
+      Observable.merge(getStoredLocation(), getHistoricalLocation())
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

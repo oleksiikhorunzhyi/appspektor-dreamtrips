@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantReviews;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FullMerchantActionCreator;
 
 import javax.inject.Inject;

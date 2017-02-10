@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingTop="8dp" />
+        android:paddingTop="@dimen/dtl_item_reviews_margin_eight" />
 
     <include layout="@layout/line_separator"/>
 

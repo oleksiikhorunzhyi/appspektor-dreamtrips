@@ -1,135 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="16dp">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/dtl_all_reviews_margin"
+      >
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/ivItemReview"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="16dp"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"/>
+   <de.hdodenhof.circleimageview.CircleImageView
+         android:id="@+id/ivItemReview"
+         android:layout_width="@dimen/dtl_item_reviews_margin"
+         android:layout_height="@dimen/dtl_item_reviews_margin"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginLeft="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_item_reviews_margin_tw"
+         />
 
-    <TextView
-        android:id="@+id/tvUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/ivItemReview"
-        android:layout_toEndOf="@+id/ivItemReview"
-        android:layout_toRightOf="@+id/ivItemReview"
-        android:layout_marginLeft="9dp"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="#222222"/>
+   <TextView
+         android:id="@+id/tvUserName"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignTop="@+id/ivItemReview"
+         android:layout_marginLeft="@dimen/dtl_item_reviews_margin_nine"
+         android:layout_toEndOf="@+id/ivItemReview"
+         android:layout_toRightOf="@+id/ivItemReview"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         android:textStyle="bold"
+         />
 
-    <RatingBar
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:rating="0"
-        android:layout_marginTop="6dp"
-        android:theme="@style/RatingBar"
-        android:layout_alignLeft="@+id/tvUserName"
-        android:layout_alignStart="@+id/tvUserName"
-        android:layout_below="@+id/tvUserName"
-        android:id="@+id/rbRating" />
+   <RatingBar
+         android:id="@+id/rbRating"
+         style="?android:attr/ratingBarStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/tvUserName"
+         android:layout_alignStart="@+id/tvUserName"
+         android:layout_below="@+id/tvUserName"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:isIndicator="true"
+         android:numStars="5"
+         android:rating="0"
+         android:theme="@style/RatingBar"
+         />
 
-    <TextView
-        android:id="@+id/tvCommentWrote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/tvUserName"
-        android:layout_marginRight="16dp"
-        android:textColor="#929292"
-        android:textSize="14sp" />
+   <TextView
+         android:id="@+id/tvCommentWrote"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/tvUserName"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:textColor="@color/color_item_review"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         />
 
-    <TextView
-        android:id="@+id/tvComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_alignLeft="@+id/rbRating"
-        android:layout_marginRight="16dp"
-        android:layout_alignStart="@+id/rbRating"
-        android:layout_below="@+id/rbRating"
-        android:maxLines="3"
-        android:ellipsize="end"
-        android:textSize="14sp"
-        android:textColor="#222222"
-        />
+   <TextView
+         android:id="@+id/tvComment"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/rbRating"
+         android:layout_alignStart="@+id/rbRating"
+         android:layout_below="@+id/rbRating"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:ellipsize="end"
+         android:maxLines="3"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         />
 
-    <TextView
-        android:id="@+id/tvReadMore"
-        android:layout_marginTop="6dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvComment"
-        android:layout_alignStart="@+id/tvComment"
-        android:layout_below="@+id/tvComment"
-        android:textColor="@color/rating_background_button"
-          android:visibility="gone"
-        android:textSize="14sp"
-        android:textStyle="bold"/>
+   <TextView
+         android:id="@+id/tvReadMore"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/tvComment"
+         android:layout_alignStart="@+id/tvComment"
+         android:layout_below="@+id/tvComment"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:textColor="@color/rating_background_button"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         android:textStyle="bold"
+         android:visibility="gone"
+         />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/tvReadMore"
-        android:layout_marginRight="16dp"
-        android:orientation="horizontal"
-          android:visibility="gone"
-        android:id="@+id/linearLayout">
+   <LinearLayout
+         android:id="@+id/linearLayout"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/tvReadMore"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:orientation="horizontal"
+         android:visibility="gone"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/textView15"
-            android:layout_width="7dp"
-            android:layout_height="15dp"
+            android:layout_width="@dimen/dtl_item_reviews_margin_seven"
+            android:layout_height="@dimen/dtl_no_reviews_margin"
+            android:layout_marginRight="@dimen/dtl_all_reviews_elevation"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#4C5058"
-            android:layout_marginRight="3dp"
-            android:text="2" />
+            android:text="2"
+            android:textColor="@color/color_item_review_gray"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/textView14"
-            android:layout_width="15dp"
-            android:layout_height="14dp"
-            android:background="#4C5058"
-            android:layout_marginRight="7.6dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="7dp"
-            android:layout_height="15dp"
-            android:gravity="center"
+            android:layout_width="@dimen/dtl_no_reviews_margin"
+            android:layout_height="@dimen/dtl_all_reviews_margin_ft"
+            android:layout_marginRight="@dimen/dtl_item_reviews_margin_eight"
             android:layout_weight="1"
-            android:textColor="#4C5058"
-            android:layout_marginRight="3dp"
-            android:text="1" />
+            android:background="@color/color_item_review_gray"
+            />
 
-        <TextView
+      <TextView
+            android:id="@+id/textView13"
+            android:layout_width="@dimen/dtl_item_reviews_margin_seven"
+            android:layout_height="@dimen/dtl_no_reviews_margin"
+            android:layout_marginRight="@dimen/dtl_all_reviews_elevation"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/color_item_review_gray"
+            />
+
+      <TextView
             android:id="@+id/textView12"
-            android:layout_width="15dp"
-            android:layout_height="14dp"
-            android:background="#4C5058"
-            android:layout_weight="1" />
+            android:layout_width="@dimen/dtl_no_reviews_margin"
+            android:layout_height="@dimen/dtl_all_reviews_margin_ft"
+            android:layout_weight="1"
+            android:background="@color/color_item_review_gray"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <include layout="@layout/line_separator"/>
-
+   <include layout="@layout/line_separator" />
 
 </RelativeLayout>

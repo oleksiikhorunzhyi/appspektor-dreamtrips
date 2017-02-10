@@ -3,12 +3,11 @@
     android:id="@+id/tv_read_all_review"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="14sp"
+    android:textSize="@dimen/dtl_all_reviews_text"
     android:textColor="@color/rating_background_button"
-    android:text="READ ALL REVIEWS (49)"
     android:gravity="center"
     android:textStyle="bold"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp">
+    android:layout_marginTop="@dimen/dtl_all_reviews_margin"
+    android:layout_marginBottom="@dimen/dtl_all_reviews_margin">
 
 </TextView>

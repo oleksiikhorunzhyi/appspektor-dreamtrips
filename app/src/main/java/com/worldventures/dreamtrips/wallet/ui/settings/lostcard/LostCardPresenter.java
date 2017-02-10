@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.model.LocationPlace;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
@@ -40,7 +39,6 @@ import timber.log.Timber;
 
 public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen, Parcelable> {
 
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject Navigator navigator;
    @Inject PermissionDispatcher permissionDispatcher;
    @Inject LocationServiceDispatcher locationServiceDispatcher;
@@ -58,6 +56,14 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       super.onAttachedToWindow();
       observeSaveSwitcherState();
       getEnableTrackingState();
+      observeWalletLocationCommand();
+   }
+
+   private void observeWalletLocationCommand() {
+      smartCardLocationInteractor.walletLocationCommandPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()));
    }
 
    private void observeSaveSwitcherState() {
@@ -126,7 +132,10 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             .createObservable(new GetLocationCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<GetLocationCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(getLocationCommand -> takeLastLocationAndShow(getLocationCommand.getResult()))
+                  .onSuccess(getLocationCommand -> {
+                     final WalletLocation walletLocation = takeLastLocation(getLocationCommand.getResult());
+                     processLastLocation(walletLocation);
+                  })
                   .onFail(throwable -> {
                      Timber.e(throwable, "");
                      return null;
@@ -134,27 +143,33 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
                   .wrap());
    }
 
-   private void takeLastLocationAndShow(List<WalletLocation> walletLocations) {
-      getView().toggleVisibleMsgEmptyLastLocation(walletLocations.isEmpty());
-      getView().toggleVisibleLastConnectionTime(!walletLocations.isEmpty());
+   private WalletLocation takeLastLocation(List<WalletLocation> walletLocations) {
+      return !walletLocations.isEmpty() ? WalletLocationsUtil.getLatestLocation(walletLocations) : null;
+   }
 
-      if (!walletLocations.isEmpty()) {
-         WalletLocation walletLocation = WalletLocationsUtil.getLatestLocation(walletLocations);
-
-         getView().setLastConnectionLabel(lastConnectedDateFormat.format(walletLocation.createdAt()));
-
-         smartCardLocationInteractor.fetchAddressPipe()
-               .createObservable(new FetchAddressCommand(walletLocation.coordinates()))
-               .compose(bindViewIoToMainComposer())
-               .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
-                     .onSuccess(command -> setupLocationAndAddress(walletLocation.coordinates(), command.getResult()))
-                     .onFail((fetchAddressCommand, throwable) -> {
-                        Timber.e(throwable, "");
-                        getView().toggleVisibleMsgEmptyLastLocation(true);
-                        getView().toggleVisibleLastConnectionTime(false);
-                     })
-               );
+   private void processLastLocation(WalletLocation walletLocation) {
+      if (walletLocation == null) {
+         toggleLocationContainersVisibility(false);
+         return;
       }
+      toggleLocationContainersVisibility(true);
+      getView().setLastConnectionLabel(lastConnectedDateFormat.format(walletLocation.createdAt()));
+
+      smartCardLocationInteractor.fetchAddressPipe()
+            .createObservable(new FetchAddressCommand(walletLocation.coordinates()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
+                  .onSuccess(command -> setupLocationAndAddress(walletLocation.coordinates(), command.getResult()))
+                  .onFail((fetchAddressCommand, throwable) -> {
+                     Timber.e(throwable, "");
+                     toggleLocationContainersVisibility(false);
+                  })
+            );
+   }
+
+   private void toggleLocationContainersVisibility(boolean locationExists) {
+      getView().toggleVisibleMsgEmptyLastLocation(!locationExists);
+      getView().toggleVisibleLastConnectionTime(locationExists);
    }
 
    private void setupLocationAndAddress(@NonNull WalletCoordinates walletLocation, @NonNull WalletAddress address) {

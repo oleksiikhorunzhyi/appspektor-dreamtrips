@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import javax.inject.Inject;
 
@@ -17,6 +18,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
 
    @Inject SnappyRepository snappyRepository;
    @Inject CardListStorage cardListStorage;
+   @Inject LostCardRepository lostCardRepository;
    @Inject SmartCardInteractor smartCardInteractor;
 
    @Override
@@ -34,6 +36,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
          snappyRepository.deleteSmartCardDetails();
          snappyRepository.deleteSmartCard();
          snappyRepository.deleteTermsAndConditions();
+         lostCardRepository.clear();
          subscriber.onNext(null);
          subscriber.onCompleted();
       });

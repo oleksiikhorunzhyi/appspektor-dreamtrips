@@ -18,7 +18,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class WalletLocationCommand extends Command<Void> implements InjectableAction {
+public class WalletLocationCommand extends Command<WalletLocation> implements InjectableAction {
 
    @Inject SmartCardLocationInteractor locationInteractor;
    @Inject LostCardRepository locationRepository;
@@ -29,7 +29,7 @@ public class WalletLocationCommand extends Command<Void> implements InjectableAc
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<WalletLocation> callback) throws Throwable {
       final ImmutableWalletLocation.Builder locationBuilder = ImmutableWalletLocation.builder()
             .createdAt(Calendar.getInstance().getTime())
             .type(locationType);
@@ -50,11 +50,11 @@ public class WalletLocationCommand extends Command<Void> implements InjectableAc
       return Observable.just(locationBuilder.build());
    }
 
-   private Observable<Void> saveLocation(WalletLocation location) {
+   private Observable<WalletLocation> saveLocation(WalletLocation location) {
       final List<WalletLocation> walletLocations = locationRepository.getWalletLocations();
       walletLocations.add(location);
       locationRepository.saveWalletLocations(walletLocations);
-      return Observable.just(null);
+      return Observable.just(location);
    }
 
 

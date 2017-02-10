@@ -14,4 +14,6 @@ public interface LostCardRepository {
    void saveEnabledTracking(boolean enable);
 
    boolean isEnableTracking();
+
+   void clear();
 }

@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardManager;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 
 import javax.inject.Inject;
 
@@ -18,20 +18,31 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
 
    @Inject SmartCardInteractor interactor;
    @Inject SmartCardSyncManager smartCardSyncManager;
-   @Inject LostCardManager locationManager;
+   @Inject LocationTrackingManager trackingManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
       smartCardSyncManager.connect();
-      locationManager.connect();
 
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .flatMap(command -> interactor.connectActionPipe()
                   .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
-            .subscribe(connectAction -> Timber.i("Success connection to smart card"), throwable -> {
+            .subscribe(connectAction -> {
+               Timber.i("Success connection to smart card");
+               checkEnableTracking();
+            }, throwable -> {
+            });
+   }
+
+   private void checkEnableTracking() {
+      trackingManager.checkEnableTracking()
+            .subscribe(enabled -> {
+               if (enabled) {
+                  trackingManager.track();
+               }
             });
    }
 
@@ -39,6 +50,6 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
    public void dropView() {
       super.dropView();
       interactor.disconnectPipe().send(new DisconnectAction());
-      locationManager.disconnect();
+      trackingManager.untrack();
    }
 }

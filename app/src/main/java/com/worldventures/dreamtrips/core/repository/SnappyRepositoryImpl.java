@@ -390,6 +390,11 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    }
 
    @Override
+   public void deleteWalletLocations() {
+      act(db -> db.del(WALLET_SMART_CARD_LOCATION));
+   }
+
+   @Override
    public void saveEnabledTracking(boolean enable) {
       act(db -> db.putBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING, enable));
    }

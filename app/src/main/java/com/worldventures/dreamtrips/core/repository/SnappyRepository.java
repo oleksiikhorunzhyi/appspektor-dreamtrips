@@ -265,6 +265,8 @@ public interface SnappyRepository {
 
    List<WalletLocation> getWalletLocations();
 
+   void deleteWalletLocations();
+
    void saveEnabledTracking(boolean enable);
 
    boolean isEnableTracking();

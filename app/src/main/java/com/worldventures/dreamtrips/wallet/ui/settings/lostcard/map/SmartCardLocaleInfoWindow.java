@@ -10,7 +10,13 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
+
+import java.util.List;
+
+import static java.lang.String.format;
 
 public class SmartCardLocaleInfoWindow implements GoogleMap.InfoWindowAdapter {
 
@@ -31,15 +37,19 @@ public class SmartCardLocaleInfoWindow implements GoogleMap.InfoWindowAdapter {
 
       TextView tvPlace = (TextView) viewMarker.findViewById(R.id.tv_place);
 
-      if (lostCardPin.place() != null) {
+      List<WalletPlace> places = lostCardPin.places();
+      if (places.size() == 1) {
          tvPlace.setVisibility(View.VISIBLE);
-         tvPlace.setText(lostCardPin.place());
+         tvPlace.setText(places.get(0).name());
       } else {
          tvPlace.setVisibility(View.GONE);
       }
 
       if (lostCardPin.address() != null) {
-         ((TextView) viewMarker.findViewById(R.id.tv_info)).setText(lostCardPin.address());
+         final WalletAddress address = lostCardPin.address();
+         ((TextView) viewMarker.findViewById(R.id.tv_info)).setText(
+               format("%s, %s\n%s", address.countryName(), address.adminArea(), address.addressLine())
+         );
       }
 
       return viewMarker;

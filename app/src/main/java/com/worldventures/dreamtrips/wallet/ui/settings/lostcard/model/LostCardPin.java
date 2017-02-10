@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model;
 
-import android.support.annotation.Nullable;
-
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 
 import org.immutables.value.Value;
+
+import java.util.List;
 
 @Value.Immutable
 public interface LostCardPin {
 
-   @Nullable
-   String place();
+   List<WalletPlace> places();
 
-   @Nullable
-   String address();
+   WalletAddress address();
 
    WalletCoordinates position();
 }

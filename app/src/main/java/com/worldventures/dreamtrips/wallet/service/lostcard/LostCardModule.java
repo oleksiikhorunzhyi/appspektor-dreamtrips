@@ -7,10 +7,9 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
-import com.worldventures.dreamtrips.wallet.service.command.FetchPlacesNearbyCommand;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
@@ -27,10 +26,9 @@ import dagger.Provides;
             PostLocationCommand.class,
             GetLocationCommand.class,
             DetectGeoLocationCommand.class,
-            FetchAddressCommand.class,
+            FetchAddressWithPlacesCommand.class,
             SaveEnabledTrackingCommand.class,
             GetEnabledTrackingCommand.class,
-            FetchPlacesNearbyCommand.class,
             WalletLocationCommand.class
       },
       library = true, complete = false)

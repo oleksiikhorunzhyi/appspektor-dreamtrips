@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.MagstripeReaderModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
 import java.net.CookieManager;
@@ -148,7 +149,9 @@ public class JanetModule {
    @Named(JANET_API_LIB)
    ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
       return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()));
+            .provideBuilder()
+            .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
+            .create()));
    }
 
    @Singleton

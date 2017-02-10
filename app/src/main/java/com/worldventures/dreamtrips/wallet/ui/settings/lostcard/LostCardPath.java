@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 @Layout(R.layout.screen_wallet_settings_lost_card)
 public class LostCardPath extends StyledPath {
+
    @Override
    public MasterDetailPath getMaster() {
       return this;

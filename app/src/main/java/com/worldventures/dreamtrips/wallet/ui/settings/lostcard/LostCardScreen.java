@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -34,6 +35,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.map.SmartCardLocaleInfoWindow;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import butterknife.InjectView;
 import rx.Observable;
 
@@ -52,6 +57,8 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
    @InjectView(R.id.map_view) ToucheableMapView mapView;
 
+   private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
+
    private Observable<Boolean> enableTrackingObservable;
 
    private MaterialDialog dialogErrorLocationService = null;
@@ -69,6 +76,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       return true;
    }
 
+   @NonNull
    @Override
    public LostCardPresenter createPresenter() {
       return new LostCardPresenter(getContext(), getInjector());
@@ -150,8 +158,9 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public void setLastConnectionLabel(String lastConnection) {
-      tvLastConnectionLabel.setText(lastConnection);
+   public void setLastConnectionDate(Date date) {
+
+      tvLastConnectionLabel.setText(lastConnectedDateFormat.format(date));
    }
 
    @Override
@@ -170,7 +179,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
                new MarkerOptions()
                      .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
                      .position(walletCoordinatesToLatLng(lostCardPin.position()))
-                     .snippet(lostCardPin.place())
+                     .snippet(/*lostCardPin.place()*/ "")
          );
 
          googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
@@ -194,7 +203,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    private Bitmap getBitmapFromVectorDrawable() {
-      Drawable drawable = getResources().getDrawable(R.drawable.ic_dining_pin_icon);
+      Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_dining_pin_icon);
       Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
             drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
       Canvas canvas = new Canvas(bitmap);

@@ -1,7 +1,7 @@
-package com.worldventures.dreamtrips.wallet.service.http.action;
+package com.worldventures.dreamtrips.wallet.service.lostcard.command.http;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
-import com.worldventures.dreamtrips.wallet.service.lostcard.model.NearbyResponse;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.NearbyResponse;
 
 import java.util.Locale;
 

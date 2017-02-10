@@ -103,4 +103,8 @@ public class SmartCardConverterModule {
       return new SmartCardLocationTypeToWalletLocationTypeConverter();
    }
 
+   @Provides(type = Provides.Type.SET)
+   Converter providePlaceConverter() {
+      return new ApiPlaceToWalletPlaceConverter();
+   }
 }

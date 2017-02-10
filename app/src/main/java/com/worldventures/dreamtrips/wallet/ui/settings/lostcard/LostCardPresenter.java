@@ -2,20 +2,19 @@ package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.location.LocationServiceDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.wallet.service.command.FetchPlacesNearbyCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.model.LocationPlace;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
@@ -27,9 +26,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.ImmutableL
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
 import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -43,9 +41,6 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    @Inject PermissionDispatcher permissionDispatcher;
    @Inject LocationServiceDispatcher locationServiceDispatcher;
    @Inject SmartCardLocationInteractor smartCardLocationInteractor;
-
-   private SimpleDateFormat lastConnectedDateFormat =
-         new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    public LostCardPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -153,13 +148,14 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
          return;
       }
       toggleLocationContainersVisibility(true);
-      getView().setLastConnectionLabel(lastConnectedDateFormat.format(walletLocation.createdAt()));
+      getView().setLastConnectionDate(walletLocation.createdAt());
 
       smartCardLocationInteractor.fetchAddressPipe()
-            .createObservable(new FetchAddressCommand(walletLocation.coordinates()))
+            .createObservable(new FetchAddressWithPlacesCommand(walletLocation.coordinates()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
-                  .onSuccess(command -> setupLocationAndAddress(walletLocation.coordinates(), command.getResult()))
+            .subscribe(new ActionStateSubscriber<FetchAddressWithPlacesCommand>()
+                  .onSuccess(command ->
+                        setupLocationAndAddress(walletLocation.coordinates(), command.getResult().address, command.getResult().places))
                   .onFail((fetchAddressCommand, throwable) -> {
                      Timber.e(throwable, "");
                      toggleLocationContainersVisibility(false);
@@ -172,35 +168,12 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       getView().toggleVisibleLastConnectionTime(locationExists);
    }
 
-   private void setupLocationAndAddress(@NonNull WalletCoordinates walletLocation, @NonNull WalletAddress address) {
-      LostCardPin lostCardPin = ImmutableLostCardPin.builder()
-            .address(String.format("%s, %s\n%s", address.countryName(), address.adminArea(), address.addressLine()))
-            .position(walletLocation)
-            .build();
-
-      loadPlace(lostCardPin, walletLocation);
-   }
-
-   private void loadPlace(LostCardPin lostCardPin, WalletCoordinates position) {
-      smartCardLocationInteractor.fetchPlacesNearbyCommandActionPipe()
-            .createObservable(new FetchPlacesNearbyCommand(position))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FetchPlacesNearbyCommand>()
-                  .onSuccess(command -> getView().addPin(createLostCardPinWithLastLocation(lostCardPin, command.getResult())))
-                  .onFail((command, throwable) -> {
-                     getView().addPin(lostCardPin);
-                     Timber.e(throwable, "");
-                  })
-            );
-   }
-
-   private LostCardPin createLostCardPinWithLastLocation(LostCardPin lostCardPin, List<LocationPlace> locationPlaces) {
-      if (locationPlaces == null || locationPlaces.isEmpty() || locationPlaces.size() > 1) {
-         return lostCardPin;
-      } else {
-         return ImmutableLostCardPin.copyOf(lostCardPin)
-               .withPlace(locationPlaces.get(0).name());
-      }
+   private void setupLocationAndAddress(WalletCoordinates location, WalletAddress address, List<WalletPlace> places) {
+      getView().addPin(ImmutableLostCardPin.builder()
+            .position(location)
+            .address(address)
+            .places(places)
+            .build());
    }
 
    public void disableTracking() {
@@ -227,11 +200,11 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
       void setVisibilityMap(boolean visible);
 
-      void setLastConnectionLabel(String lastConnection);
+      void setLastConnectionDate(Date date);
 
       void toggleLostCardSwitcher(boolean checked);
 
-      void addPin(@NonNull LostCardPin lostCardPin);
+      void addPin(LostCardPin lostCardPin);
 
       void onTrackingChecked(boolean checked);
 

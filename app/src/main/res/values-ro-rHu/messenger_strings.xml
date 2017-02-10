@@ -9,13 +9,11 @@
    <!---->
    <!--Conversation List -->
    <!---->
-   <string name="conversation_list_title">Conversații</string>
 
    <string name="conversation_list_spinner_item_all_chats">Toate chaturile</string>
    <string name="conversation_list_spinner_item_group_chats">Chaturi de grup</string>
 
    <string name="conversation_list_search_hint">Căutare conversații…</string>
-   <string name="conversation_list_search_edittext_hint">Căutați grupuri și oameni</string>
    <string name="conversation_list_item_last_message_text_format_you">Dvs.: %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">Ați trimis fotografia</string>
    <string name="conversation_list_item_last_message_image">fotografie trimisă</string>
@@ -39,12 +37,10 @@
    <!---->
    <string name="new_chat_title">Chat nou</string>
    <string name="new_chat_toast_no_users_selected_error">Înainte, vă rugăm să selectați câțiva utilizatori </string>
-   <string name="new_multi_user_chat_not_supported">Nu se poate crea conversație de grup </string>
    <string name="new_chat_error_loading_contacts">Contactele nu au putut fi încărcate</string>
    <string name="new_chat_new_conversation_title_hint">Setați denumirea conversației</string>
    <string name="new_chat_chosen_contacts_header_empty">"Adăugați: "</string>
    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Adăugați</string>
-   <string name="new_chat_list_item_section_close_friends">Prieteni apropiați</string>
    <string name="menu_done">Terminat</string>
 
    <!---->
@@ -54,7 +50,6 @@
    <string name="chat_subtitle_format_single_chat_offline">offline</string>
    <string name="chat_subtitle_format_group_chat_format">%1$d membri, %2$d online</string>
    <string name="chat_subtitle_format_group_chat_format_closed">%1$d membri</string>
-   <string name="chat_subtitle_format_group_chat_offline">Niciun utilizator online </string>
    <string name="chat_message_edittext_hint">Mesajul dvs. </string>
    <string name="chat_message_send_button_text">Trimiteți</string>
    <string name="chat_message_sending_disabled">Nu puteți să trimiteți mesaje deoarece nu mai sunteți participant</string>
@@ -94,7 +89,6 @@
    <!-- flagging related -->
    <string name="chat_flag_dialog_progress_loading_flags">Se încarcă…</string>
    <string name="chat_flag_dialog_reason_title">Marcați</string>
-   <string name="chat_flag_dialog_reason_hint">Introduceți motivul</string>
    <string name="chat_flag_dialog_reason_positive_button">Acceptați</string>
    <string name="chat_flag_dialog_reason_negative_button">Anulați</string>
    <string name="chat_flag_dialog_confirmation_title">Confirmați</string>
@@ -113,12 +107,9 @@
    <string name="chat_settings_single_chat_online">online</string>
    <string name="chat_settings_single_chat_offline">offline</string>
    <string name="chat_settings_row_notifications">Notificări</string>
-   <string name="chat_settings_row_shared_content">Conținut partajat</string>
    <string name="chat_settings_row_members_format">Membri (%1$d)</string>
-   <string name="chat_settings_row_assign_new_admin">Alocați un nou administrator</string>
    <string name="chat_settings_row_clear_chat">Ștergere chat</string>
    <string name="chat_settings_row_leave_chat">Păsăriți chatul</string>
-   <string name="chat_settings_row_delete_chat">Ștergeți chat</string>
    <string name="chat_settings_group_chat_info_text_format">Acest grup a fost creat de %1$s</string>
    <string name="chat_settings_menu_settings">Setări</string>
    <string name="chat_settings_menu_edit_chat_name">Editați numele conversației</string>

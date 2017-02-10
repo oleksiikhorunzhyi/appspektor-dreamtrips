@@ -35,6 +35,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     }
 
     @Override
+    public DtlReviewsPresenter createPresenter() {
+        return new DtlReviewsPresenterImpl(getContext(), injector, getPath().getMerchant());
+    }
+
+    @Override
     protected void onPostAttachToWindowView() {
         inflateToolbarMenu(toolbar);
         toolbar.setTitle("Reviews");
@@ -125,10 +130,5 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @Override
     public void hideBlockingProgress() {
 
-    }
-
-    @Override
-    public DtlReviewsPresenter createPresenter() {
-        return new DtlReviewsPresenterImpl(getContext(), injector);
     }
 }

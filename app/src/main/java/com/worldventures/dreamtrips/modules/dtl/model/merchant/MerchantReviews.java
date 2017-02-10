@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.api.dtl.locations.model.Coordinates;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.*;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.IReviewsMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewsMerchant;
 
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
@@ -44,5 +43,5 @@ public interface MerchantReviews extends Identifiable<String> {
    @Nullable @SerializedName("images") List<MerchantMedia> images();
    @Nullable @SerializedName("operation_days") List<OperationDay> operationDays();
    @Nullable @SerializedName("disclaimers") List<Disclaimer> disclaimers();
-   @Nullable @SerializedName("reviews") IReviewsMerchant reviews();
+   //@Nullable @SerializedName("reviews") IReviewsMerchant reviews();
 }

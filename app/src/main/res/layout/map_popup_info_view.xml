@@ -1,87 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:orientation="vertical"
-      android:padding="2dp"
+      android:layout_marginEnd="@dimen/spacing_large"
+      android:layout_marginStart="@dimen/spacing_large"
+      android:orientation="horizontal"
       >
 
-   <android.support.v7.widget.CardView
-         android:layout_width="match_parent"
+   <LinearLayout
+         android:layout_width="0dp"
          android:layout_height="wrap_content"
-         android:layout_marginLeft="@dimen/spacing_large"
-         android:layout_marginRight="@dimen/spacing_large"
+         android:layout_weight="0.65"
+         android:orientation="vertical"
          >
 
       <TextView
-            android:id="@+id/tv_empty_last_location_msg"
+            android:id="@+id/tv_place"
             style="@style/SettingsItemText"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/spacing_normal"
-            android:text="@string/wallet_lost_card_empty_last_location_msg"
-            android:textSize="@dimen/font_medium"
-            android:visibility="visible"
-            tools:visibility="gone"
+            tools:text="Subway, Food"
             />
 
-      <LinearLayout
-            android:id="@+id/destination_label_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minWidth="1000dp"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing_tiny"
-            android:paddingLeft="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_tiny"
-            android:paddingTop="@dimen/spacing_tiny"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
+      <TextView
+            android:id="@+id/tv_info"
+            style="@style/SettingsItemSecondaryText"
+            tools:text="Dominicana st, 29891"
+            />
 
-         <LinearLayout
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="0.65"
-               android:orientation="vertical"
-               android:paddingRight="@dimen/spacing_small"
-               >
+   </LinearLayout>
 
-            <TextView
-                  android:id="@+id/tv_place"
-                  style="@style/SettingsItemText"
-                  tools:text="Subway, Food"
-                  />
-
-            <TextView
-                  android:id="@+id/tv_info"
-                  style="@style/SettingsItemSecondaryText"
-                  tools:text="Dominicana st, 29891"
-                  />
-
-         </LinearLayout>
-
-         <LinearLayout
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="0.45"
-               android:gravity="right|center_vertical"
-               >
-
-            <Button
-                  android:id="@+id/btn_directions"
-                  style="@style/Widget.AppCompat.Button.Small"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:focusable="false"
-                  android:text="@string/wallet_directions"
-                  android:textAllCaps="false"
-                  android:textColor="@color/white"
-                  />
-         </LinearLayout>
-      </LinearLayout>
-   </android.support.v7.widget.CardView>
+   <Button
+         android:id="@+id/btn_directions"
+         style="@style/Widget.AppCompat.Button.Small"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="0.35"
+         android:text="@string/wallet_directions"
+         android:textAllCaps="false"
+         android:textColor="@color/white"
+         />
 
 </LinearLayout>

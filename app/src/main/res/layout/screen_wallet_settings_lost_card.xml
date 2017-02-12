@@ -114,8 +114,6 @@
                   android:layout_height="match_parent"
                   />
 
-            <include layout="@layout/map_popup_info_view" />
-
          </FrameLayout>
 
          <FrameLayout

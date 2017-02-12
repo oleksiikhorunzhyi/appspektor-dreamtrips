@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -32,7 +33,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordina
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.map.SmartCardLocaleInfoWindow;
+import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.map.LostCardInfoWindowAdapter;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
 
 import java.text.SimpleDateFormat;
@@ -53,15 +54,15 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
    @InjectView(R.id.map_container) View mapContainer;
    @InjectView(R.id.tv_empty_lost_card_msg) TextView tvDisableLostCardMsg;
-   @InjectView(R.id.tv_empty_last_location_msg) TextView tvEmptyLastLocationMsg;
    @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
    @InjectView(R.id.map_view) ToucheableMapView mapView;
 
    private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    private Observable<Boolean> enableTrackingObservable;
+   private MaterialDialog dialogErrorLocationService;
 
-   private MaterialDialog dialogErrorLocationService = null;
+   private GoogleMap googleMap;
 
    public LostCardScreen(Context context) {
       super(context);
@@ -85,6 +86,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
       enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher);
@@ -97,14 +99,14 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
-      if(isInEditMode()) return;
+      if (isInEditMode()) return;
       mapView.onResume();
    }
 
    @Override
    protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      if(isInEditMode()) return;
+      if (isInEditMode()) return;
       mapView.onPause();
       mapView.onDestroy();
    }
@@ -139,7 +141,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void toggleVisibleMsgEmptyLastLocation(boolean visible) {
-      tvEmptyLastLocationMsg.setVisibility(visible ? VISIBLE : GONE);
+      //todo what should this method do ?
    }
 
    @Override
@@ -150,7 +152,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    public void setVisibilityMap(boolean visible) {
       if (mapContainer.getVisibility() == GONE) {
-         ObjectAnimator.ofFloat(mapView, "alpha", 0f, 1f)
+         ObjectAnimator.ofFloat(mapView, View.ALPHA, 0f, 1f)
                .setDuration(1500)
                .start();
       }
@@ -159,7 +161,6 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void setLastConnectionDate(Date date) {
-
       tvLastConnectionLabel.setText(lastConnectedDateFormat.format(date));
    }
 
@@ -169,30 +170,21 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public void addPin(@NonNull LostCardPin lostCardPin) {
-      mapView.getMapAsync(googleMap -> {
-         SmartCardLocaleInfoWindow popupPinWindow = new SmartCardLocaleInfoWindow(getContext(), lostCardPin);
-         googleMap.setInfoWindowAdapter(popupPinWindow);
-         googleMap.clear();
+   public void addPin(@NonNull LostCardPin pinData) {
+      googleMap.clear();
 
-         Marker marker = googleMap.addMarker(
-               new MarkerOptions()
-                     .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
-                     .position(walletCoordinatesToLatLng(lostCardPin.position()))
-                     .snippet(/*lostCardPin.place()*/ "")
-         );
+      Marker marker = googleMap.addMarker(
+            new MarkerOptions()
+                  .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
+                  .position(walletCoordinatesToLatLng(pinData.position()))
+      );
 
-         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
-         marker.showInfoWindow();
+      final LostCardInfoWindowAdapter infoWindowAdapter = new LostCardInfoWindowAdapter(getContext(), pinData);
+      googleMap.setInfoWindowAdapter(infoWindowAdapter);
+      googleMap.setOnInfoWindowClickListener(m -> infoWindowAdapter.openExternalMap());
 
-         googleMap.setOnInfoWindowClickListener(m -> popupPinWindow.openExternalMap());
-
-         googleMap.setOnMarkerClickListener(m -> {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
-            marker.showInfoWindow();
-            return false;
-         });
-      });
+      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
+      marker.showInfoWindow();
    }
 
    private LatLng walletCoordinatesToLatLng(WalletCoordinates position) {
@@ -247,6 +239,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void showOpenLocationServiceSettingsDialog() {
+      //todo it's a bool sheet
       if (dialogErrorLocationService == null) {
          dialogErrorLocationService = new MaterialDialog.Builder(getContext())
                .title(R.string.wallet_location_service_settings_title)
@@ -277,16 +270,19 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    private void initMap() {
       mapView.getMapAsync(googleMap -> {
-         googleMap.setMyLocationEnabled(true);
-         UiSettings uiSettings = googleMap.getUiSettings();
+         this.googleMap = googleMap;
+
+         final UiSettings uiSettings = googleMap.getUiSettings();
          uiSettings.setAllGesturesEnabled(true);
          uiSettings.setZoomControlsEnabled(true);
 
+         googleMap.setMyLocationEnabled(true);
          onMapLoaded();
       });
    }
 
    protected void onMapLoaded() {
+      // todo wtf ? it's not ui logic
       if (trackingEnableSwitcher.isChecked()) presenter.loadLastSmartCardLocation();
    }
 }

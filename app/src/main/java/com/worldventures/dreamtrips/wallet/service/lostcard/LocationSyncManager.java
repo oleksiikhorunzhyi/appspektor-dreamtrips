@@ -28,7 +28,7 @@ public class LocationSyncManager {
    }
 
    public void cancelSync() {
-      scheduledLocationFuture.cancel(true);
+      if (scheduledLocationFuture != null) scheduledLocationFuture.cancel(true);
       locationInteractor.postLocationPipe().cancelLatest();
    }
 

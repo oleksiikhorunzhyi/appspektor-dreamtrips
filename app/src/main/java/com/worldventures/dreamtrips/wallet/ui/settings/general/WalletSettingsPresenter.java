@@ -291,6 +291,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       navigator.go(new AboutPath());
    }
 
+   void goToAddNewSmartCard() {
+      // TODO: 2/13/17 Add navigate to add new SC screen
+   }
+
    public interface Screen extends WalletScreen {
 
       void smartCardGeneralStatus(@Nullable SmartCardFirmware version, int batteryLevel, Date lastSync);

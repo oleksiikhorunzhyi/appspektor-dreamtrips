@@ -134,6 +134,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @OnClick(R.id.item_setup_new_sc)
    void onSetupNewSmartCardClick() {
+      presenter.goToAddNewSmartCard();
    }
 
    @OnClick(R.id.item_factory_reset)

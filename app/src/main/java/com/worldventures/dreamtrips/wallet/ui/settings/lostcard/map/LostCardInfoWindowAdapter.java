@@ -9,10 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
 
@@ -65,10 +65,10 @@ public class LostCardInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
    }
 
    public void openExternalMap() {
-      WalletCoordinates position = pinData.position();
+      LatLng position = pinData.position();
       Intent map = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"
-            + position.lat() + "," + position.lng() + "?z=17&q="
-            + position.lat() + "," + position.lng()));
+            + position.latitude + "," + position.longitude + "?z=17&q="
+            + position.latitude + "," + position.longitude));
       context.startActivity(map);
    }
 }

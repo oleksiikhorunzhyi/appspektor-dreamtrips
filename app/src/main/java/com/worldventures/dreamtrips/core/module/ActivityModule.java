@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Activity;
 import android.app.FragmentManager;
 
-import com.worldventures.dreamtrips.core.location.LocationServiceModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
@@ -19,7 +18,6 @@ import dagger.Provides;
       includes = {
             UiUtilModule.class,
             PermissionModule.class,
-            LocationServiceModule.class
       })
 public class ActivityModule {
 

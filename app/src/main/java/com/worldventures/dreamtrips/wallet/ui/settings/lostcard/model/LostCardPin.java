@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
@@ -15,5 +16,5 @@ public interface LostCardPin {
 
    WalletAddress address();
 
-   WalletCoordinates position();
+   LatLng position();
 }

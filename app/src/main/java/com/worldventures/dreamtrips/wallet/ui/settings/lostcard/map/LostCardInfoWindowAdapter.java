@@ -50,7 +50,7 @@ public class LostCardInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
    }
 
    private void bindPlaces(TextView tvPlace, List<WalletPlace> places) {
-      if (places.size() == 1) {
+      if (places != null && places.size() == 1) {
          tvPlace.setVisibility(View.VISIBLE);
          tvPlace.setText(places.get(0).name());
       } else {

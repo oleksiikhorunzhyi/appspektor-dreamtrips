@@ -90,5 +90,9 @@ public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlace
             .saveToCache(needApiRequest())
             .build();
    }
+
+   public WalletCoordinates getCoordinates() {
+      return coordinates;
+   }
 }
 

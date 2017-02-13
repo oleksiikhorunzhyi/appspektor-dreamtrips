@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 import android.content.Context;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
@@ -29,7 +31,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -162,15 +165,10 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<GetLocationCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(getLocationCommand -> {
-                     final WalletLocation walletLocation = takeLastLocation(getLocationCommand.getResult());
+                     final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
                      processLastLocation(walletLocation);
                   })
                   .wrap());
-   }
-
-   private WalletLocation takeLastLocation(List<WalletLocation> walletLocations) {
-      // TODO: 2/13/17 incapsulate this code  in  getLatestLocation
-      return !walletLocations.isEmpty() ? getLatestLocation(walletLocations) : null;
    }
 
    private void processLastLocation(WalletLocation walletLocation) {
@@ -181,18 +179,26 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       toggleLocationContainersVisibility(true);
       getView().setLastConnectionDate(walletLocation.createdAt());
 
+      fetchAddressWithPlaces(walletLocation.coordinates());
+   }
+
+   public void fetchAddressWithPlaces(WalletCoordinates coordinates) {
       smartCardLocationInteractor.fetchAddressPipe()
-            .createObservable(new FetchAddressWithPlacesCommand(walletLocation.coordinates()))
+            .createObservable(new FetchAddressWithPlacesCommand(coordinates))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FetchAddressWithPlacesCommand>()
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView(), true)
                   .onSuccess(command ->
-                        setupLocationAndAddress(walletLocation.coordinates(), command.getResult().address, command.getResult().places))
-                  .onFail((fetchAddressCommand, throwable) -> {
-                     Timber.e(throwable, "");
-                     // handle unknow host exception
-                     toggleLocationContainersVisibility(false);
-                  })
-            );
+                        setupLocationAndAddress(coordinates, command.getResult().address, command.getResult().places))
+                  .onFail((fetchAddressWithPlacesCommand, throwable) -> setupEmptyLocation(fetchAddressWithPlacesCommand))
+                  .create());
+   }
+
+   void retryFetchAddressWithPlaces(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
+      fetchAddressWithPlaces(fetchAddressWithPlacesCommand.getCoordinates());
+   }
+
+   void setupEmptyLocation(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
+      getView().addPin(toLatLng(fetchAddressWithPlacesCommand.getCoordinates()));
    }
 
    private void toggleLocationContainersVisibility(boolean locationExists) {
@@ -200,9 +206,9 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       getView().toggleVisibleLastConnectionTime(locationExists);
    }
 
-   private void setupLocationAndAddress(WalletCoordinates location, WalletAddress address, List<WalletPlace> places) {
+   private void setupLocationAndAddress(WalletCoordinates coordinates, WalletAddress address, List<WalletPlace> places) {
       getView().addPin(ImmutableLostCardPin.builder()
-            .position(toLatLng(location))
+            .position(toLatLng(coordinates))
             .address(address)
             .places(places)
             .build());
@@ -211,6 +217,8 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    public interface Screen extends WalletScreen {
 
       Observable<Boolean> observeTrackingEnable();
+
+      OperationView<FetchAddressWithPlacesCommand> provideOperationView();
 
       void toggleVisibleDisabledOfTrackingView(boolean visible);
 
@@ -225,6 +233,8 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       void toggleLostCardSwitcher(boolean checked);
 
       void addPin(LostCardPin lostCardPin);
+
+      Marker addPin(LatLng position);
 
       void showRationaleForLocation();
 

@@ -20,6 +20,10 @@ public class WalletLocationsUtil {
    }
 
    public static WalletLocation getLatestLocation(List<WalletLocation> smartCardLocations) {
+      return !smartCardLocations.isEmpty() ? applyQueryToLocationList(smartCardLocations) : null;
+   }
+
+   private static WalletLocation applyQueryToLocationList(List<WalletLocation> smartCardLocations) {
       return Queryable.from(smartCardLocations)
             .distinct()
             .sort((smartCardLocation1, smartCardLocation2) -> smartCardLocation1.createdAt()

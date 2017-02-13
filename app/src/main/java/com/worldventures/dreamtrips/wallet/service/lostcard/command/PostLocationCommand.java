@@ -46,8 +46,8 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      if (!locationRepository.getWalletLocations().isEmpty()
-            && WalletLocationsUtil.getLatestLocation(locationRepository.getWalletLocations()).postedAt() != null) {
+      final WalletLocation walletLocation = WalletLocationsUtil.getLatestLocation(locationRepository.getWalletLocations());
+      if (walletLocation != null && walletLocation.postedAt() != null) {
          callback.onSuccess(null);
          return;
       }

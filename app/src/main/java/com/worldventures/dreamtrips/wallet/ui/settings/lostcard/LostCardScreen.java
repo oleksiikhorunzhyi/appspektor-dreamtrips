@@ -20,15 +20,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.map.LostCardInfoWindowAdapter;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
 
@@ -37,6 +41,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 import static android.graphics.Bitmap.createBitmap;
@@ -52,6 +58,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 //   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
    @InjectView(R.id.map_container) View mapContainer;
    @InjectView(R.id.tv_empty_lost_card_msg) TextView tvDisableLostCardMsg;
+   @InjectView(R.id.tv_tracking_enabled_empty_location) TextView tvTrackingEnabledEmptyLocations;
    @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
    @InjectView(R.id.map_view) ToucheableMapView mapView;
 
@@ -121,13 +128,23 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
+   public OperationView<FetchAddressWithPlacesCommand> provideOperationView() {
+      //noinspection unchecked cast
+      return new ComposableOperationView<>(null, null, ErrorViewFactory.<FetchAddressWithPlacesCommand>builder()
+            .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  presenter::retryFetchAddressWithPlaces,
+                  fetchAddressWithPlacesCommand -> {}))
+            .build());
+   }
+
+   @Override
    public void toggleVisibleDisabledOfTrackingView(boolean visible) {
       disabledTrackingView.setVisibility(visible ? VISIBLE : GONE);
    }
 
    @Override
    public void toggleVisibleMsgEmptyLastLocation(boolean visible) {
-      //todo what should this method do ?
+      tvTrackingEnabledEmptyLocations.setVisibility(visible ? VISIBLE : GONE);
    }
 
    @Override
@@ -157,20 +174,23 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void addPin(@NonNull LostCardPin pinData) {
-      googleMap.clear();
-
-      Marker marker = googleMap.addMarker(
-            new MarkerOptions()
-                  .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
-                  .position(pinData.position())
-      );
-
+      final Marker marker = addPin(pinData.position());
       final LostCardInfoWindowAdapter infoWindowAdapter = new LostCardInfoWindowAdapter(getContext(), pinData);
       googleMap.setInfoWindowAdapter(infoWindowAdapter);
       googleMap.setOnInfoWindowClickListener(m -> infoWindowAdapter.openExternalMap());
-
-      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
       marker.showInfoWindow();
+   }
+
+   @Override
+   public Marker addPin(LatLng position) {
+      googleMap.clear();
+      final Marker marker = googleMap.addMarker(
+            new MarkerOptions()
+                  .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
+                  .position(position)
+      );
+      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
+      return marker;
    }
 
    private Bitmap getBitmapFromVectorDrawable() {

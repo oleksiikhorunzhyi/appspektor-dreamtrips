@@ -28,14 +28,17 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    }
 
    private Observable<Void> removeCache() {
-      return Observable.create(subscriber -> {
-         snappyRepository.deleteWalletDefaultCardId();
-         cardListStorage.deleteWalletCardList();
-         snappyRepository.deleteSmartCardDetails();
-         snappyRepository.deleteSmartCard();
-         snappyRepository.deleteTermsAndConditions();
-         subscriber.onNext(null);
-         subscriber.onCompleted();
+      return Observable.defer(() -> {
+         try {
+            snappyRepository.deleteWalletDefaultCardId();
+            cardListStorage.deleteWalletCardList();
+            snappyRepository.deleteSmartCardDetails();
+            snappyRepository.deleteSmartCard();
+            snappyRepository.deleteTermsAndConditions();
+         } catch (Throwable e) {
+            return Observable.error(e);
+         }
+         return Observable.just(null);
       });
    }
 

@@ -64,32 +64,32 @@ class SmartCardInteractorSpec : BaseSpec({
          smartCardSyncManager.connect()
       }
 
-      context("Smart Card connection status should be changed") {
+      context("SmartCard connection status should be changed") {
 
          it("Connect to smart card") {
-            val smartcard: SmartCard = mockSmartCard("4")
-            whenever(smartcard.cardStatus()).thenReturn(SmartCard.CardStatus.DRAFT)
+            val smartCard: SmartCard = mockSmartCard("4")
+            whenever(smartCard.cardStatus()).thenReturn(SmartCard.CardStatus.DRAFT)
 
             val testSubscriber: TestSubscriber<ActionState<ConnectSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ConnectSmartCardCommand::class.java)
-                  .createObservable(ConnectSmartCardCommand(smartcard, false))
+                  .createObservable(ConnectSmartCardCommand(smartCard, false))
                   .subscribe(testSubscriber)
 
             assertActionSuccess(testSubscriber, { it.result.connectionStatus() === SmartCard.ConnectionStatus.CONNECTED })
             verify(mockDb, times(1)).saveSmartCard(any())
          }
 
-         it("Update smart card connection status") {
+         it("Update SmartCard connection status") {
             val activeSmartCardId = "4"
-            val smartcard: SmartCard = mockSmartCard(activeSmartCardId)
-            whenever(mockDb.smartCard).thenReturn(smartcard)
+            val smartCard: SmartCard = mockSmartCard(activeSmartCardId)
+            whenever(mockDb.smartCard).thenReturn(smartCard)
 
-            val connectionStastus = SmartCard.ConnectionStatus.DISCONNECTED;
+            val connectionStatus = SmartCard.ConnectionStatus.DISCONNECTED
             val testSubscriber: TestSubscriber<ActionState<ActiveSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ActiveSmartCardCommand::class.java)
                   .createObservable(ActiveSmartCardCommand({
                      ImmutableSmartCard.copyOf(it)
-                           .withConnectionStatus(connectionStastus)
+                           .withConnectionStatus(connectionStatus)
                   }))
                   .subscribe(testSubscriber)
 
@@ -172,7 +172,7 @@ class SmartCardInteractorSpec : BaseSpec({
             Assert.assertTrue(testSubscriber.onNextEvents.last().result.size == 3)
          }
 
-         it("Add several card to smartCard, check size after one by one options add") {
+         it("Add several card to SmartCard, check size after one by one options add") {
             smartCardInteractor.addRecordPipe()
                   .send(AttachCardCommand(debitCard, true))
             smartCardInteractor.addRecordPipe()
@@ -190,7 +190,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val creditCard = TestBankCard("52", TestRecordIssuerInfo(cardType = BankCard.CardType.CREDIT))
 
          beforeEach {
-            // mock active smart card
+            // mock active SmartCard
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
@@ -205,19 +205,17 @@ class SmartCardInteractorSpec : BaseSpec({
          }
 
          it("should delete item from cache of card list") {
-            val testSubscriber: TestSubscriber<ActionState<SyncCardsCommand>> = TestSubscriber()
-
-            smartCardInteractor.cardSyncPipe()
-                  .observe()
-                  .subscribe(testSubscriber)
+            fetchCardListOfCard {
+               it.result.find { it.id() == removedCardId } != null
+            }
 
             smartCardInteractor.deleteCardPipe()
                   .createObservable(DeleteRecordAction(Integer.parseInt(removedCardId)))
                   .subscribe()
-//TODO !!!!!
-//            assertActionSuccess(testSubscriber, {
-//               it.result.flatMap { it.bankCards }.find { it.id() == removedCardId } == null
-//            })
+
+            fetchCardListOfCard {
+               it.result.find { it.id() == removedCardId } == null
+            }
          }
       }
 
@@ -308,7 +306,7 @@ class SmartCardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), { Schedulers.immediate() })
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor) = SmartCardSyncManager(janet, smartCardInteractor)
 

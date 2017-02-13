@@ -26,10 +26,22 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
    @Inject WizardMemoryStorage wizardMemoryStorage;
    @Inject SystemPropertiesProvider propertiesProvider;
 
+   private final boolean waitForParing;
+   private final boolean stayAwake;
+
+   public CreateAndConnectToCardCommand() {
+      this(true, true);
+   }
+
+   public CreateAndConnectToCardCommand(boolean waitForParing, boolean stayAwake) {
+      this.waitForParing = waitForParing;
+      this.stayAwake = stayAwake;
+   }
+
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(ConnectSmartCardCommand.class)
-            .createObservableResult(new ConnectSmartCardCommand(createSmartCard(), true, true))
+            .createObservableResult(new ConnectSmartCardCommand(createSmartCard(), waitForParing, stayAwake))
             .map(ConnectSmartCardCommand::getResult)
             .subscribe(smartCard -> {
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {

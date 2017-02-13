@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedS
 import java.util.concurrent.Executors;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.WriteActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
@@ -83,11 +82,11 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
 
-   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
-      this(janet, sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
+   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
    }
 
-   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
+   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
       //synchronized pipes
       cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, cacheSchedulerFactory.call());
       syncCardsPipe = sessionActionPipeCreator.createPipe(SyncCardsCommand.class, cacheSchedulerFactory.call());

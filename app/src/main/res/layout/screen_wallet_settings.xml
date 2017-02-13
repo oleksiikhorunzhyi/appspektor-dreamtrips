@@ -404,7 +404,7 @@
                android:text="@string/wallet_card_settings_setup"
                />
 
-         <!--GONE Set up new smart card-->
+         <!--Set up new smart card-->
          <TextView
                android:id="@+id/item_setup_new_sc"
                style="@style/SettingsItemText"

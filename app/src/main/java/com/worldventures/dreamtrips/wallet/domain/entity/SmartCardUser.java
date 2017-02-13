@@ -10,10 +10,14 @@ public abstract class SmartCardUser {
    public abstract String firstName();
 
    @Value.Default
-   public String lastName(){return "";}
+   public String lastName() {
+      return "";
+   }
 
    @Value.Default
-   public String middleName() {return "";}
+   public String middleName() {
+      return "";
+   }
 
    @Nullable
    public abstract SmartCardUserPhoto userPhoto();

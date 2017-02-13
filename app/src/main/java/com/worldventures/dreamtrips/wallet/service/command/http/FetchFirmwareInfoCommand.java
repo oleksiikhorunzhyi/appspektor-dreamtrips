@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,6 +23,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
 
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject FirmwareRepository firmwareRepository;
 
    private final String scId;
    private final String sdkVersion;
@@ -35,10 +37,18 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
-      janet.createPipe(GetFirmwareHttpAction.class)
-            .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), sdkVersion))
-            .map(firmwareHttpAction -> createUpdateData(firmwareHttpAction.response()))
-            .subscribe(callback::onSuccess, callback::onFail);
+      if (firmwareRepository.getFirmwareUpdateData() != null && firmwareRepository.getFirmwareUpdateData()
+            .isStarted()) {
+         callback.onSuccess(firmwareRepository.getFirmwareUpdateData());
+      } else {
+         janet.createPipe(GetFirmwareHttpAction.class)
+               .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), sdkVersion))
+               .map(firmwareHttpAction -> createUpdateData(firmwareHttpAction.response()))
+               .subscribe(firmwareUpdateData -> {
+                  firmwareRepository.setFirmwareUpdateData(firmwareUpdateData);
+                  callback.onSuccess(firmwareUpdateData);
+               }, callback::onFail);
+      }
    }
 
    private FirmwareUpdateData createUpdateData(FirmwareResponse firmwareResponse) {
@@ -56,6 +66,6 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
       // in very first time user doesn't have installed firmware version, because this information are received only a from server.
       // so there was a decision to use a version of nordicApp firmware instead for performing request to check if there is a
       // new available update for a smart card in the server.
-      return firmwareVersion.firmwareVersion() == null ? firmwareVersion.nordicAppVersion() : firmwareVersion.firmwareVersion();
+      return firmwareVersion.firmwareBundleVersion() == null ? firmwareVersion.nordicAppVersion() : firmwareVersion.firmwareBundleVersion();
    }
 }

@@ -34,7 +34,9 @@
    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
    <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
    <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
-   <string name="wallet_edit_profile_name_format_detail">You should enter your first name and last name (middle name is optional)\nEvery part can contain from 2 to 21 letters</string>
+   <string name="wallet_edit_profile_first_name_format_detail">First name should be from 3 to 21 letters</string>
+   <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 3 to 21 letters</string>
+   <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
 
    <!--pin setup-->
@@ -327,7 +329,7 @@
 
    <!-- Power On -->
    <string name="wallet_wizard_power_on_title">Power On Smart Card</string>
-   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by sliding your thumb twice across the gold chip on your smart card.</string>
+   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by pressing and holding on the bottom right corner of the chip.</string>
 
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>
@@ -353,5 +355,8 @@
    <string name="wallet_connection_error_message">Make sure your smart card is on and\nBluetooth is enabled on your phone.</string>
    <string name="wallet_connection_error_message_unlock_card">Power on your smart card by sliding your thumb\ntwice across the gold chip on your smart card.</string>
    <string name="wallet_receive_data_error">Card did not load.\nTry swiping again.</string>
+   <string name="wallet_card_settings_cant_connected">Cannot connect to smart card</string>
+   <string name="wallet_card_settings_message_cant_connected">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
+   <string name="wallet_smart_card_enable_instruction">Press and hold chip on smart card to power on.</string>
 
 </resources>

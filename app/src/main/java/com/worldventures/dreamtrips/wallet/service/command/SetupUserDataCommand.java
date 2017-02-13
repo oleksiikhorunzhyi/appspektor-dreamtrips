@@ -49,10 +49,6 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private SmartCard smartCard;
 
-   public SetupUserDataCommand(String fullName, SmartCardUserPhoto avatar, String barcode, SmartCard smartCard) {
-      this(split(fullName)[0], split(fullName)[1], split(fullName)[2], avatar, barcode, smartCard);
-   }
-
    /**
     * barcode in constructor because
     * SetupUserDataCommand#getCacheOptions() requires barcode from WizardMemoryStorage
@@ -119,20 +115,6 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private byte[] getAvatarAsByteArray() throws IOException {
       return smartCardAvatarHelper.convertBytesForUpload(avatar.monochrome());
-   }
-
-   private static String[] split(String fullName) {
-      String[] nameParts = fullName.split(" ");
-      String firstName = null, lastName = null, middleName = null;
-      if (nameParts.length == 2) {
-         firstName = nameParts[0];
-         lastName = nameParts[1];
-      } else if (nameParts.length == 3) {
-         firstName = nameParts[0];
-         middleName = nameParts[1];
-         lastName = nameParts[2];
-      }
-      return new String[]{firstName, middleName, lastName};
    }
 
    public static class MissedAvatarException extends RuntimeException {

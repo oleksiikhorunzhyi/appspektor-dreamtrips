@@ -48,6 +48,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .onStart(getContext().getString(R.string.wallet_wizard_assigning_msg))
                   .onSuccess(command -> navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.SCAN, command.getSmartCardId())))
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
+                        .defaultAction(command -> getView().restartCamera())
                         .build())
                   .wrap());
    }
@@ -74,7 +75,10 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    public interface Screen extends WalletScreen {
+
       void startCamera();
+
+      void restartCamera();
 
       void showRationaleForCamera();
 

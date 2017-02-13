@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.pairkey.ForcePairKeyPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron.ForceUpdatePowerOnPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.pair.ForcePairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron.ForceUpdatePowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadio
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
@@ -41,8 +41,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoCle
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
@@ -91,8 +91,8 @@ import dagger.Provides;
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
             WizardWelcomePresenter.class,
-            EditCardDetailsPresenter.class,
-            EditCardDetailsScreen.class,
+            EditBillingAddressPresenter.class,
+            EditBillingAddressScreen.class,
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class,
             WalletUpToDateFirmwarePresenter.class,
@@ -109,7 +109,7 @@ import dagger.Provides;
             AboutPresenter.class,
             PairKeyPresenter.class,
             ConnectionErrorPresenter.class,
-            ForceFactoryResetPresenter.class,
+            StartFirmwareInstallPresenter.class,
             ForceUpdatePowerOnPresenter.class,
             ForcePairKeyPresenter.class
       },

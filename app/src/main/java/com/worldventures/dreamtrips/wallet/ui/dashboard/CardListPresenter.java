@@ -8,6 +8,7 @@ import android.support.v4.util.Pair;
 
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -34,9 +35,9 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
@@ -50,10 +51,10 @@ import flow.Flow;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.exception.NotConnectedException;
+import io.techery.janet.smartcard.exception.WaitingResponseException;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
@@ -76,7 +77,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
-      cardListStackConverter = new CardListStackConverter(context);
+      cardListStackConverter = new CardListStackConverter(context.getString(R.string.wallet_payment_cards_title));
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
    }
 
@@ -193,8 +194,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(connectionStatusPair -> {
                if (connectionStatusPair.first != NetworkInfo.State.CONNECTED) {
                   getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
-               } else if (connectionStatusPair.second != CONNECTED) {
-                  getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_SMARTCARD_CONNECTION);
+               } else if (!connectionStatusPair.second.isConnected()) {
+                  getView().showSCNonConnectionDialog();
                } else {
                   trackAddCard();
                   navigator.go(new WizardChargingPath());
@@ -211,10 +212,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeChanges() {
-      ErrorHandler errorHandler = ErrorHandler.builder(getContext())
-            .ignore(NotConnectedException.class)
-            .build();
-
       Observable.combineLatest(
             smartCardInteractor.cardsListPipe()
                   .observeWithReplay()
@@ -229,20 +226,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
             } /*ignore here*/);
 
-      smartCardInteractor.cardsListPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<CardListCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
-                  .wrap());
-
-      smartCardInteractor.defaultCardIdPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<DefaultCardIdCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
-                  .wrap());
-
       smartCardInteractor.cardSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -251,8 +234,18 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
                   .onFail(throwable -> {
                      getView().showCardSynchronizationDialog(false);
-                     return errorHandler.call(throwable);
+                     return null;
                   })
+                  .wrap());
+
+      smartCardInteractor.cardSyncPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.<SyncCardsCommand>builder(getContext())
+                        .ignore(NotConnectedException.class)
+                        .handle(WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected)
+                        .build())
                   .wrap());
 
    }
@@ -270,7 +263,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    public void navigateToForceUpdate() {
-      navigator.single(new ForceFactoryResetPath(), Flow.Direction.REPLACE);
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
    public void handleForceFirmwareUpdateConfirmation() {
@@ -307,5 +300,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}
+
+      void showSCNonConnectionDialog();
    }
 }

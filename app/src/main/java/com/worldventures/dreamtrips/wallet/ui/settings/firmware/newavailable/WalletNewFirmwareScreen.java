@@ -46,6 +46,7 @@ public class WalletNewFirmwareScreen
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());

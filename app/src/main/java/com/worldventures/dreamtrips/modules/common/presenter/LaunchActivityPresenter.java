@@ -37,7 +37,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    @State boolean dtlInitDone;
-   @State boolean launchAfterLogin = false;
+   @State boolean userAlreadyLoggedIn = true;
 
    @Override
    public void takeView(View view) {
@@ -56,7 +56,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             .subscribe(new ActionStateSubscriber<LoginCommand>()
                   .onStart(loginCommand -> view.showLoginProgress())
                   .onSuccess(loginCommand -> {
-                     launchAfterLogin = true;
+                     userAlreadyLoggedIn = false;
                      loginInteractor.loginActionPipe().clearReplays();
                      launchModeBasedOnExistingSession();
                   })
@@ -117,7 +117,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    private void onAuthSuccess() {
       backgroundUploadingInteractor.restoreCompoundOperationsPipe().send(new RestoreCompoundOperationsCommand());
       analyticsInteractor.analyticsActionPipe().send(new LoginAction(appSessionHolder.get()
-            .get().getUser().getUsername(), launchAfterLogin));
+            .get().getUser().getUsername(), userAlreadyLoggedIn));
       TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
       messengerConnector.connect();
       view.openMain();

@@ -7,31 +7,22 @@ class DiskFirmwareRepository implements FirmwareRepository {
 
    private final SnappyRepository snappyRepository;
 
-   private FirmwareUpdateData firmwareUpdateData;
-
    DiskFirmwareRepository(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 
    @Override
-   public FirmwareUpdateData getFirmwareUpdateData() {
-      synchronized (this) {
-         if (firmwareUpdateData == null) {
-            firmwareUpdateData = snappyRepository.getFirmwareUpdateData();
-         }
-      }
-      return firmwareUpdateData;
+   public synchronized FirmwareUpdateData getFirmwareUpdateData() {
+      return snappyRepository.getFirmwareUpdateData();
    }
 
    @Override
    public synchronized void setFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
-      this.firmwareUpdateData = firmwareUpdateData;
       snappyRepository.saveFirmwareUpdateData(firmwareUpdateData);
    }
 
    @Override
    public synchronized void clear() {
       snappyRepository.deleteFirmwareUpdateData();
-      firmwareUpdateData = null;
    }
 }

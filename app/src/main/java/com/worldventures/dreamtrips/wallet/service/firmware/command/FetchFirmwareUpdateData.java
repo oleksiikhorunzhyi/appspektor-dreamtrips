@@ -21,7 +21,7 @@ public class FetchFirmwareUpdateData extends Command<FetchFirmwareUpdateData.Res
    protected void run(CommandCallback<Result> callback) throws Throwable {
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       callback.onSuccess(ImmutableResult.builder()
-            .isForceUpdateStarted(firmwareUpdateData != null && firmwareUpdateData.isStarted() && firmwareUpdateData.updateCritical())
+            .isForceUpdateStarted(firmwareUpdateData != null && firmwareUpdateData.isStarted() && firmwareUpdateData.factoryResetRequired())
             .firmwareUpdateData(firmwareUpdateData)
             .build());
    }

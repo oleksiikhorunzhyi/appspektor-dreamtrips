@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpda
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -38,8 +37,6 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
    @Inject WalletNetworkService networkService;
-   @Inject SnappyRepository snappyRepository;
-   @Inject UpdateDataHolder updateDataHolder;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject UpdateProfileManager updateProfileManager;
 
@@ -53,7 +50,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       validateData();
       if (!networkService.isAvailable()) throw new NetworkUnavailableException();
-      updateDataHolder.saveChanging(changedFields);
+      updateProfileManager.attachChangedFields(changedFields);
 
       janet.createPipe(ActiveSmartCardCommand.class)
             .createObservableResult(new ActiveSmartCardCommand())
@@ -63,7 +60,6 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    }
 
    private void validateData() throws FormatException {
-      // TODO: 12/15/16 middle is mandatory ?
       WalletValidateHelper.validateUserFullNameOrThrow(
             changedFields.firstName(),
             changedFields.middleName(),
@@ -71,11 +67,11 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    }
 
    private Observable<SmartCard> uploadData(SmartCard smartCard) {
-      return createUpdateCardUserData(smartCard)
+      return pushToSmartCard(smartCard)
             .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard, updateCardUserData));
    }
 
-   private Observable<UpdateCardUserData> createUpdateCardUserData(SmartCard smartCard) {
+   private Observable<UpdateCardUserData> pushToSmartCard(SmartCard smartCard) {
       return updateNameOnSmartCard(smartCard)
             .flatMap(userData -> uploadPhoto(smartCard, userData));
    }
@@ -92,8 +88,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
 
       if (!changedFields.firstName().equals(user.firstName())
             || !changedFields.middleName().equals(user.middleName())
-            || !changedFields.lastName().equals(user.lastName())
-            || !changedFields.photo().photoUrl().equals(user.userPhoto().photoUrl())) {
+            || !changedFields.lastName().equals(user.lastName())) {
          needUpdate = true;
       }
 

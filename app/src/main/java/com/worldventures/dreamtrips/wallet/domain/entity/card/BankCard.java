@@ -39,10 +39,6 @@ public abstract class BankCard extends Card {
       return "";
    }
 
-   @Nullable
-   @Deprecated
-   public abstract String title();
-
    @Value.Default
    public AddressInfo addressInfo() {
       return ImmutableAddressInfo.builder().build();

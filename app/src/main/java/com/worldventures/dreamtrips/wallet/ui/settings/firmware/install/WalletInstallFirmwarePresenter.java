@@ -9,9 +9,8 @@ import com.worldventures.dreamtrips.wallet.analytics.InstallingUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.RetryInstallUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -107,7 +106,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    private void executeCombinedDataAndSendAnalytics(FirmwareUpdateData firmwareUpdateData, boolean retry) {
       final RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(
             firmwareUpdateData.smartCardId(),
-            firmwareUpdateData.currentFirmwareVersion().firmwareVersion(),
+            firmwareUpdateData.currentFirmwareVersion().nordicAppVersion(),
             firmwareUpdateData.firmwareInfo().firmwareVersion(),
             retry);
 

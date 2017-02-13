@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -19,7 +20,12 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCa
 import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.util.FirstNameException;
+import com.worldventures.dreamtrips.wallet.util.LastNameException;
+import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import java.io.File;
@@ -147,14 +153,17 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
-            .subscribe(new ActionStateSubscriber<UpdateSmartCardUserCommand>()
-                  .onStart(o -> view.showProgress())
-                  .onSuccess(o -> {
-                     view.hideProgress();
-                     goBack();
-                  })
-                  .onFail((o, throwable) -> onError((JanetException) throwable))
-            );
+            .subscribe(OperationActionStateSubscriberWrapper.<UpdateSmartCardUserCommand>forView(getView().provideOperationDelegate())
+                  .onStart(getContext().getString(R.string.loading))
+                  .onSuccess(setupUserDataCommand -> goBack())
+                  .onFail(ErrorHandler.<UpdateSmartCardUserCommand>builder(getContext())
+                        .handle(FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail)
+                        .handle(LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail)
+                        .handle(MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail)
+                        .handle(NetworkUnavailableException.class, updateSmartCardUserCommand -> view.showNetworkUnavailableError())
+                        .handle(UploadProfileDataException.class, updateSmartCardUserCommand -> view.showUploadServerError())
+                        .build())
+                  .wrap());
 
       smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
             .observeWithReplay()

@@ -38,9 +38,8 @@ public class WalletPuckConnectionScreen extends WalletLinearLayout<WalletPuckCon
 
    @Override
    protected void onFinishInflate() {
-      super.onFinishInflate();
-
       supportConnectionStatusLabel(false);
+      super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 

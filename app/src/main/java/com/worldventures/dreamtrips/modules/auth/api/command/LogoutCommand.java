@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import android.content.Context;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -26,6 +28,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWar
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
+import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 
 import java.security.KeyStoreException;
 import java.util.Arrays;
@@ -61,6 +64,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
+   @Inject SmartCardSyncManager smartCardSyncManager;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -77,6 +81,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    private Observable clearWallet() {
       return Observable.create(subscriber -> {
          sessionWalletActionPipeCreator.clearReplays();
+         smartCardSyncManager.disconnect();
          subscriber.onNext(null);
          subscriber.onCompleted();
       });
@@ -128,6 +133,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          offlineWarningDelegate.resetState();
          replayEventDelegatesWiper.clearReplays();
          snappyRepository.clearAll();
+         clearFrescoCaches();
 
          try {
             crypter.deleteKeys();
@@ -137,6 +143,11 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          subscriber.onNext(null);
          subscriber.onCompleted();
       });
+   }
+
+   private void clearFrescoCaches() {
+      ImagePipeline imagePipeline = Fresco.getImagePipeline();
+      imagePipeline.clearCaches();
    }
 
    static <T extends AuthorizedHttpAction> T authorize(T action, String token) {

@@ -85,6 +85,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
       PostFeedItem postFeedItem = getModelObject();
       TextualPost textualPost = postFeedItem.getItem();
 
+      if (!appSessionHolder.get().isPresent()) {
+         hideTranslationUi();
+         return;
+      }
+
       boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguageFrom());
@@ -100,9 +105,13 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
             viewWithTranslation.hide();
          }
       } else {
-         translateButton.setVisibility(View.GONE);
-         viewWithTranslation.hide();
+         hideTranslationUi();
       }
+   }
+
+   private void hideTranslationUi() {
+      translateButton.setVisibility(View.GONE);
+      viewWithTranslation.hide();
    }
 
    private void processPostText(TextualPost textualPost) {

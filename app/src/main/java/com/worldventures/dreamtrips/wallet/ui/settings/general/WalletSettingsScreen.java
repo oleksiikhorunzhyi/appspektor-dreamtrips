@@ -91,7 +91,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @OnClick(R.id.item_smartcard_profile)
    void onProfileClick() {
       presenter.smartCardProfileClick();
-
    }
 
    @OnClick(R.id.item_about)
@@ -138,14 +137,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @OnClick(R.id.item_restart_sc)
    void onRestartSmartCard() {
-      new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_card_settings_restart_sc)
-            .content(R.string.wallet_card_settings_are_you_sure)
-            .positiveText(R.string.wallet_card_settings_restart)
-            .negativeText(R.string.cancel)
-            .onPositive(((dialog, which) -> presenter.confirmResetSmartCard()))
-            .build()
-            .show();
+      presenter.restartSmartCard();
    }
 
    @OnClick(R.id.item_unpair_sc)
@@ -260,5 +252,27 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @Override
    public void testSectionEnabled(boolean enabled) {
       settingsSection.setVisibility(enabled ? VISIBLE : GONE);
+   }
+
+   @Override
+   public void showSCNonConnectionDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_card_settings_cant_connected)
+            .content(R.string.wallet_card_settings_message_cant_connected)
+            .positiveText(R.string.ok)
+            .build()
+            .show();
+   }
+
+   @Override
+   public void showConfirmRestartSCDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_card_settings_restart_sc)
+            .content(R.string.wallet_card_settings_are_you_sure)
+            .positiveText(R.string.wallet_card_settings_restart)
+            .negativeText(R.string.cancel)
+            .onPositive(((dialog, which) -> presenter.confirmRestartSmartCard()))
+            .build()
+            .show();
    }
 }

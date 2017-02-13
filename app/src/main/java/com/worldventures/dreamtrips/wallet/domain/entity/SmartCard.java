@@ -4,8 +4,6 @@ import android.support.annotation.Nullable;
 
 import org.immutables.value.Value;
 
-import java.io.File;
-
 @Value.Immutable
 public abstract class SmartCard {
 
@@ -20,13 +18,8 @@ public abstract class SmartCard {
 
    @Value.Default
    public SmartCardUser user() {
-      //need for migration-hack
-      return ImmutableSmartCardUser.builder()
-            .userPhoto(ImmutableSmartCardUserPhoto.builder()
-                  .original(userPhoto() != null ? new File(userPhoto()) : null)
-                  .build())
-            .firstName(cardName()).lastName("")
-            .build();
+      //todo: migration-hack in the past
+      return ImmutableSmartCardUser.builder().firstName("").build();
    }
 
    @Value.Default
@@ -47,13 +40,6 @@ public abstract class SmartCard {
       return ConnectionStatus.DISCONNECTED;
    }
 
-   //legacy, now you need request fullname from user()
-   @Value.Default
-   @Deprecated
-   public String cardName() {
-      return "";
-   }
-
    @Value.Default
    public boolean stealthMode() {
       return false;
@@ -63,11 +49,6 @@ public abstract class SmartCard {
    public boolean lock() {
       return false;
    }
-
-   //legacy, now you need request photo from user()
-   @Nullable
-   @Deprecated
-   public abstract String userPhoto();
 
    @Value.Default
    public int batteryLevel() {

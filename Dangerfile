@@ -22,7 +22,7 @@ def lintCommit(commit)
 end
 
 fail('Labels are not assigned') if gitlab.mr_labels.empty?
-fail('Title should start from JIRA ticket id') unless gitlab.mr_title =~ /^[A-Z]+\-[0-9]+\s\w+$/ || gitlab.mr_labels.include?('common')
+fail('Title should start from JIRA ticket id') unless gitlab.mr_title =~ /^[A-Z]+\-[0-9]+\s\w+.*$/ || gitlab.mr_labels.include?('common')
 fail('Title is not capitalized') unless isCapitalized(gitlab.mr_title)
 fail('Title is longer than 64 symbols (72 including PR number)') unless gitlab.mr_title.length <= 64
 

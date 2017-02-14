@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import android.text.TextUtils;
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -17,10 +15,8 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.GetDefaultRecordAction;
 import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
-import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
@@ -65,30 +61,25 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    private Observable<Void> sync(SyncBundle bundle) {
       List<Observable<Void>> operations = new ArrayList<>();
       //sync card list
-      Queryable.from(bundle.deviceCards)
-            .forEachR(deviceCard -> {
-               final int count = Queryable.from(bundle.cacheCards)
-                     .count(element -> TextUtils.equals(element.id(), deviceCard.id()));
-               if (count == 0) {
-                  operations.add(interactor.cardsListPipe()
-                        .createObservableResult(CardListCommand.add(deviceCard))
-                        .map(value -> null));
-               } else if (count == 1) {
-                  operations.add(interactor.cardsListPipe()
-                        .createObservableResult(CardListCommand.replace(deviceCard))
-                        .map(value -> null));
-               }
-            });
 
-      Queryable.from(bundle.cacheCards)
-            .forEachR(cacheCard -> {
-               if (Queryable.from(bundle.deviceCards)
-                     .count(element -> TextUtils.equals(element.id(), cacheCard.id())) == 0) {
-                  operations.add(interactor.addNativeRecordPipe()
-                        .createObservableResult(new AddRecordAction(mapperyContext.convert(cacheCard, Record.class)))
-                        .map(value -> null));
-               }
-            });
+      final List<Card> localCards = new ArrayList<>();
+      for (Card cacheCard : bundle.cacheCards) {
+         if (!bundle.deviceCards.contains(cacheCard)) {
+            localCards.add(cacheCard);
+         }
+      }
+      operations.add(janet.createPipe(AddListRecordCommand.class)
+            .createObservableResult(new AddListRecordCommand(localCards))
+            .map(command -> {
+               final List<Card> cards = new ArrayList<>(bundle.deviceCards);
+               cards.addAll(command.getResult());
+               return cards;
+            })
+            .flatMap(cards -> interactor.cardsListPipe()
+                  .createObservableResult(CardListCommand.replace(cards))
+                  .map(command -> null))
+      );
+
       //sync default card id
       if (bundle.deviceDefaultCardId != null && bundle.cacheDefaultCardId == null) {
          operations.add(interactor.defaultCardIdPipe()

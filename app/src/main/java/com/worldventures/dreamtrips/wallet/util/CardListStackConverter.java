@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.util;
 
-
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel.StackType.PAYMENT;
-
 
 public class CardListStackConverter {
 
@@ -36,8 +34,8 @@ public class CardListStackConverter {
 
    private CardStackViewModel obtainPaymentCardsStack(List<BankCard> bankCards, String defaultCardId) {
       List<BankCardViewModel> bankCardViewModels = Queryable.from(bankCards)
-            .map(element -> new BankCardViewModel(element, CardUtils.isRealCardId(defaultCardId) && TextUtils.equals(element
-                  .id(), defaultCardId)))
+            .map(element -> new BankCardViewModel(element,
+                  CardUtils.isRealCardId(defaultCardId) && TextUtils.equals(element.id(), defaultCardId)))
             .toList();
 
       return new CardStackViewModel(PAYMENT, bankCardViewModels, cardStackTitle);

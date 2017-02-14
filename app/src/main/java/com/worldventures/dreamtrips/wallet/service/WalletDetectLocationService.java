@@ -9,6 +9,10 @@ public interface WalletDetectLocationService {
 
    boolean isPermissionGranted();
 
+   boolean isEnabled();
+
+   Observable<Boolean> observeLocationSettingState();
+
    Observable<Location> detectLastKnownLocation();
 
    Observable<Address> obtainAddressByGeoposition(double latitude, double longitude);

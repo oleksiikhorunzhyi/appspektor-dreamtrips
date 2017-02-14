@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddress
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.ImmutableLostCardPin;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
@@ -29,6 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
@@ -150,12 +150,12 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       smartCardLocationInteractor.getLocationPipe()
             .createObservable(new GetLocationCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<GetLocationCommand>forView(getView().provideOperationDelegate())
+            .subscribe(new ActionStateSubscriber<GetLocationCommand>()
                   .onSuccess(getLocationCommand -> {
                      final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
                      processLastLocation(walletLocation);
                   })
-                  .wrap());
+            );
    }
 
    private void processLastLocation(WalletLocation walletLocation) {

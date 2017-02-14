@@ -8,18 +8,21 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcards.SyncPaymentCardPath;
 
 import javax.inject.Inject;
 
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject Navigator navigator;
+   @Inject WizardMemoryStorage wizardMemoryStorage;
 
    public WalletPinIsSetPresenter(Context context, Injector injector) {
       super(context, injector);

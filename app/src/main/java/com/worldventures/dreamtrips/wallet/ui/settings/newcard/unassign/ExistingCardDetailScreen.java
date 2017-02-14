@@ -10,11 +10,16 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDetectPresenter.Screen, ExistingCardDetectPresenter, ExistingCardDetectPath> implements ExistingCardDetectPresenter.Screen {
 
@@ -62,18 +67,26 @@ public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDet
    }
 
    @Override
+   public OperationView<ActiveSmartCardCommand> provideOperationView() {
+      return new ComposableOperationView<>(
+            ProgressDialogView.<ActiveSmartCardCommand>builder(getContext()).build(),
+            ErrorViewFactory.<ActiveSmartCardCommand>builder().build()
+      );
+   }
+
+   @Override
    public void setSmartCardId(String scId) {
       tvSmartCardId.setText(scId);
    }
 
    @Override
-   public void showViewForSCConnected() {
+   public void modeConnectedSmartCard() {
       containerHaveCard.setVisibility(GONE);
       unassignButton.setVisibility(VISIBLE);
    }
 
    @Override
-   public void showViewForSCDisconnected() {
+   public void modeDisconnectedSmartCard() {
       containerHaveCard.setVisibility(VISIBLE);
       unassignButton.setVisibility(GONE);
    }

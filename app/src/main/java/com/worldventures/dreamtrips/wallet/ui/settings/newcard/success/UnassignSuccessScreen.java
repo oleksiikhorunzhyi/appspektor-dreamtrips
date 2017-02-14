@@ -47,6 +47,6 @@ public class UnassignSuccessScreen extends WalletLinearLayout<UnassignSuccessPre
 
    @OnClick(R.id.get_started_button)
    public void onGetStarted() {
-      presenter.goNext();
+      presenter.navigateToWizard();
    }
 }

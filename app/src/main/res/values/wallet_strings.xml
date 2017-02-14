@@ -387,4 +387,14 @@
    <string name="wallet_you_are_ready_setup_new_sc">You are ready to set up your new Smart Card.</string>
    <string name="wallet_unassigned_success_msg">Your previous Smart Card has been successfully unassigned from this device.</string>
 
+   <!-- Unassign enter pin screen -->
+   <string name="wallet_unassign_enter_pin_text">Enter your PIN on the flye\u2122 smart card to unassign.</string>
+   <string name="wallet_enter_pin_label">Enter Pin</string>
+   <string name="wallet_error_enter_pin_title">Unable to Unassign</string>
+   <string name="wallet_error_enter_pin_msg">An error occurred while attempting to unassign your previous SmartCard from this device</string>
+
+   <!-- Sync payment cards screen -->
+   <string name="wallet_syncing_payment_cards">Syncing Payment Cards</string>
+   <string name="wallet_syncing_payment_cards_count" formatted="false">Syncing payment card %d of %d</string>
+
 </resources>

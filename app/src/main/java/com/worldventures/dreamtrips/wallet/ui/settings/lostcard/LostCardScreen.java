@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.view.RxView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
@@ -55,7 +55,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @InjectView(R.id.tracking_enable_switcher) SwitchCompat trackingEnableSwitcher;
    @InjectView(R.id.ll_disable_tracking_info_view) View disabledTrackingView;
    @InjectView(R.id.last_connection_time_container) View lastConnectionTimeContainer;
-//   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
+   //   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
    @InjectView(R.id.map_container) View mapContainer;
    @InjectView(R.id.tv_empty_lost_card_msg) TextView tvDisableLostCardMsg;
    @InjectView(R.id.tv_tracking_enabled_empty_location) TextView tvTrackingEnabledEmptyLocations;
@@ -96,10 +96,12 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
-      enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher);
+      enableTrackingObservable = RxView.clicks(trackingEnableSwitcher).map(aVoid -> trackingEnableSwitcher.isChecked());
 
       mapView.onCreate(null);
       initMap();
+      //// TODO: 2/14/17 fromHtml is deprecated from 24 API
+      //noinspection all
       tvDisableLostCardMsg.setText(Html.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
    }
 
@@ -133,22 +135,23 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       return new ComposableOperationView<>(null, null, ErrorViewFactory.<FetchAddressWithPlacesCommand>builder()
             .addProvider(new HttpErrorViewProvider<>(getContext(),
                   presenter::retryFetchAddressWithPlaces,
-                  fetchAddressWithPlacesCommand -> {}))
+                  fetchAddressWithPlacesCommand -> {
+                  }))
             .build());
    }
 
    @Override
-   public void toggleVisibleDisabledOfTrackingView(boolean visible) {
+   public void setVisibleDisabledTrackingView(boolean visible) {
       disabledTrackingView.setVisibility(visible ? VISIBLE : GONE);
    }
 
    @Override
-   public void toggleVisibleMsgEmptyLastLocation(boolean visible) {
+   public void setVisibleMsgEmptyLastLocation(boolean visible) {
       tvTrackingEnabledEmptyLocations.setVisibility(visible ? VISIBLE : GONE);
    }
 
    @Override
-   public void toggleVisibleLastConnectionTime(boolean visible) {
+   public void setVisibleLastConnectionTime(boolean visible) {
       lastConnectionTimeContainer.setVisibility(visible ? VISIBLE : GONE);
    }
 
@@ -168,13 +171,13 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public void toggleLostCardSwitcher(boolean checked) {
+   public void setTrackingSwitchStatus(boolean checked) {
       trackingEnableSwitcher.setChecked(checked);
    }
 
    @Override
    public void addPin(@NonNull LostCardPin pinData) {
-      final Marker marker = addPin(pinData.position());
+      final Marker marker = clearMapAndAttachMarker(pinData.position());
       final LostCardInfoWindowAdapter infoWindowAdapter = new LostCardInfoWindowAdapter(getContext(), pinData);
       googleMap.setInfoWindowAdapter(infoWindowAdapter);
       googleMap.setOnInfoWindowClickListener(m -> infoWindowAdapter.openExternalMap());
@@ -182,7 +185,11 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public Marker addPin(LatLng position) {
+   public void addPin(LatLng position) {
+      clearMapAndAttachMarker(position);
+   }
+
+   private Marker clearMapAndAttachMarker(LatLng position) {
       googleMap.clear();
       final Marker marker = googleMap.addMarker(
             new MarkerOptions()

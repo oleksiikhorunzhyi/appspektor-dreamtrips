@@ -3,9 +3,7 @@ package com.worldventures.dreamtrips.wallet
 import android.content.Context
 import android.test.mock.MockContext
 import android.text.TextUtils
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
@@ -35,6 +33,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.dreamtrips.wallet.service.impl.TestSystemPropertiesProvider
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -75,6 +74,10 @@ class WizardInteractorSpec : BaseSpec({
 
       context("SmartCard wizard flow") {
 
+         beforeEach {
+            lostCardStorage = mock()
+         }
+
          it("connects to SmartCard") {
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
@@ -107,6 +110,7 @@ class WizardInteractorSpec : BaseSpec({
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
+            verify(lostCardStorage, times(1))
          }
       }
    }
@@ -127,6 +131,7 @@ class WizardInteractorSpec : BaseSpec({
 
       lateinit var wizardMemoryStorage: WizardMemoryStorage
       lateinit var propertiesProvider: SystemPropertiesProvider
+      lateinit var lostCardStorage: LostCardRepository
 
       lateinit var mockedDebitCard: BankCard
 
@@ -170,6 +175,7 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(WizardMemoryStorage::class.java, { wizardMemoryStorage })
          daggerCommandActionService.registerProvider(SystemPropertiesProvider::class.java, { propertiesProvider })
+         daggerCommandActionService.registerProvider(LostCardRepository::class.java, { lostCardStorage })
 
          return janet
       }

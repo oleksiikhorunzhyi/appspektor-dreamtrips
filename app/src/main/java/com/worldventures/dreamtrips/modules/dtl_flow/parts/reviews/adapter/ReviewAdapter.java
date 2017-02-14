@@ -1,20 +1,20 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.media.ImageLoaderHelper;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,21 +24,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import timber.log.Timber;
+
 
 public class ReviewAdapter
       extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder> {
 
    private ArrayList<ReviewObject> mItems = new ArrayList<>();
-   private ImageLoaderHelper imageLoaderHelper;
    private Context context;
-
-   private static final String TAG = "ReviewAdapter";
-   private static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-   private static final String UTC = "UTC";
 
    public ReviewAdapter(Context context) {
       this.context = context;
-      this.imageLoaderHelper = new ImageLoaderHelper(ImageLoaderHelper.GLIDE);
    }
 
    @Override
@@ -65,7 +61,7 @@ public class ReviewAdapter
 
 
    class RecyclerViewHolder extends RecyclerView.ViewHolder {
-      private ImageView mAvatar;
+      private SimpleDraweeView mAvatar;
       private TextView mUserName;
       private TextView mCommentWrote;
       private RatingBar mRating;
@@ -74,7 +70,7 @@ public class ReviewAdapter
 
       public RecyclerViewHolder(View itemView) {
          super(itemView);
-         mAvatar = (ImageView) itemView.findViewById(R.id.ivItemReview);
+         mAvatar = (SimpleDraweeView) itemView.findViewById(R.id.ivItemReview);
          mUserName = (TextView) itemView.findViewById(R.id.tvUserName);
          mCommentWrote = (TextView) itemView.findViewById(R.id.tvCommentWrote);
          mComment = (TextView) itemView.findViewById(R.id.tvComment);
@@ -83,23 +79,14 @@ public class ReviewAdapter
 
       public void bind(int position) {
          String urlImage = mItems.get(position).getUrlImageUser();
-         try {
-            if (!urlImage.equalsIgnoreCase("null")) {
-               imageLoaderHelper.getLoader().load(
-                     urlImage,
-                     mAvatar);
-            } else {
-               mAvatar.setImageResource(R.drawable.noavatar_small);
-            }
-         } catch (Exception e) {
-            e.printStackTrace();
-            mAvatar.setImageResource(R.drawable.noavatar_small);
+         if (!urlImage.equalsIgnoreCase("null")) {
+            mAvatar.setImageURI(Uri.parse(urlImage));
          }
          mUserName.setText(String.valueOf(mItems.get(position).getNameUser()));
          try {
             mCommentWrote.setText(getCorrectTimeWrote(mItems.get(position).getTimeWrote()));
          } catch (ParseException e) {
-            e.printStackTrace();
+            Timber.e(e.getMessage());
          }
          mComment.setText(mItems.get(position).getComment());
          mRating.setRating((mItems.get(position).getRatingCommentUser()));
@@ -150,13 +137,13 @@ public class ReviewAdapter
       }
 
       private Calendar getCorrectTime(@NonNull String dateToConvert) {
-         SimpleDateFormat df = new SimpleDateFormat(PATTERN);
-         df.setTimeZone(TimeZone.getTimeZone(UTC));
+         SimpleDateFormat df = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
+         df.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
          Date date = null;
          try {
             date = df.parse(dateToConvert);
          } catch (ParseException e) {
-            Log.e(TAG,e.getMessage());
+            Timber.e(e.getMessage());
          }
          df.setTimeZone(TimeZone.getDefault());
          Calendar calendar = Calendar.getInstance();

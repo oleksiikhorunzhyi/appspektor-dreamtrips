@@ -140,7 +140,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void setTextRateAndReviewButton(int size) {
-      mTvReadAllReviews.setText("READ ALL REVIEWS(" + size + ")");
+      mTvReadAllReviews.setText(String.format(getContext().getResources().getString(R.string.total_reviews_text), size));
    }
 
    @OnClick(R.id.tv_read_all_review)

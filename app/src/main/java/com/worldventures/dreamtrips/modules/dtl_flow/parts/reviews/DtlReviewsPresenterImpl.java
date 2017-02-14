@@ -58,7 +58,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
-      getView().addCommentsAndReviews(action.getResult().getRatingAvarage().floatValue(), action.getResult().getTotal(),
+      getView().addCommentsAndReviews(action.getResult().getRatingAverage().floatValue(), action.getResult().getTotal(),
             ReviewObject.getReviewList(action.getResult().getReviews()));
 
    }

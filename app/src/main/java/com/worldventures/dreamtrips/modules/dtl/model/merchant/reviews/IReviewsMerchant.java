@@ -13,6 +13,6 @@ import java.util.List;
 public interface IReviewsMerchant extends Serializable {
 
    Integer total();
-   Double ratingAvarage();
+   Double ratingAverage();
    List<Reviews> reviews();
 }

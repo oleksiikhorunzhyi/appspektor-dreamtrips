@@ -10,9 +10,9 @@ public class ReviewsMerchant {
     @SerializedName("total")
     @Expose
     private Integer total;
-    @SerializedName("ratingAvarage")
+    @SerializedName("ratingAverage")
     @Expose
-    private Double ratingAvarage;
+    private Double ratingAverage;
     @SerializedName("reviews")
     @Expose
     private List<Review> reviews = null;
@@ -25,12 +25,12 @@ public class ReviewsMerchant {
         this.total = total;
     }
 
-    public Double getRatingAvarage() {
-        return ratingAvarage;
+    public Double getRatingAverage() {
+        return ratingAverage;
     }
 
-    public void setRatingAvarage(Double ratingAvarage) {
-        this.ratingAvarage = ratingAvarage;
+    public void setRatingAverage(Double ratingAverage) {
+        this.ratingAverage = ratingAverage;
     }
 
     public List<Review> getReviews() {

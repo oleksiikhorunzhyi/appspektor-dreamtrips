@@ -15,5 +15,4 @@ public interface MultiRequestBody {
    String sessionToken();
    @SerializedName("MultiRequestElement")
    List<MultiRequestElement> multiRequestElements();
-
 }

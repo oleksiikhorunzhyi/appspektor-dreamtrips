@@ -2,20 +2,20 @@ package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.location.LocationServiceDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.wallet.service.command.FetchPlacesNearbyCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.model.LocationPlace;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
@@ -25,37 +25,38 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.ImmutableLostCardPin;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
-import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import timber.log.Timber;
+
+import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.getLatestLocation;
+import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.toLatLng;
 
 public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject PermissionDispatcher permissionDispatcher;
-   @Inject LocationServiceDispatcher locationServiceDispatcher;
    @Inject SmartCardLocationInteractor smartCardLocationInteractor;
 
-   private SimpleDateFormat lastConnectedDateFormat =
-         new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
+   private final LocationSettingsService locationSettingsService;
 
-   public LostCardPresenter(Context context, Injector injector) {
+   public LostCardPresenter(Context context, LocationSettingsService locationSettingsService, Injector injector) {
       super(context, injector);
+      this.locationSettingsService = locationSettingsService;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeSaveSwitcherState();
-      getEnableTrackingState();
+      fetchEnableTrackingState();
       observeWalletLocationCommand();
    }
 
@@ -76,75 +77,98 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             });
    }
 
-   private void getEnableTrackingState() {
+   private void fetchEnableTrackingState() {
       smartCardLocationInteractor.enabledTrackingCommandActionPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               observeEnableSwitcher(getView());
+               observeEnableSwitcher();
                getView().toggleLostCardSwitcher(command.getResult());
             }, throwable -> Timber.e(throwable, ""));
       smartCardLocationInteractor.enabledTrackingCommandActionPipe().send(new GetEnabledTrackingCommand());
    }
 
-   private void observeEnableSwitcher(Screen view) {
-      view.observeTrackingEnable()
+   private void observeEnableSwitcher() {
+      getView().observeTrackingEnable()
             .compose(bindView())
             .skip(1)
-            .subscribe(this::enableToggleTracking);
+            .subscribe(this::onTrackingSwitcherChanged);
    }
 
-   private void enableToggleTracking(boolean enableTracking) {
-      requestPermissions(enableTracking);
-   }
-
-   public void requestPermissions(boolean enableTracking) {
-      permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new PermissionSubscriber()
-                  .onPermissionGrantedAction(() -> checkLocationServiceEnabled(enableTracking))
-                  .onPermissionRationaleAction(() -> getView().showRationaleForLocation())
-                  .onPermissionDeniedAction(() -> getView().showDeniedForLocation()));
-   }
-
-   private void checkLocationServiceEnabled(boolean enableTracking) {
-      locationServiceDispatcher.checkEnableLocationService()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(isEnableLocationServices -> {
-               if (isEnableLocationServices) {
-                  executeToggleTracking(enableTracking);
-               } else {
-                  getView().showOpenLocationServiceSettingsDialog();
-                  getView().toggleLostCardSwitcher(false);
-               }
-            });
-   }
-
-   private void executeToggleTracking(boolean enableTracking) {
-      getView().onTrackingChecked(enableTracking);
-      if (!getView().showDisableConfirmationDialogIfNeed(enableTracking)) {
-         smartCardLocationInteractor.saveEnabledTrackingPipe().send(new SaveEnabledTrackingCommand(enableTracking));
+   private void onTrackingSwitcherChanged(boolean enableTracking) {
+      if (enableTracking) {
+         requestLocationPermissions(true);
+      } else {
+         executeToggleTracking(false);
       }
    }
 
-   public void loadLastSmartCardLocation() {
+   void requestLocationPermissions(boolean showRationale) {
+      permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS, showRationale)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber()
+                  .onPermissionGrantedAction(this::checkLocationServiceEnabled)
+                  .onPermissionRationaleAction(() -> {
+                     getView().showRationaleForLocation();
+                     getView().toggleLostCardSwitcher(false);
+                  })
+                  .onPermissionDeniedAction(() -> {
+                     getView().showDeniedForLocation();
+                     getView().toggleLostCardSwitcher(false);
+                  }));
+   }
+
+   void onMapPrepared() {
+      fetchLastSmartCardLocation();
+   }
+
+   void disableTracking() {
+      smartCardLocationInteractor.saveEnabledTrackingPipe().send(new SaveEnabledTrackingCommand(false));
+   }
+
+   void disableTrackingCanceled() {
+      getView().toggleLostCardSwitcher(false);
+   }
+
+   public void goBack() {
+      navigator.goBack();
+   }
+
+   private void checkLocationServiceEnabled() {
+      locationSettingsService.enableLocationApi()
+            .compose(bindView())
+            .take(1)
+            .subscribe(this::onLocationSettingsResult);
+   }
+
+   private void onLocationSettingsResult(LocationSettingsService.EnableResult result) {
+      switch (result) {
+         case AVAILABLE:
+            executeToggleTracking(true);
+            break;
+         default:
+            getView().toggleLostCardSwitcher(false);
+      }
+   }
+
+   private void executeToggleTracking(boolean enableTracking) {
+      if (!enableTracking) {
+         getView().showDisableConfirmationDialog();
+         return;
+      }
+      smartCardLocationInteractor.saveEnabledTrackingPipe().send(new SaveEnabledTrackingCommand(true));
+   }
+
+   private void fetchLastSmartCardLocation() {
       smartCardLocationInteractor.getLocationPipe()
             .createObservable(new GetLocationCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<GetLocationCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(getLocationCommand -> {
-                     final WalletLocation walletLocation = takeLastLocation(getLocationCommand.getResult());
+                     final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
                      processLastLocation(walletLocation);
                   })
-                  .onFail(throwable -> {
-                     Timber.e(throwable, "");
-                     return null;
-                  })
                   .wrap());
-   }
-
-   private WalletLocation takeLastLocation(List<WalletLocation> walletLocations) {
-      return !walletLocations.isEmpty() ? WalletLocationsUtil.getLatestLocation(walletLocations) : null;
    }
 
    private void processLastLocation(WalletLocation walletLocation) {
@@ -153,18 +177,28 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
          return;
       }
       toggleLocationContainersVisibility(true);
-      getView().setLastConnectionLabel(lastConnectedDateFormat.format(walletLocation.createdAt()));
+      getView().setLastConnectionDate(walletLocation.createdAt());
 
+      fetchAddressWithPlaces(walletLocation.coordinates());
+   }
+
+   public void fetchAddressWithPlaces(WalletCoordinates coordinates) {
       smartCardLocationInteractor.fetchAddressPipe()
-            .createObservable(new FetchAddressCommand(walletLocation.coordinates()))
+            .createObservable(new FetchAddressWithPlacesCommand(coordinates))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
-                  .onSuccess(command -> setupLocationAndAddress(walletLocation.coordinates(), command.getResult()))
-                  .onFail((fetchAddressCommand, throwable) -> {
-                     Timber.e(throwable, "");
-                     toggleLocationContainersVisibility(false);
-                  })
-            );
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView(), true)
+                  .onSuccess(command ->
+                        setupLocationAndAddress(coordinates, command.getResult().address, command.getResult().places))
+                  .onFail((fetchAddressWithPlacesCommand, throwable) -> setupEmptyLocation(fetchAddressWithPlacesCommand))
+                  .create());
+   }
+
+   void retryFetchAddressWithPlaces(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
+      fetchAddressWithPlaces(fetchAddressWithPlacesCommand.getCoordinates());
+   }
+
+   void setupEmptyLocation(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
+      getView().addPin(toLatLng(fetchAddressWithPlacesCommand.getCoordinates()));
    }
 
    private void toggleLocationContainersVisibility(boolean locationExists) {
@@ -172,52 +206,19 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       getView().toggleVisibleLastConnectionTime(locationExists);
    }
 
-   private void setupLocationAndAddress(@NonNull WalletCoordinates walletLocation, @NonNull WalletAddress address) {
-      LostCardPin lostCardPin = ImmutableLostCardPin.builder()
-            .address(String.format("%s, %s\n%s", address.countryName(), address.adminArea(), address.addressLine()))
-            .position(walletLocation)
-            .build();
-
-      loadPlace(lostCardPin, walletLocation);
-   }
-
-   private void loadPlace(LostCardPin lostCardPin, WalletCoordinates position) {
-      smartCardLocationInteractor.fetchPlacesNearbyCommandActionPipe()
-            .createObservable(new FetchPlacesNearbyCommand(position))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FetchPlacesNearbyCommand>()
-                  .onSuccess(command -> getView().addPin(createLostCardPinWithLastLocation(lostCardPin, command.getResult())))
-                  .onFail((command, throwable) -> {
-                     getView().addPin(lostCardPin);
-                     Timber.e(throwable, "");
-                  })
-            );
-   }
-
-   private LostCardPin createLostCardPinWithLastLocation(LostCardPin lostCardPin, List<LocationPlace> locationPlaces) {
-      if (locationPlaces == null || locationPlaces.isEmpty() || locationPlaces.size() > 1) {
-         return lostCardPin;
-      } else {
-         return ImmutableLostCardPin.copyOf(lostCardPin)
-               .withPlace(locationPlaces.get(0).name());
-      }
-   }
-
-   public void disableTracking() {
-      smartCardLocationInteractor.saveEnabledTrackingPipe().send(new SaveEnabledTrackingCommand(false));
-   }
-
-   public void requestLocationSettings() {
-      locationServiceDispatcher.requestLocationSettings();
-   }
-
-   public void goBack() {
-      navigator.goBack();
+   private void setupLocationAndAddress(WalletCoordinates coordinates, WalletAddress address, List<WalletPlace> places) {
+      getView().addPin(ImmutableLostCardPin.builder()
+            .position(toLatLng(coordinates))
+            .address(address)
+            .places(places)
+            .build());
    }
 
    public interface Screen extends WalletScreen {
 
       Observable<Boolean> observeTrackingEnable();
+
+      OperationView<FetchAddressWithPlacesCommand> provideOperationView();
 
       void toggleVisibleDisabledOfTrackingView(boolean visible);
 
@@ -227,20 +228,18 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
       void setVisibilityMap(boolean visible);
 
-      void setLastConnectionLabel(String lastConnection);
+      void setLastConnectionDate(Date date);
 
       void toggleLostCardSwitcher(boolean checked);
 
-      void addPin(@NonNull LostCardPin lostCardPin);
+      void addPin(LostCardPin lostCardPin);
 
-      void onTrackingChecked(boolean checked);
+      Marker addPin(LatLng position);
 
       void showRationaleForLocation();
 
       void showDeniedForLocation();
 
-      void showOpenLocationServiceSettingsDialog();
-
-      boolean showDisableConfirmationDialogIfNeed(boolean enableTracking);
+      void showDisableConfirmationDialog();
    }
 }

@@ -114,7 +114,16 @@
                   android:layout_height="match_parent"
                   />
 
-            <include layout="@layout/map_popup_info_view" />
+            <TextView
+                  android:id="@+id/tv_tracking_enabled_empty_location"
+                  style="@style/SettingsItemText"
+                  android:layout_gravity="center"
+                  android:gravity="center"
+                  android:padding="@dimen/spacing_normal"
+                  android:text="@string/wallet_lost_card_empty_last_location_msg"
+                  android:textSize="@dimen/font_medium"
+                  android:visibility="gone"
+                  />
 
          </FrameLayout>
 

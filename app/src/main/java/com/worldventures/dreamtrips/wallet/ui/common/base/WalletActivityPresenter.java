@@ -43,7 +43,7 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
                if (enabled) {
                   trackingManager.track();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    @Override

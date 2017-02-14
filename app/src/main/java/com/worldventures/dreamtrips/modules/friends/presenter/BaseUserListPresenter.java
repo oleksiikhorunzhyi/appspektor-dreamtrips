@@ -32,10 +32,9 @@ import rx.android.schedulers.AndroidSchedulers;
 public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View> extends Presenter<T> {
 
    protected List<User> users = new ArrayList<>();
-   private int previousTotal = 0;
-   private boolean loading = true;
+   private boolean loading;
+   private boolean finishedLoadingAllData;
    private int nextPage = 1;
-   private boolean loadUsersRequestLocked;
 
    @Inject StartChatDelegate startChatDelegate;
    @Inject CirclesInteractor circlesInteractor;
@@ -86,55 +85,49 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    }
 
    public void reload() {
-      loadUsersRequestLocked = true;
-      nextPage = 1;
-      resetLazyLoadFields();
+      resetPaginationFields();
       view.startLoading();
       loadUsers(nextPage, this::onUsersLoaded);
    }
 
    protected void onUsersLoaded(List<User> freshUsers) {
-      loadUsersRequestLocked = false;
-      nextPage++;
       users.clear();
-      users.addAll(freshUsers);
-      view.finishLoading();
-      view.refreshUsers(users);
+      processNewUsers(freshUsers);
    }
 
    protected void onUsersAdded(List<User> freshUsers) {
-      loadUsersRequestLocked = false;
-      nextPage++;
+      processNewUsers(freshUsers);
+   }
+
+   private void processNewUsers(List<User> freshUsers) {
+      finishedLoadingAllData = freshUsers == null || freshUsers.size() < getPerPageCount();
       users.addAll(freshUsers);
       view.refreshUsers(users);
       view.finishLoading();
+      loading = false;
+      if (!finishedLoadingAllData) nextPage++;
    }
 
    protected void onError(GetUsersCommand getUsersCommand, Throwable throwable) {
-      view.finishLoading();
       handleError(getUsersCommand, throwable);
-      loadUsersRequestLocked = false;
+      nextPage--;
+      view.finishLoading();
       loading = false;
    }
 
    protected abstract void loadUsers(int page, rx.functions.Action1<List<User>> onSuccessAction);
 
    public void scrolled(int totalItemCount, int lastVisible) {
-      if (totalItemCount > previousTotal) {
-         loading = false;
-         previousTotal = totalItemCount;
-      }
-      if (!loading && !loadUsersRequestLocked && lastVisible >= totalItemCount - 1) {
+      if (!finishedLoadingAllData && !loading && lastVisible >= totalItemCount - 1) {
          view.startLoading();
          loading = true;
-         loadUsersRequestLocked = true;
-
          loadUsers(nextPage, this::onUsersAdded);
       }
    }
 
-   private void resetLazyLoadFields() {
-      previousTotal = 0;
+   private void resetPaginationFields() {
+      nextPage = 1;
+      finishedLoadingAllData = false;
       loading = false;
    }
 

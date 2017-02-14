@@ -8,16 +8,12 @@ import com.worldventures.dreamtrips.modules.infopages.service.analytics.ViewDocu
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 
 public class DocumentListPresenter extends Presenter<DocumentListPresenter.View> {
-
-   private static final long DEBOUNCE_VISIBILITY_CHANGE = 600;
 
    @Inject DocumentsInteractor documentsInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
@@ -29,16 +25,10 @@ public class DocumentListPresenter extends Presenter<DocumentListPresenter.View>
       observeDocumentsChanges();
 
       refreshDocuments();
-      listenViewVisibilityChanges();
    }
 
-   private void listenViewVisibilityChanges() {
-      view.visibilityStream()
-            .debounce(DEBOUNCE_VISIBILITY_CHANGE, TimeUnit.MILLISECONDS)
-            .compose(bindViewToMainComposer())
-            .filter(Boolean::booleanValue)
-            .filter(value -> view.getUserVisibleHint())
-            .subscribe(o -> analyticsInteractor.analyticsActionPipe().send(new ViewDocumentsTabAnalyticAction()));
+   public void onSelectedFromPager() {
+      analyticsInteractor.analyticsActionPipe().send(new ViewDocumentsTabAnalyticAction());
    }
 
    public void refreshDocuments() {
@@ -92,9 +82,5 @@ public class DocumentListPresenter extends Presenter<DocumentListPresenter.View>
       void hideProgress();
 
       void updateLoadingStatus(boolean noMoreElements);
-
-      Observable<Boolean> visibilityStream();
-
-      boolean getUserVisibleHint();
    }
 }

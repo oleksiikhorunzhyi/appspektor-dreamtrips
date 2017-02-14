@@ -7,15 +7,10 @@ import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPre
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-
 public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPresenter.View> {
-
-   private static final long DEBOUNCE_VISIBILITY_CHANGE = 600;
 
    @Inject AnalyticsInteractor analyticsInteractor;
 
@@ -26,19 +21,11 @@ public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPrese
       return GetMemberVideosCommand.forHelpVideos(videoLanguage);
    }
 
-   @Override
-   public void takeView(View view) {
-      super.takeView(view);
-      listenViewVisibilityChanges();
-   }
-
-   private void listenViewVisibilityChanges() {
-      view.visibilityStream()
-            .debounce(DEBOUNCE_VISIBILITY_CHANGE, TimeUnit.MILLISECONDS)
-            .filter(Boolean::booleanValue)
-            .filter(value -> view.getUserVisibleHint())
-            .compose(bindViewToMainComposer())
-            .subscribe(o -> viewShown());
+   public void onSelectedFromPager() {
+      if (videoLanguage != null) {
+         sendViewAnalytics();
+         analyticSent = true;
+      } else analyticSent = false;
    }
 
    @Override
@@ -59,18 +46,10 @@ public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPrese
    @Override
    protected void localesLoaded(List list) {
       super.localesLoaded(list);
-
       if (!analyticSent) {
          sendViewAnalytics();
          analyticSent = true;
       }
-   }
-
-   public void viewShown() {
-      if (videoLanguage != null) {
-         sendViewAnalytics();
-         analyticSent = true;
-      } else analyticSent = false;
    }
 
    private void sendViewAnalytics() {
@@ -79,10 +58,6 @@ public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPrese
    }
 
    public interface View extends TrainingVideosPresenter.View {
-
-      Observable<Boolean> visibilityStream();
-
-      boolean getUserVisibleHint();
    }
 
 }

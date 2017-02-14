@@ -42,7 +42,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @Override
     protected void onPostAttachToWindowView() {
         inflateToolbarMenu(toolbar);
-        toolbar.setTitle("Reviews");
+        toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> {
             getPresenter().onBackPressed();

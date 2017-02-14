@@ -289,12 +289,12 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          if (listReviews != null && !listReviews.isEmpty()) {
             //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
             int countReview = action.getResult().getTotal();
-            float ratingMerchant = action.getResult().getRatingAvarage().floatValue();
+            float ratingMerchant = action.getResult().getRatingAverage().floatValue();
             if (countReview == 0) {
                getView().addNoCommentsAndReviews();
             } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
                //If list size is major or equals 3, must be show read all message button
-               getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBussinessRule(listReviews));
+               getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
                getView().showButtonAllRateAndReview();
                getView().setTextRateAndReviewButton(countReview);
             } else {
@@ -306,7 +306,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       }
    }
 
-   private ArrayList<ReviewObject> getListReviewByBussinessRule(@NonNull ArrayList<ReviewObject> reviews) {
+   private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {
       ArrayList<ReviewObject> newListReviews = new ArrayList<>();
       for (int i = 0; i < MAX_SIZE_TO_SHOW_BUTTON; i++) {
          newListReviews.add(reviews.get(i));

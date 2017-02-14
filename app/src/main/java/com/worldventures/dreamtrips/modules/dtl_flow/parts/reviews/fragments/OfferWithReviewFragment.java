@@ -86,12 +86,14 @@ public class OfferWithReviewFragment extends Fragment {
 
    private void setUpCommentReview() {
       if (null != tvReviewCount && mCountReview > 0) {
-         tvReviewCount.setText(mCountReview + getTextReview(mCountReview));
+         tvReviewCount.setText(getTextReview(mCountReview));
       }
    }
 
-   private String getTextReview(float mCountReview) {
-      return mCountReview == 1 ? " Review" : " Reviews";
+   private String getTextReview(int mCountReview) {
+      return mCountReview == 1 ? String.format(getContext().getResources()
+            .getString(R.string.format_review_text), mCountReview) : String.format(getContext().getResources()
+            .getString(R.string.format_reviews_text), mCountReview);
    }
 
    private void setUpRating() {

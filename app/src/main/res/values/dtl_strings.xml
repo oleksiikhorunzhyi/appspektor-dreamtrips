@@ -114,6 +114,8 @@
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">RATE AND REVIEW</string>
    <string name="first_reviews_text">Be the first to review this location</string>
+   <string name="format_review_text">%1$d Review</string>
+   <string name="format_reviews_text">%1$d Reviews</string>
    <string name="reviews_text">Reviews</string>
    <string name="without_reviews_text">0 Reviews</string>
    <string name="year_ago_text">%1$d years ago</string>
@@ -122,4 +124,5 @@
    <string name="hours_ago_text">%1$d hours ago</string>
    <string name="min_ago_text">%1$d min ago</string>
    <string name="sec_ago_text">%1$d sec ago</string>
+   <string name="total_reviews_text"> READ ALL REVIEWS(%1$d)</string>
 </resources>

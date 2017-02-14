@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPath;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import javax.inject.Inject;
@@ -175,7 +175,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {
-                  navigator.go(new EditCardDetailsPath(bankCard));
+                  navigator.go(new EditBillingAddressPath(bankCard));
                } else {
                   getView().showConnectionErrorDialog();
                }

@@ -42,8 +42,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoCle
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
@@ -92,8 +92,8 @@ import dagger.Provides;
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
             WizardWelcomePresenter.class,
-            EditCardDetailsPresenter.class,
-            EditCardDetailsScreen.class,
+            EditBillingAddressPresenter.class,
+            EditBillingAddressScreen.class,
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class,
             WalletUpToDateFirmwarePresenter.class,

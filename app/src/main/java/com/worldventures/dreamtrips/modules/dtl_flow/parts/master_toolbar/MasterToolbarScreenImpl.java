@@ -92,6 +92,13 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    @Override
+   public void connectToggleUpdate() {
+      RxDtlToolbar.offersOnlyToggleChanges(toolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
+   }
+
+   @Override
    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
       toolbar.setLocationCaption(DtlToolbarHelper.provideLocationCaption(getResources(), dtlLocation));
    }

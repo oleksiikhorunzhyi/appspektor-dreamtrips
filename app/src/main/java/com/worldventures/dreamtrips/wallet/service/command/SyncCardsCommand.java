@@ -17,8 +17,10 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.GetDefaultRecordAction;
 import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
+import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
@@ -65,10 +67,15 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       //sync card list
       Queryable.from(bundle.deviceCards)
             .forEachR(deviceCard -> {
-               if (Queryable.from(bundle.cacheCards)
-                     .count(element -> TextUtils.equals(element.id(), deviceCard.id())) == 0) {
+               final int count = Queryable.from(bundle.cacheCards)
+                     .count(element -> TextUtils.equals(element.id(), deviceCard.id()));
+               if (count == 0) {
                   operations.add(interactor.cardsListPipe()
                         .createObservableResult(CardListCommand.add(deviceCard))
+                        .map(value -> null));
+               } else if (count == 1) {
+                  operations.add(interactor.cardsListPipe()
+                        .createObservableResult(CardListCommand.replace(deviceCard))
                         .map(value -> null));
                }
             });
@@ -77,8 +84,8 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             .forEachR(cacheCard -> {
                if (Queryable.from(bundle.deviceCards)
                      .count(element -> TextUtils.equals(element.id(), cacheCard.id())) == 0) {
-                  operations.add(interactor.addRecordPipe()
-                        .createObservableResult(new AttachCardCommand((BankCard) cacheCard, false))
+                  operations.add(interactor.addNativeRecordPipe()
+                        .createObservableResult(new AddRecordAction(mapperyContext.convert(cacheCard, Record.class)))
                         .map(value -> null));
                }
             });

@@ -120,6 +120,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
+            .doOnCompleted(getView()::connectToggleUpdate)
             .subscribe(getView()::toggleOffersOnly);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()

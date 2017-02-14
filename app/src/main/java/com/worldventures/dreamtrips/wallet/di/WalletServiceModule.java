@@ -70,8 +70,8 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) Janet janet, @Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new SmartCardInteractor(janet, sessionActionPipeCreator);
+   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new SmartCardInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

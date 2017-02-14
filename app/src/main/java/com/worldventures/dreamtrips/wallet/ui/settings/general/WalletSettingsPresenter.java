@@ -129,14 +129,14 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
             .map(ActiveSmartCardCommand::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(smartCard -> getView().stealthModeStatus(smartCard.stealthMode()));
+            .subscribe(smartCard -> getView().stealthModeStatus(smartCard.stealthMode()), throwable -> {});
    }
 
    private void lockStatusFailed() {
       smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
             .map(ActiveSmartCardCommand::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(smartCard -> getView().lockStatus(smartCard.lock()));
+            .subscribe(smartCard -> getView().lockStatus(smartCard.lock()), throwable -> {});
    }
 
    private void observeStealthModeController(Screen view) {
@@ -149,7 +149,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                         .filter(smartCard -> smartCard.stealthMode() != stealthMode)
                         .map(smartCard -> stealthMode)
             )
-            .subscribe(this::stealthModeChanged);
+            .subscribe(this::stealthModeChanged, throwable -> {});
    }
 
    private void observeLockController(Screen view) {
@@ -162,7 +162,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                   .filter(smartCard -> smartCard.lock() != lockStatus)
                   .map(smartCard -> lockStatus)
             )
-            .subscribe(this::lockStatusChanged);
+            .subscribe(this::lockStatusChanged, throwable -> {});
    }
 
    private void observeConnectionController(Screen view) {
@@ -175,7 +175,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                   .filter(smartCard -> (smartCard.connectionStatus().isConnected()) != connectedValue)
                   .map(smartCard -> new Pair<>(smartCard, connectedValue))
             )
-            .subscribe(pair -> manageConnection(pair.first, pair.second));
+            .subscribe(pair -> manageConnection(pair.first, pair.second), throwable -> {});
    }
 
 

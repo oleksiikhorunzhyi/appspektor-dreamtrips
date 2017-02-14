@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpda
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -23,7 +22,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.user.UpdateUserAction;
 import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
@@ -39,8 +37,6 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
    @Inject WalletNetworkService networkService;
-   @Inject SnappyRepository snappyRepository;
-   @Inject UpdateDataHolder updateDataHolder;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject UpdateProfileManager updateProfileManager;
 
@@ -54,7 +50,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       validateData();
       if (!networkService.isAvailable()) throw new NetworkUnavailableException();
-      updateDataHolder.saveChanging(changedFields);
+      updateProfileManager.attachChangedFields(changedFields);
 
       janet.createPipe(ActiveSmartCardCommand.class)
             .createObservableResult(new ActiveSmartCardCommand())
@@ -71,11 +67,11 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    }
 
    private Observable<SmartCard> uploadData(SmartCard smartCard) {
-      return createUpdateCardUserData(smartCard)
+      return pushToSmartCard(smartCard)
             .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard, updateCardUserData));
    }
 
-   private Observable<UpdateCardUserData> createUpdateCardUserData(SmartCard smartCard) {
+   private Observable<UpdateCardUserData> pushToSmartCard(SmartCard smartCard) {
       return updateNameOnSmartCard(smartCard)
             .flatMap(userData -> uploadPhoto(smartCard, userData));
    }
@@ -92,8 +88,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
 
       if (!changedFields.firstName().equals(user.firstName())
             || !changedFields.middleName().equals(user.middleName())
-            || !changedFields.lastName().equals(user.lastName())
-            || !changedFields.photo().photoUrl().equals(user.userPhoto().photoUrl())) {
+            || !changedFields.lastName().equals(user.lastName())) {
          needUpdate = true;
       }
 
@@ -116,22 +111,13 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
       }
    }
 
-   private Observable<EnableLockUnlockDeviceAction> toggleLockUnlock(boolean enable) {
-      return janet.createPipe(EnableLockUnlockDeviceAction.class)
-            .createObservableResult(new EnableLockUnlockDeviceAction(enable))
-            .onErrorResumeNext(Observable.just(null));
-   }
-
    private Observable<UpdateCardUserData> uploadPhoto(SmartCard smartCard, UpdateCardUserData userData) {
       final SmartCardUserPhoto photo = changedFields.photo();
       if (photo != null) {
-         return toggleLockUnlock(false)
-               .flatMap(action -> janet.createPipe(UpdateUserPhotoAction.class)
-                     .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper.convertBytesForUpload(photo
-                           .monochrome()))))
-               .flatMap(action -> toggleLockUnlock(true)
-                     .flatMap(command -> janet.createPipe(SmartCardUploaderyCommand.class)
-                           .createObservableResult(new SmartCardUploaderyCommand(smartCard.smartCardId(), photo.original()))))
+         return janet.createPipe(UpdateUserPhotoAction.class)
+               .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper.convertBytesForUpload(photo.monochrome())))
+               .flatMap(action -> janet.createPipe(SmartCardUploaderyCommand.class)
+                     .createObservableResult(new SmartCardUploaderyCommand(smartCard.smartCardId(), photo.original())))
                .map(command -> ImmutableUpdateCardUserData.builder()
                      .from(userData)
                      //photoUrl saved in UpdateProfileManager

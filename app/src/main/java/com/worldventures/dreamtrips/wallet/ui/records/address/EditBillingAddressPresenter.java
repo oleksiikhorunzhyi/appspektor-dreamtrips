@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.edit_card;
+package com.worldventures.dreamtrips.wallet.ui.records.address;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 
-public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPresenter.Screen, Parcelable> {
+public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddressPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -36,7 +36,7 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
 
    private final BankCard bankCard;
 
-   public EditCardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
+   public EditBillingAddressPresenter(Context context, Injector injector, BankCard bankCard) {
       super(context, injector);
       this.bankCard = bankCard;
    }

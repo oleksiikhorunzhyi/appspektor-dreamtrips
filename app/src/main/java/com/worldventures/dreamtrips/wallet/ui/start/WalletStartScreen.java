@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.ViewProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
@@ -58,7 +58,7 @@ public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPre
 
    @Override
    public OperationView<FetchAssociatedSmartCardCommand> provideOperationView() {
-      return new ComposableOperationView<>(new ViewProgressView<>(progressView),
+      return new ComposableOperationView<>(new WalletProgressView<>(progressView),
             ErrorViewFactory.<FetchAssociatedSmartCardCommand>builder()
                   .addProvider(new HttpErrorViewProvider<>(getContext(),
                         command -> presenter.retryFetchingCard(),

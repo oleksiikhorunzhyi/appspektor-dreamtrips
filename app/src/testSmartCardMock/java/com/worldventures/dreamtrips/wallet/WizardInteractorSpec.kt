@@ -6,6 +6,7 @@ import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
+import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
@@ -15,18 +16,26 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
+import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
+import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
 import com.worldventures.dreamtrips.wallet.model.TestUpdateCardUserData
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
+import com.worldventures.dreamtrips.wallet.service.impl.TestSystemPropertiesProvider
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -39,11 +48,13 @@ import io.techery.janet.smartcard.model.Record
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
 import org.powermock.api.mockito.PowerMockito
-import rx.functions.Func1
 import rx.observers.TestSubscriber
+import rx.schedulers.Schedulers
 
 class WizardInteractorSpec : BaseSpec({
+
    describe("SmartCard SDK actions") {
+
       beforeEach {
          staticMockTextUtils()
 
@@ -51,47 +62,51 @@ class WizardInteractorSpec : BaseSpec({
          cardStorage = mock()
          mappery = createMappery()
          janet = createJanet()
-         wizardInteractor = createInteractor(janet)
+         wizardInteractor = createWizardInteractor(janet)
+         smartCardInteractor = createSmartCardInteractor(janet)
+
+         wizardMemoryStorage = mockWizardMemoryStorage(MOCK_BARCODE)
+         propertiesProvider = TestSystemPropertiesProvider()
 
          janet.connectToSmartCardSdk()
 
          mockedDebitCard = mock()
       }
 
-      context("Smart Card create connect, associate and disassociate") {
-         it("Create connect to smart card") {
+      context("SmartCard wizard flow") {
+
+         it("connects to SmartCard") {
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand())
+                  .createObservable(CreateAndConnectToCardCommand(false, false))
                   .subscribe(testSubscriber)
 
-            testSubscriber.assertCompleted()
-            testSubscriber.assertNoErrors()
+            AssertUtil.assertActionSuccess(testSubscriber, {
+               it.result.connectionStatus() === SmartCard.ConnectionStatus.CONNECTED
+            })
          }
 
-         it("Associate smart card") {
-            val smartCardId = "13371340"
-            val cardUserData : UpdateCardUserData = mockUpdateCardUserData()
+         it("associates SmartCard") {
+            val cardUserData: UpdateCardUserData = TestUpdateCardUserData()
             val testSubscriber: TestSubscriber<ActionState<AssociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(AssociateCardUserCommand::class.java)
-                  .createObservable(AssociateCardUserCommand(smartCardId, cardUserData))
+                  .createObservable(AssociateCardUserCommand(MOCK_BARCODE, cardUserData))
                   .subscribe(testSubscriber)
 
-            testSubscriber.assertCompleted()
-            testSubscriber.assertNoErrors()
+            AssertUtil.assertActionSuccess(testSubscriber, { true })
          }
 
-         it("Disassociate smart card") {
-            val smartCardId = "13371340"
-            val smartCard = mockSmartCard(smartCardId)
+         it("disassociates SmartCard") {
+            val smartCard = mockSmartCard(MOCK_BARCODE)
+            whenever(smartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.CONNECTED)
             whenever(mockDb.smartCard).thenReturn(smartCard)
+
             val testSubscriber: TestSubscriber<ActionState<ResetSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ResetSmartCardCommand::class.java)
                   .createObservable(ResetSmartCardCommand(smartCard))
                   .subscribe(testSubscriber)
 
-            testSubscriber.assertCompleted()
-            testSubscriber.assertNoErrors()
+            AssertUtil.assertActionSuccess(testSubscriber, { true })
          }
       }
    }
@@ -99,12 +114,19 @@ class WizardInteractorSpec : BaseSpec({
 }) {
    private companion object {
 
+      const val MOCK_SMART_CARD_ID: Long = 13371340
+      const val MOCK_BARCODE = MOCK_SMART_CARD_ID.toString()
+
       lateinit var mockDb: SnappyRepository
       lateinit var cardStorage: CardListStorage
 
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var wizardInteractor: WizardInteractor
+      lateinit var smartCardInteractor: SmartCardInteractor
+
+      lateinit var wizardMemoryStorage: WizardMemoryStorage
+      lateinit var propertiesProvider: SystemPropertiesProvider
 
       lateinit var mockedDebitCard: BankCard
 
@@ -122,7 +144,9 @@ class WizardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
+      fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
+
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -140,23 +164,35 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
+         daggerCommandActionService.registerProvider(CardListStorage::class.java) { cardStorage }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(WizardInteractor::class.java, { wizardInteractor })
+         daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
+         daggerCommandActionService.registerProvider(WizardMemoryStorage::class.java, { wizardMemoryStorage })
+         daggerCommandActionService.registerProvider(SystemPropertiesProvider::class.java, { propertiesProvider })
 
          return janet
       }
 
-      fun createMockDb(): SnappyRepository = spy()
+      fun createMockDb(): SnappyRepository {
+         val repository: SnappyRepository = spy()
+         whenever(repository.walletTermsAndConditions).thenReturn(TestTermsAndConditions())
+         return repository
+      }
 
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(BankCard::class.java).to(Record::class.java, BankCardToRecordConverter())
             .map(Record::class.java).to(BankCard::class.java, RecordToBankCardConverter())
+            .map(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails::class.java).to(SmartCardDetails::class.java, SmartCardDetailsConverter())
             .build()
 
       fun mockHttpService(): MockHttpActionService {
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(204), Func1 { request ->
-                  request.url.contains("api/smartcard/provisioning/card_user/") && request.method.equals("delete", true)
+               .bind(MockHttpActionService.Response(204), { request ->
+                  request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("delete", true)
+               })
+               .bind(MockHttpActionService.Response(204).body(TestSmartCardDetails(MOCK_SMART_CARD_ID)), { request ->
+                  request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("post", true)
                })
                .build()
       }
@@ -175,7 +211,11 @@ class WizardInteractorSpec : BaseSpec({
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1))).subscribe()
       }
 
-      fun mockUpdateCardUserData(): UpdateCardUserData = TestUpdateCardUserData()
+      fun mockWizardMemoryStorage(cardId: String): WizardMemoryStorage {
+         val wizardMemoryStorage: WizardMemoryStorage = mock()
+         whenever(wizardMemoryStorage.barcode).thenReturn(cardId)
+         return wizardMemoryStorage
+      }
 
       fun mockSmartCard(cardId: String): SmartCard {
          val mockedSmartCard: SmartCard = mock()
@@ -190,6 +230,6 @@ class WizardInteractorSpec : BaseSpec({
 
          return mockedSmartCard
       }
+
    }
 }
-

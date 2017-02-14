@@ -70,9 +70,16 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       smartCardLocationInteractor.enabledTrackingPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> applyTrackingStatusForUI(command.getResult()));
+            .subscribe(command -> onTrackingStateFetched(command.getResult()));
 
       smartCardLocationInteractor.enabledTrackingPipe().send(CardTrackingStatusCommand.fetch());
+   }
+
+   private void onTrackingStateFetched(boolean state) {
+      if (state) {
+         requestLocationPermissions(true);
+      }
+      applyTrackingStatusForUI(state);
    }
 
    private void observeCheckingSwitcher() {

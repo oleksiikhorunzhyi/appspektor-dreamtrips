@@ -62,12 +62,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
    }
 
    @Override
-   public void onResume() {
-      super.onResume();
-      TrackingHelper.viewTripImagesScreen();
-   }
-
-   @Override
    public void setSelection(int selection) {
       pager.setCurrentItem(selection, true);
    }

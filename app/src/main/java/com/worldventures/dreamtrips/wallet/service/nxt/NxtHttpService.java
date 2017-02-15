@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.wallet.service.nxt;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.NxtSessionHolder;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
@@ -82,25 +85,37 @@ public class NxtHttpService extends ActionServiceWrapper {
          MultifunctionNxtHttpAction action = (MultifunctionNxtHttpAction) holder.action();
          if (action.getStatusCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) {
             synchronized (this) {
-               if (!action.body.sessionToken().equals(nxtSessionHolder.get().get().token())) {
-                  ((ActionHolder<MultifunctionNxtHttpAction>) holder).newAction(new MultifunctionNxtHttpAction(
-                        ImmutableMultiRequestBody.builder()
-                              .multiRequestElements(action.body.multiRequestElements())
-                              .sessionToken(nxtSessionHolder.get().get().token())
-                              .build()));
+               String currentSessionToken = pleaseGetSessionToken();
+               if (!action.body.sessionToken().equals(currentSessionToken)) {
+                  ((ActionHolder<MultifunctionNxtHttpAction>) holder).newAction(copyActionWithFreshToken(action));
                   return true;
                }
 
                boolean shouldRetry = nxtAuthRetryPolicy.handle(action.getErrorResponse(), this::createSession);
                if (shouldRetry) {
-                  retriedActions.add(action);
+                  MultifunctionNxtHttpAction freshTokenAction = copyActionWithFreshToken(action);
+                  ((ActionHolder<MultifunctionNxtHttpAction>) holder).newAction(freshTokenAction);
+                  retriedActions.add(freshTokenAction);
                }
-
                return shouldRetry;
             }
          }
       }
       return false;
+   }
+
+   @NonNull
+   private MultifunctionNxtHttpAction copyActionWithFreshToken(MultifunctionNxtHttpAction action) {
+      return new MultifunctionNxtHttpAction(ImmutableMultiRequestBody.builder()
+            .multiRequestElements(action.body.multiRequestElements())
+            .sessionToken(pleaseGetSessionToken())
+            .build());
+   }
+
+   @Nullable
+   private String pleaseGetSessionToken() {
+      Optional<NxtSession> nxtSessionOptional = nxtSessionHolder.get();
+      return (nxtSessionOptional.isPresent()) ? nxtSessionOptional.get().token() : null;
    }
 
    private NxtSession createSession() {

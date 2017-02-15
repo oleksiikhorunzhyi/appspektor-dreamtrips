@@ -3,8 +3,12 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +19,10 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.GetDefaultRecordAction;
 import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
+import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
@@ -26,6 +32,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class SyncCardsCommand extends Command<Void> implements InjectableAction {
 
    @Inject SmartCardInteractor interactor;
+   @Inject NxtInteractor nxtInteractor;
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
@@ -35,23 +42,25 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             janet.createPipe(GetMemberRecordsAction.class)
                   .createObservableResult(new GetMemberRecordsAction())
                   .flatMap(action -> Observable.from(action.records)
-                        .map(record -> (Card) mapperyContext.convert(record, BankCard.class))
+                        .map(record -> mapperyContext.convert(record, BankCard.class))
                         .toList()),
             interactor.cardsListPipe()
                   .createObservableResult(CardListCommand.fetch())
-                  .map(Command::getResult),
+                  .flatMap(action -> Observable.from(action.getResult())
+                        .map(record -> (BankCard) record)
+                        .toList()),
             janet.createPipe(GetDefaultRecordAction.class)
                   .createObservableResult(new GetDefaultRecordAction())
                   .map(getDefaultRecordAction -> getDefaultRecordAction.recordId),
             interactor.defaultCardIdPipe()
                   .createObservableResult(new DefaultCardIdCommand())
                   .map(DefaultCardIdCommand::getResult),
-            (deviceCards, cacheCards, deviceDefaultCardId, cacheDefaultCardId) -> {
+            (deviceCards, localCards, deviceDefaultCardId, localDefaultCardId) -> {
                SyncBundle bundle = new SyncBundle();
-               bundle.cacheCards = cacheCards;
                bundle.deviceCards = deviceCards;
+               bundle.localCards = localCards;
                bundle.deviceDefaultCardId = deviceDefaultCardId >= 0 ? String.valueOf(deviceDefaultCardId) : null;
-               bundle.cacheDefaultCardId = cacheDefaultCardId;
+               bundle.localDefaultCardId = localDefaultCardId;
                return bundle;
             }
       ).flatMap(this::sync)
@@ -59,48 +68,58 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    }
 
    private Observable<Void> sync(SyncBundle bundle) {
-      List<Observable<Void>> operations = new ArrayList<>();
-      //sync card list
+      final List<Observable<Void>> operations = new ArrayList<>();
 
-      final List<Card> localCards = new ArrayList<>();
-      for (Card cacheCard : bundle.cacheCards) {
-         if (!bundle.deviceCards.contains(cacheCard)) {
-            localCards.add(cacheCard);
-         }
-      }
-      operations.add(janet.createPipe(AddListRecordCommand.class)
-            .createObservableResult(new AddListRecordCommand(localCards))
-            .map(command -> {
-               final List<Card> cards = new ArrayList<>(bundle.deviceCards);
-               cards.addAll(command.getResult());
-               return cards;
-            })
-            .flatMap(cards -> interactor.cardsListPipe()
-                  .createObservableResult(CardListCommand.replace(cards))
-                  .map(command -> null))
-      );
+      // SmartCard only cards -> tokenize -> save to persistent storage
+      Queryable.from(bundle.deviceCards)
+            .filter(deviceCard -> !bundle.localCards.contains(deviceCard))
+            .map(deviceOnlyCard -> ImmutableBankCard.copyOf(deviceOnlyCard)
+                  .withNumberLastFourDigits(BankCardHelper.obtainLastCardDigits(deviceOnlyCard.number())))
+            .forEachR(deviceOnlyCard -> operations.add(tokenizeBankCard(deviceOnlyCard).flatMap(tokenizedBankCard ->
+                  interactor.cardsListPipe()
+                        .createObservableResult(CardListCommand.add(tokenizedBankCard))
+                        .map(value -> null))));
 
-      //sync default card id
-      if (bundle.deviceDefaultCardId != null && bundle.cacheDefaultCardId == null) {
+      // Local only cards -> detokenize -> push to SmartCard
+      Queryable.from(bundle.localCards)
+            .filter(localCard -> !bundle.deviceCards.contains(localCard))
+            .forEachR(localOnlyCard -> operations.add(detokenizeBankCard(localOnlyCard).flatMap(detokenizedBankCard ->
+                  interactor.addNativeRecordPipe()
+                        .createObservableResult(new AddRecordAction(mapperyContext.convert(detokenizedBankCard, Record.class)))
+                        .map(value -> null))));
+
+      // Sync default card id
+      if (bundle.deviceDefaultCardId != null && bundle.localDefaultCardId == null) {
          operations.add(interactor.defaultCardIdPipe()
                .createObservableResult(DefaultCardIdCommand.set(bundle.deviceDefaultCardId))
                .map(command -> null)
          );
-      } else if (bundle.cacheDefaultCardId != null && !bundle.cacheDefaultCardId.equals(bundle.deviceDefaultCardId)) {
+      } else if (bundle.localDefaultCardId != null && !bundle.localDefaultCardId.equals(bundle.deviceDefaultCardId)) {
          operations.add(interactor.setDefaultCardOnDeviceCommandPipe()
-               .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.cacheDefaultCardId))
+               .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.localDefaultCardId))
                .map(value -> null));
       }
       return operations.isEmpty() ? Observable.just(null)
             : Queryable.from(operations).fold((observable, observable2) -> observable.concatWith(observable2));
    }
 
+   private Observable<BankCard> tokenizeBankCard(BankCard bankCard) {
+      return nxtInteractor.tokenizeBankCardPipe()
+            .createObservableResult(new TokenizeBankCardCommand(bankCard))
+            .map(tokenizeResult -> tokenizeResult.getResult().getTokenizedBankCard());
+   }
+
+   private Observable<BankCard> detokenizeBankCard(BankCard bankCard) {
+      return nxtInteractor.detokenizeBankCardPipe()
+            .createObservableResult(new DetokenizeBankCardCommand(bankCard))
+            .map(detokenizeResult -> detokenizeResult.getResult().getDetokenizedBankCard());
+   }
 
    private static class SyncBundle {
-      private List<Card> cacheCards;
-      private List<Card> deviceCards;
+      private List<BankCard> deviceCards;
+      private List<BankCard> localCards;
       private String deviceDefaultCardId;
-      private String cacheDefaultCardId;
+      private String localDefaultCardId;
    }
 
 }

@@ -4,7 +4,6 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@android:color/white"
       android:orientation="vertical"
       android:theme="@style/WalletTheme"
       >
@@ -18,136 +17,138 @@
 
    <LinearLayout
          android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:background="#eeeeee"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
          android:orientation="vertical"
          >
 
-      <LinearLayout
+      <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff"
-            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_tiny"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_tiny"
             >
 
-         <RelativeLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingBottom="@dimen/spacing_tiny"
-               android:paddingLeft="@dimen/spacing_normal"
-               android:paddingTop="@dimen/spacing_tiny"
-               >
-
-            <TextView
-                  style="@style/SettingsItemText"
-                  android:layout_centerVertical="true"
-                  android:text="@string/wallet_lost_card_tracking_enable_label"
-                  />
-
-            <android.support.v7.widget.SwitchCompat
-                  android:id="@+id/tracking_enable_switcher"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentStart="true"
-                  android:layout_alignParentTop="true"
-                  android:padding="@dimen/spacing_normal"
-                  tools:checked="true"
-                  />
-
-         </RelativeLayout>
-
-         <!--divider-->
-         <View style="@style/SettingsItemDividerStyle" />
-
-         <LinearLayout
-               android:id="@+id/last_connection_time_container"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical"
-               android:paddingBottom="@dimen/spacing_small"
-               android:paddingLeft="@dimen/spacing_normal"
-               android:paddingTop="@dimen/spacing_small"
-               android:visibility="gone"
-               tools:visibility="visible"
-               >
-
-            <TextView
-                  style="@style/SettingsItemText"
-                  android:layout_centerVertical="true"
-                  android:text="@string/wallet_lost_card_last_connected"
-                  android:textStyle="bold"
-                  />
-
-            <TextView
-                  android:id="@+id/last_connected_label"
-                  style="@style/SettingsItemSecondaryText"
-                  tools:text="Sunday, October 3rd, 12:08PM"
-                  />
-         </LinearLayout>
-      </LinearLayout>
-
-      <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-         <View
-               android:layout_width="match_parent"
-               android:layout_height="6dp"
-               android:layout_gravity="top"
-               android:background="@drawable/square_shadow"
-               android:elevation="@dimen/spacing_tiniest"
-               android:translationZ="@dimen/spacing_tiniest"
+         <TextView
+               style="@style/SettingsItemText"
+               android:layout_centerVertical="true"
+               android:text="@string/wallet_lost_card_tracking_enable_label"
                />
 
-         <FrameLayout
-               android:id="@+id/map_container"
+         <android.support.v7.widget.SwitchCompat
+               android:id="@+id/tracking_enable_switcher"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentTop="true"
+               android:padding="@dimen/spacing_normal"
+               tools:checked="true"
+               />
+
+      </RelativeLayout>
+
+      <!--divider-->
+      <View style="@style/SettingsItemDividerStyle" />
+
+      <LinearLayout
+            android:id="@+id/last_connection_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_small"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <TextView
+               style="@style/SettingsItemText"
+               android:text="@string/wallet_lost_card_last_connected"
+               android:textStyle="bold"
+               />
+
+         <TextView
+               android:id="@+id/last_connected_label"
+               style="@style/SettingsItemSecondaryText"
+               tools:text="Sunday, October 3rd, 12:08PM"
+               />
+      </LinearLayout>
+   </LinearLayout>
+
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_gravity="top"
+            android:background="@drawable/square_shadow"
+            android:elevation="@dimen/spacing_tiniest"
+            android:translationZ="@dimen/spacing_tiniest"
+            />
+
+      <FrameLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView
+               android:id="@+id/map_view"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
+               />
+
+         <android.support.v7.widget.CardView
+               android:id="@+id/empty_location_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:layout_margin="@dimen/spacing_small"
                android:visibility="gone"
-               tools:visibility="visible"
+               app:cardCornerRadius="2dp"
+               app:cardElevation="2dp"
                >
 
-            <com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView
-                  android:id="@+id/map_view"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  />
-
             <TextView
-                  android:id="@+id/tv_tracking_enabled_empty_location"
                   style="@style/SettingsItemText"
-                  android:layout_gravity="center"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
                   android:gravity="center"
                   android:padding="@dimen/spacing_normal"
                   android:text="@string/wallet_lost_card_empty_last_location_msg"
                   android:textSize="@dimen/font_medium"
-                  android:visibility="gone"
                   />
+         </android.support.v7.widget.CardView>
 
-         </FrameLayout>
+      </FrameLayout>
 
-         <FrameLayout
-               android:id="@+id/noGoogleContainer"
+      <FrameLayout
+            android:id="@+id/noGoogleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:visibility="gone"
+            >
+
+         <TextView
                android:layout_width="match_parent"
                android:layout_height="match_parent"
-               android:padding="16dp"
-               android:visibility="gone"
-               >
-
-            <TextView
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:gravity="center"
-                  android:paddingLeft="@dimen/spacing_normal"
-                  android:paddingRight="@dimen/spacing_normal"
-                  android:text="@string/wallet_google_play_services_unsupported_text"
-                  android:textSize="@dimen/font_medium"
-                  />
-         </FrameLayout>
-
-         <include layout="@layout/empty_location_lost_card" />
+               android:gravity="center"
+               android:paddingLeft="@dimen/spacing_normal"
+               android:paddingRight="@dimen/spacing_normal"
+               android:text="@string/wallet_google_play_services_unsupported_text"
+               android:textSize="@dimen/font_medium"
+               />
       </FrameLayout>
-   </LinearLayout>
+
+      <include layout="@layout/empty_location_lost_card" />
+   </FrameLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardScreen>

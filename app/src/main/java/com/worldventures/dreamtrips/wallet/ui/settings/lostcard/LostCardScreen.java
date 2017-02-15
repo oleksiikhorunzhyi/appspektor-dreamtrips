@@ -58,7 +58,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    //   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
    @InjectView(R.id.map_container) View mapContainer;
    @InjectView(R.id.tv_empty_lost_card_msg) TextView tvDisableLostCardMsg;
-   @InjectView(R.id.tv_tracking_enabled_empty_location) TextView tvTrackingEnabledEmptyLocations;
+   @InjectView(R.id.empty_location_view) View emptyLocationsView;
    @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
    @InjectView(R.id.map_view) ToucheableMapView mapView;
 
@@ -147,7 +147,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void setVisibleMsgEmptyLastLocation(boolean visible) {
-      tvTrackingEnabledEmptyLocations.setVisibility(visible ? VISIBLE : GONE);
+      emptyLocationsView.setVisibility(visible ? VISIBLE : GONE);
    }
 
    @Override

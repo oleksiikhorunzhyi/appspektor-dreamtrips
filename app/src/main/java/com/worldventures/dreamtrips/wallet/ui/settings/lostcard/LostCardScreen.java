@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.map.LostCardInfoWindowAdapter;
+import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.adapter.LostCardInfoWindowAdapter;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
 
 import java.text.SimpleDateFormat;
@@ -178,7 +178,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    public void addPin(@NonNull LostCardPin pinData) {
       final Marker marker = clearMapAndAttachMarker(pinData.position());
-      final LostCardInfoWindowAdapter infoWindowAdapter = new LostCardInfoWindowAdapter(getContext(), pinData);
+      final LostCardInfoWindowAdapter infoWindowAdapter = new LostCardInfoWindowAdapter(this, pinData);
       googleMap.setInfoWindowAdapter(infoWindowAdapter);
       googleMap.setOnInfoWindowClickListener(m -> infoWindowAdapter.openExternalMap());
       marker.showInfoWindow();

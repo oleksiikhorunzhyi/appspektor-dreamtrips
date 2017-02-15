@@ -62,16 +62,6 @@ public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlace
       return cachedResult == null;
    }
 
-   public class PlacesWithAddress {
-      public final WalletAddress address;
-      public final List<WalletPlace> places;
-
-      private PlacesWithAddress(WalletAddress address, List<WalletPlace> places) {
-         this.address = address;
-         this.places = places;
-      }
-   }
-
    @Override
    public Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress> getCacheData() {
       return new Pair<>(coordinates, getResult());
@@ -93,6 +83,16 @@ public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlace
 
    public WalletCoordinates getCoordinates() {
       return coordinates;
+   }
+
+   public class PlacesWithAddress {
+      public final WalletAddress address;
+      public final List<WalletPlace> places;
+
+      private PlacesWithAddress(WalletAddress address, List<WalletPlace> places) {
+         this.address = address;
+         this.places = places;
+      }
    }
 }
 

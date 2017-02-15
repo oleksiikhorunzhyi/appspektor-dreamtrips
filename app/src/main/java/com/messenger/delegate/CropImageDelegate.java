@@ -1,6 +1,5 @@
 package com.messenger.delegate;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +44,8 @@ public class CropImageDelegate {
    private int ratioX = RATIO_X_DEFAULT;
    private int ratioY = RATIO_Y_DEFAULT;
 
-   public CropImageDelegate(Activity activity) {
+   public CropImageDelegate(Activity activity, DownloadFileInteractor downloadFileInteractor) {
+      this.downloadFileInteractor = downloadFileInteractor;
       init(activity);
    }
 

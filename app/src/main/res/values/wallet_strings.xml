@@ -380,6 +380,7 @@
    <string name="wallet_i_have_card">I have this card</string>
    <string name="wallet_i_dont_have_card">I don\'t have this card</string>
    <string name="wallet_unassign_card_confirm_message" formatted="false">SmartCard <b>%s</b> will now be unassigned and returned to it\'s original factory settings</string>
+   <string name="wallet_settings_dont_have_card_msg" formatted="false">SmartCard <b>%s</b> will now be unassigned from this device. Please note this will unassign it in our system but will not remove your payment cards on your Smart Card.</string>
 
    <!-- Unassign success screen -->
    <string name="wallet_unassign_successful_title">Unassign Successful</string>
@@ -396,5 +397,15 @@
    <!-- Sync payment cards screen -->
    <string name="wallet_syncing_payment_cards">Syncing Payment Cards</string>
    <string name="wallet_syncing_payment_cards_count" formatted="false">Syncing payment card %d of %d</string>
+
+   <!-- New card power on screen -->
+   <string name="wallet_new_card_power_on">Power on your Smart Card <b>%s</b> by pressing and holding on the bottom right corner of the chip.</string>
+   <string name="wallet_not_turn_on">Card won\'t turn on</string>
+
+   <!-- Pre check new card screen -->
+   <string name="wallet_pre_check_settings">Phone Settings</string>
+   <string name="wallet_pre_check_new_card">Before we can proceed, please do not following:</string>
+   <string name="wallet_new_card_pre_installation_bluetooth">Enable Bluetooth on your phone</string>
+   <string name="wallet_new_card_pre_install_confirm_message" formatted="false">SmartCard <b>%s</b> will now be unassigned and returned to it\'s original factory settings</string>
 
 </resources>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -29,6 +30,7 @@ public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDet
    @InjectView(R.id.unassign_button) View unassignButton;
 
    MaterialDialog confirmUnassignDialog = null;
+   MaterialDialog dontHaveCardDialog = null;
 
    public ExistingCardDetailScreen(Context context) {
       super(context);
@@ -46,9 +48,10 @@ public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDet
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
-      toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       if (isInEditMode()) return;
+      toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 
    @Override
@@ -66,11 +69,29 @@ public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDet
       presenter.prepareUnassignCard();
    }
 
+   @OnClick(R.id.dont_have_card_button)
+   public void onClickDontHaveCard() {
+      presenter.prepareUnassignCardOnBackend();
+   }
+
+   @OnClick(R.id.have_card_button)
+   public void onClickHaveCard() {
+      presenter.navigateToPowerOn();
+   }
+
    @Override
    public OperationView<ActiveSmartCardCommand> provideOperationView() {
       return new ComposableOperationView<>(
             ProgressDialogView.<ActiveSmartCardCommand>builder(getContext()).build(),
             ErrorViewFactory.<ActiveSmartCardCommand>builder().build()
+      );
+   }
+
+   @Override
+   public OperationView<WipeSmartCardDataCommand> provideWipeOperationView() {
+      return new ComposableOperationView<>(
+            ProgressDialogView.<WipeSmartCardDataCommand>builder(getContext()).build(),
+            ErrorViewFactory.<WipeSmartCardDataCommand>builder().build()
       );
    }
 
@@ -105,8 +126,23 @@ public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDet
    }
 
    @Override
+   public void showConfirmationUnassignOnBackend(String scId) {
+      if (dontHaveCardDialog == null) {
+         dontHaveCardDialog = new MaterialDialog.Builder(getContext())
+               .content(Html.fromHtml(getString(R.string.wallet_settings_dont_have_card_msg, scId)))
+               .positiveText(R.string.wallet_continue_label)
+               .negativeText(R.string.cancel)
+               .onPositive((dialog, which) -> presenter.unassignCardOnBackend())
+               .build();
+      }
+
+      if(!dontHaveCardDialog.isShowing()) dontHaveCardDialog.show();
+   }
+
+   @Override
    protected void onDetachedFromWindow() {
-      super.onDetachedFromWindow();
       if(confirmUnassignDialog != null) confirmUnassignDialog.dismiss();
+      if(dontHaveCardDialog != null) dontHaveCardDialog.dismiss();
+      super.onDetachedFromWindow();
    }
 }

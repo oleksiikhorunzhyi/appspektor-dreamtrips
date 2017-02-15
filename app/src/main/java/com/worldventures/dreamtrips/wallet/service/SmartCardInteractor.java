@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 
 import java.util.concurrent.Executors;
 
@@ -75,6 +76,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
    private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
+   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataOnBackedCommandActionPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
@@ -131,6 +133,8 @@ public final class SmartCardInteractor {
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
       restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
+      wipeSmartCardDataOnBackedCommandActionPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
+            .io());
 
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
@@ -275,6 +279,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe() {
       return restartSmartCardCommandActionPipe;
+   }
+
+   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataCommandActionPipe() {
+      return wipeSmartCardDataOnBackedCommandActionPipe;
    }
 
    public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {

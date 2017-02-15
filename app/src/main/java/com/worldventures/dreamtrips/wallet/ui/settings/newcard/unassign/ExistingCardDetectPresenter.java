@@ -4,12 +4,16 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.poweron.NewCardPowerOnPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPath;
 
 import javax.inject.Inject;
 
@@ -37,22 +41,24 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> {
-                     if (command.getResult().connectionStatus().isConnected()) {
-                        getView().modeConnectedSmartCard();
-                     } else {
-                        getView().modeDisconnectedSmartCard();
-                     }
-                  })
+                  .onSuccess(command -> handleConnectedResult(command.getResult().connectionStatus()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
-   public void unassignCard() {
+   private void handleConnectedResult(SmartCard.ConnectionStatus connectionStatus) {
+      if (connectionStatus.isConnected()) {
+         getView().modeConnectedSmartCard();
+      } else {
+         getView().modeDisconnectedSmartCard();
+      }
+   }
+
+   void unassignCard() {
       navigator.go(new EnterPinUnassignPath());
    }
 
-   public void prepareUnassignCard() {
+   void prepareUnassignCard() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
@@ -62,13 +68,39 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
                   .create());
    }
 
+   void prepareUnassignCardOnBackend() {
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new ActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
+                  .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId()))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .create());
+   }
+
+   void unassignCardOnBackend() {
+      smartCardInteractor.wipeSmartCardDataCommandActionPipe()
+            .createObservable(new WipeSmartCardDataCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
+                  .onSuccess(activeSmartCardCommand -> navigator.single(new UnassignSuccessPath()))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .create());
+   }
+
    public void goBack() {
       navigator.goBack();
+   }
+
+   void navigateToPowerOn() {
+      navigator.go(new NewCardPowerOnPath());
    }
 
    public interface Screen extends WalletScreen {
 
       OperationView<ActiveSmartCardCommand> provideOperationView();
+
+      OperationView<WipeSmartCardDataCommand> provideWipeOperationView();
 
       void setSmartCardId(String scId);
 
@@ -77,5 +109,7 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
       void modeDisconnectedSmartCard();
 
       void showConfirmationUnassignDialog(String scId);
+
+      void showConfirmationUnassignOnBackend(String scId);
    }
 }

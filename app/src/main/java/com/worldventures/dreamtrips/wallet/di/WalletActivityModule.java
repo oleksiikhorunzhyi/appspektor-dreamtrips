@@ -38,7 +38,9 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron.Fo
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.poweron.NewCardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPresenter;
@@ -122,7 +124,9 @@ import dagger.Provides;
             ExistingCardDetectPresenter.class,
             UnassignSuccessPresenter.class,
             EnterPinUnassignPresenter.class,
-            SyncPaymentCardPresenter.class
+            SyncPaymentCardPresenter.class,
+            NewCardPowerOnPresenter.class,
+            PreCheckNewCardPresenter.class
       },
       complete = false, library = true
 )

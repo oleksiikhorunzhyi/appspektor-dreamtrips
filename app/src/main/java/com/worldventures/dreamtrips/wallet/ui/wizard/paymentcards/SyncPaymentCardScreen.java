@@ -21,7 +21,7 @@ public class SyncPaymentCardScreen extends WalletLinearLayout<SyncPaymentCardPre
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.tv_progress_count_cards_sync) TextView progressCountCardsSync;
-   @InjectView(R.id.progressStatusLabel) TextView progressStatusLabel;
+   @InjectView(R.id.tv_progress_status) TextView progressStatusLabel;
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
 
    public SyncPaymentCardScreen(Context context) {

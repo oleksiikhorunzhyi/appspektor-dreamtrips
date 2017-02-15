@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,7 +80,7 @@ public class TripDetailsViewInjector extends TripViewInjector {
          addToBucketItem.setIcon(iconBucket);
          addToBucketItem.setEnabled(!tripModel.isInBucketList());
       }
-      if (textViewDescription != null) textViewDescription.setText(tripModel.getDescription());
+      if (textViewDescription != null) textViewDescription.setText(Html.fromHtml(tripModel.getDescription()));
    }
 
    public int getCurrentActivePhotoPosition() {

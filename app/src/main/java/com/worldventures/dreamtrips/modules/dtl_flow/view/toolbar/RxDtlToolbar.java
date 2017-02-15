@@ -3,10 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CompoundButton;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import rx.Observable;

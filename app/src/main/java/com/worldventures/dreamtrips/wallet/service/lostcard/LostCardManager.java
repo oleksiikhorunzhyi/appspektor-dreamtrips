@@ -13,7 +13,6 @@ public class LostCardManager {
    private final LocationSyncManager jobScheduler;
    private final WalletNetworkService networkService;
    private final CompositeSubscription subscriptions;
-   private volatile boolean managerConnected = false;
 
    public LostCardManager(SmartCardLocationInteractor locationInteractor, LocationSyncManager jobScheduler, WalletNetworkService networkService) {
       this.locationInteractor = locationInteractor;
@@ -23,15 +22,12 @@ public class LostCardManager {
    }
 
    public void connect() {
-      if (!managerConnected) {
-         if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
-            observeNetworkConnection();
-            observeConnection();
-         }
-         if (networkService.isAvailable()) {
-            jobScheduler.scheduleSync();
-         }
-         managerConnected = true;
+      if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
+         observeNetworkConnection();
+         observeConnection();
+      }
+      if (networkService.isAvailable()) {
+         jobScheduler.scheduleSync();
       }
    }
 
@@ -63,12 +59,9 @@ public class LostCardManager {
    }
 
    public void disconnect() {
-      if (managerConnected) {
-         if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
-            subscriptions.clear();
-         }
-         jobScheduler.cancelSync();
-         managerConnected = false;
+      if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
+         subscriptions.clear();
       }
+      jobScheduler.cancelSync();
    }
 }

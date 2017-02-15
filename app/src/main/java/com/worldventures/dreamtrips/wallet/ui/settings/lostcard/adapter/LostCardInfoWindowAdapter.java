@@ -1,11 +1,11 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.lostcard.map;
+package com.worldventures.dreamtrips.wallet.ui.settings.lostcard.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -23,10 +23,12 @@ import static java.lang.String.format;
 public class LostCardInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
    private final Context context;
+   private final ViewGroup parent;
    private final LostCardPin pinData;
 
-   public LostCardInfoWindowAdapter(Context context, LostCardPin pinData) {
-      this.context = context;
+   public LostCardInfoWindowAdapter(ViewGroup parent, LostCardPin pinData) {
+      this.parent = parent;
+      this.context = parent.getContext();
       this.pinData = pinData;
    }
 
@@ -37,8 +39,7 @@ public class LostCardInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
    @Override
    public View getInfoContents(Marker marker) {
-      @SuppressLint("InflateParams")
-      final View view = LayoutInflater.from(context).inflate(R.layout.map_popup_info_view, null);
+      final View view = LayoutInflater.from(context).inflate(R.layout.map_popup_info_view, parent, false);
 
       // TODO: 2/12/17 view does not handle clicks
 //      view.findViewById(R.id.btn_directions).setOnClickListener(v -> openExternalMap());

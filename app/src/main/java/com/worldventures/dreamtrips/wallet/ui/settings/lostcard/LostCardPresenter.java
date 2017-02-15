@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -69,6 +70,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    private void fetchEnableTrackingState() {
       smartCardLocationInteractor.enabledTrackingPipe()
             .observeSuccess()
+            .distinctUntilChanged(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> onTrackingStateFetched(command.getResult()));
 
@@ -90,13 +92,13 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
    private void onTrackingSwitcherChanged(boolean enableTracking) {
       if (enableTracking) {
-         requestLocationPermissions(true);
+         applyTrackingStatus(true);
       } else {
          getView().showDisableConfirmationDialog();
       }
    }
 
-   void requestLocationPermissions(boolean showRationale) {
+   private void requestLocationPermissions(boolean showRationale) {
       permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS, showRationale)
             .compose(bindView())
             .subscribe(new PermissionSubscriber()
@@ -124,6 +126,10 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
    void disableTracking() {
       applyTrackingStatus(false);
+   }
+
+   void onPermissionRationaleClick() {
+      requestLocationPermissions(false);
    }
 
    void disableTrackingCanceled() {

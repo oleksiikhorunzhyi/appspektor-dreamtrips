@@ -227,7 +227,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
             .content(R.string.wallet_location_permission_message)
             .positiveText(R.string.ok)
             .negativeText(R.string.cancel)
-            .onPositive((dialog, which) -> presenter.requestLocationPermissions(false))
+            .onPositive((dialog, which) -> presenter.onPermissionRationaleClick())
             .build()
             .show();
    }

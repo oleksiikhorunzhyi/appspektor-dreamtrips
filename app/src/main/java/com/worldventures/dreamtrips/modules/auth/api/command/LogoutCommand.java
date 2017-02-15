@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CancelAllCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -60,6 +62,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject ReplayEventDelegatesWiper replayEventDelegatesWiper;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
+   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
@@ -127,6 +130,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
 
    private Observable clearUserData() {
       return Observable.create(subscriber -> {
+         backgroundUploadingInteractor.cancelAllCompoundOperationsPipe().send(new CancelAllCompoundOperationsCommand());
          clearStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearStoragesCommand());
          notificationDelegate.cancelAll();
          badgeUpdater.updateBadge(0);

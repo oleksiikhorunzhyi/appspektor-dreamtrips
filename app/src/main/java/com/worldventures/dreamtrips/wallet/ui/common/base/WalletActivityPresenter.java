@@ -26,7 +26,7 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       smartCardSyncManager.connect();
-
+      trackingManager.track();
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .compose(bindView())
@@ -34,18 +34,8 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
                   .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
             .subscribe(connectAction -> {
                Timber.i("Success connection to smart card");
-               checkEnableTracking();
             }, throwable -> {
             });
-   }
-
-   private void checkEnableTracking() {
-      trackingManager.checkEnableTracking()
-            .subscribe(enabled -> {
-               if (enabled) {
-                  trackingManager.track();
-               }
-            }, throwable -> Timber.e(throwable, ""));
    }
 
    @Override

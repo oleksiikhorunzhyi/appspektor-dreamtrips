@@ -56,7 +56,12 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
                               .user()
                               .userPhoto()
                               .photoUrl())))
-                        .map(associateCardUserCommand -> sc)
+                        .map(command -> ImmutableSmartCard.builder() //// TODO: 2/15/17 SendFeedbackCommand use this fields
+                              .from(sc)
+                              .deviceAddress(command.getResult().bleAddress())
+                              .serialNumber(command.getResult().serialNumber())
+                              .build()
+                        )
             );
    }
 

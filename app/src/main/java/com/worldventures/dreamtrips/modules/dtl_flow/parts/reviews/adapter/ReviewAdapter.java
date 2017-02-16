@@ -66,6 +66,7 @@ public class ReviewAdapter
       private TextView mCommentWrote;
       private RatingBar mRating;
       private TextView mComment;
+      private TextView mTvVerifiedReview;
 
 
       public RecyclerViewHolder(View itemView) {
@@ -75,6 +76,7 @@ public class ReviewAdapter
          mCommentWrote = (TextView) itemView.findViewById(R.id.tvCommentWrote);
          mComment = (TextView) itemView.findViewById(R.id.tvComment);
          mRating = (RatingBar) itemView.findViewById(R.id.rbRating);
+         mTvVerifiedReview = (TextView) itemView.findViewById(R.id.tv_verified_buyer);
       }
 
       public void bind(int position) {
@@ -90,6 +92,20 @@ public class ReviewAdapter
          }
          mComment.setText(mItems.get(position).getComment());
          mRating.setRating((mItems.get(position).getRatingCommentUser()));
+
+         setVerifiedReview(mItems.get(position).isVerifiedReview());
+      }
+
+      private void setVerifiedReview(boolean isVerified) {
+         if (isVerified){
+            changeVisibility(mTvVerifiedReview, View.VISIBLE);
+         } else {
+            changeVisibility(mTvVerifiedReview, View.INVISIBLE);
+         }
+      }
+
+      private void changeVisibility(@NonNull View view, int type){
+         view.setVisibility(type);
       }
 
       private String getCorrectTimeWrote(String timeWrote) throws ParseException {

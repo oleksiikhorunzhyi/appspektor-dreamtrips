@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTracking
 import io.techery.janet.Command;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class LocationTrackingManager {
    private final LostCardManager lostCardManager;
@@ -23,10 +24,11 @@ public class LocationTrackingManager {
       if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
          observeLocationTracking();
       }
-      lostCardManager.connect();
+      checkEnableTracking()
+            .subscribe(this::handleTrackingStatus, throwable -> Timber.e(throwable, ""));
    }
 
-   public Observable<Boolean> checkEnableTracking() {
+   private Observable<Boolean> checkEnableTracking() {
       return locationInteractor.enabledTrackingPipe()
             .createObservableResult(CardTrackingStatusCommand.fetch())
             .map(Command::getResult);

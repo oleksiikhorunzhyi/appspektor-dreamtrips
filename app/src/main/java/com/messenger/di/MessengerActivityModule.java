@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -75,8 +76,8 @@ public class MessengerActivityModule {
 
    @Provides
    @Singleton
-   CropImageDelegate provideCropImageDelegate(Activity activity) {
-      return new CropImageDelegate(activity);
+   CropImageDelegate provideCropImageDelegate(Activity activity, DownloadFileInteractor downloadFileInteractor) {
+      return new CropImageDelegate(activity, downloadFileInteractor);
    }
 
 }

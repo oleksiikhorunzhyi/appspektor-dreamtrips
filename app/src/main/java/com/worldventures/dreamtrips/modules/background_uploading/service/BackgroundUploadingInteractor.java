@@ -29,6 +29,7 @@ public class BackgroundUploadingInteractor {
    private ActionPipe<RestoreCompoundOperationsCommand> restoreCompoundOperationsPipe;
    private ActionPipe<ResumeCompoundOperationCommand> resumeCompoundOperationPipe;
    private ActionPipe<CancelCompoundOperationCommand> cancelCompoundOperationPipe;
+   private ActionPipe<CancelAllCompoundOperationsCommand> cancelAllCompoundOperationsPipe;
 
    private EventBus eventBus;
    private SessionHolder<UserSession> sessionHolder;
@@ -49,6 +50,8 @@ public class BackgroundUploadingInteractor {
       resumeCompoundOperationPipe = sessionActionPipeCreator.createPipe(ResumeCompoundOperationCommand.class, Schedulers
             .io());
       cancelCompoundOperationPipe = sessionActionPipeCreator.createPipe(CancelCompoundOperationCommand.class, Schedulers
+            .io());
+      cancelAllCompoundOperationsPipe = sessionActionPipeCreator.createPipe(CancelAllCompoundOperationsCommand.class, Schedulers
             .io());
       subscribeToPostProcessed();
    }
@@ -87,6 +90,10 @@ public class BackgroundUploadingInteractor {
 
    public ActionPipe<CancelCompoundOperationCommand> cancelCompoundOperationPipe() {
       return cancelCompoundOperationPipe;
+   }
+
+   public ActionPipe<CancelAllCompoundOperationsCommand> cancelAllCompoundOperationsPipe() {
+      return cancelAllCompoundOperationsPipe;
    }
 
    private void subscribeToPostProcessed() {

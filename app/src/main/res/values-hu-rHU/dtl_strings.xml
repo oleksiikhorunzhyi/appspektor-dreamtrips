@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-   <string name="dtl_local">LOCAL programot</string>
+   <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Helyzet kiválasztása </string>
    <string name="dtl_locations_try_search">Nem találtunk várost a közelében.\nPróbálja ki a városok keresését.</string>
    <string name="dtl_merchant_tab_offers">Ajánlatok</string>

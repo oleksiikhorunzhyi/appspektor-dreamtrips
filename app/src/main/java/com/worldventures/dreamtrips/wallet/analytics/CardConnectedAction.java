@@ -4,9 +4,9 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
-@AnalyticsEvent(action = "wallet:setup:Step 4:Set Display Photo and Name",
+@AnalyticsEvent(action = "wallet:setup:Step 3:Card Successfully Connected",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class SetupUserAction extends WalletAnalyticsAction {
+public class CardConnectedAction extends WalletAnalyticsAction {
 
-   @Attribute("cardsetupstep4") final String cardSetupStep4 = "1";
+   @Attribute("cardsetupstep3") final String cardSetupStep3 = "1";
 }

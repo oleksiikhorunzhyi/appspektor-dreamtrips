@@ -11,12 +11,13 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
                 trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY})
 public class LoginAction extends BaseAnalyticsAction {
 
-   @Attribute("login") final String login = "1";
+   @Attribute("login") String login;
    @Attribute("member_id") final String username;
    @Attribute("loggedin") String loggedIn;
 
    public LoginAction(String username, boolean userAlreadyLoggedIn) {
       this.username = username;
-      this.loggedIn = userAlreadyLoggedIn? "1" : null;
+      if (userAlreadyLoggedIn) loggedIn = "1";
+      else login = "1";
    }
 }

@@ -51,8 +51,18 @@ public class ProgressDialogView<T> implements ProgressView<T> {
          this.context = context;
       }
 
-      public Builder message(int stringRes) {
+      public Builder<T> message(int stringRes) {
          dialogBuilder.content(stringRes);
+         return this;
+      }
+
+      public Builder<T> cancelable(boolean cancelable) {
+         dialogBuilder.cancelable(cancelable);
+         return this;
+      }
+
+      public Builder<T> canceledOnTouchOutside(boolean cancelable) {
+         dialogBuilder.canceledOnTouchOutside(cancelable);
          return this;
       }
 

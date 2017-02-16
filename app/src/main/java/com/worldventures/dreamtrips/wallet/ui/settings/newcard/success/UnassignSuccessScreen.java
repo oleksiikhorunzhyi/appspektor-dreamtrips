@@ -30,6 +30,7 @@ public class UnassignSuccessScreen extends WalletLinearLayout<UnassignSuccessPre
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());

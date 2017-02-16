@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
 
+import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -19,6 +21,8 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
 
    private ProgressDialogView progressDialogView = null;
    private MaterialDialog errorEnterPinDialog = null;
+
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public EnterPinUnassignScreen(Context context) {
       super(context);
@@ -45,10 +49,18 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
    }
 
    @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      if(isInEditMode()) return;
+      toolbar.setNavigationOnClickListener(v -> presenter.cancelUnassign());
+   }
+
+   @Override
    public OperationView<FactoryResetCommand> provideOperationView() {
       return new ComposableOperationView<>(
             progressDialogView = ProgressDialogView.<FactoryResetCommand>builder(getContext())
                   .message(R.string.loading)
+                  .canceledOnTouchOutside(false)
                   .build(),
             ErrorViewFactory.<FactoryResetCommand>builder().build()
       );

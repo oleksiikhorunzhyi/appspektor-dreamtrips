@@ -22,14 +22,13 @@
          >
 
       <TextView
-            android:id="@+id/tv_new_card_power_on_label"
+            android:id="@+id/tv_power_on_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_large"
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_huge"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             tools:text="@string/wallet_new_card_power_on"
             />
 
@@ -56,8 +55,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible"
             >
 
          <Button

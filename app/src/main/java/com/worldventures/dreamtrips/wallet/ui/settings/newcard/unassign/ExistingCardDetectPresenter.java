@@ -11,12 +11,14 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDa
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.CardIdUtil;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.poweron.NewCardPowerOnPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPath;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import timber.log.Timber;
@@ -34,6 +36,21 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observerSmartCardConnectedStatus();
+      fetchSmartCardId();
+   }
+
+   private void fetchSmartCardId() {
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new ActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
+                  .onSuccess(command -> bindSmartCardId(command.getResult().smartCardId()))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+            );
+   }
+
+   private void bindSmartCardId(String smartCardId) {
+      getView().setSmartCardId(CardIdUtil.pushZeroToSmartCardId(smartCardId));
    }
 
    private void observerSmartCardConnectedStatus() {

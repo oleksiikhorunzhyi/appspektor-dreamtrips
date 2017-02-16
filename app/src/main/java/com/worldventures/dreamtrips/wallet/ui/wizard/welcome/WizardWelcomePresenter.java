@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.wallet.analytics.NewHeightsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.WelcomeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
@@ -41,7 +41,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new NewHeightsAction()));
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new WelcomeAction()));
    }
 
    @Override
@@ -91,7 +91,5 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
       void userPhoto(File file);
 
       void showAnimation();
-
    }
-
 }

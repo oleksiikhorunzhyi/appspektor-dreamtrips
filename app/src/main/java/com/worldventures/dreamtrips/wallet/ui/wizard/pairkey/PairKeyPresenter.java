@@ -8,7 +8,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.CardConnectedAction;
+import com.worldventures.dreamtrips.wallet.analytics.CheckFrontAction;
 import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
+import com.worldventures.dreamtrips.wallet.analytics.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -43,6 +46,8 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new CheckFrontAction()));
+
       observeCreateAndConnectSmartCard();
    }
 
@@ -64,6 +69,7 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
       if (checkBarcode(smartCard.smartCardId())) {
          navigator.withoutLast(new WizardEditProfilePath(smartCard));
          trackCardAdded(barcode);
+         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(smartCard, new CardConnectedAction()));
       }
    }
 
@@ -83,10 +89,10 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
    private void trackCardAdded(String cid) {
       if (barcodeOrigin == PairKeyPath.BarcodeOrigin.SCAN) {
          analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(ScidEnteredAction.forScan(cid)));
+               .send(new WalletAnalyticsCommand(new ScidScannedAction(cid)));
       } else if (barcodeOrigin == PairKeyPath.BarcodeOrigin.MANUAL) {
          analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(ScidEnteredAction.forManual(cid)));
+               .send(new WalletAnalyticsCommand(new ScidEnteredAction(cid)));
       }
    }
 

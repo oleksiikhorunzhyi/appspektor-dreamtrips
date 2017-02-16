@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Backgro
 import com.worldventures.dreamtrips.modules.background_uploading.service.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
+import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 
@@ -32,6 +33,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject SnappyRepository db;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject DtlLocationInteractor dtlLocationInteractor;
+   // Lazy dagger won't instantiate unless injected. Do not delete unused InitializerInteractor below!
+   @Inject InitializerInteractor initializerInteractor;
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;

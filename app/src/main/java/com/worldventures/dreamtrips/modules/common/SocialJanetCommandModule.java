@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeTo
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
@@ -120,6 +121,7 @@ import dagger.Module;
       GetCirclesCommand.class,
       GetCommentsCommand.class,
       LoginCommand.class,
+      InitializeCommand.class,
       UpdateUserCommand.class,
       GetPodcastsCommand.class,
       SuggestedPhotoCommand.class,

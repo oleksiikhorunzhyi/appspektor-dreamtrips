@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedE
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
-import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ import io.techery.janet.ReadActionPipe;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class FilterDataInteractor {
+public class FilterDataInteractor implements Initializable {
 
    private final AnalyticsInteractor analyticsInteractor;
    private final DtlLocationInteractor dtlLocationInteractor;
@@ -147,7 +147,8 @@ public class FilterDataInteractor {
             .map(FilterDataAction::getResult);
    }
 
-   private void init() {
+   @Override
+   public void init() {
       send(ImmutableFilterData.builder()
             .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
             .build());

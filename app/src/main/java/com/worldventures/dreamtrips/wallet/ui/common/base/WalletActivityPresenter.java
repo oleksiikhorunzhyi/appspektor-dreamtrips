@@ -30,8 +30,9 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
             .compose(bindView())
             .flatMap(command -> interactor.connectActionPipe()
                   .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
-            .subscribe(connectAction -> Timber.i("Success connection to smart card"), throwable -> {
-            });
+            .subscribe(connectAction -> {
+               Timber.i("Success connection to smart card");
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    @Override

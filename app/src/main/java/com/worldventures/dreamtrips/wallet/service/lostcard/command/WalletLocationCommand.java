@@ -41,7 +41,7 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
 
    private Observable<DetectGeoLocationCommand> observeLocationDetection() {
       return locationInteractor.detectGeoLocationPipe()
-                  .createObservableResult(new DetectGeoLocationCommand());
+            .createObservableResult(new DetectGeoLocationCommand());
    }
 
    private Observable<WalletLocation> appendCoordinates(ImmutableWalletLocation.Builder locationBuilder,
@@ -56,6 +56,5 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
       locationRepository.saveWalletLocations(walletLocations);
       return Observable.just(location);
    }
-
-
+   
 }

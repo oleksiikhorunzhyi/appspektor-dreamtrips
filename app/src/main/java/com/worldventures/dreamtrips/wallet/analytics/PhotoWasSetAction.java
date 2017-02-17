@@ -13,8 +13,15 @@ public class PhotoWasSetAction extends WalletAnalyticsAction {
    @Attribute("displayname") final String displayName;
    @Attribute("cardsetupstep5") final String cardSetupStep5 = "1";
 
-   public PhotoWasSetAction(String displayName, String cid) {
-      this.displayName = displayName;
+   public PhotoWasSetAction(String firstName, String middleName, String lastName, String cid) {
+      this.displayName = createDisplayName(firstName, middleName, lastName);
       this.cid = cid;
+   }
+
+   private String createDisplayName(String firstName, String middleName, String lastName) {
+      return
+            firstName +
+                  (middleName.isEmpty() ? "" : " ") + middleName
+                  + (lastName.isEmpty() ? "" : " ") + lastName;
    }
 }

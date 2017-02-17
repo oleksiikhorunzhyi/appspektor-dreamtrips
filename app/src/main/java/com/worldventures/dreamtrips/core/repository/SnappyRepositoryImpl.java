@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
@@ -450,6 +451,30 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    @Override
    public long getLastSuggestedPhotosSyncTime() {
       return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(0L);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // App version check
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveAppUpdateRequirement(UpdateRequirement updateRequirement) {
+      act(db -> db.put(UPDATE_REQUIREMENT, updateRequirement));
+   }
+
+   @Override
+   public UpdateRequirement getAppUpdateRequirement() {
+      return actWithResult(db -> db.getObject(UPDATE_REQUIREMENT, UpdateRequirement.class)).orNull();
+   }
+
+   @Override
+   public void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp) {
+      act(db -> db.putLong(UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP, appUpdateDialogShownTimestamp));
+   }
+
+   @Override
+   public long getAppUpdateOptionalDialogConfirmedTimestamp() {
+      return actWithResult(db -> db.getLong(UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP)).or(0L);
    }
 
    ///////////////////////////////////////////////////////////////////////////

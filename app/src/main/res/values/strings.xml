@@ -537,6 +537,12 @@
    <string name="podcasts_button_pause">Pause</string>
    <string name="podcasts_button_stop">Stop</string>
 
+   <string name="app_update_alert_title">Update Available</string>
+   <string name="app_update_alert_neutral_button">Not now</string>
+   <string name="app_update_alert_pos_button">Update</string>
+   <string name="app_update_alert_optional_update_message">Software updates are ready for the DreamTrips app. For an improved experience update before %s.</string>
+   <string name="app_update_alert_force_update_message">Software updates are ready for the DreamTrips app. The update will only take few minutes to install.</string>
+
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Say something, add #hashtags</string>
    <string name="add_text">Add text</string>

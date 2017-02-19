@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.GetReviewsMerchantsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
@@ -10,7 +11,6 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewsMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
 import javax.inject.Inject;
@@ -20,10 +20,11 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 
 @CommandAction
-public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
-      implements CachedAction<ReviewsMerchant>, InjectableAction, NewRelicTrackableAction {
+public class ReviewMerchantsAction extends CommandWithError<Reviews>
+      implements CachedAction<Reviews>, InjectableAction, NewRelicTrackableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;
@@ -48,12 +49,12 @@ public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
    }
 
    @Override
-   public ReviewsMerchant getCacheData() {
+   public Reviews getCacheData() {
       return getResult();
    }
 
    @Override
-   public void onRestore(ActionHolder holder, ReviewsMerchant cache) {
+   public void onRestore(ActionHolder holder, Reviews cache) {
 
    }
 
@@ -70,11 +71,12 @@ public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
    }
 
    @Override
-   protected void run(CommandCallback<ReviewsMerchant> callback) throws Throwable {
+   protected void run(CommandCallback<Reviews> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(GetReviewsMerchantsHttpAction.class, Schedulers.io())
             .createObservableResult(reviewsActionCreator.createAction(actionParams))
             .map(GetReviewsMerchantsHttpAction::reviews)
+            .map(reviews -> mapperyContext.convert(reviews, Reviews.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

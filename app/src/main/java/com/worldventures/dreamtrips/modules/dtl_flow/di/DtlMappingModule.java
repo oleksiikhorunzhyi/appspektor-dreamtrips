@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantMediaCo
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OfferConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationDayConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationHourConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -93,5 +95,17 @@ public class DtlMappingModule {
    @Singleton
    Converter provideLocationsConverter() {
       return new LocationsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReviewsConverter() {
+      return new ReviewsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReviewConverter() {
+      return new ReviewConverter();
    }
 }

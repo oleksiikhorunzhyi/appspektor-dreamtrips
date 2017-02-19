@@ -169,6 +169,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       setContacts();
       setLocation();
       setClicks();
+      setReviews();
    }
 
    @Override
@@ -260,6 +261,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (estimate != null) RxView.clicks(estimate)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> getPresenter().onEstimationClick());
+   }
+
+   private void setReviews() {
+      getPresenter().addNewComments(merchant);
    }
 
    @Override

@@ -64,10 +64,10 @@ public class ReviewObject implements Parcelable {
 
    private static ReviewObject getObject(Review review) {
       return new ReviewObject("null",
-            review.getUserNickName(),
-            review.getRating(),
-            review.getLastModeratedTimeUtc(),
-            review.getReviewText());
+            review.userNickName(),
+            review.rating(),
+            review.lastModeratedTimeUtc(),
+            review.reviewText());
    }
 
    public static ArrayList<ReviewObject> getReviewList(List<Review> reviewList) {
@@ -77,15 +77,6 @@ public class ReviewObject implements Parcelable {
       }
       return reviewObjectList;
    }
-
-   public static ArrayList<ReviewObject> getReviewListLimit(List<Review> reviewList) {
-      ArrayList<ReviewObject> reviewObjectList = new ArrayList<>();
-      for (int i = 0; i < 2; i++) {
-         reviewObjectList.add(getObject(reviewList.get(i)));
-      }
-      return reviewObjectList;
-   }
-
 
    @Override
    public int describeContents() { return 0; }

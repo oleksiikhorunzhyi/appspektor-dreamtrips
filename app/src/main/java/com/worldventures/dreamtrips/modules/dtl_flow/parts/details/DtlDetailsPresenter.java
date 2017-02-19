@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
-import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 
 public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlMerchantDetailsState> {
@@ -19,5 +19,5 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void onOfferClick(Offer offer);
    void onBackPressed();
    void showAllReviews();
-   void addNewComments(ReviewMerchantsAction action);
+   void addNewComments(Merchant merchant);
 }

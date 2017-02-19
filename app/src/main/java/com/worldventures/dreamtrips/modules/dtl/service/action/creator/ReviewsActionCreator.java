@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action.creator;
 
-import com.worldventures.dreamtrips.modules.dtl.service.action.GetReviewsMerchantsHttpAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
+import com.worldventures.dreamtrips.api.dtl.merchants.GetReviewsMerchantsHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ReviewsMerchantsActionParams;
 
 import javax.inject.Inject;

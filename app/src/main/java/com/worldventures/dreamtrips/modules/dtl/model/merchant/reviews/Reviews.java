@@ -1,21 +1,19 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews;
 
+
 import com.esotericsoftware.kryo.DefaultSerializer;
+import android.support.annotation.Nullable;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 import org.immutables.value.Value;
 import java.io.Serializable;
+import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
 public interface Reviews extends Serializable {
 
-   String lastModeratedTimeUtc();
-   String reviewId();
-   String brand();
-   String userNickName();
-   String userImage();
-   String reviewText();
-   Integer rating();
-   Boolean verified();
+   String total();
+   String ratingAverage();
+   @Nullable List<Review> reviews();
 }

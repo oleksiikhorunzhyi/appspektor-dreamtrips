@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      android:orientation="vertical">
+
+   <RatingBar
+         android:id="@+id/rbRating"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginTop="19dp"
+         android:numStars="5"
+         android:stepSize="1"
+         android:rating="0"
+         android:theme="@style/rating_bar_style" />
+
+   <EditText
+         android:id="@+id/etCommentReview"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginBottom="24dp"
+         android:layout_marginLeft="16dp"
+         android:layout_marginRight="16dp"
+         android:layout_marginTop="19dp"
+         android:background="@drawable/shape_edittext"
+         android:textSize="12sp"
+         android:textColor="@color/textCommentColorReview"
+         android:gravity="start"
+         android:inputType="textMultiLine"
+         android:hint="@string/hint.comment.review"
+         android:paddingLeft="10dp"
+         android:paddingTop="10dp"
+         android:paddingRight="10dp"
+         android:paddingBottom="10dp"/>
+
+</LinearLayout>

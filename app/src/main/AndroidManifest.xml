@@ -204,6 +204,12 @@
             />
 
       <activity
+            android:name="com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.activities.MerchantReviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+      <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
             android:theme="@style/ApptentiveTheme.Transparent"
             />

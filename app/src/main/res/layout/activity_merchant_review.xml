@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout android:id="@+id/containerReview"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+   <android.support.design.widget.AppBarLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:theme="@style/ToolBarStyle"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            style="@style/MyToolbar"
+            android:theme="@style/ToolbarStyle"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/toolbarColor"
+            >
+
+         <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:background="@color/toolbarColor"
+               >
+
+            <TextView
+                  android:id="@+id/tvOnPost"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:layout_centerVertical="true"
+                  android:layout_gravity="right"
+                  android:gravity="center"
+                  android:background="@color/toolbarColor"
+                  android:text="@string/menu_post"
+                  android:textColor="@android:color/white"
+                  android:textSize="15sp"
+                  />
+
+            <TextView
+                  android:id="@+id/textView8"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="top|center_horizontal"
+                  android:gravity="center"
+                  android:text="@string/titleReview"
+                  android:textColor="@android:color/white"
+                  android:textSize="20sp"
+                  android:background="@color/toolbarColor"
+                  app:layout_anchorGravity="top|center_horizontal"
+                  android:layout_marginStart="76dp"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentStart="true"
+                  />
+
+         </RelativeLayout>
+
+         <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:gravity="center"
+               android:text="@string/titleReview"
+               android:textColor="@android:color/white"
+               android:textSize="20sp"
+               />
+      </android.support.v7.widget.Toolbar>
+
+   </android.support.design.widget.AppBarLayout>
+
+   <include
+         android:id="@+id/include3"
+         layout="@layout/include_review_comment"
+         />
+
+</android.support.design.widget.CoordinatorLayout>

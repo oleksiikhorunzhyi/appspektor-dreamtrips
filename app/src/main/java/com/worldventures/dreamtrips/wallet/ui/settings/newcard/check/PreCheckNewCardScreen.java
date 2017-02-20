@@ -23,6 +23,7 @@ public class PreCheckNewCardScreen extends WalletLinearLayout<PreCheckNewCardPre
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.btn_next) Button nextBtn;
    @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkWidgetBluetooth;
+   @InjectView(R.id.check_widget_connection) WalletCheckWidget checkWidgetConnection;
 
    public PreCheckNewCardScreen(Context context) {
       super(context);
@@ -67,7 +68,7 @@ public class PreCheckNewCardScreen extends WalletLinearLayout<PreCheckNewCardPre
                .negativeText(R.string.cancel)
                .build();
       }
-      if(!addCardContinueDialog.isShowing()) addCardContinueDialog.show();
+      if (!addCardContinueDialog.isShowing()) addCardContinueDialog.show();
    }
 
    @Override
@@ -80,6 +81,16 @@ public class PreCheckNewCardScreen extends WalletLinearLayout<PreCheckNewCardPre
       checkWidgetBluetooth.setChecked(enabled);
    }
 
+   @Override
+   public void cardConnected(boolean connected) {
+      checkWidgetConnection.setChecked(connected);
+   }
+
+   @Override
+   public void setVisiblePowerSmartCardWidget(boolean visible) {
+      checkWidgetConnection.setVisibility(visible ? VISIBLE : GONE);
+   }
+
    @OnClick(R.id.btn_next)
    public void onClickNext() {
       presenter.prepareContinueAddCard();
@@ -87,7 +98,7 @@ public class PreCheckNewCardScreen extends WalletLinearLayout<PreCheckNewCardPre
 
    @Override
    protected void onDetachedFromWindow() {
-      if(addCardContinueDialog != null) addCardContinueDialog.dismiss();
+      if (addCardContinueDialog != null) addCardContinueDialog.dismiss();
       super.onDetachedFromWindow();
    }
 }

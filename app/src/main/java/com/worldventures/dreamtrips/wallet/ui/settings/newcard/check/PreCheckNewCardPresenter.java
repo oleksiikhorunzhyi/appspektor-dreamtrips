@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.newcard.check;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.util.Pair;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -12,9 +13,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPath;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import timber.log.Timber;
 
 public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPresenter.Screen, Parcelable> {
@@ -28,21 +32,31 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
    }
 
    @Override
-   public void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      observeCheckBluetooth();
+   public void attachView(Screen view) {
+      super.attachView(view);
+      observeChecks();
    }
 
-   private void observeCheckBluetooth() {
-      bluetoothService.observeEnablesState()
-            .startWith(bluetoothService.isEnable())
-            .compose(bindView())
-            .subscribe(this::bind);
+   private void observeChecks() {
+      Observable.combineLatest(
+            smartCardInteractor.activeSmartCardPipe()
+                  .observeSuccess()
+                  .throttleLast(300, TimeUnit.MILLISECONDS),
+            bluetoothService.observeEnablesState()
+                  .startWith(bluetoothService.isEnable()),
+            (smartCardCommand, bluetoothIsEnabled) -> new Pair<>(bluetoothIsEnabled, smartCardCommand.getResult()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(pair -> bind(pair.first, pair.second.connectionStatus()
+                  .isConnected()), throwable -> Timber.e(throwable, ""));
+
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
    }
 
-   private void bind(boolean enable) {
-      getView().bluetoothEnable(enable);
-      getView().nextButtonEnabled(enable);
+   private void bind(boolean bluetoothIsEnabled, boolean smartCardConnected) {
+      getView().bluetoothEnable(bluetoothIsEnabled);
+      getView().setVisiblePowerSmartCardWidget(bluetoothIsEnabled);
+      getView().cardConnected(smartCardConnected);
+      getView().nextButtonEnabled(bluetoothIsEnabled && smartCardConnected);
    }
 
    void prepareContinueAddCard() {
@@ -70,5 +84,9 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
       void nextButtonEnabled(boolean enable);
 
       void bluetoothEnable(boolean enabled);
+
+      void cardConnected(boolean enabled);
+
+      void setVisiblePowerSmartCardWidget(boolean visible);
    }
 }

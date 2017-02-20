@@ -34,15 +34,33 @@
             android:text="@string/wallet_pre_check_new_card"
             />
 
-      <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
-            android:id="@+id/check_widget_bluetooth"
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            app:icon="@drawable/ic_wallet_bluetooth"
-            app:title="@string/wallet_new_card_pre_installation_bluetooth"
-            />
+            android:orientation="vertical"
+            >
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+               android:id="@+id/check_widget_bluetooth"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:icon="@drawable/ic_wallet_bluetooth"
+               app:title="@string/wallet_new_card_pre_installation_bluetooth"
+               />
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+               android:id="@+id/check_widget_connection"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:visibility="gone"
+               app:checked="true"
+               app:icon="@drawable/ic_wallet_power"
+               app:title="@string/wallet_firmware_pre_installation_connection"
+               tools:visibility="visible"
+               />
+      </LinearLayout>
 
       <Button
             android:id="@+id/btn_next"

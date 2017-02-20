@@ -39,6 +39,7 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardInChargerEvent;
@@ -89,6 +90,7 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
+   private final ActionPipe<ConnectAction> connectionActionPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -149,6 +151,8 @@ public final class SmartCardInteractor {
 
       cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
+
+      connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -303,5 +307,9 @@ public final class SmartCardInteractor {
 
    public ActionPipe<CardInChargerEvent> cardInChargerEventPipe() {
       return cardInChargerEventPipe;
+   }
+
+   public ActionPipe<ConnectAction> connectionActionPipe() {
+      return connectionActionPipe;
    }
 }

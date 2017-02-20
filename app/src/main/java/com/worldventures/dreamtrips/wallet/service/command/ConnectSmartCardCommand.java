@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
@@ -19,8 +20,6 @@ import io.techery.janet.smartcard.model.ConnectionType;
 import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import timber.log.Timber;
-
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 
 @CommandAction
 public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction{
@@ -46,9 +45,9 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
       Observable<Object> observable = janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(activeSmartCard.smartCardId()))))
             .doOnNext(action -> {
-               SmartCard.ConnectionStatus status = CONNECTED;
+               ConnectionStatus status = ConnectionStatus.CONNECTED;
                if (action.type == ConnectionType.DFU) {
-                  status = SmartCard.ConnectionStatus.DFU;
+                  status = ConnectionStatus.DFU;
                }
                activeSmartCard = smartCardWithStatus(status);
             })
@@ -70,12 +69,12 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
             },
             throwable -> {
                Timber.e(throwable, "Error while connecting to smart card");
-               callback.onSuccess(smartCardWithStatus(SmartCard.ConnectionStatus.ERROR));
+               callback.onSuccess(smartCardWithStatus(ConnectionStatus.DISCONNECTED));
             }
       );
    }
 
-   private SmartCard smartCardWithStatus(SmartCard.ConnectionStatus connectionStatus) {
+   private SmartCard smartCardWithStatus(ConnectionStatus connectionStatus) {
       return ImmutableSmartCard.copyOf(activeSmartCard).withConnectionStatus(connectionStatus);
    }
 }

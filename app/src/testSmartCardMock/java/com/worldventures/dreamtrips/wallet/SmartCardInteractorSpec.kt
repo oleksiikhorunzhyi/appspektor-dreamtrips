@@ -75,7 +75,7 @@ class SmartCardInteractorSpec : BaseSpec({
                   .createObservable(ConnectSmartCardCommand(smartCard, false))
                   .subscribe(testSubscriber)
 
-            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === SmartCard.ConnectionStatus.CONNECTED })
+            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === ConnectionStatus.CONNECTED })
             verify(mockDb, times(1)).saveSmartCard(any())
          }
 
@@ -84,7 +84,7 @@ class SmartCardInteractorSpec : BaseSpec({
             val smartCard: SmartCard = mockSmartCard(activeSmartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
 
-            val connectionStatus = SmartCard.ConnectionStatus.DISCONNECTED
+            val connectionStatus = ConnectionStatus.DISCONNECTED
             val testSubscriber: TestSubscriber<ActionState<ActiveSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ActiveSmartCardCommand::class.java)
                   .createObservable(ActiveSmartCardCommand({
@@ -93,7 +93,7 @@ class SmartCardInteractorSpec : BaseSpec({
                   }))
                   .subscribe(testSubscriber)
 
-            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === SmartCard.ConnectionStatus.DISCONNECTED })
+            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === ConnectionStatus.DISCONNECTED })
             verify(mockDb, atLeast(1)).saveSmartCard(any())
          }
 
@@ -419,7 +419,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val mockedSmartCard: SmartCard = mock()
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
-         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)
+         whenever(mockedSmartCard.connectionStatus()).thenReturn(ConnectionStatus.DISCONNECTED)
          whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
          whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())

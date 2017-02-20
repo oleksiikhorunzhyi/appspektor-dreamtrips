@@ -11,7 +11,7 @@ import io.techery.janet.Command;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
+import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.CONNECTED;
 
 @Deprecated
 class FirmwareDelegate {

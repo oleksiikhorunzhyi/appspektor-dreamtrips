@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -26,10 +27,9 @@ import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DISCONNECTED;
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.ERROR;
+import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.CONNECTED;
+import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.DFU;
+import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.DISCONNECTED;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.add;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.edit;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.remove;
@@ -103,9 +103,8 @@ public class SmartCardSyncManager {
             .subscribe(this::smartCardConnected, throwable -> Timber.e(throwable, "Error with handling connection event")));
 
       subscriptions.add(interactor.disconnectPipe()
-            .observe()
-            .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
-            .map(state -> state.status == ActionState.Status.SUCCESS ? DISCONNECTED : ERROR)
+            .observeSuccess()
+            .map(action -> DISCONNECTED)
             .flatMap(connectionStatus -> interactor.activeSmartCardPipe()
                   .createObservableResult(new ActiveSmartCardCommand(smartCard ->
                         ImmutableSmartCard.copyOf(smartCard)
@@ -116,12 +115,12 @@ public class SmartCardSyncManager {
    }
 
    private void smartCardConnected(ConnectionType connectionType) {
-      SmartCard.ConnectionStatus status = CONNECTED;
+      ConnectionStatus status = CONNECTED;
       if (connectionType == ConnectionType.DFU) {
          status = DFU;
       }
 
-      SmartCard.ConnectionStatus finalStatus = status;
+      ConnectionStatus finalStatus = status;
       subscriptions.add(interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand(smartCard ->
                   ImmutableSmartCard.copyOf(smartCard)

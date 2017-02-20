@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -68,7 +68,7 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    }
 
    @Override
-   public void checkConnection(SmartCard.ConnectionStatus connectionStatus) {
+   public void checkConnection(ConnectionStatus connectionStatus) {
       if(!connectionStatus.isConnected()) presenter.showConnectionErrorScreen();
    }
 

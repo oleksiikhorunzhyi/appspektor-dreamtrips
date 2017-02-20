@@ -58,7 +58,7 @@ public class SmartCardWidget extends FrameLayout {
       batteryLevel.setText(String.format("%d%%", smartCard.batteryLevel()));
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
       bindLockStatus(smartCard.lock());
-      bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
+      bindConnectionStatus(smartCard.connectionStatus().isConnected());
       if (isFirmwareAvailable) {
          badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
          badgeView.show();

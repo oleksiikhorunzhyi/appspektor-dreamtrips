@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -152,7 +153,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
 
    public interface Screen extends WalletScreen {
 
-      void checkConnection(SmartCard.ConnectionStatus connectionStatus);
+      void checkConnection(ConnectionStatus connectionStatus);
 
       void showSwipeError();
 

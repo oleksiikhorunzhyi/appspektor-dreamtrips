@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -108,7 +109,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(connectionStatus -> {
-               if (connectionStatus == SmartCard.ConnectionStatus.DFU) {
+               if (connectionStatus == ConnectionStatus.DFU) {
                   File firmwareFile = getAppropriateFirmwareFile(getContext());
                   if (firmwareFile.exists()) {
                      getView().showFirmwareUpdateError();

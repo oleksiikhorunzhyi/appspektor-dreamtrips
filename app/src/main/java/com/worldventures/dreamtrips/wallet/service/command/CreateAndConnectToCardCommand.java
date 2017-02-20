@@ -44,7 +44,7 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
             .createObservableResult(new ConnectSmartCardCommand(createSmartCard(), waitForParing, stayAwake))
             .map(ConnectSmartCardCommand::getResult)
             .subscribe(smartCard -> {
-               if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
+               if (smartCard.connectionStatus().isConnected()) {
                   callback.onSuccess(smartCard);
                } else {
                   callback.onFail(new SmartCardConnectException("Could not connect to the device"));

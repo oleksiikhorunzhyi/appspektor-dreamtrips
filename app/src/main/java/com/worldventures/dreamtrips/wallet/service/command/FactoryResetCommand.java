@@ -29,9 +29,15 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
 
    private final PublishSubject<Void> resetCommandPublishSubject;
    private final boolean withEnterPin;
+   private final boolean withErasePaymentCardData;
 
    public FactoryResetCommand(boolean withEnterPin) {
+      this(withEnterPin, true);
+   }
+
+   public FactoryResetCommand(boolean withEnterPin, boolean withErasePaymentCardData) {
       this.withEnterPin = withEnterPin;
+      this.withErasePaymentCardData = withErasePaymentCardData;
       this.resetCommandPublishSubject = PublishSubject.create();
    }
 
@@ -67,7 +73,7 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
 
    private Observable<ResetSmartCardCommand> observeResetSmartCard(SmartCard smartCard) {
       return walletJanet.createPipe(ResetSmartCardCommand.class, Schedulers.io())
-            .createObservableResult(new ResetSmartCardCommand(smartCard));
+            .createObservableResult(new ResetSmartCardCommand(smartCard, withErasePaymentCardData));
    }
 
    private Observable<LockDeviceChangedEvent> observeUnlockCard() {

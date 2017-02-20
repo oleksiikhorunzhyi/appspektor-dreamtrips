@@ -22,7 +22,7 @@ import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDetectPresenter.Screen, ExistingCardDetectPresenter, ExistingCardDetectPath> implements ExistingCardDetectPresenter.Screen {
+public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDetectPresenter.Screen, ExistingCardDetectPresenter, ExistingCardDetectPath> implements ExistingCardDetectPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.tv_sc_id) TextView tvSmartCardId;
@@ -32,11 +32,11 @@ public class ExistingCardDetailScreen extends WalletLinearLayout<ExistingCardDet
    MaterialDialog confirmUnassignDialog = null;
    MaterialDialog dontHaveCardDialog = null;
 
-   public ExistingCardDetailScreen(Context context) {
+   public ExistingCardDetectScreen(Context context) {
       super(context);
    }
 
-   public ExistingCardDetailScreen(Context context, AttributeSet attrs) {
+   public ExistingCardDetectScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 

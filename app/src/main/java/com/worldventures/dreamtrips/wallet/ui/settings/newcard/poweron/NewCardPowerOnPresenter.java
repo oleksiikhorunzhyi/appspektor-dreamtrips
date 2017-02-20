@@ -57,7 +57,7 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
 
    void unassignCardOnBackend() {
       smartCardInteractor.wipeSmartCardDataCommandActionPipe()
-            .createObservable(new WipeSmartCardDataCommand())
+            .createObservable(new WipeSmartCardDataCommand(false))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
                   .onSuccess(activeSmartCardCommand -> navigator.single(new UnassignSuccessPath()))

@@ -43,11 +43,11 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
                   .onFail((factoryResetCommand, throwable) -> getView().showErrorEnterPinDialog())
                   .create());
 
-      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
+      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true, false));
    }
 
    void retryEnterPinAndUnassign() {
-      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
+      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true, false));
    }
 
    void cancelUnassign() {

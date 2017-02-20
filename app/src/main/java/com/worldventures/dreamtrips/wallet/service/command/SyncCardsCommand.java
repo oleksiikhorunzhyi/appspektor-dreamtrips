@@ -12,6 +12,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.techery.janet.ActionPipe;
+import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -28,6 +30,9 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    @Inject SmartCardInteractor interactor;
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
+
+   // TODO: 2/20/17 This value for calc of percentage progress
+   private int countOfCards = 0;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -54,11 +59,11 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                bundle.cacheDefaultCardId = cacheDefaultCardId;
                return bundle;
             }
-      ).flatMap(this::sync)
+      ).flatMap(syncBundle -> sync(syncBundle, callback))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<Void> sync(SyncBundle bundle) {
+   private Observable<Void> sync(SyncBundle bundle, CommandCallback callback) {
       List<Observable<Void>> operations = new ArrayList<>();
       //sync card list
 
@@ -68,7 +73,16 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             localCards.add(cacheCard);
          }
       }
-      operations.add(janet.createPipe(AddListRecordCommand.class)
+
+      countOfCards = localCards.size();
+
+      ActionPipe<AddListRecordCommand> addListRecordCommandObservable = janet.createPipe(AddListRecordCommand.class);
+
+      addListRecordCommandObservable.observe()
+            .filter(action -> action.status == ActionState.Status.PROGRESS)
+            .subscribe(action -> callback.onProgress(action.progress));
+
+      operations.add(addListRecordCommandObservable
             .createObservableResult(new AddListRecordCommand(localCards))
             .map(command -> {
                final List<Card> cards = new ArrayList<>(bundle.deviceCards);
@@ -95,6 +109,9 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             : Queryable.from(operations).fold((observable, observable2) -> observable.concatWith(observable2));
    }
 
+   public int getCountOfCards() {
+      return countOfCards;
+   }
 
    private static class SyncBundle {
       private List<Card> cacheCards;

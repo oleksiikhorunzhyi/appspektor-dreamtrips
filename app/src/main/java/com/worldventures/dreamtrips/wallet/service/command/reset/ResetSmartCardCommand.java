@@ -21,9 +21,15 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    private final SmartCard smartCard;
+   private final boolean withErasePaymentCardData;
 
    public ResetSmartCardCommand(SmartCard smartCard) {
+      this(smartCard, true);
+   }
+
+   public ResetSmartCardCommand(SmartCard smartCard, boolean withErasePaymentCardData) {
       this.smartCard = smartCard;
+      this.withErasePaymentCardData = withErasePaymentCardData;
    }
 
    @Override
@@ -43,7 +49,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    private Observable<WipeSmartCardDataCommand> wipeSmartCardData() {
       return walletJanet.createPipe(WipeSmartCardDataCommand.class)
-            .createObservableResult(new WipeSmartCardDataCommand());
+            .createObservableResult(new WipeSmartCardDataCommand(withErasePaymentCardData));
    }
 
    private Observable<EnableLockUnlockDeviceAction> disableAutoLock() {

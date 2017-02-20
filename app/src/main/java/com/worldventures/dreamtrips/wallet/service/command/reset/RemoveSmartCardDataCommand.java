@@ -21,6 +21,12 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    @Inject LostCardRepository lostCardRepository;
    @Inject SmartCardInteractor smartCardInteractor;
 
+   private final boolean withPaymentCards;
+
+   public RemoveSmartCardDataCommand(boolean withPaymentCards) {
+      this.withPaymentCards = withPaymentCards;
+   }
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
@@ -32,6 +38,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    private Observable<Void> removeCache() {
       return Observable.defer(() -> {
          try {
+            if(withPaymentCards) cardListStorage.deleteWalletCardList();
             snappyRepository.deleteWalletDefaultCardId();
             cardListStorage.deleteWalletCardList();
             snappyRepository.deleteSmartCardFirmware();

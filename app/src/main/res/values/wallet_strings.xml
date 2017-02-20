@@ -396,6 +396,7 @@
 
    <!-- Sync payment cards screen -->
    <string name="wallet_syncing_payment_cards">Syncing Payment Cards</string>
+   <string name="wallet_syncing_payment_cards_fail_msg">Can\'t sync card. Check your card is power on and press retry button.</string>
    <string name="wallet_syncing_payment_cards_count" formatted="false">Syncing payment card %d of %d</string>
 
    <!-- New card power on screen -->

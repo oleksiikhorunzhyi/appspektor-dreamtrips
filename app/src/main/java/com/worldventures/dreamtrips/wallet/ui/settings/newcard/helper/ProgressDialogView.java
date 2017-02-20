@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.dreamtrips.R;
 
 import io.techery.janet.operationsubscriber.view.ProgressView;
 
@@ -19,6 +20,7 @@ public class ProgressDialogView<T> implements ProgressView<T> {
    private void createDialog(MaterialDialog.Builder builder) {
       dialog = builder
             .progress(true, 0)
+            .content(R.string.loading)
             .build();
    }
 

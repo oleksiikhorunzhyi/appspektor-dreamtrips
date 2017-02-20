@@ -28,6 +28,12 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject @Named(JANET_API_LIB) Janet apiLibJanet;
 
+   private final boolean withPaymentCard;
+
+   public WipeSmartCardDataCommand(boolean withPaymentCard) {
+      this.withPaymentCard = withPaymentCard;
+   }
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       reset().subscribe(callback::onSuccess, callback::onFail);
@@ -65,12 +71,15 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    }
 
    private Observable<UnAssignUserAction> disassociateCardUser() {
-      return walletJanet.createPipe(UnAssignUserAction.class)
-            .createObservableResult(new UnAssignUserAction());
+      return walletJanet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand())
+            .map(command -> command.getResult().connectionStatus().isConnected())
+            .flatMap(connected -> connected ? walletJanet.createPipe(UnAssignUserAction.class)
+                  .createObservableResult(new UnAssignUserAction()) : Observable.just(null));
    }
 
    private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {
       return walletJanet.createPipe(RemoveSmartCardDataCommand.class)
-            .createObservableResult(new RemoveSmartCardDataCommand());
+            .createObservableResult(new RemoveSmartCardDataCommand(withPaymentCard));
    }
 }

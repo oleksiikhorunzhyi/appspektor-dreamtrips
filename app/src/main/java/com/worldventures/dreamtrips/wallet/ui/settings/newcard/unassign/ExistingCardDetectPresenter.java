@@ -97,11 +97,11 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
 
    void unassignCardOnBackend() {
       smartCardInteractor.wipeSmartCardDataCommandActionPipe()
-            .createObservable(new WipeSmartCardDataCommand())
+            .createObservable(new WipeSmartCardDataCommand(false))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
                   .onSuccess(activeSmartCardCommand -> navigator.single(new UnassignSuccessPath()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, "unassignCardOnBackend()"))
                   .create());
    }
 

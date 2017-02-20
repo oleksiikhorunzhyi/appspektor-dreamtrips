@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
@@ -137,7 +137,7 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var mockedDebitCard: BankCard
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
+         setOf(DefaultBankCardStorage(mockDb), SmartCardActionStorage(mockDb))
       }
 
       fun staticMockTextUtils() {

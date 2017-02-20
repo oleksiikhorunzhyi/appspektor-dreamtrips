@@ -10,11 +10,11 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
-public class SmartCardStorage implements ActionStorage<SmartCard> {
+public class SmartCardActionStorage implements ActionStorage<SmartCard> {
 
    private final SnappyRepository snappyRepository;
 
-   public SmartCardStorage(SnappyRepository snappyRepository) {
+   public SmartCardActionStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

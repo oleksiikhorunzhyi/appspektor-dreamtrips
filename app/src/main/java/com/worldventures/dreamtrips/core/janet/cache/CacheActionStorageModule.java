@@ -33,6 +33,13 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.DeviceStateActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
 import com.worldventures.dreamtrips.wallet.di.WalletActionStorageModule;
 
 import javax.inject.Singleton;
@@ -145,6 +152,42 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideFullMerchantStorage() {
       return new FullMerchantStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
+      return new WalletCardsDiskStorage(cardListStorage);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
+      return new DefaultBankCardStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
+      return new SmartCardActionStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideSmartCardDetailsStorage(SnappyRepository snappyRepository) {
+      return new SmartCardDetailsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTermsAndConditionsStorage(SnappyRepository snappyRepository) {
+      return new TermsAndConditionsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideDeviceStateActionStorage() {
+      return new DeviceStateActionStorage();
    }
 
    @Singleton

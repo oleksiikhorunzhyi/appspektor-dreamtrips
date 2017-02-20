@@ -51,6 +51,8 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
    public Observable<Boolean> observeLocationSettingState() {
       final RxLocationAdapter adapter = new RxLocationAdapter(context);
       return Observable.create(adapter)
+            .map(aVoid -> isEnabled())
+            .distinctUntilChanged()
             .doOnUnsubscribe(adapter::release);
    }
 
@@ -89,7 +91,7 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
             .setInterval(1000);
    }
 
-   private static class RxLocationAdapter implements Observable.OnSubscribe<Boolean> {
+   private static class RxLocationAdapter implements Observable.OnSubscribe<Void> {
       private final Context appContext;
       private BroadcastReceiver broadcastReceiver;
 
@@ -98,15 +100,14 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
       }
 
       @Override
-      public void call(Subscriber<? super Boolean> subscriber) {
+      public void call(Subscriber<? super Void> subscriber) {
          broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-               final int state = intent.getIntExtra(LocationManager.MODE_CHANGED_ACTION, Settings.Secure.LOCATION_MODE_OFF);
-               subscriber.onNext(Settings.Secure.LOCATION_MODE_OFF != state);
+               subscriber.onNext(null);
             }
          };
-         appContext.registerReceiver(broadcastReceiver, new IntentFilter(LocationManager.MODE_CHANGED_ACTION));
+         appContext.registerReceiver(broadcastReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
       }
 
       public void release() {

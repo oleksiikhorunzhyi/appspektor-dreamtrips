@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordina
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
@@ -42,6 +43,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    @Inject Navigator navigator;
    @Inject PermissionDispatcher permissionDispatcher;
    @Inject SmartCardLocationInteractor smartCardLocationInteractor;
+   @Inject WalletDetectLocationService locationService;
 
    private final LocationSettingsService locationSettingsService;
 
@@ -56,8 +58,16 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
       observeCheckingSwitcher();
       observeWalletLocationCommand();
+      observeEnableTrackingState();
+      observeLocationSettings();
 
       fetchEnableTrackingState();
+   }
+
+   private void observeLocationSettings() {
+      locationService.observeLocationSettingState()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(this::handleLocationSettingsStatus);
    }
 
    private void observeWalletLocationCommand() {
@@ -67,14 +77,26 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()));
    }
 
-   private void fetchEnableTrackingState() {
+   private void observeEnableTrackingState() {
       smartCardLocationInteractor.enabledTrackingPipe()
             .observeSuccess()
             .distinctUntilChanged(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> onTrackingStateFetched(command.getResult()));
+   }
 
+   private void fetchEnableTrackingState() {
       smartCardLocationInteractor.enabledTrackingPipe().send(CardTrackingStatusCommand.fetch());
+   }
+
+   private void handleLocationSettingsStatus(boolean isEnabled) {
+      if (!isEnabled) {
+         smartCardLocationInteractor.enabledTrackingPipe()
+               .createObservable(CardTrackingStatusCommand.fetch())
+               .compose(bindViewIoToMainComposer())
+               .subscribe(new ActionStateSubscriber<CardTrackingStatusCommand>()
+                     .onSuccess(command -> onTrackingStateFetched(command.getResult())));
+      }
    }
 
    private void onTrackingStateFetched(boolean state) {

@@ -59,7 +59,9 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   LocationTrackingManager trackingManager(SmartCardLocationInteractor locationInteractor, LostCardManager lostCardManager) {
-      return new LocationTrackingManager(locationInteractor, lostCardManager);
+   LocationTrackingManager trackingManager(SmartCardLocationInteractor locationInteractor,
+         WalletDetectLocationService locationService,
+         LostCardManager lostCardManager) {
+      return new LocationTrackingManager(locationInteractor, locationService, lostCardManager);
    }
 }

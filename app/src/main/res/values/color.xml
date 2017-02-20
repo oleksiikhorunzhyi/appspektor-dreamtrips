@@ -213,4 +213,8 @@
    <color name="color_item_review">#929292</color>
    <color name="color_item_review_gray">#4C5058</color>
 
+   <color name="toolbarColor">#005E92</color>
+   <color name="reviewTextColor">#7FADC7</color>
+   <color name="reviewBackground">#005E92</color>
+
 </resources>

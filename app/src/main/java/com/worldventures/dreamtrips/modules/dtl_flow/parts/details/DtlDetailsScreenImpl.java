@@ -47,6 +47,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.activities.MerchantReviewActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferNoReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
@@ -340,6 +341,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @OnClick(R.id.merchant_details_suggest_merchant)
    void suggestMerchantClick() {
       getPresenter().onMerchantClick();
+   }
+
+   @OnClick(R.id.btn_rate_and_review)
+   void onClickRateView() {
+      getActivity().startActivity(new Intent(getActivity(), MerchantReviewActivity.class));
    }
 
    @Override

@@ -2,11 +2,15 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableReview;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -53,6 +57,22 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
             .builder()
             .brandId(BRAND_ID)
             .productId(merchant.id())
+            .build()));
+
+      testAddReview();
+   }
+
+   private void testAddReview() {
+      ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
+      addReviewActionActionPipe.send(AddReviewAction.create(ImmutableAddReviewsActionParams.builder()
+            .brandId(BRAND_ID)
+            .productId(merchant.id())
+            .build(), ImmutableReviewParams.builder()
+            .userEmail("yair.carreno@gmail.com")
+            .userNickName("Yair Carreno")
+            .reviewText("A wonderful place to visit.")
+            .rating(String.valueOf(4))
+            .verified(false)
             .build()));
    }
 

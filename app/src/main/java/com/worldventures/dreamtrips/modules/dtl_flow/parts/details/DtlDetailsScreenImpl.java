@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -75,6 +76,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
    @InjectView(R.id.merchant_address) TextView merchantAddress;
    @InjectView(R.id.tv_read_all_review) TextView mTvReadAllReviews;
+   @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
+   @InjectView(R.id.text_view_rating) TextView textViewRating;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -170,6 +173,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       setLocation();
       setClicks();
       setReviews();
+      setRatingAndPerk();
    }
 
    @Override
@@ -265,6 +269,18 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private void setReviews() {
       getPresenter().addNewComments(merchant);
+   }
+
+   private void setRatingAndPerk() {
+
+      String stringTotal = merchant.reviews().total();
+
+      if (mRatingBar != null && merchant.reviews() != null
+            && stringTotal != null && !stringTotal.isEmpty()
+            && Integer.parseInt(merchant.reviews().total()) > 0) {
+         mRatingBar.setRating(Float.parseFloat(merchant.reviews().ratingAverage()));
+         textViewRating.setText(ViewUtils.getLabelReviews(getContext(), Integer.parseInt(merchant.reviews().total())));
+      }
    }
 
    @Override

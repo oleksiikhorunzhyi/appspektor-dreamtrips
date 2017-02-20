@@ -59,6 +59,12 @@ public class NxtHttpService extends ActionServiceWrapper {
 
    @Override
    protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
+      if (holder.action() instanceof MultifunctionNxtHttpAction) {
+         nxtAuthRetryPolicy.handle(this::createSession);
+
+         final MultifunctionNxtHttpAction action = (MultifunctionNxtHttpAction) holder.action();
+         action.body = ((ImmutableMultiRequestBody) action.body).withSessionToken(pleaseGetSessionToken());
+      }
       return false;
    }
 

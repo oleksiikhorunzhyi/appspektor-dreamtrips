@@ -5,7 +5,6 @@ import android.content.Context;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 
@@ -28,8 +27,8 @@ public class PersistentSnappyModule {
    @Singleton
    PersistentSnappyRepositoryImpl persistentSnappyRepositoryImpl(@ForApplication Context appContext, SnappyCrypter snappyCrypter,
          @Named(SNAPPY_STORAGE_EXECUTOR_SERVICE) ExecutorService executorService,
-         SessionHolder<UserSession> sessionHolder, SnappyRepository snappyRepository) {
-      return new PersistentSnappyRepositoryImpl(appContext, snappyCrypter, executorService, sessionHolder, snappyRepository);
+         SessionHolder<UserSession> sessionHolder) {
+      return new PersistentSnappyRepositoryImpl(appContext, snappyCrypter, executorService, sessionHolder);
    }
 
    @Provides

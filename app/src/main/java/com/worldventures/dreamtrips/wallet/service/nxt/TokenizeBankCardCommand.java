@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.nxt;
 
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableMultiRequestBody;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiRequestBody;
@@ -8,14 +9,25 @@ import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.TokenizedBankCard;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import io.techery.janet.Command;
+import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
+import static com.worldventures.dreamtrips.wallet.di.JanetNxtModule.JANET_NXT;
+
 @CommandAction
-public class TokenizeBankCardCommand extends BaseNxtCommand<NxtBankCard> {
+public class TokenizeBankCardCommand extends Command<NxtBankCard> implements InjectableAction {
+
+   @Inject @Named(JANET_NXT) Janet janet;
+
+   private final BankCard card;
 
    public TokenizeBankCardCommand(BankCard card) {
-      super(card);
+      this.card = card;
    }
 
    @Override
@@ -28,7 +40,6 @@ public class TokenizeBankCardCommand extends BaseNxtCommand<NxtBankCard> {
 
    private MultiRequestBody createRequestBody() {
       return ImmutableMultiRequestBody.builder()
-            .sessionToken(getSessionToken())
             .multiRequestElements(NxtBankCardHelper.getDataForTokenization(card))
             .build();
    }

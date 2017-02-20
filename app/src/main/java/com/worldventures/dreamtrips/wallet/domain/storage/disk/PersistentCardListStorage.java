@@ -7,23 +7,16 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.List;
 
-/**
- * Must use {@link PersistentCardListStorage} for v.1.18+
- */
-@Deprecated
-public class CardListStorage extends CryptedModelStorage {
+public class PersistentCardListStorage extends CryptedModelStorage {
 
    private final String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
 
-   public CardListStorage(SnappyStorage storage, SnappyCrypter snappyCrypter) {
+   public PersistentCardListStorage(SnappyStorage storage, SnappyCrypter snappyCrypter) {
       super(storage, snappyCrypter);
    }
 
    @Override
    public boolean migrate(DB db, int oldVersion) throws SnappydbException {
-      if (oldVersion == 0) {
-         db.del(WALLET_CARDS_LIST);
-      }
       return true;
    }
 
@@ -34,15 +27,15 @@ public class CardListStorage extends CryptedModelStorage {
 
    @Override
    public int getVersion() {
-      return 1;
+      return 0;
    }
 
    public void saveWalletCardsList(List<Card> items) {
-      putEncrypted(WALLET_CARDS_LIST, items);
+      put(WALLET_CARDS_LIST, items);
    }
 
    public List<Card> readWalletCardsList() {
-      return getEncryptedList(WALLET_CARDS_LIST);
+      return getList(WALLET_CARDS_LIST);
    }
 
    public void deleteWalletCardList() {

@@ -35,7 +35,7 @@ android {
    def versionMajor = 1
    def versionMinor = 17
    def versionPatch = 0
-   def versionBuild = 20 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 26 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -72,7 +72,7 @@ android {
          'NEWRELIC_API_KEY'     : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
          'UPLOADERY_API_URL'    : '"http://techery-dt-staging-uploadery.techery.io"',
          'SMART_CARD_SDK_CLIENT': '"nxtid"',
-         'NXT_API'              : '"https://api.nxt-security.com/api/services/evtservice"'
+         'NXT_API'              : '"https://demo.nxt-security.com/api/services/evtservice"'
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
@@ -98,6 +98,7 @@ android {
          'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
+         'NXT_API'          : '"https://api.nxt-security.com/api/services/evtservice"'
    ]
    def CONFIG_MAP_SMARTCARD_MOCK = [
          'SMART_CARD_SDK_CLIENT': '"mock"'

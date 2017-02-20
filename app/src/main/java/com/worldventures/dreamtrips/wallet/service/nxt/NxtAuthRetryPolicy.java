@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.nxt;
 
+import android.support.annotation.Nullable;
+
 import com.techery.spares.session.NxtSessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiErrorResponse;
@@ -19,7 +21,11 @@ public class NxtAuthRetryPolicy {
       this.nxtSessionHolder = nxtSessionHolder;
    }
 
-   public boolean handle(MultiErrorResponse apiError, Func0<NxtSession> createNxtSessionCall) {
+   public boolean handle(Func0<NxtSession> createNxtSessionCall) {
+      return handle(null, createNxtSessionCall);
+   }
+
+   public boolean handle(@Nullable MultiErrorResponse apiError, Func0<NxtSession> createNxtSessionCall) {
       if (shouldRetry(apiError)) {
          NxtSession nxtSession = createNxtSessionCall.call();
          if (nxtSession != null) {
@@ -34,12 +40,12 @@ public class NxtAuthRetryPolicy {
       nxtSessionHolder.put(nxtSession);
    }
 
-   private boolean shouldRetry(MultiErrorResponse apiError) {
-      return isLoginError(apiError) && isCredentialExists();
+   private boolean shouldRetry(@Nullable MultiErrorResponse apiError) {
+      return isLoginError(apiError) || !isCredentialExists();
    }
 
-   private boolean isLoginError(MultiErrorResponse apiError) {
-      return apiError != null && sessionErrorCodes.contains(apiError.getCode());
+   private boolean isLoginError(@Nullable MultiErrorResponse apiError) {
+      return apiError != null && sessionErrorCodes.contains(apiError.code());
    }
 
    private boolean isCredentialExists() {

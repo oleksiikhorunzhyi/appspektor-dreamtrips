@@ -11,12 +11,14 @@ public class NxtInteractor {
    private final ActionPipe<CreateNxtSessionCommand> createNxtSessionPipe;
 
    private final ActionPipe<TokenizeBankCardCommand> tokenizeBankCardPipe;
+   private final ActionPipe<TokenizeMultipleBankCardsCommand> tokenizeMultipleBankCardPipe;
    private final ActionPipe<DetokenizeBankCardCommand> detokenizeBankCardPipe;
 
    public NxtInteractor(Janet janet) {
       createNxtSessionPipe = janet.createPipe(CreateNxtSessionCommand.class, Schedulers.io());
 
       tokenizeBankCardPipe = janet.createPipe(TokenizeBankCardCommand.class, Schedulers.io());
+      tokenizeMultipleBankCardPipe = janet.createPipe(TokenizeMultipleBankCardsCommand.class, Schedulers.io());
       detokenizeBankCardPipe = janet.createPipe(DetokenizeBankCardCommand.class, Schedulers.io());
    }
 
@@ -26,6 +28,10 @@ public class NxtInteractor {
 
    public ActionPipe<TokenizeBankCardCommand> tokenizeBankCardPipe() {
       return tokenizeBankCardPipe;
+   }
+
+   public ActionPipe<TokenizeMultipleBankCardsCommand> tokenizeMultipleBankCardPipe() {
+      return tokenizeMultipleBankCardPipe;
    }
 
    public ActionPipe<DetokenizeBankCardCommand> detokenizeBankCardPipe() {

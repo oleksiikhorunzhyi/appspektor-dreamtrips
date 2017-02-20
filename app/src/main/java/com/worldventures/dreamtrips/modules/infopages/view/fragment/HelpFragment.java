@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
@@ -14,9 +12,9 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
-
-import javax.inject.Inject;
+import com.worldventures.dreamtrips.util.PageSelectionDetector;
 
 import butterknife.InjectView;
 
@@ -28,8 +26,6 @@ public class HelpFragment extends BaseFragment<HelpTabPresenter> {
 
    @InjectView(R.id.tabs) protected BadgedTabLayout tabs;
    @InjectView(R.id.pager) protected CustomViewPager pager;
-
-   @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
    protected BasePagerAdapter adapter;
 
@@ -49,12 +45,9 @@ public class HelpFragment extends BaseFragment<HelpTabPresenter> {
       pager.setAdapter(adapter);
       // Is used for block screen rotates
       pager.setOffscreenPageLimit(TERMS_OFFSCREEN_PAGES);
-      pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-         @Override
-         public void onPageSelected(int position) {
-            super.onPageSelected(position);
-            screenChangedEventDelegate.post(null);
-         }
+      PageSelectionDetector.listenPageSelection(pager, pageNumber -> {
+         SelectablePagerFragment fragment = (SelectablePagerFragment) adapter.getCurrentFragment();
+         fragment.onSelectedFromPager();
       });
 
       tabs.setupWithPagerBadged(pager);

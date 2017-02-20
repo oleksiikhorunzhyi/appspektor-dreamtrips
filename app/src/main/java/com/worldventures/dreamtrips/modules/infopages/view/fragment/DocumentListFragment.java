@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -24,16 +25,12 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 import java.util.List;
 
 import butterknife.InjectView;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 
 import static com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
 
 @Layout(R.layout.fragment_documents)
 public class DocumentListFragment extends BaseFragment<DocumentListPresenter> implements CellDelegate<Document>,
-      DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-   private PublishSubject<Boolean> visibilityStream = PublishSubject.create();
+      DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SelectablePagerFragment {
 
    @InjectView(R.id.emptyView) TextView emptyView;
 
@@ -50,7 +47,6 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    @Override
    public void onResume() {
       super.onResume();
-      visibilityStream.onNext(true);
    }
 
    @Override
@@ -114,14 +110,8 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    }
 
    @Override
-   public void setUserVisibleHint(boolean isVisibleToUser) {
-      super.setUserVisibleHint(isVisibleToUser);
-      visibilityStream.onNext(isVisibleToUser);
-   }
-
-   @Override
-   public Observable<Boolean> visibilityStream() {
-      return visibilityStream.asObservable();
+   public void onSelectedFromPager() {
+      getPresenter().onSelectedFromPager();
    }
 
    @Override

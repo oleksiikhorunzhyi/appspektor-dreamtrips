@@ -30,16 +30,16 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void onCreate(@Nullable Activity activity) {
-      Timber.v("onCreate");
+      Timber.v("onCreate enabled: " + BuildConfig.APPTENTIVE_ENABLED);
    }
 
    public void onStart(@Nullable Activity activity) {
-      Timber.v("onStart");
+      if (!BuildConfig.APPTENTIVE_ENABLED || checkNullAndWarn(activity)) return;
       this.activity = new WeakReference<>(activity);
    }
 
    public void onStop(@Nullable Activity activity) {
-      Timber.v("onStop");
+      if (!BuildConfig.APPTENTIVE_ENABLED || checkNullAndWarn(activity)) return;
    }
 
    @Override
@@ -54,7 +54,7 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void trackEvent(String category, String action, Map<String, Object> data) {
-      if (activity == null) return;
+      if (!BuildConfig.APPTENTIVE_ENABLED || activity == null) return;
 
       Activity activity = this.activity.get();
       if (activity != null) {

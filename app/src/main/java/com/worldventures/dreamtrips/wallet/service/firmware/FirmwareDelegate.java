@@ -11,8 +11,6 @@ import io.techery.janet.Command;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.CONNECTED;
-
 @Deprecated
 class FirmwareDelegate {
 
@@ -31,7 +29,8 @@ class FirmwareDelegate {
             .activeSmartCardPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
-            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED)
+            // TODO: 2/20/17  
+//            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED)
             .filter(smartCard -> smartCard.firmwareVersion() != null)
             .take(1);
       observable.subscribe(this::fetchFirmwareInfo, throwable -> Timber.e(throwable, "Error while loading smartcard"));

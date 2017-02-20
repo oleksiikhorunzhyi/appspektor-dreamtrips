@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.device;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 
@@ -29,10 +30,16 @@ public class DeviceStateCommand extends Command<SmartCardStatus> implements Cach
       return update(builder -> builder.lock(lock));
    }
 
-   private static DeviceStateCommand update(Func1<ImmutableSmartCardStatus.Builder, ImmutableSmartCardStatus.Builder> builderFunc) {
-      return new DeviceStateCommand(smartCardStatus ->
-            builderFunc.call(ImmutableSmartCardStatus.builder().from(smartCardStatus)).build()
-      );
+   public static DeviceStateCommand stealthMode(boolean stealthMode) {
+      return update(builder -> builder.stealthMode(stealthMode));
+   }
+
+   public static DeviceStateCommand connection(ConnectionStatus connectionStatus) {
+      return update(builder -> builder.connectionStatus(connectionStatus));
+   }
+
+   public static DeviceStateCommand battery(int batteryLevel) {
+      return update(builder -> builder.batteryLevel(batteryLevel));
    }
 
    @Override
@@ -40,10 +47,6 @@ public class DeviceStateCommand extends Command<SmartCardStatus> implements Cach
       if (cachedSmartCardStatus == null) cachedSmartCardStatus = createDefault();
       SmartCardStatus newSmartCardStatus = func.call(cachedSmartCardStatus);
       callback.onSuccess(newSmartCardStatus);
-   }
-
-   private SmartCardStatus createDefault() {
-      return ImmutableSmartCardStatus.builder().build();
    }
 
    @Override
@@ -63,5 +66,15 @@ public class DeviceStateCommand extends Command<SmartCardStatus> implements Cach
             .restoreFromCache(true)
             .sendAfterRestore(true)
             .build();
+   }
+
+   private SmartCardStatus createDefault() {
+      return ImmutableSmartCardStatus.builder().build();
+   }
+
+   private static DeviceStateCommand update(Func1<ImmutableSmartCardStatus.Builder, ImmutableSmartCardStatus.Builder> builderFunc) {
+      return new DeviceStateCommand(smartCardStatus ->
+            builderFunc.call(ImmutableSmartCardStatus.builder().from(smartCardStatus)).build()
+      );
    }
 }

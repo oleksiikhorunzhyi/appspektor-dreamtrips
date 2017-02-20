@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 
@@ -147,6 +148,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<ActiveSmartCardCommand> activeSmartCardPipe() {
       return activeSmartCardActionPipe;
+   }
+
+   public ActionPipe<DeviceStateCommand> deviceStatePipe() {
+      throw new RuntimeException("deviceStatePipe is not initialized");
    }
 
    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {

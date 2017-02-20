@@ -15,8 +15,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 
 import java.io.File;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -50,15 +52,15 @@ public class SmartCardWidget extends FrameLayout {
       setVisibility(INVISIBLE);
    }
 
-   public void bindCard(@NonNull SmartCard smartCard, boolean isFirmwareAvailable) {
+   public void bindCard(@NonNull SmartCard smartCard, @NonNull SmartCardStatus smartCardStatus, boolean isFirmwareAvailable) {
       File photoFile = smartCard.user().userPhoto().monochrome();
       if (photoFile != null) scAvatar.setImageURI(Uri.fromFile(photoFile));
       bankLabel.setText(smartCard.user().fullName());
-      batteryView.setLevel(smartCard.batteryLevel());
-      batteryLevel.setText(String.format("%d%%", smartCard.batteryLevel()));
+      batteryView.setLevel(smartCardStatus.batteryLevel());
+      batteryLevel.setText(String.format(Locale.US, "%d%%", smartCardStatus.batteryLevel()));
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
-      bindLockStatus(smartCard.lock());
-      bindConnectionStatus(smartCard.connectionStatus().isConnected());
+      bindLockStatus(smartCardStatus.lock());
+      bindConnectionStatus(smartCardStatus.connectionStatus().isConnected());
       if (isFirmwareAvailable) {
          badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
          badgeView.show();

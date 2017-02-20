@@ -9,10 +9,9 @@ import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -28,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
@@ -58,16 +56,15 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeConnectionStatus() {
-      smartCardInteractor.activeSmartCardPipe()
+      smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(Command::getResult)
-            .map(SmartCard::connectionStatus)
+            .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::checkConnection);
 
-      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
    private void observeCharger() {

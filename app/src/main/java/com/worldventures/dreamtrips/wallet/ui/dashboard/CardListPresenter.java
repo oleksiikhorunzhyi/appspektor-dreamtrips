@@ -103,9 +103,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(this::setSmartCard, throwable -> {
             });
 
-      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
-            .map(Command::getResult)
-            .map(SmartCard::connectionStatus)
+      smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
+            .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(connectionStatus -> {
@@ -188,7 +187,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       Observable.combineLatest(
             ReactiveNetwork.observeNetworkConnectivity(getContext()).take(1),
-            smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().take(1),
+            smartCardInteractor.deviceStatePipe().observeSuccessWithReplay().take(1),
             (connectivity, smartCardModifier) -> new Pair<>(connectivity.getState(), smartCardModifier.getResult()
                   .connectionStatus()))
             .compose(bindViewIoToMainComposer())

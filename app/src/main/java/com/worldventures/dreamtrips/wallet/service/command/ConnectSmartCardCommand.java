@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,67 +11,39 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
-import io.techery.janet.smartcard.model.ConnectionType;
 import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import timber.log.Timber;
 
 @CommandAction
-public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction{
+public class ConnectSmartCardCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
 
-   private SmartCard activeSmartCard;
+   private final String smartCardId;
    private final boolean waitForParing;
-   private final boolean stayAwake;
 
-   public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean waitForParing) {
-      this(activeSmartCard, waitForParing, false);
-   }
-
-   public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean waitForParing, boolean stayAwake) {
-      this.activeSmartCard = activeSmartCard;
+   public ConnectSmartCardCommand(String smartCardId, boolean waitForParing) {
+      this.smartCardId = smartCardId;
       this.waitForParing = waitForParing;
-      this.stayAwake = stayAwake;
    }
 
    @Override
-   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      Observable<Object> observable = janet.createPipe(ConnectAction.class)
-            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(activeSmartCard.smartCardId()))))
-            .doOnNext(action -> {
-               ConnectionStatus status = ConnectionStatus.CONNECTED;
-               if (action.type == ConnectionType.DFU) {
-                  status = ConnectionStatus.DFU;
-               }
-               activeSmartCard = smartCardWithStatus(status);
-            })
-            .flatMap(action -> {
-               if (stayAwake) {
-                  return janet.createPipe(EnableLockUnlockDeviceAction.class)
-                        .createObservableResult(new EnableLockUnlockDeviceAction(false))
-                        .onErrorResumeNext(Observable.just(null));
-               } else {
-                  return Observable.just(action);
-               }
-            });
+   @Deprecated
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      Observable<ConnectAction> observable = janet.createPipe(ConnectAction.class)
+            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(smartCardId))));
 
       if (waitForParing) {
          observable = observable.delay(20L, TimeUnit.SECONDS); //TODO: Hard code for waiting typing PIN
       }
-      observable.subscribe(value -> {
-               callback.onSuccess(activeSmartCard);
-            },
+
+      observable.subscribe(value -> callback.onSuccess(null),
             throwable -> {
                Timber.e(throwable, "Error while connecting to smart card");
-               callback.onSuccess(smartCardWithStatus(ConnectionStatus.DISCONNECTED));
+               callback.onSuccess(null);
             }
       );
-   }
-
-   private SmartCard smartCardWithStatus(ConnectionStatus connectionStatus) {
-      return ImmutableSmartCard.copyOf(activeSmartCard).withConnectionStatus(connectionStatus);
    }
 }

@@ -1,19 +1,17 @@
 package com.worldventures.dreamtrips.wallet.domain.entity;
 
-import android.support.annotation.Nullable;
-
 import org.immutables.value.Value;
 
 @Value.Immutable
 public abstract class SmartCardStatus {
-
-   @Value.Default
-   public String sdkVersion() {
-      return "";
-   }
-
-   @Nullable
-   public abstract SmartCardFirmware firmwareVersion();
+//
+//   @Value.Default
+//   public String sdkVersion() {
+//      return "";
+//   }
+//
+//   @Nullable
+//   public abstract SmartCardFirmware firmwareVersion();
 
    @Value.Default
    public ConnectionStatus connectionStatus() {
@@ -34,14 +32,14 @@ public abstract class SmartCardStatus {
    public int batteryLevel() {
       return 0;
    }
-
-   @Value.Default
-   public long disableCardDelay() {
-      return 0; //never
-   }
-
-   @Value.Default
-   public long clearFlyeDelay() {
-      return 0; //never
-   }
+//
+//   @Value.Default
+//   public long disableCardDelay() {
+//      return 0; //never
+//   }
+//
+//   @Value.Default
+//   public long clearFlyeDelay() {
+//      return 0; //never
+//   }
 }

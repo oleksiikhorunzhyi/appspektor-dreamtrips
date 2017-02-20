@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
-import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,21 +39,17 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+      final String smartCardId = String.valueOf(Long.valueOf(wizardMemoryStorage.getBarcode())); //remove zeros from start
+
       janet.createPipe(ConnectSmartCardCommand.class)
-            .createObservableResult(new ConnectSmartCardCommand(createSmartCard(), waitForParing, stayAwake))
+            .createObservableResult(new ConnectSmartCardCommand(smartCardId, waitForParing))
             .map(ConnectSmartCardCommand::getResult)
-            .subscribe(smartCard -> {
-               if (smartCard.connectionStatus().isConnected()) {
-                  callback.onSuccess(smartCard);
-               } else {
-                  callback.onFail(new SmartCardConnectException("Could not connect to the device"));
-               }
-            }, callback::onFail);
+            .subscribe(aVoid -> callback.onSuccess(createSmartCard(smartCardId)), callback::onFail);
    }
 
-   private SmartCard createSmartCard() {
+   private SmartCard createSmartCard(String scId) {
       return ImmutableSmartCard.builder()
-            .smartCardId(String.valueOf(Long.valueOf(wizardMemoryStorage.getBarcode()))) //remove zeros from start
+            .smartCardId(scId)
             .cardStatus(SmartCard.CardStatus.DRAFT)
             .deviceId(propertiesProvider.deviceId())
             .build();

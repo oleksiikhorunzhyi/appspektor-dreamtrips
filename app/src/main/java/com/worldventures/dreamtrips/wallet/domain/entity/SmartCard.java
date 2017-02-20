@@ -42,26 +42,8 @@ public abstract class SmartCard {
 
    @Deprecated
    @Value.Default
-   public ConnectionStatus connectionStatus() {
-      return ConnectionStatus.DISCONNECTED;
-   }
-
-   @Deprecated
-   @Value.Default
    public boolean stealthMode() {
       return false;
-   }
-
-   @Deprecated
-   @Value.Default
-   public boolean lock() {
-      return false;
-   }
-
-   @Deprecated
-   @Value.Default
-   public int batteryLevel() {
-      return 0;
    }
 
    @Deprecated

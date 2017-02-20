@@ -50,7 +50,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
             .createObservableResult(new GetAssociatedCardsHttpAction(propertiesProvider.deviceId()))
             .flatMap(action -> handleResponse(action.response()))
             .doOnNext(result -> janetWallet.createPipe(ConnectSmartCardCommand.class)
-                  .send(new ConnectSmartCardCommand(result.smartCard(), true, true))
+                  .send(new ConnectSmartCardCommand(result.smartCard().smartCardId(), true))
             )
             .subscribe(callback::onSuccess, callback::onFail);
    }

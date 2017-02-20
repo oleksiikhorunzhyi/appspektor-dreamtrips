@@ -88,12 +88,6 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
    }
 
    @Override
-   public void onStart() {
-      super.onStart();
-      TrackingHelper.viewBucketListScreen();
-   }
-
-   @Override
    public void onResume() {
       super.onResume();
       notifyPosition();

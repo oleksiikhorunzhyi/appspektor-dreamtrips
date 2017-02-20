@@ -287,11 +287,6 @@ public class TrackingHelper {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_LIKE, String.valueOf(id));
    }
 
-   public static void inviteShare(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
-   }
-
    public static void podcasts(String memberId) {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
       trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
@@ -406,7 +401,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_SHOW_BUCKETLIST = "show_bucketlist";
    public static final String ATTRIBUTE_NEW_POST = "new_post";
    public static final String ATTRIBUTE_SHOW_FRIENDS = "show_friends";
-   public static final String ATTRIBUTE_ADD_CONTACT = "add_contact";
    public static final String ATTRIBUTE_SHOW_ALL = "show_all";
    public static final String ATTRIBUTE_FACEBOOK = "facebook";
    public static final String ATTRIBUTE_TWITTER = "twitter";
@@ -415,7 +409,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
    public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
    public static final String ATTRIBUTE_TRIP_SEARCH = "tripsearch";
-   public static final String ATTRIBUTE_NUMBER_OF_UPLOADED_PHOTOS = "uploadamt";
 
    // ---------------- Messenger actions
    public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
@@ -617,12 +610,6 @@ public class TrackingHelper {
 
    public static void actionBookTravelScreen(String eventType) {
       sendSimpleAttributetoAdobeTracker(ACTION_BOOK_TRAVEL, eventType);
-   }
-
-   // ---------------- Trip Images
-
-   public static void viewTripImagesScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_TRIP_IMAGES, ATTRIBUTE_LIST);
    }
 
    public static void selectTripImagesTab(String tab) {

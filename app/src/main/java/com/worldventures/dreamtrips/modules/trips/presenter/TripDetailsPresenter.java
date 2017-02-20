@@ -99,7 +99,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    }
 
    public void actionBookIt() {
-      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
+      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), trip.getName());
       //
       String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
       view.openBookIt(url);

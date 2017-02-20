@@ -7,7 +7,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleBankCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -67,18 +69,23 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
+   /**
+    * Replace local data with data from the SmartCard.
+    * Add local-only data to the SmartCard.
+    * Sync default card Id.
+    */
    private Observable<Void> sync(SyncBundle bundle) {
       final List<Observable<Void>> operations = new ArrayList<>();
 
-      // SmartCard only cards -> tokenize -> save to persistent storage
-      Queryable.from(bundle.deviceCards)
-            .filter(deviceCard -> !bundle.localCards.contains(deviceCard))
-            .map(deviceOnlyCard -> ImmutableBankCard.copyOf(deviceOnlyCard)
-                  .withNumberLastFourDigits(BankCardHelper.obtainLastCardDigits(deviceOnlyCard.number())))
-            .forEachR(deviceOnlyCard -> operations.add(tokenizeBankCard(deviceOnlyCard).flatMap(tokenizedBankCard ->
-                  interactor.cardsListPipe()
-                        .createObservableResult(CardListCommand.add(tokenizedBankCard))
-                        .map(value -> null))));
+      // All SmartCard cards -> tokenize -> save (override) local storage
+      if (!bundle.deviceCards.isEmpty()) {
+         operations.add(tokenizeBankCards(Queryable.from(bundle.deviceCards)
+               .map(deviceOnlyCard -> ImmutableBankCard.copyOf(deviceOnlyCard).withNumberLastFourDigits(
+                     BankCardHelper.obtainLastCardDigits(deviceOnlyCard.number())))
+               .toList())
+               .map(this::handleTokenizeResult)
+               .flatMap(this::saveBankCards));
+      }
 
       // Local only cards -> detokenize -> push to SmartCard
       Queryable.from(bundle.localCards)
@@ -99,20 +106,50 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.localDefaultCardId))
                .map(value -> null));
       }
-      return operations.isEmpty() ? Observable.just(null)
-            : Queryable.from(operations).fold((observable, observable2) -> observable.concatWith(observable2));
+      return operations.isEmpty() ? Observable.just(null) : Queryable.from(operations).fold(Observable::concatWith);
    }
 
-   private Observable<BankCard> tokenizeBankCard(BankCard bankCard) {
-      return nxtInteractor.tokenizeBankCardPipe()
-            .createObservableResult(new TokenizeBankCardCommand(bankCard))
-            .map(tokenizeResult -> tokenizeResult.getResult().getTokenizedBankCard());
+   private Observable<List<NxtBankCard>> tokenizeBankCards(List<? extends BankCard> bankCards) {
+      return nxtInteractor.tokenizeMultipleBankCardPipe()
+            .createObservableResult(new TokenizeMultipleBankCardsCommand(bankCards))
+            .map(Command::getResult);
    }
 
    private Observable<BankCard> detokenizeBankCard(BankCard bankCard) {
       return nxtInteractor.detokenizeBankCardPipe()
             .createObservableResult(new DetokenizeBankCardCommand(bankCard))
             .map(detokenizeResult -> detokenizeResult.getResult().getDetokenizedBankCard());
+   }
+
+   /**
+    * Filter out all cards that were not tokenized properly.
+    * Send analytic events for any errors that occurred during tokenization.
+    *
+    * @param bankCards - NXT security response that can contain both properly tokenized values and errors.
+    * @return - cards that were tokenized without any errors.
+    */
+   private List<BankCard> handleTokenizeResult(List<NxtBankCard> bankCards) {
+      sendErrorAnalytics(Queryable.from(bankCards)
+            .where(bankCard -> !bankCard.getResponseErrors().isEmpty())
+            .toList());
+      return Queryable.from(bankCards)
+            .where(bankCard -> bankCard.getResponseErrors().isEmpty())
+            .map(NxtBankCard::getTokenizedBankCard)
+            .toList();
+   }
+
+   private Observable<Void> saveBankCards(List<BankCard> tokenizedBankCards) {
+      return interactor.cardsListPipe()
+            .createObservableResult(CardListCommand.replace(tokenizedBankCards))
+            .map(o -> null);
+   }
+
+   private void sendErrorAnalytics(List<NxtBankCard> errorTokenizeResults) {
+      // TODO: 2/24/17 When task is RFD
+      Queryable.from(errorTokenizeResults).map(NxtBankCard::getResponseErrors).forEachR(
+            errorResponses -> Queryable.from(errorResponses)
+                  .map(element -> String.format("[%s: %s]", element.code(), element.message()))
+                  .forEachR(errorMessage -> Timber.e("Tokenization error: %s", errorMessage)));
    }
 
    private static class SyncBundle {

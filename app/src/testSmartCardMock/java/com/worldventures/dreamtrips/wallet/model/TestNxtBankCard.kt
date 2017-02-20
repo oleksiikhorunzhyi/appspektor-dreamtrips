@@ -8,8 +8,10 @@ import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardResponse
 /**
  * Created by shliama on 2/13/17.
  */
-class TestNxtBankCard(bankCard: BankCard, response: MultiResponseBody = ImmutableMultiResponseBody.builder().build())
-   : NxtBankCardResponse(bankCard, response) {
+class TestNxtBankCard(bankCard: BankCard,
+                      response: List<MultiResponseBody> = mutableListOf(ImmutableMultiResponseBody.builder().build()),
+                      redIdPrefix: String? = null)
+   : NxtBankCardResponse(bankCard, response, redIdPrefix) {
 
    override fun getTokenizedBankCard(): BankCard = bankCard
 

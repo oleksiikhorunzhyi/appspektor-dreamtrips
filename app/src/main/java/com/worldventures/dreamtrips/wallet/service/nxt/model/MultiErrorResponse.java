@@ -2,17 +2,17 @@ package com.worldventures.dreamtrips.wallet.service.nxt.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MultiErrorResponse {
+import org.immutables.gson.Gson;
+import org.immutables.value.Value;
 
-   @SerializedName("Code") int code;
+@Gson.TypeAdapters
+@Value.Immutable
+public interface MultiErrorResponse {
 
-   @SerializedName("Message") String message;
+   @SerializedName("Code")
+   int code();
 
-   public int getCode() {
-      return code;
-   }
+   @SerializedName("Message")
+   String message();
 
-   public String getMessage() {
-      return message;
-   }
 }

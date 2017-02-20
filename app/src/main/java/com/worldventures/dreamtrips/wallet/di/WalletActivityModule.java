@@ -16,9 +16,12 @@ import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.Supporte
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.tokenize_migration.TokenizeRecordsMigrationPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
@@ -42,8 +45,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoCle
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPresenter;
-import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
@@ -112,6 +113,8 @@ import dagger.Provides;
             ConnectionErrorPresenter.class,
             StartFirmwareInstallPresenter.class,
             ForceUpdatePowerOnPresenter.class,
+            ForcePairKeyPresenter.class,
+            TokenizeRecordsMigrationPresenter.class
             ForcePairKeyPresenter.class,
             LostCardPresenter.class
       },

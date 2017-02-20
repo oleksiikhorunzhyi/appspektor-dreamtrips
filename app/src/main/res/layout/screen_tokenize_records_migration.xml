@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.records.tokenize_migration.TokenizeRecordsMigrationScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_tokenize_migration_header"
+         />
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginLeft="@dimen/wallet_common_screen_padding"
+         android:layout_marginRight="@dimen/wallet_common_screen_padding"
+         android:layout_marginTop="60dp"
+         android:gravity="center"
+         android:text="@string/wallet_tokenize_migration_text"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         />
+
+   <TextView
+         android:id="@+id/tokenize_migration_cards_count"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         tools:text="Syncing 3 cards"
+         />
+
+   <com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget
+         android:id="@+id/tokenize_migration_progress"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginTop="44dp"
+         android:src="@drawable/wallet_download_progress"
+         />
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginTop="60dp"
+         android:text="@string/wallet_long_operation_hint"
+         />
+
+</com.worldventures.dreamtrips.wallet.ui.records.tokenize_migration.TokenizeRecordsMigrationScreen>

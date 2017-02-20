@@ -6,16 +6,16 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 
 import java.util.List;
 
 public class WalletCardsDiskStorage implements ActionStorage<List<Card>> {
 
-   private final CardListStorage cardListStorage;
+   private final PersistentCardListStorage cardListStorage;
 
-   public WalletCardsDiskStorage(CardListStorage cardListStorage) {
+   public WalletCardsDiskStorage(PersistentCardListStorage cardListStorage) {
       this.cardListStorage = cardListStorage;
    }
 
@@ -33,4 +33,5 @@ public class WalletCardsDiskStorage implements ActionStorage<List<Card>> {
    public Class<? extends CachedAction> getActionClass() {
       return CardListCommand.class;
    }
+
 }

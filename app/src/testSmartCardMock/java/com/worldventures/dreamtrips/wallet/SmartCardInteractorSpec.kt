@@ -4,6 +4,8 @@ import android.content.Context
 import android.test.mock.MockContext
 import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.*
+import com.techery.spares.session.NxtSessionHolder
+import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
@@ -21,11 +23,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage
 import com.worldventures.dreamtrips.wallet.model.*
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
 import com.worldventures.dreamtrips.wallet.service.command.*
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor
 import com.worldventures.dreamtrips.wallet.util.FormatException
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -56,6 +59,8 @@ class SmartCardInteractorSpec : BaseSpec({
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
          smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor)
+         nxtInteractor = createNxtInteractor(janet)
+         nxtSessionHolder = mock()
 
          janet.connectToSmartCardSdk()
          smartCardSyncManager.connect()
@@ -219,25 +224,26 @@ class SmartCardInteractorSpec : BaseSpec({
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
+            whenever(nxtSessionHolder.get()).thenReturn(Optional.of(TestNxtSession("testNxtSessionToken")))
          }
 
-         /*xit("Card with valid data should be stored with default address and marked as default") {
+         it("Card with valid data should be stored with default address and marked as default") {
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(null)
             val subscriber = saveBankCardData(bankCard, setAsDefaultCard = true, setAsDefaultAddress = true)
             assertActionSuccess(subscriber, { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
             verify(mockDb, atLeast(1)).saveWalletDefaultCardId(any())
-         }*/
+         }
 
-         /*xit("Card with valid data should be stored without default address and not marked as default") {
+         it("Card with valid data should be stored without default address and not marked as default") {
             val defaultCardId = "9"
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
 
             val subscriber = saveBankCardData(bankCard, setAsDefaultCard = false, setAsDefaultAddress = false)
             assertActionSuccess(subscriber, { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
-         }*/
+         }
 
          it("Card with invalid data shouldn't be stored") {
             val subscriber = saveBankCardData(bankCard, cvv = "pp", setAsDefaultCard = true, setAsDefaultAddress = true)
@@ -255,8 +261,10 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
-      lateinit var cardStorage: CardListStorage
+      lateinit var cardStorage: PersistentCardListStorage
       lateinit var smartCardSyncManager: SmartCardSyncManager
+      lateinit var nxtInteractor: NxtInteractor
+      lateinit var nxtSessionHolder: NxtSessionHolder
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultBankCardStorage(mockDb), SmartCardActionStorage(mockDb))
@@ -264,15 +272,24 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun staticMockTextUtils() {
          PowerMockito.`mockStatic`(TextUtils::class.java)
+
          PowerMockito.`doAnswer`({ invocation ->
             val arg1: String = invocation.getArgumentAt(0, String::class.java)
             val arg2: String = invocation.getArgumentAt(1, String::class.java)
             arg1 == arg2
          }).`when`(TextUtils::class.java)
          TextUtils.`equals`(anyString(), anyString())
+
+         PowerMockito.`doAnswer`({ invocation ->
+            val arg1: String? = invocation.getArgumentAt(0, String::class.java)
+            arg1 == null || arg1.isEmpty()
+         }).`when`(TextUtils::class.java)
+         TextUtils.`isEmpty`(anyString())
       }
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+
+      fun createNxtInteractor(janet: Janet) = NxtInteractor(janet)
 
       fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor) = SmartCardSyncManager(janet, smartCardInteractor)
 
@@ -291,10 +308,12 @@ class SmartCardInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
-         daggerCommandActionService.registerProvider(CardListStorage::class.java) { cardStorage }
+         daggerCommandActionService.registerProvider(PersistentCardListStorage::class.java) { cardStorage }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
+         daggerCommandActionService.registerProvider(NxtInteractor::class.java, { nxtInteractor })
+         daggerCommandActionService.registerProvider(NxtSessionHolder::class.java, { nxtSessionHolder })
 
          return janet
       }
@@ -353,7 +372,8 @@ class SmartCardInteractorSpec : BaseSpec({
                .setIssuerInfo(issuerInfo)
                .setUseDefaultAddress(useDefaultAddress)
                .setSetAsDefaultAddress(setAsDefaultAddress)
-               .setSetAsDefaultCard(setAsDefaultCard).create();
+               .setSetAsDefaultCard(setAsDefaultCard)
+               .create()
 
          smartCardInteractor.saveCardDetailsDataPipe()
                .createObservable(cmd)
@@ -362,7 +382,11 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun mockHttpService(): MockHttpActionService {
-         return MockHttpActionService.Builder().build()
+         return MockHttpActionService.Builder()
+               .bind(MockHttpActionService.Response(200).body(TestMultiResponseBody()), { request ->
+                  request.url.contains("multifunction") && request.method.equals("post", true)
+               })
+               .build()
       }
 
       fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {

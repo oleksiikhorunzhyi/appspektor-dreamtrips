@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
 
 import io.techery.janet.Command;
@@ -12,16 +13,20 @@ import timber.log.Timber;
 public class LocationTrackingManager {
    private final LostCardManager lostCardManager;
    private final SmartCardLocationInteractor locationInteractor;
+   private final WalletDetectLocationService locationService;
    private final CompositeSubscription subscriptions;
 
-   public LocationTrackingManager(SmartCardLocationInteractor locationInteractor, LostCardManager lostCardManager) {
+   public LocationTrackingManager(SmartCardLocationInteractor locationInteractor,
+         WalletDetectLocationService locationService, LostCardManager lostCardManager) {
       this.locationInteractor = locationInteractor;
+      this.locationService = locationService;
       this.lostCardManager = lostCardManager;
       this.subscriptions = new CompositeSubscription();
    }
 
    public void track() {
       if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
+         observeLocationSettings();
          observeLocationTracking();
       }
       checkEnableTracking()
@@ -29,9 +34,17 @@ public class LocationTrackingManager {
    }
 
    private Observable<Boolean> checkEnableTracking() {
-      return locationInteractor.enabledTrackingPipe()
+      return Observable.zip(Observable.just(locationService.isEnabled()),
+            locationInteractor.enabledTrackingPipe()
             .createObservableResult(CardTrackingStatusCommand.fetch())
-            .map(Command::getResult);
+            .map(Command::getResult),
+            (locationSettingsEnabled, trackingStatusEnabled) -> locationSettingsEnabled && trackingStatusEnabled
+      );
+   }
+
+   private void observeLocationSettings() {
+      subscriptions.add(locationService.observeLocationSettingState()
+            .subscribe(this::handleTrackingStatus));
    }
 
    private void observeLocationTracking() {

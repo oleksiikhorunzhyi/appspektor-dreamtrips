@@ -245,6 +245,10 @@
 
          <include layout="@layout/read_all_rating_review"
                android:visibility="invisible"/>
+
+         <include
+               layout="@layout/rate_review_button"/>
+
       </LinearLayout>
    </android.support.v4.widget.NestedScrollView>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl>

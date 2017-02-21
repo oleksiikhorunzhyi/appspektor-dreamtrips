@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -67,6 +68,7 @@ public class ReviewAdapter
       private RatingBar mRating;
       private TextView mComment;
       private TextView mTvVerifiedReview;
+      private ImageView mIvVerifiedReview;
 
 
       public RecyclerViewHolder(View itemView) {
@@ -77,6 +79,7 @@ public class ReviewAdapter
          mComment = (TextView) itemView.findViewById(R.id.tvComment);
          mRating = (RatingBar) itemView.findViewById(R.id.rbRating);
          mTvVerifiedReview = (TextView) itemView.findViewById(R.id.tv_verified_buyer);
+         mIvVerifiedReview = (ImageView) itemView.findViewById(R.id.iv_verified_buyer);
       }
 
       public void bind(int position) {
@@ -99,8 +102,10 @@ public class ReviewAdapter
       private void setVerifiedReview(boolean isVerified) {
          if (isVerified){
             changeVisibility(mTvVerifiedReview, View.VISIBLE);
+            changeVisibility(mIvVerifiedReview, View.VISIBLE);
          } else {
             changeVisibility(mTvVerifiedReview, View.INVISIBLE);
+            changeVisibility(mIvVerifiedReview, View.INVISIBLE);
          }
       }
 

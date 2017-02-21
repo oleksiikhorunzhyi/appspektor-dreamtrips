@@ -105,6 +105,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @OnClick(R.id.item_last_location)
    void onLastLocationClick() {
+      presenter.openLostCardScreen();
    }
 
    @OnClick(R.id.item_disable_default_payment_card)

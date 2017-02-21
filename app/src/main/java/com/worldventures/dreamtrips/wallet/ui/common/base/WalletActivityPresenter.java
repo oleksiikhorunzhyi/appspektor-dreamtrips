@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 
 import javax.inject.Inject;
 
@@ -19,18 +20,21 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
    @Inject SmartCardInteractor interactor;
    @Inject SmartCardSyncManager smartCardSyncManager;
    @Inject WalletBluetoothService bluetoothService;
+   @Inject LocationTrackingManager trackingManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       smartCardSyncManager.connect();
-
+      trackingManager.track();
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .compose(bindView())
             .flatMap(command -> interactor.connectActionPipe()
                   .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
-            .subscribe(connectAction -> Timber.i("Success connection to smart card"), throwable -> {
+            .subscribe(connectAction -> {
+               Timber.i("Success connection to smart card");
+            }, throwable -> {
             });
    }
 
@@ -56,6 +60,7 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
    public void dropView() {
       super.dropView();
       interactor.disconnectPipe().send(new DisconnectAction());
+      trackingManager.untrack();
    }
 
    public interface View extends ActivityPresenter.View {

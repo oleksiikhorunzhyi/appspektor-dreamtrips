@@ -7,6 +7,7 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
@@ -41,6 +42,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndCondit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 
 import java.util.ArrayList;
@@ -374,6 +376,32 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    @Override
    public SimpleDeviceStorage getWalletDeviceStorage() {
       return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
+   }
+
+   @Override
+   public void saveWalletLocations(List<WalletLocation> walletLocations) {
+      if (walletLocations == null) walletLocations = new ArrayList<>();
+      putList(WALLET_SMART_CARD_LOCATION, walletLocations);
+   }
+
+   @Override
+   public List<WalletLocation> getWalletLocations() {
+      return readList(WALLET_SMART_CARD_LOCATION, WalletLocation.class);
+   }
+
+   @Override
+   public void deleteWalletLocations() {
+      act(db -> db.del(WALLET_SMART_CARD_LOCATION));
+   }
+
+   @Override
+   public void saveEnabledTracking(boolean enable) {
+      act(db -> db.putBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING, enable));
+   }
+
+   @Override
+   public boolean isEnableTracking() {
+      return actWithResult(db -> db.getBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING)).or(false);
    }
 
    ///////////////////////////////////////////////////////////////////////////

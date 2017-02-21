@@ -67,4 +67,44 @@ public class SmartCardConverterModule {
    Converter provideRecordToFinancialServiceConverter() {
       return new RecordFinancialServiceToFinancialServiceConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletLocationToSmartCardLocationConverter() {
+      return new WalletLocationToSmartCardLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideAndroidAddressToWalletAddressConverter() {
+      return new AndroidAddressToWalletAddressConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletCoordinatesToSmartCardCoordinatesConverter() {
+      return new WalletCoordinatesToSmartCardCoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletLocationTypeToSmartCardLocationTypeConverter() {
+      return new WalletLocationTypeToSmartCardLocationTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardLocationToWalletLocationConverter() {
+      return new SmartCardLocationToWalletLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardCoordinatesToWalletCoordinatesConverter() {
+      return new SmartCardCoordinatesToWalletCoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardLocationTypeToWalletdLocationTypeConverter() {
+      return new SmartCardLocationTypeToWalletLocationTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter providePlaceConverter() {
+      return new ApiPlaceToWalletPlaceConverter();
+   }
 }

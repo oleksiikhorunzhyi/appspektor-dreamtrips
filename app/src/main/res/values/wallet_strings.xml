@@ -103,7 +103,7 @@
    <string name="wallet_card_settings_about">About</string>
    <string name="wallet_card_settings_offline_mode">Offline mode</string>
    <string name="wallet_card_settings_low_battery_alert">Low battery alert</string>
-   <string name="wallet_card_settings_locate_sc">Locate smart card (Coming Soon)</string>
+   <string name="wallet_card_settings_locate_sc">Locate smart card</string>
    <string name="wallet_card_settings_view_location_connected">View location of the last time it was connected</string>
    <string name="wallet_card_settings_security">Security</string>
    <string name="wallet_card_settings_lock_card">Lock card</string>
@@ -358,5 +358,20 @@
    <string name="wallet_card_settings_cant_connected">Cannot connect to smart card</string>
    <string name="wallet_card_settings_message_cant_connected">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
    <string name="wallet_smart_card_enable_instruction">Press and hold chip on smart card to power on.</string>
+
+   <!-- Lost Card screen -->
+   <string name="wallet_settings_lost_card_title">Locate Smart Card</string>
+   <string name="wallet_lost_card_tracking_enable_label">Enable Tracking</string>
+   <string name="wallet_lost_card_last_connected">Last Connected</string>
+   <string name="wallet_lost_card_empty_view">Turn on <![CDATA[<b>Enable Tracking</b>]]> to gather location information about your Smart Card.</string>
+   <string name="wallet_lost_card_empty_last_location_msg">Location tracking is enabled and will begin the next time your Smart Card is connected.</string>
+   <string name="wallet_lost_card_no_permission">You can not use this feature without Location permissions.</string>
+   <string name="wallet_directions">Directions</string>
+   <string name="wallet_location_permission_message">Grant of Location permission, for use this feature. Because is it required, for correct work of Google Map.</string>
+   <string name="wallet_google_play_services_unsupported_text">DreamTrips relies on Google Play services, which is not supported by your device. Contact the manufacturer for assistance.</string>
+   <!--<string name="wallet_location_service_settings_title">Open location settings?</string>-->
+   <!--<string name="wallet_location_service_settings_message">For correct work of this feature, need to enable Location Services.</string>-->
+   <string name="wallet_disable_tracking_msg">Tracking your Smart Card helps you better protect your card from being lost or stolen. Are you sure you want to disable tracking?</string>
+   <string name="wallet_disable_tracking">Disable Tracking</string>
 
 </resources>

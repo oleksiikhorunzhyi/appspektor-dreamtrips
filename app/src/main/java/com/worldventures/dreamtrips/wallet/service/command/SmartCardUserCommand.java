@@ -31,6 +31,10 @@ public class SmartCardUserCommand extends Command<SmartCardUser> implements Cach
       return new SmartCardUserCommand(true, user -> smartCardUser);
    }
 
+   public static SmartCardUserCommand update(Func1<SmartCardUser, SmartCardUser> func) {
+      return new SmartCardUserCommand(true, func);
+   }
+
    @Override
    protected void run(CommandCallback<SmartCardUser> callback) throws Throwable {
       callback.onSuccess(func.call(cachedUser));

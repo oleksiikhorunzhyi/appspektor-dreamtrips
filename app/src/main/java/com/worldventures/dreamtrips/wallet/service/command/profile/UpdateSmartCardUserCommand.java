@@ -34,7 +34,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class UpdateSmartCardUserCommand extends Command<SmartCard> implements InjectableAction {
+public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implements InjectableAction {
 
    @Inject @Named(JANET_API_LIB) Janet janetApi;
    @Inject @Named(JANET_WALLET) Janet janet;
@@ -50,7 +50,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    }
 
    @Override
-   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+   protected void run(CommandCallback<SmartCardUser> callback) throws Throwable {
       validateData();
       if (!networkService.isAvailable()) throw new NetworkUnavailableException();
       updateProfileManager.attachChangedFields(changedFields);
@@ -72,9 +72,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
             changedFields.lastName());
    }
 
-   private Observable<SmartCard> uploadData(SmartCard smartCard, SmartCardUser user) {
+   private Observable<SmartCardUser> uploadData(SmartCard smartCard, SmartCardUser user) {
       return pushToSmartCard(smartCard, user)
-            .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard, updateCardUserData));
+            .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard.smartCardId(), updateCardUserData));
    }
 
    private Observable<UpdateCardUserData> pushToSmartCard(SmartCard smartCard, SmartCardUser user) {

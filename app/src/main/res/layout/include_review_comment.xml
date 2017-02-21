@@ -30,7 +30,7 @@
          android:textColor="@color/textCommentColorReview"
          android:gravity="start"
          android:inputType="textMultiLine"
-         android:hint="@string/hint.comment.review"
+         android:hint="@string/hint_comment_review"
          android:paddingLeft="10dp"
          android:paddingTop="10dp"
          android:paddingRight="10dp"

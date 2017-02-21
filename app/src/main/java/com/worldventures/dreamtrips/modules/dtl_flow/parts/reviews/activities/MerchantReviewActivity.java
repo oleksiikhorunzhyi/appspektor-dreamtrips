@@ -23,7 +23,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MerchantReviewActivity extends AppCompatActivity implements ReviewView {
 
-   CoordinatorLayout containerReview;
+   //CoordinatorLayout containerReview;
    RatingBar mRatingBar;
    EditText mComment;
    private Toolbar mToolbar;
@@ -40,7 +40,7 @@ public class MerchantReviewActivity extends AppCompatActivity implements ReviewV
       setContentView(R.layout.activity_merchant_review);
       ButterKnife.inject(this);
 
-      containerReview = (CoordinatorLayout) findViewById(R.id.containerReview);
+      //containerReview = (CoordinatorLayout) findViewById(R.id.containerReview);
       mRatingBar = (RatingBar) findViewById(R.id.rbRating);
       mComment = (EditText) findViewById(R.id.etCommentReview);
       mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -87,7 +87,7 @@ public class MerchantReviewActivity extends AppCompatActivity implements ReviewV
 
    @Override
    public void showSnackbarMessage(String message) {
-      Snackbar.make(containerReview, message, Snackbar.LENGTH_SHORT).show();
+      //Snackbar.make(containerReview, message, Snackbar.LENGTH_SHORT).show();
    }
 
    @Override

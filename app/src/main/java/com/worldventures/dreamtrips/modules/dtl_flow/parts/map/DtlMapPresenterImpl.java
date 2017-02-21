@@ -175,7 +175,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private void navigateToDetails(Merchant merchant) {
-      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null);
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, "");
       if (Flow.get(getContext()).getHistory().size() < 2) {
          Flow.get(getContext()).set(path);
       } else {

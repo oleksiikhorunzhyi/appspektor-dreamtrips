@@ -42,6 +42,10 @@ public abstract class SmartCard {
    }
 
    public enum CardStatus {
-      ACTIVE, IN_PROVISIONING
+      ACTIVE, IN_PROVISIONING;
+
+      public boolean isActive() {
+         return this == ACTIVE;
+      }
    }
 }

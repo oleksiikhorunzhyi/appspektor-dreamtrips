@@ -4,13 +4,12 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPath;
 
 import javax.inject.Inject;
 
@@ -25,11 +24,8 @@ public class SyncPaymentCardPresenter extends WalletPresenter<SyncPaymentCardPre
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private final SmartCard smartCard;
-
-   public SyncPaymentCardPresenter(Context context, Injector injector, SmartCard smartCard) {
+   public SyncPaymentCardPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
    }
 
    @Override
@@ -44,7 +40,7 @@ public class SyncPaymentCardPresenter extends WalletPresenter<SyncPaymentCardPre
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onStart(command -> getView().setProgressInPercent(0))
-                  .onSuccess(command -> navigator.single(new WizardAssignUserPath(smartCard), Flow.Direction.REPLACE))
+                  .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
                   .create());
 
       smartCardInteractor.cardSyncPipe()

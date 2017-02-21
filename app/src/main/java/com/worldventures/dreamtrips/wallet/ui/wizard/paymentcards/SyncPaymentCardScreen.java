@@ -53,7 +53,7 @@ public class SyncPaymentCardScreen extends WalletLinearLayout<SyncPaymentCardPre
 
    @Override
    public SyncPaymentCardPresenter createPresenter() {
-      return new SyncPaymentCardPresenter(getContext(), getInjector(), getPath().smartCard());
+      return new SyncPaymentCardPresenter(getContext(), getInjector());
    }
 
    @Override

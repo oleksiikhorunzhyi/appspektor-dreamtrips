@@ -410,4 +410,9 @@
    <string name="wallet_new_card_pre_installation_bluetooth">Enable Bluetooth on your phone</string>
    <string name="wallet_new_card_pre_install_confirm_message" formatted="false">SmartCard <![CDATA[<b>%s</b>]]> will now be unassigned and returned to it\'s original factory settings</string>
 
+   <!-- Complete after sync screen -->
+   <string name="wallet_setup_is_complete_title">Set Up Complete</string>
+   <string name="wallet_setup_is_completed">Set up is complete.</string>
+   <string name="wallet_card_ready_to_use">Your Smart Card is ready for use.</string>
+
 </resources>

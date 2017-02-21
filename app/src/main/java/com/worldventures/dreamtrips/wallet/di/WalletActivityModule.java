@@ -53,6 +53,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPres
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcards.SyncPaymentCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
@@ -126,7 +127,8 @@ import dagger.Provides;
             EnterPinUnassignPresenter.class,
             SyncPaymentCardPresenter.class,
             NewCardPowerOnPresenter.class,
-            PreCheckNewCardPresenter.class
+            PreCheckNewCardPresenter.class,
+            PaymentSyncFinishPresenter.class
       },
       complete = false, library = true
 )

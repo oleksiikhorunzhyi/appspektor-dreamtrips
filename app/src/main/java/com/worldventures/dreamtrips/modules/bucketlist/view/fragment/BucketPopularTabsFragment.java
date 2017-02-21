@@ -15,12 +15,15 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
+import com.worldventures.dreamtrips.util.PageSelectionDetector;
 
 import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_popular_bucket_tab)
-public class BucketPopularTabsFragment extends BaseFragmentWithArgs<BucketPopularTabsPresenter, BucketBundle> implements BucketPopularTabsPresenter.View {
+public class BucketPopularTabsFragment extends BaseFragmentWithArgs<BucketPopularTabsPresenter, BucketBundle>
+      implements BucketPopularTabsPresenter.View {
 
    @InjectView(R.id.tabs) protected BadgedTabLayout tabs;
    @InjectView(R.id.pager) protected CustomViewPager pager;
@@ -57,6 +60,11 @@ public class BucketPopularTabsFragment extends BaseFragmentWithArgs<BucketPopula
       tabs.setupWithPagerBadged(pager);
 
       if (type != null) pager.setCurrentItem(type.ordinal());
+
+      PageSelectionDetector.listenPageSelection(pager, pageNumber -> {
+         SelectablePagerFragment fragment = (SelectablePagerFragment) adapter.getCurrentFragment();
+         fragment.onSelectedFromPager();
+      });
    }
 
 }

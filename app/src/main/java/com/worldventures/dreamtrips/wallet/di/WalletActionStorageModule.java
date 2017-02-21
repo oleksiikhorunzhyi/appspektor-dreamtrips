@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.AddressWithPlacesStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
@@ -28,7 +28,7 @@ public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
    ActionStorage smartCardStorage(SnappyRepository snappyRepository) {
-      return new SmartCardStorage(snappyRepository);
+      return new SmartCardActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)

@@ -48,7 +48,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
       analyticsInteractor.walletAnalyticsCommandPipe()
             //// TODO: 2/20/17
-            .send(new WalletAnalyticsCommand(new SetPinAction(null)));
+            .send(new WalletAnalyticsCommand(new SetPinAction()));
    }
 
    @Override

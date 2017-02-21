@@ -52,20 +52,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .createObservableResult(SmartCardUserCommand.fetch())
             .map(Command::getResult)
             .flatMap(user -> uploadPhotoOnServer(smartCardId, user.userPhoto().original())
-                  .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl)))
-            .flatMap(sc ->
-                  walletJanet.createPipe(AssociateCardUserCommand.class, Schedulers.io())
-                        .createObservableResult(new AssociateCardUserCommand(wizardMemoryStorage.getBarcode(), createUserData(sc
-                              .user()
-                              .userPhoto()
-                              .photoUrl())))
-                        .map(command -> ImmutableSmartCard.builder() //// TODO: 2/15/17 SendFeedbackCommand use this fields
-                              .from(sc)
-                              .deviceAddress(command.getResult().bleAddress())
-                              .serialNumber(command.getResult().serialNumber())
-                              .build()
-                        )
-            );
+                  .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl)));
    }
 
    private Observable<String> uploadPhotoOnServer(String smartCardId, File file) {

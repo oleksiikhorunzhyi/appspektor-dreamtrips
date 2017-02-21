@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.CheckFrontAction;
+import com.worldventures.dreamtrips.wallet.analytics.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -89,10 +90,10 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
    private void trackCardAdded(String cid) {
       if (barcodeOrigin == PairKeyPath.BarcodeOrigin.SCAN) {
          analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(ScidEnteredAction.forScan(cid)));
+               .send(new WalletAnalyticsCommand(new ScidEnteredAction(cid)));
       } else if (barcodeOrigin == PairKeyPath.BarcodeOrigin.MANUAL) {
          analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(ScidEnteredAction.forManual(cid)));
+               .send(new WalletAnalyticsCommand(new ScidScannedAction(cid)));
       }
    }
 

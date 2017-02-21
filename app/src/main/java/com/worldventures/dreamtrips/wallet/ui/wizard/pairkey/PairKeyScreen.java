@@ -37,7 +37,7 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    @NonNull
    @Override
    public PairKeyPresenter createPresenter() {
-      return new PairKeyPresenter(getContext(), getInjector());
+      return new PairKeyPresenter(getContext(), getInjector(), getPath().getBarcode(), getPath().getBarcodeOrigin());
    }
 
    @Override

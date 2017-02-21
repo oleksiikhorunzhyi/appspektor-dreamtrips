@@ -96,20 +96,20 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    private void observeSmartCard() {
       smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
-            .throttleLast(1, TimeUnit.SECONDS)
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCard, throwable -> {Timber.e("", throwable);});
+            .subscribe(getView()::setSmartCard, throwable -> Timber.e("", throwable));
 
       smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .map(Command::getResult)
+            .throttleLast(300, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCardStatus, throwable -> {Timber.e("", throwable);});
+            .subscribe(getView()::setSmartCardStatus, throwable -> Timber.e("", throwable));
 
       smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCardUser, throwable -> {Timber.e("", throwable);});
+            .subscribe(getView()::setSmartCardUser, throwable -> Timber.e("", throwable));
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
    }
 

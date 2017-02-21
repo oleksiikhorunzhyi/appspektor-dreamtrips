@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
@@ -70,8 +71,8 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
       offlineModeSwitcherObservable = RxCompoundButton.checkedChanges(offlineModeSwitcher);
-      lockSwitcherObservable = RxCompoundButton.checkedChanges(lockSwitcher);
-      stealthModeSwitcherObservable = RxCompoundButton.checkedChanges(stealthModeSwitcher);
+      lockSwitcherObservable = RxView.clicks(lockSwitcher).map(aVoid -> lockSwitcher.isChecked());
+      stealthModeSwitcherObservable = RxView.clicks(stealthModeSwitcher).map(aVoid -> stealthModeSwitcher.isChecked());
       alertConnectionSwitcherObservable = RxCompoundButton.checkedChanges(alertConnectionSwitcher);
 
       testConnectionObservable = RxCompoundButton.checkedChanges(testConnectionSwitcher);

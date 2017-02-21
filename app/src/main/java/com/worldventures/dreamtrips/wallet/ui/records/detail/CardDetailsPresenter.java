@@ -145,7 +145,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private void observeDefaultCard() {
       getView().setAsDefaultPaymentCardCondition()
             .compose(bindView())
-            .filter(stateChanged -> stateChanged != CardUtils.equals(defaultBankCard, bankCard))
             .subscribe(this::onSetAsDefaultCard);
    }
 

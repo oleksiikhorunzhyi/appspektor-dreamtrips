@@ -57,15 +57,6 @@ public class EditBillingAddressScreen extends WalletLinearLayout<EditBillingAddr
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-
-      Observable.combineLatest(RxTextView.afterTextChangeEvents(etAddress1), RxTextView.afterTextChangeEvents(etCityField),
-            RxTextView.afterTextChangeEvents(etStateField), RxTextView.afterTextChangeEvents(etZipField),
-            (addressTextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent) ->
-                  Queryable.from(addressTextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent)
-                        .count(event -> event.editable().length() == 0) > 0)
-            .compose(RxLifecycle.bindView(this))
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(someRequiredFieldIsEmpty -> confirmButton.setEnabled(!someRequiredFieldIsEmpty));
    }
 
    @Override
@@ -85,6 +76,21 @@ public class EditBillingAddressScreen extends WalletLinearLayout<EditBillingAddr
 
       etZipField.setText(addressInfo.zip());
       etZipField.setSelection(etZipField.length());
+
+      Observable.combineLatest(RxTextView.afterTextChangeEvents(etAddress1), RxTextView.afterTextChangeEvents(etAddress2),
+            RxTextView.afterTextChangeEvents(etCityField), RxTextView.afterTextChangeEvents(etStateField),
+            RxTextView.afterTextChangeEvents(etZipField),
+            (address1TextChangeEvent, address2TextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent) ->
+                  Queryable.from(address1TextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent)
+                        .count(event -> event.editable().length() == 0) == 0 &&
+                        (!addressInfo.address1().equals(address1TextChangeEvent.editable().toString()) ||
+                              !addressInfo.address2().equals(address2TextChangeEvent.editable().toString()) ||
+                              !addressInfo.city().equals(cityTextChangeEvent.editable().toString()) ||
+                              !addressInfo.state().equals(stateTextChangeEvent.editable().toString()) ||
+                              !addressInfo.zip().equals(zipTextChangeEvent.editable().toString())))
+            .compose(RxLifecycle.bindView(this))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(requiredFieldsNotEmptyAndChanged -> confirmButton.setEnabled(requiredFieldsNotEmptyAndChanged));
    }
 
    @Override

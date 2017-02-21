@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.SetupCompleteAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
@@ -21,6 +24,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private final SmartCard smartCard;
 
@@ -49,7 +53,12 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> navigateToNextScreen())
+                  .onSuccess(command -> {
+                     analyticsInteractor.walletAnalyticsCommandPipe()
+                           .send(new WalletAnalyticsCommand(new SetupCompleteAction()));
+
+                     navigateToNextScreen();
+                  })
                   .create());
    }
 

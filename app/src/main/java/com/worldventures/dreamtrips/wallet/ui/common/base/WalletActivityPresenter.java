@@ -34,8 +34,7 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
                   .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
             .subscribe(connectAction -> {
                Timber.i("Success connection to smart card");
-            }, throwable -> {
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    @Override

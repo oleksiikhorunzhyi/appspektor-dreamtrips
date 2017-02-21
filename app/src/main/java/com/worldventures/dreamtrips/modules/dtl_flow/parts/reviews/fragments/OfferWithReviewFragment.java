@@ -58,7 +58,6 @@ public class OfferWithReviewFragment extends Fragment {
       tvReview = (TextView) v.findViewById(R.id.tv_Review);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
       lineSeparator = v.findViewById(R.id.line_separator);
-      btnRateAndReview = (RelativeLayout) v.findViewById(R.id.btn_rate_and_review);
 
       Bundle bundle = getArguments();
       mArrayInfo = new ArrayList<>();

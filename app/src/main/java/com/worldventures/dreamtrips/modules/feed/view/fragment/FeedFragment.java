@@ -75,6 +75,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
+   @Optional
    @InjectView(R.id.posting_header) View postingHeader;
 
    private BadgeImageView friendsBadge;
@@ -300,14 +301,15 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    private void processFeedItems(List<FeedItem> feedItems, List feedModels) {
       int feedItemsSize = feedItems == null ? 0 : feedItems.size();
-      AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) postingHeader.getLayoutParams();
       if (feedItemsSize == 0) {
          feedModels.add(new EmptyFeedModel());
-         params.setScrollFlags(0);
       } else {
          feedModels.addAll(feedItems);
-         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
-         postingHeader.setLayoutParams(params);
+         if (postingHeader != null) {
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) postingHeader.getLayoutParams();
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
+            postingHeader.setLayoutParams(params);
+         }
       }
    }
 

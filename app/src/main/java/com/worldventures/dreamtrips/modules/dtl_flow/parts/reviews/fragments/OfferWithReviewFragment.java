@@ -20,12 +20,12 @@ import java.util.ArrayList;
 
 public class OfferWithReviewFragment extends Fragment {
 
-   RecyclerView recyclerAdapter;
-   RatingBar ratingBar2;
-   TextView tvReview;
-   TextView tvReviewCount;
-   View lineSeparator;
-   RelativeLayout btnRateAndReview;
+   private RecyclerView recyclerAdapter;
+   private RatingBar ratingBar2;
+   private TextView tvReview;
+   private TextView tvReviewCount;
+   private View lineSeparator;
+   private RelativeLayout btnRateAndReview;
 
    private ReviewAdapter mAdapter;
 

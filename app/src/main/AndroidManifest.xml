@@ -214,12 +214,6 @@
             android:theme="@style/ApptentiveTheme.Transparent"
             />
 
-      <activity
-            android:name="com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.activities.MerchantReviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-
       <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true"

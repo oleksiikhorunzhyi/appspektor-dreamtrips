@@ -122,4 +122,15 @@
    <string name="sec_ago_text">%1$d sec ago</string>
    <string name="total_reviews_text"> READ ALL REVIEWS(%1$d)</string>
    <string name="to_be_first_reviews">Be the first to review</string>
+
+   <string name="btn_rate_and_review"><![CDATA[Rate & Review]]></string>
+
+   <string name="review.comment.minor.letter">Your review needs to be at least 140 characters long.</string>
+   <string name="review.comment.major.letter">Your review needs to be at least 2000 characters long.</string>
+   <string name="review.comment.discard.changes">Are you sure you want to delete this review?</string>
+   <string name="titleReview">Review</string>
+   <string name="hint.comment.review">How was the service, environment, food, etc?</string>
+   <string name="snack.review.success">Your review has been submitted and will be posted once it\'s approved.</string>
+   <string name="menu_post">POST</string>
+   <string name="tvVerifiedReview">Verified Buyer</string>
 </resources>

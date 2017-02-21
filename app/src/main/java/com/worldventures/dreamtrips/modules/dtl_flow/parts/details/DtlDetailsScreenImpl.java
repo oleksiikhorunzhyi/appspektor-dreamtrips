@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,16 +54,20 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
 
-public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath> implements DtlDetailsScreen, ActivityResultDelegate.ActivityResultListener {
+public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
+      implements DtlDetailsScreen, ActivityResultDelegate.ActivityResultListener {
 
    private final static float MERCHANT_MAP_ZOOM = 15f;
 
@@ -144,7 +149,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void setTextRateAndReviewButton(int size) {
-      mTvReadAllReviews.setText(String.format(getContext().getResources().getString(R.string.total_reviews_text), size));
+      mTvReadAllReviews.setText(String.format(getContext().getResources()
+            .getString(R.string.total_reviews_text), size));
    }
 
    @OnClick(R.id.tv_read_all_review)

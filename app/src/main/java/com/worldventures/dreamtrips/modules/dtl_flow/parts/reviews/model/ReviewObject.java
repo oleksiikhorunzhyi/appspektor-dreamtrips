@@ -13,13 +13,15 @@ public class ReviewObject implements Parcelable {
    private float ratingCommentUser;
    private String timeWrote;
    private String comment;
+   private boolean isVerifiedReview;
 
-   public ReviewObject(String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment) {
+   public ReviewObject(String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment, boolean isVerifiedReview) {
       this.urlImageUser = urlImageUser;
       this.nameUser = nameUser;
       this.ratingCommentUser = ratingCommentUser;
       this.timeWrote = timeWrote;
       this.comment = comment;
+      this.isVerifiedReview = isVerifiedReview;
    }
 
    public String getUrlImageUser() {
@@ -38,6 +40,14 @@ public class ReviewObject implements Parcelable {
       this.nameUser = nameUser;
    }
 
+   public float getRatingCommentUser() {
+      return ratingCommentUser;
+   }
+
+   public void setRatingCommentUser(float ratingCommentUser) {
+      this.ratingCommentUser = ratingCommentUser;
+   }
+
    public String getTimeWrote() {
       return timeWrote;
    }
@@ -54,20 +64,23 @@ public class ReviewObject implements Parcelable {
       this.comment = comment;
    }
 
-   public float getRatingCommentUser() {
-      return ratingCommentUser;
+   public boolean isVerifiedReview() {
+      return isVerifiedReview;
    }
 
-   public void setRatingCommentUser(float ratingCommentUser) {
-      this.ratingCommentUser = ratingCommentUser;
+   public void setVerifiedReview(boolean verifiedReview) {
+      isVerifiedReview = verifiedReview;
    }
+
+
 
    private static ReviewObject getObject(Review review) {
       return new ReviewObject("null",
             review.userNickName(),
             review.rating(),
             review.lastModeratedTimeUtc(),
-            review.reviewText());
+            review.reviewText(),
+            review.verified());
    }
 
    public static ArrayList<ReviewObject> getReviewList(List<Review> reviewList) {
@@ -88,6 +101,7 @@ public class ReviewObject implements Parcelable {
       dest.writeFloat(this.ratingCommentUser);
       dest.writeString(this.timeWrote);
       dest.writeString(this.comment);
+      dest.writeByte(this.isVerifiedReview ? (byte) 1 : (byte) 0);
    }
 
    protected ReviewObject(Parcel in) {
@@ -96,9 +110,10 @@ public class ReviewObject implements Parcelable {
       this.ratingCommentUser = in.readFloat();
       this.timeWrote = in.readString();
       this.comment = in.readString();
+      this.isVerifiedReview = in.readByte() != 0;
    }
 
-   public static final Parcelable.Creator<ReviewObject> CREATOR = new Parcelable.Creator<ReviewObject>() {
+   public static final Creator<ReviewObject> CREATOR = new Creator<ReviewObject>() {
       @Override
       public ReviewObject createFromParcel(Parcel source) {return new ReviewObject(source);}
 

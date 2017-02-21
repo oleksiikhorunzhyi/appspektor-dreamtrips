@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -37,7 +37,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.address_textview) TextView tvAddress;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
-   @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardCheckBox;
+   @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardSwitcher;
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
@@ -65,7 +65,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
+      setAsDefaultCardObservable = RxView.clicks(defaultPaymentCardSwitcher).map(aVoid -> defaultPaymentCardSwitcher.isChecked());
       cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable().toString()).skip(1);
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, true, false);
@@ -165,7 +165,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public void setDefaultCardCondition(boolean defaultCard) {
-      defaultPaymentCardCheckBox.setChecked(defaultCard);
+      defaultPaymentCardSwitcher.setChecked(defaultCard);
    }
 
    @Override

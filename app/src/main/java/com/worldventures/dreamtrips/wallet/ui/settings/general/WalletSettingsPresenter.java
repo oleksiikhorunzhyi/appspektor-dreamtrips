@@ -97,7 +97,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void observeSmartCardChanges() {
       smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
             .map(ActiveSmartCardCommand::getResult)
-            .throttleLast(200, TimeUnit.MILLISECONDS)
+            .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
             .subscribe(this::bindSmartCard);
 
@@ -142,12 +142,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void observeStealthModeController(Screen view) {
       view.stealthModeStatus()
             .compose(bindView())
-            .skip(1)
             .flatMap(stealthMode ->
                   smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
-                        .map(Command::getResult)
-                        .filter(smartCard -> smartCard.stealthMode() != stealthMode)
-                        .map(smartCard -> stealthMode)
+                        .map(activeSmartCardCommand -> stealthMode)
             )
             .subscribe(this::stealthModeChanged, throwable -> {});
    }
@@ -155,12 +152,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void observeLockController(Screen view) {
       view.lockStatus()
             .compose(bindView())
-            .skip(1)
             .flatMap(lockStatus -> smartCardInteractor.activeSmartCardPipe()
                   .createObservableResult(new ActiveSmartCardCommand())
-                  .map(Command::getResult)
-                  .filter(smartCard -> smartCard.lock() != lockStatus)
-                  .map(smartCard -> lockStatus)
+                  .map(activeSmartCardCommand -> lockStatus)
             )
             .subscribe(this::lockStatusChanged, throwable -> {});
    }

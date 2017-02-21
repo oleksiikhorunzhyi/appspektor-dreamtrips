@@ -24,8 +24,8 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
       return new CardListCommand(new AddOperationFunc(card));
    }
 
-   public static CardListCommand replace(Card card) {
-      return new CardListCommand(new EditOperationFunc(card));
+   public static CardListCommand replace(List<Card> cardList) {
+      return new CardListCommand(new ReplaceCardsOperationFunc(cardList));
    }
 
    public static CardListCommand edit(Card card) {
@@ -67,6 +67,22 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
       }
    }
 
+   private static final class ReplaceCardsOperationFunc implements Func1<List<Card>, List<Card>> {
+
+      private final List<Card> newCardList;
+
+      ReplaceCardsOperationFunc(List<Card> cards) {
+         this.newCardList = cards;
+      }
+
+      @Override
+      public List<Card> call(List<Card> cards) {
+         cards.clear();
+         cards.addAll(newCardList);
+         return cards;
+      }
+   }
+
    private static final class EditOperationFunc implements Func1<List<Card>, List<Card>> {
       private Card card;
 
@@ -76,7 +92,7 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
 
       @Override
       public List<Card> call(List<Card> cards) {
-         return !cards.isEmpty() ? Queryable.from(cards).map(this::remapCard).toList(): cards;
+         return !cards.isEmpty() ? Queryable.from(cards).map(this::remapCard).toList() : cards;
       }
 
       private Card remapCard(Card element) {

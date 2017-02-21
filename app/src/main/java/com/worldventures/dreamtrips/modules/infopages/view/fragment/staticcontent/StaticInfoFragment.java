@@ -62,6 +62,7 @@ import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<T, P> implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
+   public static final String BLANK_PAGE = "about:blank";
 
    @Inject protected StaticPageProvider provider;
    @Inject protected HeaderProvider headerProvider;
@@ -143,7 +144,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          @Override
          public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            onWebPageLoaded();
+            getPresenter().pageLoaded(url);
          }
 
          @Override
@@ -316,7 +317,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       if (savedState != null) webView.restoreState(savedState);
    }
 
-   protected void onWebPageLoaded() {
+   @Override
+   public void hideLoadingProgress() {
       isLoading = false;
       if (!(isDetached() || isRemoving() || refreshLayout == null)) {
          weakHandler.post(() -> {

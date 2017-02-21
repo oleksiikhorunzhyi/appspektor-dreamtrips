@@ -44,6 +44,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
       reload();
    }
 
+   public void pageLoaded(String url) {
+      view.hideLoadingProgress();
+   }
+
    public void setInErrorState(boolean inErrorState) {
       this.inErrorState = inErrorState;
    }
@@ -88,5 +92,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
       void setRefreshing(boolean refreshing);
 
       void showError(int code);
+
+      void hideLoadingProgress();
    }
 }

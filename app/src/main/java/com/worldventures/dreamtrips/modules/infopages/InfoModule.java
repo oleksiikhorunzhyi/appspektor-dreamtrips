@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresente
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.OtaPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.TermsTabPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -73,6 +74,7 @@ import dagger.Provides;
             DocumentListFragment.class,
             DocumentListPresenter.class,
             DocumentPresenter.class,
+            OtaPresenter.class,
             DocumentCell.class},
       complete = false,
       library = true)

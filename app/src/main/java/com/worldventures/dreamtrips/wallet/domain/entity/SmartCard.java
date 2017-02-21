@@ -15,18 +15,6 @@ public abstract class SmartCard {
    public abstract String deviceId();
 
    @Value.Default
-   @Deprecated
-   public String deviceAddress() {
-      return "";
-   }
-
-   @Deprecated
-   @Value.Default
-   public String serialNumber() {
-      return "";
-   }
-
-   @Value.Default
    public String sdkVersion() {
       return "";
    }

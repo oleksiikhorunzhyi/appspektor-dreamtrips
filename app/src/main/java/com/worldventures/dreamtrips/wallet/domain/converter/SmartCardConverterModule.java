@@ -24,11 +24,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideSmartCardInfoToSmartCard() {
-      return new SmartCardInfoToSmartCard();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideSmartCardInfoToSmartCardDetail() {
       return new SmartCardInfoToSmartCardDetail();
    }

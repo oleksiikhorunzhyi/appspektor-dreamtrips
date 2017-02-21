@@ -20,6 +20,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -48,6 +51,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private IgnoreFirstItemAdapter adapter;
+   private CardStackHeaderHolder cardStackHeaderHolder;
 
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
    private Dialog synchronizationDialog;
@@ -57,11 +61,12 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private Dialog scNonConnectionDialog;
 
    public CardListScreen(Context context) {
-      super(context);
+      this(context, null);
    }
 
    public CardListScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
    }
 
    @NonNull
@@ -105,14 +110,62 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
    }
 
-   @Override
-   public void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
+   private void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
       Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
+      int headerPosition = 0;
       if (header != null) {
-         adapter.remove(header);
+         headerPosition = adapter.getItems().indexOf(header);
+         adapter.replaceItem(headerPosition, cardStackHeaderHolder);
+         adapter.notifyItemChanged(headerPosition);
+      } else {
+         adapter.addItem(headerPosition, cardStackHeaderHolder);
+         adapter.notifyItemInserted(headerPosition);
       }
-      adapter.addItem(0, cardStackHeaderHolder);
-      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void setSmartCard(SmartCard smartCard) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .smartCard(smartCard)
+            .build();
+      notifySmartCardChanged(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setSmartCardStatus(SmartCardStatus smartCardStatus) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .smartCardStatus(smartCardStatus)
+            .build();
+      notifySmartCardChanged(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setSmartCardUser(SmartCardUser smartCardUser) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .smartCardUser(smartCardUser)
+            .build();
+      notifySmartCardChanged(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .firmwareUpdateAvailable(firmwareUpdateAvailable)
+            .build();
+      notifySmartCardChanged(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setCardsCount(int count) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .cardCount(count)
+            .build();
+      notifySmartCardChanged(cardStackHeaderHolder);
    }
 
    @Override
@@ -259,7 +312,9 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       });
 
       bankCardList.setAdapter(adapter);
-      bankCardList.setItemAnimator(new DefaultItemAnimator());
+      final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
+      listAnimator.setSupportsChangeAnimations(false);
+      bankCardList.setItemAnimator(listAnimator);
       bankCardList.addItemDecoration(getStickyHeadersItemDecoration(adapter));
       LinearLayoutManager layout = new LinearLayoutManager(getContext());
       layout.setAutoMeasureEnabled(true);
@@ -275,7 +330,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @OnClick(R.id.add_card_button)
    protected void addCardButtonClick() {
-      getPresenter().addCardRequired();
+      getPresenter().addCardRequired(cardStackHeaderHolder.cardCount());
    }
 
    @OnClick(R.id.firmware_available)

@@ -424,7 +424,6 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
          whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
          whenever(mockedSmartCard.serialNumber()).thenReturn("")
-         whenever(mockedSmartCard.user()).thenReturn(mock())
 
          return mockedSmartCard
       }

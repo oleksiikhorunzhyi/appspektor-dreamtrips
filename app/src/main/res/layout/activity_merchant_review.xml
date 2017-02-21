@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:id="@+id/containerReview"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewScreenImpl
+      android:id="@+id/root_reviews_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
@@ -12,20 +13,21 @@
          android:theme="@style/ToolBarStyle"
          >
 
+      <!-- style="@style/ToolBarStyle" -->
       <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+            android:id="@+id/toolbar_actionbar"
             style="@style/MyToolbar"
-            android:theme="@style/ToolbarStyle"
+            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/toolbarColor"
+            android:theme="@style/ToolbarStyle"
             >
 
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:orientation="horizontal"
                android:background="@color/toolbarColor"
+               android:orientation="horizontal"
                >
 
             <TextView
@@ -35,8 +37,8 @@
                   android:layout_alignParentEnd="true"
                   android:layout_centerVertical="true"
                   android:layout_gravity="right"
-                  android:gravity="center"
                   android:background="@color/toolbarColor"
+                  android:gravity="center"
                   android:text="@string/menu_post"
                   android:textColor="@android:color/white"
                   android:textSize="15sp"
@@ -46,16 +48,16 @@
                   android:id="@+id/textView8"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
+                  android:layout_alignParentStart="true"
+                  android:layout_alignParentTop="true"
                   android:layout_gravity="top|center_horizontal"
+                  android:layout_marginStart="90dp"
+                  android:background="@color/toolbarColor"
                   android:gravity="center"
                   android:text="@string/titleReview"
                   android:textColor="@android:color/white"
                   android:textSize="20sp"
-                  android:background="@color/toolbarColor"
                   app:layout_anchorGravity="top|center_horizontal"
-                  android:layout_marginStart="76dp"
-                  android:layout_alignParentTop="true"
-                  android:layout_alignParentStart="true"
                   />
 
          </RelativeLayout>
@@ -72,9 +74,69 @@
 
    </android.support.design.widget.AppBarLayout>
 
-   <include
-         android:id="@+id/include3"
-         layout="@layout/include_review_comment"
-         />
 
-</android.support.design.widget.CoordinatorLayout>
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <include
+            android:id="@+id/include3"
+            layout="@layout/include_review_comment"
+            />
+
+   </android.support.v4.widget.SwipeRefreshLayout>
+
+   <LinearLayout
+         android:id="@+id/emptyView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:gravity="center"
+         android:orientation="vertical"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:id="@+id/captionNoMerchants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/merchants_no_results"
+            android:textSize="@dimen/font_medium"
+            android:visibility="visible"
+            />
+   </LinearLayout>
+
+   <LinearLayout
+         android:id="@+id/errorView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp"
+            android:gravity="center"
+            android:text="@string/dtl_load_error"
+            android:textSize="@dimen/font_normal"
+            />
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_medium"
+            android:text="@string/dtl_load_merchant_error_caption"
+            android:textSize="@dimen/font_normal"
+            />
+
+   </LinearLayout>
+
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewScreenImpl>

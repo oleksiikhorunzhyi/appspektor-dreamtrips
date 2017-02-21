@@ -299,7 +299,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    public void navigateToDetails(Merchant merchant, String id) {
       List<String> expandIds = MerchantHelper.buildExpandedOffersIds(id);
-      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, expandIds);
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, expandIds, "");
       if (Flow.get(getContext()).getHistory().size() < 2) {
          Flow.get(getContext()).set(path);
       } else {

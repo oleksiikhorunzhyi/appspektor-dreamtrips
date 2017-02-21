@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -46,6 +47,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.activities.MerchantReviewActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferNoReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
@@ -59,6 +62,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import flow.Flow;
 import timber.log.Timber;
 
 public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath> implements DtlDetailsScreen, ActivityResultDelegate.ActivityResultListener {
@@ -108,6 +112,15 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       addNoCommentsAndReviews();
+
+      showMessage();
+   }
+
+   private void showMessage() {
+      String message = getPath().getMessage();
+      if (message != null && message.length() > 0){
+         Snackbar.make(merchantWrapper, message, Snackbar.LENGTH_SHORT).show();
+      }
    }
 
    @Override
@@ -324,7 +337,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.btn_rate_and_review)
    void onClickRateView() {
-      getActivity().startActivity(new Intent(getActivity(), MerchantReviewActivity.class));
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
    }
 
    @Override

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -17,12 +17,14 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcards.SyncPaymentCar
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
+   @Inject SmartCardInteractor smartCardInteractor;
 
    public WalletPinIsSetPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -40,12 +42,20 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
       navigator.goBack();
    }
 
-   public void activateSmartCard() {
-      navigateToNextScreen();
+   void activateSmartCard() {
+      smartCardInteractor.cardsListPipe()
+            .createObservableResult(new CardListCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> navigateToNextScreen(!command.getCacheData()
+                  .isEmpty()), throwable -> Timber.e(throwable, ""));
    }
 
-   private void navigateToNextScreen() {
-      navigator.go(new WizardAssignUserPath());
+   private void navigateToNextScreen(boolean needToOpenSyncPaymentsScreen) {
+      if (needToOpenSyncPaymentsScreen) {
+         navigator.go(new SyncPaymentCardPath());
+      } else {
+         navigator.go(new WizardAssignUserPath());
+      }
    }
 
    public interface Screen extends WalletScreen {

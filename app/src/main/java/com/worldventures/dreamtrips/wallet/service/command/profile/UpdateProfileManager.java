@@ -61,7 +61,8 @@ class UpdateProfileManager {
       //// TODO: 12/16/16 check existing getChangedFields before starting upload
       final ChangedFields changedFields = updateDataHolder.getChangedFields();
       final ImmutableSmartCardUser.Builder userBuilder = ImmutableSmartCardUser.builder()
-            .from(smartCard.user())
+//            .from(smartCard.user())
+            // TODO: 2/21/17
             .firstName(changedFields.firstName())
             .middleName(changedFields.middleName())
             .lastName(changedFields.lastName());
@@ -73,7 +74,8 @@ class UpdateProfileManager {
                .build());
       }
       return ImmutableSmartCard.builder().from(smartCard)
-            .user(userBuilder.build())
+//            .user(userBuilder.build())
+            // TODO: 2/21/17
             .build();
    }
 }

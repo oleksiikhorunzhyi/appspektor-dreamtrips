@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
@@ -35,7 +34,6 @@ import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUse
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.dreamtrips.wallet.service.impl.TestSystemPropertiesProvider
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -65,7 +63,6 @@ class WizardInteractorSpec : BaseSpec({
          wizardInteractor = createWizardInteractor(janet)
          smartCardInteractor = createSmartCardInteractor(janet)
 
-         wizardMemoryStorage = mockWizardMemoryStorage(MOCK_BARCODE)
          propertiesProvider = TestSystemPropertiesProvider()
 
          janet.connectToSmartCardSdk()
@@ -82,7 +79,7 @@ class WizardInteractorSpec : BaseSpec({
          it("connects to SmartCard") {
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand(false, false))
+                  .createObservable(CreateAndConnectToCardCommand("5", false))
                   .subscribe(testSubscriber)
 
 //            AssertUtil.assertActionSuccess(testSubscriber, {
@@ -130,7 +127,6 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var wizardInteractor: WizardInteractor
       lateinit var smartCardInteractor: SmartCardInteractor
 
-      lateinit var wizardMemoryStorage: WizardMemoryStorage
       lateinit var propertiesProvider: SystemPropertiesProvider
       lateinit var lostCardStorage: LostCardRepository
 
@@ -174,7 +170,6 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(WizardInteractor::class.java, { wizardInteractor })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
-         daggerCommandActionService.registerProvider(WizardMemoryStorage::class.java, { wizardMemoryStorage })
          daggerCommandActionService.registerProvider(SystemPropertiesProvider::class.java, { propertiesProvider })
          daggerCommandActionService.registerProvider(LostCardRepository::class.java, { lostCardStorage })
 
@@ -216,12 +211,6 @@ class WizardInteractorSpec : BaseSpec({
 
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1))).subscribe()
-      }
-
-      fun mockWizardMemoryStorage(cardId: String): WizardMemoryStorage {
-         val wizardMemoryStorage: WizardMemoryStorage = mock()
-         whenever(wizardMemoryStorage.barcode).thenReturn(cardId)
-         return wizardMemoryStorage
       }
 
       fun mockSmartCard(cardId: String): SmartCard {

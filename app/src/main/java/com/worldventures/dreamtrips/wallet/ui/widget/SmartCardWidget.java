@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 
 import java.io.File;
 import java.util.Locale;
@@ -52,10 +54,13 @@ public class SmartCardWidget extends FrameLayout {
       setVisibility(INVISIBLE);
    }
 
-   public void bindCard(@NonNull SmartCard smartCard, @NonNull SmartCardStatus smartCardStatus, boolean isFirmwareAvailable) {
-      File photoFile = smartCard.user().userPhoto().monochrome();
-      if (photoFile != null) scAvatar.setImageURI(Uri.fromFile(photoFile));
-      bankLabel.setText(smartCard.user().fullName());
+   public void bindCard(@NonNull SmartCard smartCard, @NonNull SmartCardStatus smartCardStatus, @Nullable SmartCardUser user, boolean isFirmwareAvailable) {
+      if (user != null) {
+         File photoFile = user.userPhoto().monochrome();
+         if (photoFile != null) scAvatar.setImageURI(Uri.fromFile(photoFile));
+         bankLabel.setText(user.fullName());
+      }
+
       batteryView.setLevel(smartCardStatus.batteryLevel());
       batteryLevel.setText(String.format(Locale.US, "%d%%", smartCardStatus.batteryLevel()));
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);

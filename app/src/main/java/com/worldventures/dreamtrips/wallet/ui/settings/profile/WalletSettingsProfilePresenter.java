@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -83,12 +82,12 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       observeUpdating();
       observeChanging();
 
-      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+      smartCardInteractor.smartCardUserPipe().createObservableResult(SmartCardUserCommand.fetch())
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
-               view.setPreviewPhoto(it.user().userPhoto().monochrome());
-               view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());
+               view.setPreviewPhoto(it.userPhoto().monochrome());
+               view.setUserName(it.firstName(), it.middleName(), it.lastName());
             }, throwable -> Timber.e(throwable, ""));
    }
 
@@ -213,9 +212,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       Screen view = getView();
       //noinspection all
       Observable.combineLatest(
-            smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
-                  .map(Command::getResult)
-                  .throttleLast(200, TimeUnit.MILLISECONDS),
+            smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
+                  .map(Command::getResult),
+
             view.firstNameObservable(),
             view.middleNameObservable(),
             view.lastNameObservable(),
@@ -223,11 +222,11 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
                   .observeSuccess()
                   .map(Command::getResult)
                   .startWith(Observable.just(null)),
-            (smartCard, firstName, middleName, lastName, newAvatar) -> {
-               handleFirstName(smartCard.user().firstName(), firstName);
-               handleMiddleName(smartCard.user().middleName(), middleName);
-               handleLastName(smartCard.user().lastName(), lastName);
-               handleAvatar(smartCard.user().userPhoto(), newAvatar);
+            (user, firstName, middleName, lastName, newAvatar) -> {
+               handleFirstName(user.firstName(), firstName);
+               handleMiddleName(user.middleName(), middleName);
+               handleLastName(user.lastName(), lastName);
+               handleAvatar(user.userPhoto(), newAvatar);
                return null;
             })
             .compose(bindView())

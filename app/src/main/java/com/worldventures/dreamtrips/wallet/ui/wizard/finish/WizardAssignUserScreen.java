@@ -43,7 +43,7 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
    @NonNull
    @Override
    public WizardAssignUserPresenter createPresenter() {
-      return new WizardAssignUserPresenter(getContext(), getInjector(), getPath().smartCard);
+      return new WizardAssignUserPresenter(getContext(), getInjector());
    }
 
    @Override

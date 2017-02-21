@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
+import android.support.v4.util.Pair;
+
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
@@ -12,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
@@ -52,10 +55,13 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
       if (!networkService.isAvailable()) throw new NetworkUnavailableException();
       updateProfileManager.attachChangedFields(changedFields);
 
-      janet.createPipe(ActiveSmartCardCommand.class)
-            .createObservableResult(new ActiveSmartCardCommand())
-            .map(Command::getResult)
-            .flatMap(this::uploadData)
+      Observable.zip(
+            janet.createPipe(ActiveSmartCardCommand.class)
+                  .createObservableResult(new ActiveSmartCardCommand()),
+            janet.createPipe(SmartCardUserCommand.class)
+                  .createObservableResult(SmartCardUserCommand.fetch()),
+            Pair::new)
+            .flatMap(pair -> uploadData(pair.first.getResult(), pair.second.getResult()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -66,18 +72,17 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
             changedFields.lastName());
    }
 
-   private Observable<SmartCard> uploadData(SmartCard smartCard) {
-      return pushToSmartCard(smartCard)
+   private Observable<SmartCard> uploadData(SmartCard smartCard, SmartCardUser user) {
+      return pushToSmartCard(smartCard, user)
             .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard, updateCardUserData));
    }
 
-   private Observable<UpdateCardUserData> pushToSmartCard(SmartCard smartCard) {
-      return updateNameOnSmartCard(smartCard)
+   private Observable<UpdateCardUserData> pushToSmartCard(SmartCard smartCard, SmartCardUser user) {
+      return updateNameOnSmartCard(smartCard.smartCardId(), user)
             .flatMap(userData -> uploadPhoto(smartCard, userData));
    }
 
-   private Observable<UpdateCardUserData> updateNameOnSmartCard(SmartCard smartCard) {
-      final SmartCardUser user = smartCard.user();
+   private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
       boolean needUpdate = false;
       final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder()
             .photoUrl(user.userPhoto().photoUrl()); // photoUrl is mandatory field for API
@@ -102,7 +107,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
                      .lastName(changedFields.lastName())
                      .isUserAssigned(true)
                      .memberId(userSessionHolder.get().get().getUser().getId())
-                     .barcodeId(Long.parseLong(smartCard.smartCardId()))
+                     .barcodeId(Long.parseLong(scId))
                      .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
                      .build()))
                .map(action -> userData);

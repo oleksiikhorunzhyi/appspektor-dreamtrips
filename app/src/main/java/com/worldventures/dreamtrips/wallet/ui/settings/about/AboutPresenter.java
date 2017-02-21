@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.settings.about;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.v4.util.Pair;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import timber.log.Timber;
 
 public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parcelable> {
@@ -42,10 +43,14 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
    }
 
    private void observeSmartCardFirmware() {
-      smartCardInteractor.activeSmartCardPipe()
-            .observeSuccessWithReplay()
+      Observable.combineLatest(
+            smartCardInteractor.activeSmartCardPipe()
+                  .observeSuccessWithReplay(),
+            smartCardInteractor.smartCardUserPipe()
+                  .observeSuccessWithReplay(),
+            (command1, command2) -> new Pair<>(command1.getResult(), command2.getResult()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bindSmartCard(command.getResult()),
+            .subscribe(pair -> bindSmartCard(pair.first.smartCardId(), pair.first.firmwareVersion(), pair.second),
                   throwable -> Timber.e(throwable, ""));
    }
 
@@ -56,9 +61,9 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
             .subscribe(command -> bindCardList(command.getResult()));
    }
 
-   private void bindSmartCard(SmartCard smartCard) {
+   private void bindSmartCard(String scId, SmartCardFirmware firmware, SmartCardUser smartCardUser) {
       //noinspection ConstantConditions
-      getView().onProvideSmartCard(smartCard.firmwareVersion(), smartCard.smartCardId(), smartCard.user());
+      getView().onProvideSmartCard(firmware, scId, smartCardUser);
    }
 
    private void bindCardList(List<Card> cardList) {

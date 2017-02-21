@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -32,7 +31,6 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Activity activity;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
 
    private int scidLength;
 
@@ -81,8 +79,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
             .subscribe(scid -> getView().buttonEnable(scid.length() == scidLength));
    }
 
-   public void checkBarcode(String barcode) {
-      wizardMemoryStorage.saveBarcode(barcode);
+   void checkBarcode(String barcode) {
       wizardInteractor.availabilitySmartCardCommandActionPipe().send(new AvailabilitySmartCardCommand(barcode));
    }
 

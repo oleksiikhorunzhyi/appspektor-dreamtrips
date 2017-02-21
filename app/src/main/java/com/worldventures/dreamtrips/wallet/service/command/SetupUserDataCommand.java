@@ -4,13 +4,11 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -32,67 +30,56 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction {
+public class SetupUserDataCommand extends Command<SmartCardUser> implements InjectableAction {
 
    @Inject Janet janetGeneric;
    @Inject @Named(JANET_WALLET) Janet janetWallet;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
    @Inject MapperyContext mappery;
 
    private final String firstName;
    private final String middleName;
    private final String lastName;
-   private final String barcode;
    private final SmartCardUserPhoto avatar;
 
-   private SmartCard smartCard;
-
-   /**
-    * barcode in constructor because
-    * SetupUserDataCommand#getCacheOptions() requires barcode from WizardMemoryStorage
-    * and getCacheOptions executes before inject
-    */
-   public SetupUserDataCommand(String firstName, String middleName, String lastName, SmartCardUserPhoto avatar, String barcode, SmartCard smartCard) {
+   public SetupUserDataCommand(String firstName, String middleName, String lastName, SmartCardUserPhoto avatar) {
       this.firstName = firstName;
       this.middleName = middleName;
       this.lastName = lastName;
       this.avatar = avatar;
-      this.barcode = barcode;
-      this.smartCard = smartCard;
    }
 
    @Override
-   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      User user = validateUserNameAndCreateUser();
-      janetWallet
+   protected void run(CommandCallback<SmartCardUser> callback) throws Throwable {
+      validateUserNameAndCreateUser()
+            .flatMap(user -> uploadOnSmartCard(user)
+                  .map(aVoid -> convertToSmartCardUser(user)))
+            .flatMap(user -> smartCardInteractor.smartCardUserPipe()
+                  .createObservableResult(SmartCardUserCommand.save(user)))
+            .map(Command::getResult)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   private SmartCardUser convertToSmartCardUser(User user) {
+      return ImmutableSmartCardUser.builder()
+            .from(mappery.convert(user, SmartCardUser.class))
+            .userPhoto(avatar)
+            .build();
+   }
+
+   private Observable<Void> uploadOnSmartCard(User user) {
+      return janetWallet
             .createPipe(AssignUserAction.class).createObservableResult(new AssignUserAction(user))
             .flatMap(action -> Observable
                   .fromCallable(this::getAvatarAsByteArray)
                   .flatMap(bytesArray -> janetWallet.createPipe(UpdateUserPhotoAction.class)
                         .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
-            )
-            .map(action -> attachAvatarToLocalSmartCard(user))
-            .subscribe(smartCard -> {
-               wizardMemoryStorage.saveUserPhoto(avatar.original());
-               wizardMemoryStorage.saveName(firstName, middleName, lastName);
-               callback.onSuccess(smartCard);
-            }, callback::onFail);
+            ).map(action -> null);
    }
 
-   private SmartCard attachAvatarToLocalSmartCard(User user) {
-      smartCard = ImmutableSmartCard.builder()
-            .from(smartCard)
-            .user(ImmutableSmartCardUser.builder()
-                  .from(mappery.convert(user, SmartCardUser.class))
-                  .userPhoto(avatar)
-                  .build())
-            .build();
-      return smartCard;
-   }
-
-   private User validateUserNameAndCreateUser() throws FormatException {
+   private Observable<User> validateUserNameAndCreateUser() throws FormatException {
       if (avatar == null) throw new MissedAvatarException("avatar == null");
       if (avatar.monochrome() == null || avatar.original() == null)
          throw new MissedAvatarException("Monochrome avatar file == null");
@@ -102,14 +89,16 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
       WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
 
-      return ImmutableUser.builder()
-            .firstName(firstName)
-            .lastName(lastName)
-            .middleName(middleName)
-            .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
-            .memberId(userSessionHolder.get().get().getUser().getId())
-            .barcodeId(Long.valueOf(wizardMemoryStorage.getBarcode()))
-            .build();
+      return smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new ActiveSmartCardCommand())
+            .map(command -> ImmutableUser.builder()
+                  .firstName(firstName)
+                  .lastName(lastName)
+                  .middleName(middleName)
+                  .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
+                  .memberId(userSessionHolder.get().get().getUser().getId())
+                  .barcodeId(Long.valueOf(command.getResult().smartCardId()))
+                  .build());
    }
 
 

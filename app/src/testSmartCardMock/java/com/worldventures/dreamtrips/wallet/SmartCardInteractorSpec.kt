@@ -68,7 +68,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          it("Connect to smart card") {
             val smartCard: SmartCard = mockSmartCard("4")
-            whenever(smartCard.cardStatus()).thenReturn(SmartCard.CardStatus.DRAFT)
+            whenever(smartCard.cardStatus()).thenReturn(SmartCard.CardStatus.IN_PROVISIONING)
 
             val testSubscriber: TestSubscriber<ActionState<ConnectSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ConnectSmartCardCommand::class.java)

@@ -31,7 +31,8 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
 
       if (smartCard != null && status != null) {
          FirmwareUpdateData firmwareUpdateData = model.firmware();
-         smartCardWidget.bindCard(smartCard, status, firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
+         // TODO: 2/21/17  
+         smartCardWidget.bindCard(smartCard, status, null, firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
       }
       smartCardWidget.bindCount(model.cardCount());
       smartCardWidget.setOnSettingsClickListener(v -> cellDelegate.onSettingsChosen());

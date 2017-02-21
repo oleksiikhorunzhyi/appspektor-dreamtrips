@@ -7,7 +7,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -22,18 +21,16 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Navigator navigator;
 
-   private final SmartCard smartCard;
-
-   public WalletPinIsSetPresenter(Context context, Injector injector, SmartCard smartCard) {
+   public WalletPinIsSetPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.user().fullName())));
+            // TODO: 2/20/17
+            .send(new WalletAnalyticsCommand(new PinWasSetAction(null)));
    }
 
    public void goBack() {
@@ -45,7 +42,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    private void navigateToNextScreen() {
-      navigator.go(new WizardAssignUserPath(smartCard));
+      navigator.go(new WizardAssignUserPath());
    }
 
    public interface Screen extends WalletScreen {

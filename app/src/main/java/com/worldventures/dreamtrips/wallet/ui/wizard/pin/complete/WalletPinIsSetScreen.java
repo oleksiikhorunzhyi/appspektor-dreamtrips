@@ -28,7 +28,7 @@ public class WalletPinIsSetScreen extends WalletLinearLayout<WalletPinIsSetPrese
    @NonNull
    @Override
    public WalletPinIsSetPresenter createPresenter() {
-      return new WalletPinIsSetPresenter(getContext(), getInjector(), getPath().smartCard);
+      return new WalletPinIsSetPresenter(getContext(), getInjector());
    }
 
    @Override

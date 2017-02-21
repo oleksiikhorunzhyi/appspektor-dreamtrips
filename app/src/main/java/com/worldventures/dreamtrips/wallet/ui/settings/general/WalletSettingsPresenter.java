@@ -237,8 +237,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    void resetPin() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            //TODO: 2/20/17  replace NULL
-            navigator.go(new WizardPinSetupPath(null, Action.RESET));
+            navigator.go(new WizardPinSetupPath(Action.RESET));
          } else {
             getView().showSCNonConnectionDialog();
          }

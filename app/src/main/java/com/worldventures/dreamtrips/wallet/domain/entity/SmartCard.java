@@ -9,26 +9,21 @@ public abstract class SmartCard {
 
    public abstract String smartCardId();
 
-   // TODO: 2/17/17 it's field is really need ?
    public abstract CardStatus cardStatus();
-
-   @Value.Default
-   public String deviceAddress() {
-      return "";
-   }
 
    @Nullable
    public abstract String deviceId();
 
    @Value.Default
-   public String serialNumber() {
+   @Deprecated
+   public String deviceAddress() {
       return "";
    }
 
+   @Deprecated
    @Value.Default
-   public SmartCardUser user() {
-      //todo: migration-hack in the past
-      return ImmutableSmartCardUser.builder().firstName("").build();
+   public String serialNumber() {
+      return "";
    }
 
    @Value.Default
@@ -59,6 +54,6 @@ public abstract class SmartCard {
    }
 
    public enum CardStatus {
-      ACTIVE, INACTIVE, DRAFT
+      ACTIVE, IN_PROVISIONING
    }
 }

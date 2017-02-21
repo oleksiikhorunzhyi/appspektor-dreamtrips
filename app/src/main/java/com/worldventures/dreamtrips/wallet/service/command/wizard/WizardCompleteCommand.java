@@ -5,14 +5,13 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 
 import java.io.File;
 
@@ -23,7 +22,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -31,25 +29,27 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class WizardCompleteCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
+   @Inject SmartCardInteractor interactor;
    @Inject SnappyRepository snappyRepository;
-   @Inject SystemPropertiesProvider propertiesProvider;
-
-   private final SmartCard smartCard;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      uploadUserDataAndAssociateSmartCard(smartCard)
-            .flatMap(sc -> walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
-                  .createObservableResult(
-                        new ActivateSmartCardCommand(ImmutableSmartCard.copyOf(sc)
-                              .withDeviceId(propertiesProvider.deviceId()))))
+      SmartCard smartCard = snappyRepository.getSmartCard();
+
+      uploadUserPhoto(smartCard.smartCardId())
+            .flatMap(user ->
+                  walletJanet.createPipe(AssociateCardUserCommand.class)
+                        .createObservableResult(new AssociateCardUserCommand(smartCard.smartCardId(), createRequestData(user)))
+                        .map(associateCardUserCommand -> user))
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 
-   private Observable<SmartCard> uploadUserDataAndAssociateSmartCard(SmartCard smartCard) {
-      return uploadPhoto(smartCard, wizardMemoryStorage.getUserPhoto())
-            .map(photoUrl -> updatePhoto(smartCard, photoUrl))
+   private Observable<SmartCardUser> uploadUserPhoto(String smartCardId) {
+      return interactor.smartCardUserPipe()
+            .createObservableResult(SmartCardUserCommand.fetch())
+            .map(Command::getResult)
+            .flatMap(user -> uploadPhotoOnServer(smartCardId, user.userPhoto().original())
+                  .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl)))
             .flatMap(sc ->
                   walletJanet.createPipe(AssociateCardUserCommand.class, Schedulers.io())
                         .createObservableResult(new AssociateCardUserCommand(wizardMemoryStorage.getBarcode(), createUserData(sc
@@ -65,31 +65,28 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             );
    }
 
-   private Observable<String> uploadPhoto(SmartCard smartCard, File file) {
-      return walletJanet.createPipe(SmartCardUploaderyCommand.class, Schedulers.io())
-            .createObservableResult(new SmartCardUploaderyCommand(smartCard.smartCardId(), file))
+   private Observable<String> uploadPhotoOnServer(String smartCardId, File file) {
+      return walletJanet.createPipe(SmartCardUploaderyCommand.class)
+            .createObservableResult(new SmartCardUploaderyCommand(smartCardId, file))
             .map(c -> c.getResult().response().uploaderyPhoto().location());
    }
 
-   private SmartCard updatePhoto(SmartCard smartCard, String photoUrl) {
-      return ImmutableSmartCard.builder().from(smartCard)
-            .user(ImmutableSmartCardUser.builder().from(smartCard.user())
-                  .userPhoto(ImmutableSmartCardUserPhoto.builder()
-                        .from(smartCard.user().userPhoto())
-                        .photoUrl(photoUrl)
-                        .build())
+   private SmartCardUser attachPhotoUrlToUser(SmartCardUser smartCardUser, String photoUrl) {
+      return ImmutableSmartCardUser.builder()
+            .from(smartCardUser)
+            .userPhoto(ImmutableSmartCardUserPhoto.builder()
+                  .from(smartCardUser.userPhoto())
+                  .photoUrl(photoUrl)
                   .build())
             .build();
    }
 
-   private UpdateCardUserData createUserData(String avatarUrl) {
+   private UpdateCardUserData createRequestData(SmartCardUser smartCardUser) {
       return ImmutableUpdateCardUserData.builder()
-            .firstName(wizardMemoryStorage.getFirstName())
-            .lastName(wizardMemoryStorage.getLastName())
-            .middleName(wizardMemoryStorage.getMiddleName())
-            .photoUrl(avatarUrl)
+            .firstName(smartCardUser.firstName())
+            .lastName(smartCardUser.lastName())
+            .middleName(smartCardUser.middleName())
+            .photoUrl(smartCardUser.userPhoto().photoUrl())
             .build();
    }
-
-   public WizardCompleteCommand(SmartCard smartCard) {this.smartCard = smartCard;}
 }

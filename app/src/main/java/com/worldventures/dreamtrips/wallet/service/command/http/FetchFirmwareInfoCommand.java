@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 import com.worldventures.dreamtrips.api.smart_card.firmware.GetFirmwareHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareResponse;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
@@ -23,14 +25,13 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
 
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject SnappyRepository snappyRepository;
    @Inject FirmwareRepository firmwareRepository;
 
-   private final String scId;
    private final String sdkVersion;
    private final SmartCardFirmware firmwareVersion;
 
-   public FetchFirmwareInfoCommand(String scId, String sdkVersion, SmartCardFirmware firmwareVersion) {
-      this.scId = scId;
+   public FetchFirmwareInfoCommand(String sdkVersion, SmartCardFirmware firmwareVersion) {
       this.sdkVersion = sdkVersion;
       this.firmwareVersion = firmwareVersion;
    }
@@ -52,8 +53,9 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
    }
 
    private FirmwareUpdateData createUpdateData(FirmwareResponse firmwareResponse) {
+      SmartCard smartCard = snappyRepository.getSmartCard();
       return ImmutableFirmwareUpdateData.builder()
-            .smartCardId(scId)
+            .smartCardId(smartCard.smartCardId())
             .currentFirmwareVersion(firmwareVersion)
             .firmwareInfo(firmwareResponse.firmwareInfo()) //todo: create converter and store data in domain model
             .updateAvailable(firmwareResponse.updateAvailable())

@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,24 +28,24 @@ public class SetStealthModeCommand extends Command<Boolean> implements Injectabl
 
    @Override
    protected void run(CommandCallback<Boolean> callback) throws Throwable {
-      fetchSmartCard()
-            .flatMap(smartCard -> {
-               if (smartCard.stealthMode() == stealthModeEnabled) {
+      fetchSmartCardStatus()
+            .flatMap(smartCardStatus -> {
+               if (smartCardStatus.stealthMode() == stealthModeEnabled) {
                   return Observable.error(new IllegalArgumentException("Stealth mode already turned " + (stealthModeEnabled ? "on" : "off")));
                } else {
-                  return Observable.just(smartCard);
+                  return Observable.just(smartCardStatus);
                }
             })
-            .flatMap(smartCard -> janet.createPipe(SetStealthModeAction.class)
+            .flatMap(smartCardStatus -> janet.createPipe(SetStealthModeAction.class)
                   .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
             )
             .map(smartCard -> stealthModeEnabled)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<SmartCard> fetchSmartCard() {
-      return janet.createPipe(ActiveSmartCardCommand.class)
-            .createObservableResult(new ActiveSmartCardCommand())
+   private Observable<SmartCardStatus> fetchSmartCardStatus() {
+      return janet.createPipe(DeviceStateCommand.class)
+            .createObservableResult(DeviceStateCommand.fetch())
             .map(Command::getResult);
    }
 }

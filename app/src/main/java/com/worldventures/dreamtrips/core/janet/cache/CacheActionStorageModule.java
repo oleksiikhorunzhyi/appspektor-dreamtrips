@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.DeviceStateActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
@@ -189,6 +190,12 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDeviceStateActionStorage() {
       return new DeviceStateActionStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideSmartCardFirmwareActionStorage() {
+      return new SmartCardFirmwareActionStorage();
    }
 
    @Singleton

@@ -76,8 +76,8 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
             .smartCardId((int) details.smartCardId())
             .smartCardSerialNumber(details.serialNumber())
             .bleId(details.bleAddress())
-
-            .firmwareVersion(smartCardFirmwareVersion(smartCard.firmwareVersion()))
+            //TODO : fetch sc version
+            .firmwareVersion("")
             .sdkVersion(smartCard.sdkVersion())
             .build();
    }

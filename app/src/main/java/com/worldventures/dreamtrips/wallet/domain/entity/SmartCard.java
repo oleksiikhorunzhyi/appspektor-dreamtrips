@@ -19,28 +19,6 @@ public abstract class SmartCard {
       return "";
    }
 
-   @Deprecated
-   @Nullable
-   public abstract SmartCardFirmware firmwareVersion();
-
-   @Deprecated
-   @Value.Default
-   public boolean stealthMode() {
-      return false;
-   }
-
-   @Deprecated
-   @Value.Default
-   public long disableCardDelay() {
-      return 0; //never
-   }
-
-   @Deprecated
-   @Value.Default
-   public long clearFlyeDelay() {
-      return 0; //never
-   }
-
    public enum CardStatus {
       ACTIVE, IN_PROVISIONING;
 

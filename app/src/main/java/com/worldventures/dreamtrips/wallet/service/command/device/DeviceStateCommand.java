@@ -42,6 +42,14 @@ public class DeviceStateCommand extends Command<SmartCardStatus> implements Cach
       return update(builder -> builder.batteryLevel(batteryLevel));
    }
 
+   public static DeviceStateCommand disableCardDelay(long disableDelay) {
+      return update(builder -> builder.disableCardDelay(disableDelay));
+   }
+
+   public static DeviceStateCommand clearFlyeDelay(long clearDelay) {
+      return update(builder -> builder.clearFlyeDelay(clearDelay));
+   }
+
    @Override
    protected void run(CommandCallback<SmartCardStatus> callback) throws Throwable {
       if (cachedSmartCardStatus == null) cachedSmartCardStatus = createDefault();

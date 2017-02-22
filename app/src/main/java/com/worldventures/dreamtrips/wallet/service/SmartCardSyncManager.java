@@ -5,7 +5,6 @@ import android.support.v4.util.Pair;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
@@ -15,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionC
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -81,10 +81,8 @@ public class SmartCardSyncManager {
                               .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
                               .map(actionState -> actionState.action.getResult()))
                   .flatMap(firmwareVersion ->
-                        interactor.activeSmartCardPipe()
-                              .createObservable(new ActiveSmartCardCommand(smartCard ->
-                                    ImmutableSmartCard.copyOf(smartCard)
-                                          .withFirmwareVersion(firmwareVersion))))
+                        interactor.smartCardFirmwarePipe()
+                              .createObservable(SmartCardFirmwareCommand.save(firmwareVersion)))
                   .subscribe()
       );
    }
@@ -146,52 +144,37 @@ public class SmartCardSyncManager {
       //                  .send(new ActiveSmartCardCommand(smartCard)), throwable -> {
       //            }));
 
-      subscriptions.add(interactor.stealthModePipe().observeSuccess()
-            .map(Command::getResult)
-            .subscribe(value -> interactor.activeSmartCardPipe()
-                  .send(new ActiveSmartCardCommand(smartCard ->
-                        ImmutableSmartCard.builder()
-                              .from(smartCard)
-                              .stealthMode(value)
-                              .build())), throwable -> {
-            }));
+      subscriptions.add(interactor.stealthModePipe()
+            .observeSuccess()
+            .subscribe(command ->
+                  interactor.deviceStatePipe().send(DeviceStateCommand.stealthMode(command.getResult()))
+            ));
 
       subscriptions.add(interactor.disableDefaultCardDelayPipe().observeSuccess()
-            .map(Command::getResult)
-            .subscribe(delay -> interactor.activeSmartCardPipe()
-                  .send(new ActiveSmartCardCommand(smartCard ->
-                        ImmutableSmartCard.builder()
-                              .from(smartCard)
-                              .disableCardDelay(delay)
-                              .build())), throwable -> {
-            }));
+            .subscribe(command ->
+                  interactor.deviceStatePipe().send(DeviceStateCommand.disableCardDelay(command.getResult()))
+            ));
 
       subscriptions.add(interactor.autoClearDelayPipe().observeSuccess()
-            .map(Command::getResult)
-            .subscribe(delay -> interactor.activeSmartCardPipe()
-                  .send(new ActiveSmartCardCommand(smartCard ->
-                        ImmutableSmartCard.builder()
-                              .from(smartCard)
-                              .clearFlyeDelay(delay)
-                              .build())), throwable -> {
-            }));
+            .subscribe(command ->
+                  interactor.deviceStatePipe().send(DeviceStateCommand.clearFlyeDelay(command.getResult()))
+            ));
+
+      subscriptions.add(interactor.fetchFirmwareVersionPipe()
+            .observeSuccess()
+            .subscribe(command ->
+                  interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(command.getResult()))
+            ));
 
       subscriptions.add(interactor.fetchCardPropertiesPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(properties -> {
                interactor.deviceStatePipe().send(DeviceStateCommand.lock(properties.lock()));
                interactor.deviceStatePipe().send(DeviceStateCommand.battery(properties.batteryLevel()));
-
-               interactor.activeSmartCardPipe()
-                     .send(new ActiveSmartCardCommand(smartCard -> ImmutableSmartCard.builder()
-                           .from(smartCard)
-                           .sdkVersion(properties.sdkVersion())
-                           .firmwareVersion(updateSmartCardFirmware(smartCard, properties.firmwareVersion()))
-                           .stealthMode(properties.stealthMode())
-                           .disableCardDelay(properties.disableCardDelay())
-                           .clearFlyeDelay(properties.clearFlyeDelay())
-                           .build()
-                     ));
+               interactor.deviceStatePipe().send(DeviceStateCommand.stealthMode(properties.stealthMode()));
+               interactor.deviceStatePipe().send(DeviceStateCommand.disableCardDelay(properties.disableCardDelay()));
+               interactor.deviceStatePipe().send(DeviceStateCommand.clearFlyeDelay(properties.clearFlyeDelay()));
+               interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(properties.firmwareVersion()));
             }, throwable -> {
             }));
 
@@ -206,17 +189,6 @@ public class SmartCardSyncManager {
                         state -> interactor.deviceStatePipe().send(DeviceStateCommand.lock(state)),
                         throwable -> Timber.d(throwable, ""))
       );
-   }
-
-   private SmartCardFirmware updateSmartCardFirmware(SmartCard smartCard, SmartCardFirmware firmware) {
-      final SmartCardFirmware scFirmware = smartCard.firmwareVersion();
-      if (scFirmware == null) return firmware;
-
-      return ImmutableSmartCardFirmware
-            .builder()
-            .from(firmware)
-            .firmwareBundleVersion(scFirmware.firmwareBundleVersion())
-            .build();
    }
 
    private void connectFetchingBattery() {

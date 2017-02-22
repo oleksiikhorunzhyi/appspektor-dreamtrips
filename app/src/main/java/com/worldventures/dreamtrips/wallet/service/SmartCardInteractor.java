@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 
@@ -62,6 +63,7 @@ public final class SmartCardInteractor {
    private final ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe;
    private final ActionPipe<ActiveSmartCardCommand> activeSmartCardActionPipe;
    private final ActionPipe<DeviceStateCommand> deviceStatePipe;
+   private final ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe;
    private final ActionPipe<SmartCardUserCommand> smartCardUserPipe;
    private final ActionPipe<DefaultCardIdCommand> defaultCardIdPipe;
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
@@ -97,6 +99,7 @@ public final class SmartCardInteractor {
       activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, cacheSchedulerFactory
             .call());
       deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, cacheSchedulerFactory.call());
+      smartCardFirmwarePipe = sessionActionPipeCreator.createPipe(SmartCardFirmwareCommand.class, cacheSchedulerFactory.call());
       smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, cacheSchedulerFactory.call());
 
       defaultCardIdPipe = sessionActionPipeCreator.createPipe(DefaultCardIdCommand.class, cacheSchedulerFactory.call());
@@ -158,6 +161,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<DeviceStateCommand> deviceStatePipe() {
       return deviceStatePipe;
+   }
+
+   public ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe() {
+      return smartCardFirmwarePipe;
    }
 
    public ActionPipe<SmartCardUserCommand> smartCardUserPipe() {

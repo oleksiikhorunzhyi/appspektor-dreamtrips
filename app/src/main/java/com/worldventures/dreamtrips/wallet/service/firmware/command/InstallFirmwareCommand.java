@@ -2,13 +2,11 @@ package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import javax.inject.Inject;
@@ -116,17 +114,8 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
 
    private Observable<Void> addBundleVersion() {
       final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
-      return smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new ActiveSmartCardCommand(smartCard ->
-                  ImmutableSmartCard.builder()
-                        .from(smartCard)
-                        .firmwareVersion(
-                              ImmutableSmartCardFirmware.builder()
-                                    .from(smartCard.firmwareVersion())
-                                    .firmwareBundleVersion(data.firmwareInfo().firmwareVersion())
-                                    .build()
-                        )
-                        .build()))
+      return smartCardInteractor.smartCardFirmwarePipe()
+            .createObservableResult(SmartCardFirmwareCommand.bundleVersion(data.firmwareInfo().firmwareVersion()))
             .onErrorReturn(throwable -> null)
             .map(command -> null);
    }

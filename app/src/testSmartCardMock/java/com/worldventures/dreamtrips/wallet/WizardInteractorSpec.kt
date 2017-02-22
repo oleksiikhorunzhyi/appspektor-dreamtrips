@@ -218,10 +218,7 @@ class WizardInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
 //         whenever(mockedSmartCard.connectionStatus()).thenReturn(ConnectionStatus.DISCONNECTED)
-//         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
-//         whenever(mockedSmartCard.serialNumber()).thenReturn("")
 
          return mockedSmartCard
       }

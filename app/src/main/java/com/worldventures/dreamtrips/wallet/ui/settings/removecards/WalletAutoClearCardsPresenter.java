@@ -42,10 +42,10 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    }
 
    private void observerSmartCard() {
-      smartCardInteractor.activeSmartCardPipe()
+      smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(smartCardModifier -> getView().selectedTime(smartCardModifier.getResult().clearFlyeDelay()));
+            .subscribe(deviceStateCommand -> getView().selectedTime(deviceStateCommand.getResult().clearFlyeDelay()));
    }
 
    private void observeDelayChange() {

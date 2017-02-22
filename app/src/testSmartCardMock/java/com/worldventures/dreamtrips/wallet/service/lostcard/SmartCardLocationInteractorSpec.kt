@@ -16,8 +16,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
-import com.worldventures.dreamtrips.wallet.model.TestFirmware
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
@@ -161,7 +160,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
-               .bindStorageSet(setOf(SmartCardStorage(mockDb)))
+               .bindStorageSet(setOf(SmartCardActionStorage(mockDb)))
                .wrapDagger()
 
          janet = Janet.Builder()
@@ -222,12 +221,12 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          val mockedSmartCard: SmartCard = mock()
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
-         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.CONNECTED)
-         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
+//         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.CONNECTED)
+//         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
-         whenever(mockedSmartCard.serialNumber()).thenReturn("")
-         whenever(mockedSmartCard.user()).thenReturn(mock())
+//         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
+//         whenever(mockedSmartCard.serialNumber()).thenReturn("")
+//         whenever(mockedSmartCard.user()).thenReturn(mock())
 
          return mockedSmartCard
       }

@@ -63,7 +63,7 @@ public class SmartCardWidget extends FrameLayout {
 
       batteryView.setLevel(smartCardStatus.batteryLevel());
       batteryLevel.setText(String.format(Locale.US, "%d%%", smartCardStatus.batteryLevel()));
-      stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
+      stealthIndicator.setVisibility(smartCardStatus.stealthMode() ? VISIBLE : GONE);
       bindLockStatus(smartCardStatus.lock());
       bindConnectionStatus(smartCardStatus.connectionStatus().isConnected());
       if (isFirmwareAvailable) {

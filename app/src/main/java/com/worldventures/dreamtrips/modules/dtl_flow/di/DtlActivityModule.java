@@ -30,9 +30,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragm
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewScreen;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;

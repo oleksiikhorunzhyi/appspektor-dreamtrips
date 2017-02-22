@@ -58,22 +58,6 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
             .brandId(BRAND_ID)
             .productId(merchant.id())
             .build()));
-
-      testAddReview();
-   }
-
-   private void testAddReview() {
-      ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
-      addReviewActionActionPipe.send(AddReviewAction.create(ImmutableAddReviewsActionParams.builder()
-            .brandId(BRAND_ID)
-            .productId(merchant.id())
-            .build(), ImmutableReviewParams.builder()
-            .userEmail("yair.carreno@gmail.com")
-            .userNickName("Yair Carreno")
-            .reviewText("A wonderful place to visit.")
-            .rating(String.valueOf(4))
-            .verified(false)
-            .build()));
    }
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {

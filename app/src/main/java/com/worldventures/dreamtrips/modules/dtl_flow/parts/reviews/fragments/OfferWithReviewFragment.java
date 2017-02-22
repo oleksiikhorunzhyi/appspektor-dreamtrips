@@ -25,7 +25,6 @@ public class OfferWithReviewFragment extends Fragment {
    private TextView tvReview;
    private TextView tvReviewCount;
    private View lineSeparator;
-   private RelativeLayout btnRateAndReview;
 
    private ReviewAdapter mAdapter;
 

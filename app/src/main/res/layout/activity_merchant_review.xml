@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewScreenImpl
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl
       android:id="@+id/root_reviews_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -139,4 +139,4 @@
 
    </LinearLayout>
 
-</com.worldventures.dreamtrips.modules.dtl_flow.parts.comment_review.DtlCommentReviewScreenImpl>
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl>

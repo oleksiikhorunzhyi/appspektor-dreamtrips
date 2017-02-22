@@ -30,6 +30,7 @@ import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -86,6 +87,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.tv_read_all_review) TextView mTvReadAllReviews;
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
    @InjectView(R.id.text_view_rating) TextView textViewRating;
+   @InjectView(R.id.view_points) TextView points;
+   @InjectView(R.id.view_perks) TextView perks;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -192,6 +195,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       setClicks();
       setReviews();
       setRatingAndPerk();
+      setOffersSection();
    }
 
    @Override
@@ -412,6 +416,29 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
          return true;
       }
       return false;
+   }
+
+   private void setOffersSection() {
+      if (!merchant.asMerchantAttributes().hasOffers()) {
+         ViewUtils.setViewVisibility(this.perks, View.GONE);
+         ViewUtils.setViewVisibility(this.points, View.GONE);
+      }
+      else {
+         ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
+         ViewUtils.setViewVisibility(this.points, View.VISIBLE);
+         int perksNumber = merchant.asMerchantAttributes().offersCount(OfferType.PERK);
+         setOfferBadges(perksNumber, merchant.asMerchantAttributes().offers().size() - perksNumber);
+      }
+   }
+
+   private void setOfferBadges(int perks, int points) {
+      int perkVisibility = perks > 0 ? View.VISIBLE : View.GONE;
+      int pointVisibility = points > 0 ? View.VISIBLE : View.GONE;
+
+      ViewUtils.setViewVisibility(this.perks, perkVisibility);
+      ViewUtils.setViewVisibility(this.points, pointVisibility);
+
+      if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
    }
 
    ///////////////////////////////////////////////////////////////////////////

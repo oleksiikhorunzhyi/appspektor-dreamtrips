@@ -17,7 +17,6 @@ import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import io.techery.janet.smartcard.action.support.GetBatteryLevelAction;
-import io.techery.janet.smartcard.action.support.GetSDKVersionAction;
 import rx.Observable;
 
 @CommandAction
@@ -28,8 +27,6 @@ public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesComma
    @Override
    protected void run(CommandCallback<Properties> callback) throws Throwable {
       Observable.zip(
-            janet.createPipe(GetSDKVersionAction.class)
-                  .createObservableResult(new GetSDKVersionAction()),
             janet.createPipe(FetchFirmwareVersionCommand.class)
                   .createObservableResult(new FetchFirmwareVersionCommand()),
             janet.createPipe(GetBatteryLevelAction.class)
@@ -42,10 +39,9 @@ public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesComma
                   .createObservableResult(new GetDisableDefaultCardDelayAction()),
             janet.createPipe(GetClearRecordsDelayAction.class)
                   .createObservableResult(new GetClearRecordsDelayAction()),
-            (sdkVersionAction, fetchFirmwareVersionCommand, getBatteryLevelAction, getLockDeviceStatusAction,
+            (fetchFirmwareVersionCommand, getBatteryLevelAction, getLockDeviceStatusAction,
                   getStealthModeAction, getDisableDefaultCardDelayAction, getClearRecordsDelayAction) ->
                   (Properties) ImmutableProperties.builder()
-                        .sdkVersion(sdkVersionAction.version)
                         .firmwareVersion(fetchFirmwareVersionCommand.getResult())
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
                         .lock(getLockDeviceStatusAction.locked)
@@ -58,8 +54,6 @@ public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesComma
 
    @Value.Immutable
    public interface Properties {
-
-      String sdkVersion();
 
       SmartCardFirmware firmwareVersion();
 

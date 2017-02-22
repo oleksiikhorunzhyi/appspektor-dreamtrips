@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 
-import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
+import io.techery.janet.smartcard.util.SmartCardSDK;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -20,8 +20,6 @@ import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus
 
 @Deprecated
 class FirmwareDelegate {
-
-   private static final String SDK_FIRMWARE_VERSION_IF_NOT_PRESENT = "1.0.0";
 
    private SmartCardInteractor smartCardInteractor;
    private FirmwareInteractor firmwareInteractor;
@@ -54,10 +52,7 @@ class FirmwareDelegate {
 
    private void fetchServerFirmwareInfo(SmartCardFirmware smartCardFirmware) {
       if (smartCardFirmware == null) return;
-      //TODO : get sdk version
-//      String sdkVersion = smartCard.sdkVersion().isEmpty() ? SDK_FIRMWARE_VERSION_IF_NOT_PRESENT : smartCard
-//            .sdkVersion();
-      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand(SDK_FIRMWARE_VERSION_IF_NOT_PRESENT, smartCardFirmware));
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand(SmartCardSDK.getSDKVersion(), smartCardFirmware));
    }
 
    Observable<FirmwareUpdateData> observeFirmwareInfo() {
@@ -66,7 +61,4 @@ class FirmwareDelegate {
             .map(Command::getResult);
    }
 
-   ActionPipe<FetchFirmwareInfoCommand> fetchFirmwareInfoPipe() {
-      return firmwareInteractor.firmwareInfoPipe();
-   }
 }

@@ -14,11 +14,6 @@ public abstract class SmartCard {
    @Nullable
    public abstract String deviceId();
 
-   @Value.Default
-   public String sdkVersion() {
-      return "";
-   }
-
    public enum CardStatus {
       ACTIVE, IN_PROVISIONING;
 

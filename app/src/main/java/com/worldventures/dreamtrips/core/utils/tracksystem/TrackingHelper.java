@@ -341,8 +341,6 @@ public class TrackingHelper {
    public static final String ACTION_ACTIVITY_FEED = "activity_feed";
    public static final String ACTION_FRIENDS_ACTIVITY = "friends_activity";
    public static final String ACTION_NOTIFICATIONS = "notifications";
-   public static final String ACTION_BOOK_TRAVEL = "book_travel";
-   public static final String ACTION_TRIP_IMAGES = "trip_images";
    public static final String ACTION_MEMBER_IMAGES = "member_images";
    public static final String ACTION_MY_IMAGES = "my_images";
    public static final String ACTION_YSHB_IMAGES = "yshb_images";
@@ -358,7 +356,6 @@ public class TrackingHelper {
    public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
    public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
    public static final String ACTION_REP_TOOLS_INVITE_SHARE = "rep_tools:invite_share";
-   public static final String ACTION_FEEDBACK = "Send Feedback";
    public static final String ACTION_TERMS = "Terms and Conditions";
    public static final String ACTION_SETTINGS = "Settings";
    public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
@@ -607,10 +604,6 @@ public class TrackingHelper {
    }
 
    // ---------------- Book Travel
-
-   public static void actionBookTravelScreen(String eventType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_BOOK_TRAVEL, eventType);
-   }
 
    public static void selectTripImagesTab(String tab) {
       sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);

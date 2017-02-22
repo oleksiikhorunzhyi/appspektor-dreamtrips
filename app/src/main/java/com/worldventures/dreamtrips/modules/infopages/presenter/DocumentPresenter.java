@@ -13,7 +13,9 @@ public class DocumentPresenter extends WebViewFragmentPresenter<DocumentPresente
       super(url);
    }
 
-   public void onWebPageLoaded() {
+   @Override
+   public void pageLoaded(String url) {
+      super.pageLoaded(url);
       String document = url.substring(url.lastIndexOf("/") + 1);
       analyticsInteractor.analyticsActionPipe().send(new ViewDocumentAnalyticAction(document));
    }

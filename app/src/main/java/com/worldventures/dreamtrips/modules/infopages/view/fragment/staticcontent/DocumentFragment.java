@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.infopages.bundle.DocumentBundle;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresenter;
 
 @Layout(R.layout.fragment_webview)
-public class DocumentFragment extends StaticInfoFragment<DocumentPresenter, DocumentBundle> implements DocumentPresenter.View{
+public class DocumentFragment extends StaticInfoFragment<DocumentPresenter, DocumentBundle> implements DocumentPresenter.View {
 
    @Override
    protected String getURL() {
@@ -30,9 +30,4 @@ public class DocumentFragment extends StaticInfoFragment<DocumentPresenter, Docu
       return new DocumentPresenter(getURL());
    }
 
-   @Override
-   protected void onWebPageLoaded() {
-      super.onWebPageLoaded();
-      getPresenter().onWebPageLoaded();
-   }
 }

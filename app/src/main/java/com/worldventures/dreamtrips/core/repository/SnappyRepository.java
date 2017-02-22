@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
@@ -78,6 +79,7 @@ public interface SnappyRepository {
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
    String WALLET_SMART_CARD_USER = "WALLET_SMART_CARD_USER";
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
+   String WALLET_SMART_CARD_FIRMWARE = "WALLET_DETAILS_SMART_CARD";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
    String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
@@ -262,6 +264,12 @@ public interface SnappyRepository {
    SmartCardDetails getSmartCardDetails();
 
    void deleteSmartCardDetails();
+
+   void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware);
+
+   SmartCardFirmware getSmartCardFirmware();
+
+   void deleteSmartCardFirmware();
 
    void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 

@@ -223,7 +223,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
 //         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.CONNECTED)
 //         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
-         whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
+//         whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
 //         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
 //         whenever(mockedSmartCard.serialNumber()).thenReturn("")
 //         whenever(mockedSmartCard.user()).thenReturn(mock())

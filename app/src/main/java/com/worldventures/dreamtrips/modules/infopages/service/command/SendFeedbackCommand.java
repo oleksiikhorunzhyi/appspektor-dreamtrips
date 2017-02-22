@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoPro
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
 
 import java.util.List;
 
@@ -69,14 +71,14 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
    private Feedback.SmartCardMetadata provideSmartCardMetadata() {
       SmartCard smartCard = snappyRepository.getSmartCard();
       SmartCardDetails details = snappyRepository.getSmartCardDetails();
+      SmartCardFirmware firmware = snappyRepository.getSmartCardFirmware();
       if (smartCard == null || details == null) return null;
 
       return ImmutableSmartCardMetadata.builder()
             .smartCardId((int) details.smartCardId())
             .smartCardSerialNumber(details.serialNumber())
             .bleId(details.bleAddress())
-            //TODO : fetch sc version
-            .firmwareVersion("")
+            .firmwareVersion(SCFirmwareUtils.smartCardFirmwareVersion(firmware))
             .sdkVersion(SmartCardSDK.getSDKVersion())
             .build();
    }

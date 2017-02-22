@@ -38,10 +38,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
@@ -320,6 +322,21 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    @Override
    public void deleteSmartCardDetails() {
       act(db -> db.del(WALLET_DETAILS_SMART_CARD));
+   }
+
+   @Override
+   public void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
+      putEncrypted(WALLET_SMART_CARD_FIRMWARE, smartCardFirmware);
+   }
+
+   @Override
+   public SmartCardFirmware getSmartCardFirmware() {
+      return getEncrypted(WALLET_SMART_CARD_FIRMWARE, ImmutableSmartCardFirmware.class);
+   }
+
+   @Override
+   public void deleteSmartCardFirmware() {
+      act(db -> db.del(WALLET_SMART_CARD_FIRMWARE));
    }
 
 /////////

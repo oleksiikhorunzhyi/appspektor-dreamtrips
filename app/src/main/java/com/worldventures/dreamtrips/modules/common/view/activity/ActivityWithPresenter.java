@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -122,6 +123,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    protected void onPause() {
       isPaused = true;
       lifecycleSubject.onNext(ActivityEvent.PAUSE);
+      getPresentationModel().onPause();
       super.onPause();
    }
 
@@ -165,5 +167,13 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
       return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+   }
+
+   protected <T> Observable.Transformer<T, T> bindView() {
+      return input -> input.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+   }
+
+   protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {
+      return input -> input.compose(new IoToMainComposer<>()).compose(bindView());
    }
 }

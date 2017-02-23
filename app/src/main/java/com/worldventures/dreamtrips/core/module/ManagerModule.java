@@ -20,6 +20,8 @@ import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteract
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
@@ -53,6 +55,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesIntera
 import com.worldventures.dreamtrips.modules.tripsimages.service.VideoInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
+import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
 import javax.inject.Named;
@@ -60,6 +64,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.techery.janet.Janet;
 
 @Module(
       injects = {
@@ -281,6 +286,12 @@ public class ManagerModule {
 
    @Provides
    @Singleton
+   AppInfoProvider provideAppInfoProvider(Context context) {
+      return new AppInfoProviderImpl(context);
+   }
+
+   @Provides
+   @Singleton
    DeviceInfoProvider provideProfileInteractor(Context context) {
       return new DeviceInfoProviderImpl(context);
    }
@@ -319,5 +330,11 @@ public class ManagerModule {
    @Singleton
    FacebookInteractor provideFacebookInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FacebookInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   VersionCheckInteractor provideVersionCheckInteractor(@Named(VersionCheckModule.JANET_QUALIFIER) Janet janet) {
+      return new VersionCheckInteractor(janet);
    }
 }

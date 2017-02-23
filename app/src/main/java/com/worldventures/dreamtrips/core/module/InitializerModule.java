@@ -17,8 +17,10 @@ import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
+import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -118,5 +120,10 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideFacebookInitializer() {
       return new FacebookInitializer();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideVersionCheckInitializer(VersionCheckInteractor interactor) {
+      return new VersionCheckInitializer(interactor);
    }
 }

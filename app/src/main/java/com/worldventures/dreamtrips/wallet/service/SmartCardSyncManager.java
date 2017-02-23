@@ -119,6 +119,7 @@ public class SmartCardSyncManager {
                         .observeSuccess()
                         .map(Command::getResult), Pair::create)
                   .filter(pair -> pair.first.type == ConnectionType.APP && pair.second.cardStatus() == SmartCard.CardStatus.ACTIVE)
+                  .take(1)
                   .subscribe(aVoid -> activeCardConnected(),
                         throwable -> Timber.e(throwable, "Error while observe connection for active card"))
       );

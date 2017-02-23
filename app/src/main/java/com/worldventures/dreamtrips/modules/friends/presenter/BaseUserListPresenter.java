@@ -100,7 +100,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    }
 
    private void processNewUsers(List<User> freshUsers) {
-      finishedLoadingAllData = freshUsers == null || freshUsers.size() < getPerPageCount();
+      // server signals about end of pagination with empty page, NOT with items < page size
+      finishedLoadingAllData = freshUsers == null || freshUsers.isEmpty();
       users.addAll(freshUsers);
       view.refreshUsers(users);
       view.finishLoading();

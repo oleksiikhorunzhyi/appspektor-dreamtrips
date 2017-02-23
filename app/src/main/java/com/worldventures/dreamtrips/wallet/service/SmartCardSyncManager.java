@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import android.support.v4.util.Pair;
 
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
@@ -54,10 +55,9 @@ public class SmartCardSyncManager {
       if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
          observeConnection();
          connectUpdateSmartCard();
-         connectFetchingBattery();
          connectSyncCards();
          connectSyncDisabling();
-         connectFetchingFirmwareVersion();
+         connectFetchingFirmwareVersionObserver();
       }
    }
 
@@ -65,24 +65,6 @@ public class SmartCardSyncManager {
       if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
          subscriptions.clear();
       }
-   }
-
-   private void connectFetchingFirmwareVersion() {
-      subscriptions.add(
-            interactor.cardInChargerEventPipe()
-                  .observeSuccess()
-                  .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
-                  .compose(new FilterActiveConnectedSmartCard(interactor))
-                  .flatMap(smartCard ->
-                        interactor.fetchFirmwareVersionPipe()
-                              .createObservable(new FetchFirmwareVersionCommand())
-                              .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
-                              .map(actionState -> actionState.action.getResult()))
-                  .flatMap(firmwareVersion ->
-                        interactor.smartCardFirmwarePipe()
-                              .createObservable(SmartCardFirmwareCommand.save(firmwareVersion)))
-                  .subscribe()
-      );
    }
 
    private void connectSyncDisabling() {
@@ -97,28 +79,28 @@ public class SmartCardSyncManager {
       // // TODO: 2/20/17 create pipe in interactor
       subscriptions.add(janet.createPipe(ConnectAction.class)
             .observeSuccess()
+            .throttleLast(1, TimeUnit.SECONDS)
             .map(connectAction -> connectAction.type == ConnectionType.DFU ? DFU : CONNECTED)
-            .debounce(1, TimeUnit.SECONDS)
-            .flatMap(connectionStatus -> interactor.deviceStatePipe()
-                  .createObservableResult(DeviceStateCommand.connection(connectionStatus)))
-            .subscribe(command -> {
-            }, throwable -> Timber.e(throwable, "Error with handling connection event")));
+            .doOnNext(connectionStatus -> interactor.deviceStatePipe()
+                  .send(DeviceStateCommand.connection(connectionStatus)))
+            .subscribe(this::observeActiveSmartCard,
+                  throwable -> Timber.e(throwable, "Error with handling connection event")));
 
       subscriptions.add(interactor.disconnectPipe()
             .observeSuccess()
             .flatMap(action ->
                   interactor.deviceStatePipe().createObservableResult(DeviceStateCommand.connection(DISCONNECTED)))
-            .subscribe(command -> {
-            }, throwable -> Timber.e(throwable, "Error while updating status of active card")));
+            .subscribe(command -> {}, throwable -> Timber.e(throwable, "Error while updating status of active card")));
+   }
 
+   private void observeActiveSmartCard(ConnectionStatus connectionStatus) {
       subscriptions.add(
-            Observable.combineLatest(
-                  janet.createPipe(ConnectAction.class)
-                        .observeSuccess(),
-                  interactor.activeSmartCardPipe()
-                        .observeSuccess()
-                        .map(Command::getResult), Pair::create)
-                  .filter(pair -> pair.first.type == ConnectionType.APP && pair.second.cardStatus() == SmartCard.CardStatus.ACTIVE)
+            interactor.activeSmartCardPipe()
+                  .observeSuccessWithReplay()
+                  .map(Command::getResult)
+                  .filter(smartCard -> connectionStatus == ConnectionStatus.CONNECTED
+                        && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
+                  .takeUntil(interactor.disconnectPipe().observeSuccess())
                   .take(1)
                   .subscribe(aVoid -> activeCardConnected(),
                         throwable -> Timber.e(throwable, "Error while observe connection for active card"))
@@ -128,6 +110,7 @@ public class SmartCardSyncManager {
    private void activeCardConnected() {
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
       interactor.cardsListPipe().send(CardListCommand.fetch());
+      setupBatteryObserver();
    }
 
    private void connectUpdateSmartCard() {
@@ -174,14 +157,33 @@ public class SmartCardSyncManager {
       );
    }
 
-   private void connectFetchingBattery() {
-      subscriptions.add(Observable.interval(0, 1, TimeUnit.MINUTES)
-            .compose(new FilterActiveConnectedSmartCard(interactor))
-            .filter(smartCard -> !syncDisabled)
-            .subscribe(value ->
-                        interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
-                  throwable -> {
-                  }));
+   private void setupBatteryObserver() {
+      subscriptions.add(
+            Observable.interval(0, 1, TimeUnit.MINUTES)
+                  .filter(smartCard -> !syncDisabled)
+                  .takeUntil(interactor.disconnectPipe().observeSuccess())
+                  .subscribe(value ->
+                              interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
+                        throwable -> {
+                        })
+      );
+   }
+
+   private void connectFetchingFirmwareVersionObserver() {
+      subscriptions.add(
+            interactor.cardInChargerEventPipe()
+                  .observeSuccess()
+                  .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
+                  .flatMap(smartCard ->
+                        interactor.fetchFirmwareVersionPipe()
+                              .createObservable(new FetchFirmwareVersionCommand())
+                              .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+                              .map(actionState -> actionState.action.getResult()))
+                  .flatMap(firmwareVersion ->
+                        interactor.smartCardFirmwarePipe()
+                              .createObservable(SmartCardFirmwareCommand.save(firmwareVersion)))
+                  .subscribe()
+      );
    }
 
    private void connectSyncCards() {

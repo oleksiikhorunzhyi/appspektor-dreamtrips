@@ -127,15 +127,16 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
+      // TODO: 2/23/17 put pagination logic into common set of presenter interfaces and view delegates
+      // when feed storage refactoring is merged
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
-         getPresenter().loadNext();
       });
       if (isTabletLandscape()) {
          fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(), getPresenter().getAccount());

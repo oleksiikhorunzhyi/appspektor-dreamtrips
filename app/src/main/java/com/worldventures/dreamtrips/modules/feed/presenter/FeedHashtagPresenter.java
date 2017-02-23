@@ -110,14 +110,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       } else view.finishLoading();
    }
 
-   public void loadNext() {
-      if (feedItems.size() > 0) {
-         if (!TextUtils.isEmpty(query)) {
-            interactor.getLoadNextFeedsByHashtagsPipe()
-                  .send(new FeedByHashtagCommand.LoadNext(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1)
-                        .getCreatedAt()));
-         }
-      }
+   public boolean loadNext() {
+      if (feedItems.isEmpty() || TextUtils.isEmpty(query)) return false;
+      interactor.getLoadNextFeedsByHashtagsPipe()
+            .send(new FeedByHashtagCommand.LoadNext(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1)
+                  .getCreatedAt()));
+      return true;
    }
 
    private void subscribeRefreshFeeds() {
@@ -163,6 +161,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    private void addFeedItems(List<FeedItem> newItems) {
+      // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreFeeds = newItems == null || newItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //

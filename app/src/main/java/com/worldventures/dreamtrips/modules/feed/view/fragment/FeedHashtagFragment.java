@@ -90,11 +90,10 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
       statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
-         getPresenter().loadNext();
       });
       if (isTabletLandscape()) {
          statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));

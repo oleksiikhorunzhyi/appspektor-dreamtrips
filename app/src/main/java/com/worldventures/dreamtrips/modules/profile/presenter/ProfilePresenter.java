@@ -231,8 +231,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       loadProfile();
    }
 
-   public void onLoadNext() {
+   public boolean onLoadNext() {
+      if (feedItems.isEmpty()) return false;
       loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
+      return true;
    }
 
    public abstract void refreshFeed();
@@ -250,6 +252,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    protected void addFeedItems(List<FeedItem> olderItems) {
+      // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreElements = olderItems == null || olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
       //

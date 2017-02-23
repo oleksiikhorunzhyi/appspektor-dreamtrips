@@ -98,11 +98,10 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().onLoadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
-         getPresenter().onLoadNext();
       });
       if (isTabletLandscape()) {
          statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16, true));

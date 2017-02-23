@@ -250,6 +250,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    private void addFeedItems(List<FeedItem> olderItems) {
+      // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreFeeds = olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //
@@ -263,13 +264,12 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       addFeedItems(new ArrayList<>());
    }
 
-   public void loadNext() {
+   public boolean loadNext() {
+      if (feedItems.isEmpty()) return false;
+      Date lastFeedDate = feedItems.get(feedItems.size() - 1).getCreatedAt();
       feedInteractor.getLoadNextAccountFeedPipe()
-            .send(new GetAccountFeedCommand.LoadNext(filterCircle.getId(), getLastFeedDate()));
-   }
-
-   private Date getLastFeedDate() {
-      return feedItems.get(feedItems.size() - 1).getCreatedAt();
+            .send(new GetAccountFeedCommand.LoadNext(filterCircle.getId(), lastFeedDate));
+      return true;
    }
 
    public void onUnreadConversationsClick() {

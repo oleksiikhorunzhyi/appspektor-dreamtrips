@@ -24,10 +24,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -110,7 +112,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setSmartCardUser, throwable -> Timber.e("", throwable));
+
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
    private void observeConnectionStatus() {

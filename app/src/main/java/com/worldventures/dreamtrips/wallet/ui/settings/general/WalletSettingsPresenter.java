@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
@@ -42,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
@@ -144,73 +142,37 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void observeStealthModeController(Screen view) {
       view.stealthModeStatus()
             .compose(bindView())
-            .flatMap(stealthMode ->
-                  smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
-                        .map(activeSmartCardCommand -> stealthMode)
-            )
-            .subscribe(this::stealthModeChanged, throwable -> {
-            });
+            .subscribe(this::stealthModeChanged);
    }
 
    private void observeLockController(Screen view) {
       view.lockStatus()
             .compose(bindView())
-            .skip(1)
-            .flatMap(lockStatus -> smartCardInteractor.deviceStatePipe()
-                  .createObservableResult(DeviceStateCommand.fetch())
-                  .map(Command::getResult)
-                  .filter(smartCard -> smartCard.lock() != lockStatus)
-                  .map(smartCard -> lockStatus)
-            )
-            .subscribe(this::lockStatusChanged, throwable -> {
-            });
+            .subscribe(this::lockStatusChanged);
    }
 
    private void observeConnectionController(Screen view) {
       view.testConnection()
             .compose(bindView())
-            .skip(1)
-            .flatMap(connectedValue -> smartCardInteractor.deviceStatePipe()
-                  .createObservableResult(DeviceStateCommand.fetch())
-                  .map(Command::getResult)
-                  .filter(smartCard -> (smartCard.connectionStatus().isConnected()) != connectedValue)
-                  .map(smartCard -> new Pair<>(smartCard, connectedValue))
-            )
-            .subscribe(pair -> manageConnection(pair.first, pair.second), throwable -> {
-            });
+            .subscribe(this::manageConnection);
    }
 
 
    private void observeFailInstallation(Screen view) {
       view.testFailInstallation()
             .compose(bindView())
-            .skip(1)
-            .filter(compatible -> temporaryStorage.failInstall() != compatible)
             .subscribe(this::changeFailInstallation);
    }
 
-   private void manageConnection(SmartCardStatus smartCardStatus, boolean connected) {
+   private void manageConnection(boolean connected) {
+      // this method for mock device
+      // so, next commands will be completed
+      // mock devise ignores card id
       if (connected) {
          smartCardInteractor.connectActionPipe()
-               //TODO: 2/20/17  replace NULL
-               .createObservable(new ConnectSmartCardCommand(null, false))
-               .compose(bindViewIoToMainComposer())
-               .subscribe(OperationActionStateSubscriberWrapper.<ConnectSmartCardCommand>forView(getView().provideOperationDelegate())
-                     .onFail(ErrorHandler.create(getContext(),
-                           action -> getView().testConnection(smartCardStatus.connectionStatus().isConnected()))
-                     )
-                     .wrap()
-               );
+               .send(new ConnectSmartCardCommand("0", false));
       } else {
-         smartCardInteractor.disconnectPipe()
-               .createObservable(new DisconnectAction())
-               .compose(bindViewIoToMainComposer())
-               .subscribe(OperationActionStateSubscriberWrapper.<DisconnectAction>forView(getView().provideOperationDelegate())
-                     .onFail(ErrorHandler.create(getContext(),
-                           action -> getView().testConnection(smartCardStatus.connectionStatus().isConnected()))
-                     )
-                     .wrap()
-               );
+         smartCardInteractor.disconnectPipe().send(new DisconnectAction());
       }
    }
 
@@ -269,7 +231,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       );
    }
 
-   public void smartCardProfileClick() {
+   void smartCardProfileClick() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
             navigator.go(new WalletSettingsProfilePath());
@@ -303,7 +265,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> action.call(command.getResult().connectionStatus()))
-
             );
    }
 

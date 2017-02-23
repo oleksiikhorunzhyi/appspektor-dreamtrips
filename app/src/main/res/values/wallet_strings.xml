@@ -406,7 +406,7 @@
 
    <!-- Pre check new card screen -->
    <string name="wallet_pre_check_settings">Phone Settings</string>
-   <string name="wallet_pre_check_new_card">Before we can proceed, please do not following:</string>
+   <string name="wallet_pre_check_new_card">Before we can proceed, please do the following:</string>
    <string name="wallet_new_card_pre_installation_bluetooth">Enable Bluetooth on your phone</string>
    <string name="wallet_new_card_pre_install_confirm_message" formatted="false">Smart Card <![CDATA[<b>%s</b>]]> will now be unassigned and returned to it\'s original factory settings</string>
 

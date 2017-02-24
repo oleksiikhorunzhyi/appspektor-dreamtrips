@@ -8,12 +8,14 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
+import com.worldventures.dreamtrips.wallet.util.AnimateGIFUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -24,6 +26,7 @@ public class NewCardPowerOnScreen extends WalletLinearLayout<NewCardPowerOnPrese
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.tv_power_on_title) TextView powerOnLabel;
+   @InjectView(R.id.wallet_power_on_card) SimpleDraweeView powerOnCardDraweeView;
 
    private MaterialDialog dontTurnOnCardDialog = null;
 
@@ -52,6 +55,7 @@ public class NewCardPowerOnScreen extends WalletLinearLayout<NewCardPowerOnPrese
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      AnimateGIFUtil.setupAnimateGIFbyFresco(powerOnCardDraweeView, R.drawable.animation_power_on);
    }
 
    @Override

@@ -9,7 +9,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractCell;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
@@ -65,6 +64,6 @@ public class PhotoCell extends AbstractDelegateCell<IFullScreenObject, CellDeleg
 
    @Override
    public void prepareForReuse() {
-      this.draweeViewPhoto.setImageURI(null);
+      this.draweeViewPhoto.setImageURI(Uri.EMPTY);
    }
 }

@@ -32,22 +32,7 @@
             tools:text="@string/wallet_new_card_power_on"
             />
 
-      <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="150dp"
-            >
-
-         <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:layout_gravity="center_horizontal"
-               android:layout_marginBottom="-100dp"
-               android:scaleType="fitCenter"
-               android:src="@drawable/flyecard_power"
-               tools:ignore="ContentDescription"
-               />
-      </FrameLayout>
+      <include layout="@layout/view_power_on_card_container" />
 
       <LinearLayout
             android:id="@+id/container_have_card"

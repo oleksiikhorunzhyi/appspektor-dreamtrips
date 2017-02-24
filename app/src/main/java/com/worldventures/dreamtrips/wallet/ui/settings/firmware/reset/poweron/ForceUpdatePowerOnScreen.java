@@ -10,9 +10,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.util.AnimateGIFUtil;
 
 import butterknife.InjectView;
 
@@ -32,6 +34,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
    @InjectView(R.id.wallet_wizard_power_on_btn) Button actionBtn;
 
    @InjectView(R.id.card_container) View cardContainer;
+   @InjectView(R.id.wallet_power_on_card) SimpleDraweeView powerOnCardDraweeView;
 
    public ForceUpdatePowerOnScreen(Context context) {
       super(context);
@@ -54,6 +57,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
       hideAllView();
       postDelayed(this::startSoarAnimation, SHOW_SOAR_TITLE_DELAY);
+      AnimateGIFUtil.setupAnimateGIFbyFresco(powerOnCardDraweeView, R.drawable.animation_power_on);
    }
 
    @Override

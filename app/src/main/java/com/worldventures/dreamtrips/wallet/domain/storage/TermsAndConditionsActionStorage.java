@@ -11,12 +11,12 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndCon
 
 import javax.inject.Inject;
 
-public class TermsAndConditionsStorage implements ActionStorage<TermsAndConditions> {
+public class TermsAndConditionsActionStorage implements ActionStorage<TermsAndConditions> {
 
    private final SnappyRepository snappyRepository;
 
    @Inject
-   public TermsAndConditionsStorage(SnappyRepository snappyRepository) {
+   public TermsAndConditionsActionStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

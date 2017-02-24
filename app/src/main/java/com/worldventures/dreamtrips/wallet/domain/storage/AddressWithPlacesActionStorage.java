@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 
-public class AddressWithPlacesStorage extends MemoryStorage<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>>
+public class AddressWithPlacesActionStorage extends MemoryStorage<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>>
       implements ActionStorage<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
 
    @Override

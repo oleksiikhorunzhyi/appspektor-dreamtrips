@@ -55,8 +55,8 @@ public class WalletActionStorageModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage smartCardFirmwareActionStorage() {
-      return new SmartCardFirmwareActionStorage();
+   ActionStorage smartCardFirmwareActionStorage(SnappyRepository snappyRepository) {
+      return new SmartCardFirmwareActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)

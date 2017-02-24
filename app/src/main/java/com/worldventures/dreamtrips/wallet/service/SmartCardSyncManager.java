@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmware
 
 import java.util.concurrent.TimeUnit;
 
-import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -57,7 +56,6 @@ public class SmartCardSyncManager {
          connectUpdateSmartCard();
          connectSyncCards();
          connectSyncDisabling();
-         connectFetchingFirmwareVersionObserver();
       }
    }
 
@@ -117,6 +115,7 @@ public class SmartCardSyncManager {
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
       interactor.cardsListPipe().send(CardListCommand.fetch());
       setupBatteryObserver();
+      setupChargerEventObserver();
    }
 
    private void connectUpdateSmartCard() {
@@ -164,33 +163,24 @@ public class SmartCardSyncManager {
    }
 
    private void setupBatteryObserver() {
-      subscriptions.add(
-            Observable.interval(0, 1, TimeUnit.MINUTES)
-                  .takeUntil(interactor.disconnectPipe().observeSuccess())
-                  .filter(inter -> !syncDisabled)
-                  .doOnNext(aLong -> Timber.d("setupBatteryObserver = %s", aLong))
-                  .subscribe(value ->
-                              interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
-                        throwable -> {
-                        })
-      );
+      Observable.interval(0, 1, TimeUnit.MINUTES)
+            .takeUntil(interactor.disconnectPipe().observeSuccess())
+            .filter(inter -> !syncDisabled)
+            .doOnNext(aLong -> Timber.d("setupBatteryObserver = %s", aLong))
+            .subscribe(value ->
+                        interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
+                  throwable -> {
+                  });
    }
 
-   private void connectFetchingFirmwareVersionObserver() {
-      subscriptions.add(
-            interactor.cardInChargerEventPipe()
-                  .observeSuccess()
-                  .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
-                  .flatMap(smartCard ->
-                        interactor.fetchFirmwareVersionPipe()
-                              .createObservable(new FetchFirmwareVersionCommand())
-                              .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
-                              .map(actionState -> actionState.action.getResult()))
-                  .flatMap(firmwareVersion ->
-                        interactor.smartCardFirmwarePipe()
-                              .createObservable(SmartCardFirmwareCommand.save(firmwareVersion)))
-                  .subscribe()
-      );
+   private void setupChargerEventObserver() {
+      interactor.cardInChargerEventPipe()
+            .observeSuccess()
+            .takeUntil(interactor.disconnectPipe().observeSuccess())
+            .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
+            .flatMap(smartCard ->
+                  interactor.fetchFirmwareVersionPipe().createObservable(new FetchFirmwareVersionCommand()))
+            .subscribe();
    }
 
    private void connectSyncCards() {

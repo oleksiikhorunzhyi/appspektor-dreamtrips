@@ -80,17 +80,23 @@ public class SmartCardSyncManager {
       subscriptions.add(janet.createPipe(ConnectAction.class)
             .observeSuccess()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(connectAction -> connectAction.type == ConnectionType.DFU ? DFU : CONNECTED)
-            .doOnNext(connectionStatus -> interactor.deviceStatePipe()
-                  .send(DeviceStateCommand.connection(connectionStatus)))
-            .subscribe(this::observeActiveSmartCard,
+            .subscribe(connectAction -> cardConnected(connectAction.type == ConnectionType.DFU ? DFU : CONNECTED),
                   throwable -> Timber.e(throwable, "Error with handling connection event")));
 
       subscriptions.add(interactor.disconnectPipe()
             .observeSuccess()
-            .flatMap(action ->
-                  interactor.deviceStatePipe().createObservableResult(DeviceStateCommand.connection(DISCONNECTED)))
-            .subscribe(command -> {}, throwable -> Timber.e(throwable, "Error while updating status of active card")));
+            .subscribe(command -> cardDisconnected(), throwable -> Timber.e(throwable, "Error while updating status of active card")));
+   }
+
+   private void cardConnected(ConnectionStatus connection) {
+      interactor.deviceStatePipe().send(DeviceStateCommand.connection(connection));
+      observeActiveSmartCard(connection);
+   }
+
+   private void cardDisconnected() {
+      interactor.deviceStatePipe().send(DeviceStateCommand.connection(DISCONNECTED));
+      interactor.deviceStatePipe().send(DeviceStateCommand.battery(0));
+      interactor.deviceStatePipe().send(DeviceStateCommand.lock(true));
    }
 
    private void observeActiveSmartCard(ConnectionStatus connectionStatus) {
@@ -160,8 +166,9 @@ public class SmartCardSyncManager {
    private void setupBatteryObserver() {
       subscriptions.add(
             Observable.interval(0, 1, TimeUnit.MINUTES)
-                  .filter(smartCard -> !syncDisabled)
                   .takeUntil(interactor.disconnectPipe().observeSuccess())
+                  .filter(inter -> !syncDisabled)
+                  .doOnNext(aLong -> Timber.d("setupBatteryObserver = %s", aLong))
                   .subscribe(value ->
                               interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
                         throwable -> {

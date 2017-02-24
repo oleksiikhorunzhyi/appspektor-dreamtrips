@@ -68,8 +68,7 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
    private void smartCardConnected(SmartCard smartCard) {
       if (checkBarcode(smartCard.smartCardId())) {
          navigator.withoutLast(new WizardEditProfilePath());
-         //TODO : null
-         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(null, new CardConnectedAction()));
+         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new CardConnectedAction()));
          trackCardAdded(barcode);
       }
    }

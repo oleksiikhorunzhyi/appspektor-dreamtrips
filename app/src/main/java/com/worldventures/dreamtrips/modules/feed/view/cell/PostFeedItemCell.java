@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
@@ -186,7 +186,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void openHashtagFeeds(@NotNull String hashtag) {
       router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
-            .data(new FeedHashtagBundle(hashtag))
+            .data(new HashtagFeedBundle(hashtag))
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
    }

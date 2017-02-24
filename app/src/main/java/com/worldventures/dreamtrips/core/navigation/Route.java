@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedHashtagFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
@@ -163,7 +163,7 @@ public enum Route {
    SHARE(ShareFragment.class, R.string.action_share),
    USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
    FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
-   FEED_HASHTAG(FeedHashtagFragment.class, R.string.empty),
+   FEED_HASHTAG(HashtagFeedFragment.class, R.string.empty),
    FEEDBACK_IMAGE_ATTACHMENTS(FeedbackImageAttachmentsFragment.class, R.string.empty),
    FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT(FeedbackImageAttachmentFullscreenFragment.class, R.string.empty),
 

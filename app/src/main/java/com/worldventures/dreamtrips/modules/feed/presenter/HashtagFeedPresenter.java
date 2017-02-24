@@ -44,7 +44,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 
-public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T>
+public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends JobPresenter<T>
    implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
    private final static int FEEDS_PER_PAGE = 10;

@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.EditPhotoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
@@ -80,7 +80,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedHashtagFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
@@ -109,8 +109,8 @@ import dagger.Provides;
             PhotoFeedItemDetailsCell.class,
             PostFeedItemCell.class,
             UndefinedFeedItemDetailsCell.class,
-            FeedHashtagFragment.class,
-            FeedHashtagPresenter.class,
+            HashtagFeedFragment.class,
+            HashtagFeedPresenter.class,
             PickerIrregularPhotoCell.class,
             PhotoGalleryCell.class,
             EditCommentPresenter.class,

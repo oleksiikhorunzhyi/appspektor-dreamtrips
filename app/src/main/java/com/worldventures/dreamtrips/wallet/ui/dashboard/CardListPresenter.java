@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
@@ -17,7 +18,6 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -84,6 +84,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      getView().setDefaultSmartCard();
       observeSmartCard();
       observeConnectionStatus();
       observeChanges();
@@ -97,25 +98,33 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeSmartCard() {
-      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
-            .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCard, throwable -> Timber.e("", throwable));
-
       smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .throttleLast(300, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCardStatus, throwable -> Timber.e("", throwable));
+            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e("", throwable));
 
       smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCardUser, throwable -> Timber.e("", throwable));
+            .subscribe(this::handleSmartCardUser, throwable -> Timber.e("", throwable));
 
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+   }
+
+   private void handleSmartCardStatus(SmartCardStatus cardStatus) {
+      final boolean connected = cardStatus.connectionStatus().isConnected();
+      getView().setSmartCardStatusAttrs(cardStatus.batteryLevel(), connected,
+            cardStatus.lock(), cardStatus.stealthMode());
+   }
+
+   private void handleSmartCardUser(SmartCardUser smartCardUser) {
+      final Uri photoFileUri = smartCardUser.userPhoto() != null
+            ? Uri.fromFile(smartCardUser.userPhoto().monochrome())
+            : Uri.EMPTY;
+      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUri);
    }
 
    private void observeConnectionStatus() {
@@ -283,11 +292,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showRecordsInfo(List<CardStackViewModel> result);
 
-      void setSmartCard(SmartCard smartCard);
+      void setDefaultSmartCard();
 
-      void setSmartCardStatus(SmartCardStatus smartCardStatus);
+      void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
 
-      void setSmartCardUser(SmartCardUser smartCardUser);
+      void setSmartCardUserAttrs(String fullname, Uri photoFileUri);
 
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 

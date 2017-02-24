@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -20,9 +21,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -110,42 +110,29 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
    }
 
-   private void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
-      Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
-      int headerPosition = 0;
-      if (header != null) {
-         headerPosition = adapter.getItems().indexOf(header);
-         adapter.replaceItem(headerPosition, cardStackHeaderHolder);
-         adapter.notifyItemChanged(headerPosition);
-      } else {
-         adapter.addItem(headerPosition, cardStackHeaderHolder);
-         adapter.notifyItemInserted(headerPosition);
-      }
+   @Override
+   public void setDefaultSmartCard() {
+      notifySmartCardChanged(cardStackHeaderHolder);
    }
 
    @Override
-   public void setSmartCard(SmartCard smartCard) {
+   public void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode) {
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
-            .smartCard(smartCard)
+            .batteryLevel(batteryLevel)
+            .connected(connected)
+            .lock(lock)
+            .stealthMode(stealthMode)
             .build();
       notifySmartCardChanged(cardStackHeaderHolder);
    }
 
    @Override
-   public void setSmartCardStatus(SmartCardStatus smartCardStatus) {
+   public void setSmartCardUserAttrs(String fullname, Uri photoFileUri) {
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
-            .smartCardStatus(smartCardStatus)
-            .build();
-      notifySmartCardChanged(cardStackHeaderHolder);
-   }
-
-   @Override
-   public void setSmartCardUser(SmartCardUser smartCardUser) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-            .from(cardStackHeaderHolder)
-            .smartCardUser(smartCardUser)
+            .fullname(fullname)
+            .photoUri(photoFileUri)
             .build();
       notifySmartCardChanged(cardStackHeaderHolder);
    }
@@ -166,6 +153,19 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             .cardCount(count)
             .build();
       notifySmartCardChanged(cardStackHeaderHolder);
+   }
+
+   private void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
+      Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
+      int headerPosition = 0;
+      if (header != null) {
+         headerPosition = adapter.getItems().indexOf(header);
+         adapter.replaceItem(headerPosition, cardStackHeaderHolder);
+         adapter.notifyItemChanged(headerPosition);
+      } else {
+         adapter.addItem(headerPosition, cardStackHeaderHolder);
+         adapter.notifyItemInserted(headerPosition);
+      }
    }
 
    @Override

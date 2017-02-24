@@ -31,6 +31,7 @@
    <string name="dtl_perks_description">Perks</string>
    <string name="dtl_description">Description</string>
    <string name="ok">OK</string>
+   <string name="continue_option">CONTINUE</string>
    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
    <string name="permission_location_rationale">Access to the location is needed for detection</string>
    <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>

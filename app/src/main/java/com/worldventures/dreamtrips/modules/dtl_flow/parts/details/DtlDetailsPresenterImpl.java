@@ -287,29 +287,31 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void showAllReviews() {
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant));
+      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
    }
 
    @Override
    public void addNewComments(Merchant merchant) {
       //List Review have not to be null
-      if (!merchant.reviews().total().equals("")) {
-         ArrayList<ReviewObject> listReviews = ReviewObject.getReviewList(merchant.reviews().reviews());
-         if (listReviews != null && !listReviews.isEmpty()) {
-            //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
-            int countReview = Integer.parseInt(merchant.reviews().total());
-            float ratingMerchant = Float.parseFloat(merchant.reviews().ratingAverage());
-            if (countReview == 0) {
-               getView().addNoCommentsAndReviews();
-            } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
-               //If list size is major or equals 3, must be show read all message button
-               getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
-               getView().showButtonAllRateAndReview();
-               getView().setTextRateAndReviewButton(countReview);
-            } else {
-               //if it doesn't, only show the comment in the same screen
-               getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
-               getView().hideButtonAllRateAndReview();
+      if (merchant.reviews() != null) {
+         if (!merchant.reviews().total().equals("")) {
+            ArrayList<ReviewObject> listReviews = ReviewObject.getReviewList(merchant.reviews().reviews());
+            if (listReviews != null && !listReviews.isEmpty()) {
+               //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
+               int countReview = Integer.parseInt(merchant.reviews().total());
+               float ratingMerchant = Float.parseFloat(merchant.reviews().ratingAverage());
+               if (countReview == 0) {
+                  getView().addNoCommentsAndReviews();
+               } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
+                  //If list size is major or equals 3, must be show read all message button
+                  getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
+                  getView().showButtonAllRateAndReview();
+                  getView().setTextRateAndReviewButton(countReview);
+               } else {
+                  //if it doesn't, only show the comment in the same screen
+                  getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
+                  getView().hideButtonAllRateAndReview();
+               }
             }
          }
       }

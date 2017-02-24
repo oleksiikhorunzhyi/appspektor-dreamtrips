@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import java.util.ArrayList;
 import butterknife.InjectView;
+import android.support.design.widget.Snackbar;
 
 public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviewsPresenter, DtlReviewsPath>
         implements DtlReviewsScreen {
@@ -50,6 +51,14 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         });
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);
+        showMessage();
+    }
+
+    private void showMessage() {
+        String message = getPath().getMessage();
+        if (message != null && message.length() > 0){
+            Snackbar.make(mContainerDetail, message, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override

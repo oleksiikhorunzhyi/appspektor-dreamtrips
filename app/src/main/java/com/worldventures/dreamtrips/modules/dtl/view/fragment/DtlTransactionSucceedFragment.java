@@ -18,10 +18,12 @@ import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 
 import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import flow.Flow;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_transaction_succeed)
@@ -29,14 +31,14 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
 
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
-   @InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
+   //@InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
 
    @Inject CloseDialogEventDelegate closeDialogEventDelegate;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      properRatingBar.setListener(ratingBar -> getPresenter().rate(ratingBar.getRating()));
+      //properRatingBar.setListener(ratingBar -> getPresenter().rate(ratingBar.getRating()));
    }
 
    @Override
@@ -52,6 +54,11 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    public void setCongratulations(DtlTransactionResult result) {
       total.setText(String.valueOf((int) result.getTotal()));
       earned.setText(String.format("+%dpt", Double.valueOf(result.getEarnedPoints()).intValue()));
+   }
+
+   @Override
+   public void sendToReview(Merchant merchant) {
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
    }
 
    @OnClick(R.id.share)

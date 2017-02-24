@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 
 import javax.inject.Inject;
 
@@ -56,14 +57,11 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     @Override
     public void navigateToDetail(String message) {
         Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
-        if (Flow.get(getContext()).getHistory().size() < 2) {
-            Flow.get(getContext()).set(path);
-        } else {
-            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-            historyBuilder.pop();
-            historyBuilder.push(path);
-            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
-        }
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+        historyBuilder.pop();
+        historyBuilder.pop();
+        historyBuilder.push(path);
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
     }
 
     @Override
@@ -71,8 +69,18 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         boolean validated = false;
         if (getView().isMinimumCharacterWrote()) {
             if (getView().isMaximumCharacterWrote()) {
-                navigateToDetail(getContext().getString(R.string.snack_review_success));
-                validated = true;
+                if(getView().getRatingBar() > 0){
+                    if (merchant.reviews().total().equals("")){
+                        navigateToDetail(getContext().getString(R.string.snack_review_success));
+                    } else {
+                        Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+                        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+                        historyBuilder.pop();
+                        historyBuilder.push(path);
+                        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+                    }
+                    validated = true;
+                }
             } else {
                 getView().showSnackbarMessage(getContext().getString(R.string.review_comment_major_letter));
             }

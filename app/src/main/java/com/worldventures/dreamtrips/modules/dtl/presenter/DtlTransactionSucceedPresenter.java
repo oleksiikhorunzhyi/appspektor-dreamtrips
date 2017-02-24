@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
-
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
@@ -50,7 +49,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    }
 
    public void done() {
-      if (stars == 0) return;
+      //if (stars == 0) return;
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
@@ -61,7 +60,12 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                         .build())))
             .compose(bindViewIoToMainComposer())
             .subscribe(action -> {
-            }, apiErrorPresenter::handleError);
+               view.sendToReview(merchant);
+            }, throwable -> {
+               view.sendToReview(merchant);
+            });
+      //TODO: Not matter what happened is calls Review
+      view.sendToReview(merchant);
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes(), stars)));
    }
@@ -104,5 +108,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
       void showShareDialog(int amount, Merchant merchant);
 
       void setCongratulations(DtlTransactionResult result);
+
+      void sendToReview(Merchant merchant);
    }
 }

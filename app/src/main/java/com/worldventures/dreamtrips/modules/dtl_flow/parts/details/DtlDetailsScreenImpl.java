@@ -56,6 +56,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import flow.History;
+import flow.path.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +131,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    private void showMessage() {
       String message = getPath().getMessage();
       if (message != null && message.length() > 0){
-         Snackbar.make(merchantWrapper, message, Snackbar.LENGTH_SHORT).show();
+         Snackbar.make(merchantWrapper, message, Snackbar.LENGTH_LONG).show();
       }
    }
 
@@ -294,14 +297,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private void setRatingAndPerk() {
-
-      String stringTotal = merchant.reviews().total();
-
-      if (mRatingBar != null && merchant.reviews() != null
-            && stringTotal != null && !stringTotal.isEmpty()
-            && Integer.parseInt(merchant.reviews().total()) > 0) {
-         mRatingBar.setRating(Float.parseFloat(merchant.reviews().ratingAverage()));
-         textViewRating.setText(ViewUtils.getLabelReviews(getContext(), Integer.parseInt(merchant.reviews().total())));
+      if (merchant.reviews() != null) {
+         String stringTotal = merchant.reviews().total();
+         if (mRatingBar != null && merchant.reviews() != null
+                 && stringTotal != null && !stringTotal.isEmpty()
+                 && Integer.parseInt(merchant.reviews().total()) > 0) {
+            mRatingBar.setRating(Float.parseFloat(merchant.reviews().ratingAverage()));
+            textViewRating.setText(ViewUtils.getLabelReviews(getContext(), Integer.parseInt(merchant.reviews().total())));
+         }
       }
    }
 

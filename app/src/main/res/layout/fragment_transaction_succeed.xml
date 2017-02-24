@@ -87,6 +87,7 @@
 
    </LinearLayout>
 
+   <!--
    <View
          android:id="@+id/divider_1"
          android:layout_width="match_parent"
@@ -124,13 +125,13 @@
          app:prb_totalTicks="5"
          app:prb_clickable="true"
          />
-
+   -->
 
    <View
          android:id="@+id/divider_2"
          android:layout_width="match_parent"
          android:layout_height="0.5dp"
-         android:layout_below="@+id/rating_bar"
+         android:layout_below="@+id/total_holder"
          android:layout_marginTop="@dimen/spacing_small"
          android:background="@drawable/list_divider"
          />
@@ -150,7 +151,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/action_share"
-            android:textColor="@color/theme_main_darker"
+            android:textColor="@color/dtl_cities_text_color"
             />
 
       <Button
@@ -158,8 +159,8 @@
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ok"
-            android:textColor="@color/dtl_cities_text_color"
+            android:text="@string/continue_option"
+            android:textColor="@color/theme_main_darker"
             />
    </LinearLayout>
 

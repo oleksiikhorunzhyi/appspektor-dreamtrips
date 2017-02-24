@@ -24,6 +24,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -52,7 +53,10 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .createObservableResult(SmartCardUserCommand.fetch())
             .map(Command::getResult)
             .flatMap(user -> uploadPhotoOnServer(smartCardId, user.userPhoto().original())
-                  .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl)));
+                  .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl)))
+            .flatMap(user -> interactor.smartCardUserPipe().createObservableResult(SmartCardUserCommand.save(user))
+                  .observeOn(Schedulers.trampoline())
+                  .map(command -> user));
    }
 
    private Observable<String> uploadPhotoOnServer(String smartCardId, File file) {

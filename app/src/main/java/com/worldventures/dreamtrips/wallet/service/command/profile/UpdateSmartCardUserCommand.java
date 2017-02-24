@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -61,7 +60,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
             janet.createPipe(SmartCardUserCommand.class)
                   .createObservableResult(SmartCardUserCommand.fetch()),
             Pair::new)
-            .flatMap(pair -> uploadData(pair.first.getResult(), pair.second.getResult()))
+            .flatMap(pair -> uploadData(pair.first.getResult().smartCardId(), pair.second.getResult()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -72,14 +71,14 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
             changedFields.lastName());
    }
 
-   private Observable<SmartCardUser> uploadData(SmartCard smartCard, SmartCardUser user) {
-      return pushToSmartCard(smartCard, user)
-            .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard.smartCardId(), updateCardUserData));
+   private Observable<SmartCardUser> uploadData(String smartCardId, SmartCardUser user) {
+      return pushToSmartCard(smartCardId, user)
+            .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCardId, updateCardUserData));
    }
 
-   private Observable<UpdateCardUserData> pushToSmartCard(SmartCard smartCard, SmartCardUser user) {
-      return updateNameOnSmartCard(smartCard.smartCardId(), user)
-            .flatMap(userData -> uploadPhoto(smartCard, userData));
+   private Observable<UpdateCardUserData> pushToSmartCard(String smartCardId, SmartCardUser user) {
+      return updateNameOnSmartCard(smartCardId, user)
+            .flatMap(userData -> uploadPhotoIfNeed(user, smartCardId, userData));
    }
 
    private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
@@ -116,20 +115,20 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
       }
    }
 
-   private Observable<UpdateCardUserData> uploadPhoto(SmartCard smartCard, UpdateCardUserData userData) {
+   private Observable<UpdateCardUserData> uploadPhotoIfNeed(SmartCardUser user, String smartCardId, UpdateCardUserData userData) {
       final SmartCardUserPhoto photo = changedFields.photo();
       if (photo != null) {
          return janet.createPipe(UpdateUserPhotoAction.class)
                .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper.convertBytesForUpload(photo.monochrome())))
                .flatMap(action -> janet.createPipe(SmartCardUploaderyCommand.class)
-                     .createObservableResult(new SmartCardUploaderyCommand(smartCard.smartCardId(), photo.original())))
+                     .createObservableResult(new SmartCardUploaderyCommand(smartCardId, photo.original())))
                .map(command -> ImmutableUpdateCardUserData.builder()
                      .from(userData)
                      //photoUrl saved in UpdateProfileManager
                      .photoUrl(command.getResult().response().uploaderyPhoto().location())
                      .build());
       } else {
-         return Observable.just(userData);
+         return Observable.just(ImmutableUpdateCardUserData.copyOf(userData).withPhotoUrl(user.userPhoto().photoUrl()));
       }
    }
 }

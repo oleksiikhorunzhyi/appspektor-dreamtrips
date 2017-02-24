@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 
 import com.worldventures.dreamtrips.api.smart_card.user_info.UpdateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 
 import io.techery.janet.Command;
@@ -18,15 +16,15 @@ import rx.schedulers.Schedulers;
 class UpdateProfileManager {
 
    private final Janet janetApi;
-   private final Janet janetWallet;
+   private final SmartCardInteractor interactor;
    private UpdateDataHolder updateDataHolder;
 
    private String smartCardId;
    private UpdateCardUserData updateCardUserData;
 
-   UpdateProfileManager(Janet janetApi, Janet janetWallet, UpdateDataHolder updateDataHolder) {
+   UpdateProfileManager(Janet janetApi, SmartCardInteractor interactor, UpdateDataHolder updateDataHolder) {
       this.janetApi = janetApi;
-      this.janetWallet = janetWallet;
+      this.interactor = interactor;
       this.updateDataHolder = updateDataHolder;
    }
 
@@ -54,7 +52,7 @@ class UpdateProfileManager {
    }
 
    private Observable<SmartCardUser> save() {
-      return janetWallet.createPipe(SmartCardUserCommand.class)
+      return interactor.smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.update(this::bindNewFields))
             .map(Command::getResult);
    }

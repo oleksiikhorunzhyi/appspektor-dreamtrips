@@ -72,6 +72,9 @@ import dagger.Provides;
       library = true)
 public class BucketListModule {
 
+   public static final String ANALYTICS_DINING = "dining";
+   public static final String ANALYTICS_ACTIVITIES = "activities";
+   public static final String ANALYTICS_LOCATIONS = "locations";
    public static final String BUCKETLIST = Route.BUCKET_TABS.name();
 
    @Provides(type = Provides.Type.SET)

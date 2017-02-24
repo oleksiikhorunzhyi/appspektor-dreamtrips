@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 
 import java.util.ArrayList;
@@ -247,6 +248,19 @@ public class BucketItem extends BaseFeedEntity {
 
       public String getName() {
          return name;
+      }
+
+      public String getAnalyticsName() {
+         switch (this) {
+            case LOCATION:
+               return BucketListModule.ANALYTICS_LOCATIONS;
+            case ACTIVITY:
+               return BucketListModule.ANALYTICS_ACTIVITIES;
+            case DINING:
+               return BucketListModule.ANALYTICS_DINING;
+            default:
+               return "";
+         }
       }
 
       @StringRes

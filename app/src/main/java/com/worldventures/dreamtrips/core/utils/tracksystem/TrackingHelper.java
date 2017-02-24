@@ -376,7 +376,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_REJECT_FRIEND_REQUEST = "reject_friend_request";
    public static final String ATTRIBUTE_CANCEL_FRIEND_REQUEST = "cancel_friend_request";
    public static final String ATTRIBUTE_SEARCH = "search";
-   public static final String ATTRIBUTE_ADD = "add";
    public static final String ATTRIBUTE_FILTER = "filter";
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
    public static final String ATTRIBUTE_MAP = "map";

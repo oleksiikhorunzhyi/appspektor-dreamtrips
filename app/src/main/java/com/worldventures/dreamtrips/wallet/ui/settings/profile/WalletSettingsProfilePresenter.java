@@ -36,6 +36,9 @@ import io.techery.janet.Command;
 import io.techery.janet.JanetException;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func0;
 import timber.log.Timber;
 
 public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettingsProfilePresenter.Screen, WalletSettingsProfileState> {
@@ -91,21 +94,31 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             }, throwable -> Timber.e(throwable, ""));
    }
 
-   void setupUserData() {
+   void handleDoneAction() {
+      //noinspection all
+      final Screen view = getView();
+      handleToolbarAction(() ->
+            smartCardUserDataInteractor.updateSmartCardUserPipe()
+                  .send(new UpdateSmartCardUserCommand(
+                        ImmutableChangedFields.builder()
+                              .firstName(view.getFirstName())
+                              .middleName(view.getMiddleName())
+                              .lastName(view.getLastName())
+                              .photo(preparedPhoto)
+                              .build())));
+   }
+
+   void handleBackAction() {
+      handleToolbarAction(() -> getView().showRevertChangesDialog());
+   }
+
+   private void handleToolbarAction(Action0 action) {
+      getView().hidePhotoPicker();
       if (!isDataChanged()) {
          goBack();
          return;
       }
-      final Screen view = getView();
-      //noinspection all
-      smartCardUserDataInteractor.updateSmartCardUserPipe()
-            .send(new UpdateSmartCardUserCommand(
-                  ImmutableChangedFields.builder()
-                        .firstName(view.getFirstName())
-                        .middleName(view.getMiddleName())
-                        .lastName(view.getLastName())
-                        .photo(preparedPhoto)
-                        .build()));
+      action.call();
    }
 
    void cancelUploadServerUserData() {
@@ -114,16 +127,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    void setupInputMode() {
       activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-   }
-
-   void checkChangingAndGoBack() {
-      getView().hidePhotoPicker();
-
-      if (!isDataChanged()) {
-         goBack();
-      } else {
-         getView().showRevertChangesDialog();
-      }
    }
 
    void goBack() {

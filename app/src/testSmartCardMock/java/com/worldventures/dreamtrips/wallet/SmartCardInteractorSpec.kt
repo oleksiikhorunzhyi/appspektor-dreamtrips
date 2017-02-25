@@ -64,41 +64,6 @@ class SmartCardInteractorSpec : BaseSpec({
          smartCardSyncManager.connect()
       }
 
-      context("SmartCard connection status should be changed") {
-
-         it("Connect to smart card") {
-            val smartCard: SmartCard = mockSmartCard("4")
-            whenever(smartCard.cardStatus()).thenReturn(SmartCard.CardStatus.IN_PROVISIONING)
-
-            val testSubscriber: TestSubscriber<ActionState<ConnectSmartCardCommand>> = TestSubscriber()
-            janet.createPipe(ConnectSmartCardCommand::class.java)
-                  .createObservable(ConnectSmartCardCommand("4", false))
-                  .subscribe(testSubscriber)
-
-//            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === ConnectionStatus.CONNECTED })
-            verify(mockDb, times(1)).saveSmartCard(any())
-         }
-
-         it("Update SmartCard connection status") {
-            val activeSmartCardId = "4"
-            val smartCard: SmartCard = mockSmartCard(activeSmartCardId)
-            whenever(mockDb.smartCard).thenReturn(smartCard)
-
-            val connectionStatus = ConnectionStatus.DISCONNECTED
-            val testSubscriber: TestSubscriber<ActionState<ActiveSmartCardCommand>> = TestSubscriber()
-            janet.createPipe(ActiveSmartCardCommand::class.java)
-                  .createObservable(ActiveSmartCardCommand({
-                     ImmutableSmartCard.copyOf(it)
-//                           .withConnectionStatus(connectionStatus)
-                  }))
-                  .subscribe(testSubscriber)
-
-//            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === ConnectionStatus.DISCONNECTED })
-            verify(mockDb, atLeast(1)).saveSmartCard(any())
-         }
-
-      }
-
       context("Default card id is fetching") {
 
          it("should fetch default card id from storage") {

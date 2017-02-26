@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ReviewParams;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,14 +22,14 @@ public class AddReviewAction extends Command<Review> implements InjectableAction
    @Inject MapperyContext mapperyContext;
    @Inject ReviewsActionCreator reviewsActionCreator;
 
-   private final AddReviewsActionParams actionParams;
+   private final RequestReviewParams actionParams;
    private final ReviewParams reviewParams;
 
-   public static AddReviewAction create(AddReviewsActionParams params, ReviewParams reviewParams) {
+   public static AddReviewAction create(RequestReviewParams params, ReviewParams reviewParams) {
       return new AddReviewAction(params, reviewParams);
    }
 
-   public AddReviewAction(AddReviewsActionParams params, ReviewParams reviewParams) {
+   public AddReviewAction(RequestReviewParams params, ReviewParams reviewParams) {
       this.actionParams = params;
       this.reviewParams = reviewParams;
    }
@@ -38,10 +38,9 @@ public class AddReviewAction extends Command<Review> implements InjectableAction
    protected void run(CommandCallback<Review> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(AddReviewHttpAction.class)
-            .createObservableResult(new AddReviewHttpAction(actionParams.brandId(), actionParams.productId(), reviewParams))
+            .createObservableResult(new AddReviewHttpAction(actionParams, reviewParams))
             .map(AddReviewHttpAction::review)
             .map(attributes -> mapperyContext.convert(attributes, Review.class))
-            .doOnNext(review -> Timber.i("Successful :::::::----------->", review.reviewId()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 }

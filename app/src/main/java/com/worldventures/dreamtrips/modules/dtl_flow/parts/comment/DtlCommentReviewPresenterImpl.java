@@ -3,18 +3,21 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 import android.content.Context;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 
@@ -30,6 +33,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     PresentationInteractor presentationInteractor;
     @Inject
     MerchantsInteractor merchantInteractor;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
 
     private final Merchant merchant;
     private static final String BRAND_ID = "1";
@@ -84,7 +89,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
             } else {
                 getView().showSnackbarMessage(getContext().getString(R.string.review_comment_major_letter));
             }
-        } else {
+        } else if (getView().getSizeComment() > 0) {
             getView().showSnackbarMessage(getContext().getString(R.string.review_comment_minor_letter));
         }
         return validated;
@@ -92,6 +97,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     @Override
     public void sendAddReview(String description, Integer rating, Boolean verified) {
+        User user = appSessionHolder.get().get().getUser();
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
                 .observeWithReplay()
@@ -100,15 +106,23 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                         .onSuccess(this::onMerchantsLoaded)
                         .onProgress(this::onMerchantsLoading)
                         .onFail(this::onMerchantsLoadingError));
-        addReviewActionActionPipe.send(AddReviewAction.create(ImmutableAddReviewsActionParams.builder()
+        addReviewActionActionPipe.send(AddReviewAction.create(ImmutableRequestReviewParams.builder()
                 .brandId(BRAND_ID)
                 .productId(merchant.id())
-                .build(), ImmutableReviewParams.builder()
-                .userEmail(merchant.email())
-                .userNickName(merchant.displayName())
+                .userEmail(user.getEmail())
+                .userNickName(user.getUsername())
                 .reviewText(description)
                 .rating(String.valueOf(rating))
                 .verified(verified)
+                .userId(String.valueOf(user.getId()))
+                .deviceFingerprint(BRAND_ID)
+                .build(), ImmutableReviewParams.builder()
+                .userEmail(user.getEmail())
+                .userNickName(user.getUsername())
+                .reviewText(description)
+                .rating(String.valueOf(rating))
+                .verified(verified)
+                .userId(String.valueOf(user.getId()))
                 .build()));
     }
 

@@ -15,10 +15,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
@@ -32,12 +30,12 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.ScrollingMan
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -192,13 +190,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onClickFood() {
       if (!filterFood.isSelected()) {
-         List<String> merchantType = new ArrayList<>();
-         merchantType.add(FilterData.RESTAURANT);
-         merchantType.add(FilterData.BAR);
-         filterFood.setSelected(true);
-         filterEntertainment.setSelected(false);
-         filterSpa.setSelected(false);
-         loadMerchantsAndAmenities(merchantType, R.string.dtlt_search_hint);
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
       }
    }
 
@@ -206,12 +199,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onClickEntertainment() {
       if (!filterEntertainment.isSelected()) {
-         List<String> merchantType = new ArrayList<>();
-         merchantType.add(FilterData.ENTERTAINMENT);
-         filterFood.setSelected(false);
-         filterEntertainment.setSelected(true);
-         filterSpa.setSelected(false);
-         loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_entertainment);
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
       }
    }
 
@@ -219,12 +208,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onClickSpa() {
       if (!filterSpa.isSelected()) {
-         List<String> merchantType = new ArrayList<>();
-         merchantType.add(FilterData.SPAS);
-         filterFood.setSelected(false);
-         filterEntertainment.setSelected(false);
-         filterSpa.setSelected(true);
-         loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_spa);
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
       }
    }
 
@@ -408,17 +393,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    private void updateFiltersView(int stringResource) {
 
-      ViewUtils.setCompatDrawable(backgroundFood, filterFood.isSelected() ?
-            R.drawable.circle_merchant_button_selected : R.drawable.circle_merchant_button);
+      ViewUtils.setCompatDrawable(backgroundFood, MerchantTypeUtil.filterMerchantDrawable(filterFood));
 
-      ViewUtils.setCompatDrawable(backgroundEntertainment, filterEntertainment.isSelected() ?
-            R.drawable.circle_merchant_button_selected : R.drawable.circle_merchant_button);
+      ViewUtils.setCompatDrawable(backgroundEntertainment, MerchantTypeUtil.filterMerchantDrawable(filterEntertainment));
 
-      ViewUtils.setCompatDrawable(backgroundSpa, filterSpa.isSelected() ?
-            R.drawable.circle_merchant_button_selected : R.drawable.circle_merchant_button);
+      ViewUtils.setCompatDrawable(backgroundSpa, MerchantTypeUtil.filterMerchantDrawable(filterSpa));
 
       if (stringResource != 0 && dtlToolbar != null) {
-         dtlToolbar.setSearchCaption(ViewUtils.getStringById(getContext(), stringResource));
+         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
       }
    }
 

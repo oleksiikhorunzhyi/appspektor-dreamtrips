@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
@@ -44,7 +46,6 @@ import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.ClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -216,42 +217,29 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
    }
 
-    @OnClick(R.id.btn_filter_merchant_food)
-    public void onFilterFoodClick() {
-        if (!filterFood.isSelected()) {
-            List<String> merchantType = new ArrayList<>();
-            merchantType.add(FilterData.RESTAURANT);
-            merchantType.add(FilterData.BAR);
-            filterFood.setSelected(true);
-            filterEntertainment.setSelected(false);
-            filterSpa.setSelected(false);
-            loadMerchantsAndAmenities(merchantType, R.string.dtlt_search_hint);
-        }
-    }
+   @OnClick(R.id.btn_filter_merchant_food)
+   public void onFilterFoodClick() {
+      if (!filterFood.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
+      }
+   }
 
-    @OnClick(R.id.btn_filter_merchant_entertainment)
-    public void onFilterEntertainmentClick() {
-        if (!filterEntertainment.isSelected()) {
-            List<String> merchantType = new ArrayList<>();
-            merchantType.add(FilterData.ENTERTAINMENT);
-            filterFood.setSelected(false);
-            filterEntertainment.setSelected(true);
-            filterSpa.setSelected(false);
-            loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_entertainment);
-        }
-    }
+   @OnClick(R.id.btn_filter_merchant_entertainment)
+   public void onFilterEntertainmentClick() {
+      if (!filterEntertainment.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
+      }
+   }
 
-    @OnClick(R.id.btn_filter_merchant_spa)
-    public void onFilterSpaClick() {
-        if (!filterSpa.isSelected()) {
-            List<String> merchantType = new ArrayList<>();
-            merchantType.add(FilterData.SPAS);
-            filterFood.setSelected(false);
-            filterEntertainment.setSelected(false);
-            filterSpa.setSelected(true);
-            loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_spa);
-        }
-    }
+   @OnClick(R.id.btn_filter_merchant_spa)
+   public void onFilterSpaClick() {
+      if (!filterSpa.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
+      }
+   }
 
    @Override
    public void showProgress(boolean show) {
@@ -426,26 +414,20 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    private void updateFiltersView(int stringResource) {
 
-      ViewUtils.setCompatDrawable(filterFood, filterFood.isSelected() ?
-            R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
+      ViewUtils.setCompatDrawable(filterFood, MerchantTypeUtil.filterMapDrawable(filterFood));
 
-      ViewUtils.setCompatDrawable(filterEntertainment, filterEntertainment.isSelected() ?
-            R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
+      ViewUtils.setCompatDrawable(filterEntertainment, MerchantTypeUtil.filterMapDrawable(filterEntertainment));
 
-      ViewUtils.setCompatDrawable(filterSpa, filterSpa.isSelected() ?
-            R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
+      ViewUtils.setCompatDrawable(filterSpa, MerchantTypeUtil.filterMapDrawable(filterSpa));
 
-      ViewUtils.setTextColor(filterFood, filterFood.isSelected() ?
-            R.color.white : R.color.dtl_text_color_disabled_filters);
+      ViewUtils.setTextColor((Button) filterFood, MerchantTypeUtil.filterMerchantColor(filterFood));
 
-      ViewUtils.setTextColor(filterEntertainment, filterEntertainment.isSelected() ?
-            R.color.white : R.color.dtl_text_color_disabled_filters);
+      ViewUtils.setTextColor((Button) filterEntertainment, MerchantTypeUtil.filterMerchantColor(filterEntertainment));
 
-      ViewUtils.setTextColor(filterSpa, filterSpa.isSelected() ?
-            R.color.white : R.color.dtl_text_color_disabled_filters);
+      ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
 
       if (stringResource != 0 && dtlToolbar != null) {
-         dtlToolbar.setSearchCaption(ViewUtils.getStringById(getContext(), stringResource));
+         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
       }
    }
 

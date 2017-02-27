@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,14 +55,6 @@ public class FilterDataInteractor {
                   .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
                   .isOffersOnly(filterData.isOffersOnly())
                   .build())
-            .subscribe(this::send);
-   }
-
-   public void resetAmenities() {
-      getLastFilterObservable()
-            .map(filterData -> ImmutableFilterData.copyOf(filterData)
-                  .withPage(0)
-                  .withSelectedAmenities(Collections.emptyList()))
             .subscribe(this::send);
    }
 

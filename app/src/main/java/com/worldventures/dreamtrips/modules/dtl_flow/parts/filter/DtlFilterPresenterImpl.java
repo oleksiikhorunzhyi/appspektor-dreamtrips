@@ -75,7 +75,7 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
    @Override
    public void retryAmenities() {
-      attributesInteractor.requestAmenities();
+      attributesInteractor.requestAmenities(null);
    }
 
    private void bindFilterUpdates() {

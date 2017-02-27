@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -166,9 +167,8 @@ public class ViewUtils {
       else view.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), resId));
    }
 
-   public static void setTextColor(View view, @ColorRes int color) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ((Button) view).setTextColor(view.getContext().getColor(color));
-      else ((Button) view).setTextColor(ContextCompat.getColor(view.getContext(), color));
+   public static void setTextColor(@NonNull Button view, @ColorRes int color) {
+      view.setTextColor(ContextCompat.getColor(view.getContext(), color));
    }
 
    public static void setTextOrHideView(TextView textView, CharSequence text) {
@@ -185,9 +185,5 @@ public class ViewUtils {
 
    public static void setViewVisibility(int visibility, View... views) {
       Queryable.from(views).forEachR(view -> setViewVisibility(view, visibility));
-   }
-
-   public static String getStringById(Context context, @StringRes int text) {
-      return context.getResources().getString(text);
    }
 }

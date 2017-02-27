@@ -6,10 +6,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
-/**
- * Created by Dmitry Reutov on 1/12/17.
- */
-
 public class RecordFinancialServiceToFinancialServiceConverter implements Converter<Record.FinancialService, FinancialService> {
 
    @Override
@@ -38,8 +34,8 @@ public class RecordFinancialServiceToFinancialServiceConverter implements Conver
          case AMEX:
             financialService = FinancialService.AMEX;
             break;
-         case SAMPLE:
-            financialService = FinancialService.SAMPLE;
+         case GENERIC:
+            financialService = FinancialService.GENERIC;
             break;
       }
       return financialService;

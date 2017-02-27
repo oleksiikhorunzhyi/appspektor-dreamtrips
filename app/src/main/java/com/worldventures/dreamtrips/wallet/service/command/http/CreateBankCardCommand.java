@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
-import com.worldventures.dreamtrips.api.smart_card.bank_info.GetBankInfoHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
@@ -17,7 +15,6 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
-import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
@@ -35,20 +32,19 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
 
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
-      Observable.zip(Observable.fromCallable(() -> mappery.convert(swipedCard, BankCard.class)),
-            janet.createPipe(GetBankInfoHttpAction.class)
-                  .createObservableResult(new GetBankInfoHttpAction(BankCardHelper.obtainIin(swipedCard.cardNumber())))
-                  .map(action -> mappery.convert(action.response(), RecordIssuerInfo.class)),
-            this::createBankCard)
-            .subscribe(callback::onSuccess, callback::onFail);
+      BankCard bankCard = mappery.convert(swipedCard, BankCard.class);
+      if (BankCardHelper.isAmexBank(swipedCard.cardNumber())) {
+         bankCard = setAmexCardType(bankCard);
+      }
+      callback.onSuccess(bankCard);
    }
 
-   private BankCard createBankCard(BankCard bankCard, RecordIssuerInfo recordIssuerInfo) {
-      if (BankCardHelper.isAmexBank(swipedCard.cardNumber())) {
-         recordIssuerInfo = ImmutableRecordIssuerInfo.copyOf(recordIssuerInfo)
-               .withFinancialService(FinancialService.AMEX);
-      }
-      return ImmutableBankCard.copyOf(bankCard)
-            .withIssuerInfo(recordIssuerInfo);
+   private BankCard setAmexCardType(BankCard bankCard) {
+      return ImmutableBankCard.builder()
+            .from(bankCard)
+            .issuerInfo(ImmutableRecordIssuerInfo.builder()
+                  .from(bankCard.issuerInfo())
+                  .financialService(FinancialService.AMEX).build())
+            .build();
    }
 }

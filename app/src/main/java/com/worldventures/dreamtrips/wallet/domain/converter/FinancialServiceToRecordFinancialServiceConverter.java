@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 
@@ -35,8 +34,8 @@ public class FinancialServiceToRecordFinancialServiceConverter implements Conver
          case AMEX:
             recordFinancialService = Record.FinancialService.AMEX;
             break;
-         case SAMPLE:
-            recordFinancialService = Record.FinancialService.SAMPLE;
+         case GENERIC:
+            recordFinancialService = Record.FinancialService.GENERIC;
             break;
       }
       return recordFinancialService;

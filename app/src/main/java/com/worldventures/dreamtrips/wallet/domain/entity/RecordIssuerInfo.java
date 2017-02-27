@@ -15,10 +15,9 @@ public abstract class RecordIssuerInfo {
       return "";
    }
 
-   //TODO: financialService should be null
    @Value.Default
    public FinancialService financialService() {
-      return FinancialService.MASTERCARD;
+      return FinancialService.GENERIC;
    }
 
    @Value.Default

@@ -5,5 +5,5 @@ public enum FinancialService {
    MASTERCARD,
    DISCOVER,
    AMEX,
-   SAMPLE
+   GENERIC
 }

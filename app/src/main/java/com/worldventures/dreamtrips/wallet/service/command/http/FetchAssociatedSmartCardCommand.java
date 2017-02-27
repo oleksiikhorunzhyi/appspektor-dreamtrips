@@ -43,7 +43,8 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    @Override
    protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
       SmartCard smartCard = getSmartCardFromCache();
-      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE) {
+      SmartCardUser user = getSmartCardUserFromCache();
+      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE && user != null) {
          callback.onSuccess(createAssociatedCard(smartCard, snappyRepository.getSmartCardDetails()));
          return;
       }
@@ -62,6 +63,11 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    private SmartCard getSmartCardFromCache() {
       return snappyRepository.getSmartCard();
    }
+
+   private SmartCardUser getSmartCardUserFromCache() {
+      return snappyRepository.getSmartCardUser();
+   }
+
 
    private Observable<FetchAssociatedSmartCardCommand.AssociatedCard> handleResponse(List<SmartCardInfo> listSmartCardInfo) {
       if (listSmartCardInfo.isEmpty()) return Observable.just(ImmutableAssociatedCard.of(false));

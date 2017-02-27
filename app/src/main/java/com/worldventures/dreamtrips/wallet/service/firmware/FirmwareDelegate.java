@@ -1,22 +1,25 @@
 package com.worldventures.dreamtrips.wallet.service.firmware;
 
+import android.support.v4.util.Pair;
+
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 
-import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
+import io.techery.janet.smartcard.util.SmartCardSDK;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
+import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.CONNECTED;
 
 @Deprecated
 class FirmwareDelegate {
-
-   private static final String SDK_FIRMWARE_VERSION_IF_NOT_PRESENT = "1.0.0";
 
    private SmartCardInteractor smartCardInteractor;
    private FirmwareInteractor firmwareInteractor;
@@ -27,21 +30,29 @@ class FirmwareDelegate {
    }
 
    void fetchFirmwareInfo() {
-      Observable<SmartCard> observable = smartCardInteractor
-            .activeSmartCardPipe()
-            .observeSuccessWithReplay()
-            .map(Command::getResult)
-            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED)
-            .filter(smartCard -> smartCard.firmwareVersion() != null)
-            .take(1);
-      observable.subscribe(this::fetchFirmwareInfo, throwable -> Timber.e(throwable, "Error while loading smartcard"));
+      Observable.zip(
+            smartCardInteractor.activeSmartCardPipe()
+                  .createObservableResult(new ActiveSmartCardCommand()),
+            smartCardInteractor.deviceStatePipe()
+                  .createObservableResult(DeviceStateCommand.fetch()),
+            (activeCommand, cardStateCommand) -> new Pair<>(activeCommand.getResult(), cardStateCommand.getResult()))
+            .filter(pair -> pair.second.connectionStatus() == CONNECTED
+                  && pair.first.cardStatus() == SmartCard.CardStatus.ACTIVE)
+            .flatMap(pair -> fetchSmartCardFirmware())
+            .subscribe(this::fetchServerFirmwareInfo,
+                  throwable -> Timber.e(throwable, "Error while loading smartcard"));
    }
 
-   private void fetchFirmwareInfo(SmartCard smartCard) {
-      if (smartCard.firmwareVersion() == null) return;
-      String sdkVersion = smartCard.sdkVersion().isEmpty() ? SDK_FIRMWARE_VERSION_IF_NOT_PRESENT : smartCard
-            .sdkVersion();
-      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand(smartCard.smartCardId(), sdkVersion, smartCard.firmwareVersion()));
+   private Observable<SmartCardFirmware> fetchSmartCardFirmware() {
+      return smartCardInteractor
+                  .smartCardFirmwarePipe()
+                  .observeSuccessWithReplay()
+                  .map(Command::getResult);
+   }
+
+   private void fetchServerFirmwareInfo(SmartCardFirmware smartCardFirmware) {
+      if (smartCardFirmware == null) return;
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand(SmartCardSDK.getSDKVersion(), smartCardFirmware));
    }
 
    Observable<FirmwareUpdateData> observeFirmwareInfo() {
@@ -50,7 +61,4 @@ class FirmwareDelegate {
             .map(Command::getResult);
    }
 
-   ActionPipe<FetchFirmwareInfoCommand> fetchFirmwareInfoPipe() {
-      return firmwareInteractor.firmwareInfoPipe();
-   }
 }

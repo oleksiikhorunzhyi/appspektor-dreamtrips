@@ -11,12 +11,12 @@ import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUse
 
 import javax.inject.Inject;
 
-public class SmartCardDetailsStorage implements ActionStorage<SmartCardDetails> {
+public class SmartCardDetailsActionStorage implements ActionStorage<SmartCardDetails> {
 
    private final SnappyRepository snappyRepository;
 
    @Inject
-   public SmartCardDetailsStorage(SnappyRepository snappyRepository) {
+   public SmartCardDetailsActionStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

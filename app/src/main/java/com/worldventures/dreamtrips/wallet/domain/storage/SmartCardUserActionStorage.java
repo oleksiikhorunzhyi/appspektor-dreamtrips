@@ -1,38 +1,34 @@
 package com.worldventures.dreamtrips.wallet.domain.storage;
 
-
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 
-public class SmartCardStorage implements ActionStorage<SmartCard> {
+public class SmartCardUserActionStorage implements ActionStorage<SmartCardUser>{
 
    private final SnappyRepository snappyRepository;
 
-   public SmartCardStorage(SnappyRepository snappyRepository) {
+   public SmartCardUserActionStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 
    @Override
-   public void save(@Nullable CacheBundle params, SmartCard data) {
-      if (data != null) {
-         snappyRepository.saveSmartCard(data);
-      }
+   public void save(@Nullable CacheBundle params, SmartCardUser data) {
+      snappyRepository.saveSmartCardUser(data);
    }
 
    @Override
-   public SmartCard get(@Nullable CacheBundle bundle) {
-      return snappyRepository.getSmartCard();
+   public SmartCardUser get(@Nullable CacheBundle action) {
+      return snappyRepository.getSmartCardUser();
    }
-
 
    @Override
    public Class<? extends CachedAction> getActionClass() {
-      return ActiveSmartCardCommand.class;
+      return SmartCardUserCommand.class;
    }
 }

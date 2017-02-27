@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -55,14 +54,11 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;
-   private final SmartCard smartCard;
 
-   public WizardEditProfilePresenter(Context context, Injector injector, SmartCard smartCard) {
+   public WizardEditProfilePresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
    }
 
    @Override
@@ -91,7 +87,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       }
    }
 
-   public void setupInputMode() {
+   void setupInputMode() {
       activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
    }
 
@@ -127,8 +123,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                   .wrap());
    }
 
-   private void onUserSetupSuccess(SmartCard smartCard) {
-      navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
+   private void onUserSetupSuccess(SmartCardUser user) {
+      navigator.go(new WizardPinSetupPath(Action.SETUP));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {
@@ -141,7 +137,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    private void sendPhotoAnalyticAction() {
       String[] userNames = getView().getUserName();
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(userNames[0], userNames[1], userNames[2], smartCard.smartCardId())));
+            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(userNames[0], userNames[1], userNames[2], null)));
    }
 
    void goToBack() {
@@ -159,8 +155,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    void setupUserData() {
       final String[] userNames = getView().getUserName();
-      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2],
-            preparedPhoto, wizardMemoryStorage.getBarcode(), smartCard));
+      wizardInteractor.setupUserDataPipe()
+            .send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2], preparedPhoto));
    }
 
    private void fetchAndStoreDefaultAddress() {

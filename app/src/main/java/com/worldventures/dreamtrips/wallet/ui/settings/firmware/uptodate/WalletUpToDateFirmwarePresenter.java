@@ -8,7 +8,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ViewSdkVersionAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -35,10 +34,10 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
    }
 
    private void observeSmartCard() {
-      smartCardInteractor.activeSmartCardPipe()
+      smartCardInteractor.smartCardFirmwarePipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bindSmartCard(command.getResult()));
+            .subscribe(command -> bindSmartCardFirmware(command.getResult()));
    }
 
    private void sendAnalyticViewAction() {
@@ -46,8 +45,8 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
-   private void bindSmartCard(SmartCard smartCard) {
-      getView().version(smartCard.firmwareVersion());
+   private void bindSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
+      getView().version(smartCardFirmware);
    }
 
    void goBack() {

@@ -7,11 +7,11 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
@@ -70,13 +70,17 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
-      offlineModeSwitcherObservable = RxCompoundButton.checkedChanges(offlineModeSwitcher);
-      lockSwitcherObservable = RxView.clicks(lockSwitcher).map(aVoid -> lockSwitcher.isChecked());
-      stealthModeSwitcherObservable = RxView.clicks(stealthModeSwitcher).map(aVoid -> stealthModeSwitcher.isChecked());
-      alertConnectionSwitcherObservable = RxCompoundButton.checkedChanges(alertConnectionSwitcher);
+      offlineModeSwitcherObservable = observeClick(offlineModeSwitcher);
+      lockSwitcherObservable = observeClick(lockSwitcher);
+      stealthModeSwitcherObservable = observeClick(stealthModeSwitcher);
+      alertConnectionSwitcherObservable = observeClick(alertConnectionSwitcher);
 
-      testConnectionObservable = RxCompoundButton.checkedChanges(testConnectionSwitcher);
-      testFailInstallationObservable = RxCompoundButton.checkedChanges(testFailInstallFirmwareSwitcher);
+      testConnectionObservable = observeClick(testConnectionSwitcher);
+      testFailInstallationObservable = observeClick(testFailInstallFirmwareSwitcher);
+   }
+
+   private Observable<Boolean> observeClick(CompoundButton compoundButton) {
+      return RxView.clicks(compoundButton).map(aVoid -> compoundButton.isChecked());
    }
 
    @NonNull

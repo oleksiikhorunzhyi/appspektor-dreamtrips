@@ -26,11 +26,8 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   private final SmartCard smartCard;
-
-   public WizardAssignUserPresenter(Context context, Injector injector, SmartCard smartCard) {
+   public WizardAssignUserPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
    }
 
    @Override
@@ -40,11 +37,11 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
       onWizardComplete();
    }
 
-   public void onWizardComplete() {
-      wizardInteractor.completePipe().send(new WizardCompleteCommand(smartCard));
+   void onWizardComplete() {
+      wizardInteractor.completePipe().send(new WizardCompleteCommand());
    }
 
-   public void onWizardCancel() {
+   void onWizardCancel() {
       navigator.goBack();
    }
 

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -42,16 +43,20 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    @Override
    protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
       SmartCard smartCard = getSmartCardFromCache();
-      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE) {
+      SmartCardUser user = getSmartCardUserFromCache();
+      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE && user != null) {
          callback.onSuccess(createAssociatedCard(smartCard, snappyRepository.getSmartCardDetails()));
          return;
       }
       janet.createPipe(GetAssociatedCardsHttpAction.class)
             .createObservableResult(new GetAssociatedCardsHttpAction(propertiesProvider.deviceId()))
             .flatMap(action -> handleResponse(action.response()))
-            .doOnNext(result -> janetWallet.createPipe(ConnectSmartCardCommand.class)
-                  .send(new ConnectSmartCardCommand(result.smartCard(), true, true))
-            )
+            .doOnNext(result -> {
+               if (result.exist()) {
+                  janetWallet.createPipe(ConnectSmartCardCommand.class)
+                        .send(new ConnectSmartCardCommand(result.smartCard().smartCardId(), true));
+               }
+            })
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -59,44 +64,64 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
       return snappyRepository.getSmartCard();
    }
 
+   private SmartCardUser getSmartCardUserFromCache() {
+      return snappyRepository.getSmartCardUser();
+   }
+
+
    private Observable<FetchAssociatedSmartCardCommand.AssociatedCard> handleResponse(List<SmartCardInfo> listSmartCardInfo) {
       if (listSmartCardInfo.isEmpty()) return Observable.just(ImmutableAssociatedCard.of(false));
       final SmartCardInfo smartCardInfo = listSmartCardInfo.get(0);
 
       final SmartCardDetails smartCardDetails = mappery.convert(smartCardInfo, SmartCardDetails.class);
+      final SmartCard smartCard = createSmartCard(smartCardInfo);
 
-      /// TODO: 12/16/16 save photo url
-      return createSmartCard(smartCardInfo)
-            .flatMap(sc -> save(sc, smartCardDetails));
+      return createSmartCardUser(smartCardInfo)
+            .flatMap(user -> save(smartCard, user, smartCardDetails));
    }
 
-   private Observable<SmartCard> createSmartCard(SmartCardInfo smartCardInfo) {
-      final SmartCard smartCard = mappery.convert(smartCardInfo, SmartCard.class);
-      if (smartCardInfo.user() != null && smartCardInfo.user().displayPhoto() != null) {
-         final String photoUrl = smartCardInfo.user().displayPhoto();
+   private Observable<SmartCardUser> createSmartCardUser(SmartCardInfo smartCardInfo) {
+      final com.worldventures.dreamtrips.api.smart_card.association_info.model.SmartCardUser user = smartCardInfo.user();
+      final SmartCardUser scUser = ImmutableSmartCardUser.builder()
+            .firstName(user.firstName())
+            .middleName(user.middleName() != null ? user.middleName() : "")
+            .lastName(user.lastName() != null ? user.lastName() : "")
+            .build();
+
+      if (user.displayPhoto() != null) {
+         final String photoUrl = user.displayPhoto();
          return janetWallet.createPipe(CompressImageForSmartCardCommand.class)
                .createObservableResult(new CompressImageForSmartCardCommand(photoUrl))
-               .map(command -> changeUserPhoto(smartCard, command.getResult()));
+               .map(command -> changeUserPhoto(scUser, command.getResult()));
       } else {
-         return Observable.just(smartCard);
+         return Observable.just(scUser);
       }
    }
 
-   private SmartCard changeUserPhoto(SmartCard smartCard, SmartCardUserPhoto smartCardUserPhoto) {
+   private SmartCard createSmartCard(SmartCardInfo smartCardInfo) {
+      return ImmutableSmartCard.builder()
+            .smartCardId(String.valueOf(smartCardInfo.scId()))
+            .deviceId(smartCardInfo.deviceId())
+            .cardStatus(SmartCard.CardStatus.ACTIVE)
+            .build();
+   }
+
+   private SmartCardUser changeUserPhoto(SmartCardUser user, SmartCardUserPhoto smartCardUserPhoto) {
       final File monochromeFile = smartCardUserPhoto.monochrome();
       if (monochromeFile != null) {
-         return ImmutableSmartCard.builder()
-               .from(smartCard)
-               .user(ImmutableSmartCardUser.builder().from(smartCard.user()).userPhoto(smartCardUserPhoto).build())
+         return ImmutableSmartCardUser.builder()
+               .from(user)
+               .userPhoto(smartCardUserPhoto)
                .build();
       } else {
-         return smartCard;
+         return user;
       }
    }
 
-   private Observable<AssociatedCard> save(SmartCard smartCard, SmartCardDetails smartCardDetails) {
+   private Observable<AssociatedCard> save(SmartCard smartCard, SmartCardUser user, SmartCardDetails smartCardDetails) {
       snappyRepository.saveSmartCard(smartCard);
       snappyRepository.saveSmartCardDetails(smartCardDetails);
+      snappyRepository.saveSmartCardUser(user);
 
       return Observable.just(createAssociatedCard(smartCard, smartCardDetails));
    }

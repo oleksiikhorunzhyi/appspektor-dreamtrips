@@ -34,6 +34,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
          try {
             snappyRepository.deleteWalletDefaultCardId();
             cardListStorage.deleteWalletCardList();
+            snappyRepository.deleteSmartCardFirmware();
             snappyRepository.deleteSmartCardDetails();
             snappyRepository.deleteSmartCard();
             snappyRepository.deleteTermsAndConditions();

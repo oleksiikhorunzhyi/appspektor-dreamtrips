@@ -63,7 +63,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.done:
-               getPresenter().setupUserData();
+               getPresenter().handleDoneAction();
                break;
          }
          return false;
@@ -107,7 +107,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    protected void onNavigationClick() {
-      presenter.checkChangingAndGoBack();
+      presenter.handleBackAction();
    }
 
    @Override
@@ -206,7 +206,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
             .positiveText(R.string.ok)
             .onPositive((dialog, which) -> {
                if (throwable instanceof FormatException) getPresenter().cancelUpdating();
-               else getPresenter().setupUserData();
+               else getPresenter().handleDoneAction();
             })
             .onNegative((dialog, which) -> getPresenter().cancelUpdating())
             .negativeText(R.string.cancel)

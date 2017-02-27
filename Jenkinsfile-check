@@ -19,7 +19,7 @@ utils.runBuild('android', utils.notifiers.gitlab(this)) {
                   [$class: 'CleanBeforeCheckout'],
                   [$class : 'CloneOption',
                    shallow: true,
-                   depth  : 10,
+                   depth  : 100,
                    noTags : true,
                    timeout: 30]
             ]

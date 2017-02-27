@@ -67,9 +67,18 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
    }
 
    @Override
-   public void onProvideSmartCard(final SmartCardFirmware smartCardFirmware, final String smartCardId, final SmartCardUser user) {
-      tvUserName.setText(user.fullName());
+   public void onProvidePayCardInfo(final int cardStored, final int cardAvailable) {
+      tvQtyCardStored.setText(String.valueOf(cardStored));
+      tvQtyCardAvailable.setText(String.valueOf(cardAvailable));
+   }
+
+   @Override
+   public void setSmartCardId(String smartCardId) {
       tvSmartCardId.setText(smartCardId);
+   }
+
+   @Override
+   public void setSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
       tvNordicFWVersion.setText(smartCardFirmware.nordicAppVersion());
       tvAtmelCardFWVersion.setText(smartCardFirmware.internalAtmelVersion());
       tvBootLoaderFWVersion.setText(smartCardFirmware.nrfBootloaderVersion());
@@ -77,8 +86,7 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
    }
 
    @Override
-   public void onProvidePayCardInfo(final int cardStored, final int cardAvailable) {
-      tvQtyCardStored.setText(String.valueOf(cardStored));
-      tvQtyCardAvailable.setText(String.valueOf(cardAvailable));
+   public void setSmartCardUser(SmartCardUser smartCardUser) {
+      tvUserName.setText(smartCardUser.fullName());
    }
 }

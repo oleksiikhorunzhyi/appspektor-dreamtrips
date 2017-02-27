@@ -54,7 +54,7 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    @NonNull
    @Override
    public WizardPinSetupPresenter createPresenter() {
-      return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().smartCard, getPath().action);
+      return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().action);
    }
 
    @OnClick(R.id.button_next)

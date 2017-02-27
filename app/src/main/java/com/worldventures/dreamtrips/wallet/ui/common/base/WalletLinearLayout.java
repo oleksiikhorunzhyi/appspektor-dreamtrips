@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import butterknife.ButterKnife;
@@ -49,14 +49,13 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             .inflate(R.layout.wallet_smartcard_connection_plank, this, false);
    }
 
-   public void showConnectionStatus(SmartCard.ConnectionStatus connectionStatus) {
+   public void showConnectionStatus(ConnectionStatus connectionStatus) {
       if (!visibleConnectionLabel) return;
 
       switch (connectionStatus) {
          case CONNECTED:
             removeView(connectionLabel);
             break;
-         case ERROR:
          case DISCONNECTED:
             connectionLabel.setText(R.string.wallet_smart_card_enable_instruction);
             if (indexOfChild(connectionLabel) < 0) {

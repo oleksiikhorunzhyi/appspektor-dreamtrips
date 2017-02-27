@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.wallet.analytics.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -30,7 +29,6 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject PermissionDispatcher permissionDispatcher;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
 
    public WizardScanBarcodePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -51,7 +49,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .onSuccess(command -> {
                      analyticsInteractor.walletAnalyticsCommandPipe()
                            .send(new WalletAnalyticsCommand(new ScidScannedAction(command.getSmartCardId())));
-                     navigator.go(new PairKeyPath());
+                     navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.SCAN, command.getSmartCardId()));
                   })
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
                         .defaultAction(command -> getView().restartCamera())
@@ -59,7 +57,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .wrap());
    }
 
-   public void requestCamera() {
+   void requestCamera() {
       permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
             .compose(bindView())
             .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().startCamera())
@@ -67,12 +65,11 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .onPermissionDeniedAction(() -> getView().showDeniedForCamera()));
    }
 
-   public void barcodeScanned(String barcode) {
-      wizardMemoryStorage.saveBarcode(barcode);
+   void barcodeScanned(String barcode) {
       wizardInteractor.availabilitySmartCardCommandActionPipe().send(new AvailabilitySmartCardCommand(barcode));
    }
 
-   public void startManualInput() {
+   void startManualInput() {
       navigator.go(new WizardManualInputPath());
    }
 

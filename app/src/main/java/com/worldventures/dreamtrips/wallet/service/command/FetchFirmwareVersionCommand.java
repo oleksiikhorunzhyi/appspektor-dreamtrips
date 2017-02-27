@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,12 +20,15 @@ public class FetchFirmwareVersionCommand extends Command<SmartCardFirmware> impl
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject SmartCardInteractor interactor;
 
    @Override
    protected void run(CommandCallback<SmartCardFirmware> callback) throws Throwable {
       janet.createPipe(GetFirmwareVersionAction.class)
             .createObservableResult(new GetFirmwareVersionAction())
             .map(firmwareVersionAction -> mapperyContext.convert(firmwareVersionAction.version, SmartCardFirmware.class))
+            .doOnNext(firmwareVersion ->
+                  interactor.smartCardFirmwarePipe().createObservable(SmartCardFirmwareCommand.save(firmwareVersion)))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 }

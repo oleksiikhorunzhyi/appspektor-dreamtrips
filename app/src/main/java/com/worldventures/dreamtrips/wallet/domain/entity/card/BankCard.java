@@ -50,8 +50,8 @@ public abstract class BankCard extends Card {
    }
 
    @Value.Default
-   public int cvv() {
-      return 0;
+   public String cvv() {
+      return "";
    }
 
    @Nullable

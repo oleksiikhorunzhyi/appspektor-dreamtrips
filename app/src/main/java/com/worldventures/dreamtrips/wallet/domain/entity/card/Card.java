@@ -26,6 +26,6 @@ public abstract class Card {
    }
 
    public enum Category {
-      BANK, DISCOUNT, SAMPLE
+      BANK, DISCOUNT
    }
 }

@@ -13,7 +13,6 @@
    <string name="wallet_wizard_title">flye smart card</string>
    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
-   <string name="wallet_bank_card_cvv_label">CVV</string>
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
    <string name="wallet_no_internet_connection">No internet connection</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>

@@ -5,12 +5,14 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.check.PreCheckNewCardPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPath;
 
 import javax.inject.Inject;
@@ -24,6 +26,7 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject WalletBluetoothService bluetoothService;
 
    public NewCardPowerOnPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -66,7 +69,22 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
    }
 
    void navigateNext() {
-      navigator.go(new PreCheckNewCardPath());
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new ActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
+                  .onSuccess(command -> handleConnectionSmartCard(bluetoothService.isEnable(), command.getResult()
+                        .connectionStatus()
+                        .isConnected()))
+                  .onFail((command, throwable) -> navigator.go(new PreCheckNewCardPath())));
+   }
+
+   private void handleConnectionSmartCard(boolean bluetoothIsConnected, boolean smartCardConnected) {
+      if (bluetoothIsConnected && smartCardConnected) {
+         navigator.go(new EnterPinUnassignPath());
+      } else {
+         navigator.go(new PreCheckNewCardPath());
+      }
    }
 
    public void goBack() {

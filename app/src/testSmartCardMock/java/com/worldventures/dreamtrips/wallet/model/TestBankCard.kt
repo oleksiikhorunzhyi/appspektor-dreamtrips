@@ -38,8 +38,6 @@ class TestBankCard(
 
    override fun cvv(): String = cvv
 
-   override fun cvvToken(): String? = cvvToken
-
    override fun addressInfo() = addressInfo
 
    override fun issuerInfo() = issuerInfo

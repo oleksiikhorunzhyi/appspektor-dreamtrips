@@ -7,7 +7,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,10 +66,19 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
       validateAddressInfoOrThrow(bankCard.addressInfo());
    }
 
+   // TODO: 2/28/17 Should add analytics event for detokenization errors
    private Observable<BankCard> detokenizeBankCard(BankCard bankCard) {
       return nxtInteractor.detokenizeBankCardPipe()
             .createObservableResult(new DetokenizeBankCardCommand(bankCard))
-            .map(detokenizeResult -> detokenizeResult.getResult().getDetokenizedBankCard());
+            .map(Command::getResult)
+            .flatMap(nxtBankCard -> {
+               if (nxtBankCard.getResponseErrors().isEmpty()) {
+                  return Observable.just(nxtBankCard.getDetokenizedBankCard());
+               } else {
+                  return Observable.error(new NxtMultifunctionException(
+                        NxtBankCardHelper.getResponseErrorMessage(nxtBankCard.getResponseErrors())));
+               }
+            });
    }
 
    private Observable<BankCard> pushBankCard(Record record) {

@@ -58,9 +58,6 @@ public abstract class BankCard extends Card {
    }
 
    @Nullable
-   public abstract String cvvToken();
-
-   @Nullable
    public abstract String track1();
 
    @Nullable

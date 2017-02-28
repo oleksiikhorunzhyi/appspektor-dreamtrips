@@ -33,19 +33,20 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
       BankCard bankCard = mappery.convert(swipedCard, BankCard.class);
-      if (BankCardHelper.isAmexBank(swipedCard.cardNumber())) {
-         bankCard = setAmexCardType(bankCard);
-      }
-      callback.onSuccess(bankCard);
+      callback.onSuccess(withExtraInfo(bankCard));
    }
 
-   private BankCard setAmexCardType(BankCard bankCard) {
-      return ImmutableBankCard.builder()
+   private BankCard withExtraInfo(BankCard bankCard) {
+      final ImmutableBankCard.Builder builder = ImmutableBankCard.builder()
             .from(bankCard)
-            .issuerInfo(ImmutableRecordIssuerInfo.builder()
-                  .from(bankCard.issuerInfo())
-                  .financialService(FinancialService.AMEX).build())
-            .withNumberLastFourDigits(BankCardHelper.obtainLastCardDigits(bankCard.number()))
-            .build();
+            .numberLastFourDigits(BankCardHelper.obtainLastCardDigits(bankCard.number()));
+
+      if (BankCardHelper.isAmexBank(bankCard.number())) {
+         builder.issuerInfo(ImmutableRecordIssuerInfo.builder()
+               .from(bankCard.issuerInfo())
+               .financialService(FinancialService.AMEX).build());
+      }
+      return builder.build();
    }
+
 }

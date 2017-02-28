@@ -114,7 +114,7 @@ import dagger.Provides;
             StartFirmwareInstallPresenter.class,
             ForceUpdatePowerOnPresenter.class,
             ForcePairKeyPresenter.class,
-            TokenizeRecordsMigrationPresenter.class
+            TokenizeRecordsMigrationPresenter.class,
             ForcePairKeyPresenter.class,
             LostCardPresenter.class
       },

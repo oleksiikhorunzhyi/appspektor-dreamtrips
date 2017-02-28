@@ -10,7 +10,9 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 
 import javax.inject.Inject;
 
@@ -95,10 +97,19 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       }
    }
 
+   // TODO: 2/28/17 Should add analytics event for tokenization errors
    private Observable<NxtBankCard> tokenizeBankCard(BankCard bankCard) {
       return nxtInteractor.tokenizeBankCardPipe()
             .createObservableResult(new TokenizeBankCardCommand(bankCard))
-            .map(Command::getResult);
+            .map(Command::getResult)
+            .flatMap(nxtBankCard -> {
+               if (nxtBankCard.getResponseErrors().isEmpty()) {
+                  return Observable.just(nxtBankCard);
+               } else {
+                  return Observable.error(new NxtMultifunctionException(
+                        NxtBankCardHelper.getResponseErrorMessage(nxtBankCard.getResponseErrors())));
+               }
+            });
    }
 
    private Observable<BankCard> pushBankCard(NxtBankCard bankCard) {

@@ -33,12 +33,6 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage;
 import com.worldventures.dreamtrips.wallet.di.WalletActionStorageModule;
 
 import javax.inject.Singleton;

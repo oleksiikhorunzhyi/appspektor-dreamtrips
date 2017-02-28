@@ -68,7 +68,7 @@ public class NxtBankCardHelper {
             .build());
       elements.add(ImmutableMultiRequestElement.builder()
             .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(bankCard.cvvToken()).referenceId(prefixRefId(CVV, refIdPrefix))
+            .value(bankCard.cvv()).referenceId(prefixRefId(CVV, refIdPrefix))
             .build());
 
       safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, bankCard.track1(), prefixRefId(TRACK_1, refIdPrefix));
@@ -80,11 +80,9 @@ public class NxtBankCardHelper {
 
    public static BankCard getTokenizedBankCard(TokenizedBankCard card, @Nullable String refIdPrefix) {
       return ImmutableBankCard.builder().from(card.bankCard)
-            // Save tokenized cvv as String value and also clear real cvv
-            .cvv(0)
-            .cvvToken(card.nxtValues.get(prefixRefId(CVV, refIdPrefix)))
             // Save tokenized track values into original values
             .number(card.nxtValues.get(prefixRefId(PAN, refIdPrefix)))
+            .cvv(card.nxtValues.get(prefixRefId(CVV, refIdPrefix)))
             .track1(card.nxtValues.get(prefixRefId(TRACK_1, refIdPrefix)))
             .track2(card.nxtValues.get(prefixRefId(TRACK_2, refIdPrefix)))
             .track3(card.nxtValues.get(prefixRefId(TRACK_3, refIdPrefix)))
@@ -94,8 +92,7 @@ public class NxtBankCardHelper {
    public static BankCard getDetokenizedBankCard(DetokenizedBankCard card) {
       return ImmutableBankCard.builder().from(card.bankCard)
             .number(card.nxtValues.get(PAN))
-            .cvv(Integer.parseInt(card.nxtValues.get(CVV)))
-            .cvvToken(null)
+            .cvv(card.nxtValues.get(CVV))
             .track1(getDecodedElement(card.nxtValues.get(TRACK_1)))
             .track2(getDecodedElement(card.nxtValues.get(TRACK_2)))
             .track3(getDecodedElement(card.nxtValues.get(TRACK_3)))
@@ -139,6 +136,21 @@ public class NxtBankCardHelper {
             .map(refId -> response.nxtErrors.get(prefixRefId(refId, refIdPrefix)))
             .notNulls()
             .toList();
+   }
+
+   @Nullable
+   public static String getResponseErrorMessage(@Nullable List<MultiErrorResponse> errorResponseList) {
+      if (errorResponseList == null || errorResponseList.isEmpty()) return null;
+
+      StringBuilder sb = new StringBuilder("[");
+      for (int i = 0; i < errorResponseList.size(); i++) {
+         if (i > 0) sb.append(", ");
+         MultiErrorResponse errorResponse = errorResponseList.get(i);
+         sb.append(String.format("\"%s\" : \"%s\"", errorResponse.code(), errorResponse.message()));
+      }
+      sb.append("]");
+
+      return sb.toString();
    }
 
 }

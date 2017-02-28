@@ -98,12 +98,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void onResume() {
-      super.onResume();
-      getPresenter().refreshFeed();
-   }
-
-   @Override
    public void onStop() {
       super.onStop();
       fragmentWithFeedDelegate.resetTranslatedStatus();

@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class FeedHashtagBundle implements Parcelable {
+public class HashtagFeedBundle implements Parcelable {
 
    String hashtag;
 
-   public FeedHashtagBundle(String hashtag) {
+   public HashtagFeedBundle(String hashtag) {
       this.hashtag = hashtag;
    }
 
@@ -15,19 +15,19 @@ public class FeedHashtagBundle implements Parcelable {
       return hashtag;
    }
 
-   protected FeedHashtagBundle(Parcel in) {
+   protected HashtagFeedBundle(Parcel in) {
       hashtag = in.readString();
    }
 
-   public static final Creator<FeedHashtagBundle> CREATOR = new Creator<FeedHashtagBundle>() {
+   public static final Creator<HashtagFeedBundle> CREATOR = new Creator<HashtagFeedBundle>() {
       @Override
-      public FeedHashtagBundle createFromParcel(Parcel in) {
-         return new FeedHashtagBundle(in);
+      public HashtagFeedBundle createFromParcel(Parcel in) {
+         return new HashtagFeedBundle(in);
       }
 
       @Override
-      public FeedHashtagBundle[] newArray(int size) {
-         return new FeedHashtagBundle[size];
+      public HashtagFeedBundle[] newArray(int size) {
+         return new HashtagFeedBundle[size];
       }
    };
 

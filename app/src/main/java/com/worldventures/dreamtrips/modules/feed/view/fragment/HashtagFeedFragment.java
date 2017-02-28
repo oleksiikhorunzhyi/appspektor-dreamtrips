@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
@@ -35,7 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
-import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
@@ -54,8 +54,8 @@ import butterknife.InjectView;
 
 @MenuResource(R.menu.menu_hashtag_feed)
 @Layout(R.layout.fragment_hashtag_feed)
-public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle>
-      implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener, FeedEntityEditingView {
+public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPresenter, HashtagFeedBundle>
+      implements HashtagFeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, FeedEntityEditingView {
 
    @InjectView(R.id.empty_view) ViewGroup emptyView;
    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
@@ -161,17 +161,17 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
       super.onResume();
       releaseSearchFocus(searchView);
 
-      FeedHashtagBundle args = getArgs();
+      HashtagFeedBundle args = getArgs();
       if (args != null && args.getHashtag() != null) {
          getPresenter().onRefresh();
       }
    }
 
    @Override
-   protected FeedHashtagPresenter createPresenter(Bundle savedInstanceState) {
-      FeedHashtagBundle args = getArgs();
+   protected HashtagFeedPresenter createPresenter(Bundle savedInstanceState) {
+      HashtagFeedBundle args = getArgs();
       String query = args != null && !TextUtils.isEmpty(args.getHashtag()) ? args.getHashtag() : null;
-      FeedHashtagPresenter presenter = new FeedHashtagPresenter();
+      HashtagFeedPresenter presenter = new HashtagFeedPresenter();
       presenter.setQuery(query);
       return presenter;
    }

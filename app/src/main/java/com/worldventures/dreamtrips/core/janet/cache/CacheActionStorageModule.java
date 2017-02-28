@@ -21,6 +21,10 @@ import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMem
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.AccountTimelineStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage;
@@ -229,5 +233,29 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideFacebookPhotosStorage() {
       return new FacebookPhotosStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFeedItemsStorage() {
+      return new FeedStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTimelineStorage() {
+      return new AccountTimelineStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideUserTimelineStorage() {
+      return new UserTimelineStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideHashtagFeedStorage() {
+      return new HashtagFeedStorage();
    }
 }

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
@@ -12,7 +11,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntitiesHolderDelegate;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
@@ -26,13 +25,11 @@ import javax.inject.Inject;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V>
-   implements FeedEditEntityPresenter, FeedItemsHolder {
+   implements FeedEditEntityPresenter, FeedEntityHolder {
 
    protected FeedItem feedItem;
 
-   private WeakHandler handler = new WeakHandler();
-
-   @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
+   @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject TripsInteractor tripsInteractor;
    @Inject BucketInteractor bucketInteractor;
@@ -47,18 +44,12 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    public void takeView(V view) {
       super.takeView(view);
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
-      feedEntitiesHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
+      feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       view.setFeedItem(feedItem);
       subscribeToLikesChanges();
       subscribeForTripsDetails();
       subscribeToBucketDetailsUpdates();
       loadFullEventInfo();
-   }
-
-   @Override
-   public void dropView() {
-      super.dropView();
-      handler.removeCallbacksAndMessages(null);
    }
 
    //todo until Trip becomes as all normal entities
@@ -119,11 +110,6 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    }
 
    @Override
-   public void addFeedItem(FeedItem feedItem) {
-      // nothing to do
-   }
-
-   @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
       if (updatedFeedEntity.equals(feedItem.getItem())) {
          feedItem.setItem(updatedFeedEntity);
@@ -133,13 +119,12 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    }
 
    @Override
-   public void deleteFeedEntity(String uid) {
-      if (feedEntity.getUid().equals(uid)) {
+   public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
+      if (feedEntity.equals(deletedFeedEntity)) {
          back();
       }
    }
 
-   @Override
    public void refreshFeedItems() {
       view.updateFeedItem(feedItem);
    }

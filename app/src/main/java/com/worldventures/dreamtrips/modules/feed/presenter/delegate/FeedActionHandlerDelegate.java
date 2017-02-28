@@ -82,7 +82,7 @@ public class FeedActionHandlerDelegate {
    }
 
    public void onDeleteTextualPost(TextualPost textualPost) {
-      postsInteractor.deletePostPipe().send(new DeletePostCommand(textualPost.getUid()));
+      postsInteractor.deletePostPipe().send(new DeletePostCommand(textualPost));
    }
 
    public void onEditPhoto(Photo photo) {
@@ -90,7 +90,7 @@ public class FeedActionHandlerDelegate {
    }
 
    public void onDeletePhoto(Photo photo) {
-      tripImagesInteractor.deletePhotoPipe().send(new DeletePhotoCommand(photo.getUid()));
+      tripImagesInteractor.deletePhotoPipe().send(new DeletePhotoCommand(photo));
    }
 
    public void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType bucketType) {
@@ -98,6 +98,6 @@ public class FeedActionHandlerDelegate {
    }
 
    public void onDeleteBucketItem(BucketItem bucketItem) {
-      bucketInteractor.deleteItemPipe().send(new DeleteBucketItemCommand(bucketItem.getUid()));
+      bucketInteractor.deleteItemPipe().send(new DeleteBucketItemCommand(bucketItem));
    }
 }

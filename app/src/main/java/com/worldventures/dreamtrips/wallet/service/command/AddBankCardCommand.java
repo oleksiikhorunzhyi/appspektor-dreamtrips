@@ -11,6 +11,9 @@ import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 

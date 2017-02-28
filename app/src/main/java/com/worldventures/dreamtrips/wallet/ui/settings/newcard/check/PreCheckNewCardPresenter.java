@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -39,7 +40,7 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
 
    private void observeChecks() {
       Observable.combineLatest(
-            smartCardInteractor.activeSmartCardPipe()
+            smartCardInteractor.deviceStatePipe()
                   .observeSuccess()
                   .throttleLast(300, TimeUnit.MILLISECONDS),
             bluetoothService.observeEnablesState()
@@ -49,7 +50,7 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
             .subscribe(pair -> bind(pair.first, pair.second.connectionStatus()
                   .isConnected()), throwable -> Timber.e(throwable, ""));
 
-      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
    private void bind(boolean bluetoothIsEnabled, boolean smartCardConnected) {

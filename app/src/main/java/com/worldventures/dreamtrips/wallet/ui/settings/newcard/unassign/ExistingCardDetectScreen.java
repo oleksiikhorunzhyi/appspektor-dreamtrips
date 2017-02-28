@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -84,6 +85,14 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
       return new ComposableOperationView<>(
             ProgressDialogView.<ActiveSmartCardCommand>builder(getContext()).build(),
             ErrorViewFactory.<ActiveSmartCardCommand>builder().build()
+      );
+   }
+
+   @Override
+   public OperationView<DeviceStateCommand> provideDeviceStateOperationView() {
+      return new ComposableOperationView<>(
+            ProgressDialogView.<DeviceStateCommand>builder(getContext()).build(),
+            ErrorViewFactory.<DeviceStateCommand>builder().build()
       );
    }
 

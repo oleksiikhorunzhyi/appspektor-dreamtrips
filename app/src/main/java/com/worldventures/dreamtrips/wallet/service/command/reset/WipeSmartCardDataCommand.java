@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.api.smart_card.user_association.Disassociate
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
 import java.net.HttpURLConnection;
 
@@ -71,8 +72,8 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    }
 
    private Observable<UnAssignUserAction> disassociateCardUser() {
-      return walletJanet.createPipe(ActiveSmartCardCommand.class)
-            .createObservableResult(new ActiveSmartCardCommand())
+      return walletJanet.createPipe(DeviceStateCommand.class)
+            .createObservableResult(DeviceStateCommand.fetch())
             .map(command -> command.getResult().connectionStatus().isConnected())
             .flatMap(connected -> connected ? walletJanet.createPipe(UnAssignUserAction.class)
                   .createObservableResult(new UnAssignUserAction()) : Observable.just(null));

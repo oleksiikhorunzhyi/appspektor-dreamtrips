@@ -4,9 +4,10 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -54,16 +55,16 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
    }
 
    private void observerSmartCardConnectedStatus() {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new ActiveSmartCardCommand())
+      smartCardInteractor.deviceStatePipe()
+            .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
+            .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
                   .onSuccess(command -> handleConnectedResult(command.getResult().connectionStatus()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
-   private void handleConnectedResult(SmartCard.ConnectionStatus connectionStatus) {
+   private void handleConnectedResult(ConnectionStatus connectionStatus) {
       if (connectionStatus.isConnected()) {
          getView().modeConnectedSmartCard();
       } else {
@@ -116,6 +117,8 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
    public interface Screen extends WalletScreen {
 
       OperationView<ActiveSmartCardCommand> provideOperationView();
+
+      OperationView<DeviceStateCommand> provideDeviceStateOperationView();
 
       OperationView<WipeSmartCardDataCommand> provideWipeOperationView();
 

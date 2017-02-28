@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -69,10 +70,10 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
    }
 
    void navigateNext() {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new ActiveSmartCardCommand())
+      smartCardInteractor.deviceStatePipe()
+            .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
+            .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> handleConnectionSmartCard(bluetoothService.isEnable(), command.getResult()
                         .connectionStatus()
                         .isConnected()))

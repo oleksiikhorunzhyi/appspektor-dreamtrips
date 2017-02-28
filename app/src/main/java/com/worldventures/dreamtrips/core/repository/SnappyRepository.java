@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.repository;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;

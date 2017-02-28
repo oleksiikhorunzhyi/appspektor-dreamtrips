@@ -38,7 +38,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorag
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage;
 
 import javax.inject.Singleton;
 
@@ -152,7 +152,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
+   ActionStorage provideWalletCardListStorage(PersistentCardListStorage cardListStorage) {
       return new WalletCardsDiskStorage(cardListStorage);
    }
 

@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
 import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
@@ -59,7 +60,8 @@ class WizardInteractorSpec : BaseSpec({
          staticMockTextUtils()
 
          mockDb = createMockDb()
-         cardStorage = mock()
+         persistentCardStorage = mock()
+         oldCardStorage = mock()
          mappery = createMappery()
          janet = createJanet()
          wizardInteractor = createWizardInteractor(janet)
@@ -118,7 +120,8 @@ class WizardInteractorSpec : BaseSpec({
       const val MOCK_BARCODE = MOCK_SMART_CARD_ID.toString()
 
       lateinit var mockDb: SnappyRepository
-      lateinit var cardStorage: CardListStorage
+      lateinit var persistentCardStorage: PersistentCardListStorage
+      lateinit var oldCardStorage: CardListStorage
 
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
@@ -131,17 +134,24 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var mockedDebitCard: BankCard
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
+         setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb), WalletCardsDiskStorage(persistentCardStorage))
       }
 
       fun staticMockTextUtils() {
          PowerMockito.`mockStatic`(TextUtils::class.java)
+
          PowerMockito.`doAnswer`({ invocation ->
             val arg1: String = invocation.getArgumentAt(0, String::class.java)
             val arg2: String = invocation.getArgumentAt(1, String::class.java)
             arg1 == arg2
          }).`when`(TextUtils::class.java)
          TextUtils.`equals`(anyString(), anyString())
+
+         PowerMockito.`doAnswer`({ invocation ->
+            val arg1: String? = invocation.getArgumentAt(0, String::class.java)
+            arg1 == null || arg1.isEmpty()
+         }).`when`(TextUtils::class.java)
+         TextUtils.`isEmpty`(anyString())
       }
 
       fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
@@ -152,7 +162,6 @@ class WizardInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(setOfMultiplyStorage())
-               .bindStorageSet(setOf(WalletCardsDiskStorage(cardStorage)))
                .wrapDagger()
 
          janet = Janet.Builder()
@@ -164,7 +173,8 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
-         daggerCommandActionService.registerProvider(CardListStorage::class.java) { cardStorage }
+         daggerCommandActionService.registerProvider(PersistentCardListStorage::class.java) { persistentCardStorage }
+         daggerCommandActionService.registerProvider(CardListStorage::class.java) { oldCardStorage }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(WizardInteractor::class.java, { wizardInteractor })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })

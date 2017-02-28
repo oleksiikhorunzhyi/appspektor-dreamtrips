@@ -17,11 +17,13 @@ import static io.techery.janet.http.annotations.Response.ERROR;
 @HttpAction(method = HttpAction.Method.POST, value = "/multifunction")
 public class MultifunctionNxtHttpAction {
 
+   static final int MULTIFUNCTION_REQUEST_ELEMENTS_LIMIT = 40;
+
    private static final String CONTENT_TYPE = "application/json";
 
    @RequestHeader("Content-Type") final String contentTypeHeader;
 
-   @Body final MultiRequestBody body;
+   @Body MultiRequestBody body;
 
    @Response MultiResponseBody response;
    @Response(value = ERROR) MultiErrorResponse errorResponse;

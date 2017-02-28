@@ -12,11 +12,9 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.repository.BaseSnappyRepository;
 import com.worldventures.dreamtrips.core.repository.SnappyAction;
 import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.repository.SnappyResult;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 
 import java.util.concurrent.ExecutorService;
@@ -34,15 +32,13 @@ public class PersistentSnappyRepositoryImpl implements SnappyStorage {
    private final SnappyStorage externalSnappyRepository;
 
    private final SessionHolder<UserSession> sessionHolder;
-   private final SnappyRepository snappyRepository;
 
    @Nullable
    private String persistentStorageFolderName;
 
    public PersistentSnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService,
-         SessionHolder<UserSession> sessionHolder, SnappyRepository snappyRepository) {
+         SessionHolder<UserSession> sessionHolder) {
       this.sessionHolder = sessionHolder;
-      this.snappyRepository = snappyRepository;
 
       internalSnappyRepository = new PersistentInternalSnappyRepository(context, snappyCrypter, executorService);
       externalSnappyRepository = new PersistentExternalSnappyRepository(context, snappyCrypter, executorService);
@@ -73,22 +69,14 @@ public class PersistentSnappyRepositoryImpl implements SnappyStorage {
 
    private void updateStorageFolderName() {
       String userId = getUserId();
-      String smartCardId = getSmartCardId();
 
-      persistentStorageFolderName = (userId != null && smartCardId != null) ?
-            (String.valueOf((userId + "_" + smartCardId).hashCode())) : null;
+      persistentStorageFolderName = (userId != null) ? String.valueOf((userId).hashCode()) : null;
    }
 
    @Nullable
    private String getUserId() {
       User user = sessionHolder.get().isPresent() ? sessionHolder.get().get().getUser() : null;
       return (user != null) ? String.valueOf(user.getId()) : null;
-   }
-
-   @Nullable
-   private String getSmartCardId() {
-      SmartCard smartCard = snappyRepository.getSmartCard();
-      return (smartCard != null) ? smartCard.smartCardId() : null;
    }
 
    /**

@@ -359,4 +359,14 @@
    <string name="wallet_card_settings_message_cant_connected">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
    <string name="wallet_smart_card_enable_instruction">Press and hold chip on smart card to power on.</string>
 
+   <!--Tokenize Records migration-->
+   <string name="wallet_tokenize_migration_header">Syncing Payment Cards</string>
+   <string name="wallet_tokenize_migration_text">One moment while we sync your cards.</string>
+   <string name="wallet_tokenize_migration_error_alert_title">Syncing Error</string>
+   <string name="wallet_tokenize_migration_error_alert_content">Failed to complete sync. Would you like to retry?</string>
+   <plurals name="wallet_tokenize_migration_sub_text">
+      <item quantity="one">Syncing %d card</item>
+      <item quantity="other">Syncing %d cards</item>
+   </plurals>
+
 </resources>

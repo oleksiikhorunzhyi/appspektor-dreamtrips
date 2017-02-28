@@ -404,14 +404,14 @@
                android:text="@string/wallet_card_settings_setup"
                />
 
-         <!--GONE Set up new smart card-->
+         <!--Set up new smart card-->
          <TextView
                android:id="@+id/item_setup_new_sc"
                style="@style/SettingsItemText"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_set_up_new_sc"
-               android:visibility="gone"
                />
 
          <!--Factory Reset smart card-->

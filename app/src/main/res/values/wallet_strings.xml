@@ -372,4 +372,47 @@
    <string name="wallet_disable_tracking_msg">Tracking your Smart Card helps you better protect your card from being lost or stolen. Are you sure you want to disable tracking?</string>
    <string name="wallet_disable_tracking">Disable Tracking</string>
 
+   <!-- Existing Card detect screen -->
+   <string name="wallet_existing_card_detect_label">Existing Smart Card Detected</string>
+   <string name="wallet_device_currently_is_assigned">This device is currently assigned to the following Smart Card in our system:</string>
+   <string name="wallet_only_one_device_can_be_assigned">Only one card can be assigned to a device at a time.</string>
+   <string name="wallet_unassign_card">Unassign Card</string>
+   <string name="wallet_i_have_card">I have this card</string>
+   <string name="wallet_i_dont_have_card">I don\'t have this card</string>
+   <string name="wallet_unassign_card_confirm_message" formatted="false">SmartCard <![CDATA[<b>%s</b>]]> will now be unassigned and returned to it\'s original factory settings</string>
+   <string name="wallet_settings_dont_have_card_msg" formatted="false">SmartCard <![CDATA[<b>%s</b>]]> will now be unassigned from this device. Please note this will unassign it in our system but will not remove your payment cards on your Smart Card.</string>
+
+   <!-- Unassign success screen -->
+   <string name="wallet_unassign_successful_title">Unassign Successful</string>
+   <string name="wallet_unassign_success_btn_next">Get Started</string>
+   <string name="wallet_you_are_ready_setup_new_sc">You are ready to set up your new Smart Card.</string>
+   <string name="wallet_unassigned_success_msg">Your previous Smart Card has been successfully unassigned from this device.</string>
+
+   <!-- Unassign enter pin screen -->
+   <string name="wallet_unassign_enter_pin_text">Enter your PIN on the flye\u2122 smart card to unassign.</string>
+   <string name="wallet_enter_pin_label">Enter Pin</string>
+   <string name="wallet_error_enter_pin_title">Unable to Unassign</string>
+   <string name="wallet_error_enter_pin_msg">An error occurred while attempting to unassign your previous SmartCard from this device</string>
+
+   <!-- Sync payment cards screen -->
+   <string name="wallet_syncing_payment_cards">Syncing Payment Cards</string>
+   <string name="wallet_syncing_payment_cards_fail_msg">Can\'t sync card. Check your card is power on and press retry button.</string>
+   <string name="wallet_syncing_payment_cards_count" formatted="false">Syncing payment card %d of %d</string>
+
+   <!-- New card power on screen -->
+   <string name="wallet_new_card_power_on" formatted="false">Power on Smart Card <![CDATA[<b>%s</b>]]> by pressing and holding on the bottom-right corner of the chip.</string>
+   <string name="wallet_not_turn_on">Card won\'t turn on</string>
+   <string name="wallet_new_card_pre_dont_have_card_msg" formatted="false">SmartCard <![CDATA[<b>%s</b>]]> will now be unassigned from this device. Please note this will unassign it in our system but will not remove your payment cards on your Smart Card.</string>
+
+   <!-- Pre check new card screen -->
+   <string name="wallet_pre_check_settings">Phone Settings</string>
+   <string name="wallet_pre_check_new_card">Before we can proceed, please do the following:</string>
+   <string name="wallet_new_card_pre_installation_bluetooth">Enable Bluetooth on your phone</string>
+   <string name="wallet_new_card_pre_install_confirm_message" formatted="false">Smart Card <![CDATA[<b>%s</b>]]> will now be unassigned and returned to it\'s original factory settings</string>
+
+   <!-- Complete after sync screen -->
+   <string name="wallet_setup_is_complete_title">Set Up Complete</string>
+   <string name="wallet_setup_is_completed">Set up is complete.</string>
+   <string name="wallet_card_ready_to_use">Your Smart Card is ready for use.</string>
+
 </resources>

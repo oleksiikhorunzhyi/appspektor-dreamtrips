@@ -42,4 +42,9 @@
    <dimen name="wallet_smartcard_connection_label_height">40dp</dimen>
    <dimen name="wallet_content_divider_header_height">48dp</dimen>
    <dimen name="wallet_content_divider_height">52dp</dimen>
+
+   <dimen name="wallet_existing_card_margin_start_end">24dp</dimen>
+   <dimen name="wallet_existing_card_margin_top">30dp</dimen>
+   <dimen name="wallet_existing_card_margin_bottom">24dp</dimen>
+   <dimen name="wallet_sc_id_existing_margin_left_right">32dp</dimen>
 </resources>

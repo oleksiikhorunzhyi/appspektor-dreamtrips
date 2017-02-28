@@ -6,6 +6,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation
 
 import io.techery.mappery.MapperyContext;
 
+import static com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType.CONNECT;
+import static com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType.DISCONNECT;
+
 public class SmartCardLocationTypeToWalletLocationTypeConverter implements Converter<SmartCardLocationType, WalletLocationType> {
    @Override
    public Class<SmartCardLocationType> sourceClass() {
@@ -22,10 +25,10 @@ public class SmartCardLocationTypeToWalletLocationTypeConverter implements Conve
       WalletLocationType walletLocationType = null;
       switch (locationType) {
          case CONNECT:
-            walletLocationType = WalletLocationType.CONNECT;
+            walletLocationType = CONNECT;
             break;
          case DISCONNECT:
-            walletLocationType = WalletLocationType.DISCONNECT;
+            walletLocationType = DISCONNECT;
       }
       return walletLocationType;
    }

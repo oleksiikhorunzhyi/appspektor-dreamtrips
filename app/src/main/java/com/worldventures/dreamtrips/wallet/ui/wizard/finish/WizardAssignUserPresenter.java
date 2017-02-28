@@ -8,22 +8,27 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.SetupCompleteAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcards.SyncPaymentCardPath;
 
 import javax.inject.Inject;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import timber.log.Timber;
 
 public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardAssignUserPresenter(Context context, Injector injector) {
@@ -54,13 +59,25 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
                      analyticsInteractor.walletAnalyticsCommandPipe()
                            .send(new WalletAnalyticsCommand(new SetupCompleteAction()));
 
-                     navigateToNextScreen();
+                     prepareToNextScreen();
                   })
                   .create());
    }
 
-   private void navigateToNextScreen() {
-      navigator.single(new CardListPath());
+   private void prepareToNextScreen() {
+      smartCardInteractor.cardsListPipe()
+            .createObservableResult(new CardListCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> navigateToNextScreen(!command.getCacheData()
+                  .isEmpty()), throwable -> Timber.e(throwable, ""));
+   }
+
+   private void navigateToNextScreen(boolean needToSyncPaymentCards) {
+      if (needToSyncPaymentCards) {
+         navigator.go(new SyncPaymentCardPath());
+      } else {
+         navigator.single(new CardListPath());
+      }
    }
 
    interface Screen extends WalletScreen {

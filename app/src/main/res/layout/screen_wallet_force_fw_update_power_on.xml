@@ -42,24 +42,7 @@
             android:text="@string/wallet_next_label"
             />
 
-      <FrameLayout
-            android:id="@+id/card_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="150dp"
-            >
-
-         <ImageView
-               android:id="@+id/wallet_wizard_smarcard_front"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:layout_gravity="center_horizontal"
-               android:layout_marginBottom="-100dp"
-               android:scaleType="fitCenter"
-               android:src="@drawable/flyecard_power"
-               tools:ignore="ContentDescription"
-               />
-      </FrameLayout>
+      <include layout="@layout/view_power_on_card_container" />
 
    </FrameLayout>
 

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocat
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
@@ -64,6 +65,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject PresentationInteractor presentationInteractor;
+   @Inject AttributesInteractor attributesInteractor;
 
    @State FullMerchantParamsHolder actionParamsHolder;
 
@@ -103,8 +105,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
-            .map(FilterData::isOffersOnly)
-            .subscribe(getView()::toggleOffersOnly);
+            .map(FilterData::getMerchantType)
+            .subscribe(getView()::updateMerchantType);
       fullMerchantInteractor.fullMerchantPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -208,6 +210,16 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void offersOnlySwitched(boolean isOffersOnly) {
       filterDataInteractor.applyOffersOnly(isOffersOnly);
+   }
+
+   @Override
+   public void onLoadMerchantsType(List<String> merchantType) {
+      filterDataInteractor.applyMerchantTypes(merchantType);
+   }
+
+   @Override
+   public void loadAmenities(List<String> merchantType) {
+      attributesInteractor.requestAmenities(merchantType);
    }
 
    @Override

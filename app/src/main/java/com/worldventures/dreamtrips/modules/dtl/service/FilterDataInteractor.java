@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
 
 import java.util.Collections;
+import java.util.List;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -118,6 +119,14 @@ public class FilterDataInteractor {
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
                   .withPage(0)
                   .withIsOffersOnly(isOffersOnly))
+            .subscribe(this::send);
+   }
+
+   public void applyMerchantTypes(final List<String> merchantType) {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(0)
+                  .withMerchantType(merchantType))
             .subscribe(this::send);
    }
 

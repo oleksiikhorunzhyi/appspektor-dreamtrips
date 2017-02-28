@@ -4,11 +4,13 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAttributesActionParams;
+import java.util.List;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -37,14 +39,14 @@ public class AttributesInteractor {
       return attributesPipe;
    }
 
-   public void requestAmenities() {
+   public void requestAmenities(List<String> merchantType) {
       Observable.combineLatest(
-            provideFormattedLocationObservable(),
-            provideFilterDataObservable(),
-            new AttributesUpdateFunc())
-            .take(1)
-            .map(AttributesAction::create)
-            .subscribe(attributesPipe::send);
+              provideFormattedLocationObservable(),
+              provideFilterDataObservable(),
+              new AttributesUpdateFunc())
+              .take(1)
+              .map(param -> AttributesAction.create(param, (merchantType != null && !merchantType.isEmpty()) ? merchantType : ImmutableFilterData.builder().build().getMerchantType()))
+              .subscribe(attributesPipe::send);
    }
 
    private Observable<String> provideFormattedLocationObservable() {
@@ -66,7 +68,7 @@ public class AttributesInteractor {
       dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .filter(LocationCommand::isResultDefined)
             .map(LocationCommand::getResult)
-            .subscribe(dtlLocation -> requestAmenities());
+            .subscribe(dtlLocation -> requestAmenities(null));
    }
 
    private final class AttributesUpdateFunc implements Func2<String, FilterData, AttributesActionParams> {

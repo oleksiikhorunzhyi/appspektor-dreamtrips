@@ -14,10 +14,12 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.MerchantsErrorCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.ProgressCell;
@@ -28,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.ScrollingMan
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
@@ -52,6 +55,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
    @InjectView(R.id.captionNoMerchants) TextView noMerchantsCaption;
+
+   @InjectView(R.id.btn_filter_merchant_food) View filterFood;
+   @InjectView(R.id.btn_filter_merchant_entertainment) View filterEntertainment;
+   @InjectView(R.id.btn_filter_merchant_spa) View filterSpa;
+
+   @InjectView(R.id.id_view_food) View backgroundFood;
+   @InjectView(R.id.id_view_entertainment) View backgroundEntertainment;
+   @InjectView(R.id.id_view_spas) View backgroundSpa;
 
    @Inject MerchantsAdapterDelegate delegate;
 
@@ -123,9 +134,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -177,6 +185,56 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       this.showEmpty(false);
       this.updateLoadingState(true);
    }
+
+   @OnClick(R.id.btn_filter_merchant_food)
+   @Override
+   public void onClickFood() {
+      if (!filterFood.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
+      }
+   }
+
+   @OnClick(R.id.btn_filter_merchant_entertainment)
+   @Override
+   public void onClickEntertainment() {
+      if (!filterEntertainment.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
+      }
+   }
+
+   @OnClick(R.id.btn_filter_merchant_spa)
+   @Override
+   public void onClickSpa() {
+      if (!filterSpa.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
+      }
+   }
+
+    @Override
+    public void updateMerchantType(List<String> type) {
+        int idResource = 0;
+
+       if (type != null ) {
+          if (type.size() > 1) {
+             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
+                filterFood.setSelected(true);
+                idResource = R.string.dtlt_search_hint;
+             }
+          } else {
+             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
+                filterEntertainment.setSelected(true);
+                idResource = R.string.filter_merchant_entertainment;
+             } else if (type.get(0).equals(FilterData.SPAS)) {
+                filterSpa.setSelected(true);
+                idResource = R.string.filter_merchant_spa;
+             }
+          }
+       }
+       updateFiltersView(idResource);
+    }
 
    private void showhMerchantsError() {
       if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
@@ -272,12 +330,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.toggleOffersOnly(enabled);
-   }
-
-   @Override
    public void toggleSelection(ThinMerchant merchant) {
       int index = delegate.getItems().indexOf(merchant);
       if (index != -1) selectionManager.toggleSelection(index);
@@ -337,5 +389,24 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    public DtlMerchantsScreenImpl(Context context, AttributeSet attrs) {
       super(context, attrs);
+   }
+
+   private void updateFiltersView(int stringResource) {
+
+      ViewUtils.setCompatDrawable(backgroundFood, MerchantTypeUtil.filterMerchantDrawable(filterFood));
+
+      ViewUtils.setCompatDrawable(backgroundEntertainment, MerchantTypeUtil.filterMerchantDrawable(filterEntertainment));
+
+      ViewUtils.setCompatDrawable(backgroundSpa, MerchantTypeUtil.filterMerchantDrawable(filterSpa));
+
+      if (stringResource != 0 && dtlToolbar != null) {
+         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
+      }
+   }
+
+   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+      getPresenter().onLoadMerchantsType(merchantType);
+      updateFiltersView(stringResource);
+      getPresenter().loadAmenities(merchantType);
    }
 }

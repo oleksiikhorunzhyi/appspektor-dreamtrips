@@ -28,8 +28,8 @@ configurations.all {
 }
 
 android {
-   compileSdkVersion 24
-   buildToolsVersion "24.0.3"
+   compileSdkVersion 25
+   buildToolsVersion "25.0.2"
 
    // App version
    def versionMajor = 1
@@ -396,8 +396,8 @@ tasks.whenTaskAdded { task ->
    }
 }
 
-def googleLibrariesVersion = '24.2.0'
-def googlePlayServicesVersion = '9.2.1'
+def googleLibrariesVersion = '25.2.0'
+def googlePlayServicesVersion = '10.2.0'
 def leakCanaryVersion = '1.3.1'
 def roboelectricVersion = '3.1.2'
 
@@ -416,7 +416,7 @@ dependencies {
    apt "com.github.techery.janet-http:service-compiler:1.0.11"
    compile "com.github.techery.janet-http:client-okhttp:1.0.11"
    compile "com.github.techery.janet-converters:gson:1.0.2"
-   compile 'com.squareup.okhttp:logging-interceptor:2.+'
+   compile 'com.squareup.okhttp:logging-interceptor:2.7.5'
    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
    // Data storage, flow
    compile 'de.greenrobot:eventbus:2.4.0'
@@ -442,7 +442,7 @@ dependencies {
    compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
    //
    compile 'me.dm7.barcodescanner:zxing:1.9'
-   compile ('com.facebook.android:facebook-android-sdk:3.23.1') {
+   compile('com.facebook.android:facebook-android-sdk:3.23.1') {
       exclude module: 'bolts-android'
       exclude module: 'bolts-tasks'
    }
@@ -457,15 +457,19 @@ dependencies {
    compile 'com.github.techery:job-executor:0.1.1'
    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-   compile 'io.reactivex:rxjava:1.1.6'
+   compile 'io.reactivex:rxjava:1.2.3'
    compile 'io.reactivex:rxandroid:1.1.0'
-   compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
+   compile('com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'){
+      exclude group: 'com.android.support'
+   }
    compile 'com.trello:rxlifecycle:0.4.0'
    compile 'com.trello:rxlifecycle-components:0.4.0'
    compile 'io.reactivex:rxjava-debug:1.0.3'
    // Ui
    compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-   compile 'com.github.techery:sweet-alert-dialog:d82b5e4764'
+   compile('com.github.techery:sweet-alert-dialog:d82b5e4764') {
+      exclude group: 'com.android.support'
+   }
    compile "com.android.support:design:${googleLibrariesVersion}"
    compile 'com.github.traex.expandablelayout:library:1.3'
    compile 'com.facebook.fresco:fresco:1.1.0'
@@ -478,8 +482,12 @@ dependencies {
    compile 'com.rengwuxian.materialedittext:library:2.1.4'
    compile 'com.getbase:floatingactionbutton:1.10.0'
    compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-   compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
-   compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
+   compile('com.github.afollestad.material-dialogs:core:0.8.6.2') {
+      exclude group: 'com.android.support'
+   }
+   compile('com.github.afollestad.material-dialogs:commons:0.8.6.2') {
+      exclude group: 'com.android.support'
+   }
    compile 'com.orhanobut:dialogplus:1.10@aar'
    compile 'com.github.techery:material-range-bar:db6fec9fdd'
    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
@@ -488,9 +496,13 @@ dependencies {
    compile 'com.ms-square:expandableTextView:0.1.4'
    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
-   compile 'mbanje.kurt:fabbutton:1.2.1'
-   compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
-   compile 'com.yalantis:ucrop:1.2.4'
+   compile('mbanje.kurt:fabbutton:1.2.1') {
+      exclude group: 'com.android.support'
+   }
+   compile('com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6') {
+      exclude group: 'com.android.support'
+   }
+   compile 'com.yalantis:ucrop:2.2.0'
    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
    compile 'com.github.techery:properratingbar:0.0.5'
@@ -512,7 +524,9 @@ dependencies {
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
-   compile 'com.github.techery:mappery:8675fb6'
+   compile('com.github.techery:mappery:8675fb6') {
+      exclude group: "org.jetbrains.kotlin"
+   }
    compile 'com.jaredrummler:android-device-names:1.1.2'
 
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
@@ -544,7 +558,9 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true) {
+      exclude group: 'com.github.techery', module: 'mappery'
+   }
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
@@ -560,11 +576,11 @@ dependencies {
    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
    testCompile 'org.powermock:powermock-classloading-xstream:1.6.4'
    testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
-   testCompile 'org.jetbrains.spek:spek:1.0.9'
-   testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+   testCompile('org.jetbrains.spek:spek:1.0.9')
+   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-   testCompile 'io.reactivex:rxkotlin:0.55.0'
-   testCompile 'io.reactivex:rxjava:1.1.6'
+   testCompile('io.reactivex:rxkotlin:0.55.0')
+   testCompile 'io.reactivex:rxjava:1.2.3'
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {
       exclude group: 'org.mockito', module: 'mockito-core'
    }

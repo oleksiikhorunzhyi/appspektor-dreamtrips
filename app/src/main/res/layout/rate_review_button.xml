@@ -3,7 +3,6 @@
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="@dimen/dtl_all_reviews_height"
-      android:layout_marginBottom="@dimen/dtl_all_reviews_margin_small"
       android:layout_marginLeft="@dimen/dtl_all_reviews_margin"
       android:layout_marginRight="@dimen/dtl_all_reviews_margin"
       android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"

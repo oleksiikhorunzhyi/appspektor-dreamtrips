@@ -280,6 +280,25 @@
                android:background="@drawable/list_divider_with_right_padding"
                />
 
+         <FrameLayout
+             android:id="@+id/container_comments"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent" />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="vertical"
+             android:background="@color/white">
+
+            <include
+                layout="@layout/rate_review_button"/>
+
+            <include layout="@layout/read_all_rating_review"
+                android:visibility="invisible"/>
+
+         </LinearLayout>
+
          <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -306,17 +325,6 @@
                   tools:visibility="visible"
                   />
          </LinearLayout>
-
-         <FrameLayout
-               android:id="@+id/container_comments"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent" />
-
-         <include layout="@layout/read_all_rating_review"
-               android:visibility="invisible"/>
-
-         <include
-               layout="@layout/rate_review_button"/>
 
       </LinearLayout>
    </android.support.v4.widget.NestedScrollView>

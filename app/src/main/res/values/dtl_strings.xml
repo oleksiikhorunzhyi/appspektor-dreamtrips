@@ -109,7 +109,7 @@
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filters</string>
    <!-- Reviews Merchants -->
-   <string name="rate_and_reviews_text">RATE AND REVIEW</string>
+   <string name="rate_and_reviews_text">RATE &amp; REVIEW</string>
    <string name="first_reviews_text">Be the first to review this location</string>
    <string name="format_review_text">%1$d Review</string>
    <string name="format_reviews_text">%1$d Reviews</string>

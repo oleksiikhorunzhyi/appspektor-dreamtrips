@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
 
 import butterknife.InjectView;
@@ -51,7 +50,7 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      if(isInEditMode()) return;
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.cancelUnassign());
    }
 
@@ -61,8 +60,8 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
             progressDialogView = ProgressDialogView.<FactoryResetCommand>builder(getContext())
                   .message(R.string.loading)
                   .canceledOnTouchOutside(false)
-                  .build(),
-            ErrorViewFactory.<FactoryResetCommand>builder().build()
+                  .cancelAction(dialog -> presenter.cancelUnassign())
+                  .build()
       );
    }
 
@@ -78,13 +77,13 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
                .onNegative((dialog, which) -> presenter.cancelUnassign())
                .build();
       }
-      if(!errorEnterPinDialog.isShowing()) errorEnterPinDialog.show();
+      if (!errorEnterPinDialog.isShowing()) errorEnterPinDialog.show();
    }
 
    @Override
    protected void onDetachedFromWindow() {
-      if(progressDialogView != null) progressDialogView.hideProgress();
-      if(errorEnterPinDialog != null) errorEnterPinDialog.dismiss();
+      if (progressDialogView != null) progressDialogView.hideProgress();
+      if (errorEnterPinDialog != null) errorEnterPinDialog.dismiss();
       super.onDetachedFromWindow();
    }
 }

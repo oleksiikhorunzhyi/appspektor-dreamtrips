@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper;
 
 import android.content.Context;
+import android.content.DialogInterface;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
@@ -65,6 +66,11 @@ public class ProgressDialogView<T> implements ProgressView<T> {
 
       public Builder<T> canceledOnTouchOutside(boolean cancelable) {
          dialogBuilder.canceledOnTouchOutside(cancelable);
+         return this;
+      }
+
+      public Builder<T> cancelAction(DialogInterface.OnCancelListener cancelListener) {
+         dialogBuilder.cancelListener(cancelListener);
          return this;
       }
 

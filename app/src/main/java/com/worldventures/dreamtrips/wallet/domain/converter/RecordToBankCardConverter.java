@@ -46,16 +46,12 @@ public class RecordToBankCardConverter implements Converter<Record, BankCard> {
          category = Card.Category.valueOf(metadata.get(BANK_CARD_CATEGORY));
       }
       recordIssuerInfoBuilder.financialService(mapperyContext.convert(record.financialService(), FinancialService.class));
-      int cvv = 0;
-      if (record.cvv().length() > 0) {
-         cvv = Integer.parseInt(record.cvv());
-      }
       final Integer recordId = record.id();
       return ImmutableBankCard.builder()
             .id(recordId != null ? String.valueOf(recordId) : null)
             .number(record.cardNumber())
             .expDate(record.expDate())
-            .cvv(cvv)
+            .cvv(record.cvv())
             .track1(record.t1())
             .track2(record.t2())
             .cardNameHolder(record.firstName() + " " + record.middleName() + " " + record.lastName()) //// TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!

@@ -423,7 +423,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.18-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.15-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.squareup.okhttp:okhttp:2.7.5'
@@ -540,7 +540,7 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.0-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)

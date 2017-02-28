@@ -58,8 +58,8 @@ public class BankCardHelper {
             return context.getString(R.string.wallet_card_financial_service_discover);
          case AMEX:
             return context.getString(R.string.wallet_card_financial_service_amex);
-         case SAMPLE: {
-            return context.getString(R.string.wallet_card_financial_service_sample);
+         case GENERIC: {
+            return "";
          }
          default:
             throw new IllegalStateException("Incorrect Financial Service");
@@ -139,7 +139,7 @@ public class BankCardHelper {
             return R.drawable.wallet_finansial_service_discover;
          case AMEX:
             return R.drawable.wallet_finansial_service_amex;
-         case SAMPLE:
+         case GENERIC:
             return 0;
          default:
             throw new IllegalStateException("Incorrect Financial Service");

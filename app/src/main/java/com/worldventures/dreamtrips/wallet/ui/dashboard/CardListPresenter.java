@@ -183,10 +183,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.go(new WalletSettingsPath());
    }
 
-   void navigateToInstallFirmware() {
-      navigator.go(new WalletInstallFirmwarePath());
-   }
-
    void navigateBack() {
       navigator.goBack();
    }
@@ -217,10 +213,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    private void trackAddCard() {
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
-   }
-
-   void firmwareAvailable() {
-      navigator.go(new WalletNewFirmwareAvailablePath());
    }
 
    private void observeChanges() {
@@ -268,7 +260,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().showRecordsInfo(cards);
    }
 
-   public void navigateToForceUpdate() {
+   public void navigateToFirmwareUpdate() {
       navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
@@ -279,7 +271,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                if (firmwareUpdateData.factoryResetRequired()) {
                   getView().showFactoryResetConfirmationDialog();
                } else {
-                  navigateToForceUpdate();
+                  navigateToFirmwareUpdate();
                }
             }, throwable -> Timber.e("", throwable));
    }

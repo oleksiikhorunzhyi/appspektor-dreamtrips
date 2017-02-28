@@ -21,8 +21,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -207,7 +205,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public void showFirmwareUpdateError() {
       if (installFirmwareErrorDialog == null) {
          installFirmwareErrorDialog = new InstallFirmwareErrorDialog(getContext())
-               .setOnRetryction(() -> presenter.navigateToInstallFirmware())
+               .setOnRetryction(() -> presenter.navigateToFirmwareUpdate())
                .setOnCancelAction(() -> presenter.navigateBack());
       }
       if (!installFirmwareErrorDialog.isShowing()) {
@@ -265,7 +263,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             .cancelListener(dialog -> getPresenter().navigateBack())
             .onNegative((dialog, which) -> getPresenter().navigateBack())
             .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
-            .onPositive((dialog, which) -> getPresenter().navigateToForceUpdate())
+            .onPositive((dialog, which) -> getPresenter().navigateToFirmwareUpdate())
             .build();
       factoryResetConfirmationDialog.show();
    }
@@ -335,7 +333,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @OnClick(R.id.firmware_available)
    protected void firmwareAvailableBtnClick() {
-      getPresenter().firmwareAvailable();
+      getPresenter().navigateToFirmwareUpdate();
    }
 
    @Override

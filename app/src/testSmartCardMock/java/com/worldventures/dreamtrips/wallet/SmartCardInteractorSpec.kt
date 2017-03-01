@@ -74,7 +74,7 @@ class SmartCardInteractorSpec : BaseSpec({
          it("should fetch default card id from storage") {
             val testSmartCardId: String = "4"
 
-            whenever(mockDb.readWalletDefaultCardId()).thenReturn(testSmartCardId)
+            whenever(cardStorage.readWalletDefaultCardId()).thenReturn(testSmartCardId)
             assertActionSuccess(loadDefaultCardId(), { testSmartCardId == it.result })
          }
 
@@ -119,7 +119,7 @@ class SmartCardInteractorSpec : BaseSpec({
          beforeEach {
             val cardList = listOf(debitCard, creditCard)
             whenever(cardStorage.readWalletCardsList()).thenReturn(cardList)
-            whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
+            whenever(cardStorage.readWalletDefaultCardId()).thenReturn(defaultCardId)
          }
 
          it("should fetch from cache") {
@@ -231,17 +231,17 @@ class SmartCardInteractorSpec : BaseSpec({
          }
 
          it("Card with valid data should be stored with default address and marked as default") {
-            whenever(mockDb.readWalletDefaultCardId()).thenReturn(null)
+            whenever(cardStorage.readWalletDefaultCardId()).thenReturn(null)
             val subscriber = saveBankCardData(bankCard, setAsDefaultCard = true, setAsDefaultAddress = true)
             assertActionSuccess(subscriber, { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
-            verify(mockDb, atLeast(1)).saveWalletDefaultCardId(any())
+            verify(cardStorage, atLeast(1)).saveWalletDefaultCardId(any())
          }
 
          it("Card with valid data should be stored without default address and not marked as default") {
             val defaultCardId = "9"
-            whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
+            whenever(cardStorage.readWalletDefaultCardId()).thenReturn(defaultCardId)
 
             val subscriber = saveBankCardData(bankCard, setAsDefaultCard = false, setAsDefaultAddress = false)
             assertActionSuccess(subscriber, { true })
@@ -253,7 +253,7 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionFail(subscriber, { it.cause is FormatException })
 
             verify(mockDb, times(0)).saveDefaultAddress(any())
-            verify(mockDb, times(0)).saveWalletDefaultCardId(any())
+            verify(cardStorage, times(0)).saveWalletDefaultCardId(any())
          }
       }
    }
@@ -270,7 +270,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var nxtSessionHolder: NxtSessionHolder
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(mockDb), SmartCardActionStorage(mockDb))
+         setOf(DefaultBankCardStorage(cardStorage), SmartCardActionStorage(mockDb))
       }
 
       fun staticMockTextUtils() {

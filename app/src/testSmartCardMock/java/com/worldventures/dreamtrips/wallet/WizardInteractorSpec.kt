@@ -161,7 +161,7 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var mockedDebitCard: BankCard
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(mockDb), SmartCardActionStorage(mockDb), WalletCardsDiskStorage(persistentCardStorage))
+         setOf(DefaultBankCardStorage(persistentCardStorage), SmartCardActionStorage(mockDb), WalletCardsDiskStorage(persistentCardStorage))
       }
 
       fun staticMockTextUtils() {

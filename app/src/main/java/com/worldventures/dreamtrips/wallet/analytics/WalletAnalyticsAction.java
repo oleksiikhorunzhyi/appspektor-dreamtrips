@@ -7,10 +7,10 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 
 public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
 
-   @Attribute("cid") String cid = "";
-   @Attribute("lockstatus") String lockStatus = "";
-   @Attribute("cardconnected") String cardConnected = "";
-   @Attribute("batterystatus") String batteryStatus = "";
+   @Attribute("cid") String cid;
+   @Attribute("lockstatus") String lockStatus;
+   @Attribute("cardconnected") String cardConnected;
+   @Attribute("batterystatus") String batteryStatus;
 
    public WalletAnalyticsAction() {}
 
@@ -25,23 +25,23 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
             smartCard.smartCardId(),
             smartCardStatus.connectionStatus().isConnected(),
             smartCardStatus.lock(),
-            String.valueOf(smartCardStatus.batteryLevel()));
+            smartCardStatus.batteryLevel());
    }
 
-   public void setSmartCardData(String scId, boolean connected, boolean lockStatus, String battaryLevel) {
-      cid = scId;
+   public void setSmartCardData(String scId, boolean connected, boolean lockStatus, int battaryLevel) {
+      setSmartCardData(scId);
       setConnected(connected);
       if (connected) {
          setLockStatus(lockStatus);
-         batteryStatus = battaryLevel;
+         batteryStatus = battaryLevel != 0 ? Integer.toString(battaryLevel) : null;
       }
    }
 
    public void setSmartCardData(String scId, boolean connected, boolean lockStatus) {
-      setSmartCardData(scId, connected, lockStatus, "");
+      setSmartCardData(scId, connected, lockStatus, 0);
    }
 
-   public void setSmartCardData(String scId) {
+   private void setSmartCardData(String scId) {
       cid = scId;
    }
 

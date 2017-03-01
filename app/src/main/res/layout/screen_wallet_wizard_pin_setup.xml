@@ -26,12 +26,38 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/spacing_large"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
             android:paddingTop="@dimen/spacing_normal"
             android:textSize="@dimen/font_large"
             tools:text="@string/wallet_wizard_setup_pin_header"
             />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/header_text_view"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+         <ImageView
+               android:layout_width="38dp"
+               android:layout_height="38dp"
+               app:srcCompat="@drawable/wizard_lock_info_long_click_left_btn_example"
+               />
+
+         <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="@dimen/spacing_small"
+               android:text="@string/wallet_set_pin_info_gesture"
+               android:textAppearance="@style/WalletTheme.TextAppearanceMedium"
+               />
+      </LinearLayout>
 
       <ImageView
             android:id="@+id/flye_card_image"

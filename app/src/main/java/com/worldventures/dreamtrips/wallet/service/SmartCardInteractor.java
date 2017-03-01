@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordsMigrationStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.TokenizeRecordsMigrationCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
@@ -84,6 +86,8 @@ public final class SmartCardInteractor {
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
    private final ActionPipe<CreateBankCardCommand> recordIssuerInfoPipe;
+   private final ActionPipe<RecordsMigrationStatusCommand> recordsMigrationStatusPipe;
+   private final ActionPipe<TokenizeRecordsMigrationCommand> tokenizeRecordsMigrationPipe;
 
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
@@ -145,6 +149,9 @@ public final class SmartCardInteractor {
       stopCardRecordingPipe = sessionActionPipeCreator.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
       recordIssuerInfoPipe = sessionActionPipeCreator.createPipe(CreateBankCardCommand.class, Schedulers.io());
+      recordsMigrationStatusPipe = sessionActionPipeCreator.createPipe(RecordsMigrationStatusCommand.class, Schedulers.io());
+      tokenizeRecordsMigrationPipe = sessionActionPipeCreator.createPipe(TokenizeRecordsMigrationCommand.class, Schedulers
+            .io());
 
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
@@ -275,6 +282,14 @@ public final class SmartCardInteractor {
 
    public ActionPipe<CreateBankCardCommand> bankCardPipe() {
       return recordIssuerInfoPipe;
+   }
+
+   public ActionPipe<TokenizeRecordsMigrationCommand> tokenizeMigrationPipe() {
+      return tokenizeRecordsMigrationPipe;
+   }
+
+   public ActionPipe<RecordsMigrationStatusCommand> recordsMigrationStatusPipe() {
+      return recordsMigrationStatusPipe;
    }
 
    public ActionPipe<DisconnectAction> disconnectPipe() {

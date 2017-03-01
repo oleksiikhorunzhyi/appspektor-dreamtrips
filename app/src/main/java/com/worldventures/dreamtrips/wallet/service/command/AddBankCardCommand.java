@@ -7,7 +7,15 @@ import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 
 import javax.inject.Inject;
 
@@ -24,6 +32,7 @@ import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.vali
 public class AddBankCardCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject NxtInteractor nxtInteractor;
    @Inject SnappyRepository snappyRepository;
 
    private final BankCard bankCard;
@@ -59,6 +68,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       checkCardData();
 
       createCardWithAddress()
+            .flatMap(this::tokenizeBankCard)
             .flatMap(this::pushBankCard)
             .subscribe(bankCard -> {
                saveDefaultAddressIfNeed();
@@ -90,7 +100,22 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       }
    }
 
-   private Observable<BankCard> pushBankCard(BankCard bankCard) {
+   // TODO: 2/28/17 Should add analytics event for tokenization errors
+   private Observable<NxtBankCard> tokenizeBankCard(BankCard bankCard) {
+      return nxtInteractor.tokenizeBankCardPipe()
+            .createObservableResult(new TokenizeBankCardCommand(bankCard))
+            .map(Command::getResult)
+            .flatMap(nxtBankCard -> {
+               if (nxtBankCard.getResponseErrors().isEmpty()) {
+                  return Observable.just(nxtBankCard);
+               } else {
+                  return Observable.error(new NxtMultifunctionException(
+                        NxtBankCardHelper.getResponseErrorMessage(nxtBankCard.getResponseErrors())));
+               }
+            });
+   }
+
+   private Observable<BankCard> pushBankCard(NxtBankCard bankCard) {
       //card without id -> AttachCardCommand -> card with id
       return smartCardInteractor.addRecordPipe()
             .createObservableResult(new AttachCardCommand(bankCard, setAsDefaultCard))

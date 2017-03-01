@@ -64,6 +64,11 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
+   Converter provideNxtSessionConverter() {
+      return new NxtSessionConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
    Converter provideWalletLocationToSmartCardLocationConverter() {
       return new WalletLocationToSmartCardLocationConverter();
    }

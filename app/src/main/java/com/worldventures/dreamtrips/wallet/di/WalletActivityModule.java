@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddress
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.tokenize_migration.TokenizeRecordsMigrationPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
@@ -121,7 +122,7 @@ import dagger.Provides;
             ForceUpdatePowerOnPresenter.class,
             ForcePairKeyPresenter.class,
             LostCardPresenter.class,
-            ForcePairKeyPresenter.class,
+            TokenizeRecordsMigrationPresenter.class,
             ExistingCardDetectPresenter.class,
             UnassignSuccessPresenter.class,
             EnterPinUnassignPresenter.class,
@@ -129,6 +130,7 @@ import dagger.Provides;
             NewCardPowerOnPresenter.class,
             PreCheckNewCardPresenter.class,
             PaymentSyncFinishPresenter.class
+
       },
       complete = false, library = true
 )

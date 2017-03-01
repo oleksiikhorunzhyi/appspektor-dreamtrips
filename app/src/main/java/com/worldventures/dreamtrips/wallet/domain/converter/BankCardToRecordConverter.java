@@ -44,7 +44,7 @@ public class BankCardToRecordConverter implements Converter<BankCard, Record> {
                   Record.FinancialService.class))
             .t1(card.track1() != null ? card.track1() : "")
             .t2(card.track2() != null ? card.track2() : "")
-            .t3("")
+            .t3(card.track3() != null ? card.track3() : "")
             .lastName(card.cardHolderLastName())
             .firstName(card.cardHolderFirstName())
             .middleName(card.cardHolderMiddleName())

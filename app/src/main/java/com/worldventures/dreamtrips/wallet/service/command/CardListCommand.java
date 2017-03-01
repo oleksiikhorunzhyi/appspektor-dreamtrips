@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
@@ -24,7 +25,11 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
       return new CardListCommand(new AddOperationFunc(card));
    }
 
-   public static CardListCommand replace(List<Card> cardList) {
+   public static CardListCommand addAll(List<? extends Card> cards) {
+      return new CardListCommand(new AddOperationFunc(cards));
+   }
+
+   public static CardListCommand replace(List<? extends Card> cardList) {
       return new CardListCommand(new ReplaceCardsOperationFunc(cardList));
    }
 
@@ -40,7 +45,8 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
    }
 
    private static final class RemoveOperationFunc implements Func1<List<Card>, List<Card>> {
-      private String cardId;
+
+      private final String cardId;
 
       RemoveOperationFunc(String cardId) {
          this.cardId = cardId;
@@ -48,46 +54,52 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
 
       @Override
       public List<Card> call(List<Card> cards) {
-         cards.remove(Queryable.from(cards).first(element -> element.id().equals(cardId)));
+         cards.remove(Queryable.from(cards).first(element -> Objects.equals(element.id(), cardId)));
          return cards;
       }
    }
 
    private static final class AddOperationFunc implements Func1<List<Card>, List<Card>> {
-      private Card card;
+
+      private final List<Card> cardsToAdd = new ArrayList<>();
 
       AddOperationFunc(Card card) {
-         this.card = card;
+         cardsToAdd.add(card);
+      }
+
+      AddOperationFunc(List<? extends Card> cards) {
+         cardsToAdd.addAll(cards);
       }
 
       @Override
       public List<Card> call(List<Card> cards) {
-         cards.add(card);
+         cards.addAll(cardsToAdd);
          return cards;
       }
    }
 
    private static final class ReplaceCardsOperationFunc implements Func1<List<Card>, List<Card>> {
 
-      private final List<Card> newCardList;
+      private final List<Card> newCards = new ArrayList<>();
 
-      ReplaceCardsOperationFunc(List<Card> cards) {
-         this.newCardList = cards;
+      ReplaceCardsOperationFunc(List<? extends Card> cards) {
+         newCards.addAll(cards);
       }
 
       @Override
       public List<Card> call(List<Card> cards) {
          cards.clear();
-         cards.addAll(newCardList);
+         cards.addAll(newCards);
          return cards;
       }
    }
 
    private static final class EditOperationFunc implements Func1<List<Card>, List<Card>> {
-      private Card card;
+
+      private final Card editedCard;
 
       EditOperationFunc(Card card) {
-         this.card = card;
+         editedCard = card;
       }
 
       @Override
@@ -96,11 +108,8 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
       }
 
       private Card remapCard(Card element) {
-         if (element.id().equals(card.id())) {
-            return card;
-         } else {
-            return element;
-         }
+         return Objects.equals(element.id(), editedCard.id()) ? editedCard : element;
       }
    }
+
 }

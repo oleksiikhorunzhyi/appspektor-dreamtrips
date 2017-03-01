@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActio
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,13 +20,13 @@ import dagger.Provides;
 public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage walletCardListStorage(CardListStorage cardListStorage) {
-      return new WalletCardsDiskStorage(cardListStorage);
+   ActionStorage walletCardListStorage(PersistentWalletCardsStorage bankCardsStorage) {
+      return new WalletCardsDiskStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage defaultBankCardStorage(SnappyRepository snappyRepository) {
-      return new DefaultBankCardStorage(snappyRepository);
+   ActionStorage defaultBankCardStorage(PersistentWalletCardsStorage bankCardsStorage) {
+      return new DefaultBankCardStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)

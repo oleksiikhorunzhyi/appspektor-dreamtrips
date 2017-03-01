@@ -80,7 +80,6 @@ public interface SnappyRepository {
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
    String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
-   String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
@@ -227,12 +226,6 @@ public interface SnappyRepository {
    SimpleDeviceStorage getWalletDeviceStorage();
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
-
-   void deleteWalletDefaultCardId();
-
-   void saveWalletDefaultCardId(String id);
-
-   String readWalletDefaultCardId();
 
    void saveDefaultAddress(AddressInfo addressInfo);
 

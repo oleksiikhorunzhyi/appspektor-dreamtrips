@@ -68,13 +68,13 @@ public class BankCardHelper {
 
    public String financialServiceWithCardNumber(BankCard bankCard) {
       return format("%s •••• %s", obtainFinancialServiceType(bankCard.issuerInfo()
-            .financialService()), obtainLastCardDigits(bankCard.number()));
+            .financialService()), bankCard.numberLastFourDigits());
    }
 
    public String bankNameWithCardNumber(BankCard bankCard) {
       String bankName = bankCard.issuerInfo().bankName();
       bankName = (bankName == null) ? "" : bankName;
-      return format("%s •••• %s", bankName, obtainLastCardDigits(bankCard.number()));
+      return format("%s •••• %s", bankName, bankCard.numberLastFourDigits());
    }
 
    // utils
@@ -92,12 +92,12 @@ public class BankCardHelper {
       }
    }
 
-   public CharSequence obtainFullCardNumber(String number) {
-      return "•••• •••• •••• " + obtainLastCardDigits(number);
+   public CharSequence obtainFullCardNumber(String numberLastFourDigits) {
+      return "•••• •••• •••• " + numberLastFourDigits;
    }
 
-   public CharSequence obtainShortCardNumber(String number) {
-      SpannableString lastDigits = new SpannableString(obtainLastCardDigits(number));
+   public CharSequence obtainShortCardNumber(String numberLastFourDigits) {
+      SpannableString lastDigits = new SpannableString(numberLastFourDigits);
       lastDigits.setSpan(new RelativeSizeSpan(.6f), 0, lastDigits.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
       return new SpannableStringBuilder()
             .append("••••")
@@ -115,7 +115,7 @@ public class BankCardHelper {
    public CharSequence formattedBankNameWithCardNumber(BankCard bankCard) {
       CharSequence bankName = toBoldSpannable(bankCard.issuerInfo().bankName());
 
-      SpannableString cardNumber = new SpannableString(format(" •••• %s", obtainLastCardDigits(bankCard.number())));
+      SpannableString cardNumber = new SpannableString(format(" •••• %s", bankCard.numberLastFourDigits()));
       cardNumber.setSpan(new RelativeSizeSpan(0.8f), 0, cardNumber.length(), 0);
 
       if (TextUtils.isEmpty(bankName)) return cardNumber;

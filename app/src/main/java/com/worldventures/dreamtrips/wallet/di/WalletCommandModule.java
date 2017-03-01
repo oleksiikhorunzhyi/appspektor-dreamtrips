@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyt
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AddListRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -36,6 +35,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsData
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -59,7 +59,6 @@ import dagger.Module;
             CompressImageForSmartCardCommand.class,
             CardListCommand.class,
             AttachCardCommand.class,
-            AddListRecordCommand.class,
             UpdateCardDetailsDataCommand.class,
             UpdateBankCardCommand.class,
             SyncCardsCommand.class,
@@ -99,8 +98,9 @@ import dagger.Module;
             AvailabilitySmartCardCommand.class,
             UpdateSmartCardUserCommand.class,
             FactoryResetCommand.class,
-            LocateCardAnalyticsCommand.class,
-            WipeSmartCardDataCommand.class
+            WipeSmartCardDataCommand.class,
+            CreateNxtSessionCommand.class,
+            LocateCardAnalyticsCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

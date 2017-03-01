@@ -1,17 +1,21 @@
 package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
+
+import java.io.File;
 
 import butterknife.InjectView;
 
@@ -22,6 +26,7 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.smart_card) View smartCard;
    @InjectView(R.id.credit_card) View creditCard;
+   @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
 
    private final OperationScreen operationScreen = new DialogOperationScreen(this);
    private final ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
@@ -85,5 +90,10 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    @Override
    public void showSwipeSuccess() {
       operationScreen.showProgress(getString(R.string.wallet_add_card_swipe_success));
+   }
+
+   @Override
+   public void userPhoto(File photo) {
+      userPhoto.setImageURI(Uri.fromFile(photo));
    }
 }

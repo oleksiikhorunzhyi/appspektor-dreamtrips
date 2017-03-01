@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
@@ -98,7 +99,8 @@ import dagger.Module;
             UpdateSmartCardUserCommand.class,
             FactoryResetCommand.class,
             WipeSmartCardDataCommand.class,
-            CreateNxtSessionCommand.class
+            CreateNxtSessionCommand.class,
+            LocateCardAnalyticsCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

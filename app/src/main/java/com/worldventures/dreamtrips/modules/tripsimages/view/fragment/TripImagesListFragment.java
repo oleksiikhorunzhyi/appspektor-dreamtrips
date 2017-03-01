@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -42,7 +42,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter> extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
-      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesBasePresenter.View {
+      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesBasePresenter.View, SelectablePagerFragment {
 
    @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
@@ -65,6 +65,11 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
       stateDelegate.saveStateIfNeeded(outState);
+   }
+
+   @Override
+   public void onSelectedFromPager() {
+      getPresenter().onSelectedFromPager();
    }
 
    @Override

@@ -40,6 +40,9 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
+   // TODO: 2/20/17 This value for calc of percentage progress
+   private int countOfCards = 0;
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.zip(
@@ -67,8 +70,14 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                bundle.localDefaultCardId = localDefaultCardId;
                return bundle;
             }
-      ).flatMap(this::sync)
+      )
+            .doOnNext(syncBundle -> countOfCards = syncBundle.localCards.size())
+            .flatMap(this::sync)
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   public int getCountOfCards() {
+      return countOfCards;
    }
 
    /**

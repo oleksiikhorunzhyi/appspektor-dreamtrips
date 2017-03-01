@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_setup_is_complete_title"
+         />
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <FrameLayout
+            android:id="@+id/image_success_container"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="58dp"
+            >
+
+         <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:src="@drawable/ic_circle_blue"
+               />
+
+         <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:padding="16dp"
+               android:src="@drawable/ic_check_blue"
+               />
+      </FrameLayout>
+
+      <TextView
+            android:id="@+id/tv_unassigned_success_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/image_success_container"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing_large"
+            android:paddingRight="@dimen/spacing_large"
+            android:text="@string/wallet_setup_is_completed"
+            android:textAppearance="@style/WalletTheme.TextAppearanceLarge"
+            android:textSize="@dimen/font_extra_large"
+            />
+
+      <TextView
+            android:id="@+id/tv_you_are_ready_setup_new_sc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tv_unassigned_success_msg"
+            android:layout_marginTop="@dimen/spacing_huge"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing_large"
+            android:paddingRight="@dimen/spacing_large"
+            android:text="@string/wallet_card_ready_to_use"
+            android:textAppearance="@style/WalletTheme.TextAppearanceLarge"
+            />
+
+      <Button
+            android:id="@+id/btn_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:text="@string/wallet_done_label"
+            />
+   </RelativeLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishScreen>

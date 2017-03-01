@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.util.AnimateGIFUtil;
 
 import butterknife.InjectView;
 
@@ -22,6 +24,7 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
    @InjectView(R.id.wallet_wizard_power_on_btn) Button actionBtn;
 
    @InjectView(R.id.card_container) View cardContainer;
+   @InjectView(R.id.wallet_power_on_card) SimpleDraweeView powerOnCardDraweeView;
 
    public WizardPowerOnScreen(Context context) {
       super(context);
@@ -39,9 +42,11 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
 
    @Override
    protected void onFinishInflate() {
-      super.onFinishInflate();
       supportConnectionStatusLabel(false);
+      super.onFinishInflate();
+      if(isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
+      AnimateGIFUtil.setupAnimateGIFbyFresco(powerOnCardDraweeView, R.drawable.animation_power_on);
    }
 
    @Override

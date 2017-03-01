@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 
 import java.util.concurrent.Executors;
 
@@ -40,6 +41,7 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardInChargerEvent;
@@ -77,6 +79,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
    private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
+   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataOnBackedCommandActionPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
@@ -91,6 +94,7 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
+   private final ActionPipe<ConnectAction> connectionActionPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -135,6 +139,8 @@ public final class SmartCardInteractor {
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
       restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
+      wipeSmartCardDataOnBackedCommandActionPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
+            .io());
 
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
@@ -152,6 +158,8 @@ public final class SmartCardInteractor {
 
       cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
+
+      connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -292,6 +300,10 @@ public final class SmartCardInteractor {
       return restartSmartCardCommandActionPipe;
    }
 
+   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataCommandActionPipe() {
+      return wipeSmartCardDataOnBackedCommandActionPipe;
+   }
+
    public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {
       return autoClearDelayPipe;
    }
@@ -310,5 +322,9 @@ public final class SmartCardInteractor {
 
    public ActionPipe<CardInChargerEvent> cardInChargerEventPipe() {
       return cardInChargerEventPipe;
+   }
+
+   public ActionPipe<ConnectAction> connectionActionPipe() {
+      return connectionActionPipe;
    }
 }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.newcard.check.PreCheckNewCardScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_pre_check_settings"
+         />
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:paddingEnd="@dimen/spacing_large"
+         android:paddingStart="@dimen/spacing_large"
+         android:paddingTop="@dimen/spacing_large"
+         >
+
+      <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center"
+            android:text="@string/wallet_pre_check_new_card"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            >
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+               android:id="@+id/check_widget_bluetooth"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:icon="@drawable/ic_wallet_bluetooth"
+               app:title="@string/wallet_new_card_pre_installation_bluetooth"
+               />
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+               android:id="@+id/check_widget_connection"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:visibility="gone"
+               app:checked="true"
+               app:icon="@drawable/ic_wallet_power"
+               app:title="@string/wallet_firmware_pre_installation_connection"
+               tools:visibility="visible"
+               />
+      </LinearLayout>
+
+      <Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:enabled="false"
+            android:padding="@dimen/spacing_normal"
+            android:text="@string/wallet_next_label"
+            tools:enabled="true"
+            />
+
+   </RelativeLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.newcard.check.PreCheckNewCardScreen>

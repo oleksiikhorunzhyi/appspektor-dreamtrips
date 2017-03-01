@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateProfile
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 
@@ -96,7 +97,8 @@ import dagger.Module;
             AvailabilitySmartCardCommand.class,
             UpdateSmartCardUserCommand.class,
             FactoryResetCommand.class,
-            CreateNxtSessionCommand.class,
+            WipeSmartCardDataCommand.class,
+            CreateNxtSessionCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

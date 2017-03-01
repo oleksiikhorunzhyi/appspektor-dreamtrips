@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.Wallet
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
@@ -289,6 +290,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    void openAboutScreen() {
       navigator.go(new AboutPath());
+   }
+
+   void goToAddNewSmartCard() {
+      navigator.go(new ExistingCardDetectPath());
    }
 
    public interface Screen extends WalletScreen {

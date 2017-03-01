@@ -39,7 +39,12 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron.Fo
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.check.PreCheckNewCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.poweron.NewCardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
@@ -48,6 +53,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPres
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcards.SyncPaymentCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
@@ -114,9 +121,16 @@ import dagger.Provides;
             StartFirmwareInstallPresenter.class,
             ForceUpdatePowerOnPresenter.class,
             ForcePairKeyPresenter.class,
+            LostCardPresenter.class,
             TokenizeRecordsMigrationPresenter.class,
-            ForcePairKeyPresenter.class,
-            LostCardPresenter.class
+            ExistingCardDetectPresenter.class,
+            UnassignSuccessPresenter.class,
+            EnterPinUnassignPresenter.class,
+            SyncPaymentCardPresenter.class,
+            NewCardPowerOnPresenter.class,
+            PreCheckNewCardPresenter.class,
+            PaymentSyncFinishPresenter.class
+
       },
       complete = false, library = true
 )

@@ -252,22 +252,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    @Override
-   public void deleteWalletDefaultCardId() {
-      act(db -> db.del(WALLET_DEFAULT_BANK_CARD));
-   }
-
-   @Override
-   public void saveWalletDefaultCardId(String defaultCardId) {
-      if (defaultCardId == null) return;
-      putEncrypted(WALLET_DEFAULT_BANK_CARD, defaultCardId);
-   }
-
-   @Override
-   public String readWalletDefaultCardId() {
-      return getEncrypted(WALLET_DEFAULT_BANK_CARD, String.class);
-   }
-
-   @Override
    public void saveDefaultAddress(AddressInfo addressInfo) {
       putEncrypted(WALLET_DEFAULT_ADDRESS, addressInfo);
    }

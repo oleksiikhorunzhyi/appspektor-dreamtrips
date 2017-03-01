@@ -18,8 +18,8 @@ public class StorageModule {
 
    @Provides
    @Singleton
-   public SnappyStorageManager SnappyRepositoryImpl(CardListStorage cardListStorage, PersistentCardListStorage persistentCardListStorage) {
-      return new SnappyStorageManager(Arrays.asList(cardListStorage, persistentCardListStorage));
+   public SnappyStorageManager SnappyRepositoryImpl(CardListStorage cardListStorage, PersistentWalletCardsStorage persistentWalletCardsStorage) {
+      return new SnappyStorageManager(Arrays.asList(cardListStorage, persistentWalletCardsStorage));
    }
 
    @Provides
@@ -30,8 +30,8 @@ public class StorageModule {
 
    @Provides
    @Singleton
-   public PersistentCardListStorage persistentCardListStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage, SnappyCrypter snappyCrypter) {
-      return new PersistentCardListStorage(snappyStorage, snappyCrypter);
+   public PersistentWalletCardsStorage persistentCardListStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage, SnappyCrypter snappyCrypter) {
+      return new PersistentWalletCardsStorage(snappyStorage, snappyCrypter);
    }
 
 }

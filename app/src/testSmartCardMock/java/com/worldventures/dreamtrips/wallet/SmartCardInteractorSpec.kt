@@ -18,12 +18,15 @@ import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConv
 import com.worldventures.dreamtrips.wallet.domain.converter.FinancialServiceToRecordFinancialServiceConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordFinancialServiceToFinancialServiceConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
-import com.worldventures.dreamtrips.wallet.domain.entity.*
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService
+import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage
 import com.worldventures.dreamtrips.wallet.model.*
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
@@ -261,7 +264,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
-      lateinit var cardStorage: PersistentCardListStorage
+      lateinit var cardStorage: PersistentWalletCardsStorage
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var nxtInteractor: NxtInteractor
       lateinit var nxtSessionHolder: NxtSessionHolder
@@ -308,7 +311,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
-         daggerCommandActionService.registerProvider(PersistentCardListStorage::class.java) { cardStorage }
+         daggerCommandActionService.registerProvider(PersistentWalletCardsStorage::class.java) { cardStorage }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })

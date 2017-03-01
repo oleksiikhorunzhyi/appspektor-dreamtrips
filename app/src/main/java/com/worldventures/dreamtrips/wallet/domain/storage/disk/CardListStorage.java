@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import java.util.List;
 
 /**
- * Must use {@link PersistentCardListStorage} for v.1.18+
+ * Must use {@link PersistentWalletCardsStorage} for v.1.18+
  */
 @Deprecated
 public class CardListStorage extends CryptedModelStorage {

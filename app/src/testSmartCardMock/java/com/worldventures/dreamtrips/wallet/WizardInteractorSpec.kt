@@ -23,8 +23,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentCardListStorage
-import com.worldventures.dreamtrips.wallet.model.TestFirmware
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage
 import com.worldventures.dreamtrips.wallet.model.TestSmartCard
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
 import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
@@ -148,7 +147,7 @@ class WizardInteractorSpec : BaseSpec({
       const val MOCK_BARCODE = MOCK_SMART_CARD_ID.toString()
 
       lateinit var mockDb: SnappyRepository
-      lateinit var persistentCardStorage: PersistentCardListStorage
+      lateinit var persistentCardStorage: PersistentWalletCardsStorage
       lateinit var oldCardStorage: CardListStorage
 
       lateinit var janet: Janet
@@ -201,7 +200,7 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
-         daggerCommandActionService.registerProvider(PersistentCardListStorage::class.java) { persistentCardStorage }
+         daggerCommandActionService.registerProvider(PersistentWalletCardsStorage::class.java) { persistentCardStorage }
          daggerCommandActionService.registerProvider(CardListStorage::class.java) { oldCardStorage }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(WizardInteractor::class.java, { wizardInteractor })

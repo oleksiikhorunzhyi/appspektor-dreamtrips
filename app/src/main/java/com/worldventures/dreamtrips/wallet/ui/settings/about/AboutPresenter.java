@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
@@ -26,6 +29,7 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public AboutPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -40,6 +44,8 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
       smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
+
+      trackScreen();
    }
 
    private void observeSmartCard() {
@@ -65,6 +71,11 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bindCardList(command.getResult()));
+   }
+
+   private void trackScreen() {
+      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new AboutAnalyticsAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    private void bindCardList(List<Card> cardList) {

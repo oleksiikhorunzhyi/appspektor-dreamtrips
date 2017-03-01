@@ -7,18 +7,26 @@ import android.util.Pair;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.settings.RestartSmartCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.StealthModeAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.settings.WalletSettingsAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardLockAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardUnlockAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
-import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -29,8 +37,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.Wallet
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
@@ -42,19 +50,22 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import flow.path.Path;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject FirmwareInteractor firmwareInteractor;
+   @Inject SCFirmwareFacade firmwareFacade;
    @Inject TemporaryStorage temporaryStorage;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
-   @Nullable private FirmwareUpdateData firmwareUpdateData;
+   private Path firmwareUpdatePath = null;
 
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -74,24 +85,29 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       observeFailInstallation(view);
       observeConnectionController(view);
       observeFirmwareUpdates();
+      firmwareFacade.fetchFirmwareInfo();
+      trackScreen();
    }
 
    private void observeFirmwareUpdates() {
-      firmwareInteractor.firmwareInfoPipe()
-            .observeSuccessWithReplay()
+      firmwareFacade.takeFirmwareInfo()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> {
-               firmwareUpdateData = command.getResult();
-               toggleFirmwareBargeOrVersion(firmwareUpdateData.updateAvailable());
-            });
+            .subscribe(this::toggleFirmwareBargeOrVersion, throwable -> Timber.e("", throwable));
    }
 
-   private void toggleFirmwareBargeOrVersion(boolean updateAvailable) {
-      if (updateAvailable) {
+   private void trackScreen() {
+      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new WalletSettingsAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+   }
+
+   private void toggleFirmwareBargeOrVersion(FirmwareUpdateData firmwareUpdateData) {
+      if (firmwareUpdateData.updateAvailable()) {
          getView().firmwareUpdateCount(1);
          getView().showFirmwareBadge();
+         firmwareUpdatePath = new StartFirmwareInstallPath();
       } else {
          getView().showFirmwareVersion();
+         firmwareUpdatePath = new WalletUpToDateFirmwarePath();
       }
    }
 
@@ -108,7 +124,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled))
+                  .onSuccess(action -> {
+                     trackSmartCardStealthMode(action.stealthModeEnabled);
+                     stealthModeChangedMessage(action.stealthModeEnabled);
+                  })
                   .onFail(ErrorHandler.create(getContext(),
                         command -> stealthModeFailed()))
                   .wrap()
@@ -118,12 +137,25 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(action -> trackSmartCardLock(action.isLock()))
                   .onFail(ErrorHandler.<SetLockStateCommand>builder(getContext())
                         .defaultMessage(R.string.wallet_smartcard_connection_error)
                         .defaultAction(a -> lockStatusFailed())
                         .build()
                   )
                   .wrap());
+   }
+
+   private void trackSmartCardStealthMode(boolean stealthModeEnabled) {
+      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new StealthModeAction(stealthModeEnabled));
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+   }
+
+   private void trackSmartCardLock(boolean lock) {
+      final WalletAnalyticsAction smartCardLockAction = lock
+            ? new SmartCardLockAction()
+            : new SmartCardUnlockAction();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(smartCardLockAction));
    }
 
    private void stealthModeFailed() {
@@ -188,7 +220,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.disableDefaultPaymentValue(status.disableCardDelay());
       view.autoClearSmartCardValue(status.clearFlyeDelay());
       view.firmwareVersion(smartCardFirmware);
-      toggleFirmwareBargeOrVersion(firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
    }
 
    public void goBack() {
@@ -243,10 +274,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void firmwareUpdatesClick() {
-      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
-         navigator.go(new StartFirmwareInstallPath());
-      } else {
-         navigator.go(new WalletUpToDateFirmwarePath());
+      if (firmwareUpdatePath != null) {
+         navigator.go(firmwareUpdatePath);
       }
    }
 
@@ -282,6 +311,12 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    void confirmRestartSmartCard() {
       smartCardInteractor.restartSmartCardCommandActionPipe()
             .send(new RestartSmartCardCommand());
+      trackSmartCardRestart();
+   }
+
+   private void trackSmartCardRestart() {
+      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new RestartSmartCardAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    void openLostCardScreen() {

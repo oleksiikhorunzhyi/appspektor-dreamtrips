@@ -6,7 +6,10 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinSuccessAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetPinAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -23,6 +26,7 @@ import javax.inject.Inject;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 
+import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action.RESET;
 import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action.SETUP;
 
 public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPresenter.Screen, Parcelable> {
@@ -45,10 +49,15 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      trackScreen();
+   }
 
+   private void trackScreen() {
+      WalletAnalyticsAction walletAnalyticsAction = (mode == RESET)
+            ? new ResetPinAction()
+            : new SetPinAction();
       analyticsInteractor.walletAnalyticsCommandPipe()
-            //// TODO: 2/20/17
-            .send(new WalletAnalyticsCommand(new SetPinAction()));
+            .send(new WalletAnalyticsCommand(walletAnalyticsAction));
    }
 
    @Override
@@ -64,6 +73,9 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<PinSetupFinishedEvent>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> {
+                     if (mode == RESET) {
+                        trackPinResetSuccess();
+                     }
                      getView().provideOperationDelegate().hideProgress();
                      navigateToNextScreen();
                   })
@@ -82,6 +94,11 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
                   .onStart(action -> getView().provideOperationDelegate().showProgress(null))
                   .wrap()
             );
+   }
+
+   private void trackPinResetSuccess() {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new ResetPinSuccessAction()));
    }
 
    void setupPIN() {

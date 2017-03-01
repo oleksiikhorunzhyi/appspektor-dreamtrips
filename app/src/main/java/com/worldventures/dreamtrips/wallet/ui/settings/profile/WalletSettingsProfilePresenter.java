@@ -8,11 +8,16 @@ import android.view.WindowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
@@ -37,8 +42,6 @@ import io.techery.janet.JanetException;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func0;
 import timber.log.Timber;
 
 public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettingsProfilePresenter.Screen, WalletSettingsProfileState> {
@@ -47,6 +50,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private SmartCardUserPhoto preparedPhoto;
    private int changeProfileFlag = 0;
@@ -92,20 +96,36 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
                view.setPreviewPhoto(it.userPhoto().monochrome());
                view.setUserName(it.firstName(), it.middleName(), it.lastName());
             }, throwable -> Timber.e(throwable, ""));
+
+      trackScreen();
+   }
+
+   private void trackScreen() {
+      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new SmartCardProfileAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    void handleDoneAction() {
       //noinspection all
-      final Screen view = getView();
-      handleToolbarAction(() ->
-            smartCardUserDataInteractor.updateSmartCardUserPipe()
-                  .send(new UpdateSmartCardUserCommand(
-                        ImmutableChangedFields.builder()
-                              .firstName(view.getFirstName())
-                              .middleName(view.getMiddleName())
-                              .lastName(view.getLastName())
-                              .photo(preparedPhoto)
-                              .build())));
+      final ChangedFields changedFields = collectUserData(getView());
+      handleToolbarAction(() -> {
+         smartCardUserDataInteractor.updateSmartCardUserPipe().send(new UpdateSmartCardUserCommand(changedFields));
+         trackProfileChangesSaved();
+      });
+   }
+
+   private void trackProfileChangesSaved() {
+      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new ProfileChangesSavedAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+   }
+
+   private ChangedFields collectUserData(Screen view) {
+      return ImmutableChangedFields.builder()
+            .firstName(view.getFirstName())
+            .middleName(view.getMiddleName())
+            .lastName(view.getLastName())
+            .photo(preparedPhoto)
+            .build();
    }
 
    void handleBackAction() {

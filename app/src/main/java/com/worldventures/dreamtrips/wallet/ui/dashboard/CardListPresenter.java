@@ -39,8 +39,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;

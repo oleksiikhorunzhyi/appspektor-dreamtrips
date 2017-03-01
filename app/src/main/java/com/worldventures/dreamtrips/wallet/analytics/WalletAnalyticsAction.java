@@ -12,9 +12,9 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
    @Attribute("cardconnected") String cardConnected = "";
    @Attribute("batterystatus") String batteryStatus = "";
 
-   WalletAnalyticsAction() {}
+   public WalletAnalyticsAction() {}
 
-   WalletAnalyticsAction(String scId) {
+   public WalletAnalyticsAction(String scId) {
       cid = scId;
    }
 
@@ -43,6 +43,10 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
 
    public void setSmartCardData(String scId) {
       cid = scId;
+   }
+
+   public void setSmartCardData(boolean connected) {
+      setConnected(connected);
    }
 
    private void setConnected(boolean connected) {

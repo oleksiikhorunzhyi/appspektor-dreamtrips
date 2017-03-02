@@ -57,6 +57,10 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
    private final DisableDefaultCardItemProvider disableDefaultCardItemProvider = new DisableDefaultCardItemProvider();
 
+   private MaterialDialog confirmFactoryResetDialog = null;
+   private MaterialDialog noConnectionDialog = null;
+   private MaterialDialog confirmRestartSmartCardDialog = null;
+
    public WalletSettingsScreen(Context context) {
       super(context);
    }
@@ -139,7 +143,15 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @OnClick(R.id.item_factory_reset)
    void onFactoryResetClick() {
-      presenter.factoryResetClick();
+      if (confirmFactoryResetDialog == null) {
+         confirmFactoryResetDialog = new MaterialDialog.Builder(getContext())
+               .content(R.string.wallet_confirm_factory_reset_msg)
+               .positiveText(R.string.wallet_continue_label)
+               .negativeText(R.string.cancel)
+               .onPositive((dialog, which) -> presenter.factoryResetClick())
+               .build();
+      }
+      if(!confirmFactoryResetDialog.isShowing()) confirmFactoryResetDialog.show();
    }
 
    @OnClick(R.id.item_restart_sc)
@@ -263,23 +275,35 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @Override
    public void showSCNonConnectionDialog() {
-      new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_card_settings_cant_connected)
-            .content(R.string.wallet_card_settings_message_cant_connected)
-            .positiveText(R.string.ok)
-            .build()
-            .show();
+      if (noConnectionDialog == null) {
+         noConnectionDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_card_settings_cant_connected)
+               .content(R.string.wallet_card_settings_message_cant_connected)
+               .positiveText(R.string.ok)
+               .build();
+      }
+      if(!noConnectionDialog.isShowing()) noConnectionDialog.show();
    }
 
    @Override
    public void showConfirmRestartSCDialog() {
-      new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_card_settings_restart_sc)
-            .content(R.string.wallet_card_settings_are_you_sure)
-            .positiveText(R.string.wallet_card_settings_restart)
-            .negativeText(R.string.cancel)
-            .onPositive(((dialog, which) -> presenter.confirmRestartSmartCard()))
-            .build()
-            .show();
+      if (confirmRestartSmartCardDialog == null) {
+         confirmRestartSmartCardDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_card_settings_restart_sc)
+               .content(R.string.wallet_card_settings_are_you_sure)
+               .positiveText(R.string.wallet_card_settings_restart)
+               .negativeText(R.string.cancel)
+               .onPositive(((dialog, which) -> presenter.confirmRestartSmartCard()))
+               .build();
+      }
+      if(!confirmRestartSmartCardDialog.isShowing()) confirmRestartSmartCardDialog.show();
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      if(confirmFactoryResetDialog != null) confirmFactoryResetDialog.dismiss();
+      if(noConnectionDialog != null) noConnectionDialog.dismiss();
+      if(confirmRestartSmartCardDialog != null) confirmRestartSmartCardDialog.dismiss();
+      super.onDetachedFromWindow();
    }
 }

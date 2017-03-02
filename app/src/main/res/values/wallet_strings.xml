@@ -40,7 +40,7 @@
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>
-   <string name="wallet_wizard_setup_pin_header">Create your PIN using any 4-gesture combination of left-button tap, right-button tap, left-to-right swipe, or right-to-left swipe.</string>
+   <string name="wallet_wizard_setup_pin_header">Create you 4-gesture PIN using any\nof the following gestures on the\ntwo outer buttons:</string>
    <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the smart card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
@@ -424,5 +424,17 @@
    <string name="wallet_setup_is_complete_title">Set Up Complete</string>
    <string name="wallet_setup_is_completed">Set up is complete.</string>
    <string name="wallet_card_ready_to_use">Your Smart Card is ready for use.</string>
+
+   <!-- Setup Pin lock gestures info dialog -->
+   <string name="wallet_pin_setup_action_info_gesture_label">Gestures Info</string>
+   <string name="wallet_gestures_info_dialog_title">PIN Gestures</string>
+   <string name="wallet_lock_label_swipe_right">Swipe Right</string>
+   <string name="wallet_lock_label_hold_right_btn">Press/hold R</string>
+   <string name="wallet_lock_label_swipe_left">Swipe Left</string>
+   <string name="wallet_lock_label_hold_left_btn">Press/hold L</string>
+   <string name="wallet_lock_label_click_right_btn">Tap Right</string>
+   <string name="wallet_lock_label_tap_left_btn">Tap Left</string>
+   <string name="wallet_close">Close</string>
+   <string name="wallet_set_pin_info_gesture">Press and hold</string>
 
 </resources>

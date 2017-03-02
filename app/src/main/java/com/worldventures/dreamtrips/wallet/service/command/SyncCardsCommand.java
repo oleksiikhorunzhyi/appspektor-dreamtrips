@@ -2,6 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -28,7 +32,6 @@ import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -37,6 +40,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
 
    @Inject SmartCardInteractor interactor;
    @Inject NxtInteractor nxtInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
@@ -126,11 +130,11 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             .map(Command::getResult);
    }
 
-   // TODO: 2/28/17 Should add analytics event for detokenization errors
    private Observable<BankCard> detokenizeBankCard(BankCard bankCard) {
       return nxtInteractor.detokenizeBankCardPipe()
             .createObservableResult(new DetokenizeBankCardCommand(bankCard))
             .map(Command::getResult)
+            .doOnNext(this::sendTokenizationAnalytics)
             .flatMap(nxtBankCard -> {
                if (nxtBankCard.getResponseErrors().isEmpty()) {
                   return Observable.just(nxtBankCard.getDetokenizedBankCard());
@@ -141,17 +145,19 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             });
    }
 
+   private void sendTokenizationAnalytics(NxtBankCard nxtBankCard) {
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(
+            TokenizationCardAction.from(nxtBankCard, ActionType.RESTORE, false)
+      ));
+   }
+
    /**
     * Filter out all cards that were not tokenized properly.
-    * Send analytic events for any errors that occurred during tokenization.
     *
     * @param bankCards - NXT security response that can contain both properly tokenized values and errors.
     * @return - cards that were tokenized without any errors.
     */
    private List<BankCard> handleTokenizeResult(List<NxtBankCard> bankCards) {
-      sendErrorAnalytics(Queryable.from(bankCards)
-            .where(bankCard -> !bankCard.getResponseErrors().isEmpty())
-            .toList());
       return Queryable.from(bankCards)
             .where(bankCard -> bankCard.getResponseErrors().isEmpty())
             .map(NxtBankCard::getTokenizedBankCard)
@@ -162,14 +168,6 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       return interactor.cardsListPipe()
             .createObservableResult(CardListCommand.replace(tokenizedBankCards))
             .map(o -> null);
-   }
-
-   private void sendErrorAnalytics(List<NxtBankCard> errorTokenizeResults) {
-      // TODO: 2/24/17 When task is RFD
-      Queryable.from(errorTokenizeResults).map(NxtBankCard::getResponseErrors).forEachR(
-            errorResponses -> Queryable.from(errorResponses)
-                  .map(element -> String.format("[%s: %s]", element.code(), element.message()))
-                  .forEachR(errorMessage -> Timber.e("Tokenization error: %s", errorMessage)));
    }
 
    private static class SyncBundle {

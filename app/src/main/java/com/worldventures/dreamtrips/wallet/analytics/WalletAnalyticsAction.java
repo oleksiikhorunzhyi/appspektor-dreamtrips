@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 
 public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
@@ -11,6 +12,7 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
    @Attribute("lockstatus") String lockStatus;
    @Attribute("cardconnected") String cardConnected;
    @Attribute("batterystatus") String batteryStatus;
+   @Attribute("currentversion") String currentVersion;
 
    public WalletAnalyticsAction() {}
 
@@ -18,7 +20,8 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       cid = scId;
    }
 
-   public void setSmartCardAction(SmartCard smartCard, SmartCardStatus smartCardStatus) {
+   public void setSmartCardAction(SmartCard smartCard, SmartCardStatus smartCardStatus,
+         SmartCardFirmware smartCardFirmware) {
       if (smartCard == null) return;
 
       setSmartCardData(
@@ -26,14 +29,18 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
             smartCardStatus.connectionStatus().isConnected(),
             smartCardStatus.lock(),
             smartCardStatus.batteryLevel());
+
+      if (smartCardFirmware != null) {
+         setCurrentVersion(smartCardFirmware.nordicAppVersion());
+      }
    }
 
-   public void setSmartCardData(String scId, boolean connected, boolean lockStatus, int battaryLevel) {
-      setSmartCardData(scId);
+   public void setSmartCardData(String scId, boolean connected, boolean lockStatus, int batteryLevel) {
+      cid = scId;
       setConnected(connected);
       if (connected) {
          setLockStatus(lockStatus);
-         batteryStatus = battaryLevel != 0 ? Integer.toString(battaryLevel) : null;
+         batteryStatus = batteryLevel != 0 ? Integer.toString(batteryLevel) : null;
       }
    }
 
@@ -55,5 +62,9 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
 
    private void setLockStatus(boolean lockStatus) {
       this.lockStatus = lockStatus ? "Locked" : "Unlocked";
+   }
+
+   public void setCurrentVersion(String currentVersion) {
+      this.currentVersion = currentVersion;
    }
 }

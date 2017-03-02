@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
-@AnalyticsEvent(action = "dta:wallet:settings:locate smartcard",
+@AnalyticsEvent(action = "wallet:settings:locate smartcard",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class OpenLocateSmartCardAction extends BaseLocateSmartCardAction {
 

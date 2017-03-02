@@ -74,24 +74,30 @@
                app:pinRepeatedHint="#"
                />
 
-         <EditText
-               android:id="@+id/card_name"
+         <android.support.design.widget.TextInputLayout
+               android:id="@+id/cardNameInputLayout"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:imeOptions="actionNext"
-               android:inputType="textCapSentences"
-               android:maxLength="@integer/wallet_card_name_length"
-               android:maxLines="1"
-               tools:ignore="LabelFor"
-               />
+               app:errorEnabled="true">
+
+            <EditText
+                  android:id="@+id/card_name"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:imeOptions="actionNext"
+                  android:inputType="textCapSentences"
+                  android:maxLength="@integer/wallet_card_name_length"
+                  android:maxLines="1"
+                  tools:ignore="LabelFor"
+                  />
+
+         </android.support.design.widget.TextInputLayout>
 
          <include
                android:id="@+id/address_info"
                layout="@layout/include_wallet_address_info"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                />
 
          <android.support.v7.widget.SwitchCompat

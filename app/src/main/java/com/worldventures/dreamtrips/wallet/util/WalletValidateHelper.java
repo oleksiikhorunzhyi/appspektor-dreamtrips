@@ -7,9 +7,11 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 
 import java.util.regex.Pattern;
 
+import rx.Observable;
+
 public class WalletValidateHelper {
 
-   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[\\p{L} ]{1,11}+");
+   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9\\-\\s]{1,11}+");
    private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("[\\p{L}]{3,21}+");
    private static final Pattern MIDDLE_NAME_PATTERN = Pattern.compile("[\\p{L}]{0,21}+");
    private static final Pattern LAST_NAME_PATTERN = Pattern.compile("[a-zA-Z\\s]{3,21}+");
@@ -50,6 +52,10 @@ public class WalletValidateHelper {
 
    public static void validateCardNameOrThrow(String cardName) throws CardNameFormatException {
       if (!CARD_NAME_PATTERN.matcher(cardName).matches()) throw new CardNameFormatException();
+   }
+
+   public static boolean validateCardName(String cardName) {
+      return CARD_NAME_PATTERN.matcher(cardName).matches();
    }
 
    public static void validateAddressInfoOrThrow(AddressInfo addressInfo) throws AddressFormatException {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.add;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
@@ -68,7 +70,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
-      observeCardNameChanging();
       connectToDefaultCardPipe();
       connectToDefaultAddressPipe();
       connectToSaveCardDetailsPipe();
@@ -190,18 +191,28 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       navigator.goBack();
    }
 
-   private void observeCardNameChanging() {
-      final Screen view = getView();
-      view.getCardNicknameObservable()
-            .compose(bindView())
-            .subscribe(view::setCardName);
+   private Observable<Boolean> observeCardNickName() {
+      return getView().getCardNicknameObservable()
+            .filter(cardName -> !TextUtils.isEmpty(cardName))
+            .map(this::validateNickName);
+   }
+
+   private boolean validateNickName(String nickname) {
+      if (WalletValidateHelper.validateCardName(nickname)) {
+         getView().hideCardNameError();
+         getView().setCardName(nickname);
+         return true;
+      } else {
+         getView().showCardNameError();
+         return false;
+      }
    }
 
    private void observeMandatoryFields() {
       final Screen screen = getView();
-
+      //noinspection ConstantConditions
       Observable.combineLatest(
-            screen.getCardNicknameObservable(),
+            observeCardNickName(),
             screen.getAddress1Observable(),
             screen.getCityObservable(),
             screen.getZipObservable(),
@@ -212,8 +223,8 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .subscribe(screen::setEnableButton);
    }
 
-   private boolean checkMandatoryFields(String cardName, String address1, String city, String zipCode, String state, String cvv) {
-      return getTrimmedLength(cardName) > 0
+   private boolean checkMandatoryFields(boolean cardNameValid, String address1, String city, String zipCode, String state, String cvv) {
+      return cardNameValid
             && getTrimmedLength(address1) > 0
             && getTrimmedLength(city) > 0
             && getTrimmedLength(zipCode) > 0
@@ -250,5 +261,9 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       void setEnableButton(boolean enable);
 
       void showPushCardError();
+
+      void showCardNameError();
+
+      void hideCardNameError();
    }
 }

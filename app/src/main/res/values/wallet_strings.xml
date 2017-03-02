@@ -180,6 +180,7 @@
    <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
    <string name="wallet_view_card_details_hint_nickname_card">i.e. \"Pacific Bank Card\"</string>
    <string name="wallet_tap_confirm_try_again">Did not save to smart card.\nTap Confirm to try again.</string>
+   <string name="wallet_card_details_nickname_error">Please use letters, numbers, spaces or dashes</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>

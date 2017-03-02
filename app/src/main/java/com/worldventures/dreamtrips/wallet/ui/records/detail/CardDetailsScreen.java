@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -38,6 +39,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
    @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardSwitcher;
+   @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
@@ -191,5 +193,15 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             .positiveText(R.string.ok)
             .build()
             .show();
+   }
+
+   @Override
+   public void showCardNameError() {
+      cardNameInputLayout.setError(getString(R.string.wallet_card_details_nickname_error));
+   }
+
+   @Override
+   public void hideCardNameError() {
+      cardNameInputLayout.setError("");
    }
 }

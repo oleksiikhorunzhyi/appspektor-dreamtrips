@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPath;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
@@ -66,7 +67,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
       connectSetPaymentCardPipe();
-      observeNickname();
+      observeCardNickName();
       observeDefaultCard();
    }
 
@@ -134,12 +135,19 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   .wrap());
    }
 
-   private void observeNickname() {
+   private void observeCardNickName() {
       final Screen view = getView();
       view.getCardNicknameObservable()
             .compose(bindView())
-            .skip(1)
-            .subscribe(view::setCardNickname);
+            .filter(cardName -> !TextUtils.isEmpty(cardName))
+            .subscribe(cardName -> {
+               if (WalletValidateHelper.validateCardName(cardName)) {
+                  getView().hideCardNameError();
+                  getView().setCardNickname(cardName);
+               } else {
+                  getView().showCardNameError();
+               }
+            });
    }
 
    private void observeDefaultCard() {
@@ -281,5 +289,9 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       String getUpdateNickname();
 
       void showSCNonConnectionDialog();
+
+      void showCardNameError();
+
+      void hideCardNameError();
    }
 }

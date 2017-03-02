@@ -16,10 +16,11 @@ public class AvailabilitySmartCardCommand extends Command<Void> implements Injec
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet apiJanet;
 
-   private final String smartCardId;
+   private String smartCardId;
+   private final String barcode;
 
-   public AvailabilitySmartCardCommand(String smartCardId) {
-      this.smartCardId = smartCardId;
+   public AvailabilitySmartCardCommand(String barcode) {
+      this.barcode = barcode;
    }
 
    public String getSmartCardId() {
@@ -28,8 +29,9 @@ public class AvailabilitySmartCardCommand extends Command<Void> implements Injec
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
+      smartCardId = String.valueOf(Long.parseLong(barcode));
       apiJanet.createPipe(AvailabilitySmartCardHttpAction.class)
-            .createObservableResult(new AvailabilitySmartCardHttpAction(String.valueOf(Long.parseLong(smartCardId))))
+            .createObservableResult(new AvailabilitySmartCardHttpAction(smartCardId))
             .map(availabilitySmartCardHttpAction -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);
    }

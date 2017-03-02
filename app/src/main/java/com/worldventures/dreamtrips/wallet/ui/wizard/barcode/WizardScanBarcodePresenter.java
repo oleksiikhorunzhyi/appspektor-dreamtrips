@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.ScidScannedAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
@@ -49,7 +49,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .onSuccess(command -> {
                      analyticsInteractor.walletAnalyticsCommandPipe()
                            .send(new WalletAnalyticsCommand(new ScidScannedAction(command.getSmartCardId())));
-                     navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.SCAN, command.getSmartCardId()));
+                     navigator.go(new PairKeyPath(command.getSmartCardId()));
                   })
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
                         .defaultAction(command -> getView().restartCamera())

@@ -9,8 +9,8 @@ import android.view.WindowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.ManualCardInputAction;
-import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
@@ -55,7 +55,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
                   .onSuccess(command -> {
                      analyticsInteractor.walletAnalyticsCommandPipe()
                            .send(new WalletAnalyticsCommand(new ScidEnteredAction(command.getSmartCardId())));
-                     navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.MANUAL, command.getSmartCardId()));
+                     navigator.go(new PairKeyPath(command.getSmartCardId()));
                   })
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
                         .build())

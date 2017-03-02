@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.wallet.analytics.PhotoWasSetAction;
-import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
@@ -124,20 +124,14 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void onUserSetupSuccess(SmartCardUser user) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
       navigator.go(new WizardPinSetupPath(Action.SETUP));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {
       preparedPhoto = photo;
       getView().setPreviewPhoto(photo.monochrome());
-
-      sendPhotoAnalyticAction();
-   }
-
-   private void sendPhotoAnalyticAction() {
-      String[] userNames = getView().getUserName();
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(userNames[0], userNames[1], userNames[2], null)));
    }
 
    void goToBack() {

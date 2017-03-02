@@ -8,8 +8,9 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
                 trackers = AdobeTracker.TRACKER_KEY)
 public class ScidEnteredAction extends WalletAnalyticsAction {
 
-   @Attribute("cardsetupstep2") final String cardSetupStep2 = "1";
-   @Attribute("cardinputmethod") final String cardInputMethod = "Manual";
+   @Attribute("cardmaninput") final String success = "1";
+   @Attribute("cardsetupstep2") final String step = "1";
+   @Attribute("cardinputmethod") final String method = "Manual";
 
    public ScidEnteredAction(String cid) {
       this.cid = cid;

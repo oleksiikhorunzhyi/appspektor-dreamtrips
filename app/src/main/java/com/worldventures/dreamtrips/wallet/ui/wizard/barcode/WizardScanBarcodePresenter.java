@@ -49,7 +49,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .onSuccess(command -> {
                      analyticsInteractor.walletAnalyticsCommandPipe()
                            .send(new WalletAnalyticsCommand(new ScidScannedAction(command.getSmartCardId())));
-                     navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.SCAN, command.getSmartCardId()));
+                     navigator.go(new PairKeyPath(command.getSmartCardId()));
                   })
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
                         .defaultAction(command -> getView().restartCamera())

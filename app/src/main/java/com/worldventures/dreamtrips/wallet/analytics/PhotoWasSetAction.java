@@ -9,19 +9,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 public class PhotoWasSetAction extends WalletAnalyticsAction {
 
    @Attribute("displayphotoset") final String displayPhotoSet = "1";
-   @Attribute("photomethod") String photoMethod = "Default";
-   @Attribute("displayname") final String displayName;
+   @Attribute("photomethod") final String photoMethod = "Default";
    @Attribute("cardsetupstep5") final String cardSetupStep5 = "1";
-
-   public PhotoWasSetAction(String firstName, String middleName, String lastName, String cid) {
-      this.displayName = createDisplayName(firstName, middleName, lastName);
-      this.cid = cid;
-   }
-
-   private String createDisplayName(String firstName, String middleName, String lastName) {
-      return
-            firstName +
-                  (middleName.isEmpty() ? "" : " ") + middleName
-                  + (lastName.isEmpty() ? "" : " ") + lastName;
-   }
 }

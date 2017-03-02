@@ -8,16 +8,10 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 @Layout(R.layout.screen_wallet_wizard_pairkey)
 public class PairKeyPath extends StyledPath {
 
-   private BarcodeOrigin barcodeOrigin;
    private String barcode;
 
-   public PairKeyPath(BarcodeOrigin scan, String barcode) {
-      this.barcodeOrigin = scan;
+   public PairKeyPath(String barcode) {
       this.barcode = barcode;
-   }
-
-   public BarcodeOrigin getBarcodeOrigin() {
-      return barcodeOrigin;
    }
 
    public String getBarcode() {
@@ -27,9 +21,5 @@ public class PairKeyPath extends StyledPath {
    @Override
    public MasterDetailPath getMaster() {
       return this;
-   }
-
-   public enum BarcodeOrigin {
-      MANUAL, SCAN
    }
 }

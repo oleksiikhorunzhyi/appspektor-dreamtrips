@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.WelcomeAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.WelcomeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;

@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;

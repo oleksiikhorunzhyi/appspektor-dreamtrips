@@ -9,10 +9,5 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
                 trackers = AdobeTracker.TRACKER_KEY)
 public class PinWasSetAction extends WalletAnalyticsAction {
 
-   @Attribute("displayname") final String displayname;
    @Attribute("cardsetupstep7") final String cardsetupstep7 = "1";
-
-   public PinWasSetAction(String displayname) {
-      this.displayname = displayname;
-   }
 }

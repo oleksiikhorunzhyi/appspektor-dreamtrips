@@ -63,7 +63,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          locationStorage = mockLostCardStorage()
 
          janet.connectToSmartCardSdk()
-         smartCardSyncManager.connect()
       }
 
       context("SmartCard Location interactor spec tests") {

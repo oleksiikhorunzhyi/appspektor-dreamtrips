@@ -66,7 +66,6 @@ class SmartCardInteractorSpec : BaseSpec({
          nxtSessionHolder = mock()
 
          janet.connectToSmartCardSdk()
-         smartCardSyncManager.connect()
       }
 
       context("Default card id is fetching") {

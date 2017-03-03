@@ -2,6 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
@@ -18,7 +22,6 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import timber.log.Timber;
 
 /**
  * Should be executed when user has some non-tokenized bank cards stored in database. [v1.17 -> v1.18]
@@ -28,6 +31,7 @@ public class TokenizeRecordsMigrationCommand extends Command<Void> implements In
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NxtInteractor nxtInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject CardListStorage oldCardListStorage;
 
    private int migrateCardsCount;
@@ -47,6 +51,7 @@ public class TokenizeRecordsMigrationCommand extends Command<Void> implements In
             .map(deviceOnlyCard -> ImmutableBankCard.copyOf(deviceOnlyCard).withNumberLastFourDigits(
                   BankCardHelper.obtainLastCardDigits(deviceOnlyCard.number())))
             .toList())
+            .doOnNext(bankCards -> Observable.from(bankCards).doOnNext(this::sendTokenizationAnalytics))
             .map(this::handleTokenizeResult)
             .flatMap(this::saveBankCards)
             .doOnNext(aVoid -> clearOldCardStorage())
@@ -66,15 +71,11 @@ public class TokenizeRecordsMigrationCommand extends Command<Void> implements In
 
    /**
     * Filter out all cards that were not tokenized properly.
-    * Send analytic events for any errors that occurred during tokenization.
     *
     * @param bankCards - NXT security response that can contain both properly tokenized values and errors.
     * @return - cards that were tokenized without any errors.
     */
    private List<BankCard> handleTokenizeResult(List<NxtBankCard> bankCards) {
-      sendErrorAnalytics(Queryable.from(bankCards)
-            .where(bankCard -> !bankCard.getResponseErrors().isEmpty())
-            .toList());
       return Queryable.from(bankCards)
             .where(bankCard -> bankCard.getResponseErrors().isEmpty())
             .map(NxtBankCard::getTokenizedBankCard)
@@ -87,12 +88,10 @@ public class TokenizeRecordsMigrationCommand extends Command<Void> implements In
             .map(o -> null);
    }
 
-   private void sendErrorAnalytics(List<NxtBankCard> errorTokenizeResults) {
-      // TODO: 2/24/17 When task is RFD
-      Queryable.from(errorTokenizeResults).map(NxtBankCard::getResponseErrors).forEachR(
-            errorResponses -> Queryable.from(errorResponses)
-                  .map(element -> String.format("[%s: %s]", element.code(), element.message()))
-                  .forEachR(errorMessage -> Timber.e("Tokenization error: %s", errorMessage)));
+   private void sendTokenizationAnalytics(NxtBankCard nxtBankCard) {
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(
+            TokenizationCardAction.from(nxtBankCard, ActionType.RESTORE, true)
+      ));
    }
 
    private void clearOldCardStorage() {

@@ -2,11 +2,16 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
@@ -30,8 +35,9 @@ import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.vali
 public class UpdateBankCardCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject MapperyContext mapperyContext;
    @Inject NxtInteractor nxtInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject MapperyContext mapperyContext;
 
    private BankCard bankCard;
 
@@ -66,11 +72,11 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
       validateAddressInfoOrThrow(bankCard.addressInfo());
    }
 
-   // TODO: 2/28/17 Should add analytics event for detokenization errors
    private Observable<BankCard> detokenizeBankCard(BankCard bankCard) {
       return nxtInteractor.detokenizeBankCardPipe()
             .createObservableResult(new DetokenizeBankCardCommand(bankCard))
             .map(Command::getResult)
+            .doOnNext(this::sendTokenizationAnalytics)
             .flatMap(nxtBankCard -> {
                if (nxtBankCard.getResponseErrors().isEmpty()) {
                   return Observable.just(nxtBankCard.getDetokenizedBankCard());
@@ -79,6 +85,12 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
                         NxtBankCardHelper.getResponseErrorMessage(nxtBankCard.getResponseErrors())));
                }
             });
+   }
+
+   private void sendTokenizationAnalytics(NxtBankCard nxtBankCard) {
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(
+            TokenizationCardAction.from(nxtBankCard, ActionType.UPDATE, false)
+      ));
    }
 
    private Observable<BankCard> pushBankCard(Record record) {

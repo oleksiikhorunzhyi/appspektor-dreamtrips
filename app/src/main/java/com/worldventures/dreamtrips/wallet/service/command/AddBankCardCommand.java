@@ -2,6 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -11,9 +15,6 @@ import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
-import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 
@@ -33,6 +34,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NxtInteractor nxtInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SnappyRepository snappyRepository;
 
    private final BankCard bankCard;
@@ -100,11 +102,11 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       }
    }
 
-   // TODO: 2/28/17 Should add analytics event for tokenization errors
    private Observable<NxtBankCard> tokenizeBankCard(BankCard bankCard) {
       return nxtInteractor.tokenizeBankCardPipe()
             .createObservableResult(new TokenizeBankCardCommand(bankCard))
             .map(Command::getResult)
+            .doOnNext(this::sendTokenizationAnalytics)
             .flatMap(nxtBankCard -> {
                if (nxtBankCard.getResponseErrors().isEmpty()) {
                   return Observable.just(nxtBankCard);
@@ -113,6 +115,12 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
                         NxtBankCardHelper.getResponseErrorMessage(nxtBankCard.getResponseErrors())));
                }
             });
+   }
+
+   private void sendTokenizationAnalytics(NxtBankCard nxtBankCard) {
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(
+            TokenizationCardAction.from(nxtBankCard, ActionType.ADD, true)
+      ));
    }
 
    private Observable<BankCard> pushBankCard(NxtBankCard bankCard) {

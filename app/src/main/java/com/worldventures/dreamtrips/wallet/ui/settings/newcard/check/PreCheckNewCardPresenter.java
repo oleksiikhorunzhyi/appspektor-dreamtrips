@@ -5,6 +5,9 @@ import android.os.Parcelable;
 import android.util.Pair;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SmartCartWillNowBeAssignedAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -26,6 +29,7 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject WalletBluetoothService bluetoothService;
 
    public PreCheckNewCardPresenter(Context context, Injector injector) {
@@ -71,6 +75,10 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
    }
 
    void navigateNext() {
+      analyticsInteractor
+            .walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new SmartCartWillNowBeAssignedAction()));
+
       navigator.go(new EnterPinUnassignPath());
    }
 

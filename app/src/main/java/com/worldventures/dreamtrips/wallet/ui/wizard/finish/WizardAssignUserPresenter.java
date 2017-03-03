@@ -5,8 +5,10 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupCompleteAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupCompleteAction;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupCompleteAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
@@ -55,9 +57,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> {
-                     analyticsInteractor.walletAnalyticsCommandPipe()
-                           .send(new WalletAnalyticsCommand(new SetupCompleteAction()));
-
+                     sendAnalytic(new SetupCompleteAction());
                      prepareToNextScreen();
                   })
                   .create());
@@ -75,8 +75,14 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
       if (needToSyncPaymentCards) {
          navigator.go(new SyncPaymentCardPath());
       } else {
+         sendAnalytic(new NewCardSetupCompleteAction());
          navigator.single(new CardListPath());
       }
+   }
+
+   private void sendAnalytic(WalletAnalyticsAction action) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(action));
    }
 
    interface Screen extends WalletScreen {

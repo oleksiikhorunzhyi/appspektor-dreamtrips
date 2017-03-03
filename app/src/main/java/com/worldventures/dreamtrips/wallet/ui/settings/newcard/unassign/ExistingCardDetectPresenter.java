@@ -4,8 +4,21 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothDisabledAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothEnabledAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardDontHaveCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardDontHaveCardContinueAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardHaveCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
@@ -28,6 +41,9 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+
+   @Inject WalletBluetoothService bluetoothService;
 
    public ExistingCardDetectPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -38,6 +54,8 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
       super.onAttachedToWindow();
       observerSmartCardConnectedStatus();
       fetchSmartCardId();
+
+      sendAnalyticAction(bluetoothService.isEnable() ? new BluetoothEnabledAction() : new BluetoothDisabledAction());
    }
 
    private void fetchSmartCardId() {
@@ -66,13 +84,16 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
 
    private void handleConnectedResult(ConnectionStatus connectionStatus) {
       if (connectionStatus.isConnected()) {
+         sendAnalyticAction(new ExistSmartCardAction());
          getView().modeConnectedSmartCard();
       } else {
+         sendAnalyticAction(new ExistSmartCardNotConnectedAction());
          getView().modeDisconnectedSmartCard();
       }
    }
 
    void unassignCard() {
+      sendAnalyticAction(new UnAssignCardContinueAction());
       navigator.go(new EnterPinUnassignPath());
    }
 
@@ -81,7 +102,10 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().smartCardId()))
+                  .onSuccess(command -> {
+                     sendAnalyticAction(new UnAssignCardAction());
+                     getView().showConfirmationUnassignDialog(command.getResult().smartCardId());
+                  })
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
@@ -91,7 +115,10 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId()))
+                  .onSuccess(command -> {
+                     sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
+                     getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId());
+                  })
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
@@ -101,7 +128,10 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .createObservable(new WipeSmartCardDataCommand(false))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
-                  .onSuccess(activeSmartCardCommand -> navigator.single(new UnassignSuccessPath()))
+                  .onSuccess(activeSmartCardCommand -> {
+                     sendAnalyticAction(new ExistSmartCardDontHaveCardContinueAction());
+                     navigator.single(new UnassignSuccessPath());
+                  })
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, "unassignCardOnBackend()"))
                   .create());
    }
@@ -111,7 +141,14 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
    }
 
    void navigateToPowerOn() {
+      sendAnalyticAction(new ExistSmartCardHaveCardAction());
       navigator.go(new NewCardPowerOnPath());
+   }
+
+   private void sendAnalyticAction(WalletAnalyticsAction action) {
+      analyticsInteractor
+            .walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(action));
    }
 
    public interface Screen extends WalletScreen {

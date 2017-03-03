@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import java.util.ArrayList;
@@ -82,6 +83,10 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
       presenter.setCurrentPhotoPosition(currentPhotosPosition);
       return presenter;
+   }
+
+   public void onSelectedFromPager() {
+      analyticsInteractor.analyticsActionPipe().send(TripImagesTabViewAnalyticsEvent.forTripImages(type));
    }
 
    @Override

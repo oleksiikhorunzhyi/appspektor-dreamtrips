@@ -44,8 +44,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
-   // TODO: 2/20/17 This value for calc of percentage progress
-   private int countOfCards = 0;
+   private int localOnlyCardsCount = 0;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -73,15 +72,13 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                bundle.deviceDefaultCardId = deviceDefaultCardId >= 0 ? String.valueOf(deviceDefaultCardId) : null;
                bundle.localDefaultCardId = localDefaultCardId;
                return bundle;
-            }
-      )
-            .doOnNext(syncBundle -> countOfCards = syncBundle.localCards.size())
-            .flatMap(this::sync)
+            })
+            .flatMap(syncBundle -> sync(syncBundle, callback))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   public int getCountOfCards() {
-      return countOfCards;
+   public int getLocalOnlyCardsCount() {
+      return localOnlyCardsCount;
    }
 
    /**
@@ -89,7 +86,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
     * Add local-only data to the SmartCard.
     * Sync default card Id.
     */
-   private Observable<Void> sync(SyncBundle bundle) {
+   private Observable<Void> sync(SyncBundle bundle, CommandCallback<Void> callback) {
       final List<Observable<Void>> operations = new ArrayList<>();
 
       // All SmartCard cards -> tokenize -> save (override) local storage
@@ -103,12 +100,18 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       }
 
       // Local only cards -> detokenize -> push to SmartCard
-      Queryable.from(bundle.localCards)
+      List<BankCard> localOnlyCards = Queryable.from(bundle.localCards)
             .filter(localCard -> !bundle.deviceCards.contains(localCard))
-            .forEachR(localOnlyCard -> operations.add(detokenizeBankCard(localOnlyCard).flatMap(detokenizedBankCard ->
-                  interactor.addNativeRecordPipe()
-                        .createObservableResult(new AddRecordAction(mapperyContext.convert(detokenizedBankCard, Record.class)))
-                        .map(value -> null))));
+            .toList();
+      localOnlyCardsCount = localOnlyCards.size();
+      for (int i = 0; i < localOnlyCards.size(); i++) {
+         final int progress = i + 1;
+         operations.add(detokenizeBankCard(localOnlyCards.get(i))
+               .doOnSubscribe(() -> callback.onProgress(progress))
+               .flatMap(detokenizedBankCard -> interactor.addNativeRecordPipe()
+                     .createObservableResult(new AddRecordAction(mapperyContext.convert(detokenizedBankCard, Record.class)))
+                     .map(value -> null)));
+      }
 
       // Sync default card id
       if (bundle.deviceDefaultCardId != null && bundle.localDefaultCardId == null) {
@@ -121,7 +124,10 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.localDefaultCardId))
                .map(value -> null));
       }
-      return operations.isEmpty() ? Observable.just(null) : Queryable.from(operations).fold(Observable::concatWith);
+      return operations.isEmpty() ? Observable.just(null) : Queryable.from(operations)
+            .fold(Observable::concatWith)
+            .toList()
+            .map(voids -> null);
    }
 
    private Observable<List<NxtBankCard>> tokenizeBankCards(List<? extends BankCard> bankCards) {

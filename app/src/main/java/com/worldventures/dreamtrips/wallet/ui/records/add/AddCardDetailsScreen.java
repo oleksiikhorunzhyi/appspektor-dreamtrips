@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -48,6 +49,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
    @InjectView(R.id.confirm_button) View confirmButton;
    @InjectView(R.id.tvPostDataError) View tvPostDataError;
+   @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
    private final BankCardHelper bankCardHelper;
    private DialogOperationScreen dialogOperationScreen;
@@ -188,6 +190,16 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public void showPushCardError() {
       tvPostDataError.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void showCardNameError() {
+      cardNameInputLayout.setError(getString(R.string.wallet_card_details_nickname_error));
+   }
+
+   @Override
+   public void hideCardNameError() {
+      cardNameInputLayout.setError("");
    }
 
    protected void navigateButtonClick() {

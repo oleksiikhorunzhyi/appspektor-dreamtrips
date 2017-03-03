@@ -39,7 +39,7 @@ public class WalletPinIsSetScreen extends WalletLinearLayout<WalletPinIsSetPrese
 
    @OnClick(R.id.next_button)
    public void nextClick() {
-      presenter.activateSmartCard();
+      presenter.navigateToNextScreen();
    }
 
    @Override

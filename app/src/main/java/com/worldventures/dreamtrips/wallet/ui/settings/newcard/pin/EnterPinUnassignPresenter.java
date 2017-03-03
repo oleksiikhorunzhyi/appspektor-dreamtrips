@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignEnteredAction;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
@@ -23,6 +27,7 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public EnterPinUnassignPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -31,6 +36,10 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      analyticsInteractor
+            .walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new EnterPinUnAssignAction()));
+
       observeUnassignSmartCard();
    }
 
@@ -39,7 +48,13 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> navigator.single(new UnassignSuccessPath()))
+                  .onSuccess(command -> {
+                     analyticsInteractor
+                           .walletAnalyticsCommandPipe()
+                           .send(new WalletAnalyticsCommand(new EnterPinUnAssignEnteredAction()));
+
+                     navigator.single(new UnassignSuccessPath());
+                  })
                   .onFail((factoryResetCommand, throwable) -> getView().showErrorEnterPinDialog())
                   .create());
 

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -23,6 +26,7 @@ public class SyncPaymentCardPresenter extends WalletPresenter<SyncPaymentCardPre
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public SyncPaymentCardPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -31,6 +35,10 @@ public class SyncPaymentCardPresenter extends WalletPresenter<SyncPaymentCardPre
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      analyticsInteractor
+            .walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new SyncPaymentCardAction()));
+
       observeSyncPaymentCards();
    }
 

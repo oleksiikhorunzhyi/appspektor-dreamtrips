@@ -48,7 +48,7 @@ public class SyncPaymentCardPresenter extends WalletPresenter<SyncPaymentCardPre
             .compose(bindViewIoToMainComposer())
             .filter(action -> action.status == ActionState.Status.PROGRESS)
             .subscribe(new ActionStateSubscriber<SyncCardsCommand>()
-                  .onProgress((command, progress) -> handleProgressSyncCard(command.getCountOfCards(), progress))
+                  .onProgress((command, progress) -> handleProgressSyncCard(command.getLocalOnlyCardsCount(), progress))
             );
 
       smartCardInteractor.cardSyncPipe().send(new SyncCardsCommand());

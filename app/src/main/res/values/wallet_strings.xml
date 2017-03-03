@@ -327,7 +327,7 @@
 
    <!-- Power On -->
    <string name="wallet_wizard_power_on_title">Power On Smart Card</string>
-   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by pressing and holding on the bottom right corner of the chip.</string>
+   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by pressing and holding on the bottom-right corner of the chip.</string>
 
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>

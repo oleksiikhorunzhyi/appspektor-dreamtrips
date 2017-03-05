@@ -39,7 +39,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     private static final int MINIMUM_CHARACTER = 140;
     private static final int MAJOR_CHARACTER = 2000;
-    public static final int REVIEW_COMMENT = 1;
 
     public DtlCommentReviewScreenImpl(Context context) {
         super(context);

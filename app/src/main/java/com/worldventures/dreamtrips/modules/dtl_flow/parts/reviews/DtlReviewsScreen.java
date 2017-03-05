@@ -15,4 +15,6 @@ public interface DtlReviewsScreen extends DtlScreen {
    void onRefreshError(String error);
 
    void showEmpty(boolean isShow);
+
+   void showFrameLayoutReviews(boolean isShow);
 }

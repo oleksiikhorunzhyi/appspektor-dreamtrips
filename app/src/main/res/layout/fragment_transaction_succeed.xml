@@ -87,7 +87,6 @@
 
    </LinearLayout>
 
-   <!--
    <View
          android:id="@+id/divider_1"
          android:layout_width="match_parent"
@@ -125,7 +124,6 @@
          app:prb_totalTicks="5"
          app:prb_clickable="true"
          />
-   -->
 
    <View
          android:id="@+id/divider_2"

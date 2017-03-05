@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
@@ -314,6 +315,15 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                }
             }
          }
+      }
+   }
+
+   @Override
+   public void onClickRatingsReview(Merchant merchant) {
+      if (!merchant.reviews().total().isEmpty() && Integer.parseInt(merchant.reviews().total()) > 0) {
+         Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      } else {
+         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
       }
    }
 

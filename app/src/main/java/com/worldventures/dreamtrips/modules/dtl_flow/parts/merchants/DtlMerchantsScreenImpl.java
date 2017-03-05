@@ -272,6 +272,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
+   public void sendToRatingReview(ThinMerchant merchant) {
+      getPresenter().sendToRatingReview(merchant);
+   }
+
+   @Override
    public void toggleOffersOnly(boolean enabled) {
       if (dtlToolbar == null) return;
       dtlToolbar.toggleOffersOnly(enabled);

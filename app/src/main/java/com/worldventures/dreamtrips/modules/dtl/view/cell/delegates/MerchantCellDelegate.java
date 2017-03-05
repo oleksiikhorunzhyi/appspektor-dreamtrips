@@ -7,4 +7,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 public interface MerchantCellDelegate extends ExpandableCellDelegate<ImmutableThinMerchant> {
 
    void onOfferClick(ThinMerchant merchant, Offer offer);
+
+   void sendToRatingReview(ThinMerchant merchant);
 }

@@ -56,9 +56,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import flow.History;
-import flow.path.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +170,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @OnClick(R.id.tv_read_all_review)
    public void onClickReadAllReviews() {
       getPresenter().showAllReviews();
+   }
+
+   @OnClick(R.id.layout_rating_reviews)
+   void onClickRatingsReview() {
+      getPresenter().onClickRatingsReview(merchant);
    }
 
    @Override

@@ -26,6 +26,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView) View emptyView;
     @InjectView(R.id.errorView) View errorView;
+    //@InjectView(R.id.container_comments_detail) FrameLayout frameLayoutReviews;
 
     public DtlReviewsScreenImpl(Context context) {
         super(context);
@@ -104,6 +105,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @Override
     public void showEmpty(boolean isShow) {
         emptyView.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void showFrameLayoutReviews(boolean isShow) {
+        mContainerDetail.setVisibility(isShow ? VISIBLE : GONE);
     }
 
     @Override

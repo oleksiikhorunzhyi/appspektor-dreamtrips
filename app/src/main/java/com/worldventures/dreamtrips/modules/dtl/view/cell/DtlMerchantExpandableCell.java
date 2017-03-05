@@ -219,4 +219,9 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
       this.selectableDelegate = selectableDelegate;
    }
+
+   @OnClick(R.id.layout_rating_reviews)
+   void onClickRateView() {
+      cellDelegate.sendToRatingReview(getModelObject());
+   }
 }

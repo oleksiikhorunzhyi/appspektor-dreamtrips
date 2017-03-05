@@ -35,6 +35,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    private final String offerId;
    private final String merchantId;
    private final DtlLocation dtlLocation;
+   private final boolean fromRating;
 
    private Merchant cache;
 
@@ -43,17 +44,18 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    }
 
    public static FullMerchantAction create(String merchantId, DtlLocation dtlLocation) {
-      return create(merchantId, null, dtlLocation);
+      return create(merchantId, null, dtlLocation, false);
    }
 
-   public static FullMerchantAction create(String merchantId, String offerId, DtlLocation dtlLocation) {
-      return new FullMerchantAction(merchantId, offerId, dtlLocation);
+   public static FullMerchantAction create(String merchantId, String offerId, DtlLocation dtlLocation, boolean fromRating) {
+      return new FullMerchantAction(merchantId, offerId, dtlLocation, fromRating);
    }
 
-   public FullMerchantAction(String merchantId, String offerId, DtlLocation dtlLocation) {
+   public FullMerchantAction(String merchantId, String offerId, DtlLocation dtlLocation, boolean fromRating) {
       this.merchantId = merchantId;
       this.offerId = offerId;
       this.dtlLocation = dtlLocation;
+      this.fromRating = fromRating;
    }
 
    @Override
@@ -76,6 +78,8 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    public String getMerchantId() {
       return merchantId;
    }
+
+   public boolean getFromRating() { return fromRating; }
 
    @Override
    public int getFallbackErrorMessage() {

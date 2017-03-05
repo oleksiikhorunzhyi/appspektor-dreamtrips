@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 import android.content.res.Resources;
 import android.view.View;
 import android.widget.TextView;
-
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -11,10 +10,9 @@ import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
-
 import javax.inject.Inject;
-
 import butterknife.InjectView;
+import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
 import rx.Observable;
 
@@ -45,6 +43,11 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    protected void onMerchantAttributesApply() {
       setInfo();
       setOffersSection();
+   }
+
+   @OnClick(R.id.layout_rating_reviews)
+   public void onClickRatingsReview() {
+      notifyRatingsClickListeners();
    }
 
    private void setInfo() {

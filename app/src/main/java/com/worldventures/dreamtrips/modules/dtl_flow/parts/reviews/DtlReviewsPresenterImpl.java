@@ -15,6 +15,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableR
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -62,12 +65,14 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
+      getView().showFrameLayoutReviews(true);
       getView().addCommentsAndReviews(Float.parseFloat(action.getResult().ratingAverage()), Integer.parseInt(action.getResult().total()),
             ReviewObject.getReviewList(action.getResult().reviews()));
 
    }
 
    private void onMerchantsLoading(ReviewMerchantsAction action, Integer progress) {
+      getView().showFrameLayoutReviews(false);
       getView().onRefreshProgress();
    }
 

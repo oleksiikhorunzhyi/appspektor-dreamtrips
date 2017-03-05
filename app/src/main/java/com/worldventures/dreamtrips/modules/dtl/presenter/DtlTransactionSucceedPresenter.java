@@ -49,7 +49,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    }
 
    public void done() {
-      //if (stars == 0) return;
+      if (stars == 0) return;
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)

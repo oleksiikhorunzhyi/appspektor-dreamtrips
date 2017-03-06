@@ -15,20 +15,6 @@
          app:title="@string/wallet_add_card_details_title"
          />
 
-   <TextView
-         android:id="@+id/tvPostDataError"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:gravity="center"
-         android:minHeight="48dp"
-         android:textAppearance="?android:textAppearanceMedium"
-         android:textColor="@color/wallet_waring_red"
-         android:textSize="@dimen/apptentive_text_small"
-         android:visibility="gone"
-         tools:text="@string/wallet_tap_confirm_try_again"
-         tools:visibility="visible"
-         />
-
    <ScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"

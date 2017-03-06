@@ -48,7 +48,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.cvv_label) TextView cvvLabel;
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
    @InjectView(R.id.confirm_button) View confirmButton;
-   @InjectView(R.id.tvPostDataError) View tvPostDataError;
    @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
    private final BankCardHelper bankCardHelper;
@@ -188,11 +187,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void showPushCardError() {
-      tvPostDataError.setVisibility(VISIBLE);
-   }
-
-   @Override
    public void showCardNameError() {
       cardNameInputLayout.setError(getString(R.string.wallet_card_details_nickname_error));
    }
@@ -217,8 +211,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @OnClick(R.id.confirm_button)
    public void onConfirmButtonClicked() {
-      tvPostDataError.setVisibility(GONE);
-
       String cvv = etCardCvv.getText().toString().trim();
       String nickname = etCardNickname.getText().toString().trim();
       boolean setAsDefaultCard = defaultPaymentCardSwitcher.isChecked();

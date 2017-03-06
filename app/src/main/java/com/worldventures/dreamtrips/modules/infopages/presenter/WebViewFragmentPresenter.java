@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.common.view.connection_overlay.Conne
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
-   protected final String url;
+   protected String url;
    private boolean inErrorState;
 
    public WebViewFragmentPresenter(String url) {

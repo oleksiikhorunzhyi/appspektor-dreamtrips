@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
@@ -31,11 +29,8 @@ public class WalletAnalyticsCommand extends Command<Void> implements InjectableA
       smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .subscribe(deviceStateCommand -> {
-               final SmartCard smartCard = snappyRepository.getSmartCard();
-               final SmartCardFirmware smartCardFirmware = snappyRepository.getSmartCardFirmware();
-               if (smartCard != null) {
-                  walletAnalyticsAction.setSmartCardAction(smartCard, deviceStateCommand.getResult(), smartCardFirmware);
-               }
+               walletAnalyticsAction.setSmartCardAction(snappyRepository.getSmartCard(),
+                     deviceStateCommand.getResult(), snappyRepository.getSmartCardFirmware());
                analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
                callback.onSuccess(null);
             }, callback::onFail);

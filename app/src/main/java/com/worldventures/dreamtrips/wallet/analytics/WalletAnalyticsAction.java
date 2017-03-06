@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.wallet.analytics;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
@@ -11,7 +14,7 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
    @Attribute("cid") String cid;
    @Attribute("lockstatus") String lockStatus;
    @Attribute("cardconnected") String cardConnected;
-   @Attribute("batterystatus") String batteryStatus;
+   @Attribute("batterystatus") String batteryLevel;
    @Attribute("currentversion") String currentVersion;
 
    public WalletAnalyticsAction() {}
@@ -20,13 +23,14 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       cid = scId;
    }
 
-   public void setSmartCardAction(SmartCard smartCard, SmartCardStatus smartCardStatus,
-         SmartCardFirmware smartCardFirmware) {
-      if (smartCard == null) return;
+   void setSmartCardAction(@Nullable  SmartCard smartCard, @Nullable SmartCardStatus smartCardStatus,
+         @Nullable SmartCardFirmware smartCardFirmware) {
+      if (smartCard == null || smartCardStatus == null) return;
 
       setSmartCardData(
             smartCard.smartCardId(),
-            smartCardStatus.connectionStatus().isConnected(),
+            smartCard.cardStatus(),
+            smartCardStatus.connectionStatus(),
             smartCardStatus.lock(),
             smartCardStatus.batteryLevel());
 
@@ -35,25 +39,18 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       }
    }
 
-   public void setSmartCardData(String scId, boolean connected, boolean lockStatus, int batteryLevel) {
-      cid = scId;
+   private void setSmartCardData(String scId, SmartCard.CardStatus cardState, ConnectionStatus connectionStatus, boolean lockStatus, int batteryLevel) {
+      setSmartCardId(scId);
+      boolean connected = connectionStatus.isConnected();
       setConnected(connected);
-      if (connected) {
+      if (connected && cardState == SmartCard.CardStatus.ACTIVE) {
          setLockStatus(lockStatus);
-         batteryStatus = batteryLevel != 0 ? Integer.toString(batteryLevel) : null;
+         setBatteryLevel(batteryLevel);
       }
    }
 
-   public void setSmartCardData(String scId, boolean connected, boolean lockStatus) {
-      setSmartCardData(scId, connected, lockStatus, 0);
-   }
-
-   private void setSmartCardData(String scId) {
+   private void setSmartCardId(String scId) {
       cid = scId;
-   }
-
-   public void setSmartCardData(boolean connected) {
-      setConnected(connected);
    }
 
    private void setConnected(boolean connected) {
@@ -64,7 +61,10 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       this.lockStatus = lockStatus ? "Locked" : "Unlocked";
    }
 
-   public void setCurrentVersion(String currentVersion) {
+   private void setBatteryLevel(int batteryLevel) {
+      this.batteryLevel = batteryLevel != 0 ? Integer.toString(batteryLevel) : null;
+   }
+   private void setCurrentVersion(String currentVersion) {
       this.currentVersion = currentVersion;
    }
 }

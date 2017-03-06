@@ -578,27 +578,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    @Layout(R.layout.fragment_webview)
-   public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
-
-      @Override
-      protected String getURL() {
-         return provider.getEnrollMemberUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         webView.getSettings().setLoadWithOverviewMode(true);
-         webView.getSettings().setUseWideViewPort(true);
-      }
-
-      @Override
-      protected void track() {
-         getPresenter().track(Route.ENROLL_MEMBER);
-      }
-   }
-
-   @Layout(R.layout.fragment_webview)
    public static class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<MerchantIdBundle> {
 
       @Override

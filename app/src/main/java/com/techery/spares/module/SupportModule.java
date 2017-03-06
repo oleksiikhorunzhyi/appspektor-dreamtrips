@@ -10,6 +10,7 @@ import com.techery.spares.utils.intent.IntentBuilder;
 import com.techery.spares.utils.intent.ServiceLauncher;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
 import javax.inject.Singleton;
@@ -46,7 +47,7 @@ public class SupportModule {
    }
 
    @Provides
-   StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> appSessionHolder) {
-      return new StaticPageProvider(appSessionHolder, BuildConfig.DreamTripsApi, BuildConfig.UPLOADERY_API_URL);
+   StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider) {
+      return new StaticPageProvider(appSessionHolder, deviceInfoProvider, BuildConfig.DreamTripsApi, BuildConfig.UPLOADERY_API_URL);
    }
 }

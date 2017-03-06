@@ -137,7 +137,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                         .handle(CardNameFormatException.class, R.string.wallet_add_card_details_error_message)
                         .handle(CvvFormatException.class, R.string.wallet_add_card_details_error_message)
                         .handle(AddressFormatException.class, R.string.wallet_add_card_details_error_message)
-                        .defaultAction(action -> getView().showPushCardError())
                         .build())
                   .wrap());
    }
@@ -259,8 +258,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       Observable<Boolean> setAsDefaultPaymentCardCondition();
 
       void setEnableButton(boolean enable);
-
-      void showPushCardError();
 
       void showCardNameError();
 

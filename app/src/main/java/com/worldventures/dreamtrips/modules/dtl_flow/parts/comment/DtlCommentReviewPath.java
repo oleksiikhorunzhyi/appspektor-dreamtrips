@@ -34,6 +34,11 @@ public class DtlCommentReviewPath extends DtlMasterPath {
     }
 
     @Override
+    public boolean shouldHideDrawer() {
+        return true;
+    }
+
+    @Override
     public Path getMasterToolbarPath() {
         return MasterToolbarPath.INSTANCE;
     }

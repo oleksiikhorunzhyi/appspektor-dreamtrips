@@ -75,7 +75,7 @@ public class ReviewMerchantsAction extends CommandWithError<Reviews>
       callback.onProgress(0);
       janet.createPipe(GetReviewsMerchantsHttpAction.class, Schedulers.io())
             .createObservableResult(reviewsActionCreator.createAction(actionParams))
-            .map(GetReviewsMerchantsHttpAction::reviews)
+            .map(GetReviewsMerchantsHttpAction::response)
             .map(reviews -> mapperyContext.convert(reviews, Reviews.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }

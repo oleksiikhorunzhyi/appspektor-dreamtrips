@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
-@AnalyticsEvent(action = "wallet:setup:Step 2:Card Successfully Entered",
+@AnalyticsEvent(action = "wallet:setup:Step 1:Card Successfully Entered",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class ScidEnteredAction extends WalletAnalyticsAction {
 

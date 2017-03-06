@@ -10,10 +10,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
 
     void showDialogMessage(String message);
 
-    void enableInputs();
-
-    void disableInputs();
-
     int getSizeComment();
 
     int getRatingBar();
@@ -33,4 +29,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     void showEmpty(boolean isShow);
 
     void sendPostReview();
+
+    boolean isFromListReview();
 }

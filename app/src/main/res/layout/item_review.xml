@@ -89,7 +89,7 @@
          android:textColor="@color/rating_background_button"
          android:textSize="@dimen/dtl_all_reviews_text"
          android:textStyle="bold"
-         android:visibility="gone"
+         android:text="@string/tv_read_more"
          />
 
    <LinearLayout

@@ -128,16 +128,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         errorDialog.show();
     }
 
-    @Override
-    public void enableInputs() {
-        enableButtons(true);
-    }
-
-    @Override
-    public void disableInputs() {
-        enableButtons(false);
-    }
-
     private void enableButtons(boolean status) {
         mComment.setEnabled(status);
         mRatingBar.setEnabled(status);
@@ -206,6 +196,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @Override
     public void hideBlockingProgress() {
+    }
 
+    @Override
+    public boolean isFromListReview(){
+        return getPath().isFromAddReview();
     }
 }

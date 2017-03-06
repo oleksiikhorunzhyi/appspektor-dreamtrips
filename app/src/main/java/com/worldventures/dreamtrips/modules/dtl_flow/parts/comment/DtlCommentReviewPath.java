@@ -15,10 +15,17 @@ import flow.path.Path;
 public class DtlCommentReviewPath extends DtlMasterPath {
 
     private final Merchant merchant;
+    private final boolean isFromListReview;
 
     public DtlCommentReviewPath(@NonNull Merchant merchant) {
         super();
         this.merchant = merchant;
+        this.isFromListReview = false;
+    }
+
+    public DtlCommentReviewPath(Merchant merchant, boolean isFromAddReview) {
+        this.merchant = merchant;
+        this.isFromListReview = isFromAddReview;
     }
 
     @Override
@@ -33,5 +40,9 @@ public class DtlCommentReviewPath extends DtlMasterPath {
 
     public Merchant getMerchant() {
         return merchant;
+    }
+
+    public boolean isFromAddReview() {
+        return isFromListReview;
     }
 }

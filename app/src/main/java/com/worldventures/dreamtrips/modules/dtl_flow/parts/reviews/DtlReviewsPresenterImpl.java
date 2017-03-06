@@ -2,25 +2,22 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableReview;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
-
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.R;
+import android.view.MenuItem;
+import flow.Flow;
 
 public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, ViewState.EMPTY> implements DtlReviewsPresenter {
 
@@ -43,8 +40,24 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    }
 
    @Override
+   public int getToolbarMenuRes() {
+      return R.menu.menu_review_merchant;
+   }
+
+   @Override
+   public boolean onToolbarMenuItemClick(MenuItem item) {
+      if (item.getItemId() == R.id.action_add_review) onAddClick();
+      return super.onToolbarMenuItemClick(item);
+   }
+
+   @Override
    public void onBackPressed() {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
+   }
+
+   @Override
+   public void onAddClick() {
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true));
    }
 
    private void connectReviewMerchants() {

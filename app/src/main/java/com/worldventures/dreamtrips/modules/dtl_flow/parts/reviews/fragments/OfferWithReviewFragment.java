@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -17,6 +16,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewO
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
 
 import java.util.ArrayList;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
+import flow.Flow;
 
 public class OfferWithReviewFragment extends Fragment {
 
@@ -31,10 +34,12 @@ public class OfferWithReviewFragment extends Fragment {
    public static final String ARRAY = "arrayList";
    public static final String RATING_MERCHANT = "ratingMerchant";
    public static final String COUNT_REVIEW = "countReview";
+   public static final String MERCHANT_NAME = "merchantName";
    private ArrayList<ReviewObject> mArrayInfo;
 
    private float mRatingMerchant;
    private int mCountReview;
+   private String mMerchantName;
 
    public OfferWithReviewFragment() {
    }
@@ -63,12 +68,29 @@ public class OfferWithReviewFragment extends Fragment {
       mArrayInfo.addAll(bundle.<ReviewObject>getParcelableArrayList(ARRAY));
       mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
       mCountReview = bundle.getInt(COUNT_REVIEW, 0);
+      mMerchantName = bundle.getString(MERCHANT_NAME, "");
       setRetainInstance(true);
 
       initRecycler();
       initAdapter();
+      initListener();
 
       return v;
+   }
+
+   private void initListener() {
+      recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerAdapter,
+              new RecyclerClickListener() {
+                 @Override
+                 public void onClick(View view, int position) {
+                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position)));
+                 }
+
+                 @Override
+                 public void onLongClick(View view, int position) {
+
+                 }
+              }));
    }
 
    @Override

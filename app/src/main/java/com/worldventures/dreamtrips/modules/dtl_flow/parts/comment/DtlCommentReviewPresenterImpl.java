@@ -81,6 +81,9 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                         Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
                         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
                         historyBuilder.pop();
+                        if (getView().isFromListReview()){
+                            historyBuilder.pop();
+                        }
                         historyBuilder.push(path);
                         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
                     }

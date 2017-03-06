@@ -68,6 +68,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
         bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
         bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
+        bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, getPath().getMerchant().displayName());
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container_comments_detail, OfferWithReviewFragment.newInstance(bundle));

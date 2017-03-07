@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Animation;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
@@ -18,8 +19,6 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipi
 import java.io.File;
 
 import butterknife.InjectView;
-
-import static com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations.BANKCARD_ANIMATION_REPEAT_DEFAULT;
 
 public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPresenter.Screen, WizardChargingPresenter, WizardChargingPath> implements WizardChargingPresenter.Screen {
 
@@ -49,7 +48,7 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
       swipingAnimations.animateSmartCard(smartCard);
-      swipingAnimations.animateBankCard(creditCard, BANKCARD_ANIMATION_REPEAT_DEFAULT);
+      swipingAnimations.animateBankCard(creditCard, Animation.INFINITE);
    }
 
    @NonNull

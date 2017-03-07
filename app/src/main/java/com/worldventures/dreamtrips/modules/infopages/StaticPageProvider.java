@@ -107,8 +107,8 @@ public class StaticPageProvider {
       return builder.toString();
    }
 
-   public String fillWithLocation(String url, double latitude, double longitude) {
-      return url + String.format(Locale.ENGLISH, LAT, latitude) + String.format(Locale.ENGLISH, LNG, longitude);
+   public String getEnrollWithLocation(double latitude, double longitude) {
+      return getEnrollMemberUrl() + String.format(Locale.ENGLISH, LAT, latitude) + String.format(Locale.ENGLISH, LNG, longitude);
    }
 
    private String getUsername() {

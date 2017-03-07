@@ -39,7 +39,7 @@ public class EnrollMemberPresenter extends AuthorizedStaticInfoPresenter {
    }
 
    private void updateUrlWithLocation(Location location) {
-      url = staticPageProvider.fillWithLocation(url, location.getLatitude(), location.getLongitude());
+      url = staticPageProvider.getEnrollWithLocation(location.getLatitude(), location.getLongitude());
    }
 
    private Observable<Location> doWithLocation() {

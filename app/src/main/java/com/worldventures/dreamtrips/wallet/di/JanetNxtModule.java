@@ -7,12 +7,10 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
 import com.worldventures.dreamtrips.core.janet.TimberServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
-import com.worldventures.dreamtrips.wallet.service.command.RecordsMigrationStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.command.TokenizeRecordsMigrationCommand;
-import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtHttpService;
-import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleBankCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleRecordsCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.GsonAdaptersMultiErrorResponse;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.GsonAdaptersMultiRequestBody;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.GsonAdaptersMultiRequestElement;
@@ -39,11 +37,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 @Module(
       injects = {
-            TokenizeBankCardCommand.class,
-            TokenizeMultipleBankCardsCommand.class,
-            DetokenizeBankCardCommand.class,
-            RecordsMigrationStatusCommand.class,
-            TokenizeRecordsMigrationCommand.class,
+            TokenizeRecordCommand.class,
+            TokenizeMultipleRecordsCommand.class,
+            DetokenizeRecordCommand.class,
             NxtHttpService.class
       },
       complete = false, library = true)

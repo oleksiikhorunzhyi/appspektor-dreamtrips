@@ -49,7 +49,7 @@ public class EditBillingAddressScreen extends WalletLinearLayout<EditBillingAddr
    @NonNull
    @Override
    public EditBillingAddressPresenter createPresenter() {
-      return new EditBillingAddressPresenter(getContext(), getInjector(), getPath().getBankCard());
+      return new EditBillingAddressPresenter(getContext(), getInjector(), getPath().getRecord());
    }
 
    @Override

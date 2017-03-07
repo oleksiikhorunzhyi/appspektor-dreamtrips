@@ -21,7 +21,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -287,8 +287,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
       adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
          @Override
-         public void onCardClicked(BankCard bankCard) {
-            getPresenter().cardClicked(bankCard);
+         public void onCardClicked(Record record) {
+            getPresenter().cardClicked(record);
          }
       });
       adapter.registerIdDelegate(CardStackViewModel.class, model -> {

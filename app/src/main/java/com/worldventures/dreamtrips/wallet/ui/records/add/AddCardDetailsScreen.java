@@ -17,14 +17,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -50,7 +50,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.confirm_button) View confirmButton;
    @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
-   private final BankCardHelper bankCardHelper;
+   private final WalletRecordUtil walletRecordUtil;
    private DialogOperationScreen dialogOperationScreen;
 
    private Observable<Boolean> setAsDefaultCardObservable;
@@ -67,13 +67,13 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    public AddCardDetailsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
-      bankCardHelper = new BankCardHelper(context);
+      walletRecordUtil = new WalletRecordUtil(context);
    }
 
    @NonNull
    @Override
    public AddCardDetailsPresenter createPresenter() {
-      return new AddCardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
+      return new AddCardDetailsPresenter(getContext(), getInjector(), getPath().getRecord());
    }
 
    @Override
@@ -98,10 +98,10 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void setCardBank(BankCard bankCard) {
-      bankCardWidget.setBankCard(bankCard);
+   public void setCardBank(Record record) {
+      bankCardWidget.setBankCard(record);
 
-      int cvvLength = BankCardHelper.obtainRequiredCvvLength(bankCard.number());
+      int cvvLength = WalletRecordUtil.obtainRequiredCvvLength(record.number());
       etCardCvv.setMaxLength(cvvLength);
    }
 
@@ -170,8 +170,8 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void showChangeCardDialog(BankCard bankCard) {
-      new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(bankCard))
+   public void showChangeCardDialog(Record record) {
+      new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(record))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();
    }

@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableMultiRequestElement;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiErrorResponse;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiRequestElement;
@@ -31,54 +31,54 @@ public class NxtBankCardHelper {
    private NxtBankCardHelper() {
    }
 
-   public static List<MultiRequestElement> getDataForTokenization(BankCard bankCard) {
-      return getDataForTokenization(bankCard, null);
+   public static List<MultiRequestElement> getDataForTokenization(Record record) {
+      return getDataForTokenization(record, null);
    }
 
-   public static List<MultiRequestElement> getDataForTokenization(BankCard bankCard, @Nullable String refIdPrefix) {
+   public static List<MultiRequestElement> getDataForTokenization(Record record, @Nullable String refIdPrefix) {
       List<MultiRequestElement> elements = new ArrayList<>();
 
       elements.add(ImmutableMultiRequestElement.builder()
             .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(bankCard.number()).referenceId(prefixRefId(PAN, refIdPrefix))
+            .value(record.number()).referenceId(prefixRefId(PAN, refIdPrefix))
             .build());
       elements.add(ImmutableMultiRequestElement.builder()
             .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(bankCard.cvv()).referenceId(prefixRefId(CVV, refIdPrefix))
+            .value(record.cvv()).referenceId(prefixRefId(CVV, refIdPrefix))
             .build());
 
-      safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, bankCard.track1(), prefixRefId(TRACK_1, refIdPrefix));
-      safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, bankCard.track2(), prefixRefId(TRACK_2, refIdPrefix));
-      safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, bankCard.track3(), prefixRefId(TRACK_3, refIdPrefix));
+      safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, record.track1(), prefixRefId(TRACK_1, refIdPrefix));
+      safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, record.track2(), prefixRefId(TRACK_2, refIdPrefix));
+      safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, record.track3(), prefixRefId(TRACK_3, refIdPrefix));
 
       return elements;
    }
 
-   public static List<MultiRequestElement> getDataForDetokenization(BankCard bankCard) {
-      return getDataForDetokenization(bankCard, null);
+   public static List<MultiRequestElement> getDataForDetokenization(Record record) {
+      return getDataForDetokenization(record, null);
    }
 
-   public static List<MultiRequestElement> getDataForDetokenization(BankCard bankCard, @Nullable String refIdPrefix) {
+   public static List<MultiRequestElement> getDataForDetokenization(Record record, @Nullable String refIdPrefix) {
       List<MultiRequestElement> elements = new ArrayList<>();
 
       elements.add(ImmutableMultiRequestElement.builder()
             .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(bankCard.number()).referenceId(prefixRefId(PAN, refIdPrefix))
+            .value(record.number()).referenceId(prefixRefId(PAN, refIdPrefix))
             .build());
       elements.add(ImmutableMultiRequestElement.builder()
             .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(bankCard.cvv()).referenceId(prefixRefId(CVV, refIdPrefix))
+            .value(record.cvv()).referenceId(prefixRefId(CVV, refIdPrefix))
             .build());
 
-      safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, bankCard.track1(), prefixRefId(TRACK_1, refIdPrefix));
-      safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, bankCard.track2(), prefixRefId(TRACK_2, refIdPrefix));
-      safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, bankCard.track3(), prefixRefId(TRACK_3, refIdPrefix));
+      safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, record.track1(), prefixRefId(TRACK_1, refIdPrefix));
+      safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, record.track2(), prefixRefId(TRACK_2, refIdPrefix));
+      safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, record.track3(), prefixRefId(TRACK_3, refIdPrefix));
 
       return elements;
    }
 
-   public static BankCard getTokenizedBankCard(TokenizedBankCard card, @Nullable String refIdPrefix) {
-      return ImmutableBankCard.builder().from(card.bankCard)
+   public static Record getTokenizedRecord(TokenizedRecord card, @Nullable String refIdPrefix) {
+      return ImmutableRecord.builder().from(card.record)
             // Save tokenized track values into original values
             .number(card.nxtValues.get(prefixRefId(PAN, refIdPrefix)))
             .cvv(card.nxtValues.get(prefixRefId(CVV, refIdPrefix)))
@@ -88,8 +88,8 @@ public class NxtBankCardHelper {
             .build();
    }
 
-   public static BankCard getDetokenizedBankCard(DetokenizedBankCard card) {
-      return ImmutableBankCard.builder().from(card.bankCard)
+   public static Record getDetokenizedRecord(DetokenizedRecord card) {
+      return ImmutableRecord.builder().from(card.record)
             .number(card.nxtValues.get(PAN))
             .cvv(card.nxtValues.get(CVV))
             .track1(getDecodedElement(card.nxtValues.get(TRACK_1)))
@@ -130,7 +130,7 @@ public class NxtBankCardHelper {
    }
 
    @NonNull
-   public static List<MultiErrorResponse> getResponseErrors(NxtBankCardResponse response, @Nullable String refIdPrefix) {
+   public static List<MultiErrorResponse> getResponseErrors(NxtRecordResponse response, @Nullable String refIdPrefix) {
       return Queryable.from(new String[]{PAN, CVV, TRACK_1, TRACK_2, TRACK_3})
             .map(refId -> response.nxtErrors.get(prefixRefId(refId, refIdPrefix)))
             .notNulls()

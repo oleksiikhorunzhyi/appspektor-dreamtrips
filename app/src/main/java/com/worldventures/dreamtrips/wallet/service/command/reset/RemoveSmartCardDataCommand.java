@@ -2,8 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
@@ -18,8 +17,7 @@ import rx.Observable;
 public class RemoveSmartCardDataCommand extends Command<Void> implements InjectableAction {
 
    @Inject SnappyRepository snappyRepository;
-   @Inject CardListStorage cardListStorage;
-   @Inject PersistentWalletCardsStorage persistentWalletCardsStorage;
+   @Inject PersistentRecordsStorage persistentRecordsStorage;
    @Inject LostCardRepository lostCardRepository;
    @Inject SmartCardInteractor smartCardInteractor;
 
@@ -40,10 +38,9 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    private Observable<Void> removeCache() {
       return Observable.defer(() -> {
          try {
-            if(withPaymentCards) {
-               cardListStorage.deleteWalletCardList();
-               persistentWalletCardsStorage.deleteWalletCardList();
-               persistentWalletCardsStorage.deleteWalletDefaultCardId();
+            if (withPaymentCards) {
+               persistentRecordsStorage.deleteAllRecords();
+               persistentRecordsStorage.deleteDefaultRecordId();
             }
             snappyRepository.deleteSmartCardFirmware();
             snappyRepository.deleteSmartCardDetails();

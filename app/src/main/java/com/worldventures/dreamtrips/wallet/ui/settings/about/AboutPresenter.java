@@ -5,14 +5,14 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -43,7 +43,7 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
 
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
-      smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
+      smartCardInteractor.cardsListPipe().send(RecordListCommand.fetch());
 
       trackScreen();
    }
@@ -78,10 +78,10 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
-   private void bindCardList(List<Card> cardList) {
+   private void bindCardList(List<Record> records) {
       // TODO: 1/26/17 CardListPresenter.MAX_CARD_LIMIT should be a common constant
       //noinspection ConstantConditions
-      getView().onProvidePayCardInfo(cardList.size(), CardListPresenter.MAX_CARD_LIMIT - cardList.size());
+      getView().onProvidePayCardInfo(records.size(), CardListPresenter.MAX_CARD_LIMIT - records.size());
    }
 
    public void goBack() {

@@ -4,18 +4,18 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 @Layout(R.layout.screen_wallet_wizard_edit_card_details)
 public class EditBillingAddressPath extends StyledPath {
-   private final BankCard bankCard;
+   private final Record record;
 
-   public EditBillingAddressPath(BankCard bankCard) {
-      this.bankCard = bankCard;
+   public EditBillingAddressPath(Record record) {
+      this.record = record;
    }
 
-   public BankCard getBankCard() {
-      return bankCard;
+   public Record getRecord() {
+      return record;
    }
 
    @Override

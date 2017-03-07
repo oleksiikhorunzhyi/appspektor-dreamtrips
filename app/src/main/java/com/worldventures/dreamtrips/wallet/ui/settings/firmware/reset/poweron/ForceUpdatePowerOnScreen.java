@@ -10,11 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.util.AnimateGIFUtil;
+import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
 import butterknife.InjectView;
 
@@ -33,8 +32,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
    @InjectView(R.id.wallet_wizard_power_on_title) TextView walletWizardSplashTitle;
    @InjectView(R.id.wallet_wizard_power_on_btn) Button actionBtn;
 
-   @InjectView(R.id.card_container) View cardContainer;
-   @InjectView(R.id.wallet_power_on_card) SimpleDraweeView powerOnCardDraweeView;
+   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
 
    public ForceUpdatePowerOnScreen(Context context) {
       super(context);
@@ -57,7 +55,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
       hideAllView();
       postDelayed(this::startSoarAnimation, SHOW_SOAR_TITLE_DELAY);
-      AnimateGIFUtil.setupAnimateGIFbyFresco(powerOnCardDraweeView, R.drawable.animation_power_on);
+      wizardVideoView.playVideo(R.raw.anim_power_on_sc);
    }
 
    @Override
@@ -68,7 +66,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
    private void hideAllView() {
       if (isInEditMode()) return;
       apply(
-            asList(actionBtn, walletWizardSplashTitle, cardContainer),
+            asList(actionBtn, walletWizardSplashTitle, wizardVideoView),
             (view, index) -> view.setAlpha(0)
       );
    }
@@ -78,7 +76,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
       mainAnimation
             .play(ofFloat(actionBtn, View.ALPHA, 1).setDuration(COMMON_FADE_IN_DELAY))
             .with(ofFloat(walletWizardSplashTitle, View.ALPHA, 1).setDuration(COMMON_FADE_IN_DELAY))
-            .after(ofFloat(cardContainer, View.ALPHA, 1).setDuration(CARD_FADE_IN_DELAY));
+            .after(ofFloat(wizardVideoView, View.ALPHA, 1).setDuration(CARD_FADE_IN_DELAY));
 
       mainAnimation.start();
    }

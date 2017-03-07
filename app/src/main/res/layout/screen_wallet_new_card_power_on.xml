@@ -18,7 +18,7 @@
    <FrameLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="@null"
+         android:background="@android:color/white"
          >
 
       <TextView
@@ -32,7 +32,12 @@
             tools:text="@string/wallet_new_card_power_on"
             />
 
-      <include layout="@layout/view_power_on_card_container" />
+      <com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView
+            android:id="@+id/wizard_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            />
 
       <LinearLayout
             android:id="@+id/container_have_card"

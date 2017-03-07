@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 
 import io.techery.janet.ActionPipe;
@@ -17,6 +18,7 @@ public class AnalyticsInteractor {
    private final ActionPipe<WalletAnalyticsCommand> walletAnalyticsCommandPipe;
    private final ActionPipe<PaycardAnalyticsCommand> paycardAnalyticsCommandPipe;
    private final ActionPipe<LocateCardAnalyticsCommand> locateCardAnalyticsCommandActionPipe;
+   private final ActionPipe<WalletFirmwareAnalyticsCommand> walletFirmwareAnalyticsPipe;
 
    public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       analyticsActionPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
@@ -24,6 +26,7 @@ public class AnalyticsInteractor {
       walletAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(WalletAnalyticsCommand.class, Schedulers.io());
       paycardAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(PaycardAnalyticsCommand.class, Schedulers.io());
       locateCardAnalyticsCommandActionPipe = sessionActionPipeCreator.createPipe(LocateCardAnalyticsCommand.class, Schedulers.io());
+      walletFirmwareAnalyticsPipe = sessionActionPipeCreator.createPipe(WalletFirmwareAnalyticsCommand.class, Schedulers.io());
    }
 
    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {
@@ -44,5 +47,9 @@ public class AnalyticsInteractor {
 
    public WriteActionPipe<LocateCardAnalyticsCommand> locateCardAnalyticsCommandActionPipe() {
       return locateCardAnalyticsCommandActionPipe;
+   }
+
+   public WriteActionPipe<WalletFirmwareAnalyticsCommand> walletFirmwareAnalyticsPipe() {
+      return walletFirmwareAnalyticsPipe;
    }
 }

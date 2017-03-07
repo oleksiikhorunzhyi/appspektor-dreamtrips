@@ -101,8 +101,8 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
-      return new SmartCardSyncManager(janet, smartCardInteractor);
+   SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor) {
+      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor);
    }
 
    @Singleton

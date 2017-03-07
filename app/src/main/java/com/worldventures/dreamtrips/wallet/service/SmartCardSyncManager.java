@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -38,12 +39,14 @@ public class SmartCardSyncManager {
 
    private final Janet janet;
    private final SmartCardInteractor interactor;
+   private final FirmwareInteractor firmwareInteractor;
+
    private volatile boolean syncDisabled = false;
 
-   public SmartCardSyncManager(Janet janet, SmartCardInteractor interactor) {
+   public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor) {
       this.janet = janet;
-      this.interactor = interactor;
-
+      this.interactor = smartCardInteractor;
+      this.firmwareInteractor = firmwareInteractor;
       observeConnection();
       connectUpdateSmartCard();
       connectSyncCards();
@@ -129,8 +132,11 @@ public class SmartCardSyncManager {
 
       interactor.fetchFirmwareVersionPipe()
             .observeSuccess()
-            .subscribe(command ->
-                  interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(command.getResult()))
+            .map(Command::getResult)
+            .subscribe(firmware -> {
+                     interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(firmware));
+                     firmwareInteractor.fetchFirmwareInfoPipe().send(new FetchFirmwareInfoCommand(firmware));
+                  }
             );
 
       Observable.merge(
@@ -161,9 +167,8 @@ public class SmartCardSyncManager {
             .observeSuccess()
             .takeUntil(interactor.disconnectPipe().observeSuccess())
             .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
-            .flatMap(smartCard ->
-                  interactor.fetchFirmwareVersionPipe().createObservable(new FetchFirmwareVersionCommand()))
-            .subscribe();
+            .subscribe(cardInChargerEvent ->
+                  interactor.fetchFirmwareVersionPipe().send(new FetchFirmwareVersionCommand()));
    }
 
    private void connectSyncCards() {

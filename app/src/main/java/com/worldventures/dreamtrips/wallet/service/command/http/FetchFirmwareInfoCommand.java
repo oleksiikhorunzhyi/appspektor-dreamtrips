@@ -16,6 +16,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.util.SmartCardSDK;
 import io.techery.mappery.MapperyContext;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
@@ -28,11 +29,9 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
    @Inject SnappyRepository snappyRepository;
    @Inject FirmwareRepository firmwareRepository;
 
-   private final String sdkVersion;
    private final SmartCardFirmware firmwareVersion;
 
-   public FetchFirmwareInfoCommand(String sdkVersion, SmartCardFirmware firmwareVersion) {
-      this.sdkVersion = sdkVersion;
+   public FetchFirmwareInfoCommand(SmartCardFirmware firmwareVersion) {
       this.firmwareVersion = firmwareVersion;
    }
 
@@ -43,7 +42,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
          callback.onSuccess(firmwareRepository.getFirmwareUpdateData());
       } else {
          janet.createPipe(GetFirmwareHttpAction.class)
-               .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), sdkVersion))
+               .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), SmartCardSDK.getSDKVersion()))
                .map(firmwareHttpAction -> createUpdateData(firmwareHttpAction.response()))
                .subscribe(firmwareUpdateData -> {
                   firmwareRepository.setFirmwareUpdateData(firmwareUpdateData);

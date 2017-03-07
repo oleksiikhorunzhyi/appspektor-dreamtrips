@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.AddressWithPlacesActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DeviceStateActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareUpdateActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActionStorage;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionSto
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage;
+import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -62,5 +64,9 @@ public class WalletActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage smartCardUserActionStorage(SnappyRepository snappyRepository) {
       return new SmartCardUserActionStorage(snappyRepository);
+   }
+
+   ActionStorage firmwareUpdateActionStorage(FirmwareRepository repository) {
+      return new FirmwareUpdateActionStorage(repository);
    }
 }

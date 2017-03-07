@@ -5,15 +5,14 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.UpdateChecksVisitAction;
-import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallAction;
-import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallLaterAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateChecksVisitAction;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateInstallAction;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateInstallLaterAction;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand;
-import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -32,7 +31,6 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SCFirmwareFacade firmwareFacade;
    @Inject Navigator navigator;
 
    WalletFirmwareChecksPresenter(Context context, Injector injector) {
@@ -42,18 +40,13 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      trackScreen();
       observeChecks();
    }
 
-   @Override
-   public void onAttachedToWindow() {
-      super.onAttachedToWindow();
-
-      firmwareFacade.takeFirmwareInfo()
-            .compose(bindView())
-            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
-                        .send(new WalletAnalyticsCommand(new UpdateChecksVisitAction(firmwareUpdateData.smartCardId()))),
-                  throwable -> Timber.e(throwable, ""));
+   private void trackScreen() {
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new UpdateChecksVisitAction()));
    }
 
    private void observeChecks() {
@@ -77,19 +70,15 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    }
 
    void installLater() {
-      firmwareFacade.takeFirmwareInfo()
-            .compose(bindView())
-            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
-                  .send(new WalletAnalyticsCommand(new UpdateInstallLaterAction(firmwareUpdateData.smartCardId()))));
       goBack();
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+                  .send(new WalletFirmwareAnalyticsCommand(new UpdateInstallLaterAction()));
    }
 
    void install() {
-      firmwareFacade.takeFirmwareInfo()
-            .compose(bindView())
-            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
-                  .send(new WalletAnalyticsCommand(new UpdateInstallAction(firmwareUpdateData.smartCardId()))));
       navigator.go(new WalletInstallFirmwarePath());
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new UpdateInstallAction()));
    }
 
    void goBack() {

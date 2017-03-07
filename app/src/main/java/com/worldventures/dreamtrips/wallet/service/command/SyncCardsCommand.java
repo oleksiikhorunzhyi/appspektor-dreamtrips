@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
@@ -152,7 +152,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    }
 
    private void sendTokenizationAnalytics(NxtBankCard nxtBankCard) {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new TokenizationAnalyticsLocationCommand(
             TokenizationCardAction.from(nxtBankCard, ActionType.RESTORE, false)
       ));
    }

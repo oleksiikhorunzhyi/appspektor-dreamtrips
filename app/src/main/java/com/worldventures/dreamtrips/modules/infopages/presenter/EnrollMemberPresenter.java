@@ -5,6 +5,8 @@ import android.location.Location;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -41,7 +43,9 @@ public class EnrollMemberPresenter extends AuthorizedStaticInfoPresenter {
    }
 
    private Observable<Location> doWithLocation() {
-      return locationDelegate.requestLocationUpdate()
+      return Observable.merge(
+            Observable.timer(2, TimeUnit.SECONDS).flatMap(unit -> Observable.error(new IllegalStateException())),
+            locationDelegate.requestLocationUpdate())
             .take(1)
             .compose(bindViewToMainComposer());
    }

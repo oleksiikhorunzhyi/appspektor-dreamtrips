@@ -38,15 +38,15 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
    }
 
    @Override
-   public void takeView(View view) {
-      super.takeView(view);
+   public void onStart() {
+      super.onStart();
       startBluetoothTracking();
    }
 
    private void startBluetoothTracking() {
       bluetoothService.observeEnablesState()
             .startWith(bluetoothService.isEnable())
-            .compose(bindView())
+            .compose(bindUntilStop())
             .distinctUntilChanged()
             .subscribe(this::onBluetoothStateChanged);
    }

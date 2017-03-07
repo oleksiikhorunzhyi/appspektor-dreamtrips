@@ -119,6 +119,11 @@
                   app:el_headerLayout="@layout/adapter_item_merchant_hours_header"
                   />
 
+            <FrameLayout
+                android:id="@+id/container_comments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
                   android:id="@+id/disclaimer"
                   android:layout_width="match_parent"

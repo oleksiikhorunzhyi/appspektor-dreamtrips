@@ -99,7 +99,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     }
 
     @Override
-    public void sendAddReview(String description, Integer rating, Boolean verified) {
+    public void sendAddReview(String description, Integer rating) {
         User user = appSessionHolder.get().get().getUser();
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
@@ -116,15 +116,15 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                 .userNickName(user.getUsername())
                 .reviewText(description)
                 .rating(String.valueOf(rating))
-                .verified(verified)
+                .verified(getView().isVerified())
                 .userId(String.valueOf(user.getId()))
                 .deviceFingerprint(BRAND_ID)
                 .build(), ImmutableReviewParams.builder()
                 .userEmail(user.getEmail())
-                .userNickName(user.getUsername())
+                .userNickName(user.getFullName())
                 .reviewText(description)
                 .rating(String.valueOf(rating))
-                .verified(verified)
+                .verified(getView().isVerified())
                 .userId(String.valueOf(user.getId()))
                 .build()));
     }

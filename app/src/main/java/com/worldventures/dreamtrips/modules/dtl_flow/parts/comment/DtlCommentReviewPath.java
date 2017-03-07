@@ -16,16 +16,19 @@ public class DtlCommentReviewPath extends DtlMasterPath {
 
     private final Merchant merchant;
     private final boolean isFromListReview;
+    private final boolean isVerified;
 
     public DtlCommentReviewPath(@NonNull Merchant merchant) {
         super();
         this.merchant = merchant;
         this.isFromListReview = false;
+        this.isVerified = false;
     }
 
-    public DtlCommentReviewPath(Merchant merchant, boolean isFromAddReview) {
+    public DtlCommentReviewPath(Merchant merchant, boolean isFromAddReview, boolean isVerified) {
         this.merchant = merchant;
         this.isFromListReview = isFromAddReview;
+        this.isVerified = isVerified;
     }
 
     @Override
@@ -49,5 +52,9 @@ public class DtlCommentReviewPath extends DtlMasterPath {
 
     public boolean isFromAddReview() {
         return isFromListReview;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
     }
 }

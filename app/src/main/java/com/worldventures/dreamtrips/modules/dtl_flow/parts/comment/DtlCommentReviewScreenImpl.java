@@ -79,7 +79,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @Override
     public void sendPostReview() {
-        getPresenter().sendAddReview(mComment.getText().toString(), (int) mRatingBar.getRating(), false);
+        getPresenter().sendAddReview(mComment.getText().toString(), (int) mRatingBar.getRating());
     }
 
     @Override
@@ -201,5 +201,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public boolean isFromListReview(){
         return getPath().isFromAddReview();
+    }
+
+    @Override
+    public boolean isVerified() {
+        return getPath().isVerified();
     }
 }

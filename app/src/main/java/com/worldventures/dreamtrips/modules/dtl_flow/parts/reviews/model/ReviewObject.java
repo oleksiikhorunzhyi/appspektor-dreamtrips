@@ -75,7 +75,7 @@ public class ReviewObject implements Parcelable {
 
 
    private static ReviewObject getObject(Review review) {
-      return new ReviewObject("null",
+      return new ReviewObject(review.userImage().thumb(),
             review.userNickName(),
             review.rating(),
             review.lastModeratedTimeUtc(),

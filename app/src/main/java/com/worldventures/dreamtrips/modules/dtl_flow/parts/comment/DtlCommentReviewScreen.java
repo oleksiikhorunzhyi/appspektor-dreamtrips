@@ -31,4 +31,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     void sendPostReview();
 
     boolean isFromListReview();
+
+    boolean isVerified();
 }

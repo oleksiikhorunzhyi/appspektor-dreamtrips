@@ -57,7 +57,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void onAddClick() {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true));
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true, false));
    }
 
    private void connectReviewMerchants() {

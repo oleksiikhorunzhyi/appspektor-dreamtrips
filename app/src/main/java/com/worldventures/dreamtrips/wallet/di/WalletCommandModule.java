@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.CardInChargerCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
@@ -102,7 +104,9 @@ import dagger.Module;
             FactoryResetCommand.class,
             WipeSmartCardDataCommand.class,
             CreateNxtSessionCommand.class,
-            LocateCardAnalyticsCommand.class
+            LocateCardAnalyticsCommand.class,
+            CardInChargerCommand.class,
+            FetchFirmwareUpdateDataCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

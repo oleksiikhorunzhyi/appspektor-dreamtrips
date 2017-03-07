@@ -8,7 +8,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,6 +30,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject SnappyRepository snappyRepository;
    @Inject FirmwareRepository firmwareRepository;
+   @Inject FirmwareInteractor firmwareInteractor;
 
    private final SmartCardFirmware firmwareVersion;
 
@@ -45,7 +48,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
                .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), SmartCardSDK.getSDKVersion()))
                .map(firmwareHttpAction -> createUpdateData(firmwareHttpAction.response()))
                .subscribe(firmwareUpdateData -> {
-                  firmwareRepository.setFirmwareUpdateData(firmwareUpdateData);
+                  firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.save(firmwareUpdateData));
                   callback.onSuccess(firmwareUpdateData);
                }, callback::onFail);
       }

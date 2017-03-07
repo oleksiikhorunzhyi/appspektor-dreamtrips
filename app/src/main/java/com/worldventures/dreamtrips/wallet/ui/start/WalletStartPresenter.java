@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisi
 import com.worldventures.dreamtrips.wallet.ui.records.tokenize_migration.TokenizeRecordsMigrationPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
@@ -110,7 +111,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
          final FirmwareUpdateData firmwareUpdateData = result.firmwareUpdateData();
          //noinspection ConstantConditions
          if (firmwareUpdateData.fileDownloaded()) {
-            navigator.single(new WalletInstallFirmwarePath(), Flow.Direction.REPLACE);
+            navigator.single(new WalletFirmwareChecksPath(), Flow.Direction.REPLACE);
          } else {
             navigator.single(new WalletNewFirmwareAvailablePath(), Flow.Direction.REPLACE);
          }

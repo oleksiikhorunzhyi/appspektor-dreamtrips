@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage
 import com.worldventures.dreamtrips.wallet.model.*
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
 import com.worldventures.dreamtrips.wallet.service.command.*
@@ -61,7 +62,8 @@ class SmartCardInteractorSpec : BaseSpec({
          mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
-         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor)
+         firmwareInteractor = createFirmwareInteractor(janet)
+         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
          nxtInteractor = createNxtInteractor(janet)
          nxtSessionHolder = mock()
 
@@ -263,6 +265,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
+      lateinit var firmwareInteractor: FirmwareInteractor
       lateinit var cardStorage: PersistentWalletCardsStorage
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var nxtInteractor: NxtInteractor
@@ -291,9 +294,11 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
+      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
+
       fun createNxtInteractor(janet: Janet) = NxtInteractor(janet)
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor) = SmartCardSyncManager(janet, smartCardInteractor)
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -314,6 +319,7 @@ class SmartCardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
+         daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
          daggerCommandActionService.registerProvider(NxtInteractor::class.java, { nxtInteractor })
          daggerCommandActionService.registerProvider(NxtSessionHolder::class.java, { nxtSessionHolder })
 

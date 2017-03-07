@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadAppAtmel
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadNordicFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadPuckAtmelFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.UnzipFirmwareCommand;
 
@@ -20,7 +19,6 @@ import dagger.Provides;
 
 @Module(
       injects = {
-            PreInstallationCheckCommand.class,
             InstallFirmwareCommand.class,
             LoadPuckAtmelFirmwareCommand.class,
             LoadAppAtmelFirmwareCommand.class,

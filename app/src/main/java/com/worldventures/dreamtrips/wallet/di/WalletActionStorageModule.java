@@ -66,6 +66,7 @@ public class WalletActionStorageModule {
       return new SmartCardUserActionStorage(snappyRepository);
    }
 
+   @Provides(type = Provides.Type.SET)
    ActionStorage firmwareUpdateActionStorage(FirmwareRepository repository) {
       return new FirmwareUpdateActionStorage(repository);
    }

@@ -1,10 +1,16 @@
 package com.worldventures.dreamtrips.wallet.analytics.tokenization;
 
+import android.support.annotation.Nullable;
+
+import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.BaseCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 
 public class TokenizationCardAction extends BaseCardDetailsAction {
+
+   @Attribute("coordinates") String coordinates;
 
    private final ActionType actionType;
    private final boolean tokenize;
@@ -22,6 +28,10 @@ public class TokenizationCardAction extends BaseCardDetailsAction {
       this.tokenize = tokenize;
 
       fillPaycardInfo(bankCard);
+   }
+
+   void setCoordinates(@Nullable WalletCoordinates coordinates) {
+      if (coordinates != null) this.coordinates = String.format("%s,%s", coordinates.lat(), coordinates.lng());
    }
 
    String generateCondition() {

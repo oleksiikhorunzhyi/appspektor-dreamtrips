@@ -21,7 +21,6 @@ public class NxtBankCardHelper {
    private static final String OPERATION_DETOKENIZE = "detokenize";
 
    private static final String TOKEN_NAME_GENERIC = "smartcardgeneric";
-   private static final String TOKEN_NAME_CC = "smartcardcc";
 
    private static final String PAN = "number";
    private static final String CVV = "cvv";
@@ -40,12 +39,12 @@ public class NxtBankCardHelper {
       List<MultiRequestElement> elements = new ArrayList<>();
 
       elements.add(ImmutableMultiRequestElement.builder()
-            .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_CC)
+            .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_GENERIC)
             .value(bankCard.number()).referenceId(prefixRefId(PAN, refIdPrefix))
             .build());
       elements.add(ImmutableMultiRequestElement.builder()
             .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(String.valueOf(bankCard.cvv())).referenceId(prefixRefId(CVV, refIdPrefix))
+            .value(bankCard.cvv()).referenceId(prefixRefId(CVV, refIdPrefix))
             .build());
 
       safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, bankCard.track1(), prefixRefId(TRACK_1, refIdPrefix));
@@ -63,7 +62,7 @@ public class NxtBankCardHelper {
       List<MultiRequestElement> elements = new ArrayList<>();
 
       elements.add(ImmutableMultiRequestElement.builder()
-            .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_CC)
+            .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_GENERIC)
             .value(bankCard.number()).referenceId(prefixRefId(PAN, refIdPrefix))
             .build());
       elements.add(ImmutableMultiRequestElement.builder()

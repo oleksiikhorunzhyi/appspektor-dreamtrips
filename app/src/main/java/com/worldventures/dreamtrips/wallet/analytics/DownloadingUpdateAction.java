@@ -10,4 +10,7 @@ public class DownloadingUpdateAction extends WalletAnalyticsAction {
 
    @Attribute("scupdatestep2") final String updateStep2 = "1";
 
+   public DownloadingUpdateAction(String scId) {
+      super(scId);
+   }
 }

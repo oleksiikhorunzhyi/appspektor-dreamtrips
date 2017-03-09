@@ -26,7 +26,6 @@
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Meniu Deschis</string>
    <string name="drawer_close">Meniu Închis</string>
-   <string name="empty" translatable="false"></string>
    <string name="logout_dialog_title">Deconectare</string>
    <string name="logout_dialog_message">Sigur doriți să vă deconectați?</string>
    <string name="logout_dialog_positive_btn">Deconectare</string>
@@ -127,6 +126,10 @@
    <string name="bucket_list_create_message">În momentul de față, nu aveți niciun articol pe Lista de dorințe. Puteți alege din articole populare de pe listele de dorințe sau vă puteți crea propriile obiective.</string>
    <string name="bucket_list_choose">Alegeți din articole populare</string>
    <string name="bucket_list_create_new">Vreau să-mi creez propria Listă de dorințe</string>
+   <string name="bucket_list_action_create_error">Nu s-a putut adăuga articolul din Lista de dorințe</string>
+   <string name="bucket_list_action_update_error">Nu s-a putut actualiza articolul din Lista de dorințe</string>
+   <string name="bucket_list_action_change_order_error">Nu s-a putut modifica succesiunea articolelor din Lista de dorințe</string>
+   <string name="bucket_list_action_delete_error">Nu s-a putut șterge articolul din Lista de dorințe</string>
    <string name="bucket_hint_title">Titlu</string>
    <string name="bucket_hint_description">Descriere</string>
    <string name="bucket_hint_description_text">Introduceți descrierea aici</string>
@@ -171,7 +174,9 @@
    <string name="training_videos">Videoclipuri de formare</string>
    <string name="error_while_sync">A apărut o eroare</string>
    <string name="can_not_like_photo">Nu se poate aprecia fotografia</string>
+   <string name="like">%1$d apreciere</string>
    <string name="likes">%1$d aprecieri</string>
+   <string name="comment_single">%1$d comentariu</string>
    <string name="comments">%1$d comentarii</string>
    <string name="wrong_image">Imagine greșită</string>
    <string name="could_not_load">Nu s-a putut încărca </string>
@@ -392,6 +397,7 @@
    <string name="photo_delete">Ștergeți fotografia</string>
    <string name="photo_edit">Editați fotografia</string>
    <string name="photo_delete_caption">Sigur doriți să ștergeți această fotografie?</string>
+   <string name="photo_edit_error">Fotografia nu s-a putut edita</string>
 
    <string name="bucket_delete">Ștergeți articolul de pe Lista de dorințe</string>
    <string name="bucket_edit">Modificați articolul de pe Lista de dorințe</string>
@@ -487,6 +493,12 @@
    <string name="feedback_has_been_sent">Feedbackul dvs. a fost trimis. Mulțumim.</string>
    <string name="feedback_send_btn">Trimiteți</string>
    <string name="feedback_select_category">Alegeți categoria</string>
+   <string name="feedback_add_photos">Adăugați fotografii</string>
+   <string name="feedback_could_not_load_attachment">Fișierul atașat nu s-a putut încărca</string>
+   <string name="feedback_attachment_failed_item_retry">Reîncercați</string>
+   <string name="feedback_attachment_failed_item_remove">Eliminați</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d din %2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">Eliminați</string>
 
    <string name="years_ago">acum %1$d ani</string>
    <string name="invitation_template">Selectați șablonul</string>
@@ -585,7 +597,24 @@
    <string name="error_fail_to_load_videos">Nu s-au putut încărca videoclipurile</string>
    <string name="error_fail_to_like_item">Nu s-a putut aprecia elementul</string>
    <string name="error_fail_to_unlike_item">Nu s-a putut anula aprecierea pentru element</string>
+   <string name="error_fail_to_load_documents">Încărcarea documentelor a eșuat</string>
    <string name="tag_people">Etichetați persoane</string>
+
+   <string name="uploading_post_status_progress_singular">Se încarcă fotografia…</string>
+   <string name="uploading_post_status_progress_plural">Se încarcă %1$d fotografii…</string>
+   <string name="uploading_post_status_paused">Încărcarea a fosr întreruptă</string>
+   <string name="uploading_post_status_waiting">Se așteaptă</string>
+   <string name="uploading_post_status_failed_connection">Conexiune pierdută</string>
+   <string name="uploading_post_status_uploaded">Postarea de text s-a încărcat cu succes!</string>
+   <string name="uploading_post_time_left_posting">Se postează…</string>
+   <string name="uploading_post_time_time_left">ieșit</string>
+   <string name="uploading_post_time_left_seconds">s</string>
+   <string name="uploading_post_time_left_minutes">m</string>
+   <string name="uploading_post_time_left_hours">h</string>
+   <string name="uploading_post_time_left_more_than_one_day">Mai mult de 1 zi…</string>
+   <string name="uploading_post_cancel_upload_message">Anulați încărcarea?</string>
+   <string name="uploading_post_cancel_upload_positive_button">Da</string>
+   <string name="uploading_post_cancel_upload_negative_button">Niciun/nicio</string>
 
    <string name="say_something">Comunicați ceva restului lumii</string>
 
@@ -654,9 +683,16 @@
 
    <string name="error_fail_to_load_filters">Ne pare rău, încărcarea filtrelor este nereușită.</string>
    <string name="flag_content_message">Personalul WorldVentures va fi notificat pentru a analiza acest conținut. </string>
+   <string name="try_again">Încercați din nou</string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">Nicio conexiune la internet</string>
    <string name="offline_warning_dialog_message">Accesul dvs. va fi limitat</string>
+   <string name="offline_indicator_description">Nicio conexiune la internet</string>
 
+   <string name="merchant_message_text" formatted="false">Felicitări! Ați câștigat%1$s puncte DreamTrips @%2$s, %3$s</string>
+
+   <string name="beta_label">Beta</string>
+
+   <string name="documents">Documente</string>
+   <string name="documents_empty_text">Documentele nu au putut fi încărcate în acest moment.</string>
 </resources>

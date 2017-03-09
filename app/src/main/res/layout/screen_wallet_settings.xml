@@ -42,7 +42,7 @@
                   />
 
             <LinearLayout
-                  android:layout_width="wrap_content"
+                  android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/spacing_large"
                   android:orientation="vertical"
@@ -72,16 +72,14 @@
          <TextView
                android:id="@+id/item_smartcard_profile"
                style="@style/SettingsItemText"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_sc_profile"
                />
 
          <!--divider-->
-         <View
-               style="@style/SettingsItemDividerStyle"
-               />
+         <View style="@style/SettingsItemDividerStyle" />
 
          <!--General-->
          <TextView
@@ -95,9 +93,9 @@
          <TextView
                android:id="@+id/item_about"
                style="@style/SettingsItemText"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_about"
                />
 
@@ -161,10 +159,10 @@
                android:id="@+id/item_last_location"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
-               android:orientation="vertical"
                >
 
             <TextView
@@ -180,9 +178,7 @@
          </LinearLayout>
 
          <!--divider-->
-         <View
-               style="@style/SettingsItemDividerStyle"
-               />
+         <View style="@style/SettingsItemDividerStyle" />
 
          <!--Security-->
          <TextView
@@ -195,9 +191,9 @@
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                >
 
             <TextView
@@ -224,10 +220,10 @@
                android:id="@+id/item_disable_default_payment_card"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
-               android:orientation="vertical"
                >
 
             <TextView
@@ -247,9 +243,9 @@
          <TextView
                android:id="@+id/item_reset_pin"
                style="@style/SettingsItemText"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_reset_pin"
                />
 
@@ -258,10 +254,10 @@
                android:id="@+id/item_auto_delete_cards"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
-               android:orientation="vertical"
                >
 
             <TextView
@@ -281,9 +277,9 @@
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                >
 
             <TextView
@@ -340,9 +336,7 @@
          </RelativeLayout>
 
          <!--divider-->
-         <View
-               style="@style/SettingsItemDividerStyle"
-               />
+         <View style="@style/SettingsItemDividerStyle" />
 
          <!--Updates-->
          <TextView
@@ -356,11 +350,11 @@
                android:id="@+id/item_firmware_updates"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:paddingStart="@dimen/spacing_normal"
-               android:paddingEnd="@dimen/spacing_normal"
-               android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                android:orientation="vertical"
+               android:paddingBottom="@dimen/spacing_large"
+               android:paddingEnd="@dimen/spacing_normal"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                >
 
             <TextView
@@ -401,9 +395,7 @@
          </RelativeLayout>
 
          <!--divider-->
-         <View
-               style="@style/SettingsItemDividerStyle"
-               />
+         <View style="@style/SettingsItemDividerStyle" />
 
          <!--Setup-->
          <TextView
@@ -427,9 +419,9 @@
                android:id="@+id/item_factory_reset"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:orientation="vertical"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:orientation="vertical"
                >
 
             <TextView
@@ -448,9 +440,9 @@
          <TextView
                android:id="@+id/item_restart_sc"
                style="@style/SettingsItemText"
+               android:paddingBottom="@dimen/spacing_large"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_restart_sc"
                />
 

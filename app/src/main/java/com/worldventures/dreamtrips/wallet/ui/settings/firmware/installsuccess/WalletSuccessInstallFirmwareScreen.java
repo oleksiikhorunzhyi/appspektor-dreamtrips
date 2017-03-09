@@ -52,6 +52,7 @@ public class WalletSuccessInstallFirmwareScreen
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       hideAllView();
@@ -69,7 +70,7 @@ public class WalletSuccessInstallFirmwareScreen
    @NonNull
    @Override
    public WalletSuccessInstallFirmwarePresenter createPresenter() {
-      return new WalletSuccessInstallFirmwarePresenter(getContext(), getInjector());
+      return new WalletSuccessInstallFirmwarePresenter(getContext(), getInjector(), getPath().firmwareUpdateData);
    }
 
    @Override
@@ -84,7 +85,7 @@ public class WalletSuccessInstallFirmwareScreen
 
    @OnClick(R.id.success_firmware_install_done)
    void onDoneClick() {
-      getPresenter().goDashboard();
+      getPresenter().finishUpdateFlow();
    }
 
 

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
@@ -23,6 +24,7 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject WizardMemoryStorage wizardMemoryStorage;
+   @Inject SystemPropertiesProvider propertiesProvider;
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
@@ -42,6 +44,7 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
       return ImmutableSmartCard.builder()
             .smartCardId(String.valueOf(Long.valueOf(wizardMemoryStorage.getBarcode()))) //remove zeros from start
             .cardStatus(SmartCard.CardStatus.DRAFT)
+            .deviceId(propertiesProvider.deviceId())
             .build();
    }
 

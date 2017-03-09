@@ -14,10 +14,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.composer.ActionPipeClear
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.schedulers.Schedulers;
 
-public class DtlLocationInteractor {
+public class DtlLocationInteractor implements Initializable {
 
    private final ActionPipe<LocationCommand> locationSourcePipe;
    private final ActionPipe<LocationFacadeCommand> locationFacadePipe;
@@ -34,7 +33,7 @@ public class DtlLocationInteractor {
       connectLocationPipes();
       connectSearchCancelLatest();
       connectClearSearches();
-      clear();
+      init();
    }
 
    public ReadActionPipe<LocationCommand> locationSourcePipe() {
@@ -87,5 +86,10 @@ public class DtlLocationInteractor {
             .map(LocationCommand::getResult)
             .map(LocationFacadeCommand::change)
             .subscribe(locationFacadePipe::send);
+   }
+
+   @Override
+   public void init() {
+      clear();
    }
 }

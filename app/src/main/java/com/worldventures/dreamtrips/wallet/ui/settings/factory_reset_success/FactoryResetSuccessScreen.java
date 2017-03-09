@@ -22,6 +22,12 @@ public class FactoryResetSuccessScreen extends WalletLinearLayout<FactoryResetSu
       super(context, attrs);
    }
 
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      supportConnectionStatusLabel(false);
+   }
+
    @NonNull
    @Override
    public FactoryResetSuccessPresenter createPresenter() {

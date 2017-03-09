@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -47,7 +48,13 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private IgnoreFirstItemAdapter adapter;
+
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
+   private Dialog synchronizationDialog;
+   private MaterialDialog forceUpdateDialog;
+   private Dialog addCardErrorDialog;
+   private Dialog factoryResetConfirmationDialog;
+   private Dialog scNonConnectionDialog;
 
    public CardListScreen(Context context) {
       super(context);
@@ -68,6 +75,22 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
 
       setupCardStackList();
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      dismissDialogs();
+
+      super.onDetachedFromWindow();
+   }
+
+   private void dismissDialogs() {
+      if (synchronizationDialog != null) synchronizationDialog.dismiss();
+      if (installFirmwareErrorDialog != null) installFirmwareErrorDialog.dismiss();
+      if (forceUpdateDialog != null) forceUpdateDialog.dismiss();
+      if (addCardErrorDialog != null) addCardErrorDialog.dismiss();
+      if (factoryResetConfirmationDialog != null) factoryResetConfirmationDialog.dismiss();
+      if (scNonConnectionDialog != null) scNonConnectionDialog.dismiss();
    }
 
    @Override
@@ -110,10 +133,10 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             break;
       }
 
-      builder.positiveText(R.string.ok)
+      addCardErrorDialog = builder.positiveText(R.string.ok)
             .negativeText(R.string.cancel)
-            .build()
-            .show();
+            .build();
+      addCardErrorDialog.show();
    }
 
    @Override
@@ -135,8 +158,63 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
                .setOnCancelAction(() -> presenter.navigateBack());
       }
       if (!installFirmwareErrorDialog.isShowing()) {
+         if (forceUpdateDialog != null && forceUpdateDialog.isShowing()) {
+            forceUpdateDialog.setOnCancelListener(null);
+            forceUpdateDialog.cancel();
+         }
          installFirmwareErrorDialog.show();
       }
+   }
+
+   @Override
+   public void showCardSynchronizationDialog(boolean visible) {
+      if (visible) {
+         if (synchronizationDialog == null) createSynchronizationDialog();
+         synchronizationDialog.show();
+      } else {
+         if (synchronizationDialog != null) synchronizationDialog.dismiss();
+      }
+   }
+
+   private void createSynchronizationDialog() {
+      synchronizationDialog = new MaterialDialog.Builder(getContext())
+            .content(getString(R.string.wallet_wizard_card_list_card_synchronization_dialog_text))
+            .progress(true, 0)
+            .cancelable(false)
+            .build();
+   }
+
+   @Override
+   public void showForceFirmwareUpdateDialog() {
+      if (forceUpdateDialog == null) {
+         forceUpdateDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_dashboard_update_dialog_title)
+               .content(R.string.wallet_dashboard_update_dialog_content)
+               .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
+               .cancelListener(dialog -> getPresenter().navigateBack())
+               .onNegative((dialog, which) -> getPresenter().navigateBack())
+               .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
+               .onPositive((dialog, which) -> getPresenter().handleForceFirmwareUpdateConfirmation())
+               .build();
+      } else {
+         forceUpdateDialog.dismiss();
+      }
+      if (installFirmwareErrorDialog == null || !installFirmwareErrorDialog.isShowing()) {
+         forceUpdateDialog.show();
+      }
+   }
+
+   @Override
+   public void showFactoryResetConfirmationDialog() {
+      factoryResetConfirmationDialog = new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_dashboard_factory_reset_dialog_content)
+            .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
+            .cancelListener(dialog -> getPresenter().navigateBack())
+            .onNegative((dialog, which) -> getPresenter().navigateBack())
+            .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
+            .onPositive((dialog, which) -> getPresenter().navigateToForceUpdate())
+            .build();
+      factoryResetConfirmationDialog.show();
    }
 
    @Override
@@ -208,5 +286,15 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void showSCNonConnectionDialog() {
+      scNonConnectionDialog = new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_card_settings_cant_connected)
+            .content(R.string.wallet_card_settings_message_cant_connected)
+            .positiveText(R.string.ok)
+            .build();
+      scNonConnectionDialog.show();
    }
 }

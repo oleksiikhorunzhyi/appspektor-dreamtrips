@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPath;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import javax.inject.Inject;
@@ -67,6 +67,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToSetDefaultCardIdPipe();
       connectSetPaymentCardPipe();
       observeNickname();
+      observeDefaultCard();
    }
 
    @Override
@@ -92,9 +93,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .subscribe(defaultBankCard -> {
                this.defaultBankCard = defaultBankCard;
                getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
-               getView().setAsDefaultPaymentCardCondition()
-                     .compose(bindView())
-                     .subscribe(this::onSetAsDefaultCard);
             }, throwable -> Timber.e(throwable, ""));
    }
 
@@ -144,6 +142,13 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .subscribe(view::setCardNickname);
    }
 
+   private void observeDefaultCard() {
+      getView().setAsDefaultPaymentCardCondition()
+            .compose(bindView())
+            .filter(stateChanged -> stateChanged != CardUtils.equals(defaultBankCard, bankCard))
+            .subscribe(this::onSetAsDefaultCard);
+   }
+
    private AddressInfoWithLocale obtainAddressWithCountry() {
       return ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
@@ -159,7 +164,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                if (command.getResult().connectionStatus().isConnected()) {
                   getView().showDeleteCardDialog();
                } else {
-                  getView().showConnectionErrorDialog();
+                  getView().showSCNonConnectionDialog();
                }
             }, throwable -> Timber.e(throwable, ""));
    }
@@ -170,7 +175,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {
-                  navigator.go(new EditCardDetailsPath(bankCard));
+                  navigator.go(new EditBillingAddressPath(bankCard));
                } else {
                   getView().showConnectionErrorDialog();
                }
@@ -178,7 +183,16 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    void payThisCard() {
-      smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(bankCard));
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+            .map(Command::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(smartCard -> {
+               if (smartCard.connectionStatus().isConnected()) {
+                  smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(bankCard));
+               } else {
+                  getView().showSCNonConnectionDialog();
+               }
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    void onCardIsReadyDialogShown() {
@@ -208,7 +222,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    void defaultCardDialogConfirmed(boolean confirmed) {
       if (!confirmed) {
-         getView().setDefaultCardCondition(false);
+         getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
       } else {
          trackSetAsDefault();
          smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
@@ -238,7 +252,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   executeSetDefaultCard(setDefaultCard);
                } else {
                   getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
-                  getView().showConnectionErrorDialog();
+                  getView().showSCNonConnectionDialog();
                }
             }, throwable -> Timber.e(throwable, ""));
    }
@@ -265,5 +279,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       Observable<String> getCardNicknameObservable();
 
       String getUpdateNickname();
+
+      void showSCNonConnectionDialog();
    }
 }

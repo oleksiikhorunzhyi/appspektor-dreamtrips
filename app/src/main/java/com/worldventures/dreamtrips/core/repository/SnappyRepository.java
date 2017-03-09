@@ -74,7 +74,6 @@ public interface SnappyRepository {
 
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
-   String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
    String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
@@ -236,17 +235,9 @@ public interface SnappyRepository {
 
    void saveSmartCard(SmartCard smartCard);
 
-   SmartCard getSmartCard(String smartCardId);
+   SmartCard getSmartCard();
 
-   void deleteSmartCard(String smartCardId);
-
-   List<SmartCard> getSmartCards();
-
-   String getActiveSmartCardId();
-
-   void setActiveSmartCardId(String scid);
-
-   void deleteActiveSmartCardId();
+   void deleteSmartCard();
 
    void saveWalletTermsAndConditions(TermsAndConditions data);
 
@@ -256,9 +247,9 @@ public interface SnappyRepository {
 
    void saveSmartCardDetails(SmartCardDetails details);
 
-   SmartCardDetails getSmartCardDetails(String smartCardId);
+   SmartCardDetails getSmartCardDetails();
 
-   void deleteSmartCardDetails(String smartCardId);
+   void deleteSmartCardDetails();
 
    void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 

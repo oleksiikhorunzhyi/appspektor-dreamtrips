@@ -58,7 +58,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             break;
          case ERROR:
          case DISCONNECTED:
-            connectionLabel.setText(R.string.wallet_smart_card_locked_disconnected_status);
+            connectionLabel.setText(R.string.wallet_smart_card_enable_instruction);
             if (indexOfChild(connectionLabel) < 0) {
                addView(connectionLabel, hasToolbar() ? 1 : 0);
             }

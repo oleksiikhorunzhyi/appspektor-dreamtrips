@@ -35,14 +35,15 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
-import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.FirstNameException;
+import com.worldventures.dreamtrips.wallet.util.LastNameException;
+import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 
 import java.io.File;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.smartcard.exception.SmartCardServiceException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -83,7 +84,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       fetchAndStoreDefaultAddress();
 
       User userProfile = appSessionHolder.get().get().getUser();
-      view.setUserFullName(userProfile.getFirstName(),  userProfile.getLastName());
+      view.setUserFullName(userProfile.getFirstName(), userProfile.getLastName());
       String defaultUserAvatar = userProfile.getAvatar().getThumb();
       if (!TextUtils.isEmpty(defaultUserAvatar)) {
          smartCardUserDataInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
@@ -118,7 +119,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                   .onStart(getContext().getString(R.string.wallet_long_operation_hint))
                   .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
                   .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
-                        .handle(FormatException.class, R.string.wallet_edit_profile_name_format_detail)
+                        .handle(FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail)
+                        .handle(LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail)
+                        .handle(MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail)
                         .handle(SetupUserDataCommand.MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen)
                         .build())
                   .wrap());
@@ -126,13 +129,19 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    private void onUserSetupSuccess(SmartCard smartCard) {
       navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.user().fullName(), smartCard.smartCardId())));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {
       preparedPhoto = photo;
       getView().setPreviewPhoto(photo.monochrome());
+
+      sendPhotoAnalyticAction();
+   }
+
+   private void sendPhotoAnalyticAction() {
+      String[] userNames = getView().getUserName();
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(userNames[0], userNames[1], userNames[2], smartCard.smartCardId())));
    }
 
    void goToBack() {

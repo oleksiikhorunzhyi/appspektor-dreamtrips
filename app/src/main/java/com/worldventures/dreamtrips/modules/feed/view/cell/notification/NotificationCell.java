@@ -59,6 +59,8 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
    @Override
    protected void syncUIStateWithModel() {
+      if (!appSessionHolder.get().isPresent()) return;
+
       User firstUser = getModelObject().getLinks().getUsers().get(0);
       notificationAvatar.setImageURI(Uri.parse(firstUser.getAvatar().getThumb()));
       notificationAvatar.setup(firstUser, injectorProvider.get());

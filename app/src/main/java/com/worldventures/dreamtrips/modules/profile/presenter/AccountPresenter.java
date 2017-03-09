@@ -46,6 +46,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User>
@@ -320,6 +321,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       String filePath = CachedEntity.getFilePath(context, url);
       downloadFileInteractor.getDownloadFileCommandPipe()
             .createObservable(new DownloadFileCommand(new File(filePath), url))
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
                   .onSuccess(downloadFileCommand -> action.action(filePath))
                   .onFail(this::handleError));

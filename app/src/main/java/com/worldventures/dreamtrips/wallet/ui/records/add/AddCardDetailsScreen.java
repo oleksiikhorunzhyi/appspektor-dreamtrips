@@ -37,13 +37,13 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
-   @InjectView(R.id.card_cvv) PinEntryEditText cardCvvField;
-   @InjectView(R.id.address1) EditText address1Field;
-   @InjectView(R.id.address2) EditText address2Field;
-   @InjectView(R.id.city) EditText cityField;
-   @InjectView(R.id.state) EditText stateField;
-   @InjectView(R.id.zip) EditText zipField;
-   @InjectView(R.id.card_name) EditText cardNicknameField;
+   @InjectView(R.id.card_cvv) PinEntryEditText etCardCvv;
+   @InjectView(R.id.address1) EditText etAddress1;
+   @InjectView(R.id.address2) EditText etAddress2;
+   @InjectView(R.id.city) EditText etCity;
+   @InjectView(R.id.state) EditText etState;
+   @InjectView(R.id.zip) EditText etZip;
+   @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
    @InjectView(R.id.confirm_button) View confirmButton;
@@ -83,13 +83,13 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
-      cardNicknameObservable = observableFrom(cardNicknameField);
+      cardNicknameObservable = observableFrom(etCardNickname);
 
-      address1Observable = observableFrom(address1Field);
-      stateObservable = observableFrom(stateField);
-      cityObservable = observableFrom(cityField);
-      zipObservable = observableFrom(zipField);
-      cvvObservable = observableFrom(cardCvvField);
+      address1Observable = observableFrom(etAddress1);
+      stateObservable = observableFrom(etState);
+      cityObservable = observableFrom(etCity);
+      zipObservable = observableFrom(etZip);
+      cvvObservable = observableFrom(etCardCvv);
    }
 
    private Observable<String> observableFrom(TextView textView) {
@@ -101,7 +101,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       bankCardWidget.setBankCard(bankCard);
 
       int cvvLength = BankCardHelper.obtainRequiredCvvLength(bankCard.number());
-      cardCvvField.setMaxLength(cvvLength);
+      etCardCvv.setMaxLength(cvvLength);
    }
 
    public Observable<String> getCardNicknameObservable() {
@@ -140,12 +140,21 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @Override
    public void defaultAddress(AddressInfoWithLocale defaultAddress) {
-      AddressInfo addressInfo = defaultAddress.addressInfo();
-      address1Field.setText(addressInfo.address1());
-      address2Field.setText(addressInfo.address2());
-      cityField.setText(addressInfo.city());
-      stateField.setText(addressInfo.state());
-      zipField.setText(addressInfo.zip());
+      final AddressInfo addressInfo = defaultAddress.addressInfo();
+      etAddress1.setText(addressInfo.address1());
+      etAddress1.setSelection(etAddress1.length());
+
+      etAddress2.setText(addressInfo.address2());
+      etAddress2.setSelection(etAddress2.length());
+
+      etCity.setText(addressInfo.city());
+      etCity.setSelection(etCity.length());
+
+      etState.setText(addressInfo.state());
+      etState.setSelection(etState.length());
+
+      etZip.setText(addressInfo.zip());
+      etZip.setSelection(etZip.length());
    }
 
    @Override
@@ -198,16 +207,16 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    public void onConfirmButtonClicked() {
       tvPostDataError.setVisibility(GONE);
 
-      String cvv = cardCvvField.getText().toString().trim();
-      String nickname = cardNicknameField.getText().toString().trim();
+      String cvv = etCardCvv.getText().toString().trim();
+      String nickname = etCardNickname.getText().toString().trim();
       boolean setAsDefaultCard = defaultPaymentCardSwitcher.isChecked();
 
       AddressInfo addressInfo = ImmutableAddressInfo.builder()
-            .address1(address1Field.getText().toString().trim())
-            .address2(address2Field.getText().toString().trim())
-            .city(cityField.getText().toString().trim())
-            .state(stateField.getText().toString().trim())
-            .zip(zipField.getText().toString().trim())
+            .address1(etAddress1.getText().toString().trim())
+            .address2(etAddress2.getText().toString().trim())
+            .city(etCity.getText().toString().trim())
+            .state(etState.getText().toString().trim())
+            .zip(etZip.getText().toString().trim())
             .build();
 
       getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, setAsDefaultCard);
@@ -220,12 +229,12 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    private void setHintsAndLabels() {
       bindSpannableStringToTarget(cvvLabel, R.string.wallet_add_card_details_cvv_label, true, false);
-      bindSpannableStringToTarget(cardNicknameField, R.string.wallet_add_card_details_hint_nickname_card, true, true);
-      bindSpannableStringToTarget(address1Field, R.string.wallet_add_card_details_hint_address1, true, true);
-      bindSpannableStringToTarget(address2Field, R.string.wallet_add_card_details_hint_address2_label,
+      bindSpannableStringToTarget(etCardNickname, R.string.wallet_add_card_details_hint_nickname_card, true, true);
+      bindSpannableStringToTarget(etAddress1, R.string.wallet_add_card_details_hint_address1, true, true);
+      bindSpannableStringToTarget(etAddress2, R.string.wallet_add_card_details_hint_address2_label,
             R.string.wallet_add_card_details_hint_optional, false, true);
-      bindSpannableStringToTarget(cityField, R.string.wallet_add_card_details_hint_city, true, true);
-      bindSpannableStringToTarget(stateField, R.string.wallet_add_card_details_hint_state, true, true);
-      bindSpannableStringToTarget(zipField, R.string.wallet_add_card_details_hint_zip, true, true);
+      bindSpannableStringToTarget(etCity, R.string.wallet_add_card_details_hint_city, true, true);
+      bindSpannableStringToTarget(etState, R.string.wallet_add_card_details_hint_state, true, true);
+      bindSpannableStringToTarget(etZip, R.string.wallet_add_card_details_hint_zip, true, true);
    }
 }

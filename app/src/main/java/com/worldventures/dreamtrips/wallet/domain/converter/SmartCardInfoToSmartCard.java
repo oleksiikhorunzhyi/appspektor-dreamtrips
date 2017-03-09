@@ -31,6 +31,7 @@ class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartCard> {
             .serialNumber(smartCardInfo.serialNumber())
             .deviceAddress(smartCardInfo.bleAddress())
             .cardStatus(SmartCard.CardStatus.ACTIVE)
+            .deviceId(smartCardInfo.deviceId())
             .build();
    }
 }

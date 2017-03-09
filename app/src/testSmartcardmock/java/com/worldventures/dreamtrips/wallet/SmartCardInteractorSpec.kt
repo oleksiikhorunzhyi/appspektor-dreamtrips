@@ -13,11 +13,10 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.FinancialServiceToRecordFinancialServiceConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.RecordFinancialServiceToFinancialServiceConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard
-import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
+import com.worldventures.dreamtrips.wallet.domain.entity.*
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
@@ -28,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.model.TestBankCard
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.model.TestRecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
 import com.worldventures.dreamtrips.wallet.service.command.*
 import com.worldventures.dreamtrips.wallet.util.FormatException
 import io.techery.janet.ActionState
@@ -58,8 +58,10 @@ class SmartCardInteractorSpec : BaseSpec({
          mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
+         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor)
 
          janet.connectToSmartCardSdk()
+         smartCardSyncManager.connect()
       }
 
       context("Smart Card connection status should be changed") {
@@ -80,8 +82,7 @@ class SmartCardInteractorSpec : BaseSpec({
          it("Update smart card connection status") {
             val activeSmartCardId = "4"
             val smartcard: SmartCard = mockSmartCard(activeSmartCardId)
-            whenever(mockDb.activeSmartCardId).thenReturn(activeSmartCardId)
-            whenever(mockDb.getSmartCard(activeSmartCardId)).thenReturn(smartcard)
+            whenever(mockDb.smartCard).thenReturn(smartcard)
 
             val connectionStastus = SmartCard.ConnectionStatus.DISCONNECTED;
             val testSubscriber: TestSubscriber<ActionState<ActiveSmartCardCommand>> = TestSubscriber()
@@ -192,8 +193,7 @@ class SmartCardInteractorSpec : BaseSpec({
             // mock active smart card
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
-            whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
-            whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
+            whenever(mockDb.smartCard).thenReturn(smartCard)
 
             // mock saving result after delete
             var list = listOf<BankCard>(debitCard, creditCard)
@@ -254,8 +254,7 @@ class SmartCardInteractorSpec : BaseSpec({
          beforeEach {
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
-            whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
-            whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
+            whenever(mockDb.smartCard).thenReturn(smartCard)
          }
 
          it("Card with valid data should be stored with default address and marked as default") {
@@ -274,7 +273,6 @@ class SmartCardInteractorSpec : BaseSpec({
             val subscriber = saveBankCardData(bankCard, setAsDefaultCard = false, setAsDefaultAddress = false)
             assertActionSuccess(subscriber, { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
-            verify(mockDb, times(1)).saveWalletDefaultCardId(any())//because a cards was added
          }
 
          it("Card with invalid data shouldn't be stored") {
@@ -294,6 +292,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var cardStorage: CardListStorage
+      lateinit var smartCardSyncManager: SmartCardSyncManager
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
@@ -310,6 +309,8 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), { Schedulers.immediate() })
+
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor) = SmartCardSyncManager(janet, smartCardInteractor)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -339,6 +340,8 @@ class SmartCardInteractorSpec : BaseSpec({
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(BankCard::class.java).to(Record::class.java, BankCardToRecordConverter())
             .map(Record::class.java).to(BankCard::class.java, RecordToBankCardConverter())
+            .map(FinancialService::class.java).to(Record.FinancialService::class.java, FinancialServiceToRecordFinancialServiceConverter())
+            .map(Record.FinancialService::class.java).to(FinancialService::class.java, RecordFinancialServiceToFinancialServiceConverter())
             .build()
 
       fun loadDefaultCardId(): TestSubscriber<ActionState<DefaultCardIdCommand>> {
@@ -419,9 +422,7 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
          whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)
-         whenever(mockedSmartCard.cardName()).thenReturn("device name")
          whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
-         whenever(mockedSmartCard.cardName()).thenReturn("card name")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
          whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
          whenever(mockedSmartCard.serialNumber()).thenReturn("")

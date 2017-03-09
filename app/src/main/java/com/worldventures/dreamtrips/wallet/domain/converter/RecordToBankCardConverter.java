@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -44,17 +45,13 @@ public class RecordToBankCardConverter implements Converter<Record, BankCard> {
       if (metadata.containsKey(BANK_CARD_CATEGORY)) {
          category = Card.Category.valueOf(metadata.get(BANK_CARD_CATEGORY));
       }
-      recordIssuerInfoBuilder.financialService(record.financialService());
-      int cvv = 0;
-      if (record.cvv().length() > 0) {
-         cvv = Integer.parseInt(record.cvv());
-      }
+      recordIssuerInfoBuilder.financialService(mapperyContext.convert(record.financialService(), FinancialService.class));
       final Integer recordId = record.id();
       return ImmutableBankCard.builder()
             .id(recordId != null ? String.valueOf(recordId) : null)
             .number(record.cardNumber())
             .expDate(record.expDate())
-            .cvv(cvv)
+            .cvv(record.cvv())
             .track1(record.t1())
             .track2(record.t2())
             .cardNameHolder(record.firstName() + " " + record.middleName() + " " + record.lastName()) //// TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!

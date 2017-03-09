@@ -26,14 +26,15 @@ public class SnappyStorageManager {
    }
 
    private void checkVersion(DB db, ModelStorage storage) throws SnappydbException {
+      final String versionKey = getVersionKey(storage);
+
       if (!db.exists(storage.getKey())) {
+         db.put(versionKey, storage.getVersion());
          return;
       }
-      final String versionKey = getVersionKey(storage);
-      final int storedVersion = db.exists(versionKey) ? db.getInt(versionKey) : 0;
 
+      final int storedVersion = db.exists(versionKey) ? db.getInt(versionKey) : 0;
       if (storedVersion < storage.getVersion()) {
-         //noinspection all
          if (storage.migrate(db, storedVersion)) {
             db.put(versionKey, storage.getVersion());
          }

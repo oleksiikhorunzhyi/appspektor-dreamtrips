@@ -8,13 +8,13 @@ import android.support.v4.util.Pair;
 
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
-import com.worldventures.dreamtrips.wallet.delegate.FirmwareDelegate;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareUpdateCacheCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -37,25 +37,25 @@ import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import flow.Flow;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.exception.NotConnectedException;
+import io.techery.janet.smartcard.exception.WaitingResponseException;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
-import static io.techery.janet.ActionState.Status.SUCCESS;
 
 public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
 
@@ -65,7 +65,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject FirmwareDelegate firmwareDelegate;
+   @Inject SCFirmwareFacade firmwareFacade;
+
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
@@ -76,7 +77,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
-      cardListStackConverter = new CardListStackConverter(context);
+      cardListStackConverter = new CardListStackConverter(context.getString(R.string.wallet_payment_cards_title));
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
    }
 
@@ -87,7 +88,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
-      firmwareDelegate.fetchFirmwareInfo(bindView());
+      firmwareFacade.fetchFirmwareInfo();
 
       smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
       smartCardInteractor.defaultCardIdPipe().send(new DefaultCardIdCommand());
@@ -97,13 +98,27 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    private void observeSmartCard() {
       smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
             .map(Command::getResult)
-            .throttleLast(200, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::setSmartCard);
+            .subscribe(this::setSmartCard, throwable -> {
+            });
+
+      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
+            .distinctUntilChanged()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(connectionStatus -> {
+               if (connectionStatus == SmartCard.ConnectionStatus.DFU) {
+                  File firmwareFile = getAppropriateFirmwareFile(getContext());
+                  if (firmwareFile.exists()) {
+                     getView().showFirmwareUpdateError();
+                  }
+               }
+            });
    }
 
    private void observeFirmwareInfo() {
-      firmwareDelegate.observeFirmwareInfo()
+      firmwareFacade.takeFirmwareInfo()
             .compose(bindViewIoToMainComposer())
             .subscribe(this::firmwareLoaded);
    }
@@ -116,6 +131,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().notifySmartCardChanged(cardStackHeaderHolder);
 
       if (firmwareUpdateData.updateAvailable()) {
+         if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
          getView().showFirmwareUpdateBtn();
       } else {
          getView().hideFirmwareUpdateBtn();
@@ -141,12 +157,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .smartCard(smartCard)
             .build();
       getView().notifySmartCardChanged(cardStackHeaderHolder);
-      if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.DFU) {
-         File firmwareFile = getAppropriateFirmwareFile(getContext());
-         if (firmwareFile.exists()) {
-            getView().showFirmwareUpdateError();
-         }
-      }
    }
 
    void cardClicked(BankCard bankCard) {
@@ -162,18 +172,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void navigateToInstallFirmware() {
-      firmwareInteractor.firmwareCachePipe().createObservable(new FirmwareUpdateCacheCommand())
-            .flatMap(c -> {
-               if (c.status == SUCCESS && c.action.getResult() == null) {
-                  return Observable.error(new IllegalStateException("Firmware Update is not cached to retry it"));
-               }
-               return Observable.just(c);
-            })
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<FirmwareUpdateCacheCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(c -> navigator.go(new WalletInstallFirmwarePath(c.getResult())))
-                  .wrap()
-            );
+      navigator.go(new WalletInstallFirmwarePath());
    }
 
    void navigateBack() {
@@ -195,8 +194,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(connectionStatusPair -> {
                if (connectionStatusPair.first != NetworkInfo.State.CONNECTED) {
                   getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
-               } else if (connectionStatusPair.second != CONNECTED) {
-                  getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_SMARTCARD_CONNECTION);
+               } else if (!connectionStatusPair.second.isConnected()) {
+                  getView().showSCNonConnectionDialog();
                } else {
                   trackAddCard();
                   navigator.go(new WizardChargingPath());
@@ -213,18 +212,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeChanges() {
-      ErrorHandler errorHandler = ErrorHandler.builder(getContext())
-            .ignore(NotConnectedException.class)
-            //            .ignore(throwable -> {
-            //               if (throwable instanceof JanetActionException
-            //                     && ((JanetActionException) throwable).getAction() instanceof CardListCommand) {
-            //                  CardListCommand command = (CardListCommand) ((JanetActionException) throwable).getAction();
-            //                  return command.isFromDevice();
-            //               }
-            //               return false;
-            //            })
-            .build();
-
       Observable.combineLatest(
             smartCardInteractor.cardsListPipe()
                   .observeWithReplay()
@@ -239,25 +226,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
             } /*ignore here*/);
 
-      smartCardInteractor.cardsListPipe()
+      smartCardInteractor.cardSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<CardListCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
-                  .wrap());
-
-      smartCardInteractor.defaultCardIdPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<DefaultCardIdCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
+                  .onStart(syncCardsCommand -> getView().showCardSynchronizationDialog(true))
+                  .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
+                  .onFail(throwable -> {
+                     getView().showCardSynchronizationDialog(false);
+                     return null;
+                  })
                   .wrap());
 
       smartCardInteractor.cardSyncPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
+                  .onFail(ErrorHandler.<SyncCardsCommand>builder(getContext())
+                        .ignore(NotConnectedException.class)
+                        .handle(WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected)
+                        .build())
                   .wrap());
 
    }
@@ -272,6 +260,18 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
+   }
+
+   public void navigateToForceUpdate() {
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
+   }
+
+   public void handleForceFirmwareUpdateConfirmation() {
+      if (cardStackHeaderHolder.firmware().factoryResetRequired()) {
+         getView().showFactoryResetConfirmationDialog();
+      } else {
+         navigateToForceUpdate();
+      }
    }
 
    public interface Screen extends WalletScreen {
@@ -292,7 +292,15 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showFirmwareUpdateError();
 
+      void showForceFirmwareUpdateDialog();
+
+      void showFactoryResetConfirmationDialog();
+
+      void showCardSynchronizationDialog(boolean visible);
+
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}
+
+      void showSCNonConnectionDialog();
    }
 }

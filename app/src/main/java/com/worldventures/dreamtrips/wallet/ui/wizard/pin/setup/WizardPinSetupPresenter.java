@@ -51,7 +51,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new SetPinAction(smartCard.user().fullName())));
+            .send(new WalletAnalyticsCommand(new SetPinAction()));
    }
 
    @Override

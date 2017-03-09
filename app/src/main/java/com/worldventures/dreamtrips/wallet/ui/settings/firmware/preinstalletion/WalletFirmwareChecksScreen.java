@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
@@ -19,10 +20,12 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
       implements WalletFirmwareChecksPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.check_widget_charge) WalletCheckWidget checkWidgetCharge;
+   @InjectView(R.id.check_widget_battery) WalletCheckWidget checkWidgetButtery;
    @InjectView(R.id.check_widget_connection) WalletCheckWidget checkWidgetConnection;
    @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkWidgetBluetooth;
+   @InjectView(R.id.check_widget_charger) WalletCheckWidget checkWidgetCharger;
    @InjectView(R.id.install) Button installButton;
+   @InjectView(R.id.install_later) TextView tvInstallLater;
 
    public WalletFirmwareChecksScreen(Context context) {
       super(context);
@@ -35,11 +38,12 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
    @NonNull
    @Override
    public WalletFirmwareChecksPresenter createPresenter() {
-      return new WalletFirmwareChecksPresenter(getContext(), getInjector(), getPath().firmwareFilePath, getPath().firmwareInfo);
+      return new WalletFirmwareChecksPresenter(getContext(), getInjector());
    }
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(view -> presenter.goBack());
    }
@@ -71,7 +75,7 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
 
    @Override
    public void cardCharged(boolean charged) {
-      checkWidgetCharge.setChecked(charged);
+      checkWidgetButtery.setChecked(charged);
    }
 
    @Override
@@ -81,12 +85,22 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
 
    @Override
    public void chargedStatusVisible(boolean isVisible) {
-      checkWidgetCharge.setVisibility(isVisible ? VISIBLE : GONE);
+      checkWidgetButtery.setVisibility(isVisible ? VISIBLE : GONE);
    }
 
    @Override
    public void installButtonEnabled(boolean enabled) {
       installButton.setEnabled(enabled);
+   }
+
+   @Override
+   public void cardIsInCharger(boolean enabled) {
+      checkWidgetCharger.setChecked(enabled);
+   }
+
+   @Override
+   public void cardIsInChargerCheckVisible(boolean isVisible) {
+      checkWidgetCharger.setVisibility(isVisible? VISIBLE : GONE);
    }
 
    @Override

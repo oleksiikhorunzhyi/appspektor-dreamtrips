@@ -75,7 +75,9 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
 
    private void openSuccess(FirmwareUpdateData firmwareUpdateData) {
       History.Builder historyBuilder = History.emptyBuilder();
-      historyBuilder.push(new CardListPath());
+      if (!firmwareUpdateData.factoryResetRequired()) {
+         historyBuilder.push(new CardListPath());
+      }
       historyBuilder.push(new WalletSuccessInstallFirmwarePath(firmwareUpdateData));
       navigator.setHistory(historyBuilder.build(), Flow.Direction.REPLACE);
    }

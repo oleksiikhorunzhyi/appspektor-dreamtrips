@@ -41,6 +41,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.getLatestLocation;
 import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.toLatLng;
@@ -82,7 +83,8 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       smartCardLocationInteractor.walletLocationCommandPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()));
+            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()),
+                  throwable -> Timber.e(throwable, ""));
    }
 
    private void observeEnableTrackingState() {
@@ -229,13 +231,13 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             .subscribe(new ActionStateSubscriber<GetLocationCommand>()
                   .onSuccess(getLocationCommand -> {
                      final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
+                     sendAnalyticsLastLocation(walletLocation);
                      processLastLocation(walletLocation);
                   })
             );
    }
 
    private void processLastLocation(WalletLocation walletLocation) {
-      sendAnalyticsLastLocation(walletLocation);
       if (walletLocation == null) {
          toggleLocationContainersVisibility(false);
          return;

@@ -128,6 +128,7 @@ public class PlayerActivity extends ActivityWithPresenter<PlayerPresenter> imple
             .subscribe(o -> {
                long duration = videoView.getDuration();
                long currentPosition = videoView.getCurrentPosition();
+               if (duration < 0) return;
                videoProgressStream.onNext(new Pair<>(currentPosition, duration));
 
                if (duration - currentPosition <= ANALYTIC_CHECKING_INTERVAL) stopListenProgress();

@@ -30,12 +30,9 @@ public class VersionUpdateUiDelegateImpl implements VersionUpdateUiDelegate {
       new MaterialDialog.Builder(activity)
             .title(R.string.app_update_alert_title)
             .neutralText(R.string.app_update_alert_neutral_button)
-            .onNeutral((dialog, which) -> saveConfirmedOptionalDialogShown())
             .positiveText(R.string.app_update_alert_pos_button)
-            .onPositive((dialog, which) -> {
-               saveConfirmedOptionalDialogShown();
-               openGooglePlayAppScreen();
-            })
+            .onPositive((dialog, which) -> openGooglePlayAppScreen())
+            .dismissListener(dialogInterface -> saveConfirmedOptionalDialogShown())
             .content(message)
             .show();
    }

@@ -5,13 +5,13 @@ import android.support.v4.util.Pair;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
-import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -30,9 +30,9 @@ import timber.log.Timber;
 import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.DFU;
 import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.DISCONNECTED;
-import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.add;
-import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.edit;
-import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.remove;
+import static com.worldventures.dreamtrips.wallet.service.command.RecordListCommand.add;
+import static com.worldventures.dreamtrips.wallet.service.command.RecordListCommand.edit;
+import static com.worldventures.dreamtrips.wallet.service.command.RecordListCommand.remove;
 import static java.lang.String.valueOf;
 
 public class SmartCardSyncManager {
@@ -100,7 +100,7 @@ public class SmartCardSyncManager {
 
    private void activeCardConnected() {
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
-      interactor.cardsListPipe().send(CardListCommand.fetch());
+      interactor.cardsListPipe().send(RecordListCommand.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();
    }
@@ -178,13 +178,13 @@ public class SmartCardSyncManager {
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .throttleFirst(10, TimeUnit.MINUTES)
-            .flatMap(aLong -> interactor.cardSyncPipe()
-                  .createObservableResult(new SyncCardsCommand()))
+            .flatMap(aLong -> interactor.recordsSyncPipe()
+                  .createObservableResult(new SyncRecordsCommand()))
             .retry(1)
             .subscribe(command -> {
             }, throwable -> Timber.e("", throwable));
 
-      interactor.deleteCardPipe()
+      interactor.deleteRecordPipe()
             .observeSuccess()
             .subscribe(deleteRecordAction ->
                   interactor.cardsListPipe()
@@ -196,7 +196,7 @@ public class SmartCardSyncManager {
                   interactor.cardsListPipe()
                         .send(add(attachCardCommand.getResult())));
 
-      interactor.updateBankCardPipe()
+      interactor.updateRecordPipe()
             .observeSuccess()
             .subscribe(updateBankCardCommand -> interactor.cardsListPipe()
                   .send(edit(updateBankCardCommand.getResult())));
@@ -205,7 +205,7 @@ public class SmartCardSyncManager {
       interactor.setDefaultCardOnDeviceCommandPipe()
             .observeSuccess()
             .map(Command::getResult)
-            .subscribe(id -> interactor.defaultCardIdPipe().send(DefaultCardIdCommand.set(id)), throwable -> {
+            .subscribe(id -> interactor.defaultRecordIdPipe().send(DefaultRecordIdCommand.set(id)), throwable -> {
             });
    }
 

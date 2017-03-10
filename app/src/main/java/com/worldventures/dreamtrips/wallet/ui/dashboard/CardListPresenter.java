@@ -20,15 +20,14 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
-import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -42,7 +41,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
-import com.worldventures.dreamtrips.wallet.util.CardUtils;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
 import java.util.List;
@@ -88,8 +87,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
-      smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
-      smartCardInteractor.defaultCardIdPipe().send(new DefaultCardIdCommand());
+      smartCardInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      smartCardInteractor.defaultRecordIdPipe().send(new DefaultRecordIdCommand());
       trackScreen();
    }
 
@@ -170,8 +169,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             );
    }
 
-   void cardClicked(BankCard bankCard) {
-      navigator.go(new CardDetailsPath(bankCard));
+   void cardClicked(Record record) {
+      navigator.go(new CardDetailsPath(record));
    }
 
    void navigationClick() {
@@ -220,19 +219,19 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .observeWithReplay()
                   .compose(new ActionPipeCacheWiper<>(smartCardInteractor.cardsListPipe()))
                   .compose(new ActionStateToActionTransformer<>()),
-            smartCardInteractor.defaultCardIdPipe()
+            smartCardInteractor.defaultRecordIdPipe()
                   .observeWithReplay()
-                  .compose(new ActionPipeCacheWiper<>(smartCardInteractor.defaultCardIdPipe()))
+                  .compose(new ActionPipeCacheWiper<>(smartCardInteractor.defaultRecordIdPipe()))
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .compose(bindViewIoToMainComposer())
             .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
             } /*ignore here*/);
 
-      smartCardInteractor.cardSyncPipe()
+      smartCardInteractor.recordsSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncRecordsCommand>forView(getView().provideOperationDelegate())
                   .onStart(syncCardsCommand -> getView().showCardSynchronizationDialog(true))
                   .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
                   .onFail(throwable -> {
@@ -241,11 +240,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   })
                   .wrap());
 
-      smartCardInteractor.cardSyncPipe()
+      smartCardInteractor.recordsSyncPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.<SyncCardsCommand>builder(getContext())
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncRecordsCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.<SyncRecordsCommand>builder(getContext())
                         .ignore(NotConnectedException.class)
                         .handle(WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected)
                         .build())
@@ -253,9 +252,9 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    }
 
-   private void cardsLoaded(List<Card> loadedCards, String defaultCardId) {
-      List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedCards, defaultCardId);
-      getView().setCardsCount(CardUtils.stacksToItemsCount(cards));
+   private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
+      List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedRecords, defaultRecordId);
+      getView().setCardsCount(WalletRecordUtil.stacksToItemsCount(cards));
       getView().showRecordsInfo(cards);
    }
 

@@ -9,8 +9,8 @@ import dagger.Provides;
 public class SmartCardConverterModule {
 
    @Provides(type = Provides.Type.SET)
-   Converter provideBankCardToRecordConverter() {
-      return new BankCardToRecordConverter();
+   Converter provideWalletRecordToSmartCardRecordConverter() {
+      return new WalletRecordToSmartCardRecordConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -29,8 +29,8 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideRecordToBankCardConverter() {
-      return new RecordToBankCardConverter();
+   Converter provideSmartCardRecordToWalletRecordConverter() {
+      return new SmartCardRecordToWalletRecordConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -55,12 +55,12 @@ public class SmartCardConverterModule {
 
    @Provides(type = Provides.Type.SET)
    Converter provideFinancialServiceToRecordConverter() {
-      return new FinancialServiceToRecordFinancialServiceConverter();
+      return new WalletFinancialServiceToSmartCardFinancialServiceConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    Converter provideRecordToFinancialServiceConverter() {
-      return new RecordFinancialServiceToFinancialServiceConverter();
+      return new SmartCardFinancialServiceToWalletFinancialServiceConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -99,12 +99,22 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideSmartCardLocationTypeToWalletdLocationTypeConverter() {
+   Converter provideSmartCardLocationTypeToWalletLocationTypeConverter() {
       return new SmartCardLocationTypeToWalletLocationTypeConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    Converter providePlaceConverter() {
       return new ApiPlaceToWalletPlaceConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardRecordTypeToWalletRecordTypeConverter() {
+      return new SmartCardRecordTypeToWalletRecordTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletRecordTypeToSmartCardRecordTypeConverter() {
+      return new WalletRecordTypeToSmartCardRecordTypeConverter();
    }
 }

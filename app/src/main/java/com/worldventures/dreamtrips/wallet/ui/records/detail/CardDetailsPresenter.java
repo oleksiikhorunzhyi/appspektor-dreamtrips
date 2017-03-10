@@ -15,20 +15,22 @@ import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPath;
-import com.worldventures.dreamtrips.wallet.util.CardUtils;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -45,13 +47,13 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   private final BankCard bankCard;
-   private BankCard defaultBankCard;
+   private final Record record;
+   private Record defaultRecord;
    private boolean cardDeleted = false;
 
-   public CardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
+   public CardDetailsPresenter(Context context, Injector injector, Record record) {
       super(context, injector);
-      this.bankCard = bankCard;
+      this.record = record;
    }
 
    @Override
@@ -60,7 +62,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       trackScreen();
       Screen view = getView();
 
-      view.showCardBank(bankCard);
+      view.showWalletRecord(record);
       view.showDefaultAddress(obtainAddressWithCountry());
 
       connectToDefaultCardPipe();
@@ -73,7 +75,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    @Override
    public void detachView(boolean retainInstance) {
-      if (!cardDeleted && !TextUtils.equals(getView().getUpdateNickname(), bankCard.nickName())) {
+      if (!cardDeleted && !TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
          nicknameUpdated(getView().getUpdateNickname());
       }
 
@@ -83,26 +85,26 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
-            .send(new PaycardAnalyticsCommand(new CardDetailsAction(bankCard.nickName()), bankCard));
+            .send(new PaycardAnalyticsCommand(new CardDetailsAction(record.nickName()), record));
    }
 
    private void connectToDefaultCardPipe() {
       smartCardInteractor.fetchDefaultCardCommandPipe()
-            .createObservableResult(new FetchDefaultCardCommand())
+            .createObservableResult(new FetchDefaultRecordCommand())
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(defaultBankCard -> {
-               this.defaultBankCard = defaultBankCard;
-               getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
+               this.defaultRecord = defaultBankCard;
+               getView().setDefaultCardCondition(Objects.equals(defaultBankCard, record));
             }, throwable -> Timber.e(throwable, ""));
    }
 
    private void connectToDeleteCardPipe() {
-      smartCardInteractor.deleteCardPipe()
+      smartCardInteractor.deleteRecordPipe()
             .observeWithReplay()
-            .filter(state -> valueOf(bankCard.id()).equals(state.action.recordId))
+            .filter(state -> valueOf(record.id()).equals(state.action.recordId))
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteCardPipe()))
+            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteRecordPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
                   .onSuccess(deleteRecordAction -> {
                      cardDeleted = true;
@@ -131,7 +133,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .subscribe(OperationActionStateSubscriberWrapper.<SetPaymentCardAction>forView(getView().provideOperationDelegate())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   //TODO: use card name for this message
-                  .onSuccess(action -> getView().showCardIsReadyDialog(bankCard.nickName()))
+                  .onSuccess(action -> getView().showCardIsReadyDialog(record.nickName()))
                   .wrap());
    }
 
@@ -158,7 +160,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    private AddressInfoWithLocale obtainAddressWithCountry() {
       return ImmutableAddressInfoWithLocale.builder()
-            .addressInfo(bankCard.addressInfo())
+            .addressInfo(record.addressInfo())
             .locale(LocaleHelper.getDefaultLocale())
             .build();
    }
@@ -182,7 +184,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {
-                  navigator.go(new EditBillingAddressPath(bankCard));
+                  navigator.go(new EditBillingAddressPath(record));
                } else {
                   getView().showConnectionErrorDialog();
                }
@@ -196,7 +198,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .subscribe(smartCard -> {
                if (smartCard.connectionStatus().isConnected()) {
-                  smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(bankCard));
+                  smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(record));
                } else {
                   getView().showSCNonConnectionDialog();
                }
@@ -208,20 +210,20 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    void onDeleteCardConfirmed() {
-      smartCardInteractor.deleteCardPipe().send(new DeleteRecordAction(valueOf(bankCard.id())));
+      smartCardInteractor.deleteRecordPipe().send(new DeleteRecordAction(valueOf(record.id())));
    }
 
    private void executeSetDefaultCard(boolean setDefaultCard) {
       if (setDefaultCard) {
-         if (CardUtils.isRealCard(defaultBankCard)) {
-            getView().showDefaultCardDialog(defaultBankCard);
+         if (WalletRecordUtil.isRealRecord(defaultRecord)) {
+            getView().showDefaultCardDialog(defaultRecord);
          } else {
             trackSetAsDefault();
             smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                  .send(SetDefaultCardOnDeviceCommand.setAsDefault(bankCard.id()));
+                  .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
          }
       } else {
-         if (CardUtils.equals(defaultBankCard, bankCard)) {
+         if (Objects.equals(defaultRecord, record)) {
             smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
                   .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
          }
@@ -230,17 +232,17 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    void defaultCardDialogConfirmed(boolean confirmed) {
       if (!confirmed) {
-         getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
+         getView().setDefaultCardCondition(Objects.equals(defaultRecord, record));
       } else {
          trackSetAsDefault();
          smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-               .send(SetDefaultCardOnDeviceCommand.setAsDefault(bankCard.id()));
+               .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
       }
    }
 
    private void trackSetAsDefault() {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(ChangeDefaultCardAction.forBankCard(bankCard)));
+            .send(new WalletAnalyticsCommand(ChangeDefaultCardAction.forBankCard(record)));
    }
 
    public void goBack() {
@@ -248,7 +250,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void nicknameUpdated(String nickName) {
-      smartCardInteractor.updateBankCardPipe().send(UpdateBankCardCommand.updateNickName(bankCard, nickName));
+      smartCardInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(record, nickName));
    }
 
    private void onSetAsDefaultCard(boolean setDefaultCard) {
@@ -259,18 +261,18 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                if (command.getResult().connectionStatus().isConnected()) {
                   executeSetDefaultCard(setDefaultCard);
                } else {
-                  getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
+                  getView().setDefaultCardCondition(Objects.equals(defaultRecord, record));
                   getView().showSCNonConnectionDialog();
                }
             }, throwable -> Timber.e(throwable, ""));
    }
 
    public interface Screen extends WalletScreen {
-      void showCardBank(BankCard bankCard);
+      void showWalletRecord(Record record);
 
       void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
 
-      void showDefaultCardDialog(BankCard defaultBankCard);
+      void showDefaultCardDialog(Record defaultRecord);
 
       void showDeleteCardDialog();
 

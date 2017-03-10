@@ -11,13 +11,13 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupC
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupCompleteAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcards.SyncPaymentCardPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsPath;
 
 import javax.inject.Inject;
 
@@ -65,7 +65,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
 
    private void prepareToNextScreen() {
       smartCardInteractor.cardsListPipe()
-            .createObservableResult(new CardListCommand())
+            .createObservableResult(new RecordListCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> navigateToNextScreen(!command.getCacheData()
                   .isEmpty()), throwable -> Timber.e(throwable, ""));
@@ -73,7 +73,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
 
    private void navigateToNextScreen(boolean needToSyncPaymentCards) {
       if (needToSyncPaymentCards) {
-         navigator.go(new SyncPaymentCardPath());
+         navigator.go(new SyncRecordsPath());
       } else {
          sendAnalytic(new NewCardSetupCompleteAction());
          navigator.single(new CardListPath());

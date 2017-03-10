@@ -17,10 +17,10 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -30,11 +30,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
-import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
@@ -53,17 +52,17 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;
 
-   private final BankCard bankCard;
+   private final Record record;
 
-   public AddCardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
+   public AddCardDetailsPresenter(Context context, Injector injector, Record record) {
       super(context, injector);
-      this.bankCard = bankCard;
+      this.record = record;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      getView().setCardBank(bankCard);
+      getView().setCardBank(record);
    }
 
    @Override
@@ -82,14 +81,14 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .observeSuccessWithReplay()
             .take(1)
             .subscribe(command -> analyticsInteractor.walletAnalyticsCommandPipe()
-                  .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(bankCard,
+                  .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(record,
                         command.getResult().connectionStatus().isConnected()))));
    }
 
    private void connectToDefaultCardPipe() {
       smartCardInteractor.fetchDefaultCardCommandPipe().clearReplays();
       smartCardInteractorHelper.sendSingleDefaultCardTask(bankCard -> {
-         getView().defaultPaymentCard(!CardUtils.isRealCard(bankCard));
+         getView().defaultPaymentCard(!WalletRecordUtil.isRealRecord(bankCard));
          getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
       }, bindViewIoToMainComposer());
    }
@@ -130,9 +129,9 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
-            .subscribe(OperationActionStateSubscriberWrapper.<AddBankCardCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<AddRecordCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(this::onCardAdd)
-                  .onFail(ErrorHandler.<AddBankCardCommand>builder(getContext())
+                  .onFail(ErrorHandler.<AddRecordCommand>builder(getContext())
                         // this changes need for improve error handling in feature
                         .handle(CardNameFormatException.class, R.string.wallet_add_card_details_error_message)
                         .handle(CvvFormatException.class, R.string.wallet_add_card_details_error_message)
@@ -141,34 +140,33 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                   .wrap());
    }
 
-   private void onCardAdd(AddBankCardCommand command) {
-      if (command.setAsDefaultCard()) trackSetAsDefault(command.getResult());
-      trackAddedCard(bankCard, command.setAsDefaultCard());
+   private void onCardAdd(AddRecordCommand command) {
+      if (command.setAsDefaultRecord()) trackSetAsDefault(command.getResult());
+      trackAddedCard(record, command.setAsDefaultRecord());
       navigator.single(new CardListPath(), Direction.REPLACE);
    }
 
-   private void trackSetAsDefault(BankCard bankCard) {
+   private void trackSetAsDefault(Record record) {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(bankCard)));
+            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(record)));
    }
 
-   private void trackAddedCard(BankCard bankCard, boolean setAsDefault) {
+   private void trackAddedCard(Record record, boolean setAsDefault) {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(bankCard, setAsDefault)));
+            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
    }
 
    private void loadDataFromDevice() {
-      smartCardInteractor.fetchDefaultCardCommandPipe().send(new FetchDefaultCardCommand());
+      smartCardInteractor.fetchDefaultCardCommandPipe().send(new FetchDefaultRecordCommand());
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 
    public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
-            .send(new AddBankCardCommand.Builder().setBankCard(bankCard)
+            .send(new AddRecordCommand.Builder().setRecord(record)
                   .setManualAddressInfo(addressInfo)
                   .setCardName(cardName)
                   .setCvv(cvv)
-                  .setIssuerInfo(bankCard.issuerInfo())
                   .setSetAsDefaultCard(setAsDefaultCard)
                   .create());
    }
@@ -177,7 +175,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       if (!setDefaultCard) return;
 
       smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
-         if (!CardUtils.isRealCard(defaultCard)) return;
+         if (!WalletRecordUtil.isRealRecord(defaultCard)) return;
          getView().showChangeCardDialog(defaultCard);
       }, bindViewIoToMainComposer());
    }
@@ -228,12 +226,12 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             && getTrimmedLength(city) > 0
             && getTrimmedLength(zipCode) > 0
             && getTrimmedLength(state) > 0
-            && cvv.length() == BankCardHelper.obtainRequiredCvvLength(bankCard.number());
+            && cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(record.number());
    }
 
    public interface Screen extends WalletScreen {
 
-      void setCardBank(BankCard bankCard);
+      void setCardBank(Record record);
 
       void setCardName(String cardName);
 
@@ -253,7 +251,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       void defaultPaymentCard(boolean defaultPaymentCard);
 
-      void showChangeCardDialog(BankCard bankCard);
+      void showChangeCardDialog(Record record);
 
       Observable<Boolean> setAsDefaultPaymentCardCondition();
 

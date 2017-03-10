@@ -14,16 +14,15 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
-import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
+import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage
 import com.worldventures.dreamtrips.wallet.model.TestSmartCard
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
 import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
@@ -45,7 +44,6 @@ import io.techery.janet.http.test.MockHttpActionService
 import io.techery.janet.smartcard.action.support.ConnectAction
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
-import io.techery.janet.smartcard.model.Record
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
 import org.powermock.api.mockito.PowerMockito
@@ -61,7 +59,6 @@ class WizardInteractorSpec : BaseSpec({
 
          mockDb = createMockDb()
          persistentCardStorage = mock()
-         oldCardStorage = mock()
          mappery = createMappery()
          janet = createJanet()
          wizardInteractor = createWizardInteractor(janet)
@@ -147,8 +144,7 @@ class WizardInteractorSpec : BaseSpec({
       const val MOCK_BARCODE = MOCK_SMART_CARD_ID.toString()
 
       lateinit var mockDb: SnappyRepository
-      lateinit var persistentCardStorage: PersistentWalletCardsStorage
-      lateinit var oldCardStorage: CardListStorage
+      lateinit var persistentCardStorage: PersistentRecordsStorage
 
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
@@ -158,10 +154,10 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var propertiesProvider: SystemPropertiesProvider
       lateinit var lostCardStorage: LostCardRepository
 
-      lateinit var mockedDebitCard: BankCard
+      lateinit var mockedDebitCard: Record
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(persistentCardStorage), SmartCardActionStorage(mockDb), WalletCardsDiskStorage(persistentCardStorage))
+         setOf(DefaultRecordIdStorage(persistentCardStorage), SmartCardActionStorage(mockDb), WalletRecordsDiskStorage(persistentCardStorage))
       }
 
       fun staticMockTextUtils() {
@@ -200,8 +196,7 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
-         daggerCommandActionService.registerProvider(PersistentWalletCardsStorage::class.java) { persistentCardStorage }
-         daggerCommandActionService.registerProvider(CardListStorage::class.java) { oldCardStorage }
+         daggerCommandActionService.registerProvider(PersistentRecordsStorage::class.java) { persistentCardStorage }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(WizardInteractor::class.java, { wizardInteractor })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
@@ -218,8 +213,8 @@ class WizardInteractorSpec : BaseSpec({
       }
 
       fun createMappery(): MapperyContext = Mappery.Builder()
-            .map(BankCard::class.java).to(Record::class.java, BankCardToRecordConverter())
-            .map(Record::class.java).to(BankCard::class.java, RecordToBankCardConverter())
+            .map(Record::class.java).to(io.techery.janet.smartcard.model.Record::class.java, WalletRecordToSmartCardRecordConverter())
+            .map(io.techery.janet.smartcard.model.Record::class.java).to(Record::class.java, SmartCardRecordToWalletRecordConverter())
             .map(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails::class.java).to(SmartCardDetails::class.java, SmartCardDetailsConverter())
             .build()
 

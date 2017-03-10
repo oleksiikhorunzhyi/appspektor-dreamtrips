@@ -4,9 +4,9 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.BaseCardDetailsAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtRecord;
 
 public class TokenizationCardAction extends BaseCardDetailsAction {
 
@@ -15,19 +15,19 @@ public class TokenizationCardAction extends BaseCardDetailsAction {
    private final ActionType actionType;
    private final boolean tokenize;
 
-   public static TokenizationCardAction from(NxtBankCard nxtBankCard, ActionType actionType, boolean tokenize) {
-      if (nxtBankCard.getResponseErrors().isEmpty()) {
-         return new TokenizeSuccessAction(nxtBankCard.getTokenizedBankCard(), actionType, tokenize);
+   public static TokenizationCardAction from(NxtRecord nxtRecord, ActionType actionType, boolean tokenize) {
+      if (nxtRecord.getResponseErrors().isEmpty()) {
+         return new TokenizeSuccessAction(nxtRecord.getTokenizedRecord(), actionType, tokenize);
       } else {
-         return new TokenizeErrorAction(nxtBankCard.getTokenizedBankCard(), actionType, tokenize);
+         return new TokenizeErrorAction(nxtRecord.getTokenizedRecord(), actionType, tokenize);
       }
    }
 
-   TokenizationCardAction(BankCard bankCard, ActionType actionType, boolean tokenize) {
+   TokenizationCardAction(Record record, ActionType actionType, boolean tokenize) {
       this.actionType = actionType;
       this.tokenize = tokenize;
 
-      fillPaycardInfo(bankCard);
+      fillPaycardInfo(record);
    }
 
    void setCoordinates(@Nullable WalletCoordinates coordinates) {

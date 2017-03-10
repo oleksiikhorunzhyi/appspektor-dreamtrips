@@ -9,11 +9,11 @@ import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -34,7 +34,6 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.exception.NotConnectedException;
-import io.techery.janet.smartcard.model.Record;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
@@ -117,8 +116,8 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       smartCardInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
-                  .onFail(createErrorHandlerBuilder(CreateBankCardCommand.class).build())
+            .subscribe(OperationActionStateSubscriberWrapper.<CreateRecordCommand>forView(getView().provideOperationDelegate())
+                  .onFail(createErrorHandlerBuilder(CreateRecordCommand.class).build())
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
    }
@@ -149,12 +148,12 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       navigator.goBack();
    }
 
-   private void cardSwiped(Record card) {
-      smartCardInteractor.bankCardPipe().send(new CreateBankCardCommand(card));
+   private void cardSwiped(io.techery.janet.smartcard.model.Record card) {
+      smartCardInteractor.bankCardPipe().send(new CreateRecordCommand(card));
    }
 
-   private void bankCardCreated(BankCard bankCard) {
-      navigator.withoutLast(new AddCardDetailsPath(bankCard));
+   private void bankCardCreated(Record record) {
+      navigator.withoutLast(new AddCardDetailsPath(record));
    }
 
    public void showConnectionErrorScreen() {

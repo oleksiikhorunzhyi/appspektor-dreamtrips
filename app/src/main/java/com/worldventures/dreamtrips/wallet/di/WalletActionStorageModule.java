@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.di;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.AddressWithPlacesActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DeviceStateActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareUpdateActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage;
@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsAction
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentWalletCardsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import dagger.Module;
@@ -22,13 +22,13 @@ import dagger.Provides;
 public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage walletCardListStorage(PersistentWalletCardsStorage bankCardsStorage) {
-      return new WalletCardsDiskStorage(bankCardsStorage);
+   ActionStorage walletCardListStorage(PersistentRecordsStorage bankCardsStorage) {
+      return new WalletRecordsDiskStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage defaultBankCardStorage(PersistentWalletCardsStorage bankCardsStorage) {
-      return new DefaultBankCardStorage(bankCardsStorage);
+   ActionStorage defaultBankCardStorage(PersistentRecordsStorage bankCardsStorage) {
+      return new DefaultRecordIdStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)

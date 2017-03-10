@@ -7,8 +7,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 
 import java.util.regex.Pattern;
 
-import rx.Observable;
-
 public class WalletValidateHelper {
 
    private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9\\-\\s]{1,11}+");
@@ -43,7 +41,7 @@ public class WalletValidateHelper {
    }
 
    public static boolean validateCardCvv(String cvv, String cardNumber) {
-      return cvv.length() == BankCardHelper.obtainRequiredCvvLength(cardNumber);
+      return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(cardNumber);
    }
 
    public static boolean validateSCId(String scid) {

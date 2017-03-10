@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.RecordsMigrationStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -18,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
-import com.worldventures.dreamtrips.wallet.ui.records.tokenize_migration.TokenizeRecordsMigrationPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
@@ -27,7 +25,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 import javax.inject.Inject;
 
 import flow.Flow;
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -76,24 +73,10 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
 
    private void handleResult(FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
       if (associatedCard.exist()) {
-         checkIfTokenizeRecordsMigrationNeeded();
+         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       } else {
          fetchFirmwareUpdateData(associatedCard);
       }
-   }
-
-   private void checkIfTokenizeRecordsMigrationNeeded() {
-      smartCardInteractor.recordsMigrationStatusPipe()
-            .createObservableResult(new RecordsMigrationStatusCommand())
-            .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(isMigrationNeeded -> {
-               if (isMigrationNeeded) {
-                  navigator.single(new TokenizeRecordsMigrationPath(), Flow.Direction.REPLACE);
-               } else {
-                  navigator.single(new CardListPath(), Flow.Direction.REPLACE);
-               }
-            });
    }
 
    private void fetchFirmwareUpdateData(final FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {

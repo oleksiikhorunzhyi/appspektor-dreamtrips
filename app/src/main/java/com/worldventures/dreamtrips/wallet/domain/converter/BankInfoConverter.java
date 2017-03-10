@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.api.smart_card.bank_info.model.BankInfo;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 
-import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
 class BankInfoConverter implements Converter<BankInfo, RecordIssuerInfo> {
@@ -30,8 +29,8 @@ class BankInfoConverter implements Converter<BankInfo, RecordIssuerInfo> {
 
       return ImmutableRecordIssuerInfo.builder()
             .bankName(bankName)
-            .cardType(BankCard.CardType.valueOf(cardType))
-            .financialService(mapperyContext.convert(Record.FinancialService.valueOf(brand), FinancialService.class))
+            .cardType(RecordType.valueOf(cardType))
+            .financialService(mapperyContext.convert(io.techery.janet.smartcard.model.Record.FinancialService.valueOf(brand), FinancialService.class))
             .build();
    }
 }

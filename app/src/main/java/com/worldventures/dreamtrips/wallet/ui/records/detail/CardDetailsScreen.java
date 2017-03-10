@@ -14,14 +14,14 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -44,7 +44,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
    private MaterialDialog connectedErrorDialog;
-   private final BankCardHelper bankCardHelper;
+   private final WalletRecordUtil walletRecordUtil;
 
    public CardDetailsScreen(Context context) {
       this(context, null);
@@ -52,13 +52,13 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    public CardDetailsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
-      bankCardHelper = new BankCardHelper(context);
+      walletRecordUtil = new WalletRecordUtil(context);
    }
 
    @NonNull
    @Override
    public CardDetailsPresenter createPresenter() {
-      return new CardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
+      return new CardDetailsPresenter(getContext(), getInjector(), getPath().getRecord());
    }
 
    @Override
@@ -94,18 +94,18 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   public void showCardBank(BankCard bankCard) {
-      toolbar.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
-      bankCardWidget.setBankCard(bankCard);
+   public void showWalletRecord(Record record) {
+      toolbar.setTitle(walletRecordUtil.financialServiceWithCardNumber(record));
+      bankCardWidget.setBankCard(record);
 
-      final String nickName = bankCard.nickName();
+      final String nickName = record.nickName();
       etCardNickname.setText(nickName);
       etCardNickname.setSelection(nickName.length());
    }
 
    @Override
-   public void showDefaultCardDialog(BankCard defaultBankCard) {
-      new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(defaultBankCard))
+   public void showDefaultCardDialog(Record defaultRecord) {
+      new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(defaultRecord))
             .setOnConfirmAction(() -> getPresenter().defaultCardDialogConfirmed(true))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();

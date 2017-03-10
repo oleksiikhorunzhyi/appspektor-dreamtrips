@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.analytics.locatecard;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 
 @AnalyticsEvent(action = "wallet:settings:locate smartcard:display location:get directions",
                 trackers = AdobeTracker.TRACKER_KEY)
@@ -12,12 +13,9 @@ public class DisplayLocateClickDirectionsAction extends BaseLocateSmartCardActio
    @Attribute("trackingenabled") String trackingEnabled = "Yes";
    @Attribute("locationavailable") String locationAvailable;
 
-   private DisplayLocateClickDirectionsAction(String locationAvailable) {
-      this.locationAvailable = locationAvailable;
-   }
-
-   public static DisplayLocateClickDirectionsAction forLocateSmartCard(boolean lastLocationAvailable) {
-      String locationAvailable = lastLocationAvailable ? "Yes" : "No";
-      return new DisplayLocateClickDirectionsAction(locationAvailable);
+   @Override
+   public void setLocation(WalletCoordinates walletCoordinates) {
+      super.setLocation(walletCoordinates);
+      locationAvailable = walletCoordinates != null ? "Yes" : "No";
    }
 }

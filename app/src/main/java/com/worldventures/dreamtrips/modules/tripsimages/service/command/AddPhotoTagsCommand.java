@@ -20,7 +20,7 @@ import javax.inject.Named;
 @CommandAction
 public class AddPhotoTagsCommand extends Command implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private String photoUid;

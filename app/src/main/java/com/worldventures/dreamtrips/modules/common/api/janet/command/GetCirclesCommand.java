@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class GetCirclesCommand extends CommandWithError<List<Circle>> implements InjectableAction, CachedAction<List<Circle>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private List<Circle> cachedData;

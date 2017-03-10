@@ -5,14 +5,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.AnswerFriendRequestsHttpAction;
 import com.worldventures.dreamtrips.api.friends.model.FriendRequestParams;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -23,7 +21,7 @@ public class AcceptAllFriendRequestsCommand extends CommandWithError<List<User>>
    private List<User> users;
    private String cirlceId;
 
-   @Named(JanetModule.JANET_API_LIB) @Inject Janet janet;
+   @Inject Janet janet;
 
    public AcceptAllFriendRequestsCommand(List<User> users, String cirlceId) {
       this.users = users;

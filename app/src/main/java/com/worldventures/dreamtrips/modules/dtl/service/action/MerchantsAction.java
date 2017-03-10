@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
 public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
       implements CachedAction<List<ThinMerchant>>, InjectableAction, NewRelicTrackableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject MerchantsActionCreator actionCreator;
 

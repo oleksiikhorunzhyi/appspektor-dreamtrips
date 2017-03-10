@@ -17,7 +17,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class GetPrivateProfileCommand extends CommandWithError<User> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    @Override

@@ -18,7 +18,7 @@ public class FlagItemCommand extends CommandWithError<FlagData> implements Injec
 
    private FlagData flagData;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    public FlagItemCommand(FlagData flagData) {
       this.flagData = flagData;

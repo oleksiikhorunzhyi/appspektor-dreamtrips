@@ -27,7 +27,7 @@ import io.techery.mappery.MapperyContext;
 public class GetTripDetailsCommand extends CommandWithError<TripModel> implements InjectableAction,
       CachedAction<TripModel> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
    @Inject SnappyRepository db;
 

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
@@ -100,11 +101,18 @@ public abstract class DtlTransaction {
    }
 
    public static class Request {
+
+      @SerializedName("checkin_time")
       String checkinTime;
+      @SerializedName("bill_total")
       double billTotal;
+      @SerializedName("receipt_photo_url")
       String receiptPhotoUrl;
+      @SerializedName("merchant_token")
       String merchantToken;
+      @SerializedName("location")
       DtlTransactionLocation location;
+      @SerializedName("currency_code")
       String currencyCode;
    }
 }

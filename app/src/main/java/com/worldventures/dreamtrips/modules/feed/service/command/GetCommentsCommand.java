@@ -22,7 +22,7 @@ public class GetCommentsCommand extends CommandWithError<List<Comment>> implemen
 
    public static final int LIMIT = 10;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private final String itemUid;

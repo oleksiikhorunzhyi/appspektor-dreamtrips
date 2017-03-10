@@ -48,7 +48,7 @@ import timber.log.Timber;
 @CommandAction
 public class LogoutCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject @ForApplication Context context;
    @Inject @Global EventBus eventBus;
    @Inject SnappyRepository snappyRepository;
@@ -64,7 +64,6 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
-   @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
    @Inject SmartCardSyncManager smartCardSyncManager;
@@ -113,7 +112,6 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          localeSwitcher.resetLocale();
          eventBus.post(new SessionHolder.Events.SessionDestroyed());
          sessionActionPipeCreator.clearReplays();
-         sessionApiActionPipeCreator.clearReplays();
          //
          subscriber.onNext(null);
          subscriber.onCompleted();

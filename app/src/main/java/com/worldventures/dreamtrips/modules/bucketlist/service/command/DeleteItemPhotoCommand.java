@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.modules.bucketlist.service.command;
 
 import com.worldventures.dreamtrips.api.bucketlist.DeletePhotoFromBucketItemHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -15,7 +13,7 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class DeleteItemPhotoCommand extends Command<BucketItem> implements InjectableAction {
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    private BucketItem bucketItem;
    private BucketPhoto photo;

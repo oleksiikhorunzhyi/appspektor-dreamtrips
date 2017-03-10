@@ -6,7 +6,6 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.HttpUploaderyException;
@@ -14,7 +13,6 @@ import com.worldventures.dreamtrips.util.HttpUploaderyException;
 import java.io.File;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -24,7 +22,7 @@ import rx.schedulers.Schedulers;
 public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmartCardImageHttpAction> implements InjectableAction {
 
    @ForApplication @Inject Context context;
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject SessionHolder<UserSession> userSessionHolder;
 
    private final File file;

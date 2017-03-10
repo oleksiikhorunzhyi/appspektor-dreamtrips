@@ -25,12 +25,7 @@ import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-@Module(
-      includes = {
-            JanetCommandModule.class,
-            JanetServiceModule.class,
-      },
-      complete = false, library = true)
+@Module(complete = false, library = true)
 public class JanetUploaderyModule {
 
    public static final String JANET_UPLOADERY = "JANET_UPLOADERY";

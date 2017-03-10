@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 @AnalyticsEvent(action = "wallet:setup:Step 8:Syncing of Payment Cards",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class SyncPaymentCardAction extends WalletAnalyticsAction {
+
    @Attribute("cardsetupstep8a")
    final String cardSetupStep8a = "1";
 }

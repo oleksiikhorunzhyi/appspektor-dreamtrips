@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 @AnalyticsEvent(action = "wallet:settings:setup new smartcard:existing card detected:card not connected:error",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class BluetoothDisabledAction extends WalletAnalyticsAction {
+
    @Attribute("unassigncardstep2ba")
    final String unAssignCardStep2ba = "1";
 

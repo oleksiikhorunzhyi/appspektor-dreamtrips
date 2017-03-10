@@ -20,7 +20,7 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.fromFile;
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.saveToFile;
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.scaleBitmap;
-import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.toMonochromeBitmap;
+import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.floydSteinbergDither;
 
 public class SmartCardAvatarHelper {
 
@@ -73,7 +73,7 @@ public class SmartCardAvatarHelper {
       if (imageSize > 0) {
          bitmap = scaleBitmap(bitmap, imageSize);
       }
-      return saveToFile(context, toMonochromeBitmap(bitmap));
+      return saveToFile(context, floydSteinbergDither(bitmap));
    }
 
    public byte[] convertBytesForUpload(File file) {

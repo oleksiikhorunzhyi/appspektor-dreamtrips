@@ -21,6 +21,18 @@ repositories {
    maven { url 'http://dl.bintray.com/amulyakhare/maven' }
    maven { url "http://repository.jetbrains.com/all" }
    maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
+
+   flatDir {
+      dirs 'libs'
+   }
+}
+
+buildscript {
+   repositories {
+      flatDir {
+         dirs 'libs'
+      }
+   }
 }
 
 configurations.all {
@@ -540,6 +552,9 @@ dependencies {
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
+
+   //FingerPrint Library
+   compile(name:'deviceprint-lib-release-2.3.3', ext:'aar')
 
    // Testing
    testCompile 'junit:junit:4.12'

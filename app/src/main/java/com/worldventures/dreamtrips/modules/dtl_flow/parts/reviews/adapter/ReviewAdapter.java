@@ -77,7 +77,7 @@ public class ReviewAdapter
 
       public void bind(int position) {
          String urlImage = mItems.get(position).getUrlImageUser();
-         if (!urlImage.equalsIgnoreCase("null")) {
+         if (urlImage != null && !urlImage.equalsIgnoreCase("null")) {
             mAvatar.setImageURI(Uri.parse(urlImage));
          }
          mUserName.setText(String.valueOf(mItems.get(position).getNameUser()));

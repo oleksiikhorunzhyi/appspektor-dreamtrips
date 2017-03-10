@@ -33,4 +33,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     boolean isFromListReview();
 
     boolean isVerified();
+
+    String getFingerprintId();
 }

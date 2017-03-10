@@ -12,4 +12,8 @@ public interface DtlCommentReviewsPresenter extends DtlPresenter<DtlCommentRevie
     boolean validateComment();
 
     void sendAddReview(String description, Integer rating);
+
+    int maximumCharactersAllowed();
+
+    int minimumCharactersAllowed();
 }

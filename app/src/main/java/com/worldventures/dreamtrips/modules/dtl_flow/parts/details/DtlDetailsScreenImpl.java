@@ -173,7 +173,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       getPresenter().showAllReviews();
    }
 
-   @OnClick(R.id.layout_rating_reviews)
+   @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
       getPresenter().onClickRatingsReview(merchant);
    }

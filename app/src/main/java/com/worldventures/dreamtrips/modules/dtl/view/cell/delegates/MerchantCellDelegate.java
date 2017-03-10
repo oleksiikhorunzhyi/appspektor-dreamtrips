@@ -9,4 +9,6 @@ public interface MerchantCellDelegate extends ExpandableCellDelegate<ImmutableTh
    void onOfferClick(ThinMerchant merchant, Offer offer);
 
    void sendToRatingReview(ThinMerchant merchant);
+
+   void userHasPendingReview();
 }

@@ -6,11 +6,14 @@ import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+
+import butterknife.OnClick;
 
 public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath> implements DtlMapInfoScreen {
 
@@ -64,5 +67,10 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
    public void setMerchant(ThinMerchant merchant) {
       commonDataInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
       categoryDataInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
+   }
+
+   @OnClick(R.id.layout_rating_reviews_map)
+   public void onClickRatingReviews() {
+      categoryDataInflater.notifyRatingsClickListeners();
    }
 }

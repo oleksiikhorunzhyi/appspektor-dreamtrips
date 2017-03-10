@@ -56,7 +56,7 @@
                >
 
             <LinearLayout
-                  android:id="@+id/layout_rating_reviews"
+                  android:id="@+id/layout_rating_reviews_detail"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">

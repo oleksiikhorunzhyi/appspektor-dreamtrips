@@ -103,7 +103,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/layout_rating_reviews"
+            android:id="@+id/layout_rating_reviews_map"
             android:layout_width="@dimen/dtl_item_map_width"
             android:layout_height="wrap_content"
             android:orientation="vertical"

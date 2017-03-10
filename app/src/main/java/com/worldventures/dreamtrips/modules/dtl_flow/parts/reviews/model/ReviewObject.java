@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.UserImage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +77,7 @@ public class ReviewObject implements Parcelable {
 
 
    private static ReviewObject getObject(Review review) {
-      return new ReviewObject(review.userImage().thumb(),
+      return new ReviewObject(getUrlImageUser(review.userImage()),
             review.userNickName(),
             review.rating(),
             review.lastModeratedTimeUtc(),
@@ -111,6 +113,14 @@ public class ReviewObject implements Parcelable {
       this.timeWrote = in.readString();
       this.comment = in.readString();
       this.isVerifiedReview = in.readByte() != 0;
+   }
+
+   protected static String getUrlImageUser(UserImage userImage) {
+      String urlImage = null;
+      if (userImage != null) {
+         urlImage = userImage.thumb();
+      }
+      return urlImage;
    }
 
    public static final Creator<ReviewObject> CREATOR = new Creator<ReviewObject>() {

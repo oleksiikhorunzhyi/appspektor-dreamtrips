@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
 public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen, DtlCommentReviewsPresenter, DtlCommentReviewPath>
         implements DtlCommentReviewScreen {
@@ -36,9 +37,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     EditText mComment;
 
     private SweetAlertDialog errorDialog;
-
-    private static final int MINIMUM_CHARACTER = 140;
-    private static final int MAJOR_CHARACTER = 2000;
 
     public DtlCommentReviewScreenImpl(Context context) {
         super(context);
@@ -94,12 +92,12 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @Override
     public boolean isMinimumCharacterWrote() {
-        return getSizeComment() >= MINIMUM_CHARACTER ? true : false;
+        return getSizeComment() >= getPresenter().minimumCharactersAllowed();
     }
 
     @Override
     public boolean isMaximumCharacterWrote() {
-        return getSizeComment() <= MAJOR_CHARACTER ? true : false;
+        return getSizeComment() <= getPresenter().maximumCharactersAllowed();
     }
 
     @Override
@@ -123,15 +121,9 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         errorDialog.setCancelText(getActivity().getString(R.string.apptentive_no));
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
-            getPresenter().navigateToDetail("");
+            getActivity().onBackPressed();
         });
         errorDialog.show();
-    }
-
-    private void enableButtons(boolean status) {
-        mComment.setEnabled(status);
-        mRatingBar.setEnabled(status);
-        toolbar.setEnabled(status);
     }
 
     @Override
@@ -206,5 +198,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public boolean isVerified() {
         return getPath().isVerified();
+    }
+
+    @Override
+    public String getFingerprintId() {
+        return getBlackbox(getContext().getApplicationContext());
     }
 }

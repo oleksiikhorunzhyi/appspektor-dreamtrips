@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.content.res.Resources;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -10,9 +11,9 @@ import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import javax.inject.Inject;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
 import rx.Observable;
 
@@ -24,6 +25,8 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    @InjectView(R.id.distance) TextView distance;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
+   @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
+   @InjectView(R.id.text_view_rating) TextView textViewRating;
 
    @Inject SnappyRepository db;
 
@@ -43,11 +46,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    protected void onMerchantAttributesApply() {
       setInfo();
       setOffersSection();
-   }
-
-   @OnClick(R.id.layout_rating_reviews)
-   public void onClickRatingsReview() {
-      notifyRatingsClickListeners();
+      seUptRating();
    }
 
    private void setInfo() {
@@ -89,5 +88,17 @@ public class MerchantInfoInflater extends MerchantDataInflater {
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
       if (perkVisibility == View.VISIBLE) this.perks.setText(rootView.getContext().getString(R.string.perks_formatted, perks));
+   }
+
+   private void seUptRating() {
+      ReviewSummary reviewSummary = merchantAttributes.reviewSummary();
+      if (reviewSummary != null) {
+         String stringTotal = reviewSummary.total();
+         if (mRatingBar != null && stringTotal != null && !stringTotal.isEmpty()
+                 && Integer.parseInt(reviewSummary.total()) > 0) {
+            mRatingBar.setRating(Float.parseFloat(reviewSummary.ratingAverage()));
+            textViewRating.setText(ViewUtils.getLabelReviews(rootView.getContext(), Integer.parseInt(reviewSummary.total())));
+         }
+      }
    }
 }

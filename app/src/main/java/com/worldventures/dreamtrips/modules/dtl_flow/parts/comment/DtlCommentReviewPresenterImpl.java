@@ -90,10 +90,10 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                     validated = true;
                 }
             } else {
-                getView().showSnackbarMessage(getContext().getString(R.string.review_comment_major_letter));
+                getView().showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_major_letter), maximumCharactersAllowed()));
             }
         } else if (getView().getSizeComment() > 0) {
-            getView().showSnackbarMessage(getContext().getString(R.string.review_comment_minor_letter));
+            getView().showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_minor_letter), minimumCharactersAllowed()));
         }
         return validated;
     }
@@ -112,13 +112,6 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         addReviewActionActionPipe.send(AddReviewAction.create(ImmutableRequestReviewParams.builder()
                 .brandId(BRAND_ID)
                 .productId(merchant.id())
-                .userEmail(user.getEmail())
-                .userNickName(user.getUsername())
-                .reviewText(description)
-                .rating(String.valueOf(rating))
-                .verified(getView().isVerified())
-                .userId(String.valueOf(user.getId()))
-                .deviceFingerprint(BRAND_ID)
                 .build(), ImmutableReviewParams.builder()
                 .userEmail(user.getEmail())
                 .userNickName(user.getFullName())
@@ -126,7 +119,26 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                 .rating(String.valueOf(rating))
                 .verified(getView().isVerified())
                 .userId(String.valueOf(user.getId()))
+                .deviceFingerprint(getView().getFingerprintId())
                 .build()));
+    }
+
+    @Override
+    public int maximumCharactersAllowed() {
+        int maximumCharactersAllowed = 0;
+        if (merchant.reviews() != null && merchant.reviews().reviewSettings() != null) {
+            maximumCharactersAllowed = Integer.parseInt(merchant.reviews().reviewSettings().maximumCharactersAllowed());
+        }
+        return maximumCharactersAllowed;
+    }
+
+    @Override
+    public int minimumCharactersAllowed() {
+        int minimumCharactersAllowed = 0;
+        if (merchant.reviews() != null && merchant.reviews().reviewSettings() != null) {
+            minimumCharactersAllowed = Integer.parseInt(merchant.reviews().reviewSettings().minimumCharactersAllowed());
+        }
+        return minimumCharactersAllowed;
     }
 
     private void onMerchantsLoaded(AddReviewAction action) {

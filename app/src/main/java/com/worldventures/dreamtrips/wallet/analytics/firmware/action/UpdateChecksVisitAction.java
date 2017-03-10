@@ -1,14 +1,12 @@
-package com.worldventures.dreamtrips.wallet.analytics;
-
+package com.worldventures.dreamtrips.wallet.analytics.firmware.action;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
-@AnalyticsEvent(action = "dta:wallet:SmartCard Update:Step 5:Update Successful",
+@AnalyticsEvent(action = "wallet:SmartCard Update:Ready Checklist",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class UpdateSuccessfulAction extends WalletAnalyticsAction {
+public class UpdateChecksVisitAction extends FirmwareAnalyticsAction {
 
-   @Attribute("scupdatestep5") final String updateStep5 = "1";
-
+   @Attribute("scupdatestep3") final String udateStep3 = "1";
 }

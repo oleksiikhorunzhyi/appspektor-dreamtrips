@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.ViewSdkVersionAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkVersionAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -41,8 +41,8 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
    }
 
    private void sendAnalyticViewAction() {
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new ViewSdkVersionAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new ViewSdkVersionAction()));
    }
 
    private void bindSmartCardFirmware(SmartCardFirmware smartCardFirmware) {

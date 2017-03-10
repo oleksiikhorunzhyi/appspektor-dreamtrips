@@ -6,10 +6,9 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.DownloadingUpdateAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -20,14 +19,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownloadFirmwarePresenter.Screen, Parcelable> {
 
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject Navigator navigator;
-   @Inject SCFirmwareFacade firmwareFacade;
 
    private DownloadFirmwareCommand action;
 
@@ -38,7 +34,7 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-
+      trackScreen();
       observeDownload();
       downloadFirmware();
    }
@@ -57,12 +53,11 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    private void downloadFirmware() {
       action = new DownloadFirmwareCommand();
       firmwareInteractor.downloadFirmwarePipe().send(action);
+   }
 
-      firmwareFacade.takeFirmwareInfo()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
-                        .send(new WalletAnalyticsCommand(new DownloadingUpdateAction(firmwareUpdateData.smartCardId()))),
-                  throwable -> Timber.e(throwable, ""));
+   private void trackScreen() {
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new DownloadingUpdateAction()));
    }
 
    private void openPreInstallationChecks() {

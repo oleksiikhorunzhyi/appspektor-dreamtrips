@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.UpdateSuccessfulAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateSuccessfulAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -18,6 +18,7 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
 
    @Inject Navigator navigator;
    @Inject AnalyticsInteractor analyticsInteractor;
+
    private final FirmwareUpdateData firmwareUpdateData;
 
    public WalletSuccessInstallFirmwarePresenter(Context context, Injector injector, FirmwareUpdateData firmwareUpdateData) {
@@ -33,8 +34,8 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
    }
 
    private void sendAnalyticAction() {
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateSuccessfulAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new UpdateSuccessfulAction()));
    }
 
    void finishUpdateFlow() {

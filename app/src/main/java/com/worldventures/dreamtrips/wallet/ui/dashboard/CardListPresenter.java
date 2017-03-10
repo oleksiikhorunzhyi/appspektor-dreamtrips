@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
-import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -52,6 +52,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import io.techery.janet.smartcard.exception.WaitingResponseException;
@@ -68,7 +69,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SCFirmwareFacade firmwareFacade;
 
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
@@ -87,8 +87,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeConnectionStatus();
       observeChanges();
       observeFirmwareInfo();
-
-      firmwareFacade.fetchFirmwareInfo();
 
       smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
       smartCardInteractor.defaultCardIdPipe().send(new DefaultCardIdCommand());
@@ -141,9 +139,12 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeFirmwareInfo() {
-      firmwareFacade.takeFirmwareInfo()
+      firmwareInteractor.firmwareInfoCachedPipe()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::firmwareLoaded, throwable -> Timber.e("", throwable));
+            .subscribe(command -> firmwareLoaded(command.getResult()));
+
+      firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
@@ -263,15 +264,19 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    public void handleForceFirmwareUpdateConfirmation() {
-      firmwareFacade.takeFirmwareInfo()
+      // TODO: 3/6/17 can be better
+      firmwareInteractor.firmwareInfoCachedPipe()
+            .createObservable(FirmwareInfoCachedCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(firmwareUpdateData -> {
-               if (firmwareUpdateData.factoryResetRequired()) {
-                  getView().showFactoryResetConfirmationDialog();
-               } else {
-                  navigateToFirmwareUpdate();
-               }
-            }, throwable -> Timber.e("", throwable));
+            .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().factoryResetRequired()) {
+                        getView().showFactoryResetConfirmationDialog();
+                     } else {
+                        navigateToFirmwareUpdate();
+                     }
+                  })
+            );
    }
 
    public interface Screen extends WalletScreen {

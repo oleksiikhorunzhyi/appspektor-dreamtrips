@@ -105,6 +105,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    }
 
    private Observable<FirmwareUpdateData> clearFirmwareUpdateCache() {
+      firmwareInteractor.firmwareInfoCachedPipe().clearReplays();
       final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
       firmwareRepository.clear();
       return firmwareInteractor.clearFirmwareFilesPipe()

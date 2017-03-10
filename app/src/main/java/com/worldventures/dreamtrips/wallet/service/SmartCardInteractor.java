@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.TokenizeRecordsMigrationCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.CardInChargerCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
@@ -95,6 +96,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
    private final ActionPipe<ConnectAction> connectionActionPipe;
+   private final ActionPipe<CardInChargerCommand> cardInChargerCommandActionPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -160,6 +162,7 @@ public final class SmartCardInteractor {
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
       connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
+      cardInChargerCommandActionPipe = sessionActionPipeCreator.createPipe(CardInChargerCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -326,5 +329,9 @@ public final class SmartCardInteractor {
 
    public ActionPipe<ConnectAction> connectionActionPipe() {
       return connectionActionPipe;
+   }
+
+   public ActionPipe<CardInChargerCommand> cardInChargerCommandActionPipe() {
+      return cardInChargerCommandActionPipe;
    }
 }

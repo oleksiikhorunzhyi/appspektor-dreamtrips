@@ -1,16 +1,12 @@
-package com.worldventures.dreamtrips.wallet.analytics;
+package com.worldventures.dreamtrips.wallet.analytics.firmware.action;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
-@AnalyticsEvent(action = "dta:wallet:SmartCard Update:Step 2",
+@AnalyticsEvent(action = "wallet:SmartCard Update:Step 2",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class DownloadingUpdateAction extends WalletAnalyticsAction {
+public class DownloadingUpdateAction extends FirmwareAnalyticsAction {
 
    @Attribute("scupdatestep2") final String updateStep2 = "1";
-
-   public DownloadingUpdateAction(String scId) {
-      super(scId);
-   }
 }

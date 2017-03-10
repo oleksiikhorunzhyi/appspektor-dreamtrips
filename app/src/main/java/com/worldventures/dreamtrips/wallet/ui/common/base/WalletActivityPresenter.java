@@ -18,14 +18,13 @@ import timber.log.Timber;
 public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPresenter.View> {
 
    @Inject SmartCardInteractor interactor;
-   @Inject SmartCardSyncManager smartCardSyncManager;
+   @Inject SmartCardSyncManager smartCardSyncManager; // it was init on this activity
    @Inject WalletBluetoothService bluetoothService;
    @Inject LocationTrackingManager trackingManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      smartCardSyncManager.connect();
       trackingManager.track();
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())

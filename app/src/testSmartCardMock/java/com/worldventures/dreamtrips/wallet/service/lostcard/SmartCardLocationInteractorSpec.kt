@@ -17,10 +17,7 @@ import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
-import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor
-import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
-import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService
+import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.*
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.ApiPlace
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.NearbyResponse
@@ -58,12 +55,12 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
          smartCardInteractor = createSmartCardInteractor(janet)
          smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
-         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor)
+         firmwareInteractor = createFirmwareInteractor(janet)
+         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
          walletDetectLocationService = createWalletDetectLocationService()
          locationStorage = mockLostCardStorage()
 
          janet.connectToSmartCardSdk()
-         smartCardSyncManager.connect()
       }
 
       context("SmartCard Location interactor spec tests") {
@@ -143,6 +140,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
       lateinit var walletDetectLocationService: WalletDetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
+      lateinit var firmwareInteractor: FirmwareInteractor
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var locationStorage: LostCardRepository
 
@@ -178,6 +176,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(LostCardRepository::class.java) { locationStorage }
          daggerCommandActionService.registerProvider(ReactiveLocationProvider::class.java) { mock() }
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
+         daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
 
          return janet
       }
@@ -195,7 +194,9 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor) = SmartCardSyncManager(janet, smartCardInteractor)
+      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
+
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
 
       fun mockLostCardStorage(): LostCardRepository {
          val lostCardRepository: LostCardRepository = mock()

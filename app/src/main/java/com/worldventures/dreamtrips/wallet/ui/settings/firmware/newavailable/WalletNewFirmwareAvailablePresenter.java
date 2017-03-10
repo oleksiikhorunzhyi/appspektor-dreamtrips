@@ -8,15 +8,15 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.InsufficientStorageAction;
-import com.worldventures.dreamtrips.wallet.analytics.ViewSdkUpdateAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.InsufficientStorageAction;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkUpdateAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkStorageAvailability;
 
@@ -34,7 +34,6 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SCFirmwareFacade firmwareFacade;
 
    @Inject Navigator navigator;
    @Inject ActivityRouter activityRouter;
@@ -47,12 +46,16 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      firmwareFacade.takeFirmwareInfo()
+      trackScreen();
+      fetchFirmwareInfo();
+   }
+
+   private void fetchFirmwareInfo() {
+      firmwareInteractor.firmwareInfoCachedPipe()
+            .createObservable(FirmwareInfoCachedCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(firmwareUpdateData -> {
-               bindDataToView(firmwareUpdateData);
-               sendAnalyticAction(firmwareUpdateData);
-            }, throwable -> Timber.e(throwable, ""));
+            .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
+                  .onSuccess(command -> bindDataToView(command.getResult())));
    }
 
    private void bindDataToView(FirmwareUpdateData firmwareUpdateData) {
@@ -65,16 +68,9 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
       }
    }
 
-   private void sendAnalyticAction(FirmwareUpdateData firmwareUpdateData) {
-      final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(
-            new WalletAnalyticsCommand(
-                  new ViewSdkUpdateAction(
-                        firmwareUpdateData.smartCardId(),
-                        firmwareInfo.firmwareVersion(),
-                        firmwareUpdateData.currentFirmwareVersion().nordicAppVersion(),
-                        !firmwareInfo.isCompatible())
-            ));
+   private void trackScreen() {
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new ViewSdkUpdateAction()));
    }
 
    void goBack() {
@@ -90,11 +86,10 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadButtonClicked() {
-      firmwareFacade.takeFirmwareInfo()
+      firmwareInteractor.firmwareInfoCachedPipe().createObservable(FirmwareInfoCachedCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(firmwareUpdateData -> checkStoreAndNavigateToDownLoadScreen(firmwareUpdateData),
-                  throwable -> Timber.e(throwable, ""));
-
+            .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
+                  .onSuccess(command -> checkStoreAndNavigateToDownLoadScreen(command.getResult())));
    }
 
    private void checkStoreAndNavigateToDownLoadScreen(FirmwareUpdateData firmwareUpdateData) {
@@ -104,8 +99,8 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
       } catch (WalletFilesUtils.NotEnoughSpaceException e) {
          getView().insufficientSpace(e.getMissingByteSpace());
 
-         analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(new InsufficientStorageAction(firmwareUpdateData.smartCardId())));
+         analyticsInteractor.walletFirmwareAnalyticsPipe()
+               .send(new WalletFirmwareAnalyticsCommand(new InsufficientStorageAction()));
       }
    }
 

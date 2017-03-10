@@ -45,7 +45,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    }
 
    public void pageLoaded(String url) {
-      view.hideLoadingProgress();
+      // TODO Check if view is still attached.
+      // To improve this and remove check we need to refactor our StaticInfoFragment,
+      // saving its state and detecting if page was already loaded
+      if (view != null) view.hideLoadingProgress();
    }
 
    public void setInErrorState(boolean inErrorState) {

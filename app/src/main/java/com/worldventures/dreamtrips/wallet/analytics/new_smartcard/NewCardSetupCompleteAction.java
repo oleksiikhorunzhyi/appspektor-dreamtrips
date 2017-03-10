@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 @AnalyticsEvent(action = "wallet:setup:Step 9:Setup of New Card Complete",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class NewCardSetupCompleteAction extends WalletAnalyticsAction {
+
    @Attribute("cardsetupstep9")
    final String cardSetupStep9 = "1";
 }

@@ -23,27 +23,46 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       cid = scId;
    }
 
-   void setSmartCardAction(@Nullable  SmartCard smartCard, @Nullable SmartCardStatus smartCardStatus,
+   void setSmartCardAction(@Nullable SmartCard smartCard, @Nullable SmartCardStatus smartCardStatus,
          @Nullable SmartCardFirmware smartCardFirmware) {
-      if (smartCard == null || smartCardStatus == null) return;
 
       setSmartCardData(
-            smartCard.smartCardId(),
-            smartCard.cardStatus(),
-            smartCardStatus.connectionStatus(),
-            smartCardStatus.lock(),
-            smartCardStatus.batteryLevel());
+            fetchScId(smartCard),
+            fetchScStatus(smartCard),
+            fetchConnectionStatus(smartCardStatus),
+            fetchLockState(smartCardStatus),
+            fetchBatteryLevel(smartCardStatus));
 
       if (smartCardFirmware != null) {
          setCurrentVersion(smartCardFirmware.nordicAppVersion());
       }
    }
 
+   private String fetchScId(SmartCard smartCard) {
+      return smartCard == null ? null : smartCard.smartCardId();
+   }
+
+   private SmartCard.CardStatus fetchScStatus(SmartCard smartCard) {
+      return smartCard.cardStatus() == null ? null : smartCard.cardStatus();
+   }
+
+   private ConnectionStatus fetchConnectionStatus(SmartCardStatus smartCardStatus) {
+      return smartCardStatus == null ? ConnectionStatus.DISCONNECTED : smartCardStatus.connectionStatus();
+   }
+
+   private boolean fetchLockState(SmartCardStatus smartCardStatus) {
+      return smartCardStatus == null || smartCardStatus.lock();
+   }
+
+   private int fetchBatteryLevel(SmartCardStatus smartCardStatus) {
+      return smartCardStatus == null ? 0 : smartCardStatus.batteryLevel();
+   }
+
    private void setSmartCardData(String scId, SmartCard.CardStatus cardState, ConnectionStatus connectionStatus, boolean lockStatus, int batteryLevel) {
       setSmartCardId(scId);
       boolean connected = connectionStatus.isConnected();
       setConnected(connected);
-      if (connected && cardState == SmartCard.CardStatus.ACTIVE) {
+      if (connected && cardState != null && cardState == SmartCard.CardStatus.ACTIVE) {
          setLockStatus(lockStatus);
          setBatteryLevel(batteryLevel);
       }
@@ -53,7 +72,7 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       cid = scId;
    }
 
-   private void setConnected(boolean connected) {
+   protected void setConnected(boolean connected) {
       cardConnected = connected ? "Yes" : "No";
    }
 
@@ -64,6 +83,7 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
    private void setBatteryLevel(int batteryLevel) {
       this.batteryLevel = batteryLevel != 0 ? Integer.toString(batteryLevel) : null;
    }
+
    private void setCurrentVersion(String currentVersion) {
       this.currentVersion = currentVersion;
    }

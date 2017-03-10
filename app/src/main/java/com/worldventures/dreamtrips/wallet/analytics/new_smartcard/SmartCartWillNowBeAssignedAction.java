@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 @AnalyticsEvent(action = "wallet:settings:setup new smartcard:existing card detected:card now connected:unassign card",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class SmartCartWillNowBeAssignedAction extends WalletAnalyticsAction {
+
    @Attribute("unassigncardstep3b")
    final String unAssignCardStep3b = "1";
 }

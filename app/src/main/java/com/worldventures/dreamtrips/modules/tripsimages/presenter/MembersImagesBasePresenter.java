@@ -5,7 +5,8 @@ import android.support.annotation.NonNull;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -27,7 +28,7 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
       extends TripImagesListPresenter<MembersImagesBasePresenter.View, C> implements UploadingListenerPresenter {
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
-   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
 
    private List<PostCompoundOperationModel> postUploads;
@@ -53,7 +54,7 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
    }
 
    private void subscribeToBackgroundUploadingOperations() {
-      backgroundUploadingInteractor.compoundOperationsPipe()
+      compoundOperationsInteractor.compoundOperationsPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()

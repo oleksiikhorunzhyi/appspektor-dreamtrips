@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.RestoreCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
@@ -31,15 +31,18 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SnappyRepository db;
+
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject DtlLocationInteractor dtlLocationInteractor;
    // Lazy dagger won't instantiate unless injected. Do not delete unused InitializerInteractor below!
    @Inject InitializerInteractor initializerInteractor;
+
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    @State boolean dtlInitDone;
+   @State boolean userAlreadyLoggedIn = true;
 
    @Override
    public void takeView(View view) {
@@ -58,6 +61,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             .subscribe(new ActionStateSubscriber<LoginCommand>()
                   .onStart(loginCommand -> view.showLoginProgress())
                   .onSuccess(loginCommand -> {
+                     userAlreadyLoggedIn = false;
                      loginInteractor.loginActionPipe().clearReplays();
                      launchModeBasedOnExistingSession();
                   })
@@ -101,6 +105,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    }
 
    public void loginAction() {
+      TrackingHelper.clearHeaderData();
       String username = view.getUsername();
       String userPassword = view.getUserPassword();
 
@@ -118,7 +123,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    private void onAuthSuccess() {
       backgroundUploadingInteractor.restoreCompoundOperationsPipe().send(new RestoreCompoundOperationsCommand());
       analyticsInteractor.analyticsActionPipe().send(new LoginAction(appSessionHolder.get()
-            .get().getUser().getUsername()));
+            .get().getUser().getUsername(), userAlreadyLoggedIn));
       TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
       messengerConnector.connect();
       view.openMain();

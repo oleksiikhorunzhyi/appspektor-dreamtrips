@@ -162,7 +162,6 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
             .callback(new MaterialDialog.ButtonCallback() {
                @Override
                public void onPositive(MaterialDialog dialog) {
-                  TrackingHelper.logout();
                   getPresentationModel().logout();
                }
             })

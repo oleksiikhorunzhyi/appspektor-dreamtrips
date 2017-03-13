@@ -3,21 +3,28 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.post.DeletePostHttpAction;
 import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DeletePostCommand extends ApiActionCommand<DeletePostHttpAction, Object> {
+public class DeletePostCommand extends ApiActionCommand<DeletePostHttpAction, FeedEntity> implements InjectableAction {
 
-   private String postId;
+   private FeedEntity feedEntity;
 
-   public DeletePostCommand(String postId) {
-      this.postId = postId;
+   public DeletePostCommand(FeedEntity feedEntity) {
+      this.feedEntity = feedEntity;
    }
 
    @Override
    protected DeletePostHttpAction getHttpAction() {
-      return new DeletePostHttpAction(postId);
+      return new DeletePostHttpAction(feedEntity.getUid());
+   }
+
+   @Override
+   protected FeedEntity mapHttpActionResult(DeletePostHttpAction httpAction) {
+      return feedEntity;
    }
 
    @Override

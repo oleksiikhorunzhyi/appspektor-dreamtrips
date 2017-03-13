@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
+import com.worldventures.dreamtrips.modules.infopages.service.analytics.ViewDocumentsTabAnalyticAction;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class DocumentListPresenter extends Presenter<DocumentListPresenter.View> {
 
    @Inject DocumentsInteractor documentsInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    @Override
    public void takeView(View view) {
@@ -22,6 +25,10 @@ public class DocumentListPresenter extends Presenter<DocumentListPresenter.View>
       observeDocumentsChanges();
 
       refreshDocuments();
+   }
+
+   public void onSelectedFromPager() {
+      analyticsInteractor.analyticsActionPipe().send(new ViewDocumentsTabAnalyticAction());
    }
 
    public void refreshDocuments() {

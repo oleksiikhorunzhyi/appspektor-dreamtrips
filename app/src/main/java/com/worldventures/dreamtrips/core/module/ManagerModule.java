@@ -8,6 +8,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -20,6 +21,8 @@ import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteract
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
@@ -42,16 +45,24 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteracto
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.AccountTimelineStorageInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.FeedStorageInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedStorageInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.VideoInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
+import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
 import javax.inject.Named;
@@ -59,6 +70,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.techery.janet.Janet;
 
 @Module(
       injects = {
@@ -231,6 +243,12 @@ public class ManagerModule {
 
    @Provides
    @Singleton
+   DialogNavigatorInteractor provideDialogNavigatorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new DialogNavigatorInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
    SuccessStoriesInteractor provideSuccessStoriesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new SuccessStoriesInteractor(sessionActionPipeCreator);
    }
@@ -274,6 +292,12 @@ public class ManagerModule {
 
    @Provides
    @Singleton
+   AppInfoProvider provideAppInfoProvider(Context context) {
+      return new AppInfoProviderImpl(context);
+   }
+
+   @Provides
+   @Singleton
    DeviceInfoProvider provideProfileInteractor(Context context) {
       return new DeviceInfoProviderImpl(context);
    }
@@ -295,11 +319,53 @@ public class ManagerModule {
    DrawableUtil provideDrawableUtil(Context context) {
       return new DrawableUtil(context);
    }
-   
+
    @Provides
    @Singleton
    DocumentsInteractor provideDocumentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new DocumentsInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   VideoInteractor provideVideoInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new VideoInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   FacebookInteractor provideFacebookInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FacebookInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   VersionCheckInteractor provideVersionCheckInteractor(@Named(VersionCheckModule.JANET_QUALIFIER) Janet janet) {
+      return new VersionCheckInteractor(janet);
+   }
+
+   @Provides
+   @Singleton
+   FeedStorageInteractor provideFeedStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedStorageInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   AccountTimelineStorageInteractor provideTimelineStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new AccountTimelineStorageInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   UserTimelineStorageInteractor provideUserTimelineStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new UserTimelineStorageInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   HashtagFeedStorageInteractor provideHashtagFeedStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new HashtagFeedStorageInteractor(sessionActionPipeCreator);
    }
 
    @Provides

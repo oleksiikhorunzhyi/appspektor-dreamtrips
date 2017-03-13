@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -17,8 +16,7 @@ import java.util.List;
 public abstract class BaseFeedEntity implements FeedEntity {
 
    protected String uid;
-   @SerializedName("user") protected User owner;
-
+   protected User owner;
    protected int commentsCount;
    protected List<Comment> comments;
    protected boolean liked;
@@ -97,8 +95,41 @@ public abstract class BaseFeedEntity implements FeedEntity {
    }
 
    @Override
-   public String getLanguageFrom() {
+   public String getLanguage() {
       return language;
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Translate staff
+   ///////////////////////////////////////////////////////////////////////////
+
+   private transient String translation;
+   private transient boolean translated;
+
+   @Override
+   public String getOriginalText() {
+      return null;
+   }
+
+   @Override
+   public void setTranslation(String translation) {
+      this.translation = translation;
+   }
+
+   @Nullable
+   @Override
+   public String getTranslation() {
+      return translation;
+   }
+
+   @Override
+   public boolean isTranslated() {
+      return translated;
+   }
+
+   @Override
+   public void setTranslated(boolean translated) {
+      this.translated = translated;
    }
 
    ///////////////////////////////////////////////////////////////////////////

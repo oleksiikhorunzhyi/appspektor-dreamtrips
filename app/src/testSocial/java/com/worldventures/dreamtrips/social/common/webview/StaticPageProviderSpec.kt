@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.core.session.UserSession
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
@@ -18,7 +19,7 @@ class StaticPageProviderSpec: Spek({
       setup()
 
       it("should provide correct enroll member url") {
-         val expectedUrl = API_URL + "/gateway/enroll_member?username=" + USERNAME
+         val expectedUrl = "$API_URL/gateway/enroll_member?username=$USERNAME&deviceId=$DEVICE_ID"
          assertEquals(expectedUrl, provider.enrollMemberUrl)
       }
 
@@ -86,20 +87,23 @@ class StaticPageProviderSpec: Spek({
       val API_URL = "http://some-api.io/";
       val UPLOADERY_URL = "http://some-uploadery-api.io";
 
-      val USERNAME = "515661";
-      val TRIP_ID = "12410101";
+      val USERNAME = "515661"
+      val TRIP_ID = "12410101"
+      val DEVICE_ID = "fsadfas"
       val LEGACY_API_TOKEN = "asdb11a"
       val LOCALE = "en-us"
       val MERCHANT_ID = "10191"
 
       val mockSessionHolder: SessionHolder<UserSession> = mock()
-      val provider = StaticPageProvider(mockSessionHolder, API_URL, UPLOADERY_URL)
+      val deviceInfoProvider: DeviceInfoProvider = mock()
+      val provider = StaticPageProvider(mockSessionHolder, deviceInfoProvider, API_URL, UPLOADERY_URL)
       val userSession: UserSession = mock()
 
       fun setup() {
          val mockUser = mock<User>()
 
          whenever(mockUser.username).thenReturn(USERNAME)
+         whenever(deviceInfoProvider.uniqueIdentifier).thenReturn(DEVICE_ID)
          whenever(userSession.user).thenReturn(mockUser)
          whenever(userSession.legacyApiToken).thenReturn(LEGACY_API_TOKEN)
          whenever(userSession.locale).thenReturn(LOCALE)

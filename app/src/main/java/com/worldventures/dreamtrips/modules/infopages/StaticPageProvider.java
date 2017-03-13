@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.modules.infopages;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+
+import java.util.Locale;
 
 public class StaticPageProvider {
 
@@ -10,7 +13,9 @@ public class StaticPageProvider {
    //// URLS
    //////////////////////////////////////////
 
-   private static final String ENROLL_MEMBER_URL = "/gateway/enroll_member?username=%username%";
+   private static final String ENROLL_MEMBER_URL = "/gateway/enroll_member?username=%username%&deviceId=%deviceId%";
+   private static final String LAT = "&lat=%1$,.6f";
+   private static final String LNG = "&lng=%1$,.6f";
    private static final String ENROLL_REP_URL = "/gateway/enroll_rep?username=%username%";
    private static final String BOOKING_PAGE_URL = "/gateway/booking_page/%trip_id%";
    private static final String OTA_PAGE_URL = "/gateway/ota_page";
@@ -24,23 +29,27 @@ public class StaticPageProvider {
    //// Query params
    //////////////////////////////////////////
 
+   private static final String MASK_DEVICE_ID = "%deviceId%";
    private static final String MASK_USER_NAME = "%username%";
    private static final String MASK_TRIP_ID = "%trip_id%";
 
    private SessionHolder<UserSession> appSessionHolder;
+   private DeviceInfoProvider deviceInfoProvider;
 
    private String apiUrl;
    private String uploaderyUrl;
 
-   public StaticPageProvider(SessionHolder<UserSession> appSessionHolder, String apiUrl, String uploaderyUrl) {
+   public StaticPageProvider(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider, String apiUrl, String uploaderyUrl) {
       this.appSessionHolder = appSessionHolder;
+      this.deviceInfoProvider = deviceInfoProvider;
       this.apiUrl = apiUrl;
       this.uploaderyUrl = uploaderyUrl;
    }
 
    public String getEnrollMemberUrl() {
       String urlWithMask = apiUrl + ENROLL_MEMBER_URL;
-      return urlWithMask.replace(MASK_USER_NAME, getUsername());
+      return urlWithMask.replace(MASK_USER_NAME, getUsername())
+            .replace(MASK_DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
    }
 
    public String getEnrollRepUrl() {
@@ -96,6 +105,10 @@ public class StaticPageProvider {
          builder.append("&intent=suggestProspect").append("&prospectId=").append(args.getMerchantId());
       }
       return builder.toString();
+   }
+
+   public String getEnrollWithLocation(double latitude, double longitude) {
+      return getEnrollMemberUrl() + String.format(Locale.ENGLISH, LAT, latitude) + String.format(Locale.ENGLISH, LNG, longitude);
    }
 
    private String getUsername() {

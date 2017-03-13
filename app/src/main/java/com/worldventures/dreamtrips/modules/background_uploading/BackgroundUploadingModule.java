@@ -1,27 +1,30 @@
 package com.worldventures.dreamtrips.modules.background_uploading;
 
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CancelAllCompoundOperationsCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CancelCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.PauseCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.PhotoAttachmentUploadingCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.PostProcessingCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.ResumeCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.StartNextCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CancelCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.PauseCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.PhotoAttachmentUploadingCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.ResumeCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
+
+import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
+import rx.schedulers.Schedulers;
+
 
 @Module(
       injects = {
@@ -30,6 +33,7 @@ import de.greenrobot.event.EventBus;
             ScheduleCompoundOperationCommand.class,
             CancelCompoundOperationCommand.class,
             CancelAllCompoundOperationsCommand.class,
+            RestoreCompoundOperationsCommand.class,
             StartNextCompoundOperationCommand.class,
             PauseCompoundOperationCommand.class,
             ResumeCompoundOperationCommand.class,
@@ -39,9 +43,14 @@ public class BackgroundUploadingModule {
 
    @Provides
    @Singleton
-   BackgroundUploadingInteractor provideBackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         @Global EventBus eventBus, SessionHolder<UserSession> sessionHolder, AnalyticsInteractor analyticsInteractor) {
-      return new BackgroundUploadingInteractor(sessionActionPipeCreator, eventBus, sessionHolder, analyticsInteractor);
+   BackgroundUploadingInteractor provideBackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new BackgroundUploadingInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   CompoundOperationsInteractor provideCompoundOperationsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new CompoundOperationsInteractor(sessionActionPipeCreator, Schedulers.from(Executors.newSingleThreadExecutor()));
    }
 
    @Provides
@@ -53,5 +62,4 @@ public class BackgroundUploadingModule {
    UploadTimeEstimator provideUploadingTimeEstimator() {
       return new UploadTimeEstimator();
    }
-
 }

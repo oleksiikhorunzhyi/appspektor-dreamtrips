@@ -37,7 +37,7 @@ utils.runBuild('android', getNotifier(utils)) {
       }
    }
    stage('publish') {
-      if (Boolean.valueOf(env.INTERNAL_ONLY)) {
+     if (Boolean.valueOf(env.INTERNAL_ONLY)) {
         archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
       } else {
         def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())

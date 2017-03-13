@@ -9,13 +9,11 @@
    <!---->
    <!--Conversation List -->
    <!---->
-   <string name="conversation_list_title">Perbualan</string>
 
    <string name="conversation_list_spinner_item_all_chats">Semua Bualan</string>
    <string name="conversation_list_spinner_item_group_chats">Kumpulan Sembang</string>
 
    <string name="conversation_list_search_hint">Cari perbualan …</string>
-   <string name="conversation_list_search_edittext_hint">Cari kumpulan dan orang</string>
    <string name="conversation_list_item_last_message_text_format_you">Anda: %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">Anda telah menghantar foto</string>
    <string name="conversation_list_item_last_message_image">Menghantar foto</string>
@@ -39,12 +37,10 @@
    <!---->
    <string name="new_chat_title">Bualan Baru</string>
    <string name="new_chat_toast_no_users_selected_error">Sila pilih beberapa orang pengguna terlebih dahulu</string>
-   <string name="new_multi_user_chat_not_supported">Mencipta perbualan berkumpulan tidak disokong</string>
    <string name="new_chat_error_loading_contacts">Tidak dapat memuatkan kenalan</string>
    <string name="new_chat_new_conversation_title_hint">Tetapkan nama perbualan</string>
    <string name="new_chat_chosen_contacts_header_empty">"Tambah: "</string>
    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Tambah</string>
-   <string name="new_chat_list_item_section_close_friends">RAKAN RAPAT</string>
    <string name="menu_done">Selesai</string>
 
    <!---->
@@ -54,7 +50,6 @@
    <string name="chat_subtitle_format_single_chat_offline">luar talian</string>
    <string name="chat_subtitle_format_group_chat_format">%1$d ahli, %2$d dalam talian</string>
    <string name="chat_subtitle_format_group_chat_format_closed">%1$d ahli</string>
-   <string name="chat_subtitle_format_group_chat_offline">Tiada pengguna di atas talian</string>
    <string name="chat_message_edittext_hint">Pesanan anda</string>
    <string name="chat_message_send_button_text">Hantar</string>
    <string name="chat_message_sending_disabled">Anda tidak boleh menghantar mesej kerana anda bukan peserta lagi</string>
@@ -94,7 +89,6 @@
    <!-- flagging related -->
    <string name="chat_flag_dialog_progress_loading_flags">Sedang memuat…</string>
    <string name="chat_flag_dialog_reason_title">Bendera</string>
-   <string name="chat_flag_dialog_reason_hint">Taip sebab anda</string>
    <string name="chat_flag_dialog_reason_positive_button">Terima</string>
    <string name="chat_flag_dialog_reason_negative_button">Batal</string>
    <string name="chat_flag_dialog_confirmation_title">Sahkan</string>
@@ -113,12 +107,9 @@
    <string name="chat_settings_single_chat_online">dalam talian</string>
    <string name="chat_settings_single_chat_offline">luar talian</string>
    <string name="chat_settings_row_notifications">Pemberitahuan</string>
-   <string name="chat_settings_row_shared_content">Kandungan Berkongsi</string>
    <string name="chat_settings_row_members_format">Ahli (%1$d)</string>
-   <string name="chat_settings_row_assign_new_admin"> Lantik pentadbir baharu </string>
    <string name="chat_settings_row_clear_chat">Padam sembang</string>
    <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
-   <string name="chat_settings_row_delete_chat">Hapus Sembang</string>
    <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %1$s</string>
    <string name="chat_settings_menu_settings">Tetapan</string>
    <string name="chat_settings_menu_edit_chat_name"> Edit nama perbualan </string>

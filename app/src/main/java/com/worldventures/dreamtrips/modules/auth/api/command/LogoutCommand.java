@@ -6,6 +6,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.synchmechanism.MessengerConnector;
+import com.messenger.util.CrashlyticsTracker;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
@@ -21,7 +22,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.analytics.LogoutAction;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CancelAllCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
@@ -67,6 +70,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardSyncManager smartCardSyncManager;
 
    @Override
@@ -74,7 +78,16 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
       Observable.zip(clearSessionDependants(), args -> null)
             .flatMap(o -> clearSession())
             .flatMap(o -> clearUserData())
-            .subscribe(o -> callback.onSuccess(null));
+            .doOnError(throwable -> {
+               Timber.w((Throwable) throwable, "Could not log out");
+               CrashlyticsTracker.trackError((Throwable) throwable);
+            })
+            .subscribe(o -> logoutComplete(callback));
+   }
+
+   private void logoutComplete(CommandCallback<Void> callback) {
+      analyticsInteractor.analyticsActionPipe().send(new LogoutAction());
+      callback.onSuccess(null);
    }
 
    private Iterable<Observable<Void>> clearSessionDependants() {

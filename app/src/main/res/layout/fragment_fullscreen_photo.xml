@@ -166,6 +166,8 @@
          </LinearLayout>
       </LinearLayout>
 
+      <include layout="@layout/include_photo_fullscreen_translation"/>
+
       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

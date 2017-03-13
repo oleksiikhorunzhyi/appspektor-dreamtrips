@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.Session;
+import com.facebook.AccessToken;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -28,7 +28,7 @@ public class FacebookAlbumCell extends AbstractCell<FacebookAlbum> {
    protected void syncUIStateWithModel() {
       tvTitle.setText(getModelObject().getName());
       tvCount.setText(getModelObject().getCount() + "");
-      String accessToken = Session.getActiveSession().getAccessToken();
+      String accessToken = AccessToken.getCurrentAccessToken().getToken();
       ivBg.setImageURI(Uri.parse(getModelObject().getCoverUrl(accessToken)));
    }
 }

@@ -10,15 +10,17 @@ public class Video {
    private String name;
    private String category;
    private String duration;
+   private String language;
 
    private transient CachedEntity entity;
 
-   public Video(String imageUrl, String videoUrl, String name, String category, String duration) {
+   public Video(String imageUrl, String videoUrl, String name, String category, String duration, String language) {
       this.imageUrl = imageUrl;
       this.videoUrl = videoUrl;
       this.name = name;
       this.category = category;
       this.duration = duration;
+      this.language = language;
    }
 
    public Video() {
@@ -50,6 +52,10 @@ public class Video {
 
    public String getDuration() {
       return duration;
+   }
+
+   public String getLanguage() {
+      return language;
    }
 
    public CachedEntity getCacheEntity() {

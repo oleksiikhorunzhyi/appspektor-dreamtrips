@@ -4,13 +4,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.post.UpdatePostHttpAction;
 import com.worldventures.dreamtrips.api.post.model.request.PostData;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class EditPostCommand extends MappableApiActionCommand<UpdatePostHttpAction, TextualPost, TextualPost> {
+public class EditPostCommand extends MappableApiActionCommand<UpdatePostHttpAction, TextualPost, TextualPost>
+   implements InjectableAction {
 
    private String id;
    private CreatePhotoPostEntity createPhotoPostEntity;

@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -117,10 +116,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
                   creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()))
             .compose(new IoToMainComposer<>())
             .subscribe(new ActionStateSubscriber<EditPhotoWithTagsCommand>()
-               .onSuccess(command -> {
-                  eventBus.post(new FeedEntityChangedEvent(command.getResult()));
-                  view.cancel();
-               })
+               .onSuccess(command -> view.cancel())
             .onFail((editPhotoWithTagsCommand, throwable) -> {
                handleError(editPhotoWithTagsCommand, throwable);
                view.onPostError();

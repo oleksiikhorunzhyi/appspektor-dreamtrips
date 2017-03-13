@@ -73,10 +73,6 @@
             android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU"
             />
       <meta-data
-            android:name="apptentive_api_key"
-            android:value="${surveyApiToken}"
-            />
-      <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${fabricApiKey}"
             />
@@ -127,7 +123,6 @@
                />
 
       </activity>
-
 
       <activity
             android:name=".modules.common.view.activity.Player360Activity"
@@ -190,22 +185,31 @@
 
       <!--Foreign activities-->
 
+      <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                  "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+
+      <!--Facebook Chrome Custom Tabs activity to be used instead of web view -->
       <activity
-            android:name="com.facebook.LoginActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            />
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="@string/fb_login_protocol_scheme" />
+         </intent-filter>
+      </activity>
+
+      <provider android:authorities="com.facebook.app.FacebookContentProvider761062457321921"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
 
       <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-
-      <activity
-            android:name="com.apptentive.android.sdk.ViewActivity"
-            android:theme="@style/ApptentiveTheme.Transparent"
             />
 
       <service

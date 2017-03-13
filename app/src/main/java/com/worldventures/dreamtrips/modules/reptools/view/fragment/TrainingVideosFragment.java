@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragmen
 import java.util.List;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class TrainingVideosFragment extends PresentationVideosFragment<TrainingVideosPresenter> implements TrainingVideosPresenter.View {
+public class TrainingVideosFragment<T extends TrainingVideosPresenter> extends PresentationVideosFragment<T> implements TrainingVideosPresenter.View {
 
    private FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
@@ -36,8 +36,8 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
    }
 
    @Override
-   protected TrainingVideosPresenter createPresenter(Bundle savedInstanceState) {
-      return new TrainingVideosPresenter();
+   protected T createPresenter(Bundle savedInstanceState) {
+      return (T) new TrainingVideosPresenter();
    }
 
    @Override

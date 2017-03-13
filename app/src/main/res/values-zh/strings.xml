@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="web_title">网络</string>
-   <string name="new_photo">网络</string>
-   <string name="detailed_trip">详细行程</string>
    <string name="membership">会员</string>
    <string name="trip_images">旅行图片</string>
    <string name="bucket_list">人生愿望清单</string>
    <string name="my_profile">我的简历</string>
-   <string name="terms">条款</string>
    <string name="terms_of_service">服务条款</string>
-   <string name="faq">常问问题</string>
    <string name="privacy">隐私政策</string>
    <string name="cookie">小型文档政策</string>
-   <string name="action_settings">设置</string>
    <string name="action_quick_input">快速添加</string>
    <string name="action_popular_string">添加来自流行</string>
    <string name="action_done">完成</string>
    <string name="action_cancel">取消</string>
-   <string name="action_enroll">注册</string>
    <string name="action_filter">筛选</string>
    <string name="action_map">地图</string>
    <string name="action_like">点赞</string>
-   <string name="title_activity_login">登录活动</string>
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">菜单已打开</string>
    <string name="drawer_close">菜单已关闭</string>
@@ -33,16 +25,12 @@
    <string name="member_images">会员图片</string>
    <string name="my_images">我的图片</string>
    <string name="you_should_be_here">You Should Be Here</string>
-   <string name="title_activity_full_screen_photo">DreamTrips</string>
-   <string name="skip_login">跳过登录</string>
    <string name="duration">%1$d夜</string>
    <string name="smth_went_wrong">出了错=（</string>
    <string name="inspire_me">鼓舞我</string>
    <string name="three_sixty">360体验</string>
    <string name="book_it">预订！</string>
    <string name="reload_trip_details">重新上载行程的详细信息</string>
-   <string name="title_book_it">预订</string>
-   <string name="title_enroll_it">注册</string>
    <string name="user_id_hint">WV会员号码</string>
    <string name="user_password_hint">WV会员密码</string>
    <string name="type_your_reason">输入您的理由</string>
@@ -59,24 +47,13 @@
    <string name="trip_details">详细行程</string>
    <string name="trip_featured">精选旅行</string>
    <string name="profile_from_hint">从</string>
-   <string name="profile_location_hint">住在</string>
    <string name="profile_enroll_hint">报名日期</string>
    <string name="profile_birth_hint">出生日期</string>
    <string name="profile_user_id_hint">用户号码</string>
    <string name="bucket_locations">位置</string>
    <string name="bucket_activities">活动</string>
    <string name="bucket_restaurants">餐饮</string>
-   <string name="photo_what">什么</string>
-   <string name="photo_what_hint">为您的照片写一个简要说明</string>
-   <string name="photo_where">哪里</string>
-   <string name="photo_where_hint">设置位置</string>
-   <string name="photo_when">什么时候</string>
-   <string name="photo_when_date_hint">日期</string>
-   <string name="photo_when_time_hint">时间</string>
-   <string name="photo_tags">标签</string>
-   <string name="photo_tags_hint">在这里添加逗号分隔标签</string>
    <string name="photo_deleted">照片已被删除</string>
-   <string name="photo_flagged">照片已被检举</string>
    <string name="delete_photo_title">删除照片</string>
    <string name="delete_photo_text">您确定要删除该照片？</string>
    <string name="delete_photo_positiove">删除</string>
@@ -89,17 +66,7 @@
    <string name="flag_description_positive">接受</string>
    <string name="flag_description_negative">取消</string>
    <string name="log_in">登录</string>
-   <string name="error_log_in">您的登录-ID和/或密码不正确 - 请使用您的WorldVentures会员-ID和密码登录</string>
-   <string name="error_image_not_loaded">图像尚未加载</string>
-   <string name="error_while_loading">载入图像时发生错误</string>
-   <string name="fab_select_album">选择相册</string>
-   <string name="fab_select_photo">选择照片</string>
    <string name="fab_posted">成功地发布至脸书</string>
-   <string-array name="photo_dialog_items">
-      <item>照相</item>
-      <item>选择照片</item>
-      <item>从脸书选择</item>
-   </string-array>
    <string-array name="share_dialog_items">
       <item>脸书</item>
       <item>推特</item>
@@ -109,18 +76,12 @@
       <item>推特</item>
       <item>保存到相册</item>
    </string-array>
-   <string name="buffering">缓冲…</string>
-   <string name="profile_select_avatar_header">选择化身</string>
-   <string name="profile_select_cover_header">选择封面</string>
    <string name="error_internal_server">内部服务器错误</string>
    <string name="username_empty">用户名是空白</string>
    <string name="username_not_valid">用户名无效</string>
    <string name="password_empty">密码是空白</string>
    <string name="password_not_valid">密码无效</string>
-   <string name="bucket_list_my_title">添加项目到人生愿望清单</string>
    <string name="bucket_list_location_popular">流行人生愿望清单</string>
-   <string name="bucket_list_activity_popular">流行人生愿望清单活动</string>
-   <string name="bucket_list_dinning_popular">热门人生愿望清单餐饮和娱乐</string>
    <string name="bucket_list_edit_header">编辑人生愿望清单项目</string>
    <string name="bucket_list_add">添加%1$s到您的人生愿望清单</string>
    <string name="bucket_list_create_message">目前您没有人生愿望清单项目。您可以从流行的人生愿望清单项目中进行选择或创建自己的目标</string>
@@ -135,38 +96,24 @@
    <string name="bucket_hint_description_text">在此处键入您的描述</string>
    <string name="bucket_hint_time">时间</string>
    <string name="bucket_hint_time_text">您想何时完成这个目标？</string>
-   <string name="bucket_hint_location">位置</string>
-   <string name="bucket_hint_location_text">这一目标是否有具体位置？</string>
    <string name="bucket_hint_people">人</string>
    <string name="bucket_hint_people_text">加入您要一起完成这个目标的人</string>
    <string name="bucket_hint_tags">标签</string>
    <string name="bucket_hint_tags_text">添加描述您的人生愿望清单项目的标签</string>
-   <string name="bucket_item_edit_done">人生愿望清单项目已保存！</string>
-   <string name="bucket_item_edit_error">保存项目时出错</string>
-   <string name="bucket_item_photos">添加图片</string>
    <string name="category">类别</string>
    <string name="bucket_added">%1$s添加到您的人生愿望清单</string>
    <string name="trip_liked">%1$s添加到您的收藏夹</string>
    <string name="trip_unliked">%1$s已从收藏夹中删除</string>
    <string name="congrats">恭喜！</string>
-   <string name="bucket_delete_undo">项目已被删除</string>
-   <string name="undo">恢复</string>
-   <string name="location">位置</string>
-   <string name="activity">活动</string>
-   <string name="dinning">餐饮</string>
    <string name="show_all">显示所有</string>
    <string name="show_completed">显示已完成</string>
    <string name="show_to_do">显示待办事项</string>
    <string name="rep_tools">销售代表工具</string>
    <string name="success_stories">成功的故事</string>
-   <string name="to_do">待办事项</string>
-   <string name="completed">完成</string>
    <string name="action_share">分享</string>
    <string name="recent_header">新增360体验</string>
    <string name="recently_added">最近添加的</string>
    <string name="featured_header">精选360体验</string>
-   <string name="title_activity_success_story_details">成功故事详细活动</string>
-   <string name="hello_world">您好，世界！</string>
    <string name="ss_has_been_added_to_favorites">成功的故事已被添加到收藏夹</string>
    <string name="ss_has_been_removed_from_favorites">成功的故事已经从收藏夹中删除</string>
    <string name="ss_filter_show_favorites">显示收藏夹</string>
@@ -178,12 +125,9 @@
    <string name="likes">%1$d点赞</string>
    <string name="comment_single">%1$d评论</string>
    <string name="comments">%1$d评论</string>
-   <string name="wrong_image">错误的图像</string>
-   <string name="could_not_load">无法加载 </string>
    <string name="someday">日后</string>
    <string name="who">谁： </string>
    <string name="tags">标签： </string>
-   <string name="my_pictures">我的图片</string>
    <string name="today">今天</string>
    <string name="rep_enrollment">销售代表注册</string>
    <string name="no_connection">没有网络连接</string>
@@ -205,16 +149,12 @@
       <item>明年</item>
       <item>日后</item>
    </string-array>
-   <string name="choose_fb">从脸书选择</string>
-   <string name="choose_camera">拍个照</string>
    <string name="choose_gallery">选择一张照片</string>
    <string name="uploading_photo">上传照片</string>
    <string name="bucket_photo_cover">设为封面</string>
    <string name="bucket_photo_delete">删除</string>
    <string name="add_pictures">添加图片</string>
-   <string name="select_photo">选择照片</string>
    <string name="bucket_photo_dialog">人生愿望清单照片</string>
-   <string name="download_in_progress">下载进行中</string>
    <string name="delete_cached_video_title">视频</string>
    <string name="delete_cached_video_text">您确定您想从本地缓存中删除视频？</string>
    <string name="fail">失败</string>
@@ -234,7 +174,6 @@
    <string name="action_send">发送</string>
    <string name="action_preview">预览</string>
    <string name="title_edit_template">编辑模板</string>
-   <string name="title_activity_invite">邀请</string>
    <string name="invitation_continue">继续</string>
    <string name="invitation_select_contacts">选择联系人</string>
    <string name="invitation_select_template">选择邀请函模板</string>
@@ -243,69 +182,47 @@
    <string name="invitation_to">至：</string>
    <string name="invitation_subject">主题</string>
 
-   <string name="invite_add_last_name">姓</string>
-   <string name="preview_template">预览模板</string>
    <string name="selected">%1$d已选</string>
-   <string name="error_personal_message_is_empty">个人讯息必填</string>
    <string name="email_is_not_valid">电子邮件无效</string>
    <string name="invitation_deselect_all">全部取消</string>
    <string name="invitation_text_template" formatted="false"><![CDATA[你好%1$s ， %2$s<br/>一探究竟<a href=\"%3$s\">这里</a> 。]]></string>
-   <string name="terms_and_conditions"><![CDATA[我已阅读并接受<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">条款和条件</a>]]></string>
    <string name="invite_add_photo">添加照片</string>
    <string name="invite_select_first">首先选择联系人</string>
    <string name="filters_show_favorite">显示收藏的旅行</string>
    <string name="filter_recently_added">最近添加的</string>
    <string name="bucketlist_share" formatted="false">在我的人生愿望清单上：%1$s</string>
-   <string name="choose_multiselect">选择照片</string>
    <string name="last_sent">最后发送</string>
    <string name="search_trips">搜索旅游</string>
    <string name="search">搜索</string>
 
-   <string name="profile_update_info">更新信息</string>
    <string name="profile_zero_trip_images">旅行图片</string>
    <string name="profile_zero_bucket_list">人生愿望清单项目</string>
    <string name="profile_trip_images">%1$d旅行图片</string>
    <string name="profile_bucket_list">%1$d人生愿望清单项目</string>
-   <string name="profile_post">帖子</string>
    <string name="profile_friends">朋友</string>
-   <string name="profile_messages">讯息</string>
-   <string name="profile_more">更多</string>
    <string name="profile_platinum">白金会员</string>
    <string name="profile_golden">黄金会员</string>
    <string name="profile_dt_points">&lt;b&gt;%1$s&lt;/b&gt;DT点数</string>
    <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt;Rovia币</string>
-   <string name="bucket_delete_dialog">您确定要删除此人生愿望清单项目吗？</string>
 
    <string name="action_add_to_bucket">添加到人生愿望清单</string>
-   <string name="profile_dream_trips">%1$d Dream Trips</string>
    <string name="profile_add_friend">添加好友</string>
    <string name="profile_friend_request" formatted="false">%1$s发给您好友请求</string>
-   <string name="profile_accept">确认</string>
-   <string name="profile_reject">删除请求</string>
-   <string name="title_activity_friends">朋友</string>
-   <string name="profile_request">请求</string>
    <string name="profile_respond">响应</string>
    <string name="profile_waiting">等候</string>
    <string name="social_my_friends">我的朋友</string>
    <string name="social_requests">请求</string>
    <string name="social_add_friend_yes">是</string>
    <string name="social_add_friend_no">不是</string>
-   <string name="social_add_friend_title">添加好友</string>
-   <string name="social_add_friend_content" formatted="false">添加%1$s作为您的朋友吗？</string>
    <string name="social_postfix_mutual_friends_one">%1$d共同朋友</string>
    <string name="social_postfix_mutual_friends">%1$d共同朋友</string>
    <string name="social_user_wrapper_cell_actions">操作</string>
    <string name="social_remove_friend_title">取消朋友关系</string>
-   <string name="action_social_show_all">显示所有</string>
    <string name="friend_search_placeholder">搜索名称，团体</string>
-   <string name="bucket_photo_upload_error">无法上传照片</string>
-   <string name="training_video_hint">选择语言</string>
    <string name="friend_reject">拒绝</string>
    <string name="friend_accept">接受</string>
    <string name="friend_hide">隐藏</string>
    <string name="friend_cancel">取消</string>
-   <string name="request_incoming">传入</string>
-   <string name="request_outgoing">传出</string>
    <string name="friend_global_search">搜寻所有成员</string>
    <string name="friend_add_to">添加至：</string>
    <string name="bucket_current_cover">本期封面</string>
@@ -328,7 +245,6 @@
    <string name="comment_add_hint">添加评论</string>
    <string name="comment_post_btn_title">帖子</string>
    <string name="comment_view_more">查看更多评论</string>
-   <string name="comment_edit">编辑评论</string>
    <string name="save">保存</string>
    <string name="comment_delete">删除评论</string>
    <string name="comment_delete_caption">您确定要删除此评论吗？</string>
@@ -345,19 +261,13 @@
    <string name="minutes_ago">%1$d分钟前</string>
    <string name="months_ago">%1$d个月前</string>
    <string name="weeks_ago">%1$d周前</string>
-   <string name="seconds_ago">%1$d秒前</string>
    <string name="minute_ago">一分钟前</string>
    <string name="hour_ago">一小时前</string>
    <string name="last_month">上个月</string>
    <string name="last_week">上个星期</string>
    <string name="last_year">去年</string>
    <string name="yesterday">昨天</string>
-   <string name="year_ago">1年以前</string>
-   <string name="month_ago">1个月前</string>
-   <string name="week_ago">1周前</string>
-   <string name="day_ago">1天前</string>
 
-   <string name="social_remove_and_block_friend_title">取消朋友关系并断绝联系</string>
    <string name="social_friend_preference_title">编辑朋友喜好</string>
    <string name="friend_pref_create_new_list">创建新清单</string>
    <string name="friend_pref_lists_title">清单</string>
@@ -367,13 +277,10 @@
    <string name="social_unfriend_confiramation_cancel">不是</string>
    <string name="feed_title">活动供稿</string>
    <string name="post_cancel_message">您确定要放弃更改吗？</string>
-   <string name="pictures">图片</string>
    <string name="bucket_list_foreign_message">目前，该用户没有人生愿望清单项目。</string>
 
    <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
    <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
-   <string name="configuration_acitve_button">再试一次</string>
-   <string name="configuration_failed">配置加载失败</string>
    <string name="email_app_choose_dialog_title">选择应用程序</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;点赞这个</string>
@@ -382,7 +289,6 @@
    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;%1$s和%2$d其他人&lt;/b&gt;点赞这个</string>
 
    <string name="users_who_liked_title">人们点赞</string>
-   <string name="users_who_liked_empty">没有人点赞这个项目</string>
    <string name="notifications_title">通知</string>
    <string name="accept_request">接受您的请求</string>
    <string name="reject_request">拒绝您的请求</string>
@@ -390,17 +296,14 @@
    <string name="send_request">发送您好友请求</string>
 
    <string name="post_delete">删除帖子</string>
-   <string name="post_edit">编辑帖子</string>
    <string name="post_delete_caption">您确定要删除这个帖子？</string>
    <string name="post_delete_confirm">是的，删除它！</string>
 
    <string name="photo_delete">删除照片</string>
-   <string name="photo_edit">编辑照片</string>
    <string name="photo_delete_caption">您确定要删除该照片？</string>
    <string name="photo_edit_error">无法编辑照片</string>
 
    <string name="bucket_delete">删除人生愿望清单项目</string>
-   <string name="bucket_edit">编辑人生愿望清单项目</string>
    <string name="bucket_delete_caption">您确定要删除此人生愿望清单项目吗？</string>
 
    <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt;和&lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
@@ -443,7 +346,6 @@
    <string name="feed_share_post">分享帖子</string>
    <string name="feed_share_photos">分享照片</string>
    <string name="feed_view_profile_btn">查看资料</string>
-   <string name="feed_close_friends">密友</string>
    <string name="start_searching">键入开始搜索</string>
 
    <string name="people_liked_one">%1$s点赞</string>
@@ -463,7 +365,6 @@
    <string name="no_friends">您这个名单还没有朋友</string>
    <string name="feed_add_friends">添加好友</string>
    <string name="all_friends">所有朋友</string>
-   <string name="trip_view_and_book"><![CDATA[查看并预订]]></string>
    <string name="accept_all">全都接受</string>
    <string name="request_count_desc">您有%1$d传入的​​朋友请求</string>
 
@@ -481,7 +382,6 @@
 
    <string name="tag_photo">对您进行了标记</string>
 
-   <string name="user_already_exists">%1$s已经存在</string>
    <string name="photo_tag_title">点击任何地方给别人加标签</string>
    <string name="profile_friend_formatter">%1$d朋友</string>
    <string name="profile_friends_formatter">%1$d朋友</string>
@@ -526,18 +426,10 @@
    <string name="error_fail_to_load_success_stories">无法加载成功故事</string>
    <string name="error_fail_to_like_success_story">无法点赞成功故事</string>
    <string name="error_fail_to_unlike_success_story">无法取消点赞成功故事</string>
-   <string name="error_fail_to_load_settings">无法加载设置</string>
    <string name="error_fail_to_update_settings">无法更新设置</string>
-   <string name="error_fail_to_load_bl">无法加载人生愿望清单</string>
-   <string name="error_fail_to_delete_bl">无法删除人生愿望清单项目</string>
-   <string name="error_fail_to_create_bl">无法创建人生愿望清单项目</string>
-   <string name="error_fail_to_edit_bl">无法编辑人生愿望清单</string>
    <string name="error_fail_to_load_categories">无法加载类别</string>
    <string name="error_fail_to_load_suggestions">无法加载建议</string>
    <string name="error_fail_to_load_popular_bl">无法加载流行人生愿望清单项目</string>
-   <string name="error_fail_to_add_bl_item">无法添加项目</string>
-   <string name="error_fail_to_upload_bl_photo">无法上传照片</string>
-   <string name="error_fail_to_delete_bl_photo">无法删除照片</string>
    <string name="error_fail_to_load_circles">无法加载朋友圈</string>
    <string name="error_fail_to_load_feed">无法加载供稿</string>
    <string name="error_fail_to_load_item_details">无法加载项目细节</string>
@@ -550,7 +442,6 @@
    <string name="error_fail_to_edit_comment">无法编辑评论</string>
    <string name="error_fail_to_load_flag_reason">无法加载检举原因</string>
    <string name="error_fail_to_flag_item">无法检举项目</string>
-   <string name="error_fail_to_accept_friend_requests">无法接受好友请求</string>
    <string name="error_fail_to_accept_friend_request">无法接受好友请求</string>
    <string name="error_fail_to_reject_friend_request">无法拒绝好友请求</string>
    <string name="error_fail_to_hide_friend_request">无法隐藏好友请求</string>
@@ -565,29 +456,18 @@
    <string name="error_failed_to_load_mutual_friends">无法加载共同的朋友</string>
    <string name="error_failed_to_load_notifications">无法加载通知</string>
    <string name="error_failed_to_accept_terms_and_conditions">无法接受条款和条件</string>
-   <string name="error_failed_to_load_my_images">无法加载我的图片</string>
    <string name="error_failed_to_load_member_images">无法加载会员图像</string>
-   <string name="error_failed_to_load_ysbh_images">无法加载『You Should Be Here』图象</string>
    <string name="error_failed_to_load_inspire_images">无法加载『激励我（Inspire Me) 』图像</string>
-   <string name="error_failed_to_create_image">无法创建图像</string>
-   <string name="error_failed_to_edit_image">无法编辑图像</string>
    <string name="error_failed_to_delete_image">无法删除图像</string>
    <string name="string_failed_to_load_trips">无法加载旅行</string>
    <string name="error_failed_to_load_activities">无法加载活动</string>
    <string name="error_failed_to_load_users">无法加载用户</string>
-   <string name="error_failed_to_load_feedback_reasons">无法加载反馈原因</string>
-   <string name="error_fail_to_tag_people">"无法给人加标签"</string>
    <string name="error_fail_to_delete_tag">无法删除标签</string>
    <string name="error_fail_to_load_feedback_reasons">无法加载反馈原因</string>
    <string name="error_fail_to_send_feedback">无法发送反馈</string>
-   <string name="error_fail_to_upload_image">无法上传图片</string>
    <string name="error_fail_to_load_timeline">无法加载时间表</string>
-   <string name="error_fail_to_download_video">无法下载视频</string>
    <string name="error_fail_to_get_invitations">无法获得邀请</string>
-   <string name="error_fail_to_create_invitation">无法创建邀请</string>
-   <string name="error_fail_to_send_invitation">无法发送邀请</string>
    <string name="error_fail_to_invitation_templates">无法获得邀请模板</string>
-   <string name="error_fail_to_fill_template">无法填写模板</string>
    <string name="error_fail_to_get_preview_for_template">无法预览模板</string>
    <string name="error_fail_to_locales">无法获取当地情况</string>
    <string name="error_fail_to_login">无法登录</string>
@@ -654,7 +534,6 @@
    <string name="cancel_cached_podcast_title">播客</string>
    <string name="cancel_cached_podcast_text">您确定要取消文件下载？</string>
    <string name="audio_app_not_found_exception">未找到应用播放音频</string>
-   <string name="complete_action_with">完成操作</string>
    <string name="error_fail_to_load_podcast">无法加载播客</string>
    <string name="podcasts_button_resume">重新开始</string>
    <string name="podcasts_button_pause">暂停</string>

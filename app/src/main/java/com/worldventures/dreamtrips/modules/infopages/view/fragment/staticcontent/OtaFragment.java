@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.infopages.presenter.OtaPresenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import java.util.HashMap;
@@ -28,8 +29,8 @@ public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
    }
 
    @Override
-   protected void sendAnalyticEvent(String actionAnalyticEvent) {
-      TrackingHelper.actionBookTravelScreen(actionAnalyticEvent);
+   protected OtaPresenter createPresenter(Bundle savedInstanceState) {
+      return new OtaPresenter(getURL());
    }
 
    @Override
@@ -41,7 +42,7 @@ public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
 
    @Override
    public void reload(String url) {
-      webView.loadUrl("about:blank");
+      webView.loadUrl(BLANK_PAGE);
       load(url);
    }
 }

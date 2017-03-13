@@ -100,14 +100,4 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
       dialog.setCanceledOnTouchOutside(true);
       dialog.show();
    }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-
-   }
 }

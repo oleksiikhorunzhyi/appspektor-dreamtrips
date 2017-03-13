@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
 public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen, DtlCommentReviewsPresenter, DtlCommentReviewPath>
         implements DtlCommentReviewScreen {
@@ -84,6 +85,11 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     }
 
     @Override
+    public String getFingerprintId() {
+        return getBlackbox(getContext().getApplicationContext());
+    }
+
+    @Override
     public int getSizeComment() {
         return mComment != null ? mComment.getText().toString().length() : -1;
     }
@@ -124,7 +130,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         errorDialog.setCancelText(getActivity().getString(R.string.apptentive_no));
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
-            getPresenter().navigateToDetail("");
+            getActivity().onBackPressed();
         });
         errorDialog.show();
     }
@@ -137,6 +143,11 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public void disableInputs() {
         enableButtons(false);
+    }
+
+    @Override
+    public void onBackClick() {
+        getActivity().onBackPressed();
     }
 
     private void enableButtons(boolean status) {
@@ -208,5 +219,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public void hideBlockingProgress() {
 
+    }
+
+    @Override
+    public boolean isFromListReview(){
+        return getPath().isFromAddReview();
     }
 }

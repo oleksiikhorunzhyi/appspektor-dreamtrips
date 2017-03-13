@@ -8,16 +8,17 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 
@@ -81,6 +82,9 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                         Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
                         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
                         historyBuilder.pop();
+                        if (getView().isFromListReview()){
+                            historyBuilder.pop();
+                        }
                         historyBuilder.push(path);
                         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
                     }
@@ -89,7 +93,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
             } else {
                 getView().showSnackbarMessage(getContext().getString(R.string.review_comment_major_letter));
             }
-        } else if (getView().getSizeComment() > 0) {
+        } else if (getView().getSizeComment() > 0){
             getView().showSnackbarMessage(getContext().getString(R.string.review_comment_minor_letter));
         }
         return validated;
@@ -100,30 +104,30 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         User user = appSessionHolder.get().get().getUser();
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
-                .observeWithReplay()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<AddReviewAction>()
-                        .onSuccess(this::onMerchantsLoaded)
-                        .onProgress(this::onMerchantsLoading)
-                        .onFail(this::onMerchantsLoadingError));
+              .observeWithReplay()
+              .compose(bindViewIoToMainComposer())
+              .subscribe(new ActionStateSubscriber<AddReviewAction>()
+                    .onSuccess(this::onMerchantsLoaded)
+                    .onProgress(this::onMerchantsLoading)
+                    .onFail(this::onMerchantsLoadingError));
         addReviewActionActionPipe.send(AddReviewAction.create(ImmutableRequestReviewParams.builder()
-                .brandId(BRAND_ID)
-                .productId(merchant.id())
-                .userEmail(user.getEmail())
-                .userNickName(user.getUsername())
-                .reviewText(description)
-                .rating(String.valueOf(rating))
-                .verified(verified)
-                .userId(String.valueOf(user.getId()))
-                .deviceFingerprint(BRAND_ID)
-                .build(), ImmutableReviewParams.builder()
-                .userEmail(user.getEmail())
-                .userNickName(user.getUsername())
-                .reviewText(description)
-                .rating(String.valueOf(rating))
-                .verified(verified)
-                .userId(String.valueOf(user.getId()))
-                .build()));
+              .brandId(BRAND_ID)
+              .productId(merchant.id())
+              .userEmail(user.getEmail())
+              .userNickName(user.getUsername())
+              .reviewText(description)
+              .rating(String.valueOf(rating))
+              .verified(verified)
+              .userId(String.valueOf(user.getId()))
+              .deviceFingerprint(getView().getFingerprintId())
+              .build(), ImmutableReviewParams.builder()
+              .userEmail(user.getEmail())
+              .userNickName(user.getUsername())
+              .reviewText(description)
+              .rating(String.valueOf(rating))
+              .verified(verified)
+              .userId(String.valueOf(user.getId()))
+              .build()));
     }
 
     private void onMerchantsLoaded(AddReviewAction action) {

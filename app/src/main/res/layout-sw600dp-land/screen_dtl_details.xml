@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/root_detail_view"
       android:layout_width="match_parent"
@@ -117,6 +118,12 @@
                   android:layout_height="wrap_content"
                   app:el_contentLayout="@layout/adapter_item_merchant_hours_content"
                   app:el_headerLayout="@layout/adapter_item_merchant_hours_header"
+                  />
+
+            <View
+                  android:layout_width="match_parent"
+                  android:layout_height="1dp"
+                  android:background="@drawable/list_divider_with_right_padding"
                   />
 
             <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView

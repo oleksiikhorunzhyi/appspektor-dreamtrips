@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewConverter
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.UserImageConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import javax.inject.Singleton;
@@ -107,5 +108,11 @@ public class DtlMappingModule {
    @Singleton
    Converter provideReviewConverter() {
       return new ReviewConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideUserImageConverter() {
+      return new UserImageConverter();
    }
 }

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -56,9 +57,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import flow.History;
-import flow.path.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,6 +146,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
       bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
       bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
+      bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, merchant.displayName());
 
       FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
       transaction.replace(R.id.container_comments, OfferWithReviewFragment.newInstance(bundle));

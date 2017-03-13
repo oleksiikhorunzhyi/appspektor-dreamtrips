@@ -133,4 +133,7 @@
    <string name="snack_review_success">Your review has been submitted and will be posted once it\'s approved.</string>
    <string name="menu_post">POST</string>
 
+   <string name="tv_read_more">Read more</string>
+   <string name="action_add_review">Add review</string>
+
 </resources>

@@ -14,6 +14,10 @@ public interface DtlCommentReviewScreen extends DtlScreen {
 
     void disableInputs();
 
+    void onBackClick();
+
+    boolean isFromListReview();
+
     int getSizeComment();
 
     int getRatingBar();
@@ -33,4 +37,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     void showEmpty(boolean isShow);
 
     void sendPostReview();
+
+    String getFingerprintId();
 }

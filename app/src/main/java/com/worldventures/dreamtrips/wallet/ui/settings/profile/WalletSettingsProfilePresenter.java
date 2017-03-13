@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -10,12 +11,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
@@ -32,8 +33,6 @@ import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
-
-import java.io.File;
 
 import javax.inject.Inject;
 
@@ -93,7 +92,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
-               view.setPreviewPhoto(it.userPhoto().monochrome());
+               view.setPreviewPhoto(it.userPhoto().photoUrl());
                view.setUserName(it.firstName(), it.middleName(), it.lastName());
             }, throwable -> Timber.e(throwable, ""));
 
@@ -220,11 +219,11 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    private void photoPrepared(SmartCardUserPhoto photo) {
       preparedPhoto = photo;
-      getView().setPreviewPhoto(photo.monochrome());
+      getView().setPreviewPhoto(photo.photoUrl());
    }
 
    private void onImageCropped(String path) {
-      smartCardUserDataInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
+      smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromSchemePath(path));
    }
 
    private boolean isDataChanged() {
@@ -291,31 +290,43 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    public interface Screen extends WalletScreen {
+
       void pickPhoto();
+
       void hidePhotoPicker();
+
       void cropPhoto(String photoPath);
 
       Observable<String> observePickPhoto();
+
       Observable<String> observeCropper();
 
-      void setPreviewPhoto(File file);
+      void setPreviewPhoto(String photoUrl);
+
       void setUserName(String firstName, String middleName, String lastName);
 
       void showRevertChangesDialog();
 
       String getFirstName();
+
       String getMiddleName();
+
       String getLastName();
 
       Observable<String> firstNameObservable();
+
       Observable<String> middleNameObservable();
+
       Observable<String> lastNameObservable();
 
       void showError(Throwable throwable);
+
       void showUploadServerError();
+
       void showNetworkUnavailableError();
 
       void showProgress();
+
       void hideProgress();
    }
 }

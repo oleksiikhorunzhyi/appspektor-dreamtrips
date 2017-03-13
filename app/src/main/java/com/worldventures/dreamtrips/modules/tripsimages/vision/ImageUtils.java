@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.modules.tripsimages.vision;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -21,6 +19,7 @@ import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
 import com.facebook.datasource.DataSubscriber;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.image.CloseableBitmap;
@@ -51,6 +50,7 @@ import rx.Subscriber;
 public class ImageUtils {
 
    public static final String MIME_TYPE_GIF = "image/gif";
+   public static final int DEFAULT_IMAGE_SIZE = 256;
 
    private static final String PATTERN = "%s?width=%d&height=%d";
 
@@ -218,6 +218,14 @@ public class ImageUtils {
 
    public static Bitmap scaleBitmap(Bitmap source, int imageSize) {
       return Bitmap.createScaledBitmap(source, imageSize, imageSize, true);
+   }
+
+   public static void applyGrayScaleColorFilter(SimpleDraweeView draweeView) {
+      if (draweeView == null) return;
+      ColorMatrix matrix = new ColorMatrix();
+      matrix.setSaturation(0);
+      ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+      draweeView.getHierarchy().setActualImageColorFilter(filter);
    }
 
    public static Bitmap floydSteinbergDither(Bitmap src) {

@@ -15,15 +15,13 @@ import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
@@ -37,8 +35,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPat
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
-
-import java.io.File;
 
 import javax.inject.Inject;
 
@@ -83,7 +79,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       view.setUserFullName(userProfile.getFirstName(), userProfile.getLastName());
       String defaultUserAvatar = userProfile.getAvatar().getThumb();
       if (!TextUtils.isEmpty(defaultUserAvatar)) {
-         smartCardUserDataInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
+         smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromUrl(defaultUserAvatar));
       }
    }
 
@@ -131,7 +127,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    private void photoPrepared(SmartCardUserPhoto photo) {
       preparedPhoto = photo;
-      getView().setPreviewPhoto(photo.monochrome());
+      getView().setPreviewPhoto(photo.photoUrl());
    }
 
    void goToBack() {
@@ -144,7 +140,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void prepareImage(String path) {
-      smartCardUserDataInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
+      smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromSchemePath(path));
    }
 
    void setupUserData() {
@@ -169,7 +165,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       void hidePhotoPicker();
 
-      void setPreviewPhoto(File photo);
+      void setPreviewPhoto(String photoUrl);
 
       void setUserFullName(String firstName, String lastName);
 

@@ -88,7 +88,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .firstName(smartCardUser.firstName())
             .lastName(smartCardUser.lastName())
             .middleName(smartCardUser.middleName())
-            .photoUrl(smartCardUser.userPhoto().photoUrl())
+            .photoUrl(smartCardUser.userPhoto().photoUrl().toString())
             .build();
    }
 }

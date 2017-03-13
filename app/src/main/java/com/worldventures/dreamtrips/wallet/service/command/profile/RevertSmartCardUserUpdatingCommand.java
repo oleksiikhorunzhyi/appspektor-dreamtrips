@@ -4,11 +4,15 @@ import android.support.v4.util.Pair;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+
+import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -66,12 +70,17 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    private Observable<Void> revertPhoto(ChangedFields changedFields, SmartCardUser user) {
       if (changedFields.photo() == null) return Observable.just(null);
-
-      return janet.createPipe(UpdateUserPhotoAction.class)
-            .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper
-                  .convertBytesForUpload(user.userPhoto().monochrome()))
-            )
+      return Observable
+            .fromCallable(() -> getAvatarAsByteArray(user.userPhoto().original()))
+            .flatMap(bytes ->  janet.createPipe(UpdateUserPhotoAction.class)
+                  .createObservableResult(new UpdateUserPhotoAction(bytes)))
             .map(action -> null);
+   }
+
+   private byte[] getAvatarAsByteArray(File originalFile) throws IOException {
+      final File ditheredImageFile =
+            smartCardAvatarHelper.toMonochromeFile(originalFile, ImageUtils.DEFAULT_IMAGE_SIZE);
+      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageFile);
    }
 
    private User createUser(SmartCardUser user, String smartCardId) {

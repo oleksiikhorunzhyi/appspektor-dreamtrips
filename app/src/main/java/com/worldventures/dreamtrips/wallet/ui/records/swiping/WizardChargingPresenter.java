@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPath;
 
-import java.io.File;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
@@ -63,7 +62,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto().monochrome()))
+                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto().photoUrl()))
             );
    }
 
@@ -170,6 +169,6 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
 
       void showSwipeSuccess();
 
-      void userPhoto(File file);
+      void userPhoto(String photoUrl);
    }
 }

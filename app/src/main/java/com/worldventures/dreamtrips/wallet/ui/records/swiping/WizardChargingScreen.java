@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -10,13 +9,12 @@ import android.view.animation.Animation;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
-
-import java.io.File;
 
 import butterknife.InjectView;
 
@@ -42,6 +40,7 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> navigateClick());
+      ImageUtils.applyGrayScaleColorFilter(userPhoto);
    }
 
    @Override
@@ -92,7 +91,7 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    }
 
    @Override
-   public void userPhoto(File photo) {
-      userPhoto.setImageURI(Uri.fromFile(photo));
+   public void userPhoto(String photoUrl) {
+      userPhoto.setImageURI(photoUrl);
    }
 }

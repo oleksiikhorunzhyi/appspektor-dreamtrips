@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCard
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -81,9 +83,9 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
 
    private Observable<User> validateUserNameAndCreateUser() throws FormatException {
       if (avatar == null) throw new MissedAvatarException("avatar == null");
-      if (avatar.monochrome() == null || avatar.original() == null)
-         throw new MissedAvatarException("Monochrome avatar file == null");
-      if (!avatar.monochrome().exists() || !avatar.original().exists())
+      if (avatar.original() == null)
+         throw new MissedAvatarException("Avatar file == null");
+      if (!avatar.original().exists())
          throw new MissedAvatarException("Avatar does not exist");
 
 
@@ -103,7 +105,9 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
 
 
    private byte[] getAvatarAsByteArray() throws IOException {
-      return smartCardAvatarHelper.convertBytesForUpload(avatar.monochrome());
+      final File ditheredImageFile =
+            smartCardAvatarHelper.toMonochromeFile(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
+      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageFile);
    }
 
    public static class MissedAvatarException extends RuntimeException {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
@@ -13,7 +14,9 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Backgro
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
+import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 
 import javax.inject.Inject;
 
@@ -28,6 +31,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SnappyRepository db;
+
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject DtlLocationInteractor dtlLocationInteractor;
+   // Lazy dagger won't instantiate unless injected. Do not delete unused InitializerInteractor below!
+   @Inject InitializerInteractor initializerInteractor;
+
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;

@@ -40,7 +40,6 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
@@ -197,12 +196,6 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideFeedbackStorage(SnappyRepository db) {
       return new FeedbackTypeStorage(db);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideFirmwareStorage(SnappyRepository db) {
-      return new FirmwareStorage(db);
    }
 
    @Singleton

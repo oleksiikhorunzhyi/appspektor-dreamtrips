@@ -100,7 +100,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
    private BankCard createBankCard(AddressInfo address) {
       return ImmutableBankCard.builder()
             .from(bankCard)
-            .cvv(Integer.parseInt(cvv))
+            .cvv(cvv)
             .nickName(cardName)
             .issuerInfo(issuerInfo)
             .addressInfo(address)

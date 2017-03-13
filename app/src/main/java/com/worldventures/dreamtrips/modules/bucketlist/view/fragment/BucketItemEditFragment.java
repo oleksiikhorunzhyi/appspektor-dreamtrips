@@ -331,7 +331,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setImages(List photos) {
+   public void setImages(List<EntityStateHolder<BucketPhoto>> photos) {
       bucketPhotosView.setImages(photos);
    }
 

@@ -11,6 +11,7 @@ import android.text.style.StyleSpan;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import io.techery.janet.smartcard.model.Record;
@@ -47,7 +48,7 @@ public class BankCardHelper {
       return cardNumber.length() == 15 && amexPrefix;
    }
 
-   public String obtainFinancialServiceType(Record.FinancialService financialService) {
+   public String obtainFinancialServiceType(FinancialService financialService) {
       switch (financialService) {
          case VISA:
             return context.getString(R.string.wallet_card_financial_service_visa);
@@ -57,8 +58,8 @@ public class BankCardHelper {
             return context.getString(R.string.wallet_card_financial_service_discover);
          case AMEX:
             return context.getString(R.string.wallet_card_financial_service_amex);
-         case SAMPLE: {
-            return context.getString(R.string.wallet_card_financial_service_sample);
+         case GENERIC: {
+            return "";
          }
          default:
             throw new IllegalStateException("Incorrect Financial Service");
@@ -138,7 +139,7 @@ public class BankCardHelper {
             return R.drawable.wallet_finansial_service_discover;
          case AMEX:
             return R.drawable.wallet_finansial_service_amex;
-         case SAMPLE:
+         case GENERIC:
             return 0;
          default:
             throw new IllegalStateException("Incorrect Financial Service");

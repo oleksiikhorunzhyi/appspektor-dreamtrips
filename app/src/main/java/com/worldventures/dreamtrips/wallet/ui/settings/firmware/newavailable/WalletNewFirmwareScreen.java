@@ -46,6 +46,7 @@ public class WalletNewFirmwareScreen
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
@@ -91,7 +92,7 @@ public class WalletNewFirmwareScreen
 
    @Override
    public void currentFirmwareInfo(@Nullable SmartCardFirmware version) {
-      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.firmwareVersion()));
+      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.nordicAppVersion()));
    }
 
    @Override

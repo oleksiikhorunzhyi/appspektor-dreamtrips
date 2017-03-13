@@ -46,7 +46,7 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
    @NonNull
    @Override
    public WizardWelcomePresenter createPresenter() {
-      return new WizardWelcomePresenter(getContext(), getInjector(), getPath().smartCard);
+      return new WizardWelcomePresenter(getContext(), getInjector());
    }
 
    @Override

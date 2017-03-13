@@ -43,8 +43,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBaseFragmentWithArgs<T, UserBundle>
       implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener, ProfileCellDelegate,

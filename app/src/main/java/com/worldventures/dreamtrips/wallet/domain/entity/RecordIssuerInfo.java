@@ -6,8 +6,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
-import io.techery.janet.smartcard.model.Record;
-
 @Value.Immutable
 @Gson.TypeAdapters
 public abstract class RecordIssuerInfo {
@@ -17,10 +15,9 @@ public abstract class RecordIssuerInfo {
       return "";
    }
 
-   //TODO: financialService should be null
    @Value.Default
-   public Record.FinancialService financialService() {
-      return Record.FinancialService.MASTERCARD;
+   public FinancialService financialService() {
+      return FinancialService.GENERIC;
    }
 
    @Value.Default

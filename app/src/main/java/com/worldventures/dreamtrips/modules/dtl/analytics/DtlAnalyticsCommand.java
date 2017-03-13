@@ -45,7 +45,7 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
                         .observeSuccessWithReplay()
                         .take(1)
                         .map(MerchantsAction::getResult)
-                        .map(merchants -> merchants.get(0))
+                        .map(merchants -> merchants.get(0)) // TODO proper merchants handling
                         .map(dtlMerchant -> ImmutableDtlLocation.copyOf(dtlLocation)
                               .withAnalyticsName(dtlMerchant.asMerchantAttributes().provideAnalyticsName()))
                         .subscribe(action::setAnalyticsLocation, callback::onFail);

@@ -18,6 +18,7 @@ import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmartCardImageHttpAction> implements InjectableAction {
@@ -37,7 +38,7 @@ public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmar
    @Override
    protected void run(CommandCallback<UploadSmartCardImageHttpAction> callback) throws Exception{
       final String username = userSessionHolder.get().get().getUsername();
-      janet.createPipe(UploadSmartCardImageHttpAction.class)
+      janet.createPipe(UploadSmartCardImageHttpAction.class, Schedulers.io())
             .createObservableResult(new UploadSmartCardImageHttpAction(BuildConfig.UPLOADERY_API_URL, username, smartCardId, file))
             .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
    }

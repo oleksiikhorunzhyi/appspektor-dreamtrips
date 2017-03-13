@@ -11,14 +11,11 @@ class TestBankCard(
       private val cardNameHolder: String = "Test Holder",
       private val number: String = "123456789",
       private val expDate: String = "07/17",
-      private val cvv: Int = 375,
+      private val cvv: String = "375",
       private val track1: String? = null,
       private val track2: String? = null,
       private val addressInfo: AddressInfo = TestAddressInfo()
       ): BankCard() {
-
-   override fun title(): String? = null
-
    override fun id(): String? = id
 
    override fun number(): String = number
@@ -33,7 +30,7 @@ class TestBankCard(
 
    override fun nickName(): String= title
 
-   override fun cvv(): Int = cvv
+   override fun cvv(): String = cvv
 
    override fun addressInfo() = addressInfo
 

@@ -50,7 +50,10 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       trackScreen();
       observeCharger();
       observeBankCardCreation();
-      observeConnectionStatus();
+      //observeConnectionStatus();
+      //was developed in scope of SMARTCARD-1516
+      //commented due to bug SMARTCARD-1792,
+      //TODO: uncomment by request in future
    }
 
    private void observeConnectionStatus() {

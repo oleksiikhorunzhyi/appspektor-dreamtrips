@@ -40,6 +40,7 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -87,6 +88,9 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       }
    };
 
+   private BaseStatePagerAdapter adapter;
+   private List<BucketPhoto> photos = new ArrayList<>();
+
    @Override
    public void afterCreateView(View view) {
       super.afterCreateView(view);
@@ -94,6 +98,14 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       translateBucketItemViewInjector = new TranslateBucketItemViewInjector(view, getContext(), sessionHolder);
       viewPagerBucketGallery.addOnPageChangeListener(onPageSelectedListener);
       subscribeToBucketImagesClicks();
+      adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+         @Override
+         public void setArgs(int position, Fragment fragment) {
+            BucketPhoto photo = photos.get(position);
+            ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+         }
+      };
+      viewPagerBucketGallery.setAdapter(adapter);
    }
 
    @Override
@@ -264,17 +276,10 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    }
 
    @Override
-   public void setImages(List photos) {
-      BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
-         @Override
-         public void setArgs(int position, Fragment fragment) {
-            if (photos.get(position) instanceof BucketPhoto) {
-               BucketPhoto photo = (BucketPhoto) photos.get(position);
-               ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
-            }
-         }
-      };
-      viewPagerBucketGallery.setAdapter(adapter);
+   public void setImages(List<BucketPhoto> newPhotos) {
+      this.photos.clear();
+      this.photos.addAll(newPhotos);
+      adapter.clear();
       Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
       adapter.notifyDataSetChanged();
 
@@ -283,6 +288,10 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
          circleIndicator.setViewPager(viewPagerBucketGallery);
          viewPagerIndicatorInitialized = true;
       }
+
+      circleIndicator.setViewPager(viewPagerBucketGallery);
+      circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
+
       viewPagerBucketGallery.setCurrentItem(checkedPosition);
    }
 

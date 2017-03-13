@@ -13,6 +13,14 @@ public abstract class FirmwareUpdateData implements Serializable {
 
    public abstract boolean updateAvailable();
 
+   public abstract boolean updateCritical();
+
+   public abstract boolean factoryResetRequired();
+
+   public abstract String smartCardId();
+
+   public abstract SmartCardFirmware currentFirmwareVersion();
+
    @Nullable
    public abstract FirmwareInfo firmwareInfo();
 
@@ -22,5 +30,10 @@ public abstract class FirmwareUpdateData implements Serializable {
    @Value.Derived
    public boolean fileDownloaded() {
       return firmwareFile() != null;
+   }
+
+   @Value.Default
+   public boolean isStarted() {
+      return false;
    }
 }

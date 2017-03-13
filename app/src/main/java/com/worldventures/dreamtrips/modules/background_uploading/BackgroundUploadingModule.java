@@ -5,11 +5,13 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CancelAllCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CancelCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PauseCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PhotoAttachmentUploadingCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ResumeCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand;
@@ -23,12 +25,15 @@ import dagger.Module;
 import dagger.Provides;
 import rx.schedulers.Schedulers;
 
+
 @Module(
       injects = {
             PostProcessingCommand.class,
             PhotoAttachmentUploadingCommand.class,
             ScheduleCompoundOperationCommand.class,
             CancelCompoundOperationCommand.class,
+            CancelAllCompoundOperationsCommand.class,
+            RestoreCompoundOperationsCommand.class,
             StartNextCompoundOperationCommand.class,
             PauseCompoundOperationCommand.class,
             ResumeCompoundOperationCommand.class,

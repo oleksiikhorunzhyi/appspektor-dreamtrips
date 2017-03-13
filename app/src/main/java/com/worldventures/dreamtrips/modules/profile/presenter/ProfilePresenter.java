@@ -46,7 +46,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
-   implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
+      implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
    protected U user;
 

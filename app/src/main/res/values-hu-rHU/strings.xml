@@ -18,7 +18,6 @@
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menü megnyitva</string>
    <string name="drawer_close">Menü bezárva</string>
-   <string name="empty" translatable="false"></string>
    <string name="logout_dialog_title">Kijelentkezés</string>
    <string name="logout_dialog_message">Biztos, hogy kijelentkezik?</string>
    <string name="logout_dialog_positive_btn">Kijelentkezés</string>
@@ -88,6 +87,10 @@
    <string name="bucket_list_create_message">Jelenleg nincsenek bakancslistatételei. Választhat a népszerű bakancslistatételek közül, vagy létrehozhat saját célokat.</string>
    <string name="bucket_list_choose">Válasszon a népszerű tételekből</string>
    <string name="bucket_list_create_new">Saját lista létrehozása</string>
+   <string name="bucket_list_action_create_error">Nem sikerült frissíteni a bakancslitsa tételt</string>
+   <string name="bucket_list_action_update_error">Nem sikerült frissíteni a bakancslista tételt</string>
+   <string name="bucket_list_action_change_order_error">Nem sikerült megváltoztatni a bakancslista tételt</string>
+   <string name="bucket_list_action_delete_error">Nem sikerült törölni a bakancslista tételt</string>
    <string name="bucket_hint_title">Cím</string>
    <string name="bucket_hint_description">Leírás</string>
    <string name="bucket_hint_description_text">Írja ide a leírást</string>
@@ -116,7 +119,11 @@
    <string name="ss_filter_show_favorites">Kedvencek megjelenítése</string>
    <string name="other_travel">Utazás lefoglalása</string>
    <string name="training_videos">Oktatóvideók</string>
+   <string name="error_while_sync">Valamilyen hiba történt</string>
+   <string name="can_not_like_photo">A fénykép nem kedvelhető</string>
+   <string name="like">%1$d embernek tetszik</string>
    <string name="likes">%1$d felhasználónak tetszik</string>
+   <string name="comment_single">%1$d megjegyzés</string>
    <string name="comments">%1$d megjegyzés</string>
    <string name="someday">Egy napon</string>
    <string name="who">Ki: </string>
@@ -292,6 +299,7 @@
 
    <string name="photo_delete">Fénykép törlése</string>
    <string name="photo_delete_caption">Biztos, hogy törli a fényképet?</string>
+   <string name="photo_edit_error">Nem sikerült módosítani a fotót</string>
 
    <string name="bucket_delete">Bakancslistatétel törlése</string>
    <string name="bucket_delete_caption">Biztos, hogy törli a bakancslistatételt?</string>
@@ -383,6 +391,12 @@
    <string name="feedback_has_been_sent">Visszajelzésének elküldése megtörtént. Köszönjük!</string>
    <string name="feedback_send_btn">Küldés</string>
    <string name="feedback_select_category">Kategória választás</string>
+   <string name="feedback_add_photos">Fénykép hozzáadása</string>
+   <string name="feedback_could_not_load_attachment">Nem sikerült betölteni a mellékletet</string>
+   <string name="feedback_attachment_failed_item_retry">Újra</string>
+   <string name="feedback_attachment_failed_item_remove">eltávolít</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d/%2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">eltávolít</string>
 
    <string name="years_ago">%1$d évvel ezelőtt</string>
    <string name="invitation_template">Sablon kiválasztása</string>
@@ -461,8 +475,28 @@
    <string name="error_fail_to_load_videos">Videók betöltése sikertelen</string>
    <string name="error_fail_to_like_item">Tétel like-olása sikertelen</string>
    <string name="error_fail_to_unlike_item">Tétel vissza like-olása sikertelen</string>
+   <string name="error_fail_to_load_documents">Nem sikerült betölteni a dokumentumokat</string>
    <string name="tag_people">Emberek megjelölése</string>
 
+   <string name="uploading_post_status_progress_singular">Fotó feltöltése …</string>
+   <string name="uploading_post_status_progress_plural">%1$d kép feltöltés …</string>
+   <string name="uploading_post_status_paused">Feltöltés szünetel</string>
+   <string name="uploading_post_status_waiting">Várakozik</string>
+   <string name="uploading_post_status_failed_connection">A kapcsolat megszakadt</string>
+   <string name="uploading_post_status_uploaded">Hozzászólás sikeresen feltöltve!</string>
+   <string name="uploading_post_time_left_posting">Közzététel …</string>
+   <string name="uploading_post_time_time_left">elhagyta</string>
+   <string name="uploading_post_time_left_seconds">m</string>
+   <string name="uploading_post_time_left_minutes">p</string>
+   <string name="uploading_post_time_left_hours">ó</string>
+   <string name="uploading_post_time_left_more_than_one_day">Több mint 1 nap …</string>
+   <string name="uploading_post_cancel_upload_message">Feltöltés visszavonása?</string>
+   <string name="uploading_post_cancel_upload_positive_button">Igen</string>
+   <string name="uploading_post_cancel_upload_negative_button">Nem</string>
+
+   <string name="say_something">Mondj valamit a világnak</string>
+
+>>>>>>> develop
    <string name="update">Frissítés</string>
    <string name="add_location">Hely hozzáadás</string>
    <string name="find_your_location">Helyzet megtalálása</string>
@@ -527,9 +561,16 @@
 
    <string name="error_fail_to_load_filters">Sajnáljuk, nem sikerült betölteni a szűrőket</string>
    <string name="flag_content_message">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt a tartalmat </string>
+   <string name="try_again">Próbálja újra</string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">Nincs internetkapcsolat</string>
    <string name="offline_warning_dialog_message">A hozzáférés korlátozott</string>
+   <string name="offline_indicator_description">Nincs internetkapcsolat</string>
 
+   <string name="merchant_message_text" formatted="false">Gratulálunk! %1$s DreamTrips pontot szereztél @ %2$s , %3$s</string>
+
+   <string name="beta_label">Béta</string>
+
+   <string name="documents">dokumentumok</string>
+   <string name="documents_empty_text">Dokumentumokat nem lehet betölteni jelenleg.</string>
 </resources>

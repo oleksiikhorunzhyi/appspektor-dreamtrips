@@ -38,7 +38,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
+public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View, EntityStateHolder<BucketPhoto>> {
 
    public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
 
@@ -243,7 +243,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             .equals(photoEntityStateHolder));
    }
 
-   public interface View extends BucketDetailsBasePresenter.View {
+   public interface View extends BucketDetailsBasePresenter.View<EntityStateHolder<BucketPhoto>> {
       void showError();
 
       void setCategoryItems(List<CategoryItem> items, CategoryItem selectedItem);

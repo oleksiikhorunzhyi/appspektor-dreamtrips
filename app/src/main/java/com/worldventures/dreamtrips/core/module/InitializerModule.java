@@ -20,6 +20,9 @@ import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.Initializable;
 import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 
 import dagger.Module;
@@ -125,5 +128,15 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideVersionCheckInitializer(VersionCheckInteractor interactor) {
       return new VersionCheckInitializer(interactor);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public Initializable provideDtlLocationInteractor(DtlLocationInteractor dtlLocationInteractor) {
+      return dtlLocationInteractor;
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public Initializable provideDtlFilterDataInteractor(FilterDataInteractor filterDataInteractor) {
+      return filterDataInteractor;
    }
 }

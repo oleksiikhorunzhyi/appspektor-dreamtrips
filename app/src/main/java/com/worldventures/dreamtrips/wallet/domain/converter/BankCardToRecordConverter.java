@@ -38,9 +38,10 @@ public class BankCardToRecordConverter implements Converter<BankCard, Record> {
             .id(parseCardId(card))
             .title(card.nickName())
             .cardNumber(card.number())
-            .cvv(String.valueOf(card.cvv()))
+            .cvv(card.cvv())
             .expDate(card.expDate())
-            .financialService(card.issuerInfo().financialService())
+            .financialService(mapperyContext.convert(card.issuerInfo().financialService(),
+                  Record.FinancialService.class))
             .t1(card.track1() != null ? card.track1() : "")
             .t2(card.track2() != null ? card.track2() : "")
             .t3("")

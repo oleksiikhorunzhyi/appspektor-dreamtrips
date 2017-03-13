@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
@@ -25,7 +26,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
+public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View, BucketPhoto> {
 
    public BucketItemDetailsPresenter(BucketBundle bundle) {
       super(bundle);
@@ -151,7 +152,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       return status ? BucketItem.COMPLETED : BucketItem.NEW;
    }
 
-   public interface View extends BucketDetailsBasePresenter.View {
+   public interface View extends BucketDetailsBasePresenter.View<BucketPhoto> {
       void setCategory(String category);
 
       void setPlace(String place);

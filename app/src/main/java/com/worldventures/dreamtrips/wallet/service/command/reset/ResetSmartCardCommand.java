@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
+import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,6 +11,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
@@ -27,25 +27,25 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    @Inject @Named(JANET_API_LIB) Janet apiLibJanet;
    @Inject @Named(JANET_WALLET) Janet walletJanet;
-   @Inject SystemPropertiesProvider propertiesProvider;
+   private final SmartCard smartCard;
+
+   public ResetSmartCardCommand(SmartCard smartCard) {
+      this.smartCard = smartCard;
+   }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      walletJanet.createPipe(ActiveSmartCardCommand.class)
-            .createObservableResult(new ActiveSmartCardCommand())
-            .flatMap(command -> reset(command.getResult()))
-            .subscribe(callback::onSuccess, callback::onFail);
+      reset().subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<Void> reset(SmartCard smartCard) {
+   private Observable<Void> reset() {
       if (!smartCard.connectionStatus().isConnected()) return Observable.error(new NotConnectedException());
-      if (smartCard.lock()) return Observable.error(new IllegalStateException("Smart Card should be unlocked"));
 
       return disableAutoLock()
             .flatMap(action -> disassociateCardUserServer(smartCard))
             .flatMap(action -> disassociateCardUser())
             .flatMap(action -> disconnect())
-            .flatMap(action -> removeSmartCardData(smartCard))
+            .flatMap(action -> removeSmartCardData())
             .map(action -> null);
    }
 
@@ -60,11 +60,19 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .createObservableResult(new DisconnectAction());
    }
 
-   private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {
-      //// TODO: 11/18/16 use DisassociateCardUserCommand for it
-      long scId = Long.parseLong(smartCard.smartCardId());
+   private Observable<Void> disassociateCardUserServer(SmartCard smartCard) {
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
-            .createObservableResult(new DisassociateCardUserHttpAction(scId, propertiesProvider.deviceId()));
+            .createObservableResult(
+                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), smartCard.deviceId()))
+            .map(disassociateCardUserHttpAction -> (Void) null)
+            .onErrorResumeNext(throwable -> {
+               JanetActionException actionException = (JanetActionException) throwable;
+               if (((BaseHttpAction) actionException.getAction()).statusCode() == 404) {
+                  return Observable.just(null);
+               } else {
+                  return Observable.error(throwable);
+               }
+            });
    }
 
    private Observable<UnAssignUserAction> disassociateCardUser() {
@@ -72,9 +80,8 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .createObservableResult(new UnAssignUserAction());
    }
 
-   private Observable<RemoveSmartCardDataCommand> removeSmartCardData(SmartCard smartCard) {
+   private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {
       return walletJanet.createPipe(RemoveSmartCardDataCommand.class)
-            .createObservableResult(new RemoveSmartCardDataCommand(smartCard.smartCardId()));
+            .createObservableResult(new RemoveSmartCardDataCommand());
    }
-
 }

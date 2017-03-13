@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-   <string name="dtl_local">Tempatan</string>
+   <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Pilih lokasi</string>
    <string name="dtl_locations_try_search">Kami tidak dapat mengesan Bandar terdekat kepada anda.\nCuba carian bandar kami</string>
    <string name="dtl_merchant_tab_offers">Tawaran</string>
@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Alat Setempat DT</string>
    <string name="dtl_details_share_title">Saya akan memperoleh mata Dreamtrips dalam %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">Saya telah mendapat %1$s mata DreamTrips dalam %2$s</string>
-   <string name="dtl_wait_for_receipt">Tunggu... Resit muat naik</string>
-   <string name="dtl_wait_for_earn">Tunggu... Memperoleh mata</string>
+   <string name="dtl_wait_for_receipt">Tunggu… Resit muat naik</string>
+   <string name="dtl_wait_for_earn">Tunggu… Memperoleh mata</string>
    <string name="dtl_wait_for_offers">Mencari tawaran yang berhampiran.</string>
    <string name="dtl_wait_for_dinings">Mencari pedagang yang berhampiran.</string>
    <string name="dtl_estimator_explanation">Mata dikira berdasarkan amaun minimum dibelanjakan di saudagar dan hari minggu tersebut</string>
@@ -92,6 +92,15 @@
    <string name="merchants_list_empty_text">Tempat yang akan datang tidak lama lagi</string>
    <string name="merchants_list_empty_text_additional">- atau -</string>
    <string name="merchant_working_hours_caption">jam</string>
+   <string name="filter_amenities_error_caption">Kemudahan tidak dapat dimuatkan pada masa ini</string>
+   <string name="merchants_no_results">Tiada keputusan ditemui \n Cuba laraskan penapis anda atau masukkan sebuah lokasi baharu.</string>
+   <string name="merchants_no_results_offers_only">Maaf, masih tiada tawaran yang tersedia di kawasan anda. \n Padamkan tawaran untuk melihat restoran berdekatan anda.</string>
+   <string name="dtl_try_again">Cubalah lagi</string>
+   <string name="dtl_load_more">Muat Lebih</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Ralat Memuat</string>
+   <string name="dtl_load_merchant_error_caption">Keputusan tidak dapat dimuatkan pada masa ini.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Makanan &amp; Minuman</string>

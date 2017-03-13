@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
-import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -78,7 +78,14 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void processTranslations() {
-      TextualPost textualPost = getModelObject().getItem();
+      PostFeedItem postFeedItem = getModelObject();
+      TextualPost textualPost = postFeedItem.getItem();
+
+      if (!appSessionHolder.get().isPresent()) {
+         hideTranslationUi();
+         return;
+      }
+
       boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguage());
@@ -94,9 +101,13 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
             viewWithTranslation.hide();
          }
       } else {
-         translateButton.setVisibility(View.GONE);
-         viewWithTranslation.hide();
+         hideTranslationUi();
       }
+   }
+
+   private void hideTranslationUi() {
+      translateButton.setVisibility(View.GONE);
+      viewWithTranslation.hide();
    }
 
    private void processPostText(TextualPost textualPost) {

@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
@@ -27,6 +26,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAda
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.ScrollingManager;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionManager;
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
@@ -56,7 +56,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Inject MerchantsAdapterDelegate delegate;
 
    ScrollingManager scrollingManager;
-   SingleSelectionManager selectionManager;
+   ClearableSelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -90,7 +90,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       scrollingManager = new ScrollingManager();
       scrollingManager.setup(recyclerView);
 
-      selectionManager = new SingleSelectionManager(recyclerView);
+      selectionManager = new ClearableSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
@@ -123,9 +123,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -226,6 +223,15 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void setRefreshedItems(List<ThinMerchant> merchants) {
       delegate.setItems(merchants);
       scrollStatePersister.restoreInstanceStateIfNeeded(getLastRestoredInstanceState(), layoutManager);
+   }
+
+   @Override
+   public void connectToggleUpdate() {
+      if(dtlToolbar == null) return;
+
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override

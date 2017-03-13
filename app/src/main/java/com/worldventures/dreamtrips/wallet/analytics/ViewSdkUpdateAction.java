@@ -13,7 +13,8 @@ public class ViewSdkUpdateAction extends WalletAnalyticsAction {
    @Attribute("latestversion") final String latestVersion;
    @Attribute("dtupdaterqrd") final String updateRequired;
 
-   public ViewSdkUpdateAction(String latestVersion, String currentVersion, boolean updateRequired) {
+   public ViewSdkUpdateAction(String scId, String latestVersion, String currentVersion, boolean updateRequired) {
+      super(scId);
       this.latestVersion = latestVersion;
       this.currentVersion = currentVersion;
       this.updateRequired = updateRequired ? "Yes" : "No";

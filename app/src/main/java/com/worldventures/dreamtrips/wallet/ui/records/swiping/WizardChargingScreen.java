@@ -37,7 +37,6 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> navigateClick());
    }
 

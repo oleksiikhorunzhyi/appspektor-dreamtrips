@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.MagstripeReaderModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
-import com.worldventures.dreamtrips.wallet.di.WalletDelegateModule;
+import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
 import java.net.CookieManager;
 import java.util.List;
@@ -47,7 +47,6 @@ import io.techery.janet.smartcard.client.SmartCardClient;
             JanetServiceModule.class,
             CacheActionStorageModule.class,
             SmartCardModule.class,
-            WalletDelegateModule.class,
             MagstripeReaderModule.class
       },
       complete = false, library = true)
@@ -193,6 +192,7 @@ public class JanetModule {
    ActionService provideSmartCardService(SmartCardClient client) {
       return new SmartCardActionService.Builder(client)
             .addDefaults()
+            .setLogger(new TimberLogger("SC_ABS_LAYER"))
             .setResponseTimeout(TimeUnit.MINUTES.toMillis(2L))
             .build();
    }

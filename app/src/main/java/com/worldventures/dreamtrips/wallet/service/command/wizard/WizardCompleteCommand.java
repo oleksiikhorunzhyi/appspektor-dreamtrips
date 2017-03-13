@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
@@ -32,6 +33,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject WizardMemoryStorage wizardMemoryStorage;
    @Inject SnappyRepository snappyRepository;
+   @Inject SystemPropertiesProvider propertiesProvider;
 
    private final SmartCard smartCard;
 
@@ -39,7 +41,9 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    protected void run(CommandCallback<Void> callback) throws Throwable {
       uploadUserDataAndAssociateSmartCard(smartCard)
             .flatMap(sc -> walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
-                  .createObservableResult(new ActivateSmartCardCommand(sc)))
+                  .createObservableResult(
+                        new ActivateSmartCardCommand(ImmutableSmartCard.copyOf(sc)
+                              .withDeviceId(propertiesProvider.deviceId()))))
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 
@@ -52,7 +56,12 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
                               .user()
                               .userPhoto()
                               .photoUrl())))
-                        .map(associateCardUserCommand -> sc)
+                        .map(command -> ImmutableSmartCard.builder() //// TODO: 2/15/17 SendFeedbackCommand use this fields
+                              .from(sc)
+                              .deviceAddress(command.getResult().bleAddress())
+                              .serialNumber(command.getResult().serialNumber())
+                              .build()
+                        )
             );
    }
 

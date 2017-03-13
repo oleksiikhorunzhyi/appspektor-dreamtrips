@@ -210,8 +210,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<FeedStorageCommand>()
-               .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
-               .onFail(this::handleError));
+                  .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
+                  .onFail(this::handleError));
    }
 
    private void refreshFeed(List<FeedItem> newFeedItems) {

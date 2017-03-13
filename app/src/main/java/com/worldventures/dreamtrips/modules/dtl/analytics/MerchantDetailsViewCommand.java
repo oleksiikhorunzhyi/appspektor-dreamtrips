@@ -24,16 +24,13 @@ public class MerchantDetailsViewCommand extends DtlAnalyticsCommand {
             .take(1)
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
-            .flatMap(isOffersOnly -> {
-               ((MerchantDetailsViewEvent) action).setOffersOnly(isOffersOnly);
-               return null;
-            })
+            .doOnNext(((MerchantDetailsViewEvent) action)::setOffersOnly)
             .subscribe(aVoid -> {
-               try {
-                  super.run(callback);
-               } catch (Throwable throwable) {
-                  callback.onFail(throwable);
-               }
-            }, callback::onFail);
+                     try {
+                        super.run(callback);
+                     } catch (Throwable throwable) {
+                        callback.onFail(throwable);
+                     }
+                  }, callback::onFail);
    }
 }

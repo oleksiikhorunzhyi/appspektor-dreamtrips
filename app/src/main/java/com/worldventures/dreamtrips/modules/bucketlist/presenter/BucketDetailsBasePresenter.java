@@ -26,7 +26,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View<T>, T> extends Presenter<V> {
 
    @Inject protected SnappyRepository db;
    @Inject protected BucketInteractor bucketInteractor;
@@ -107,7 +107,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
    }
 
    public void openFullScreen(BucketPhoto selectedPhoto) {
-      if ((bucketItem.getPhotos().contains(selectedPhoto))) {
+      if ((bucketItem.getPhotos().contains(selectedPhoto)) && bucketItem.getOwner() != null) {
          ArrayList<IFullScreenObject> photos = new ArrayList<>();
          if (bucketItem.getCoverPhoto() != null) {
             Queryable.from(bucketItem.getPhotos()).forEachR(photo -> photo.setIsCover(photo.getFSId()
@@ -147,7 +147,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
       super.dropView();
    }
 
-   public interface View extends RxView {
+   public interface View<T> extends RxView {
       void setBucketItem(BucketItem bucketItem);
 
       void setTime(String time);
@@ -162,6 +162,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
       void openFullscreen(FullScreenImagesBundle data);
 
-      void setImages(List photos);
+      void setImages(List<T> photos);
    }
 }

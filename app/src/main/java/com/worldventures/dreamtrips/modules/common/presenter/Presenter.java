@@ -169,6 +169,7 @@ public class Presenter<VT extends Presenter.View> {
       if (handleGenericError(error)) return;
       if (action instanceof CommandWithError) {
          view.informUser(((CommandWithError) action).getErrorMessage());
+         return;
       }
       String message = JanetHttpErrorHandlingUtils.handleJanetHttpError(context,
             action, error, context.getString(R.string.smth_went_wrong));

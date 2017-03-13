@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import java.io.File;
@@ -28,9 +29,9 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
-   @InjectView(R.id.first_name) EditText firstName;
-   @InjectView(R.id.middle_name) EditText middleName;
-   @InjectView(R.id.last_name) EditText lastName;
+   @InjectView(R.id.first_name) EditText etFirstName;
+   @InjectView(R.id.middle_name) EditText etMiddleName;
+   @InjectView(R.id.last_name) EditText etLastName;
 
    private Observable<String> firstNameObservable;
    private Observable<String> middleNameObservable;
@@ -72,9 +73,9 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
-      firstNameObservable = RxTextView.afterTextChangeEvents(firstName).map(event -> event.editable().toString());
-      middleNameObservable = RxTextView.afterTextChangeEvents(middleName).map(event -> event.editable().toString());
-      lastNameObservable = RxTextView.afterTextChangeEvents(lastName).map(event -> event.editable().toString());
+      firstNameObservable = RxTextView.afterTextChangeEvents(etFirstName).map(event -> event.editable().toString());
+      middleNameObservable = RxTextView.afterTextChangeEvents(etMiddleName).map(event -> event.editable().toString());
+      lastNameObservable = RxTextView.afterTextChangeEvents(etLastName).map(event -> event.editable().toString());
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -116,9 +117,14 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public void setUserName(String firstName, String middleName, String lastName) {
-      this.firstName.setText(firstName);
-      this.middleName.setText(middleName);
-      this.lastName.setText(lastName);
+      etFirstName.setText(firstName);
+      etFirstName.setSelection(etFirstName.length());
+
+      etMiddleName.setText(middleName);
+      etMiddleName.setSelection(etMiddleName.length());
+
+      etLastName.setText(lastName);
+      etLastName.setSelection(etLastName.length());
    }
 
    @Override
@@ -134,17 +140,17 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public String getFirstName() {
-      return firstName.getText().toString();
+      return etFirstName.getText().toString();
    }
 
    @Override
    public String getMiddleName() {
-      return middleName.getText().toString();
+      return etMiddleName.getText().toString();
    }
 
    @Override
    public String getLastName() {
-      return lastName.getText().toString();
+      return etLastName.getText().toString();
    }
 
    @Override
@@ -164,7 +170,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return null;
+      return new DialogOperationScreen(this);
    }
 
    @Override
@@ -198,7 +204,10 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
             .cancelable(false)
             .title(R.string.wallet_card_settings_profile_dialog_error_smartcard_header)
             .positiveText(R.string.ok)
-            .onPositive((dialog, which) -> getPresenter().setupUserData())
+            .onPositive((dialog, which) -> {
+               if (throwable instanceof FormatException) getPresenter().cancelUpdating();
+               else getPresenter().setupUserData();
+            })
             .onNegative((dialog, which) -> getPresenter().cancelUpdating())
             .negativeText(R.string.cancel)
             .build()

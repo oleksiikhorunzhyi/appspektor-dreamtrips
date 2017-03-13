@@ -10,4 +10,7 @@ public class UpdateChecksVisitAction extends WalletAnalyticsAction {
 
    @Attribute("scupdatestep3") final String udateStep3 = "1";
 
+   public UpdateChecksVisitAction(String scId) {
+      super(scId);
+   }
 }

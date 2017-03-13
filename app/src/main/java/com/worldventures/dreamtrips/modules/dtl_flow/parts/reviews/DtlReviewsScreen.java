@@ -17,4 +17,6 @@ public interface DtlReviewsScreen extends DtlScreen {
    void showEmpty(boolean isShow);
 
    void showFrameLayoutReviews(boolean isShow);
+
+   void userHasPendingReview();
 }

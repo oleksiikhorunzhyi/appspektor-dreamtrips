@@ -6,7 +6,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
@@ -36,6 +39,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import java.util.List;
 
@@ -56,9 +60,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
+   @Inject SessionHolder<UserSession> appSessionHolder;
 
    @State boolean initialized;
    @State FullMerchantParamsHolder actionParamsHolder;
+   @State boolean hasPendingReview;
+
+   private User user;
 
    public DtlMerchantsPresenterImpl(Context context, Injector injector) {
       super(context);
@@ -188,6 +196,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
+      user = appSessionHolder.get().get().getUser();
+      ReviewStorage.updateReviewsPosted(context, String.valueOf(user.getId()), action.getMerchantId(), hasPendingReview);
       if (!action.getFromRating()) {
          navigateToDetails(action.getResult(), action.getOfferId());
       } else {
@@ -290,6 +300,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId, boolean fromRating) {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
       fullMerchantInteractor.load(merchant.id(), expandedOfferId, fromRating);
+      hasPendingReview = merchant.reviewSummary().userHasPendingReview();
    }
 
    private void onEmptyMerchantsLoaded() {

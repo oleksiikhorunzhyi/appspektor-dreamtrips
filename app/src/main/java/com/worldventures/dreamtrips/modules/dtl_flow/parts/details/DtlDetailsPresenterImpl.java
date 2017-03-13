@@ -11,11 +11,14 @@ import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
@@ -43,6 +46,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentRev
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,7 +68,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
 
+   @Inject SessionHolder<UserSession> appSessionHolder;
+
    private final Merchant merchant;
+   private User user;
    private final List<String> preExpandOffers;
    private static final int MAX_SIZE_TO_SHOW_BUTTON = 2;
 
@@ -322,6 +329,16 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    public void onClickRatingsReview(Merchant merchant) {
       if (!merchant.reviews().total().isEmpty() && Integer.parseInt(merchant.reviews().total()) > 0) {
          Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      } else {
+         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+      }
+   }
+
+   @Override
+   public void onClickRateView() {
+      this.user = appSessionHolder.get().get().getUser();
+      if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
+         getView().userHasPendingReview();
       } else {
          Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
       }

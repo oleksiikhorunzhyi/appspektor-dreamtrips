@@ -10,4 +10,6 @@ public interface DtlMapInfoPresenter extends DtlPresenter<DtlMapInfoScreen, View
    void onSizeReady(int height);
 
    void onClickRatingsReview();
+
+   boolean hasPendingReview();
 }

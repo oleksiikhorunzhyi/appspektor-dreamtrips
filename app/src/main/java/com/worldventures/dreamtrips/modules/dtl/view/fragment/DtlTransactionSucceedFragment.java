@@ -31,14 +31,14 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
 
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
-   @InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
+   //@InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
 
    @Inject CloseDialogEventDelegate closeDialogEventDelegate;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      properRatingBar.setListener(ratingBar -> getPresenter().rate(ratingBar.getRating()));
+      //properRatingBar.setListener(ratingBar -> getPresenter().rate(ratingBar.getRating()));
    }
 
    @Override

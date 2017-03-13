@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import javax.inject.Inject;
 
@@ -38,6 +39,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     private final Merchant merchant;
     private static final String BRAND_ID = "1";
+    private User user;
 
     public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
         super(context);
@@ -100,7 +102,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     @Override
     public void sendAddReview(String description, Integer rating) {
-        User user = appSessionHolder.get().get().getUser();
+        this.user = appSessionHolder.get().get().getUser();
+        ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
                 .observeWithReplay()

@@ -14,10 +14,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath> implements DtlMapInfoScreen {
 
    MerchantDataInflater commonDataInflater, categoryDataInflater;
+   SweetAlertDialog errorDialog;
 
    public DtlMapInfoScreenImpl(Context context) {
       super(context);
@@ -71,6 +73,16 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
 
    @OnClick(R.id.layout_rating_reviews_map)
    public void onClickRatingReviews() {
-      categoryDataInflater.notifyRatingsClickListeners();
+      if (getPresenter().hasPendingReview()) {
+         errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+         errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+         errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+         errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+         errorDialog.showCancelButton(true);
+         errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+         errorDialog.show();
+      } else {
+         categoryDataInflater.notifyRatingsClickListeners();
+      }
    }
 }

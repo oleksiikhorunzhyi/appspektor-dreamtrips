@@ -50,7 +50,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferNoReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
@@ -66,7 +65,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import flow.Flow;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import timber.log.Timber;
 
 public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
@@ -94,6 +93,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    private MerchantWorkingHoursInflater merchantHoursInflater;
    private MerchantInflater merchantInfoInflater;
    private Merchant merchant;
+
+   SweetAlertDialog errorDialog;
 
    @Override
    public DtlDetailsPresenter createPresenter() {
@@ -166,6 +167,17 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public void setTextRateAndReviewButton(int size) {
       mTvReadAllReviews.setText(String.format(getContext().getResources()
             .getString(R.string.total_reviews_text), size));
+   }
+
+   @Override
+   public void userHasPendingReview() {
+      errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
    }
 
    @OnClick(R.id.tv_read_all_review)
@@ -372,7 +384,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.btn_rate_and_review)
    void onClickRateView() {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+      getPresenter().onClickRateView();
    }
 
    @Override

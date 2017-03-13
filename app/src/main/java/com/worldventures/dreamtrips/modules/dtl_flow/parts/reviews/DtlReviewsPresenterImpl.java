@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
@@ -16,6 +19,8 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
+
 import android.view.MenuItem;
 import flow.Flow;
 
@@ -24,8 +29,12 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
 
+   @Inject
+   SessionHolder<UserSession> appSessionHolder;
+
    private final Merchant merchant;
    private static final String BRAND_ID = "1";
+   private User user;
 
    public DtlReviewsPresenterImpl(Context context, Injector injector, Merchant merchant) {
       super(context);
@@ -57,7 +66,12 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void onAddClick() {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true, false));
+      user = appSessionHolder.get().get().getUser();
+      if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
+         getView().userHasPendingReview();
+      } else {
+         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true, false));
+      }
    }
 
    private void connectReviewMerchants() {

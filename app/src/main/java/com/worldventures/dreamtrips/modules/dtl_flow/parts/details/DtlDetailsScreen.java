@@ -59,4 +59,6 @@ public interface DtlDetailsScreen extends DtlScreen {
    void hideButtonAllRateAndReview();
 
    void setTextRateAndReviewButton(int size);
+
+   void userHasPendingReview();
 }

@@ -84,4 +84,8 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
       fullMerchantInteractor.load(merchant.id(), true);
    }
 
+   @Override
+   public boolean hasPendingReview() {
+      return (merchant.reviewSummary().userHasPendingReview() && Integer.parseInt(merchant.reviewSummary().total()) < 1);
+   }
 }

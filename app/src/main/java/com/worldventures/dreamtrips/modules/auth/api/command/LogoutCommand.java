@@ -20,8 +20,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.analytics.LogoutAction;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -63,18 +64,23 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.zip(clearSessionDependants(), args -> null)
             .flatMap(o -> clearSession())
             .flatMap(o -> clearUserData())
-            .doOnNext(o -> TrackingHelper.logout())
             .doOnError(throwable -> {
                Timber.w((Throwable) throwable, "Could not log out");
                CrashlyticsTracker.trackError((Throwable) throwable);
             })
-            .subscribe(o -> callback.onSuccess(null));
+            .subscribe(o -> logoutComplete(callback));
+   }
+
+   private void logoutComplete(CommandCallback<Void> callback) {
+      analyticsInteractor.analyticsActionPipe().send(new LogoutAction());
+      callback.onSuccess(null);
    }
 
    private Iterable<Observable<Void>> clearSessionDependants() {

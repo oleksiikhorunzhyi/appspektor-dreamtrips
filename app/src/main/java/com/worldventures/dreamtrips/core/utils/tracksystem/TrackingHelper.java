@@ -70,7 +70,6 @@ public class TrackingHelper {
    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
    public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
 
-   public static final String ACTION_360 = "videos_360";
    public static final String ACTION_360_PLAY = "videos_360_play";
    public static final String ACTION_360_LOAD_START = "videos_360_download_start";
 
@@ -348,7 +347,6 @@ public class TrackingHelper {
    public static final String ACTION_360_VIDEOS = "360_videos";
    public static final String ACTION_MEMBERSHIP = "membership";
    public static final String ACTION_MEMBERSHIP_ENROLL = "membership:enroll-member";
-   public static final String ACTION_LOGOUT = "Logout";
    public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
    public static final String ACTION_TERMS_SERVICE = "terms_service";
    public static final String ACTION_TERMS_COOKIE = "terms-cookie";
@@ -389,9 +387,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_TERMS = "optinoptout";
    public static final String ATTRIBUTE_COMPLETE = "complete";
    public static final String ATTRIBUTE_FAVORITE = "favorite";
-   public static final String ATTRIBUTE_DINING = "dining";
-   public static final String ATTRIBUTE_ACTIVITIES = "activities";
-   public static final String ATTRIBUTE_LOCATIONS = "locations";
    public static final String ATTRIBUTE_VIEW_PHOTO = "view_photo";
    public static final String ATTRIBUTE_SHOW_TRIPS = "show_trips";
    public static final String ATTRIBUTE_SHOW_BUCKETLIST = "show_bucketlist";
@@ -689,8 +684,7 @@ public class TrackingHelper {
       sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, buttonType);
    }
 
-   public static void logout() {
-      sendSimpleAttributetoAdobeTracker(ACTION_LOGOUT, null);
+   public static void clearHeaderData() {
       trackers.get(KEY_ADOBE_TRACKER).setHeaderData(null);
    }
 

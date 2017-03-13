@@ -5,6 +5,7 @@ import android.content.Context;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
+import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
@@ -62,8 +63,8 @@ public class JanetModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionService provideHttpService(@ForApplication Context appContext, HttpClient httpClient) {
-      return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient,
+   ActionService provideHttpService(@ForApplication Injector injector, HttpClient httpClient) {
+      return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient,
             new GsonConverter(new GsonProvider().provideGson()));
    }
 

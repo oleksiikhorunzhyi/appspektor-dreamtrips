@@ -9,6 +9,7 @@ import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.synchmechanism.MessengerSyncDelegate;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
@@ -17,7 +18,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import javax.inject.Singleton;
 
@@ -26,9 +26,19 @@ import dagger.Provides;
 import io.techery.janet.Janet;
 
 @Module(
+      injects = {
+            MessengerSyncDelegate.class,
+      },
       complete = false,
       library = true)
 public class MessengerDelegateModule {
+
+   @Provides
+   @Singleton
+   MessengerSyncDelegate provideMessengerSyncDelegate(@ForApplication Injector injector, Janet janet) {
+      return new MessengerSyncDelegate(injector, janet);
+   }
+
    @Provides
    ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {
       return new ChatFacadeManager(injector);

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.janet;
 
-import android.content.Context;
-
+import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
@@ -68,8 +67,8 @@ public class JanetUploaderyModule {
 
    @Provides
    @Named(JANET_UPLOADERY)
-   ActionService provideUploaderyActionService(@ForApplication Context appContext, @Named(JANET_UPLOADERY) HttpClient httpClient) {
-      return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
+   ActionService provideUploaderyActionService(@ForApplication Injector injector, @Named(JANET_UPLOADERY) HttpClient httpClient) {
+      return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
             .provideGson()));
    }
 }

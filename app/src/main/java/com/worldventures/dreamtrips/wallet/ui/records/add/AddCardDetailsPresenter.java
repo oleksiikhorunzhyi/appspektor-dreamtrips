@@ -5,9 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
@@ -17,39 +16,36 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
-import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
-import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
-import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
 import flow.Flow.Direction;
-import io.techery.janet.helper.ActionStateToActionTransformer;
+import io.techery.janet.Command;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import rx.functions.Action1;
-
-import static android.text.TextUtils.getTrimmedLength;
+import timber.log.Timber;
 
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SmartCardInteractorHelper smartCardInteractorHelper;
 
    private final Record record;
 
@@ -61,59 +57,37 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      getView().setCardBank(record);
+      view.setCardBank(record);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
-      connectToDefaultCardPipe();
-      connectToDefaultAddressPipe();
-      connectToSaveCardDetailsPipe();
+      observeDefaultCardChangeByUser();
+      observeFetchingDefaultAddress();
+      observeSavingCardDetailsData();
       loadDataFromDevice();
       observeMandatoryFields();
    }
 
-   private void trackScreen() {
-      smartCardInteractor.deviceStatePipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .subscribe(command -> analyticsInteractor.walletAnalyticsCommandPipe()
-                  .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(record,
-                        command.getResult().connectionStatus().isConnected()))));
+   private void observeDefaultCardChangeByUser() {
+      getView().setAsDefaultPaymentCardCondition()
+            .compose(bindView())
+            .subscribe(this::onUpdateStatusDefaultCard);
    }
 
-   private void connectToDefaultCardPipe() {
-      smartCardInteractorHelper.sendSingleDefaultCardTask(bankCard -> {
-         getView().defaultPaymentCard(!WalletRecordUtil.isRealRecord(bankCard));
-         getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
-      }, bindViewIoToMainComposer());
-   }
-
-   private void connectToDefaultAddressPipe() {
+   private void observeFetchingDefaultAddress() {
       smartCardInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
-            .compose(new ActionStateToActionTransformer<>())
-            .map(command -> {
-               AddressInfo addressInfo = command.getResult();
-               if (addressInfo == null) return null;
-
-               return ImmutableAddressInfoWithLocale.builder()
-                     .addressInfo(addressInfo)
-                     .locale(LocaleHelper.getDefaultLocale())
-                     .build();
-            })
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<AddressInfoWithLocale>forView(getView().provideOperationDelegate())
-                  .onNext(new Action1<AddressInfoWithLocale>() {
-                     @Override
-                     public void call(AddressInfoWithLocale defaultAddress) {
-                        setDefaultAddress(defaultAddress);
-                     }
-                  })
-                  .onFail(ErrorHandler.create(getContext()))
-                  .wrap()
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDefaultAddress())
+                  .onSuccess(command -> setDefaultAddress(
+                        ImmutableAddressInfoWithLocale.builder()
+                              .addressInfo(command.getResult())
+                              .locale(LocaleHelper.getDefaultLocale())
+                              .build())
+                  ).create()
             );
    }
 
@@ -122,20 +96,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       getView().defaultAddress(defaultAddress);
    }
 
-   private void connectToSaveCardDetailsPipe() {
+   private void observeSavingCardDetailsData() {
       smartCardInteractor.saveCardDetailsDataPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
-            .subscribe(OperationActionStateSubscriberWrapper.<AddRecordCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationAddRecord())
                   .onSuccess(this::onCardAdd)
-                  .onFail(ErrorHandler.<AddRecordCommand>builder(getContext())
-                        // this changes need for improve error handling in feature
-                        .handle(CardNameFormatException.class, R.string.wallet_add_card_details_error_message)
-                        .handle(CvvFormatException.class, R.string.wallet_add_card_details_error_message)
-                        .handle(AddressFormatException.class, R.string.wallet_add_card_details_error_message)
-                        .build())
-                  .wrap());
+                  .create());
    }
 
    private void onCardAdd(AddRecordCommand command) {
@@ -144,21 +111,11 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       navigator.single(new CardListPath(), Direction.REPLACE);
    }
 
-   private void trackSetAsDefault(Record record) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(record)));
-   }
-
-   private void trackAddedCard(Record record, boolean setAsDefault) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
-   }
-
    private void loadDataFromDevice() {
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 
-   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
+   void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
             .send(new AddRecordCommand.Builder().setRecord(record)
                   .setManualAddressInfo(addressInfo)
@@ -168,17 +125,53 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                   .create());
    }
 
-   private void onSetAsDefaultCard(boolean setDefaultCard) {
-      if (!setDefaultCard) return;
-
-      smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
-         if (!WalletRecordUtil.isRealRecord(defaultCard)) return;
-         getView().showChangeCardDialog(defaultCard);
-      }, bindViewIoToMainComposer());
+   private void onUpdateStatusDefaultCard(boolean setDefaultCard) {
+      if (setDefaultCard) {
+         setCardAsDefault();
+      } else {
+         unsetCardAsDefault();
+      }
    }
 
-   public void defaultCardDialogConfirmed(boolean confirmed) {
-      if (!confirmed) getView().defaultPaymentCard(false);
+   private void setCardAsDefault() {
+      fetchDefaultRecordId(defaultRecordId -> {
+         if (WalletRecordUtil.isRealRecord(record)) {
+            smartCardInteractor.cardsListPipe()
+                  .createObservableResult(RecordListCommand.fetch())
+                  .compose(bindViewIoToMainComposer())
+                  .filter(command -> !command.getResult().isEmpty())
+                  .subscribe(command -> getView().showChangeCardDialog(Queryable.from(command.getResult())
+                              .first(element -> element.id().equals(defaultRecordId))),
+                        throwable -> Timber.e(throwable, ""));
+         }
+      });
+   }
+
+   private void unsetCardAsDefault() {
+      fetchDefaultRecordId(defaultRecordId -> {
+         if (WalletRecordUtil.equals(defaultRecordId, record)) {
+            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+                  .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
+         }
+      });
+   }
+
+   private void fetchDefaultRecordId(Action1<String> action) {
+      smartCardInteractor.defaultRecordIdPipe()
+            .createObservableResult(DefaultRecordIdCommand.fetch())
+            .map(Command::getResult)
+            .compose(bindViewIoToMainComposer())
+            .switchIfEmpty(Observable.just(record.id()))
+            .subscribe(action, throwable -> Timber.e(throwable, ""));
+   }
+
+   void onCardToDefaultClick(boolean confirmed) {
+      if (!confirmed) {
+         getView().defaultPaymentCard(false);
+      } else {
+         smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+               .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
+      }
    }
 
    public void goBack() {
@@ -218,12 +211,35 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private boolean checkMandatoryFields(boolean cardNameValid, String address1, String city, String zipCode, String state, String cvv) {
-      return cardNameValid
-            && getTrimmedLength(address1) > 0
-            && getTrimmedLength(city) > 0
-            && getTrimmedLength(zipCode) > 0
-            && getTrimmedLength(state) > 0
-            && cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(record.number());
+      return cardNameValid && WalletRecordUtil.validationMandatoryFields(
+            record.number(),
+            address1,
+            city,
+            zipCode,
+            state,
+            cvv
+      );
+   }
+
+   private void trackScreen() {
+      smartCardInteractor.deviceStatePipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .map(Command::getResult)
+            .map(SmartCardStatus::connectionStatus)
+            .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(AddCardDetailsAction
+                        .forBankCard(record, connectionStatus.isConnected()))));
+   }
+
+   private void trackSetAsDefault(Record record) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(record)));
+   }
+
+   private void trackAddedCard(Record record, boolean setAsDefault) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
    }
 
    public interface Screen extends WalletScreen {
@@ -257,5 +273,9 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       void showCardNameError();
 
       void hideCardNameError();
+
+      OperationView<GetDefaultAddressCommand> provideOperationGetDefaultAddress();
+
+      OperationView<AddRecordCommand> provideOperationAddRecord();
    }
 }

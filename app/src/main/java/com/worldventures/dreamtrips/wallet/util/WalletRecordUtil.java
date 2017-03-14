@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 
 import java.util.List;
 
+import static android.text.TextUtils.getTrimmedLength;
 import static java.lang.String.format;
 
 public class WalletRecordUtil {
@@ -172,5 +173,13 @@ public class WalletRecordUtil {
       return card.cardHolderFirstName()
             + (!TextUtils.isEmpty(card.cardHolderMiddleName()) ? (" " + card.cardHolderMiddleName()) : "")
             + " " + card.cardHolderLastName();
+   }
+
+   public static boolean validationMandatoryFields(String number, String address1, String city, String zipCode, String state, String cvv) {
+      return getTrimmedLength(address1) > 0
+            && getTrimmedLength(city) > 0
+            && getTrimmedLength(zipCode) > 0
+            && getTrimmedLength(state) > 0
+            && cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
    }
 }

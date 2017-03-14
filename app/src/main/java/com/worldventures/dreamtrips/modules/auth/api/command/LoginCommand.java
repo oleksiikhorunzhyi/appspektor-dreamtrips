@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -32,7 +30,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class LoginCommand extends CommandWithError<UserSession> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject MapperyContext mapperyContext;
    @Inject AuthInteractor authInteractor;

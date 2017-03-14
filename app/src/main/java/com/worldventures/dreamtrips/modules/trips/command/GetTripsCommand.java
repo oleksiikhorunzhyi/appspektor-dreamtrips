@@ -33,7 +33,7 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
 
    public static final int PER_PAGE = 20;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private String searchQuery;

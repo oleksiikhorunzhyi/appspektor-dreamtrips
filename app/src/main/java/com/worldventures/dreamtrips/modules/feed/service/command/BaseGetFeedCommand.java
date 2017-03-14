@@ -2,17 +2,13 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.api.feed.GetFeedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -24,7 +20,7 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
    protected static final int FEED_LIMIT = 20;
    protected static final int TIMELINE_LIMIT = 10;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) protected Janet janet;
+   @Inject protected Janet janet;
    @Inject protected MapperyContext mappery;
 
    protected Date before;

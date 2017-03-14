@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.core.janet;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
+import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
@@ -47,12 +47,12 @@ import io.techery.janet.smartcard.client.SmartCardClient;
             JanetServiceModule.class,
             CacheActionStorageModule.class,
             SmartCardModule.class,
-            MagstripeReaderModule.class
+            MagstripeReaderModule.class,
       },
       complete = false, library = true)
 public class JanetModule {
+
    public static final String JANET_QUALIFIER = "JANET";
-   public static final String JANET_API_LIB = "JANET_API_LIB";
    public static final String JANET_WALLET = "JANET_WALLET";
 
    @Singleton
@@ -62,10 +62,16 @@ public class JanetModule {
    }
 
    @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionService provideHttpService(@ForApplication Injector injector, HttpClient httpClient) {
+      return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient,
+            new GsonConverter(new GsonProvider().provideGson()));
+   }
+
+   @Singleton
    @Provides
    Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
-         Set<MultipleActionStorage> multipleActionStorageSet,
-         @ForApplication Context context) {
+         Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
       Janet.Builder builder = new Janet.Builder();
       for (ActionService service : services) {
          service = new TimberServiceWrapper(service);
@@ -85,22 +91,6 @@ public class JanetModule {
          builder.addService(service);
       }
       return builder.build();
-   }
-
-   @Singleton
-   @Provides
-   @Named(JANET_API_LIB)
-   Janet provideApiLibJanet(@Named(JANET_API_LIB) ActionService httpActionService) {
-      Janet.Builder builder = new Janet.Builder();
-      builder.addService(new TimberServiceWrapper(httpActionService));
-      return builder.build();
-   }
-
-   @Singleton
-   @Named(JANET_API_LIB)
-   @Provides
-   SessionActionPipeCreator provideSessionApiLibActionPipeCreator(@Named(JANET_API_LIB) Janet janet) {
-      return new SessionActionPipeCreator(janet);
    }
 
    @Singleton
@@ -138,26 +128,10 @@ public class JanetModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionService provideHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
-      return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(gson),
-            new GsonConverter(new GsonProvider().provideGson()));
-   }
-
-   @Singleton
-   @Provides
-   @Named(JANET_API_LIB)
-   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
-      return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()));
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
    ActionService provideAnalyticsService(Set<Tracker> trackers) {
       return new AnalyticsService(trackers);
    }
 
-   //
    @Singleton
    @Provides
    @Named(JANET_WALLET)

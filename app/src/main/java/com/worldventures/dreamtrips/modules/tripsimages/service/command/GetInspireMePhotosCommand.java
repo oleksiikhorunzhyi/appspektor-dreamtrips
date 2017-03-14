@@ -18,7 +18,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class GetInspireMePhotosCommand extends TripImagesCommand<Inspiration> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private double randomSeed; // used later when API lib is fixed for inspire me photos

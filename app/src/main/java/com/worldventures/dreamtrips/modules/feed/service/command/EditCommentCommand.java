@@ -22,7 +22,7 @@ public class EditCommentCommand extends MappableApiActionCommand<UpdateCommentHt
    private String commentUid;
    private String text;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    public EditCommentCommand(FeedEntity feedEntity, String commentUid, String text) {

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.api.bucketlist.AddPhotoToBucketItemHttpActio
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketPhotoBody;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -17,7 +16,6 @@ import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -30,9 +28,9 @@ import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolde
 
 @CommandAction
 public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPhoto>> implements InjectableAction {
+
    @Inject @ForApplication Context context;
    @Inject Janet janet;
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet apiJanet;
    @Inject MapperyContext mapperyContext;
    @Inject BucketInteractor bucketInteractor;
    @Inject UploaderyInteractor uploaderyInteractor;
@@ -62,7 +60,7 @@ public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPh
                bucketPhoto.setOriginUrl(location);
                return bucketPhoto;
             })
-            .flatMap(photo -> apiJanet.createPipe(AddPhotoToBucketItemHttpAction.class)
+            .flatMap(photo -> janet.createPipe(AddPhotoToBucketItemHttpAction.class)
                   .createObservableResult(new AddPhotoToBucketItemHttpAction(bucketItem.getUid(),
                         mapperyContext.convert(photo, BucketPhotoBody.class)))
                   .map(action -> mapperyContext.convert(action.response(), BucketPhoto.class)))

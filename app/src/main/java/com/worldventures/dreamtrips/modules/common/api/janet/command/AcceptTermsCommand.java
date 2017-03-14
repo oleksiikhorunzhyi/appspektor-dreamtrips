@@ -4,12 +4,10 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.terms_and_conditions.AcceptTermsAndConditionsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -17,7 +15,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class AcceptTermsCommand extends CommandWithError implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
    private String text;

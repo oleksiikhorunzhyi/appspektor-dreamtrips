@@ -27,7 +27,7 @@ public class NearbyLocationAction extends CommandWithError<List<DtlLocation>> im
 
    private final LocationsActionParams params;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject LocationsActionCreator locationsActionCreator;
 

@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class FeedByHashtagCommand extends CommandWithError<List<FeedItem>> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private String query;

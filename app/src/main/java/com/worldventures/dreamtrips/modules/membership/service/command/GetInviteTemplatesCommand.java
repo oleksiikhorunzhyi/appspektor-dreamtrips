@@ -20,7 +20,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class GetInviteTemplatesCommand extends CommandWithError<List<InviteTemplate>> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    @Override

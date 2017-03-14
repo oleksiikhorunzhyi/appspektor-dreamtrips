@@ -14,7 +14,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class MarkNotificationAsReadCommand extends Command implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    private int notificationId;
 

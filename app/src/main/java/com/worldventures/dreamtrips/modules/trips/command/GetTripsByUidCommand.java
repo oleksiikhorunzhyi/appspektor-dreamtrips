@@ -31,7 +31,7 @@ import io.techery.mappery.MapperyContext;
 public class GetTripsByUidCommand extends CommandWithError<List<TripModel>> implements InjectableAction,
       CachedAction<List<TripModel>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private List<String> tripUids;

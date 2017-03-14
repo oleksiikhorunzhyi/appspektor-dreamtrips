@@ -64,6 +64,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      sendAnalyticsLocateSmartCard();
 
       observeCheckingSwitcher();
       observeWalletLocationCommand();
@@ -115,7 +116,6 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
          requestLocationPermissions(true);
       }
       applyTrackingStatusForUI(state);
-      sendAnalyticsLocateSmartCard(state);
    }
 
    private void observeCheckingSwitcher() {
@@ -248,9 +248,15 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             .build());
    }
 
-   private void sendAnalyticsLocateSmartCard(boolean state) {
-      analyticsInteractor.locateCardAnalyticsCommandActionPipe()
-            .send(new LocateCardAnalyticsCommand(OpenLocateSmartCardAction.forLocateSmartCard(state)));
+   private void sendAnalyticsLocateSmartCard() {
+      smartCardLocationInteractor.enabledTrackingPipe()
+            .createObservable(CardTrackingStatusCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<CardTrackingStatusCommand>()
+                  .onSuccess(command -> analyticsInteractor.locateCardAnalyticsCommandActionPipe()
+                        .send(new LocateCardAnalyticsCommand(
+                              OpenLocateSmartCardAction.forLocateSmartCard(command.getResult()))))
+            );
    }
 
    private void sendAnalyticsLastLocation(WalletLocation walletLocation) {

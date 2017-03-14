@@ -6,7 +6,10 @@ import android.util.Pair;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothDisabledAction;
+import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothEnabledAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SmartCartWillNowBeAssignedAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
@@ -54,6 +57,13 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
             .subscribe(pair -> bind(pair.first, pair.second.connectionStatus()
                   .isConnected()), throwable -> Timber.e(throwable, ""));
 
+      bluetoothService.observeEnablesState()
+            .startWith(bluetoothService.isEnable())
+            .take(1)
+            .subscribe(bluetoothEnabled -> sendAnalyticAction(bluetoothEnabled
+                  ? new BluetoothEnabledAction()
+                  : new BluetoothDisabledAction()));
+
       smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
@@ -75,11 +85,15 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
    }
 
    void navigateNext() {
-      analyticsInteractor
-            .walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new SmartCartWillNowBeAssignedAction()));
+      sendAnalyticAction(new SmartCartWillNowBeAssignedAction());
 
       navigator.go(new EnterPinUnassignPath());
+   }
+
+   private void sendAnalyticAction(WalletAnalyticsAction action) {
+      analyticsInteractor
+            .walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(action));
    }
 
    void goBack() {

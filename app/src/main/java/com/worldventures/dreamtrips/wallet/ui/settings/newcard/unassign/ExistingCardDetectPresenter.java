@@ -7,14 +7,11 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothDisabledAction;
-import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothEnabledAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardDontHaveCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardDontHaveCardContinueAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardHaveCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
-import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -54,8 +51,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
       super.onAttachedToWindow();
       observerSmartCardConnectedStatus();
       fetchSmartCardId();
-
-      sendAnalyticAction(bluetoothService.isEnable() ? new BluetoothEnabledAction() : new BluetoothDisabledAction());
    }
 
    private void fetchSmartCardId() {
@@ -102,10 +97,7 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> {
-                     sendAnalyticAction(new UnAssignCardAction());
-                     getView().showConfirmationUnassignDialog(command.getResult().smartCardId());
-                  })
+                  .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().smartCardId()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }

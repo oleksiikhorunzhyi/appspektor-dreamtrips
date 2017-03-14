@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndCon
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.ViewProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.ViewProgressView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

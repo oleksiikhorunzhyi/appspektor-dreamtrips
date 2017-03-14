@@ -35,6 +35,8 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 import timber.log.Timber;
@@ -47,9 +49,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   private final Record record;
+   private Record record;
    private Record defaultRecord;
-   private boolean cardDeleted = false;
 
    public CardDetailsPresenter(Context context, Injector injector, Record record) {
       super(context, injector);
@@ -71,17 +72,25 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectSetPaymentCardPipe();
       observeCardNickName();
       observeDefaultCard();
+      observeSaveCardData();
    }
 
-   @Override
-   public void detachView(boolean retainInstance) {
-      if (!cardDeleted && !TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
+   private void observeSaveCardData() {
+      smartCardInteractor.updateRecordPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSaveCardData())
+                  .onSuccess(command -> record = command.getResult())
+                  .create());
+   }
+
+   public void updateNickNameIfIsEdited() {
+      if (!TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
          nicknameUpdated(getView().getUpdateNickname());
+      } else {
+         getView().notifyCardDataIsSaved();
       }
-
-      super.detachView(retainInstance);
    }
-
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
@@ -106,10 +115,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteRecordPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
-                  .onSuccess(deleteRecordAction -> {
-                     cardDeleted = true;
-                     navigator.goBack();
-                  })
+                  .onSuccess(deleteRecordAction -> navigator.goBack())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }
@@ -295,5 +301,9 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void showCardNameError();
 
       void hideCardNameError();
+
+      OperationView<UpdateRecordCommand> provideOperationSaveCardData();
+
+      void notifyCardDataIsSaved();
    }
 }

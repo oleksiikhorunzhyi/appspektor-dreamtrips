@@ -122,6 +122,8 @@
       <item name="navigationIcon">@drawable/back_icon</item>
       <item name="android:gravity">center_vertical</item>
       <item name="titleTextColor">@android:color/white</item>
+      <item name="actionMenuTextColor">@android:color/white</item>
+      <item name="android:actionMenuTextColor">@android:color/white</item>
       <item name="android:background">@color/wallet_color_primary</item>
    </style>
 

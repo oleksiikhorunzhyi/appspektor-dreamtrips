@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.WalletProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 

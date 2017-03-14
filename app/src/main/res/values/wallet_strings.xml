@@ -86,11 +86,14 @@
    <string name="wallet_card_details_label_billing_address">Billing Address</string>
    <string name="wallet_card_details_label_card_nickname">Card Nickname</string>
    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
-   <string name="wallet_card_details_button_delete_card">Delete this card</string>
+   <string name="wallet_card_details_button_delete_card">Delete card</string>
    <string name="wallet_card_details_progress_delete">Deleting %s…</string>
    <string name="wallet_card_details_delete_card_dialog_title">Delete payment card</string>
    <string name="wallet_card_details_delete_card_dialog_content">Are you sure?</string>
    <string name="wallet_card_details_button_pay_with_this">Pay with this card</string>
+   <string name="wallet_card_details_progress_save">Apply changes&#8230;</string>
+   <string name="wallet_card_details_title_action_save">Save</string>
+   <string name="wallet_card_details_success_save">Card data is updated!</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>

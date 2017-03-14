@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.common.helper2;
+package com.worldventures.dreamtrips.wallet.ui.common.helper2.progress;
 
 import android.view.View;
 

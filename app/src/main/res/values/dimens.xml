@@ -327,8 +327,10 @@
    <dimen name="dtlt_input_vertical_padding">7dp</dimen>
    <dimen name="dtlt_input_side_padding">9dp</dimen>
    <dimen name="dtlt_input_text_size">13sp</dimen>
+   <dimen name="dtlt_input_text_size_near">12sp</dimen>
    <dimen name="dtlt_input_drawable_padding">6dp</dimen>
    <dimen name="dtlt_second_row_side_padding">54dp</dimen>
+   <dimen name="filter_layout_margin_left">25dp</dimen>
    <!-- </DTL Toolbar dimens> -->
 
 </resources>

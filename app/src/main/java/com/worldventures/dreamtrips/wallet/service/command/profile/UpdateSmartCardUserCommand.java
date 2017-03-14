@@ -139,8 +139,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    }
 
    private byte[] getAvatarAsByteArray(SmartCardUserPhoto avatar) throws IOException {
-      final File ditheredImageFile =
-            smartCardAvatarHelper.toMonochromeFile(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
-      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageFile);
+      final int[][] ditheredImageArray =
+            smartCardAvatarHelper.toMonochrome(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
+      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 }

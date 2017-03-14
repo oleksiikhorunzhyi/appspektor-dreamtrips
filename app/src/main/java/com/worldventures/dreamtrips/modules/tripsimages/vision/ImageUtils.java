@@ -228,43 +228,53 @@ public class ImageUtils {
       draweeView.getHierarchy().setActualImageColorFilter(filter);
    }
 
-   public static Bitmap floydSteinbergDither(Bitmap src) {
-      Bitmap out = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
+   public static int[][] floydSteinbergDither(Bitmap src) {
+      int[][] pixelMatrix = convertBimapToArray(src);
       int error;
-      int width = src.getWidth() - 1;
-      int height = src.getHeight() - 1;
+      int width = src.getWidth();
+      int height = src.getHeight();
       for (int y = 0; y < height; y++) {
          for (int x = 0; x < width; x++) {
-            error = evaluateError(src, x, y);
-            if (x + 1 <= width) {
-               replaceSurroundingPixel(src, out, x + 1, y, error, 7);
+            error = evaluateError(pixelMatrix, x, y);
+            if (x + 1 < width) {
+               replaceSurroundingPixel(pixelMatrix, x + 1, y, error, 7);
             }
-            if (x - 1 >= 0 && y + 1 <= height) {
-               replaceSurroundingPixel(src, out, x - 1, y + 1, error, 3);
+            if (x - 1 >= 0 && y + 1 < height) {
+               replaceSurroundingPixel(pixelMatrix, x - 1, y + 1, error, 3);
             }
-            if (y + 1 <= height) {
-               replaceSurroundingPixel(src, out, x, y + 1, error, 5);
+            if (y + 1 < height) {
+               replaceSurroundingPixel(pixelMatrix, x, y + 1, error, 5);
             }
-            if (x + 1 <= width && y + 1 <= height) {
-               replaceSurroundingPixel(src, out, x + 1, y + 1, error, 1);
+            if (x + 1 < width && y + 1 < height) {
+               replaceSurroundingPixel(pixelMatrix, x + 1, y + 1, error, 1);
             }
          }
       }
-      return out;
+      return pixelMatrix;
    }
 
-   private static int evaluateError(Bitmap src, int x, int y) {
-      int oldPixel = Color.red(src.getPixel(x, y));
-      int newPixel = Math.round(oldPixel / 256);
+   private static int[][] convertBimapToArray(Bitmap src) {
+      int[][] matrix = new int[src.getWidth()][src.getHeight()];
+      for (int y = 0; y < src.getHeight(); y++) {
+         for (int x = 0; x < src.getWidth(); x++) {
+            matrix[x][y] = Color.red(src.getPixel(x, y));
+         }
+      }
+      return matrix;
+   }
+
+   private static int evaluateError(int[][] pixelMatrix, int x, int y) {
+      int oldPixel = pixelMatrix[x][y];
+      int newPixel = oldPixel > 128 ? 255 : 0;
+      pixelMatrix[x][y] = newPixel;
       return oldPixel - newPixel;
    }
 
-   private static void replaceSurroundingPixel(Bitmap src, Bitmap out, int x, int y, int error, int multiplier) {
-      int alpha = Color.alpha(src.getPixel(x, y));
-      int oldPixel = Color.red(src.getPixel(x, y));
+   private static void replaceSurroundingPixel(int[][] pixelMatrix, int x, int y, int error, int multiplier) {
+      int oldPixel = pixelMatrix[x][y];
       int newPixel =  oldPixel + (error * multiplier) / 16;
       int dithered = Math.max(Math.min(newPixel, 250), 0);
-      out.setPixel(x, y, Color.argb(alpha, dithered, dithered, dithered));
+      pixelMatrix[x][y] = dithered;
    }
 
    private interface BitmapReceiverListener {

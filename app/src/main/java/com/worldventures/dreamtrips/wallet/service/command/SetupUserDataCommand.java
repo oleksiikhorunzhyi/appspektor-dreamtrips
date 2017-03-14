@@ -105,9 +105,9 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
 
 
    private byte[] getAvatarAsByteArray() throws IOException {
-      final File ditheredImageFile =
-            smartCardAvatarHelper.toMonochromeFile(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
-      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageFile);
+      final int[][] ditheredImageArray =
+            smartCardAvatarHelper.toMonochrome(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
+      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 
    public static class MissedAvatarException extends RuntimeException {

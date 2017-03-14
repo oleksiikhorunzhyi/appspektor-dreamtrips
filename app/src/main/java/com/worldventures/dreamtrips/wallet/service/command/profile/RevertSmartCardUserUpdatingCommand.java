@@ -78,9 +78,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
    }
 
    private byte[] getAvatarAsByteArray(File originalFile) throws IOException {
-      final File ditheredImageFile =
-            smartCardAvatarHelper.toMonochromeFile(originalFile, ImageUtils.DEFAULT_IMAGE_SIZE);
-      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageFile);
+      final int[][] ditheredImageArray =
+            smartCardAvatarHelper.toMonochrome(originalFile, ImageUtils.DEFAULT_IMAGE_SIZE);
+      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 
    private User createUser(SmartCardUser user, String smartCardId) {

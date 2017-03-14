@@ -20,7 +20,7 @@ utils.runBuild('android', getNotifier(utils)) {
                   [$class: 'CleanBeforeCheckout'],
                   [$class : 'CloneOption',
                    shallow: true,
-                   depth  : 100,
+                   depth  : 1000,
                    noTags : true,
                    timeout: 5]
             ]

@@ -53,7 +53,6 @@ public class MessengerSyncDelegate {
 
    private void connectReLogin() {
       reLoginInteractor.loginHttpActionPipe().observeSuccess()
-            .map(__ -> new LoginToMessengerServerCommand())
-            .subscribe(command -> loginToMessengerServerCommandActionPipe.send(command));
+            .subscribe(__ -> loginToMessengerServerCommandActionPipe.send(new LoginToMessengerServerCommand()));
    }
 }

@@ -7,5 +7,7 @@
       android:orientation="vertical"
       >
 
+   <include layout="@layout/list_filter_options_card" android:visibility="gone"/>
+
    <include layout="@layout/screen_dtl_map_content" />
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl>

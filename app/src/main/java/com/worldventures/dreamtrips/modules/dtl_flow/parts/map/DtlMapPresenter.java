@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
+import java.util.List;
+
 public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EMPTY> {
 
    void onMapLoaded();
@@ -28,4 +30,8 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
    void retryLoadMerchant();
 
    void offersOnlySwitched(boolean isOffersOnly);
+
+   void onLoadMerchantsType(List<String> merchantType);
+
+   void loadAmenities(List<String> merchantType);
 }

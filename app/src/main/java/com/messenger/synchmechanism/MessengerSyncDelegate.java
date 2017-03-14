@@ -3,7 +3,6 @@ package com.messenger.synchmechanism;
 import com.messenger.command.LoginToMessengerServerCommand;
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
 import com.messenger.delegate.roster.LoadContactsCommand;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 
 import javax.inject.Inject;
@@ -18,11 +17,11 @@ public class MessengerSyncDelegate {
    private final ActionPipe<LoadContactsCommand> contactsPipe;
    private final ActionPipe<SyncConversationsCommand> conversationsPipe;
    private final ActionPipe<LoginToMessengerServerCommand> loginToMessengerServerCommandActionPipe;
+   private final ReLoginInteractor reLoginInteractor;
 
-   @Inject ReLoginInteractor reLoginInteractor;
-
-   public MessengerSyncDelegate(Injector injector, Janet janet) {
-      injector.inject(this);
+   @Inject
+   public MessengerSyncDelegate(Janet janet, ReLoginInteractor reLoginInteractor) {
+      this.reLoginInteractor = reLoginInteractor;
       this.contactsPipe = janet.createPipe(LoadContactsCommand.class, Schedulers.io());
       this.conversationsPipe = janet.createPipe(SyncConversationsCommand.class, Schedulers.io());
       this.loginToMessengerServerCommandActionPipe =
@@ -53,6 +52,6 @@ public class MessengerSyncDelegate {
 
    private void connectReLogin() {
       reLoginInteractor.loginHttpActionPipe().observeSuccess()
-            .subscribe(__ -> loginToMessengerServerCommandActionPipe.send(new LoginToMessengerServerCommand()));
+            .subscribe(httpAction -> loginToMessengerServerCommandActionPipe.send(new LoginToMessengerServerCommand()));
    }
 }

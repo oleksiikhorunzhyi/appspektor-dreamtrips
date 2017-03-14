@@ -9,7 +9,6 @@ import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.synchmechanism.MessengerSyncDelegate;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
@@ -25,19 +24,8 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
 
-@Module(
-      injects = {
-            MessengerSyncDelegate.class,
-      },
-      complete = false,
-      library = true)
+@Module(complete = false, library = true)
 public class MessengerDelegateModule {
-
-   @Provides
-   @Singleton
-   MessengerSyncDelegate provideMessengerSyncDelegate(@ForApplication Injector injector, Janet janet) {
-      return new MessengerSyncDelegate(injector, janet);
-   }
 
    @Provides
    ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {

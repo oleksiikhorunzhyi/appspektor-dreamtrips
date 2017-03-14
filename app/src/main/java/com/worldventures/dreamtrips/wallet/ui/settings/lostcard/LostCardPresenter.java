@@ -203,7 +203,8 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             .subscribe(new ActionStateSubscriber<GetLocationCommand>()
                   .onSuccess(getLocationCommand -> {
                      final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
-                     sendAnalyticsLastLocation(walletLocation);
+                     //todo: Unused for now, by Scott analytics update.
+                     //sendAnalyticsLastLocation(walletLocation);
                      processLastLocation(walletLocation);
                   })
             );
@@ -259,6 +260,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
             );
    }
 
+   /*unused for now*/
    private void sendAnalyticsLastLocation(WalletLocation walletLocation) {
       analyticsInteractor.locateCardAnalyticsCommandActionPipe()
             .send(new LocateCardAnalyticsCommand(DisplayLocateSmartCardAction

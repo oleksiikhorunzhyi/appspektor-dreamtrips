@@ -38,6 +38,7 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
@@ -250,5 +251,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideHashtagFeedStorage() {
       return new HashtagFeedStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripsFiltersStorage(SnappyRepository snappyRepository) {
+      return new TripsFiltersStorage(snappyRepository);
    }
 }

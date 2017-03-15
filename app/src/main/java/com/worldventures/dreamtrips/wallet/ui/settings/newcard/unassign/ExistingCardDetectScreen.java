@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDa
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -83,7 +83,7 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
    @Override
    public OperationView<ActiveSmartCardCommand> provideOperationView() {
       return new ComposableOperationView<>(
-            ProgressDialogView.<ActiveSmartCardCommand>builder(getContext()).build(),
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
             ErrorViewFactory.<ActiveSmartCardCommand>builder().build()
       );
    }
@@ -91,7 +91,7 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
    @Override
    public OperationView<DeviceStateCommand> provideDeviceStateOperationView() {
       return new ComposableOperationView<>(
-            ProgressDialogView.<DeviceStateCommand>builder(getContext()).build(),
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
             ErrorViewFactory.<DeviceStateCommand>builder().build()
       );
    }
@@ -99,7 +99,7 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
    @Override
    public OperationView<WipeSmartCardDataCommand> provideWipeOperationView() {
       return new ComposableOperationView<>(
-            ProgressDialogView.<WipeSmartCardDataCommand>builder(getContext()).build(),
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
             ErrorViewFactory.<WipeSmartCardDataCommand>builder().build()
       );
    }

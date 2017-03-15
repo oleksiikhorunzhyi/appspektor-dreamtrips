@@ -164,4 +164,13 @@ public class WalletRecordUtil {
       return recordId != null;
    }
 
+   public static boolean equals(String recordId, Record record) {
+      return (recordId != null && record != null) && record.id().equals(recordId);
+   }
+
+   public static String fetchFullName(Record card) {
+      return card.cardHolderFirstName()
+            + (!TextUtils.isEmpty(card.cardHolderMiddleName()) ? (" " + card.cardHolderMiddleName()) : "")
+            + " " + card.cardHolderLastName();
+   }
 }

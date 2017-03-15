@@ -5,10 +5,9 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
@@ -69,7 +68,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe;
    private final ActionPipe<SmartCardUserCommand> smartCardUserPipe;
    private final ActionPipe<DefaultRecordIdCommand> defaultRecordIdPipe;
-   private final ActionPipe<FetchDefaultRecordCommand> fetchDefaultCardCommandPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
    private final ActionPipe<DeleteRecordAction> deleteRecordPipe;
@@ -109,8 +107,6 @@ public final class SmartCardInteractor {
       smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, cacheSchedulerFactory.call());
 
       defaultRecordIdPipe = sessionActionPipeCreator.createPipe(DefaultRecordIdCommand.class, cacheSchedulerFactory.call());
-      fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultRecordCommand.class, cacheSchedulerFactory
-            .call());
       fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, cacheSchedulerFactory
             .call());
 
@@ -196,10 +192,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<DefaultRecordIdCommand> defaultRecordIdPipe() {
       return defaultRecordIdPipe;
-   }
-
-   public ActionPipe<FetchDefaultRecordCommand> fetchDefaultCardCommandPipe() {
-      return fetchDefaultCardCommandPipe;
    }
 
    public ActionPipe<DeleteRecordAction> deleteRecordPipe() {

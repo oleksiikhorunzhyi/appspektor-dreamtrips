@@ -1,4 +1,6 @@
-package com.worldventures.dreamtrips.wallet.service.command;
+package com.worldventures.dreamtrips.wallet.service.command.record;
+
+import com.worldventures.dreamtrips.wallet.service.command.CachedValueCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
@@ -10,11 +12,11 @@ public final class DefaultRecordIdCommand extends CachedValueCommand<String> {
       return new DefaultRecordIdCommand(cache -> recordId);
    }
 
-   public DefaultRecordIdCommand() {
+   public static DefaultRecordIdCommand fetch() {
+      return new DefaultRecordIdCommand(cache -> cache);
    }
 
-   public DefaultRecordIdCommand(Func1<String, String> operationFunc) {
+   private DefaultRecordIdCommand(Func1<String, String> operationFunc) {
       super(operationFunc);
    }
-
 }

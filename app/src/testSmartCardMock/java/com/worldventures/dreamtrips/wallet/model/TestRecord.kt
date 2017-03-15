@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType
 class TestRecord(
       private val id: String?,
       private val title: String = "TEST",
-      private val cardNameHolder: String = "Test Holder",
       private val number: String = "123456789",
       private val numberLastFourDigits: String = "6789",
       private val expDate: String = "07/17",
@@ -35,8 +34,6 @@ class TestRecord(
    override fun track2(): String? = track2
 
    override fun track3(): String? = track3
-
-   override fun cardNameHolder(): String = cardNameHolder
 
    override fun nickName(): String = title
 

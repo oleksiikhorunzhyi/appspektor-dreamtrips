@@ -11,7 +11,7 @@ public abstract class DialogProgressView<T> implements ProgressView<T> {
    protected final Context context;
    private MaterialDialog progressDialog;
 
-   protected DialogProgressView(Context context) {
+   public DialogProgressView(Context context) {
       this.context = context;
    }
 

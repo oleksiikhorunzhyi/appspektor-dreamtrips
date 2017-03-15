@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDa
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
 import butterknife.InjectView;
@@ -94,7 +94,7 @@ public class NewCardPowerOnScreen extends WalletLinearLayout<NewCardPowerOnPrese
    @Override
    public OperationView<WipeSmartCardDataCommand> provideWipeOperationView() {
       return new ComposableOperationView<>(
-            ProgressDialogView.<WipeSmartCardDataCommand>builder(getContext()).build(),
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
             ErrorViewFactory.<WipeSmartCardDataCommand>builder().build()
       );
    }

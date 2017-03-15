@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.ProgressDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
 import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
@@ -18,7 +18,6 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignPresenter.Screen, EnterPinUnassignPresenter, EnterPinUnassignPath> implements EnterPinUnassignPresenter.Screen {
 
-   private ProgressDialogView progressDialogView = null;
    private MaterialDialog errorEnterPinDialog = null;
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -57,11 +56,9 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
    @Override
    public OperationView<FactoryResetCommand> provideOperationView() {
       return new ComposableOperationView<>(
-            progressDialogView = ProgressDialogView.<FactoryResetCommand>builder(getContext())
-                  .message(R.string.loading)
-                  .canceledOnTouchOutside(false)
-                  .cancelAction(dialog -> presenter.cancelUnassign())
-                  .build()
+            new SimpleDialogProgressView<FactoryResetCommand>(
+                  getContext(), R.string.loading, false, dialog -> presenter.cancelUnassign()
+            )
       );
    }
 
@@ -82,7 +79,6 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
 
    @Override
    protected void onDetachedFromWindow() {
-      if (progressDialogView != null) progressDialogView.hideProgress();
       if (errorEnterPinDialog != null) errorEnterPinDialog.dismiss();
       super.onDetachedFromWindow();
    }

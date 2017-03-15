@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCa
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleRecordsCommand;
@@ -60,7 +61,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
                   .createObservableResult(new GetDefaultRecordAction())
                   .map(getDefaultRecordAction -> getDefaultRecordAction.recordId),
             interactor.defaultRecordIdPipe()
-                  .createObservableResult(new DefaultRecordIdCommand())
+                  .createObservableResult(DefaultRecordIdCommand.fetch())
                   .map(DefaultRecordIdCommand::getResult),
             (deviceRecords, localRecords, deviceDefaultRecordId, localDefaultRecordId) -> {
                SyncBundle bundle = new SyncBundle();

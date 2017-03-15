@@ -86,7 +86,6 @@ public interface SnappyRepository {
    String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
    String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
 
-
    void clearAll();
 
    Boolean isEmpty(String key);

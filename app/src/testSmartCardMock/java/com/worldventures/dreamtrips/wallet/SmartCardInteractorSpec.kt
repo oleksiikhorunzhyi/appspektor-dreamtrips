@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
 import com.worldventures.dreamtrips.wallet.service.command.*
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor
 import com.worldventures.dreamtrips.wallet.util.FormatException
 import io.techery.janet.ActionState
@@ -357,7 +358,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val testSubscriber = TestSubscriber<ActionState<DefaultRecordIdCommand>>()
 
          smartCardInteractor.defaultRecordIdPipe()
-               .createObservable(DefaultRecordIdCommand())
+               .createObservable(DefaultRecordIdCommand.fetch())
                .subscribe(testSubscriber)
          return testSubscriber
       }

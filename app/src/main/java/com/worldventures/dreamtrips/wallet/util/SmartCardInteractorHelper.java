@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.util;
 
-import android.support.annotation.Nullable;
-
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 
 import javax.inject.Inject;
 
@@ -20,11 +20,14 @@ public class SmartCardInteractorHelper {
       this.smartCardInteractor = smartCardInteractor;
    }
 
-   public void sendSingleDefaultCardTask(Action1<Record> action, @Nullable Observable.Transformer composer) {
-      Observable<FetchDefaultRecordCommand> fetchCardObservale = smartCardInteractor.fetchDefaultCardCommandPipe()
-            .observeSuccessWithReplay()
-            .take(1);
-      if (composer != null) fetchCardObservale = fetchCardObservale.compose(composer);
-      fetchCardObservale.subscribe(command -> action.call(command.getResult()));
+   public void sendSingleDefaultCardTask(Action1<Record> action, Observable.Transformer composer) {
+      smartCardInteractor.defaultRecordIdPipe()
+            .createObservableResult(DefaultRecordIdCommand.fetch())
+            .flatMap(command -> smartCardInteractor.cardsListPipe()
+                  .createObservableResult(RecordListCommand.fetchById(command.getResult()))
+                  .flatMap(recordsCommand -> Observable.just(
+                        Queryable.from(recordsCommand.getResult()).first())))
+            .compose(composer)
+            .subscribe(action);
    }
 }

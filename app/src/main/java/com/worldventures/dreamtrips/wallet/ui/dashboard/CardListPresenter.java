@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
@@ -87,7 +87,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeFirmwareInfo();
 
       smartCardInteractor.cardsListPipe().send(RecordListCommand.fetch());
-      smartCardInteractor.defaultRecordIdPipe().send(new DefaultRecordIdCommand());
+      smartCardInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());
       trackScreen();
    }
 

@@ -15,10 +15,13 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
@@ -31,6 +34,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
@@ -51,7 +55,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    private Observable<String> cardNicknameObservable;
    private MaterialDialog connectedErrorDialog;
    private final WalletRecordUtil walletRecordUtil;
-   private MaterialDialog saveCardDataProgressDialog = null;
 
    public CardDetailsScreen(Context context) {
       this(context, null);
@@ -89,7 +92,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.action_save:
-               presenter.updateNickNameIfIsEdited();
+               presenter.updateNickName();
             default:
                return false;
          }
@@ -242,8 +245,26 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   protected void onDetachedFromWindow() {
-      if (saveCardDataProgressDialog != null) saveCardDataProgressDialog.dismiss();
-      super.onDetachedFromWindow();
+   public OperationView<DeleteRecordAction> provideOperationDeleteRecord() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<DeleteRecordAction>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
+   }
+
+   @Override
+   public OperationView<SetDefaultCardOnDeviceCommand> provideOperationSetDefaultOnDevice() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<SetDefaultCardOnDeviceCommand>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
+   }
+
+   @Override
+   public OperationView<SetPaymentCardAction> provideOperationSetPaymentCardAction() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<SetPaymentCardAction>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
    }
 }

@@ -3,6 +3,7 @@
    <!-- Common -->
    <string name="wallet_next_label">Next</string>
    <string name="wallet_done_label">Done</string>
+   <string name="wallet_cancel_label">Cancel</string>
    <string name="wallet_continue_label">Continue</string>
    <string name="wallet_got_it_label">Got it!</string>
    <string name="wallet_error_label">Error</string>
@@ -427,6 +428,6 @@
    <string name="wallet_lock_label_tap_left_btn">Tap Left</string>
    <string name="wallet_close">Close</string>
    <string name="wallet_set_pin_info_gesture">Press and hold</string>
-   <string name="wallet_confirm_factory_reset_msg">Are you sure want to factory rest your Smart Card? This will clear all data on your card.</string>
+   <string name="wallet_confirm_factory_reset_msg">Are you sure you would you like to factory reset your SmartCard?</string>
 
 </resources>

@@ -34,9 +34,9 @@ public class FactoryResetSuccessScreen extends WalletLinearLayout<FactoryResetSu
       return new FactoryResetSuccessPresenter(getContext(), getInjector());
    }
 
-   @OnClick(R.id.next_button)
-   public void nextClick() {
-      presenter.goToNext();
+   @OnClick(R.id.btn_done)
+   public void onClickDone() {
+      presenter.navigateNext();
    }
 
    @Override

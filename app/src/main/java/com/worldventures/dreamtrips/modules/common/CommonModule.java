@@ -8,6 +8,7 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
@@ -59,7 +60,6 @@ import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
@@ -135,7 +135,7 @@ public class CommonModule {
 
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
-      if (!ViewUtils.isTablet(context)) {
+      if (BuildConfig.SMARTCARD_ENABLED && !ViewUtils.isTablet(context)) {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletActivityModule.WALLET));
       }
 

@@ -25,8 +25,8 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+
    private boolean delayWasChanged = false;
-   private long newDisableDelay;
 
    public WalletDisableDefaultCardPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -42,13 +42,11 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    public void applyViewState() {
       super.applyViewState();
       delayWasChanged = state.delayWasChanged();
-      newDisableDelay = state.getNewDisableDelay();
    }
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
       state.setDelayWasChanged(delayWasChanged);
-      state.setNewDisableDelay(newDisableDelay);
       super.onSaveInstanceState(bundle);
    }
    @Override
@@ -61,7 +59,8 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    @Override
    public void detachView(boolean retainInstance) {
       if (delayWasChanged) {
-         trackDisableDelay(new DisableDefaultChangedAction(newDisableDelay));
+         //known problem: this action will be sent after action from onAttachView of next screen
+         trackDisableDelay(new DisableDefaultChangedAction(getView().getSelectedTime()));
       }
       super.detachView(retainInstance);
    }
@@ -84,7 +83,7 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
             .subscribe(deviceStateCommand -> {
                final long disableCardDelay = deviceStateCommand.getResult().disableCardDelay();
                getView().selectedTime(disableCardDelay);
-               trackDisableDelay(new DisableDefaultAction(disableCardDelay));
+               trackDisableDelay(new DisableDefaultAction(getView().getSelectedTime()));
             });
    }
 
@@ -97,19 +96,20 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
                      final long disableCardDelay = command.getResult();
                      getView().selectedTime(disableCardDelay);
                      delayWasChanged = true;
-                     newDisableDelay = disableCardDelay;
                   })
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap());
    }
 
    private void trackDisableDelay(WalletAnalyticsAction disableCardDelayAction) {
-      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(disableCardDelayAction);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(disableCardDelayAction));
    }
 
    public interface Screen extends WalletScreen {
 
       void selectedTime(long minutes);
+
+      String getSelectedTime();
    }
 }

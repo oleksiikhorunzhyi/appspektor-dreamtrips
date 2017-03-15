@@ -25,8 +25,8 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+
    private boolean autoClearWasChanged = false;
-   private long newAutoClearDelay;
 
    public WalletAutoClearCardsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -42,13 +42,11 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    public void applyViewState() {
       super.applyViewState();
       autoClearWasChanged = state.autoClearWasChanged();
-      newAutoClearDelay = state.getNewAutoClearDelay();
    }
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
       state.setAutoClearWasChanged(autoClearWasChanged);
-      state.setNewAutoClearDelay(newAutoClearDelay);
       super.onSaveInstanceState(bundle);
    }
 
@@ -62,7 +60,8 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    @Override
    public void detachView(boolean retainInstance) {
       if (autoClearWasChanged) {
-         trackAutoClear(new AutoClearChangedAction(newAutoClearDelay));
+         //known problem: this action will be sent after action from onAttachView of next screen
+         trackAutoClear(new AutoClearChangedAction(getView().getSelectedTime()));
       }
       super.detachView(retainInstance);
    }
@@ -74,7 +73,7 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    /**
     * @param delayMinutes 0 - never
     */
-   public void onTimeSelected(long delayMinutes) {
+   void onTimeSelected(long delayMinutes) {
       smartCardInteractor.autoClearDelayPipe().send(new SetAutoClearSmartCardDelayCommand(delayMinutes));
    }
 
@@ -85,7 +84,7 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
             .subscribe(deviceStateCommand -> {
                final long autoClearDelay = deviceStateCommand.getResult().clearFlyeDelay();
                getView().selectedTime(autoClearDelay);
-               trackAutoClear(new AutoClearAction(autoClearDelay));
+               trackAutoClear(new AutoClearAction(getView().getSelectedTime()));
             });
    }
 
@@ -98,19 +97,20 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
                      final long autoClearDelay = command.getResult();
                      getView().selectedTime(autoClearDelay);
                      autoClearWasChanged = true;
-                     newAutoClearDelay = autoClearDelay;
                   })
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap());
    }
 
    private void trackAutoClear(WalletAnalyticsAction autoClearAction) {
-      final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(autoClearAction);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(autoClearAction));
    }
 
    public interface Screen extends WalletScreen {
 
       void selectedTime(long minutes);
+
+      String getSelectedTime();
    }
 }

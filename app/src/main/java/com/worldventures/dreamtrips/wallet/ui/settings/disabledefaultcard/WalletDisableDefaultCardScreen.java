@@ -67,6 +67,11 @@ public class WalletDisableDefaultCardScreen
       selectionManager.setSelection(itemProvider.getPositionForValue(minutes) + 1, true); // +1 is Header
    }
 
+   @Override
+   public String getSelectedTime() {
+      return getContext().getString(itemProvider.items().get(selectionManager.getSelectedPosition() - 1).getStringId());
+   }
+
    private void onNavigationClick() {
       presenter.goBack();
    }

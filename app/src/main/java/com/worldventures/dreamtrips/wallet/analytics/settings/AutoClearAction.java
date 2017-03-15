@@ -11,7 +11,7 @@ public class AutoClearAction extends WalletAnalyticsAction {
 
    @Attribute("autoclear") final String autoClear;
 
-   public AutoClearAction(long autoClear) {
-      this.autoClear = Long.toString(autoClear);
+   public AutoClearAction(String autoClearTime) {
+      this.autoClear = autoClearTime;
    }
 }

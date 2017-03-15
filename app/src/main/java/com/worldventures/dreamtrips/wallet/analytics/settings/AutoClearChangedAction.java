@@ -10,9 +10,9 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 public class AutoClearChangedAction extends WalletAnalyticsAction {
 
    @Attribute("autoclear") final String autoClear;
-   @Attribute("autoclearchange") String autoClearChange = "1";
+   @Attribute("autoclearchange") final String autoClearChange = "1";
 
-   public AutoClearChangedAction(long autoClear) {
-      this.autoClear = Long.toString(autoClear);
+   public AutoClearChangedAction(String autoClearTimber) {
+      this.autoClear = autoClearTimber;
    }
 }

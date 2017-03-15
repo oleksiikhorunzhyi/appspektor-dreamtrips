@@ -66,6 +66,11 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
       selectionManager.setSelection(itemProvider.getPositionForValue(millis) + 1, true); // +1 is Header
    }
 
+   @Override
+   public String getSelectedTime() {
+      return getString(itemProvider.items().get(selectionManager.getSelectedPosition() - 1).getStringId());
+   }
+
    private void onNavigationClick() {
       presenter.goBack();
    }
@@ -82,7 +87,6 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
          @Override
          public void onCellClicked(SettingsRadioModel model) {
             getPresenter().onTimeSelected(model.getValue());
-
          }
       });
       adapter.addItem(new SectionDividerModel(R.string.wallet_settings_clear_flye_card_description));

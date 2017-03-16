@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.analytics.locatecard;
+package com.worldventures.dreamtrips.wallet.analytics.locatecard.action;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;

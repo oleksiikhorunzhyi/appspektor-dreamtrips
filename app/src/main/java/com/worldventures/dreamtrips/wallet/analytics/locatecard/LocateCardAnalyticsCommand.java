@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.analytics.locatecard;
 
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.BaseLocateSmartCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;

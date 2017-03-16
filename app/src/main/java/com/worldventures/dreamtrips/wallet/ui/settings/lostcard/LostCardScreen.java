@@ -182,7 +182,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       googleMap.setInfoWindowAdapter(infoWindowAdapter);
       googleMap.setOnInfoWindowClickListener(m -> {
          infoWindowAdapter.openExternalMap();
-         presenter.sendAnalyticsClickDirections();
+         presenter.trackDirectionsClick();
       });
       marker.showInfoWindow();
    }

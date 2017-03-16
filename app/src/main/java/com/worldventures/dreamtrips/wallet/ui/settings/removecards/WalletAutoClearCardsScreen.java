@@ -17,7 +17,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDivide
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SectionDividerModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.AutoClearSmartCardItemProvider;
+
+import java.util.List;
 
 import butterknife.InjectView;
 
@@ -27,8 +28,8 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.recycler_view) RecyclerView recyclerView;
 
-   private final AutoClearSmartCardItemProvider itemProvider = new AutoClearSmartCardItemProvider();
    private SingleSelectionManager selectionManager;
+   private BaseDelegateAdapter adapter;
 
    public WalletAutoClearCardsScreen(Context context) {
       super(context);
@@ -61,22 +62,12 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
       return new DialogOperationScreen(this);
    }
 
-   @Override
-   public void selectedTime(long millis) {
-      selectionManager.setSelection(itemProvider.getPositionForValue(millis) + 1, true); // +1 is Header
-   }
-
-   @Override
-   public String getSelectedTime() {
-      return getString(itemProvider.items().get(selectionManager.getSelectedPosition() - 1).getStringId());
-   }
-
    private void onNavigationClick() {
       presenter.goBack();
    }
 
    private void prepareRecyclerView() {
-      BaseDelegateAdapter adapter = new BaseDelegateAdapter(getContext(), getInjector());
+      adapter = new BaseDelegateAdapter(getContext(), getInjector());
       adapter.registerCell(SectionDividerModel.class, SectionDividerCell.class);
       adapter.registerCell(SettingsRadioModel.class, SettingsRadioCell.class, new SettingsRadioCell.Delegate() {
          @Override
@@ -90,7 +81,6 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
          }
       });
       adapter.addItem(new SectionDividerModel(R.string.wallet_settings_clear_flye_card_description));
-      adapter.addItems(itemProvider.items());
       selectionManager = new SingleSelectionManager(recyclerView);
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
@@ -99,5 +89,21 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void setItems(List<SettingsRadioModel> items) {
+      adapter.addItems(items);
+   }
+
+   @Override
+   public void setSelectedPosition(int position) {
+      selectionManager.setSelection(position + 1, true);
+   }
+
+   @Override
+   public int getSelectedPosition() {
+      int position = selectionManager.getSelectedPosition() - 1; // first item is header
+      return position < 0 ? 0 : position;
    }
 }

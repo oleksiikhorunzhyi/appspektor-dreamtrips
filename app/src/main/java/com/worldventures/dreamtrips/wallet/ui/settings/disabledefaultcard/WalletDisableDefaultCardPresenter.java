@@ -17,6 +17,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDefaultCardItemProvider;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,10 +30,12 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
+   private final DisableDefaultCardItemProvider itemProvider;
    private boolean delayWasChanged = false;
 
    public WalletDisableDefaultCardPresenter(Context context, Injector injector) {
       super(context, injector);
+      itemProvider = new DisableDefaultCardItemProvider(context);
    }
 
    // View State
@@ -49,10 +55,12 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
       state.setDelayWasChanged(delayWasChanged);
       super.onSaveInstanceState(bundle);
    }
+
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      observeSmartCard();
+      getView().setItems(itemProvider.items());
+      fetchSmartCard();
       observeDelayChange();
    }
 
@@ -60,7 +68,7 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    public void detachView(boolean retainInstance) {
       if (delayWasChanged) {
          //known problem: this action will be sent after action from onAttachView of next screen
-         trackDisableDelay(new DisableDefaultChangedAction(getView().getSelectedTime()));
+         trackChangedDelay();
       }
       super.detachView(retainInstance);
    }
@@ -76,14 +84,13 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
       smartCardInteractor.disableDefaultCardDelayPipe().send(new SetDisableDefaultCardDelayCommand(delayMinutes));
    }
 
-   private void observeSmartCard() {
+   private void fetchSmartCard() {
       smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(deviceStateCommand -> {
-               final long disableCardDelay = deviceStateCommand.getResult().disableCardDelay();
-               getView().selectedTime(disableCardDelay);
-               trackDisableDelay(new DisableDefaultAction(getView().getSelectedTime()));
+            .subscribe(command -> {
+               bindToView(command.getResult().disableCardDelay());
+               trackScreen();
             });
    }
 
@@ -93,12 +100,24 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetDisableDefaultCardDelayCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> {
-                     final long disableCardDelay = command.getResult();
-                     getView().selectedTime(disableCardDelay);
+                     bindToView(command.getResult());
                      delayWasChanged = true;
                   })
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap());
+   }
+
+   private void bindToView(long disableCardDelay) {
+      final int position = itemProvider.getPositionForValue(disableCardDelay);
+      getView().setSelectedPosition(position);
+   }
+
+   public void trackScreen() {
+      trackDisableDelay(new DisableDefaultAction(itemProvider.item(getView().getSelectedPosition()).getText()));
+   }
+
+   public void trackChangedDelay() {
+      trackDisableDelay(new DisableDefaultChangedAction(itemProvider.item(getView().getSelectedPosition()).getText()));
    }
 
    private void trackDisableDelay(WalletAnalyticsAction disableCardDelayAction) {
@@ -108,8 +127,10 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
 
    public interface Screen extends WalletScreen {
 
-      void selectedTime(long minutes);
+      void setItems(List<SettingsRadioModel> items);
 
-      String getSelectedTime();
+      void setSelectedPosition(int position);
+
+      int getSelectedPosition();
    }
 }

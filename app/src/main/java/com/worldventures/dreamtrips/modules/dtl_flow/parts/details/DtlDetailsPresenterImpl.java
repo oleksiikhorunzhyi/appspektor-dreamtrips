@@ -83,7 +83,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
       preExpandOffers();
-      tryHideSuggestMerchantButton();
    }
 
    @Override

@@ -24,7 +24,7 @@ public class ReviewConverter implements Converter<com.worldventures.dreamtrips.a
             .reviewId(review.reviewId())
             .brand(review.brand())
             .userNickName(review.userNickName())
-            .userImage(review.userImage())
+            .userImage("")
             .reviewText(review.reviewText())
             .rating(review.rating())
             .verified(review.verified())

@@ -18,7 +18,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public abstract class TripImagesCommand<T extends IFullScreenObject> extends CommandWithError<List<T>> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    protected int perPage;

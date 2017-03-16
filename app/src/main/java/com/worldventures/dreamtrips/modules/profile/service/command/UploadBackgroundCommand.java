@@ -20,7 +20,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class UploadBackgroundCommand extends CommandWithError<User> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private final File file;

@@ -30,7 +30,7 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
 
    private static final int PER_PAGE = 10;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private List<Document> cachedDocuments;

@@ -17,7 +17,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeletePhotoTagsCommand extends CommandWithError implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    private String photoId;
    private List<Integer> userIds;

@@ -20,7 +20,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class MarkNotificationsAsReadCommand extends Command implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    private List<FeedItem> notifications;
 

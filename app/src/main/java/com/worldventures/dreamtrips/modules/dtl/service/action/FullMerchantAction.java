@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class FullMerchantAction extends CommandWithError<Merchant> implements InjectableAction, CachedAction<Merchant> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject FullMerchantActionCreator actionCreator;
 

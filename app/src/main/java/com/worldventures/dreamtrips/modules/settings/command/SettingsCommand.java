@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class SettingsCommand extends CommandWithError<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    private List<Setting> settings;
 

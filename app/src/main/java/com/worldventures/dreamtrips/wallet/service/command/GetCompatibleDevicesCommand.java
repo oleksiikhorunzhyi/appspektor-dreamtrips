@@ -10,19 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
-
 @CommandAction
 public class GetCompatibleDevicesCommand extends Command<List<Device>> implements InjectableAction {
 
-   @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    @Override
    protected void run(CommandCallback<List<Device>> callback) throws Throwable {

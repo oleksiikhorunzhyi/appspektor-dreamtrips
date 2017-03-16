@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -21,13 +20,11 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.util.SmartCardSDK;
 import io.techery.mappery.MapperyContext;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
-
 @CommandAction
 public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implements InjectableAction {
 
    @Inject MapperyContext mapperyContext;
-   @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject SnappyRepository snappyRepository;
    @Inject FirmwareRepository firmwareRepository;
    @Inject FirmwareInteractor firmwareInteractor;

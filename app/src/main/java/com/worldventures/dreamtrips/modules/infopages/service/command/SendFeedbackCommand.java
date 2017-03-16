@@ -34,7 +34,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class SendFeedbackCommand extends CommandWithError implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SnappyRepository snappyRepository;

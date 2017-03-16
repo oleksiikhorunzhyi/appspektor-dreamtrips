@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.PlacesN
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -23,14 +22,13 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static rx.Observable.zip;
 
 @CommandAction
 public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlacesCommand.PlacesWithAddress>
       implements InjectableAction, CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
 
-   @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject WalletDetectLocationService locationService;
    @Inject MapperyContext mapperyContext;
 

@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
@@ -29,12 +28,10 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
-
 @CommandAction
 public class PostLocationCommand extends Command<Void> implements InjectableAction{
 
-   @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject LostCardRepository locationRepository;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject MapperyContext mapperyContext;

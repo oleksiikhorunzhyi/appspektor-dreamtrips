@@ -29,7 +29,7 @@ public class UpdateProfileModule {
    @Provides
    @Singleton
    UpdateProfileManager updateProfileManager(
-         @Named(JanetModule.JANET_API_LIB) Janet janetApi,
+         Janet janetApi,
          SmartCardInteractor smartCardInteractor,
          UpdateDataHolder updateDataHolder) {
       return new UpdateProfileManager(janetApi, smartCardInteractor, updateDataHolder);

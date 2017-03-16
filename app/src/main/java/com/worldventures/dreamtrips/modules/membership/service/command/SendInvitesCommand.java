@@ -22,7 +22,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class SendInvitesCommand extends CommandWithError implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    private int templateId;
    private List<String> contacts;

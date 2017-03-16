@@ -33,7 +33,7 @@ import rx.schedulers.Schedulers;
 public class SearchLocationAction extends CommandWithError<List<DtlLocation>> implements
       CachedAction<Pair<String, List<DtlLocation>>>, InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject LocationsActionCreator actionCreator;
 

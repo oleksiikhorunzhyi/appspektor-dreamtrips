@@ -36,7 +36,7 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    public static final int PAGE_SIZE = 10;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject PodcastsMapper podcastsMapper;
    @Inject SnappyRepository db;
 

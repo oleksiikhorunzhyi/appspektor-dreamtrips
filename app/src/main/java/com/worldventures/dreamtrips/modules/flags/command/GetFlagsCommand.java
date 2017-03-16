@@ -25,7 +25,7 @@ import rx.Observable;
 @CommandAction
 public class GetFlagsCommand extends CommandWithError<List<Flag>> implements InjectableAction, CachedAction<List<Flag>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private List<Flag> cachedFlags;

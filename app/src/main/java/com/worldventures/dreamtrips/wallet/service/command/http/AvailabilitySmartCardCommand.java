@@ -14,7 +14,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class AvailabilitySmartCardCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet apiJanet;
+   @Inject Janet apiJanet;
 
    private String smartCardId;
    private final String barcode;

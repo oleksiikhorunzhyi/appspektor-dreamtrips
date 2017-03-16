@@ -20,14 +20,13 @@ import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class WipeSmartCardDataCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
-   @Inject @Named(JANET_API_LIB) Janet apiLibJanet;
+   @Inject Janet apiLibJanet;
 
    private final boolean withPaymentCard;
 

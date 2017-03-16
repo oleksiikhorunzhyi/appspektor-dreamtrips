@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -18,12 +17,10 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
-
 @CommandAction
 public class GetLocationCommand extends Command<List<WalletLocation>> implements InjectableAction {
 
-   @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject LostCardRepository locationRepository;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject MapperyContext mapperyContext;

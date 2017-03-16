@@ -21,7 +21,7 @@ public class AddFriendCommand extends CommandWithError<User> implements Injectab
    private User user;
    private String circleId;
 
-   @Named(JanetModule.JANET_API_LIB) @Inject Janet janet;
+   @Inject Janet janet;
 
    public AddFriendCommand(User user, String circleId) {
       this.user = user;

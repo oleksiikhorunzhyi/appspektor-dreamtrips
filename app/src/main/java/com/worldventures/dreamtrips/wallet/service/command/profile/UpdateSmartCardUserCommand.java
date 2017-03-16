@@ -29,13 +29,12 @@ import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implements InjectableAction {
 
-   @Inject @Named(JANET_API_LIB) Janet janetApi;
+   @Inject Janet janetApi;
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
    @Inject WalletNetworkService networkService;

@@ -88,7 +88,6 @@
    <string name="bucket_list_choose">Alegeți din articole populare</string>
    <string name="bucket_list_create_new">Vreau să-mi creez propria Listă de dorințe</string>
    <string name="bucket_list_action_create_error">Nu s-a putut adăuga articolul din Lista de dorințe</string>
-   <string name="bucket_list_action_update_error">Nu s-a putut actualiza articolul din Lista de dorințe</string>
    <string name="bucket_list_action_change_order_error">Nu s-a putut modifica succesiunea articolelor din Lista de dorințe</string>
    <string name="bucket_list_action_delete_error">Nu s-a putut șterge articolul din Lista de dorințe</string>
    <string name="bucket_hint_title">Titlu</string>
@@ -119,8 +118,6 @@
    <string name="ss_filter_show_favorites">Afișați Favorite</string>
    <string name="other_travel">Rezervați o călătorie</string>
    <string name="training_videos">Videoclipuri de formare</string>
-   <string name="error_while_sync">A apărut o eroare</string>
-   <string name="can_not_like_photo">Nu se poate aprecia fotografia</string>
    <string name="like">%1$d apreciere</string>
    <string name="likes">%1$d aprecieri</string>
    <string name="comment_single">%1$d comentariu</string>
@@ -370,13 +367,13 @@
    <string name="no_mutual_friends">Nu aveți niciun prieten comun</string>
 
    <string name="photo_limitation_message">Alegeți până la %1$d fotografii</string>
-   <string name="pending">În așteptare…</string>
+   <string name="pending">În așteptare...</string>
 
    <string name="back">Înapoi</string>
    <string name="logout_component">Deconectare</string>
    <string name="start_typing_name">Începeți să introduceți numele</string>
 
-   <string name="multiple_dates">Date multiple, %1$s…</string>
+   <string name="multiple_dates">Date multiple, %1$s...</string>
 
    <string name="tag_photo">v-a etichetat pe</string>
 
@@ -478,13 +475,13 @@
    <string name="error_fail_to_load_documents">Încărcarea documentelor a eșuat</string>
    <string name="tag_people">Etichetați persoane</string>
 
-   <string name="uploading_post_status_progress_singular">Se încarcă fotografia…</string>
-   <string name="uploading_post_status_progress_plural">Se încarcă %1$d fotografii…</string>
+   <string name="uploading_post_status_progress_singular">Se încarcă fotografia...</string>
+   <string name="uploading_post_status_progress_plural">Se încarcă %1$d fotografii...</string>
    <string name="uploading_post_status_paused">Încărcarea a fosr întreruptă</string>
    <string name="uploading_post_status_waiting">Se așteaptă</string>
    <string name="uploading_post_status_failed_connection">Conexiune pierdută</string>
    <string name="uploading_post_status_uploaded">Postarea de text s-a încărcat cu succes!</string>
-   <string name="uploading_post_time_left_posting">Se postează…</string>
+   <string name="uploading_post_time_left_posting">Se postează...</string>
    <string name="uploading_post_time_time_left">ieșit</string>
    <string name="uploading_post_time_left_seconds">s</string>
    <string name="uploading_post_time_left_minutes">m</string>
@@ -494,7 +491,6 @@
    <string name="uploading_post_cancel_upload_positive_button">Da</string>
    <string name="uploading_post_cancel_upload_negative_button">Niciun/nicio</string>
 
-   <string name="say_something">Comunicați ceva restului lumii</string>
    <string name="update">Actualizați</string>
    <string name="add_location">Adăugați locație</string>
    <string name="find_your_location">Găsiți-vă locația</string>
@@ -536,6 +532,12 @@
    <string name="podcasts_button_pause">Pauză</string>
    <string name="podcasts_button_stop">Oprire</string>
 
+   <string name="app_update_alert_title">Actualizare disponibilă</string>
+   <string name="app_update_alert_neutral_button">Nu acum</string>
+   <string name="app_update_alert_pos_button">Actualizați</string>
+   <string name="app_update_alert_optional_update_message">Există actualizări de software pentru aplicația DreamTrips. Pentru o experiență de utilizare mai bună, actualizați înainte de %1$s</string>
+   <string name="app_update_alert_force_update_message">Există actualizări de software pentru aplicația DreamTrips. Instalarea actualizării durează doar câteva minute update.</string>
+
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Spuneți ceva, adăugați #hashtag-uri</string>
    <string name="add_text">Adăugare text</string>
@@ -571,4 +573,7 @@
 
    <string name="documents">Documente</string>
    <string name="documents_empty_text">Documentele nu au putut fi încărcate în acest moment.</string>
+
+   <string name="show_original">Afișați originalul</string>
+   
 </resources>

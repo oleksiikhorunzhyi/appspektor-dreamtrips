@@ -88,7 +88,6 @@
    <string name="bucket_list_choose">Válasszon a népszerű tételekből</string>
    <string name="bucket_list_create_new">Saját lista létrehozása</string>
    <string name="bucket_list_action_create_error">Nem sikerült frissíteni a bakancslitsa tételt</string>
-   <string name="bucket_list_action_update_error">Nem sikerült frissíteni a bakancslista tételt</string>
    <string name="bucket_list_action_change_order_error">Nem sikerült megváltoztatni a bakancslista tételt</string>
    <string name="bucket_list_action_delete_error">Nem sikerült törölni a bakancslista tételt</string>
    <string name="bucket_hint_title">Cím</string>
@@ -119,8 +118,6 @@
    <string name="ss_filter_show_favorites">Kedvencek megjelenítése</string>
    <string name="other_travel">Utazás lefoglalása</string>
    <string name="training_videos">Oktatóvideók</string>
-   <string name="error_while_sync">Valamilyen hiba történt</string>
-   <string name="can_not_like_photo">A fénykép nem kedvelhető</string>
    <string name="like">%1$d embernek tetszik</string>
    <string name="likes">%1$d felhasználónak tetszik</string>
    <string name="comment_single">%1$d megjegyzés</string>
@@ -370,13 +367,13 @@
    <string name="no_mutual_friends">Nincsenek közös barátai</string>
 
    <string name="photo_limitation_message">Legfeljebb %1$d fényképet válasszon</string>
-   <string name="pending">Függőben…</string>
+   <string name="pending">Függőben...</string>
 
    <string name="back">Vissza</string>
    <string name="logout_component">Kijelentkezés</string>
    <string name="start_typing_name">Kezdje el beírni a nevet</string>
 
-   <string name="multiple_dates">Több dátumot, %1$s …</string>
+   <string name="multiple_dates">Több dátumot, %1$s ...</string>
 
    <string name="tag_photo">megjelölte Önt itt:</string>
 
@@ -478,25 +475,22 @@
    <string name="error_fail_to_load_documents">Nem sikerült betölteni a dokumentumokat</string>
    <string name="tag_people">Emberek megjelölése</string>
 
-   <string name="uploading_post_status_progress_singular">Fotó feltöltése …</string>
-   <string name="uploading_post_status_progress_plural">%1$d kép feltöltés …</string>
+   <string name="uploading_post_status_progress_singular">Fotó feltöltése ...</string>
+   <string name="uploading_post_status_progress_plural">%1$d kép feltöltés ...</string>
    <string name="uploading_post_status_paused">Feltöltés szünetel</string>
    <string name="uploading_post_status_waiting">Várakozik</string>
    <string name="uploading_post_status_failed_connection">A kapcsolat megszakadt</string>
    <string name="uploading_post_status_uploaded">Hozzászólás sikeresen feltöltve!</string>
-   <string name="uploading_post_time_left_posting">Közzététel …</string>
+   <string name="uploading_post_time_left_posting">Közzététel ...</string>
    <string name="uploading_post_time_time_left">elhagyta</string>
    <string name="uploading_post_time_left_seconds">m</string>
    <string name="uploading_post_time_left_minutes">p</string>
    <string name="uploading_post_time_left_hours">ó</string>
-   <string name="uploading_post_time_left_more_than_one_day">Több mint 1 nap …</string>
+   <string name="uploading_post_time_left_more_than_one_day">Több mint 1 nap ...</string>
    <string name="uploading_post_cancel_upload_message">Feltöltés visszavonása?</string>
    <string name="uploading_post_cancel_upload_positive_button">Igen</string>
    <string name="uploading_post_cancel_upload_negative_button">Nem</string>
 
-   <string name="say_something">Mondj valamit a világnak</string>
-
->>>>>>> develop
    <string name="update">Frissítés</string>
    <string name="add_location">Hely hozzáadás</string>
    <string name="find_your_location">Helyzet megtalálása</string>
@@ -538,6 +532,12 @@
    <string name="podcasts_button_pause">Szünet</string>
    <string name="podcasts_button_stop">Stop</string>
 
+   <string name="app_update_alert_title">Elérhető frissítés</string>
+   <string name="app_update_alert_neutral_button">Most nem</string>
+   <string name="app_update_alert_pos_button">Frissítés</string>
+   <string name="app_update_alert_optional_update_message">A szoftverfrissítések készen állnak a DreamTrips-alkalmazáshoz. A továbbfejlesztett élményért még a következő időpont előtt telepítsd: %1$s.</string>
+   <string name="app_update_alert_force_update_message">A szoftverfrissítések készen állnak a DreamTrips-alkalmazáshoz. A frissítés telepítése mindössze néhány percet vesz igénybe.</string>
+
    <string name="min">perc</string>
    <string name="post_hint_with_hashtag">Mondj valamit, add hozzá #hashtags</string>
    <string name="add_text">Szöveg hozzáadás</string>
@@ -573,4 +573,7 @@
 
    <string name="documents">dokumentumok</string>
    <string name="documents_empty_text">Dokumentumokat nem lehet betölteni jelenleg.</string>
+
+   <string name="show_original">Eredeti mutatása</string>
+   
 </resources>

@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Terima</string>
    <string name="flag_description_negative">Batal</string>
    <string name="log_in">Log masuk</string>
+   <string name="facebook_error_loading_albums">Tidak dapat memuatkan album</string>
+   <string name="facebook_error_loading_photos">Tidak dapat memuatkan foto</string>
+   <string name="facebook_login_error">Tidak dapat melog masuk ke Facebook</string>
    <string name="fab_posted">Berjaya dicatatkan ke Facebook</string>
+   <string name="facebook_posting_error">Tidak dapat mengepos ke Facebook</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -88,7 +92,6 @@
    <string name="bucket_list_choose">Pilih Daripada Item Popular</string>
    <string name="bucket_list_create_new">Cipta Senarai Saya Sendiri</string>
    <string name="bucket_list_action_create_error">Tidak dapat menambah item Senarai Perkara Yang Ingin Lakukan </string>
-   <string name="bucket_list_action_update_error">Tidak dapat mengemas kini item Senarai Perkara Yang Ingin Lakukan </string>
    <string name="bucket_list_action_change_order_error">Tidak dapat mengubah pesanan item Senarai Perkara Yang Ingin Lakukan </string>
    <string name="bucket_list_action_delete_error">Tidak dapat menghapuskan item Senarai Perkara Yang Ingin Lakukan </string>
    <string name="bucket_hint_title">Tajuk:</string>
@@ -119,8 +122,6 @@
    <string name="ss_filter_show_favorites">Tunjuk Kegemaran</string>
    <string name="other_travel">Tempah Perjalanan</string>
    <string name="training_videos">Video Latihan</string>
-   <string name="error_while_sync">Sesuatu yang tidak kena</string>
-   <string name="can_not_like_photo">Tidak boleh suka gambar</string>
    <string name="like">%1$d suka</string>
    <string name="likes">%1$d Suka</string>
    <string name="comment_single">%1$d komen</string>
@@ -370,7 +371,7 @@
    <string name="no_mutual_friends">Anda tidak ada kawan bersama</string>
 
    <string name="photo_limitation_message">Sila pilih sehingga %1$d gambar</string>
-   <string name="pending">Sedang menunggu…</string>
+   <string name="pending">Sedang menunggu...</string>
 
    <string name="back">กลับไป</string>
    <string name="logout_component">Log keluar</string>
@@ -494,8 +495,6 @@
    <string name="uploading_post_cancel_upload_positive_button">Ya</string>
    <string name="uploading_post_cancel_upload_negative_button">Tidak</string>
 
-   <string name="say_something">Ucapkan sesuatu kepada dunia</string>
-
    <string name="update">Kemas kini</string>
    <string name="add_location">Tambah lokasi</string>
    <string name="find_your_location">Cari lokasi anda</string>
@@ -537,6 +536,12 @@
    <string name="podcasts_button_pause">Berhenti seketika</string>
    <string name="podcasts_button_stop">Berhenti</string>
 
+   <string name="app_update_alert_title">Pengemaskinian Tersedia</string>
+   <string name="app_update_alert_neutral_button">Bukan sekarang</string>
+   <string name="app_update_alert_pos_button">Kemas kini</string>
+   <string name="app_update_alert_optional_update_message">Pengemaskinian perisian tersedia untuk aplikasi DreamTrips. Untuk pengalaman yang dipertingkatkan kemas kini sebelum %1$s</string>
+   <string name="app_update_alert_force_update_message">Pengemaskinian perisian tersedia untuk aplikasi DreamTrips. Pengemaskinian ini hanya memerlukan beberapa minit untuk dipasang.</string>
+
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Kata sesuatu, tambah #hashtags</string>
    <string name="add_text">Tambah teks</string>
@@ -572,4 +577,7 @@
 
    <string name="documents">Dokumen</string>
    <string name="documents_empty_text">Dokumen tidak dapat dimuatkan pada masa ini.</string>
+
+   <string name="show_original">Tunjukkan yang asal</string>
+   <string name="error_fail_to_translate_bucket_item">Tidak dapat menterjemahkan item baldi</string>
 </resources>

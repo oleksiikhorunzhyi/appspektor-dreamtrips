@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/dtl_all_reviews_margin"
+      >
+
+
+   <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+         android:id="@+id/ivItemReview"
+         android:layout_width="@dimen/dtl_item_reviews_margin"
+         android:layout_height="@dimen/dtl_item_reviews_margin"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginLeft="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_item_reviews_margin_tw"
+         fresco:roundAsCircle="true"
+         fresco:actualImageScaleType="centerCrop"
+         fresco:placeholderImage="@drawable/noavatar_small"
+         fresco:placeholderImageScaleType="centerCrop"
+         />
+
+   <TextView
+         android:id="@+id/tvUserName"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignTop="@+id/ivItemReview"
+         android:layout_marginLeft="@dimen/dtl_item_reviews_margin_nine"
+         android:layout_toEndOf="@+id/ivItemReview"
+         android:layout_toRightOf="@+id/ivItemReview"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         android:textStyle="bold"
+         />
+
+   <RatingBar
+         android:id="@+id/rbRating"
+         style="?android:attr/ratingBarStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/tvUserName"
+         android:layout_alignStart="@+id/tvUserName"
+         android:layout_below="@+id/tvUserName"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:isIndicator="true"
+         android:numStars="5"
+         android:rating="0"
+         android:theme="@style/RatingBar"
+         />
+
+   <TextView
+         android:id="@+id/tvCommentWrote"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/tvUserName"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:textColor="@color/color_item_review"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         />
+
+   <TextView
+         android:id="@+id/tvComment"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/rbRating"
+         android:layout_alignStart="@+id/rbRating"
+         android:layout_below="@+id/rbRating"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:ellipsize="end"
+         android:maxLines="3"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         />
+
+   <TextView
+         android:id="@+id/tvReadMore"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/tvComment"
+         android:layout_alignStart="@+id/tvComment"
+         android:layout_below="@+id/tvComment"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:textColor="@color/rating_background_button"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         android:textStyle="bold"
+         android:visibility="gone"
+         />
+
+   <LinearLayout
+         android:id="@+id/linearLayout"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/tvReadMore"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:orientation="horizontal"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:id="@+id/textView15"
+            android:layout_width="@dimen/dtl_item_reviews_margin_seven"
+            android:layout_height="@dimen/dtl_no_reviews_margin"
+            android:layout_marginRight="@dimen/dtl_all_reviews_elevation"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="@color/color_item_review_gray"
+            />
+
+      <TextView
+            android:id="@+id/textView14"
+            android:layout_width="@dimen/dtl_no_reviews_margin"
+            android:layout_height="@dimen/dtl_all_reviews_margin_ft"
+            android:layout_marginRight="@dimen/dtl_item_reviews_margin_eight"
+            android:layout_weight="1"
+            android:background="@color/color_item_review_gray"
+            />
+
+      <TextView
+            android:id="@+id/textView13"
+            android:layout_width="@dimen/dtl_item_reviews_margin_seven"
+            android:layout_height="@dimen/dtl_no_reviews_margin"
+            android:layout_marginRight="@dimen/dtl_all_reviews_elevation"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/color_item_review_gray"
+            />
+
+      <TextView
+            android:id="@+id/textView12"
+            android:layout_width="@dimen/dtl_no_reviews_margin"
+            android:layout_height="@dimen/dtl_all_reviews_margin_ft"
+            android:layout_weight="1"
+            android:background="@color/color_item_review_gray"
+            />
+
+   </LinearLayout>
+
+   <include layout="@layout/line_separator" />
+
+</RelativeLayout>

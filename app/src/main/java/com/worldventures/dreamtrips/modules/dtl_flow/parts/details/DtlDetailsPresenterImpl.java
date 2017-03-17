@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,14 +32,19 @@ import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -56,9 +62,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject PresentationInteractor presentationInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;
+   private static final int MAX_SIZE_TO_SHOW_BUTTON = 2;
 
    public DtlDetailsPresenterImpl(Context context, Injector injector, Merchant merchant, List<String> preExpandOffers) {
       super(context);
@@ -261,5 +269,46 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
          getView().showMerchantMap(intent);
       });
+   }
+
+   @Override
+   public void showAllReviews() {
+      Flow.get(getContext()).set(new DtlReviewsPath(merchant));
+   }
+
+   @Override
+   public void addNewComments(Merchant merchant) {
+      //List Review have not to be null
+      Reviews reviews = merchant.reviews();
+      if (reviews != null && !reviews.total().isEmpty()) {
+         ArrayList<ReviewObject> listReviews = ReviewObject.getReviewList(reviews.reviews());
+         if (listReviews != null && !listReviews.isEmpty()) {
+            //Business logic: If the size is equals than 0, so we need to show an screen without info
+            int countReview = Integer.parseInt(reviews.total());
+            float ratingMerchant = Float.parseFloat(reviews.ratingAverage());
+            if (getView() != null) {
+               if (countReview == 0) {
+                  getView().addNoCommentsAndReviews();
+               } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
+                  //If list size is major or equals 3, must be show read all message button
+                  getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
+                  getView().showButtonAllRateAndReview();
+                  getView().setTextRateAndReviewButton(countReview);
+               } else {
+                  //if it doesn't, only show the comment in the same screen
+                  getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
+                  getView().hideButtonAllRateAndReview();
+               }
+            }
+         }
+      }
+   }
+
+   private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {
+      ArrayList<ReviewObject> newListReviews = new ArrayList<>();
+      for (int i = 0; i < MAX_SIZE_TO_SHOW_BUTTON; i++) {
+         newListReviews.add(reviews.get(i));
+      }
+      return newListReviews;
    }
 }

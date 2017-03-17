@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface DtlDetailsScreen extends DtlScreen {
@@ -46,4 +47,14 @@ public interface DtlDetailsScreen extends DtlScreen {
    List<String> getExpandedOffersIds();
 
    boolean isHoursViewExpanded();
+
+   void addNoCommentsAndReviews();
+
+   void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);
+
+   void showButtonAllRateAndReview();
+
+   void hideButtonAllRateAndReview();
+
+   void setTextRateAndReviewButton(int size);
 }

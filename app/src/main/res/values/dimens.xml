@@ -367,5 +367,24 @@
    <dimen name="dtlt_second_row_side_padding">54dp</dimen>
    <dimen name="filter_layout_margin_left">25dp</dimen>
    <!-- </DTL Toolbar dimens> -->
+   <dimen name="dtl_all_reviews_margin">16dp</dimen>
+   <dimen name="dtl_all_reviews_margin_ft">14dp</dimen>
+   <dimen name="dtl_all_reviews_margin_ten">10dp</dimen>
+   <dimen name="dtl_all_reviews_height">48dp</dimen>
+   <dimen name="dtl_all_reviews_height_big">222dp</dimen>
+   <dimen name="dtl_no_reviews_height">121dp</dimen>
+   <dimen name="dtl_all_reviews_margin_small">6dp</dimen>
+   <dimen name="dtl_all_reviews_elevation">3dp</dimen>
+   <dimen name="dtl_all_reviews_text">14sp</dimen>
+   <dimen name="dtl_no_reviews_text">15sp</dimen>
+   <dimen name="dtl_no_reviews_dimen_nine">9sp</dimen>
+   <dimen name="dtl_no_reviews_margin">15dp</dimen>
+   <dimen name="dtl_review_small_margin">2dp</dimen>
+   <dimen name="dtl_review_extra_small_margin">1dp</dimen>
+   <dimen name="dtl_item_reviews_margin">28dp</dimen>
+   <dimen name="dtl_item_reviews_margin_tw">20dp</dimen>
+   <dimen name="dtl_item_reviews_margin_nine">9dp</dimen>
+   <dimen name="dtl_item_reviews_margin_eight">8dp</dimen>
+   <dimen name="dtl_item_reviews_margin_seven">7dp</dimen>
 
 </resources>

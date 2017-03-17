@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 import butterknife.InjectView;
@@ -21,6 +22,7 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.header_text_view) TextView headerTextView;
    @InjectView(R.id.button_next) TextView nextButton;
+   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
 
    private DialogOperationScreen dialogOperationScreen;
    private MaterialDialog infoLockGesturesDialog = null;
@@ -39,6 +41,7 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
       toolbar.setNavigationOnClickListener(v -> onBackClick());
       setupMenuItem();
       headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
+      wizardVideoView.setVideoSource(R.raw.anim_pin_entry);
    }
 
    private void setupMenuItem() {

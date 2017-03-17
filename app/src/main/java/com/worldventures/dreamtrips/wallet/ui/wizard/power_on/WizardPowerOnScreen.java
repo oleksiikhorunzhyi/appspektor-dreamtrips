@@ -43,7 +43,7 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
-      wizardVideoView.playVideo(R.raw.anim_power_on_sc);
+      wizardVideoView.setVideoSource(R.raw.anim_power_on_sc);
    }
 
    @Override

@@ -60,7 +60,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesIntera
 import com.worldventures.dreamtrips.modules.tripsimages.service.VideoInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
 import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
@@ -337,7 +336,7 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   VersionCheckInteractor provideVersionCheckInteractor(@Named(VersionCheckModule.JANET_QUALIFIER) Janet janet) {
+    provideVersionCheckInteractor(Janet janet) {
       return new VersionCheckInteractor(janet);
    }
 

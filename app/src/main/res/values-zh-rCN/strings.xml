@@ -88,7 +88,6 @@
    <string name="bucket_list_choose">选择热门项目</string>
    <string name="bucket_list_create_new">创建我自己的清单</string>
    <string name="bucket_list_action_create_error">无法添加愿望清单项目</string>
-   <string name="bucket_list_action_update_error">无法更新愿望清单项目</string>
    <string name="bucket_list_action_change_order_error">无法更改愿望清单项目顺序</string>
    <string name="bucket_list_action_delete_error">无法删除愿望清单项目</string>
    <string name="bucket_hint_title">标题</string>
@@ -119,8 +118,6 @@
    <string name="ss_filter_show_favorites">显示收藏夹</string>
    <string name="other_travel">预订旅游</string>
    <string name="training_videos">培训视频</string>
-   <string name="error_while_sync">出了些问题</string>
-   <string name="can_not_like_photo">不能点赞照片</string>
    <string name="like">%1$d点赞</string>
    <string name="likes">%1$d点赞</string>
    <string name="comment_single">%1$d评论</string>
@@ -238,7 +235,7 @@
    <string name="feed_photo">照片</string>
    <string name="feed_bucket">人生愿望清单项目</string>
    <string name="coming_soon">即将推出</string>
-   <string name="loading">载入中…</string>
+   <string name="loading">载入中...</string>
    <string name="filter_video_title_language">选择语言</string>
    <string name="filter_video_title_country">选择国家</string>
    <string name="comments_title">评论</string>
@@ -370,13 +367,13 @@
    <string name="no_mutual_friends">您没有任何共同的朋友</string>
 
    <string name="photo_limitation_message">请选择最多%1$d张照片</string>
-   <string name="pending">待处理…</string>
+   <string name="pending">待处理...</string>
 
    <string name="back">回去</string>
    <string name="logout_component">退出</string>
    <string name="start_typing_name">开始键入名称</string>
 
-   <string name="multiple_dates">多个日期， %1$s …</string>
+   <string name="multiple_dates">多个日期， %1$s ...</string>
 
    <string name="tag_photo">对您进行了标记</string>
 
@@ -478,23 +475,21 @@
    <string name="error_fail_to_load_documents">无法加载文件</string>
    <string name="tag_people">给人加标签</string>
 
-   <string name="uploading_post_status_progress_singular">上传照片…</string>
+   <string name="uploading_post_status_progress_singular">上传照片...</string>
    <string name="uploading_post_status_progress_plural">上传%1$d张照片…</string>
    <string name="uploading_post_status_paused">上传已暂停</string>
    <string name="uploading_post_status_waiting">等候</string>
    <string name="uploading_post_status_failed_connection">失去连接</string>
    <string name="uploading_post_status_uploaded">帖子上传成功！</string>
-   <string name="uploading_post_time_left_posting">正在发布…</string>
+   <string name="uploading_post_time_left_posting">正在发布...</string>
    <string name="uploading_post_time_time_left">离开</string>
    <string name="uploading_post_time_left_seconds">S</string>
    <string name="uploading_post_time_left_minutes">M</string>
    <string name="uploading_post_time_left_hours">h</string>
-   <string name="uploading_post_time_left_more_than_one_day">超过1天…</string>
+   <string name="uploading_post_time_left_more_than_one_day">超过1天...</string>
    <string name="uploading_post_cancel_upload_message">取消上传？</string>
    <string name="uploading_post_cancel_upload_positive_button">是</string>
    <string name="uploading_post_cancel_upload_negative_button">不是</string>
-
-   <string name="say_something">向世界说点什么</string>
 
    <string name="update">更新</string>
    <string name="add_location">添加位置</string>
@@ -537,6 +532,9 @@
    <string name="podcasts_button_pause">暂停</string>
    <string name="podcasts_button_stop">停止</string>
 
+   <string name="app_update_alert_title">更新可用</string>
+   <string name="app_update_alert_neutral_button">不是现在</string>
+   <string name="app_update_alert_pos_button">更新</string>
    <string name="min">分钟</string>
    <string name="post_hint_with_hashtag">说些什么，添加#标签</string>
    <string name="add_text">添加文字</string>
@@ -572,4 +570,7 @@
 
    <string name="documents">文件</string>
    <string name="documents_empty_text">此次无法加载文件。</string>
+
+   <string name="show_original">显示最初的</string>
+   
 </resources>

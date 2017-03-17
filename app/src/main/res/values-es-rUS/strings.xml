@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Aceptar</string>
    <string name="flag_description_negative">Cancelar</string>
    <string name="log_in">Inicio de sesión </string>
+   <string name="facebook_error_loading_albums">No se pudo cargar los álbumes</string>
+   <string name="facebook_error_loading_photos">No se pudo cargar fotos</string>
+   <string name="facebook_login_error">No se ha podido iniciar sesión en Facebook</string>
    <string name="fab_posted">Se publicó correctamente en Facebook</string>
+   <string name="facebook_posting_error">No se pudo publicar en Facebook</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -88,7 +92,6 @@
    <string name="bucket_list_choose">Elegir entre elementos populares</string>
    <string name="bucket_list_create_new">Crear mi propia lista</string>
    <string name="bucket_list_action_create_error">No se pudo agregar el elemento de la Lista de deseos</string>
-   <string name="bucket_list_action_update_error">No se pudo actualizar el elemento de la Lista de deseos</string>
    <string name="bucket_list_action_change_order_error">No se pudo cambiar el elemento de la Lista de deseos</string>
    <string name="bucket_list_action_delete_error">No se pudo eliminar el elemento de la Lista de deseos</string>
    <string name="bucket_hint_title">Título</string>
@@ -119,8 +122,6 @@
    <string name="ss_filter_show_favorites">Mostrar favoritos</string>
    <string name="other_travel">Reservar viaje</string>
    <string name="training_videos">Videos de capacitación</string>
-   <string name="error_while_sync">Algo fue mal</string>
-   <string name="can_not_like_photo">No te puede gustar la foto</string>
    <string name="like">%1$d me gusta</string>
    <string name="likes">%1$d me gusta</string>
    <string name="comment_single">%1$d comentario</string>
@@ -238,7 +239,7 @@
    <string name="feed_photo">Foto</string>
    <string name="feed_bucket">Elemento de la lista de pendientes</string>
    <string name="coming_soon">Próximamente</string>
-   <string name="loading">Cargando…</string>
+   <string name="loading">Cargando...</string>
    <string name="filter_video_title_language">Elegir idioma</string>
    <string name="filter_video_title_country">Elegir país</string>
    <string name="comments_title">Comentarios</string>
@@ -370,13 +371,13 @@
    <string name="no_mutual_friends">No tenéis ningún amigo mutuo</string>
 
    <string name="photo_limitation_message">Elige hasta %1$d fotos</string>
-   <string name="pending">Pendiente…</string>
+   <string name="pending">Pendiente...</string>
 
    <string name="back">Volver</string>
    <string name="logout_component">Cerrar sesión</string>
    <string name="start_typing_name">Empezar a escribir nombre</string>
 
-   <string name="multiple_dates">Múltiples fechas, %1$s…</string>
+   <string name="multiple_dates">Múltiples fechas, %1$s...</string>
 
    <string name="tag_photo">te etiquetó en</string>
 
@@ -478,8 +479,8 @@
    <string name="error_fail_to_load_documents">No se pudieron cargar los documentos </string>
    <string name="tag_people">Etiqueta personas</string>
 
-   <string name="uploading_post_status_progress_singular">Subiendo Foto …</string>
-   <string name="uploading_post_status_progress_plural">Subiendo %1$d fotos …</string>
+   <string name="uploading_post_status_progress_singular">Subiendo Foto ...</string>
+   <string name="uploading_post_status_progress_plural">Subiendo %1$d fotos ...</string>
    <string name="uploading_post_status_paused">Carga pausada</string>
    <string name="uploading_post_status_waiting">Esperando</string>
    <string name="uploading_post_status_failed_connection">Conexión perdida</string>
@@ -489,12 +490,10 @@
    <string name="uploading_post_time_left_seconds">s</string>
    <string name="uploading_post_time_left_minutes">m</string>
    <string name="uploading_post_time_left_hours">h</string>
-   <string name="uploading_post_time_left_more_than_one_day">Más de 1 día …</string>
+   <string name="uploading_post_time_left_more_than_one_day">Más de 1 día ...</string>
    <string name="uploading_post_cancel_upload_message">¿Cancelar la carga?</string>
    <string name="uploading_post_cancel_upload_positive_button">Sí</string>
    <string name="uploading_post_cancel_upload_negative_button">No</string>
-
-   <string name="say_something">Dile algo al mundo</string>
 
    <string name="update">Actualizar</string>
    <string name="add_location">Agregar ubicación</string>
@@ -537,6 +536,12 @@
    <string name="podcasts_button_pause">Pausar</string>
    <string name="podcasts_button_stop">Detener</string>
 
+   <string name="app_update_alert_title">Actualización disponible</string>
+   <string name="app_update_alert_neutral_button">No ahora</string>
+   <string name="app_update_alert_pos_button">Actualizar</string>
+   <string name="app_update_alert_optional_update_message">Las actualizaciones de software están listas para la aplicación DreamTrips. Para una mejor experiencia actualizarse antes de %1$s</string>
+   <string name="app_update_alert_force_update_message">Las actualizaciones de software están listas para la aplicación DreamTrips. La actualización sólo tardará unos minutos en instalarse.</string>
+
    <string name="min">minutos</string>
    <string name="post_hint_with_hashtag">Di algo, agregar #hashtags</string>
    <string name="add_text">Agregar texto</string>
@@ -572,4 +577,7 @@
 
    <string name="documents">Documentos</string>
    <string name="documents_empty_text">No se pudieron cargar los documentos en este momento.</string>
+
+   <string name="show_original">Mostrar original</string>
+   <string name="error_fail_to_translate_bucket_item">No se ha podido traducir lista de pendientes </string>
 </resources>

@@ -88,7 +88,6 @@
    <string name="bucket_list_choose">Επιλογή από τα Δημοφιλή αντικείμενα</string>
    <string name="bucket_list_create_new">Δημιουργία του δικού μου Καλαθιού</string>
    <string name="bucket_list_action_create_error">Το αντικείμενο δεν προστέθηκε στο Καλάθι Αγορών</string>
-   <string name="bucket_list_action_update_error">Το αντικείμενο στο Καλάθι Αγορών δεν ενημερώθηκε</string>
    <string name="bucket_list_action_change_order_error">Η σειρά αντικειμένων στο Καλάθι Αγορών δεν άλλαξε</string>
    <string name="bucket_list_action_delete_error">ΤΟ αντικείμενο στο Καλάθι Αγορών δεν διαγράφηκε</string>
    <string name="bucket_hint_title">Τίτλος</string>
@@ -119,8 +118,6 @@
    <string name="ss_filter_show_favorites">Εμφάνιση Αγαπημένων</string>
    <string name="other_travel">Κλείστε Ταξίδια</string>
    <string name="training_videos">Εκπαιδευτικά βίντεο</string>
-   <string name="error_while_sync">Κάτι δεν πήγε καλά</string>
-   <string name="can_not_like_photo">Δεν είναι δυνατό να γίνει like στη φωτογραφία</string>
    <string name="like">%1$d Μου αρέσει</string>
    <string name="likes">%1$d Μου Αρέσει</string>
    <string name="comment_single">%1$d σχόλιο</string>
@@ -370,7 +367,7 @@
    <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
 
    <string name="photo_limitation_message">Επιλέξτε έως %1$d φωτογραφίες</string>
-   <string name="pending">Σε εκκρεμότητα…</string>
+   <string name="pending">Σε εκκρεμότητα...</string>
 
    <string name="back">Πίσω</string>
    <string name="logout_component">Αποσύνδεση</string>
@@ -494,8 +491,6 @@
    <string name="uploading_post_cancel_upload_positive_button">Ναι</string>
    <string name="uploading_post_cancel_upload_negative_button">Όχι</string>
 
-   <string name="say_something">Πείτε κάτι στον κόσμο</string>
-
    <string name="update">Ενημέρωση</string>
    <string name="add_location">Προσθέστε τοποθεσία</string>
    <string name="find_your_location">Βρείτε την τοποθεσία σας</string>
@@ -537,6 +532,12 @@
    <string name="podcasts_button_pause">Παύση</string>
    <string name="podcasts_button_stop">Στάση</string>
 
+   <string name="app_update_alert_title"> Διαθέσιμη Ενημέρωση </string>
+   <string name="app_update_alert_neutral_button">Όχι τώρα</string>
+   <string name="app_update_alert_pos_button">Ενημέρωση</string>
+   <string name="app_update_alert_optional_update_message">Υπάρχουν έτοιμες ενημερώσεις λογισμικού για την εφαρμογή DreamTrips.  Για μια βελτιωμένη εμπειρία ενημερώστε πριν από %1$s.</string>
+   <string name="app_update_alert_force_update_message">Υπάρχουν έτοιμες ενημερώσεις λογισμικού για την εφαρμογή DreamTrips. Θα χρειαστούν μόνο λίγα λεπτά για να εγκατασταθεί η ενημέρωση.</string>
+
    <string name="min">λεπτά</string>
    <string name="post_hint_with_hashtag">Πείτε κάτι, προσθέστε #hashtags</string>
    <string name="add_text">Προσθέστε κείμενο</string>
@@ -572,4 +573,7 @@
 
    <string name="documents">Έγγραφα</string>
    <string name="documents_empty_text">Τα έγγραφα δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή.</string>
+
+   <string name="show_original">Δείξε αρχικό</string>
+   
 </resources>

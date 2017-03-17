@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -27,7 +26,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import icepick.State;
 import io.techery.janet.Janet;
@@ -39,7 +37,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.N
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janetApi;
+   @Inject Janet janetApi;
    @Inject BucketInteractor bucketInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 

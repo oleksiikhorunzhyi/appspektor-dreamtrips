@@ -19,13 +19,12 @@ import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class ResetSmartCardCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JANET_API_LIB) Janet apiLibJanet;
+   @Inject Janet apiLibJanet;
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    private final SmartCard smartCard;
 

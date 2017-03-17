@@ -34,7 +34,7 @@ import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.smartCard
 @CommandAction
 public class SendFeedbackCommand extends CommandWithError implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;

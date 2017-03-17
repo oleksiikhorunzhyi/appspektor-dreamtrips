@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.core.janet.api_lib;
 
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.messenger.command.LoginToMessengerServerCommand;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -14,10 +12,10 @@ import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import java.util.Set;
@@ -26,39 +24,32 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
-import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionServiceWrapper;
 import io.techery.janet.ActionState;
 import io.techery.janet.HttpActionService;
-import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
 import io.techery.janet.converter.Converter;
 import io.techery.janet.http.HttpClient;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
-   @Inject SnappyRepository db;
    @Inject MapperyContext mapperyContext;
-   @Inject Janet janet;
+   @Inject ReLoginInteractor reLoginInteractor;
    @Inject Observable<Device> deviceSource;
    @Inject Set<ResponseListener> responseListeners;
 
-   private final ActionPipe<LoginHttpAction> loginActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
    private final AuthRetryPolicy retryPolicy;
 
-   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter) {
+   public NewDreamTripsHttpService(Injector injector, String baseUrl, HttpClient client, Converter converter) {
       super(new HttpActionService(baseUrl, client, converter));
-      ((Injector) appContext).inject(this);
-      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, converter))
-            .build()
-            .createPipe(LoginHttpAction.class);
+      injector.inject(this);
+
       retryPolicy = new AuthRetryPolicy(appSessionHolder);
    }
 
@@ -75,7 +66,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       action.setAppLanguageHeader(LocaleHelper.getDefaultLocaleFormatted());
       action.setApiVersionForAccept(BuildConfig.API_VERSION);
       action.setAppPlatformHeader(String.format("android-%d", Build.VERSION.SDK_INT));
-      //
+
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
          ((AuthorizedHttpAction) action).setAuthorizationHeader(getAuthorizationHeader(userSession.getApiToken()));
@@ -144,10 +135,9 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       Device device = deviceSource.toBlocking().first();
       LoginHttpAction loginAction = new LoginHttpAction(username, userPassword, device);
       prepareNewHttpAction(loginAction);
-      ActionState<LoginHttpAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();
+      ActionState<LoginHttpAction> loginState = reLoginInteractor.loginHttpActionPipe()
+            .createObservable(loginAction).toBlocking().last();
       if (loginState.status == ActionState.Status.SUCCESS) {
-         janet.createPipe(LoginToMessengerServerCommand.class, Schedulers.io())
-               .send(new LoginToMessengerServerCommand());
          return mapperyContext.convert(loginState.action.response(), Session.class);
       } else {
          Timber.w(loginState.exception, "Login error");

@@ -29,7 +29,7 @@ import io.techery.mappery.MapperyContext;
 public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implements InjectableAction,
       CachedAction<List<Pin>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private String searchQuery;

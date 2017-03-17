@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class GetActivitiesCommand extends Command<List<ActivityModel>> implements InjectableAction, CachedAction<List<ActivityModel>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    List<ActivityModel> cachedResult;

@@ -12,10 +12,10 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
@@ -41,7 +41,8 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
+public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View>
+   implements com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder {
 
    @Inject Router router;
    @Inject FragmentManager fm;
@@ -49,6 +50,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedInteractor feedInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
+   @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    private FlagDelegate flagDelegate;
 
@@ -62,6 +64,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       setupTranslationState();
       subscribeToTranslation();
       subscribeToLikesChanges();
+      feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       loadEntity();
    }
 
@@ -89,21 +92,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
             .createObservable(new GetFeedEntityCommand(photo.getUid(), FeedEntityHolder.Type.PHOTO))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetFeedEntityCommand>()
-                  .onSuccess(getFeedEntityCommand -> {
-                     Photo photoFeedEntity = (Photo) getFeedEntityCommand.getResult();
-                     if (photo.getUser() != null) {
-                        photo.syncLikeState(photoFeedEntity);
-                        photo.setCommentsCount(photoFeedEntity.getCommentsCount());
-                        photo.setComments(photoFeedEntity.getComments());
-                        photo.setPhotoTags(photoFeedEntity.getPhotoTags());
-                        photo.setPhotoTagsCount(photoFeedEntity.getPhotoTagsCount());
-                     } else {
-                        photo = photoFeedEntity;
-                        view.showContentWrapper();
-                     }
-                     setupActualViewState();
-                     setupTranslationState();
-                  })
+                  .onSuccess(getFeedEntityCommand -> updateFeedEntity(getFeedEntityCommand.getResult()))
                   .onFail(this::handleError));
    }
 
@@ -194,10 +183,6 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       analyticsInteractor.analyticsActionPipe().send(new TripImageDeleteAnalyticsEvent(photo.getFSId()));
    }
 
-   public void onEvent(FeedEntityChangedEvent event) {
-      updatePhoto(event.getFeedEntity());
-   }
-
    public void onEvent(FeedEntityCommentedEvent event) {
       updatePhoto(event.getFeedEntity());
    }
@@ -234,6 +219,29 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    private void photoTranslationError(TranslatePhotoCommand action, Throwable e) {
       handleError(action, e);
       view.showTranslationButton();
+   }
+
+   @Override
+   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
+      if (!updatedFeedEntity.equals(updatedFeedEntity)) return;
+      Photo photoFeedEntity = (Photo) updatedFeedEntity;
+      if (photo.getUser() != null) {
+         photo.syncLikeState(photoFeedEntity);
+         photo.setCommentsCount(photoFeedEntity.getCommentsCount());
+         photo.setComments(photoFeedEntity.getComments());
+         photo.setPhotoTags(photoFeedEntity.getPhotoTags());
+         photo.setPhotoTagsCount(photoFeedEntity.getPhotoTagsCount());
+      } else {
+         photo = photoFeedEntity;
+         view.showContentWrapper();
+      }
+      setupActualViewState();
+      setupTranslationState();
+   }
+
+   @Override
+   public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
+
    }
 
    public interface View extends SocialFullScreenPresenter.View, FlagDelegate.View {

@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -208,10 +207,6 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
 
    public void refreshFeedItems() {
       view.refreshFeedItems(feedItems);
-   }
-
-   public void onEventMainThread(FeedEntityChangedEvent event) {
-      updateFeedEntity(event.getFeedEntity());
    }
 
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {

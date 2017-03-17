@@ -1,15 +1,22 @@
 package com.worldventures.dreamtrips.modules.feed.presenter.delegate;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
+
+import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -18,15 +25,13 @@ import rx.functions.Action2;
 
 public class FeedEntityHolderDelegate {
 
-   private TripImagesInteractor tripImagesInteractor;
-   private PostsInteractor postsInteractor;
-   private BucketInteractor bucketInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject PostsInteractor postsInteractor;
+   @Inject BucketInteractor bucketInteractor;
+   @Inject FriendsInteractor friendsInteractor;
 
-   public FeedEntityHolderDelegate(TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor,
-         BucketInteractor bucketInteractor) {
-      this.tripImagesInteractor = tripImagesInteractor;
-      this.postsInteractor = postsInteractor;
-      this.bucketInteractor = bucketInteractor;
+   public FeedEntityHolderDelegate(Injector injector) {
+      injector.inject(this);
    }
 
    public void subscribeToUpdates(FeedEntityHolder feedEntityHolder, Observable.Transformer stopper,
@@ -71,6 +76,29 @@ public class FeedEntityHolderDelegate {
             .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>()
                   .onSuccess(deleteItemCommand -> feedEntityHolder.deleteFeedEntity(deleteItemCommand.getResult()))
                   .onFail(errorAction::call));
+
+      bucketInteractor.addBucketItemPhotoPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>()
+                  .onSuccess(addBucketItemPhotoCommand -> feedEntityHolder.updateFeedEntity(addBucketItemPhotoCommand.getResult().first))
+                  .onFail(errorAction::call));
+
+      bucketInteractor.deleteItemPhotoPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
+               .onSuccess(deleteItemPhotoCommand -> feedEntityHolder.updateFeedEntity(deleteItemPhotoCommand.getResult()))
+               .onFail(errorAction::call));
+
+      friendsInteractor.getLikersPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<GetLikersCommand>()
+               .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
+               .onFail(errorAction::call));
+
+
    }
 
    protected <T> Observable.Transformer<T, T> bind(Observable.Transformer stopper) {

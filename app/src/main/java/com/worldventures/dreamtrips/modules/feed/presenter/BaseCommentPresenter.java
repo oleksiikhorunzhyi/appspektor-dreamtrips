@@ -1,17 +1,14 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -139,10 +136,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void loadFirstLikers() {
       friendsInteractor.getLikersPipe()
-            .createObservable(new GetLikersCommand(feedEntity.getUid(), PAGE, PER_PAGE))
+            .createObservable(new GetLikersCommand(feedEntity, PAGE, PER_PAGE))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetLikersCommand>()
-                  .onSuccess(likersCommand -> onLikersLoaded(likersCommand.getResult()))
+                  .onSuccess(likersCommand -> {
+                     this.feedEntity = likersCommand.getFeedEntity();
+                     view.setLikePanel(feedEntity);
+                  })
                   .onFail(this::handleError));
    }
 
@@ -278,17 +278,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       if (type != FeedEntityHolder.Type.UNDEFINED) {
          TrackingHelper.sendActionItemFeed(actionAttribute, id, type);
       }
-   }
-
-   private void onLikersLoaded(List<User> users) {
-      if (users != null && !users.isEmpty()) {
-         User userWhoLiked = Queryable.from(users).firstOrDefault(user -> user.getId() != getAccount().getId());
-         feedEntity.setFirstLikerName(userWhoLiked != null ? userWhoLiked.getFullName() : null);
-      } else {
-         feedEntity.setFirstLikerName(null);
-      }
-      view.setLikePanel(feedEntity);
-      eventBus.post(new FeedEntityChangedEvent(feedEntity));
    }
 
    private void updateEntityComments(Comment comment) {

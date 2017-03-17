@@ -33,7 +33,6 @@ import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -51,7 +50,6 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedC
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.FeedStorageCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.FeedStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.utils.FeedUtils;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -307,11 +305,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
                            .toList();
                      refreshFeedItems();
                   }));
-   }
-
-   public void onEventMainThread(FeedEntityChangedEvent event) {
-      FeedUtils.updateFeedItemInList(feedItems, event.getFeedEntity());
-      refreshFeedItems();
    }
 
    public void onEvent(FeedEntityCommentedEvent event) {

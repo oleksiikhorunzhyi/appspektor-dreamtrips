@@ -33,7 +33,7 @@
             android:paddingBottom="@dimen/spacing_large"
             android:paddingLeft="@dimen/spacing_huge"
             android:paddingRight="@dimen/spacing_huge"
-            android:paddingTop="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_huge"
             android:text="@string/wallet_wizard_scan_barcode_header"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white"

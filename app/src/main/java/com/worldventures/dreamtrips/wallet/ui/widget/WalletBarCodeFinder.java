@@ -15,16 +15,19 @@ import me.dm7.barcodescanner.core.ViewFinderView;
 
 public class WalletBarCodeFinder extends ViewFinderView {
 
+   private static final int[] SCANNER_ALPHA = new int[]{0, 64, 128, 192, 255, 192, 128, 64};
+
    private Paint viewPaint;
    private Paint framingPaint;
    private Paint framingBorderPaint;
-
-   private int framingBorderRadius;
+   private Paint laserPaint;
 
    private int framingLeft;
    private int framingTop;
    private int framingRight;
    private int framingBottom;
+   private int borderWidth;
+   private int scannerAlpha;
 
    public WalletBarCodeFinder(Context context) {
       super(context);
@@ -42,12 +45,16 @@ public class WalletBarCodeFinder extends ViewFinderView {
       framingPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
       //draw border for scan zone
+      borderWidth = getResources().getDimensionPixelOffset(R.dimen.wallet_wizard_bar_code_border_stroke_width);
       framingBorderPaint = new Paint();
       framingBorderPaint.setColor(ContextCompat.getColor(getContext(), R.color.wallet_bar_code_scanner_border));
       framingBorderPaint.setStyle(Paint.Style.STROKE);
-      framingBorderPaint.setStrokeWidth(getResources().getDimensionPixelOffset(R.dimen.wallet_wizard_bar_code_border_stroke_width));
+      framingBorderPaint.setStrokeWidth(borderWidth);
 
-      framingBorderRadius = getResources().getDimensionPixelOffset(R.dimen.wallet_wizard_bar_code_border_radius);
+      laserPaint = new Paint();
+      laserPaint.setColor(ContextCompat.getColor(getContext(), R.color.wallet_laser_line_color));
+      laserPaint.setStyle(Paint.Style.STROKE);
+      laserPaint.setStrokeWidth(getResources().getDimensionPixelOffset(R.dimen.wallet_wizard_bar_code_laser_line_border_width));
 
       framingLeft = getResources().getDimensionPixelOffset(R.dimen.wallet_wizard_bar_code_view_left);
       framingTop = getResources().getDimensionPixelOffset(R.dimen.wallet_wizard_bar_code_view_top);
@@ -62,13 +69,20 @@ public class WalletBarCodeFinder extends ViewFinderView {
 
    @Override
    public void drawViewFinderBorder(Canvas canvas) {
-      canvas.drawRoundRect(new RectF(getFramingRect()), framingBorderRadius, framingBorderRadius, framingPaint);
-      canvas.drawRoundRect(new RectF(getFramingRect()), framingBorderRadius, framingBorderRadius, framingBorderPaint);
+      canvas.drawRect(new RectF(getFramingRect()), framingPaint);
+      canvas.drawRect(new RectF(getFramingRect()), framingBorderPaint);
    }
 
    @Override
    public void drawLaser(Canvas canvas) {
-      //no laser line
+      Rect framingRect = getFramingRect();
+      laserPaint.setAlpha(SCANNER_ALPHA[this.scannerAlpha]);
+      scannerAlpha = (this.scannerAlpha + 1) % SCANNER_ALPHA.length;
+      int middle = framingRect.height() / 2 + framingRect.top;
+      canvas.drawLine((float)(framingRect.left + 4), middle,
+            (float)(framingRect.right - 4), middle, laserPaint);
+      postInvalidateDelayed(80L, framingRect.left, framingRect.top - borderWidth,
+            framingRect.right, framingRect.bottom + borderWidth);
    }
 
    @Override

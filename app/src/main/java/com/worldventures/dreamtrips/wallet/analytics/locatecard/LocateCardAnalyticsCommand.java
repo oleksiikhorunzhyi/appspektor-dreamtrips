@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.wallet.analytics.locatecard;
 
-import android.support.annotation.Nullable;
-
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
+import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.BaseLocateSmartCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
+import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 
 import java.util.List;
 
@@ -27,15 +26,15 @@ public class LocateCardAnalyticsCommand extends WalletAnalyticsCommand {
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      baseLocateSmartCardAction.setLocation(fetchLastKnownLocation());
+      attachLocation();
       super.run(callback);
    }
 
-   @Nullable
-   private WalletCoordinates fetchLastKnownLocation() {
+   private void attachLocation() {
       List<WalletLocation> locations = lostCardRepository.getWalletLocations();
-      WalletLocation lastKnownLocation = (locations == null || locations.isEmpty()) ?
-            null : locations.get(locations.size() - 1);
-      return (lastKnownLocation == null) ? null : lastKnownLocation.coordinates();
+      WalletLocation lastKnownLocation = WalletLocationsUtil.getLatestLocation(locations);
+      if (lastKnownLocation != null) {
+         baseLocateSmartCardAction.setLocation(lastKnownLocation.coordinates());
+      }
    }
 }

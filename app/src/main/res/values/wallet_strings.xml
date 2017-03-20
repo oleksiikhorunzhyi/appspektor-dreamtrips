@@ -428,6 +428,6 @@
    <string name="wallet_lock_label_tap_left_btn">Tap Left</string>
    <string name="wallet_close">Close</string>
    <string name="wallet_set_pin_info_gesture">Press and hold</string>
-   <string name="wallet_confirm_factory_reset_msg">Are you sure you would you like to factory reset your SmartCard?</string>
+   <string name="wallet_confirm_factory_reset_msg">Are you sure you would you like to factory reset your Smart Card?</string>
 
 </resources>

@@ -64,7 +64,7 @@
 
    <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your Smart Card.</string>
    <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
-   <string name="wallet_wizard_scan_title">Scan Smart Card</string>
+   <string name="wallet_wizard_scan_title">Scan flye\u2122 smart card</string>
    <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
    <string name="wallet_wizard_scan_barcode_header">Position the flye\u2122 smart card barcode in the viewfinder box.</string>
@@ -77,7 +77,7 @@
    <string name="wallet_payment_cards_title">Payment cards</string>
 
    <!--bar code manual-->
-   <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode</string>
+   <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode.</string>
    <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
    <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>

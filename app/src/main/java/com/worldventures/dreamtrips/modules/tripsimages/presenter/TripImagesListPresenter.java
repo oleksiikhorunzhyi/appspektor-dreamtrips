@@ -101,6 +101,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       subscribeToPhotoDeletedEvents();
       subscribeToLikesChanges();
       subscribeToErrorUpdates();
+      subscribeToDeletedItems();
    }
 
    private void fillWithItems() {
@@ -246,6 +247,23 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             .observeSuccess()
             .compose(bindViewToMainComposer())
             .subscribe(command -> reportNoConnection());
+   }
+
+   private void subscribeToDeletedItems() {
+      tripImagesInteractor.deletePhotoPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .map(deletePhotoCommand -> deletePhotoCommand.getResult())
+            .subscribe(this::onItemDeleted);
+   }
+
+   public void onItemDeleted(Photo deletedPhoto) {
+      int index = photos.indexOf(deletedPhoto);
+      if (index != -1) {
+         photos.remove(index);
+         db.savePhotoEntityList(type, userId, photos);
+         view.setImages(photos);
+      }
    }
 
    ////////////////////////////

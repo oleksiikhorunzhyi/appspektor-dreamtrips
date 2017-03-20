@@ -41,7 +41,7 @@
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>
-   <string name="wallet_wizard_setup_pin_header">Create you 4-gesture PIN using any\nof the following gestures on the\ntwo outer buttons:</string>
+   <string name="wallet_wizard_setup_pin_header">Create your 4-gesture PIN using any\nof the following gestures on the 2\n outer buttons:</string>
    <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the Smart Card with 4 swipe and tap motions</string>
    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the Smart Card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>

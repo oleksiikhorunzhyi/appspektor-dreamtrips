@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -720,6 +721,16 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    @Override
    public List<TripModel> getTrips() {
       return readList(TRIPS, TripModel.class);
+   }
+
+   @Override
+   public void saveTripFilters(CachedTripFilters tripFilters) {
+      act(db -> db.put(TRIP_FILTERS, tripFilters));
+   }
+
+   @Override
+   public CachedTripFilters getTripFilters() {
+      return actWithResult(db -> db.get(TRIP_FILTERS, CachedTripFilters.class)).orNull();
    }
 
    @Override

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -33,9 +34,8 @@ import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 public interface SnappyRepository {
 
    String CIRCLES = "circles";
-   String REGIONS = "regions_new";
+   String TRIP_FILTERS = "trip_filters";
    String CATEGORIES = "categories";
-   String ACTIVITIES = "activities_new";
    String BUCKET_LIST = "bucket_items";
    String SETTINGS_KEY = "settings";
    String TRANSLATION = "translation";
@@ -214,6 +214,10 @@ public interface SnappyRepository {
    void saveTrips(List<TripModel> trips);
 
    List<TripModel> getTrips();
+
+   void saveTripFilters(CachedTripFilters tripFilters);
+
+   CachedTripFilters getTripFilters();
 
    void savePins(List<Pin> pins);
 

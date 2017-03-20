@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessScreen
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
+<com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:orientation="vertical"
       android:theme="@style/WalletTheme"
       >
 
@@ -12,13 +12,11 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_factory_reset_title"
          app:navigationIcon="@null"
+         app:title="@string/wallet_factory_reset_title"
          />
 
-   <RelativeLayout
-         style="@style/WalletTheme.ContentContainerStyle"
-         >
+   <RelativeLayout style="@style/WalletTheme.ContentContainerStyle">
 
       <ImageView
             android:id="@+id/iv_success_icon"
@@ -33,20 +31,20 @@
 
       <TextView
             android:id="@+id/success_label_text_view"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center"
             android:text="@string/wallet_factory_reset_card_reset_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             />
 
       <Button
-            android:id="@+id/next_button"
+            android:id="@+id/btn_done"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="@string/wallet_next_label"
+            android:text="@string/wallet_done_label"
             />
    </RelativeLayout>
 </com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessScreen>

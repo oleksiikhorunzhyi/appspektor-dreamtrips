@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.factory_reset;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -12,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.SimpleCancelStrategy;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter.Screen, FactoryResetPresenter, FactoryResetPath> implements FactoryResetPresenter.Screen {
 
@@ -36,6 +39,7 @@ public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter
    protected void onFinishInflate() {
       super.onFinishInflate();
       if (isInEditMode()) return;
+      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 
@@ -44,6 +48,11 @@ public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
       dialogOperationScreen.setCancelStrategy(new SimpleCancelStrategy());
       return dialogOperationScreen;
+   }
+
+   @OnClick(R.id.btn_cancel)
+   public void onClickCancel() {
+      presenter.goBack();
    }
 
    @Override

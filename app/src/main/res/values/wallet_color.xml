@@ -40,6 +40,7 @@
    <color name="wallet_new_card_have_not_card">#005e92</color>
    <color name="wallet_new_card_power_on">#005e92</color>
 
+   <color name="wallet_delete_button_color">#e72a3c</color>
    <color name="wallet_laser_line_color">#99dc1431</color>
 
 </resources>

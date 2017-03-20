@@ -54,19 +54,21 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    private Observable<Boolean> testConnectionObservable;
    private Observable<Boolean> testFailInstallationObservable;
 
-   private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
-   private final DisableDefaultCardItemProvider disableDefaultCardItemProvider = new DisableDefaultCardItemProvider();
+   private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider;
+   private final DisableDefaultCardItemProvider disableDefaultCardItemProvider;
 
    private MaterialDialog confirmFactoryResetDialog = null;
    private MaterialDialog noConnectionDialog = null;
    private MaterialDialog confirmRestartSmartCardDialog = null;
 
    public WalletSettingsScreen(Context context) {
-      super(context);
+      this(context, null);
    }
 
    public WalletSettingsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+      autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider(context);
+      disableDefaultCardItemProvider = new DisableDefaultCardItemProvider(context);
    }
 
    @Override

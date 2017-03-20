@@ -11,7 +11,7 @@ public class DisableDefaultAction extends WalletAnalyticsAction {
 
    @Attribute("disabledefault") final String disableDefault;
 
-   public DisableDefaultAction(long disableDefault) {
-      this.disableDefault = Long.toString(disableDefault);
+   public DisableDefaultAction(String disableDefaultTime) {
+      this.disableDefault = disableDefaultTime;
    }
 }

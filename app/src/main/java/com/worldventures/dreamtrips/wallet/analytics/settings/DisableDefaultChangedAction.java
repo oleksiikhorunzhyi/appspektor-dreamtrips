@@ -10,9 +10,9 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 public class DisableDefaultChangedAction extends WalletAnalyticsAction {
 
    @Attribute("disabledefault") final String disableDefault;
-   @Attribute("disabledefaultchange") String disableDefaultChange = "1";
+   @Attribute("disabledefaultchange") final String disableDefaultChange = "1";
 
-   public DisableDefaultChangedAction(long disableDefault) {
-      this.disableDefault = Long.toString(disableDefault);
+   public DisableDefaultChangedAction(String disableDefaultTime) {
+      this.disableDefault = disableDefaultTime;
    }
 }

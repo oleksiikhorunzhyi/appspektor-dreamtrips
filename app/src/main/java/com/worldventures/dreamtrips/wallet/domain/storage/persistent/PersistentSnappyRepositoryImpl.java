@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.storage.persistent;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
@@ -19,17 +18,12 @@ import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 
 import java.util.concurrent.ExecutorService;
 
-import timber.log.Timber;
-
 /**
- * Repository always tries to execute provided actions on both internal and external persistent (not cleared on logout)
- * storage. Internal storage must be always available so external works just like backup option when app is
- * re-installed etc.
+ * Repository is not cleared on logout.
  */
 public class PersistentSnappyRepositoryImpl implements SnappyStorage {
 
    private final SnappyStorage internalSnappyRepository;
-   private final SnappyStorage externalSnappyRepository;
 
    private final SessionHolder<UserSession> sessionHolder;
 
@@ -41,22 +35,19 @@ public class PersistentSnappyRepositoryImpl implements SnappyStorage {
       this.sessionHolder = sessionHolder;
 
       internalSnappyRepository = new PersistentInternalSnappyRepository(context, snappyCrypter, executorService);
-      externalSnappyRepository = new PersistentExternalSnappyRepository(context, snappyCrypter, executorService);
    }
 
    @Override
    public void execute(SnappyAction action) {
       if (persistentStorageAvailable()) {
          internalSnappyRepository.execute(action);
-         externalSnappyRepository.execute(action);
       }
    }
 
    @Override
    public <T> Optional<T> executeWithResult(SnappyResult<T> action) {
       if (persistentStorageAvailable()) {
-         return internalSnappyRepository.executeWithResult(action)
-               .or(externalSnappyRepository.executeWithResult(action));
+         return internalSnappyRepository.executeWithResult(action);
       } else {
          return Optional.absent();
       }
@@ -94,30 +85,6 @@ public class PersistentSnappyRepositoryImpl implements SnappyStorage {
                .directory(context.getFilesDir().getAbsolutePath() + "/persistent")
                .name(persistentStorageFolderName)
                .build();
-      }
-   }
-
-   /**
-    * Provides SnappyDB instance located in external storage (if available).
-    */
-   private class PersistentExternalSnappyRepository extends BaseSnappyRepository {
-
-      PersistentExternalSnappyRepository(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService) {
-         super(context, snappyCrypter, executorService);
-      }
-
-      @Override
-      protected DB openDbInstance(Context context) throws SnappydbException {
-         DB db = null;
-         try {
-            db = new SnappyDB.Builder(context)
-                  .directory(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DreamTrips/persistent")
-                  .name(persistentStorageFolderName)
-                  .build();
-         } catch (IllegalStateException e) {
-            Timber.w(e, "Cannot access database files");
-         }
-         return db;
       }
    }
 

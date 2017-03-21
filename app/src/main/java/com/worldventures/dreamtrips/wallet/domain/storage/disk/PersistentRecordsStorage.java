@@ -18,6 +18,10 @@ public class PersistentRecordsStorage extends CryptedModelStorage {
 
    @Override
    public boolean migrate(DB db, int oldVersion) throws SnappydbException {
+      if (oldVersion == 0) {
+         db.del(RECORDS_LIST);
+         db.del(DEFAULT_RECORD_ID);
+      }
       return true;
    }
 
@@ -28,15 +32,15 @@ public class PersistentRecordsStorage extends CryptedModelStorage {
 
    @Override
    public int getVersion() {
-      return 0;
+      return 1;
    }
 
    public void saveRecords(List<Record> items) {
-      put(RECORDS_LIST, items);
+      putEncrypted(RECORDS_LIST, items);
    }
 
    public List<Record> readRecords() {
-      return getList(RECORDS_LIST);
+      return getEncryptedList(RECORDS_LIST);
    }
 
    public void deleteAllRecords() {
@@ -44,11 +48,11 @@ public class PersistentRecordsStorage extends CryptedModelStorage {
    }
 
    public void saveDefaultRecordId(String id) {
-      put(DEFAULT_RECORD_ID, id);
+      putEncrypted(DEFAULT_RECORD_ID, id);
    }
 
    public String readDefaultRecordId() {
-      return get(DEFAULT_RECORD_ID, String.class);
+      return getEncrypted(DEFAULT_RECORD_ID, String.class);
    }
 
    public void deleteDefaultRecordId() {

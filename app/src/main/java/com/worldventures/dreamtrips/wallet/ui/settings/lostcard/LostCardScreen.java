@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.AttributeSet;
@@ -23,7 +22,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
@@ -35,6 +34,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFact
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.adapter.LostCardInfoWindowAdapter;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,7 +52,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
-   @InjectView(R.id.tracking_enable_switcher) SwitchCompat trackingEnableSwitcher;
+   @InjectView(R.id.tracking_enable_switcher) WalletSwitcher trackingEnableSwitcher;
    @InjectView(R.id.ll_disable_tracking_info_view) View disabledTrackingView;
    @InjectView(R.id.last_connection_time_container) View lastConnectionTimeContainer;
    //   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
@@ -96,7 +96,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
-      enableTrackingObservable = RxView.clicks(trackingEnableSwitcher).map(aVoid -> trackingEnableSwitcher.isChecked());
+      enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher).skip(1);
 
       mapView.onCreate(null);
       initMap();
@@ -172,7 +172,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void setTrackingSwitchStatus(boolean checked) {
-      trackingEnableSwitcher.setChecked(checked);
+      trackingEnableSwitcher.setCheckedWithoutNotify(checked);
    }
 
    @Override
@@ -220,6 +220,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
             .negativeText(R.string.cancel)
             .onPositive((dialog, which) -> presenter.disableTracking())
             .onNegative((dialog, which) -> presenter.disableTrackingCanceled())
+            .cancelListener(dialog -> presenter.disableTrackingCanceled())
             .build()
             .show();
    }

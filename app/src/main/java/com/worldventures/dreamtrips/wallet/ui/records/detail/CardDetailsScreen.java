@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
@@ -38,7 +39,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.address_textview) TextView tvAddress;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
-   @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardSwitcher;
+   @InjectView(R.id.default_payment_card_checkbox) WalletSwitcher defaultPaymentCardSwitcher;
    @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
    private Observable<Boolean> setAsDefaultCardObservable;
@@ -67,8 +68,9 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-      setAsDefaultCardObservable = RxView.clicks(defaultPaymentCardSwitcher).map(aVoid -> defaultPaymentCardSwitcher.isChecked());
-      cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable().toString()).skip(1);
+      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
+      cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable()
+            .toString()).skip(1);
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }
@@ -167,7 +169,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public void setDefaultCardCondition(boolean defaultCard) {
-      defaultPaymentCardSwitcher.setChecked(defaultCard);
+      defaultPaymentCardSwitcher.setCheckedWithoutNotify(defaultCard);
    }
 
    @Override

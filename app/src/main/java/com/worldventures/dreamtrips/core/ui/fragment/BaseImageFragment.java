@@ -46,7 +46,8 @@ public class BaseImageFragment<T extends ImagePathHolder> extends BaseFragmentWi
       ivImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
          @Override
          public void onGlobalLayout() {
-            if (ivImage != null) getPresenter().onImageReady(ivImage.getWidth(), ivImage.getHeight());
+            if (ivImage == null) return;
+            getPresenter().onImageReady(ivImage.getWidth(), ivImage.getHeight());
             //
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                ivImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);

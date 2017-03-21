@@ -86,7 +86,7 @@
                tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
                />
 
-         <android.support.v7.widget.SwitchCompat
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
                android:id="@+id/default_payment_card_checkbox"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"

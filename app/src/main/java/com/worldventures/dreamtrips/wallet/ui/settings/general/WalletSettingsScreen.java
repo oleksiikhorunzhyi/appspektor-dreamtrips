@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.AutoClearSmartCardItemProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDefaultCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 
 import java.util.Date;
 
@@ -32,13 +32,13 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.status) TextView status;
 
-   @InjectView(R.id.offline_mode_switcher) SwitchCompat offlineModeSwitcher;
-   @InjectView(R.id.lock_switcher) SwitchCompat lockSwitcher;
-   @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
-   @InjectView(R.id.alert_connection_switcher) SwitchCompat alertConnectionSwitcher;
+   @InjectView(R.id.offline_mode_switcher) WalletSwitcher offlineModeSwitcher;
+   @InjectView(R.id.lock_switcher) WalletSwitcher lockSwitcher;
+   @InjectView(R.id.stealth_mode_switcher) WalletSwitcher stealthModeSwitcher;
+   @InjectView(R.id.alert_connection_switcher) WalletSwitcher alertConnectionSwitcher;
 
-   @InjectView(R.id.test_connection_switcher) SwitchCompat testConnectionSwitcher;
-   @InjectView(R.id.test_firmware_is_fail_install) SwitchCompat testFailInstallFirmwareSwitcher;
+   @InjectView(R.id.test_connection_switcher) WalletSwitcher testConnectionSwitcher;
+   @InjectView(R.id.test_firmware_is_fail_install) WalletSwitcher testFailInstallFirmwareSwitcher;
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
@@ -46,10 +46,8 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @InjectView(R.id.firmware_version_label) TextView firmwareVersionLabel;
    @InjectView(R.id.settings_section) ViewGroup settingsSection;
 
-   private Observable<Boolean> offlineModeSwitcherObservable;
    private Observable<Boolean> lockSwitcherObservable;
    private Observable<Boolean> stealthModeSwitcherObservable;
-   private Observable<Boolean> alertConnectionSwitcherObservable;
 
    private Observable<Boolean> testConnectionObservable;
    private Observable<Boolean> testFailInstallationObservable;
@@ -76,17 +74,15 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
-      offlineModeSwitcherObservable = observeClick(offlineModeSwitcher);
-      lockSwitcherObservable = observeClick(lockSwitcher);
-      stealthModeSwitcherObservable = observeClick(stealthModeSwitcher);
-      alertConnectionSwitcherObservable = observeClick(alertConnectionSwitcher);
+      lockSwitcherObservable = observeCheckedChanges(lockSwitcher);
+      stealthModeSwitcherObservable = observeCheckedChanges(stealthModeSwitcher);
 
-      testConnectionObservable = observeClick(testConnectionSwitcher);
-      testFailInstallationObservable = observeClick(testFailInstallFirmwareSwitcher);
+      testConnectionObservable = observeCheckedChanges(testConnectionSwitcher);
+      testFailInstallationObservable = observeCheckedChanges(testFailInstallFirmwareSwitcher);
    }
 
-   private Observable<Boolean> observeClick(CompoundButton compoundButton) {
-      return RxView.clicks(compoundButton).map(aVoid -> compoundButton.isChecked());
+   private Observable<Boolean> observeCheckedChanges(CompoundButton compoundButton) {
+      return RxCompoundButton.checkedChanges(compoundButton).skip(1);
    }
 
    @NonNull
@@ -153,7 +149,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
                .onPositive((dialog, which) -> presenter.factoryResetClick())
                .build();
       }
-      if(!confirmFactoryResetDialog.isShowing()) confirmFactoryResetDialog.show();
+      if (!confirmFactoryResetDialog.isShowing()) confirmFactoryResetDialog.show();
    }
 
    @OnClick(R.id.item_restart_sc)
@@ -180,17 +176,17 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @Override
    public void stealthModeStatus(boolean isEnabled) {
-      stealthModeSwitcher.setChecked(isEnabled);
+      stealthModeSwitcher.setCheckedWithoutNotify(isEnabled);
    }
 
    @Override
    public void lockStatus(boolean lock) {
-      lockSwitcher.setChecked(lock);
+      lockSwitcher.setCheckedWithoutNotify(lock);
    }
 
    @Override
    public void testConnection(boolean connected) {
-      testConnectionSwitcher.setChecked(connected);
+      testConnectionSwitcher.setCheckedWithoutNotify(connected);
    }
 
    @Override
@@ -215,12 +211,12 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @Override
    public void testFailInstallation(boolean failInstall) {
-      testFailInstallFirmwareSwitcher.setChecked(failInstall);
+      testFailInstallFirmwareSwitcher.setCheckedWithoutNotify(failInstall);
    }
 
    @Override
    public Observable<Boolean> offlineMode() {
-      return offlineModeSwitcherObservable;
+      return Observable.never();
    }
 
    @Override
@@ -235,7 +231,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @Override
    public Observable<Boolean> alertConnection() {
-      return alertConnectionSwitcherObservable;
+      return Observable.never();
    }
 
    @Override
@@ -284,7 +280,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
                .positiveText(R.string.ok)
                .build();
       }
-      if(!noConnectionDialog.isShowing()) noConnectionDialog.show();
+      if (!noConnectionDialog.isShowing()) noConnectionDialog.show();
    }
 
    @Override
@@ -298,14 +294,14 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
                .onPositive(((dialog, which) -> presenter.confirmRestartSmartCard()))
                .build();
       }
-      if(!confirmRestartSmartCardDialog.isShowing()) confirmRestartSmartCardDialog.show();
+      if (!confirmRestartSmartCardDialog.isShowing()) confirmRestartSmartCardDialog.show();
    }
 
    @Override
    protected void onDetachedFromWindow() {
-      if(confirmFactoryResetDialog != null) confirmFactoryResetDialog.dismiss();
-      if(noConnectionDialog != null) noConnectionDialog.dismiss();
-      if(confirmRestartSmartCardDialog != null) confirmRestartSmartCardDialog.dismiss();
+      if (confirmFactoryResetDialog != null) confirmFactoryResetDialog.dismiss();
+      if (noConnectionDialog != null) noConnectionDialog.dismiss();
+      if (confirmRestartSmartCardDialog != null) confirmRestartSmartCardDialog.dismiss();
       super.onDetachedFromWindow();
    }
 }

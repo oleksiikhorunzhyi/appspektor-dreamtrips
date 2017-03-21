@@ -65,7 +65,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject AnalyticsInteractor analyticsInteractor;
 
    private Path firmwareUpdatePath = new WalletUpToDateFirmwarePath();
-   ;
 
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -123,6 +122,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       smartCardInteractor.stealthModePipe()
             .observe()
+            .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> {
@@ -136,6 +136,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       smartCardInteractor.lockPipe()
             .observe()
+            .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> trackSmartCardLock(action.isLock()))

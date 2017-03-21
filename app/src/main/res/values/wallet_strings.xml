@@ -203,7 +203,7 @@
 
    <!--charging-->
    <string name="wallet_charging_swiping_screen_title">Add Payment Card</string>
-   <string name="wallet_charging_swiping_screen_instruction">Plug flye\u2122 smart card into the charger\nand swipe credit or debit cards.</string>
+   <string name="wallet_charging_swiping_screen_instruction">Plug flye\u2122 smart card into the charger and swipe credit or debit cards.</string>
    <string name="wallet_charging_swiping_screen_notes">Be sure your flye\u2122 smart card is turned on\nand the charger LED is on.</string>
    <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
    <string name="wallet_terms_and_conditions_header">User Agreement</string>

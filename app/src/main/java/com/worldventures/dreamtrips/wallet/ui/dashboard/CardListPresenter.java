@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
@@ -116,10 +115,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSmartCardUser(SmartCardUser smartCardUser) {
-      final Uri photoFileUri = smartCardUser.userPhoto() != null
-            ? Uri.fromFile(smartCardUser.userPhoto().monochrome())
-            : Uri.EMPTY;
-      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUri);
+      final String photoFileUrl = smartCardUser.userPhoto() != null
+            ? smartCardUser.userPhoto().photoUrl()
+            : "";
+      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUrl);
    }
 
    private void observeConnectionStatus() {
@@ -290,7 +289,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
 
-      void setSmartCardUserAttrs(String fullname, Uri photoFileUri);
+      void setSmartCardUserAttrs(String fullname, String photoFileUrl);
 
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 

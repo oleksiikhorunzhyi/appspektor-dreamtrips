@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardComm
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.DefaultRecordIdCommand;
@@ -20,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDa
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
-import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
@@ -31,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
@@ -59,13 +58,12 @@ import dagger.Module;
       },
       injects = {
             GetCompatibleDevicesCommand.class,
-            CompressImageForSmartCardCommand.class,
             RecordListCommand.class,
             AttachCardCommand.class,
             UpdateCardDetailsDataCommand.class,
             UpdateRecordCommand.class,
             SyncRecordsCommand.class,
-            LoadImageForSmartCardCommand.class,
+            SmartCardAvatarCommand.class,
             SetupUserDataCommand.class,
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,

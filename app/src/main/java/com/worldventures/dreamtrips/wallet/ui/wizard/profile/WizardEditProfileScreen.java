@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -10,6 +9,7 @@ import android.widget.EditText;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -54,6 +54,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
+      ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -113,8 +114,8 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void setPreviewPhoto(File photo) {
-      previewPhotoView.setImageURI(Uri.fromFile(photo));
+   public void setPreviewPhoto(String photoUrl) {
+      previewPhotoView.setImageURI(photoUrl);
    }
 
    @Override

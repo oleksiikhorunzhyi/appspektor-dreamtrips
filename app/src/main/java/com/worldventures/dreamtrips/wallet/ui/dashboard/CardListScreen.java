@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -126,11 +125,11 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void setSmartCardUserAttrs(String fullname, Uri photoFileUri) {
+   public void setSmartCardUserAttrs(String fullname, String photoFileUrl) {
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .fullname(fullname)
-            .photoUri(photoFileUri)
+            .photoUrl(photoFileUrl)
             .build();
       notifySmartCardChanged(cardStackHeaderHolder);
    }

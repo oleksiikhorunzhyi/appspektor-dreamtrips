@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.profile;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -13,6 +12,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -76,6 +76,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       firstNameObservable = RxTextView.afterTextChangeEvents(etFirstName).map(event -> event.editable().toString());
       middleNameObservable = RxTextView.afterTextChangeEvents(etMiddleName).map(event -> event.editable().toString());
       lastNameObservable = RxTextView.afterTextChangeEvents(etLastName).map(event -> event.editable().toString());
+      ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -111,8 +112,8 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public void setPreviewPhoto(File file) {
-      previewPhotoView.setImageURI(Uri.fromFile(file));
+   public void setPreviewPhoto(String photoUrl) {
+      previewPhotoView.setImageURI(photoUrl);
    }
 
    @Override

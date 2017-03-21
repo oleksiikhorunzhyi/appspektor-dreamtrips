@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util;
 
-import android.net.Uri;
-
 import com.techery.spares.adapter.HeaderItem;
 
 import org.immutables.value.Value;
@@ -35,8 +33,8 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    }
 
    @Value.Default
-   public Uri photoUri() {
-      return Uri.EMPTY;
+   public String photoUrl() {
+      return "";
    }
 
    @Value.Default

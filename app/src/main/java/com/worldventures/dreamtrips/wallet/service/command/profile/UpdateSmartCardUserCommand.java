@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
@@ -17,6 +18,9 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
+
+import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -83,7 +87,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
       boolean needUpdate = false;
       final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder()
-            .photoUrl(user.userPhoto().photoUrl()); // photoUrl is mandatory field for API
+            .photoUrl(user.userPhoto().photoUrl().toString()); // photoUrl is mandatory field for API
 
       dataBuilder.firstName(changedFields.firstName());
       dataBuilder.middleName(changedFields.middleName());
@@ -117,8 +121,11 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    private Observable<UpdateCardUserData> uploadPhotoIfNeed(SmartCardUser user, String smartCardId, UpdateCardUserData userData) {
       final SmartCardUserPhoto photo = changedFields.photo();
       if (photo != null) {
-         return janet.createPipe(UpdateUserPhotoAction.class)
-               .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper.convertBytesForUpload(photo.monochrome())))
+
+         return Observable
+               .fromCallable(() -> getAvatarAsByteArray(photo))
+               .flatMap(bytes ->  janet.createPipe(UpdateUserPhotoAction.class)
+                     .createObservableResult(new UpdateUserPhotoAction(bytes)))
                .flatMap(action -> janet.createPipe(SmartCardUploaderyCommand.class)
                      .createObservableResult(new SmartCardUploaderyCommand(smartCardId, photo.original())))
                .map(command -> ImmutableUpdateCardUserData.builder()
@@ -127,7 +134,13 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                      .photoUrl(command.getResult().response().uploaderyPhoto().location())
                      .build());
       } else {
-         return Observable.just(ImmutableUpdateCardUserData.copyOf(userData).withPhotoUrl(user.userPhoto().photoUrl()));
+         return Observable.just(ImmutableUpdateCardUserData.copyOf(userData).withPhotoUrl(user.userPhoto().photoUrl().toString()));
       }
+   }
+
+   private byte[] getAvatarAsByteArray(SmartCardUserPhoto avatar) throws IOException {
+      final int[][] ditheredImageArray =
+            smartCardAvatarHelper.toMonochrome(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
+      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 }

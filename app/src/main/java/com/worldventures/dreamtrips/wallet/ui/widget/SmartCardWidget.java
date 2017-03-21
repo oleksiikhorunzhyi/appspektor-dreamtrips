@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
 
 import java.util.Locale;
@@ -47,12 +47,13 @@ public class SmartCardWidget extends FrameLayout {
    private void setup() {
       LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_smartcard, this);
       ButterKnife.inject(this);
+      ImageUtils.applyGrayScaleColorFilter(scAvatar);
       setVisibility(INVISIBLE);
    }
 
    public void bindCard(CardStackHeaderHolder holder) {
-      if (holder.photoUri() != Uri.EMPTY) {
-         scAvatar.setImageURI(holder.photoUri());
+      if (!TextUtils.isEmpty(holder.photoUrl())) {
+         scAvatar.setImageURI(holder.photoUrl());
       }
       if (!TextUtils.isEmpty(holder.fullname())) {
          bankLabel.setText(holder.fullname());

@@ -12,8 +12,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -90,8 +90,8 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
 
       if (user.displayPhoto() != null) {
          final String photoUrl = user.displayPhoto();
-         return janetWallet.createPipe(CompressImageForSmartCardCommand.class)
-               .createObservableResult(new CompressImageForSmartCardCommand(photoUrl))
+         return janetWallet.createPipe(SmartCardAvatarCommand.class)
+               .createObservableResult(SmartCardAvatarCommand.fromUrl(photoUrl))
                .map(command -> changeUserPhoto(scUser, command.getResult()));
       } else {
          return Observable.just(scUser);
@@ -107,8 +107,8 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    }
 
    private SmartCardUser changeUserPhoto(SmartCardUser user, SmartCardUserPhoto smartCardUserPhoto) {
-      final File monochromeFile = smartCardUserPhoto.monochrome();
-      if (monochromeFile != null) {
+      final File originalFile = smartCardUserPhoto.original();
+      if (originalFile != null) {
          return ImmutableSmartCardUser.builder()
                .from(user)
                .userPhoto(smartCardUserPhoto)

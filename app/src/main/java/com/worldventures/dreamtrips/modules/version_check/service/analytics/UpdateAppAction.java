@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 
-@AnalyticsEvent(action = "dta:new version", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "new version available", trackers = AdobeTracker.TRACKER_KEY)
 public class UpdateAppAction extends BaseAnalyticsAction {
 
    @Attribute("newver") String newVersion;

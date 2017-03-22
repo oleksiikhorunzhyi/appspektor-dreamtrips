@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMemberPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
@@ -43,6 +44,7 @@ import dagger.Provides;
             EditTemplateFragment.class,
             EditTemplatePresenter.class,
             EnrollMemberPresenter.class,
+            EnrollRepPresenter.class,
             PreviewTemplateFragment.class,
             FilterLanguageDialogFragment.class
       },

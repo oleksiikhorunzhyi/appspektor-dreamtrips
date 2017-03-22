@@ -599,28 +599,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    @Layout(R.layout.fragment_webview)
-   public static class EnrollRepFragment extends AuthorizedStaticInfoFragment {
-
-      @Override
-      protected String getURL() {
-         return provider.getEnrollRepUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         webView.getSettings().setLoadWithOverviewMode(true);
-         webView.getSettings().setUseWideViewPort(true);
-      }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-         TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
-      }
-
-   }
-
-   @Layout(R.layout.fragment_webview)
    public static class EnrollUpgradeFragment extends AuthorizedStaticInfoFragment {
 
       @Override

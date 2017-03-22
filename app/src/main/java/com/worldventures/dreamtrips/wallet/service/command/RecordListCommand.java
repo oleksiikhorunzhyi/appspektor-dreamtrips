@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
@@ -54,7 +53,7 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
 
       @Override
       public List<Record> call(List<Record> records) {
-         records.remove(Queryable.from(records).first(element -> Objects.equals(element.id(), recordId)));
+         records.remove(Queryable.from(records).first(element -> element.id().equals(recordId)));
          return records;
       }
    }
@@ -108,7 +107,7 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
       }
 
       private Record remapRecord(Record record) {
-         return Objects.equals(record.id(), editedRecord.id()) ? editedRecord : record;
+         return record.id().equals(editedRecord.id()) ? editedRecord : record;
       }
    }
 

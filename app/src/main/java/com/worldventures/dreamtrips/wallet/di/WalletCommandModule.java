@@ -10,11 +10,10 @@ import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
@@ -80,7 +79,6 @@ import dagger.Module;
             FetchCardPropertiesCommand.class,
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,
-            FetchDefaultRecordCommand.class,
             FetchTermsAndConditionsCommand.class,
             CreateRecordCommand.class,
             AssociateCardUserCommand.class,

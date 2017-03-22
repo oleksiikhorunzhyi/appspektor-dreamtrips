@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWit
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -86,7 +85,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void connectToDefaultCardPipe() {
-      smartCardInteractor.fetchDefaultCardCommandPipe().clearReplays();
       smartCardInteractorHelper.sendSingleDefaultCardTask(bankCard -> {
          getView().defaultPaymentCard(!WalletRecordUtil.isRealRecord(bankCard));
          getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
@@ -157,7 +155,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void loadDataFromDevice() {
-      smartCardInteractor.fetchDefaultCardCommandPipe().send(new FetchDefaultRecordCommand());
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 

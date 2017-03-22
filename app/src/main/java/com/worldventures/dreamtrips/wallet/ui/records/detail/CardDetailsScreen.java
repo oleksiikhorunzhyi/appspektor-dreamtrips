@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
@@ -15,9 +15,15 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
@@ -26,6 +32,9 @@ import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
@@ -67,12 +76,27 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       super.onFinishInflate();
 
       if (isInEditMode()) return;
-      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+      setupToolbar();
+
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
       cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable()
             .toString()).skip(1);
+
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, true, false);
+   }
+
+   private void setupToolbar() {
+      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+      toolbar.inflateMenu(R.menu.menu_wallet_payment_card_detail);
+      toolbar.setOnMenuItemClickListener(item -> {
+         switch (item.getItemId()) {
+            case R.id.action_save:
+               presenter.updateNickName();
+            default:
+               return false;
+         }
+      });
    }
 
    @OnClick(R.id.delete_button)
@@ -108,8 +132,8 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void showDefaultCardDialog(Record defaultRecord) {
       new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(defaultRecord))
-            .setOnConfirmAction(() -> getPresenter().defaultCardDialogConfirmed(true))
-            .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
+            .setOnConfirmAction(() -> getPresenter().onChangeDefaultCardConfirmed())
+            .setOnCancelAction(() -> getPresenter().onChangeDefaultCardCanceled())
             .show();
    }
 
@@ -205,5 +229,42 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void hideCardNameError() {
       cardNameInputLayout.setError("");
+   }
+
+   @Override
+   public OperationView<UpdateRecordCommand> provideOperationSaveCardData() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_card_details_progress_save, false),
+            new SimpleToastSuccessView<>(getContext(), R.string.wallet_card_details_success_save)
+      );
+   }
+
+   @Override
+   public void notifyCardDataIsSaved() {
+      Toast.makeText(getContext(), R.string.wallet_card_details_success_save, Toast.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public OperationView<DeleteRecordAction> provideOperationDeleteRecord() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<DeleteRecordAction>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
+   }
+
+   @Override
+   public OperationView<SetDefaultCardOnDeviceCommand> provideOperationSetDefaultOnDevice() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<SetDefaultCardOnDeviceCommand>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
+   }
+
+   @Override
+   public OperationView<SetPaymentCardAction> provideOperationSetPaymentCardAction() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<SetPaymentCardAction>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
    }
 }

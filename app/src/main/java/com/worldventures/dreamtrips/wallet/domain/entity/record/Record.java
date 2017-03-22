@@ -27,11 +27,6 @@ public abstract class Record {
    public abstract String expDate();
 
    @Value.Default
-   public String cardNameHolder() {
-      return "";
-   }
-
-   @Value.Default
    public String cardHolderFirstName() {
       return "";
    }

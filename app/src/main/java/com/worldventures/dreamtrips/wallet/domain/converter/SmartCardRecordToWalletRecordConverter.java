@@ -29,6 +29,8 @@ public class SmartCardRecordToWalletRecordConverter implements Converter<io.tech
    @Override
    public Record convert(MapperyContext mapperyContext, io.techery.janet.smartcard.model.Record record) {
       final Map<String, String> metadata = record.metadata();
+      //no use getOrDefault, for support < Java 8
+      final String bankName = metadata.get(BANK_NAME_FIELD);
 
       final Integer recordId = record.id();
       return ImmutableRecord.builder()
@@ -38,10 +40,8 @@ public class SmartCardRecordToWalletRecordConverter implements Converter<io.tech
             .cvv(record.cvv())
             .track1(record.t1())
             .track2(record.t2())
-            // TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!
-            .cardNameHolder(String.format("%s %s %s", record.firstName(), record.middleName(), record.lastName()))
             .nickName(record.title())
-            .bankName(metadata.getOrDefault(BANK_NAME_FIELD, ""))
+            .bankName(bankName == null ? "" : bankName)
             .financialService(mapperyContext.convert(record.financialService(), FinancialService.class))
             .recordType(mapperyContext.convert(record.cardType(), RecordType.class))
             .addressInfo(fetchAddressInfoFromRecord(record))

@@ -79,7 +79,7 @@ public class BankCardWidget extends FrameLayout {
 
    public void setBankCard(Record card) {
       setCardName(card.nickName());
-      setOwnerName(card.cardNameHolder());
+      setOwnerName(WalletRecordUtil.fetchFullName(card));
       setCardNumber(card.numberLastFourDigits());
       setExpireDate(card.expDate());
       setRecordType(card.recordType());

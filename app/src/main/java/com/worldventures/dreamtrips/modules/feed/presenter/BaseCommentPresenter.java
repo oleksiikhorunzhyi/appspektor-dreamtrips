@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -251,7 +250,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       eventBus.post(new FeedEntityCommentedEvent(commentCommand.getFeedEntity()));
    }
 
-   public void onEvent(LoadMoreEvent event) {
+   public void onLoadMoreComments() {
       loadComments();
    }
 

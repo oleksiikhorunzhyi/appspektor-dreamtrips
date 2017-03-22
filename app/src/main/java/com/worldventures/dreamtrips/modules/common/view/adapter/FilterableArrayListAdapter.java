@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.util.CrashlyticsTracker;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
@@ -22,7 +23,7 @@ import icepick.Icepick;
 import icepick.State;
 
 
-public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
+public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends BaseDelegateAdapter<BaseItemClass> {
 
    protected volatile List<BaseItemClass> cachedItems;
    @State volatile String query;
@@ -189,18 +190,5 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
    public void clear() {
       super.clear();
       filterHandler.post(() -> cachedItems.clear());
-   }
-
-   @Override
-   public void onFinishLoading(List<BaseItemClass> result) {
-      super.onFinishLoading(result);
-      if (query != null) {
-         filterHandler.post(() -> {
-            cachedItems.clear();
-            cachedItems.addAll(items);
-         });
-         setFilter(query);
-      }
-
    }
 }

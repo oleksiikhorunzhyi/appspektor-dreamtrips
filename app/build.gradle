@@ -78,10 +78,10 @@ android {
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
+         'DreamTripsApi'    : '"http://dtapp-qa.worldventures.biz/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
+         'UPLOADERY_API_URL': '"http://dtapp-qa.worldventures.biz/uploadery"',
    ]
    def CONFIG_MAP_DTL = [
          'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',

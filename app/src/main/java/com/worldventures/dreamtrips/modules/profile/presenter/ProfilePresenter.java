@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -146,16 +145,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
       feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
-   }
-
-   public void onEvent(FeedEntityCommentedEvent event) {
-      Queryable.from(feedItems).forEachR(item -> {
-         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-            item.setItem(event.getFeedEntity());
-         }
-      });
-
-      refreshFeedItems();
    }
 
    @Override

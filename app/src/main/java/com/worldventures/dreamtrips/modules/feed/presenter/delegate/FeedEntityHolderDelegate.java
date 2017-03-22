@@ -7,9 +7,14 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucket
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -29,6 +34,7 @@ public class FeedEntityHolderDelegate {
    @Inject PostsInteractor postsInteractor;
    @Inject BucketInteractor bucketInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject CommentsInteractor commentsInteractor;
 
    public FeedEntityHolderDelegate(Injector injector) {
       injector.inject(this);
@@ -98,6 +104,33 @@ public class FeedEntityHolderDelegate {
                .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
                .onFail(errorAction::call));
 
+      commentsInteractor.commentsPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                  .onSuccess(getCommentsCommand -> feedEntityHolder.updateFeedEntity(getCommentsCommand.getFeedEntity()))
+                  .onFail(errorAction::call));
+
+      commentsInteractor.createCommentPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<CreateCommentCommand>()
+                  .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
+                  .onFail(errorAction::call));
+
+      commentsInteractor.editCommentPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<EditCommentCommand>()
+                  .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
+                  .onFail(errorAction::call));
+
+      commentsInteractor.deleteCommentPipe()
+            .observeWithReplay()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<DeleteCommentCommand>()
+                  .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
+                  .onFail(errorAction::call));
 
    }
 

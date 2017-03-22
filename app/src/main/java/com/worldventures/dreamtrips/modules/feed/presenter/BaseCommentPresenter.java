@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -56,7 +55,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @State String draftCommentText;
 
    private int page = 1;
-   private int commentsCount = 0;
    private boolean loadInitiated;
 
    public BaseCommentPresenter(FeedEntity feedEntity) {
@@ -81,7 +79,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private void subscribeToCommentsLoading() {
       view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
             .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
-                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
+                  .onSuccess(this::onCommentsLoaded)
                   .onFail(this::handleError));
    }
 
@@ -113,23 +111,23 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void loadComments() {
       view.setLoading(true);
-      commentsInteractor.commentsPipe().send(new GetCommentsCommand(feedEntity.getUid(), page));
+      commentsInteractor.commentsPipe().send(new GetCommentsCommand(feedEntity, page));
    }
 
-   private void onCommentsLoaded(List<Comment> comments) {
-      if (comments.size() > 0) {
-         page++;
-         commentsCount += comments.size();
-         view.setLoading(false);
-         feedEntity.getComments().addAll(comments);
-         view.addComments(comments);
-         if (commentsCount >= feedEntity.getCommentsCount()) {
-            view.hideViewMore();
-         } else {
-            view.showViewMore();
-         }
-      } else {
+   private void onCommentsLoaded(GetCommentsCommand getCommentsCommand) {
+      this.feedEntity = getCommentsCommand.getFeedEntity();
+      List<Comment> newComments = getCommentsCommand.getResult();
+      if (newComments.isEmpty()) {
          view.hideViewMore();
+         return;
+      }
+      page++;
+      view.setLoading(false);
+      view.addComments(newComments);
+      if (feedEntity.getComments().size() >= feedEntity.getCommentsCount()) {
+         view.hideViewMore();
+      } else {
+         view.showViewMore();
       }
    }
 
@@ -210,7 +208,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private void commentDeleted(DeleteCommentCommand deleteCommentCommand) {
       view.removeComment(deleteCommentCommand.getResult());
       sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
-      eventBus.post(new FeedEntityCommentedEvent(deleteCommentCommand.getFeedEntity()));
    }
 
    public void createComment() {
@@ -229,7 +226,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private void commentCreated(CreateCommentCommand createCommentCommand) {
       view.addComment(createCommentCommand.getResult());
       sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
-      eventBus.post(new FeedEntityCommentedEvent(createCommentCommand.getFeedEntity()));
    }
 
    private void comentCreationError(CreateCommentCommand createCommentCommand, Throwable e) {
@@ -247,7 +243,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void commentEdited(EditCommentCommand commentCommand) {
       view.updateComment(commentCommand.getResult());
-      eventBus.post(new FeedEntityCommentedEvent(commentCommand.getFeedEntity()));
    }
 
    public void onLoadMoreComments() {

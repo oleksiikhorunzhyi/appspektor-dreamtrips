@@ -33,7 +33,6 @@ import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -305,16 +304,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
                            .toList();
                      refreshFeedItems();
                   }));
-   }
-
-   public void onEvent(FeedEntityCommentedEvent event) {
-      Queryable.from(feedItems).forEachR(item -> {
-         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-            item.setItem(event.getFeedEntity());
-         }
-      });
-
-      refreshFeedItems();
    }
 
    @Override

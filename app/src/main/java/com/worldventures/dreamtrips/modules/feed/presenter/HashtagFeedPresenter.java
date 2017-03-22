@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -27,7 +26,6 @@ import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCo
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.HashtagFeedStorageCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.HashtagFeedStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.utils.FeedUtils;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -207,21 +205,6 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
 
    public void refreshFeedItems() {
       view.refreshFeedItems(feedItems);
-   }
-
-   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      FeedUtils.updateFeedItemInList(feedItems, updatedFeedEntity);
-      refreshFeedItems();
-   }
-
-   public void onEvent(FeedEntityCommentedEvent event) {
-      Queryable.from(feedItems).forEachR(item -> {
-         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-            item.setItem(event.getFeedEntity());
-         }
-      });
-
-      refreshFeedItems();
    }
 
    @Override

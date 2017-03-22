@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -135,14 +134,6 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
                   .onSuccess(command -> this.feedEntity = command.getResult())
                   .onFail(this::handleError));
-   }
-
-   public void onEvent(FeedEntityCommentedEvent event) {
-      if (event.getFeedEntity().equals(feedItem.getItem())) {
-         feedItem.setItem(event.getFeedEntity());
-         feedEntity = event.getFeedEntity();
-         refreshFeedItems();
-      }
    }
 
    @Override

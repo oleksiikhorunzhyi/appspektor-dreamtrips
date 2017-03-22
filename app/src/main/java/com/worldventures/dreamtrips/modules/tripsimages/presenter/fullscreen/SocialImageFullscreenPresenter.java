@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
@@ -183,20 +182,6 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       analyticsInteractor.analyticsActionPipe().send(new TripImageDeleteAnalyticsEvent(photo.getFSId()));
    }
 
-   public void onEvent(FeedEntityCommentedEvent event) {
-      updatePhoto(event.getFeedEntity());
-   }
-
-   private void updatePhoto(FeedEntity feedEntity) {
-      if (feedEntity instanceof Photo) {
-         Photo temp = (Photo) feedEntity;
-         if (photo.equals(temp)) {
-            this.photo = temp;
-            setupActualViewState();
-         }
-      }
-   }
-
    public Photo getPhoto() {
       return photo;
    }
@@ -223,7 +208,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      if (!updatedFeedEntity.equals(updatedFeedEntity)) return;
+      if (!photo.equals(updatedFeedEntity)) return;
       Photo photoFeedEntity = (Photo) updatedFeedEntity;
       if (photo.getUser() != null) {
          photo.syncLikeState(photoFeedEntity);

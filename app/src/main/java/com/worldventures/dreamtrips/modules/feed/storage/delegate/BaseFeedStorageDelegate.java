@@ -11,11 +11,16 @@ import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListSt
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.FeedItemsStorageBaseCommand;
@@ -44,6 +49,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject BucketInteractor bucketInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject CommentsInteractor commentsInteractor;
 
    @Inject SessionHolder<UserSession> sessionHolder;
 
@@ -117,6 +123,26 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
             tripsInteractor.detailsPipe().observeSuccess()
                   .map(GetTripDetailsCommand::getResult)
+                  .map(this::createFeedItem)
+                  .map(ListStorageOperationFactory::updateItemOperation),
+
+            commentsInteractor.commentsPipe().observeSuccess()
+                  .map(GetCommentsCommand::getFeedEntity)
+                  .map(this::createFeedItem)
+                  .map(ListStorageOperationFactory::updateItemOperation),
+
+            commentsInteractor.createCommentPipe().observeSuccess()
+                  .map(CreateCommentCommand::getFeedEntity)
+                  .map(this::createFeedItem)
+                  .map(ListStorageOperationFactory::updateItemOperation),
+
+            commentsInteractor.editCommentPipe().observeSuccess()
+                  .map(EditCommentCommand::getFeedEntity)
+                  .map(this::createFeedItem)
+                  .map(ListStorageOperationFactory::updateItemOperation),
+
+            commentsInteractor.deleteCommentPipe().observeSuccess()
+                  .map(DeleteCommentCommand::getFeedEntity)
                   .map(this::createFeedItem)
                   .map(ListStorageOperationFactory::updateItemOperation)
       ));

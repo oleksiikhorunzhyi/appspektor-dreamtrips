@@ -10,13 +10,25 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import rx.functions.Action1;
+
 public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEntityPresenter,
       T extends FeedItem> implements BaseFeedCell.FeedCellDelegate<T> {
 
    private P presenter;
+   private Action1<T> onEntityShownInCellAction;
 
    public FeedCellDelegate(P presenter) {
       this.presenter = presenter;
+   }
+
+   public void setOnEntityShownInCellAction(Action1<T> onEntityShownInCellAction) {
+      this.onEntityShownInCellAction = onEntityShownInCellAction;
+   }
+
+   @Override
+   public void onEntityShownInCell(T feedItem) {
+      if (onEntityShownInCellAction != null) onEntityShownInCellAction.call(feedItem);
    }
 
    @Override

@@ -84,6 +84,8 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
          likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
                new UsersLikedEntityBundle(getModelObject().getItem(), getModelObject().getItem().getLikesCount())));
       }
+
+      cellDelegate.onEntityShownInCell(getModelObject());
    }
 
    private boolean isMineItem(FeedItem feedItem) {
@@ -129,6 +131,8 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
    }
 
    public interface FeedCellDelegate<ITEM> extends CellDelegate<ITEM> {
+
+      void onEntityShownInCell(ITEM item);
 
       void onLikeItem(ITEM item);
 

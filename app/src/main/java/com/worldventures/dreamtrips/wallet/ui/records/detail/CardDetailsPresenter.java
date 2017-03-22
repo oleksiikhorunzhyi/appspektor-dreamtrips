@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -34,6 +36,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -71,7 +74,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToSetDefaultCardIdPipe();
       connectSetPaymentCardPipe();
       observeCardNickName();
-      observeDefaultCard();
+      observeDefaultCardSwitcher();
       observeSaveCardData();
    }
 
@@ -151,10 +154,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       }
    }
 
-   private void observeDefaultCard() {
+   private void observeDefaultCardSwitcher() {
+      //noinspection ConstantConditions
       getView().setAsDefaultPaymentCardCondition()
             .compose(bindView())
-            .subscribe(this::onSetAsDefaultCard);
+            .subscribe(this::defaultCardSwitcherChanged);
    }
 
    private AddressInfoWithLocale obtainAddressWithCountry() {
@@ -212,30 +216,43 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void setCardAsDefault() {
-      fetchDefaultRecordId(defaultRecordId -> {
-         if (WalletRecordUtil.isRealRecordId(defaultRecordId)) {
-            smartCardInteractor.cardsListPipe()
-                  .createObservableResult(RecordListCommand.fetchById(defaultRecordId))
-                  .compose(bindViewIoToMainComposer())
-                  .filter(command -> command.getResult() != null && !command.getResult().isEmpty())
-                  .subscribe(command -> getView().showDefaultCardDialog(command.getResult().get(0)),
-                        throwable -> Timber.e(throwable, ""));
-         } else {
-            trackSetAsDefault();
-            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                  .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
-         }
-      });
+      fetchDefaultRecordId(this::changeDefaultRecord);
    }
 
-   void defaultCardDialogConfirmed(boolean confirmed) {
-      if (!confirmed) {
-         updateCardConditionState();
+   private void changeDefaultRecord(@Nullable String defaultRecordId) {
+      if (defaultRecordId == null) {
+         applyDefaultId();
       } else {
-         trackSetAsDefault();
-         smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-               .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
+         smartCardInteractor.cardsListPipe()
+               .createObservable(RecordListCommand.fetch())
+               .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+               .map(actionState -> Queryable.from(actionState.action.getResult()).firstOrDefault(c -> TextUtils.equals(c.id(), defaultRecordId)))
+               .compose(bindViewIoToMainComposer())
+               .subscribe(this::showChangeDefaultIdConfirmDialog);
       }
+   }
+
+   private void applyDefaultId() {
+      trackSetAsDefault();
+      smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+            .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
+   }
+
+   private void showChangeDefaultIdConfirmDialog(Record record) {
+      if (record != null) {
+         //noinspection ConstantConditions
+         getView().showDefaultCardDialog(record);
+      } else {
+         applyDefaultId();
+      }
+   }
+
+   void onChangeDefaultCardConfirmed() {
+      applyDefaultId();
+   }
+
+   void onChangeDefaultCardCanceled() {
+      bindDefaultStatus(false);
    }
 
    private void trackSetAsDefault() {
@@ -251,7 +268,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       smartCardInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(record, nickName));
    }
 
-   private void onSetAsDefaultCard(boolean setDefaultCard) {
+   private void defaultCardSwitcherChanged(boolean setDefaultCard) {
       fetchConnectionStats(connectionStatus -> {
          if (connectionStatus.isConnected()) {
             if (setDefaultCard) {
@@ -267,7 +284,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void updateCardConditionState() {
-      fetchDefaultRecordId(defaultRecordId -> getView().setDefaultCardCondition(WalletRecordUtil.equals(defaultRecordId, record)));
+      fetchDefaultRecordId(defaultRecordId -> bindDefaultStatus(WalletRecordUtil.equals(defaultRecordId, record)));
+   }
+
+   private void bindDefaultStatus(boolean isDefault) {
+      //noinspection ConstantConditions
+      getView().setDefaultCardCondition(isDefault);
    }
 
    private void fetchConnectionStats(Action1<ConnectionStatus> action) {

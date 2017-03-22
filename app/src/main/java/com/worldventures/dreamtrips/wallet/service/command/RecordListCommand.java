@@ -1,12 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import android.text.TextUtils;
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.techery.janet.command.annotations.CommandAction;
@@ -17,9 +14,6 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
 
    public static RecordListCommand fetch() {
       return new RecordListCommand();
-   }
-   public static RecordListCommand fetchById(String recordId) {
-      return new RecordListCommand(new FetchByIdOperationFunc(recordId));
    }
 
    public static RecordListCommand remove(String recordId) {
@@ -114,20 +108,6 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
 
       private Record remapRecord(Record record) {
          return record.id().equals(editedRecord.id()) ? editedRecord : record;
-      }
-   }
-
-   private static final class FetchByIdOperationFunc implements Func1<List<Record>, List<Record>> {
-
-      private final String recordId;
-
-      FetchByIdOperationFunc(String recordId) {
-         this.recordId = recordId;
-      }
-
-      @Override
-      public List<Record> call(List<Record> records) {
-         return Arrays.asList(Queryable.from(records).firstOrDefault(c -> TextUtils.equals(c.id(), recordId)));
       }
    }
 

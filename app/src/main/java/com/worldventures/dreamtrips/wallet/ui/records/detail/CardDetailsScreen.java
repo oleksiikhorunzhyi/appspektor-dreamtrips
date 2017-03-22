@@ -132,8 +132,8 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void showDefaultCardDialog(Record defaultRecord) {
       new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(defaultRecord))
-            .setOnConfirmAction(() -> getPresenter().defaultCardDialogConfirmed(true))
-            .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
+            .setOnConfirmAction(() -> getPresenter().onChangeDefaultCardConfirmed())
+            .setOnCancelAction(() -> getPresenter().onChangeDefaultCardCanceled())
             .show();
    }
 

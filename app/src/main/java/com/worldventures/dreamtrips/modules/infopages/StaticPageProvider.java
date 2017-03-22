@@ -14,9 +14,9 @@ public class StaticPageProvider {
    //////////////////////////////////////////
 
    private static final String ENROLL_MEMBER_URL = "/gateway/enroll_member?username=%username%&deviceId=%deviceId%";
+   private static final String ENROLL_REP_URL = "/gateway/enroll_rep?username=%username%&deviceId=%deviceId%";
    private static final String LAT = "&lat=%1$,.6f";
    private static final String LNG = "&lng=%1$,.6f";
-   private static final String ENROLL_REP_URL = "/gateway/enroll_rep?username=%username%";
    private static final String BOOKING_PAGE_URL = "/gateway/booking_page/%trip_id%";
    private static final String OTA_PAGE_URL = "/gateway/ota_page";
    private static final String FAQ_URL = "/gateway/faq";
@@ -54,7 +54,8 @@ public class StaticPageProvider {
 
    public String getEnrollRepUrl() {
       String urlWithMask = apiUrl + ENROLL_REP_URL;
-      return urlWithMask.replace(MASK_USER_NAME, getUsername());
+      return urlWithMask.replace(MASK_USER_NAME, getUsername())
+            .replace(MASK_DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
    }
 
    public String getEnrollUpgradeUrl() {
@@ -109,6 +110,10 @@ public class StaticPageProvider {
 
    public String getEnrollWithLocation(double latitude, double longitude) {
       return getEnrollMemberUrl() + String.format(Locale.ENGLISH, LAT, latitude) + String.format(Locale.ENGLISH, LNG, longitude);
+   }
+
+   public String getEnrollRepWithLocation(double latitude, double longitude) {
+      return getEnrollRepUrl() + String.format(Locale.ENGLISH, LAT, latitude) + String.format(Locale.ENGLISH, LNG, longitude);
    }
 
    private String getUsername() {

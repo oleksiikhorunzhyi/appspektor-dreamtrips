@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedback
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
@@ -49,7 +50,7 @@ import dagger.Provides;
             StaticInfoFragment.PrivacyPolicyFragment.class,
             StaticInfoFragment.CookiePolicyFragment.class,
             StaticInfoFragment.FAQFragment.class,
-            StaticInfoFragment.EnrollRepFragment.class,
+            EnrollRepFragment.class,
             StaticInfoFragment.EnrollUpgradeFragment.class,
             DocumentFragment.class,
             VideoCell.class,

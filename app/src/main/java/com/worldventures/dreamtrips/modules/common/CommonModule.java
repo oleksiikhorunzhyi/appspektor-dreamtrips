@@ -135,7 +135,7 @@ public class CommonModule {
 
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
-      if (BuildConfig.SMARTCARD_ENABLED && !ViewUtils.isTablet(context)) {
+      if (!ViewUtils.isTablet(context)) {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletActivityModule.WALLET));
       }
 

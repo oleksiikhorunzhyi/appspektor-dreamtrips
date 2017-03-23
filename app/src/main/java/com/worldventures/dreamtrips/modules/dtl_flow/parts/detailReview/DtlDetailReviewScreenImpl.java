@@ -46,6 +46,8 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     TextView mTvIsVerified;
     @InjectView(R.id.tvComment)
     TextView mTvComment;
+    @InjectView(R.id.toolbar_change)
+    Toolbar mTlMenuOption;
 
     public DtlDetailReviewScreenImpl(Context context) {
         super(context);
@@ -71,6 +73,8 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);
 
+        mTlMenuOption.inflateMenu(getPresenter().getMenuFlag());
+        mTlMenuOption.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
         initData();
     }
 
@@ -144,6 +148,11 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     @Override
     public void showEmpty(boolean isShow) {
         emptyView.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public String getMerchantId() {
+        return getPath().getMerchantId();
     }
 
     @Override

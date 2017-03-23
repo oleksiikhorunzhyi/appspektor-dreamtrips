@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributeConver
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CoordinatesConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CurrencyConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.DisclaimerConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.FlaggingConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.LocationsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantMediaConverter;
@@ -128,5 +129,11 @@ public class DtlMappingModule {
    @Singleton
    Converter provideReviewSettingsConverter() {
       return new ReviewSettingsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFlaggingConverterConverter() {
+      return new FlaggingConverter();
    }
 }

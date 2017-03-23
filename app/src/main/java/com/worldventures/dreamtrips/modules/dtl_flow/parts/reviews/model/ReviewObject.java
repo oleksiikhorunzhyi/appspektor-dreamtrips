@@ -10,6 +10,7 @@ import java.util.List;
 
 public class ReviewObject implements Parcelable {
 
+   private String reviewId;
    private String urlImageUser;
    private String nameUser;
    private float ratingCommentUser;
@@ -17,7 +18,8 @@ public class ReviewObject implements Parcelable {
    private String comment;
    private boolean isVerifiedReview;
 
-   public ReviewObject(String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment, boolean isVerifiedReview) {
+   public ReviewObject(String reviewId, String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment, boolean isVerifiedReview) {
+      this.reviewId = reviewId;
       this.urlImageUser = urlImageUser;
       this.nameUser = nameUser;
       this.ratingCommentUser = ratingCommentUser;
@@ -74,10 +76,13 @@ public class ReviewObject implements Parcelable {
       isVerifiedReview = verifiedReview;
    }
 
-
+   public String getReviewId() {
+      return reviewId;
+   }
 
    private static ReviewObject getObject(Review review) {
-      return new ReviewObject(getUrlImageUser(review.userImage()),
+      return new ReviewObject(review.reviewId(),
+            getUrlImageUser(review.userImage()),
             review.userNickName(),
             review.rating(),
             review.lastModeratedTimeUtc(),

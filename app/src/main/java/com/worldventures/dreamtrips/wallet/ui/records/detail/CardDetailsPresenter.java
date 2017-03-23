@@ -141,7 +141,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       final Screen view = getView();
       view.getCardNicknameObservable()
             .compose(bindView())
-            .filter(cardName -> !cardName.isEmpty())
             .subscribe(this::handleCardNickname);
    }
 

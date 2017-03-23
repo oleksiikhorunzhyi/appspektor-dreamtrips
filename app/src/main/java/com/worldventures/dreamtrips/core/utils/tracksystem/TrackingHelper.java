@@ -183,10 +183,6 @@ public class TrackingHelper {
       trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
    }
 
-   public static void bookIt(String id, String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_DREAMTRIPS, "book_it", id);
-   }
-
    public static void insprDetails(String memberId, String id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
    }
@@ -378,7 +374,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
    public static final String ATTRIBUTE_MAP = "map";
    public static final String ATTRIBUTE_ADD_TO_BUCKET_LIST = "add_to_bucket_list";
-   public static final String ATTRIBUTE_BOOK_IT = "book_it";
    public static final String ATTRIBUTE_LOAD_MORE = "load_more";
    public static final String ATTRIBUTE_UPLOAD_PHOTO = "upload_photo";
    public static final String ATTRIBUTE_SHARE = "share";
@@ -565,16 +560,6 @@ public class TrackingHelper {
       Map data = new HashMap<>();
       data.put("trip_id", tripName + "-" + tripId);
       data.put(eventType, tripId);
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void actionBookIt(String eventType, String tripId, String tripName) {
-      //apptentive, probabaly legacy code
-      bookIt(tripId, tripId);
-
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(eventType, 1);
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
    }
 

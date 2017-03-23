@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 
 import java.io.File;
@@ -40,10 +41,12 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       uploadUserDataAndAssociateSmartCard(smartCard)
-            .flatMap(sc -> walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
-                  .createObservableResult(
-                        new ActivateSmartCardCommand(ImmutableSmartCard.copyOf(sc)
-                              .withDeviceId(propertiesProvider.deviceId()))))
+            .flatMap(sc ->
+                  walletJanet.createPipe(AddDummyRecordCommand.class)
+                        .createObservableResult(new AddDummyRecordCommand(sc.user()))
+                        .flatMap(command -> walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
+                              .createObservableResult(new ActivateSmartCardCommand(ImmutableSmartCard.copyOf(sc)
+                                    .withDeviceId(propertiesProvider.deviceId())))))
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 

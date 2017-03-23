@@ -275,7 +275,13 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @OnClick(R.id.add_card_button)
    protected void addCardButtonClick() {
-      getPresenter().addCardRequired();
+//      add coming soon dialog for 1.18
+//      getPresenter().addCardRequired();
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_wizard_card_list_add_card_coming_soon_title)
+            .content(R.string.wallet_wizard_card_list_add_card_coming_soon_text)
+            .positiveText(R.string.ok)
+            .show();
    }
 
    @OnClick(R.id.firmware_available)

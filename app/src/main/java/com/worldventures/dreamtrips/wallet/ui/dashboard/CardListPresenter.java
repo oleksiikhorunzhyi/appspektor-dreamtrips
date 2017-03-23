@@ -160,7 +160,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void cardClicked(BankCard bankCard) {
-      navigator.go(new CardDetailsPath(bankCard));
+//      was removed for 1.18 release
+//      navigator.go(new CardDetailsPath(bankCard));
    }
 
    void navigationClick() {
@@ -179,7 +180,9 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.goBack();
    }
 
+   @SuppressWarnings("unused") // for 1.18
    void addCardRequired() {
+
       if (cardLoaded >= MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
          return;

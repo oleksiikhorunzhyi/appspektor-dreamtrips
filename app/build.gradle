@@ -64,7 +64,7 @@ android {
    def BUILD_LOG_TAG = "BUILD_LOG"
    //
    def qaAutomationModeEnabled = project.hasProperty("qa_automation_mode") ?
-         project.getProperties().get("qa_automation_mode").equals("true") : false
+         project.getProperties().get("qa_automation_mode") : false
    //
    def CONFIG_MAP_DEFAULT = [
          'DreamTripsApi'        : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',

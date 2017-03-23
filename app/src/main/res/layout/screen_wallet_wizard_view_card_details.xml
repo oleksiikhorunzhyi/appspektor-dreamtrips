@@ -60,6 +60,7 @@
                android:layout_height="wrap_content"
                android:paddingTop="@dimen/spacing_small"
                app:errorEnabled="true"
+               app:errorTextAppearance="@style/WalletTheme.ErrorTextAppearance"
                app:hintEnabled="false"
                >
 

@@ -83,6 +83,7 @@
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 
    <!--details-->
+   <string name="wallet_card_details_title">Card Details</string>
    <string name="wallet_card_details_label_billing_address">Billing Address</string>
    <string name="wallet_card_details_label_card_nickname">Card Nickname</string>
    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>

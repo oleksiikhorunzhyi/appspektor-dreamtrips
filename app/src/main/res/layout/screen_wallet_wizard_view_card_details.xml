@@ -14,6 +14,7 @@
          android:layout_height="?attr/actionBarSize"
          android:theme="@style/WalletTheme.ToolbarStyle"
          app:theme="@style/WalletTheme.ToolbarStyle"
+         app:title="@string/wallet_card_details_title"
          />
 
    <ScrollView

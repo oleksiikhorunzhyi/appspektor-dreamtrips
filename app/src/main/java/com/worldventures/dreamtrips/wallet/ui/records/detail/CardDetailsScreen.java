@@ -121,7 +121,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public void showWalletRecord(Record record) {
-      toolbar.setTitle(walletRecordUtil.financialServiceWithCardNumber(record));
       bankCardWidget.setBankCard(record);
 
       final String nickName = record.nickName();

@@ -16,4 +16,6 @@ public interface DtlCommentReviewsPresenter extends DtlPresenter<DtlCommentRevie
     int maximumCharactersAllowed();
 
     int minimumCharactersAllowed();
+
+    void handleStringReview(String stringReview);
 }

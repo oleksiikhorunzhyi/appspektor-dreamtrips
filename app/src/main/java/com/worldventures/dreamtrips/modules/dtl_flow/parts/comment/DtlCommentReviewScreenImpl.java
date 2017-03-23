@@ -1,14 +1,20 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
@@ -36,6 +42,13 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @InjectView(R.id.etCommentReview)
     EditText mComment;
 
+    @InjectView(R.id.tv_char_counter)
+    TextView mCharCounter;
+    @InjectView(R.id.tv_min_chars)
+    TextView mMinChars;
+    @InjectView(R.id.tv_max_chars)
+    TextView mMaxChars;
+
     private SweetAlertDialog errorDialog;
 
     public DtlCommentReviewScreenImpl(Context context) {
@@ -57,7 +70,53 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> getPresenter().onBackPressed());
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        refreshLayout.setEnabled(true);
+        refreshLayout.setEnabled(false);
+
+        initEditTextListener();
+        initLengthText();
+        setMaxLengthText(getPresenter().maximumCharactersAllowed());
+    }
+
+    private void initLengthText() {
+        mMinChars.setText(String.format(getActivity().getResources().getString(R.string.review_min_char), getPresenter().minimumCharactersAllowed()));
+        mMaxChars.setText(String.format(getActivity().getResources().getString(R.string.review_max_char), getPresenter().maximumCharactersAllowed()));
+    }
+
+    public void setMaxLengthText(int maxValue){
+        mComment.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxValue)});
+    }
+
+    private void initEditTextListener() {
+        mComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                getPresenter().handleStringReview(s.toString());
+            }
+        });
+    }
+
+    public void showErrorMaxMessage() {
+        Snackbar.make(refreshLayout, R.string.input_major_limit, Snackbar.LENGTH_LONG).show();
+    }
+
+    public void setBoldStyleText(){
+        mCharCounter.setTypeface(null, Typeface.BOLD);
+    }
+
+    public void setNormalStyleText(){
+        mCharCounter.setTypeface(null, Typeface.NORMAL);
+    }
+
+    public void setInputChars(int charCounter){
+        mCharCounter.setText(String.valueOf(charCounter));
     }
 
     private void refreshProgress(boolean isShow) {

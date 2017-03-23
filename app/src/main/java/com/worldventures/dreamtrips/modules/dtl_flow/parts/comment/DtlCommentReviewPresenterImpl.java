@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -40,6 +41,10 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     private final Merchant merchant;
     private static final String BRAND_ID = "1";
     private User user;
+
+    private String stringReview;
+    private int stringReviewLength = 0;
+    private boolean isStringReviewValid = false;
 
     public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
         super(context);
@@ -123,6 +128,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                 .verified(getView().isVerified())
                 .userId(String.valueOf(user.getId()))
                 .deviceFingerprint(getView().getFingerprintId())
+                .authorIpAddress("10.20.20.20")
                 .build()));
     }
 
@@ -154,5 +160,34 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
         getView().onRefreshError(throwable.getMessage());
+    }
+
+    @Override
+    public void handleStringReview(String stringReview) {
+        this.stringReview = stringReview;
+
+        int lineJumpOccurrences = 0;
+        for (int i = 0; i < stringReview.length(); i++) {
+            if (stringReview.charAt(i) == '\n') {
+                lineJumpOccurrences++;
+            }
+        }
+        stringReviewLength = stringReview.length() - lineJumpOccurrences;
+
+        Log.e("lineJumpOccurrences ", "" + lineJumpOccurrences);
+        Log.e("stringReviewLength ", "" + stringReviewLength);
+
+        getView().setInputChars(stringReviewLength);
+
+        if (stringReviewLength >= minimumCharactersAllowed()) {
+            isStringReviewValid = true; //Sure will be able to submit review
+            getView().setNormalStyleText();
+        } else {
+            getView().setBoldStyleText();
+        }
+        getView().setMaxLengthText(maximumCharactersAllowed() + lineJumpOccurrences);
+        if (stringReviewLength >= maximumCharactersAllowed()){
+            getView().showErrorMaxMessage();
+        }
     }
 }

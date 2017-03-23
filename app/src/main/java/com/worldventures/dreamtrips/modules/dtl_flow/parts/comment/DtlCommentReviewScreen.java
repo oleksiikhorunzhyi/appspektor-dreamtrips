@@ -35,4 +35,14 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     boolean isVerified();
 
     String getFingerprintId();
+
+    void showErrorMaxMessage();
+
+    void setBoldStyleText();
+
+    void setNormalStyleText();
+
+    void setInputChars(int charCounter);
+
+    void setMaxLengthText(int maxValue);
 }

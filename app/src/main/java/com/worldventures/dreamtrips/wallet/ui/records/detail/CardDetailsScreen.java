@@ -54,6 +54,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
    private MaterialDialog connectedErrorDialog;
+   private MaterialDialog networkConnectionErrorDialog;
    private final WalletRecordUtil walletRecordUtil;
 
    public CardDetailsScreen(Context context) {
@@ -155,14 +156,23 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
                .title(R.string.wallet_smartcard_disconnected_label)
                .content(R.string.wallet_smartcard_connection_try_description)
                .positiveText(R.string.ok)
-               .onPositive((dialog, which) -> {
-                  dialog.cancel();
-                  connectedErrorDialog = null;
-               })
-               .dismissListener((dialog) -> connectedErrorDialog = null)
+               .onPositive((dialog, which) -> dialog.dismiss())
                .build();
-         connectedErrorDialog.show();
       }
+      if (!connectedErrorDialog.isShowing()) connectedErrorDialog.show();
+   }
+
+   @Override
+   public void showNetworkConnectionErrorDialog() {
+      if (networkConnectionErrorDialog == null) {
+         networkConnectionErrorDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_error_label)
+               .content(R.string.wallet_no_internet_connection)
+               .positiveText(R.string.ok)
+               .onPositive((dialog, which) -> dialog.dismiss())
+               .build();
+      }
+      if (!networkConnectionErrorDialog.isShowing()) networkConnectionErrorDialog.show();
    }
 
    @Override
@@ -265,5 +275,12 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             new SimpleDialogProgressView<SetPaymentCardAction>(getContext(), R.string.loading, false),
             new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
       );
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      if (networkConnectionErrorDialog != null) networkConnectionErrorDialog.dismiss();
+      if (connectedErrorDialog != null) connectedErrorDialog.dismiss();
+      super.onDetachedFromWindow();
    }
 }

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -52,6 +53,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletNetworkService networkService;
 
    private Record record;
 
@@ -96,10 +98,14 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void updateNickName() {
-      if (!TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
-         nicknameUpdated(getView().getUpdateNickname());
+      if (networkService.isAvailable()) {
+         if (!TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
+            nicknameUpdated(getView().getUpdateNickname());
+         } else {
+            getView().notifyCardDataIsSaved();
+         }
       } else {
-         getView().notifyCardDataIsSaved();
+         getView().showNetworkConnectionErrorDialog();
       }
    }
 
@@ -318,6 +324,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void showDeleteCardDialog();
 
       void showConnectionErrorDialog();
+
+      void showNetworkConnectionErrorDialog();
 
       void setDefaultCardCondition(boolean defaultCard);
 

@@ -64,7 +64,9 @@
                android:id="@+id/cardNameInputLayout"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               app:errorEnabled="true">
+               app:errorEnabled="true"
+               app:errorTextAppearance="@style/WalletTheme.ErrorTextAppearance"
+               >
 
             <EditText
                   android:id="@+id/card_name"

@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiErrorResponse;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiRequestBody;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiResponseBody;
 
-import java.util.Objects;
-
 import io.techery.janet.http.annotations.Body;
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.RequestHeader;
@@ -51,13 +49,15 @@ public class MultifunctionNxtHttpAction {
    public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
+
       MultifunctionNxtHttpAction that = (MultifunctionNxtHttpAction) o;
-      return Objects.equals(body, that.body);
+
+      return body != null ? body.equals(that.body) : that.body == null;
+
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(body);
+      return body != null ? body.hashCode() : 0;
    }
-
 }

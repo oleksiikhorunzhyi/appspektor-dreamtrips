@@ -60,6 +60,7 @@
                android:layout_height="wrap_content"
                android:paddingTop="@dimen/spacing_small"
                app:errorEnabled="true"
+               app:hintEnabled="false"
                >
 
             <EditText

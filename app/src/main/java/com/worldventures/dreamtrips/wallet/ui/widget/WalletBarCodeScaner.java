@@ -18,6 +18,6 @@ public class WalletBarCodeScaner extends ZXingScannerView {
 
    @Override
    protected IViewFinder createViewFinderView(Context context) {
-      return new WalletBarCodeFinder(context);
+      return new WalletBarCodeFinder(context, false);
    }
 }

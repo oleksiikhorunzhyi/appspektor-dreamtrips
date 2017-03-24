@@ -29,8 +29,11 @@ public class WalletBarCodeFinder extends ViewFinderView {
    private int borderWidth;
    private int scannerAlpha;
 
-   public WalletBarCodeFinder(Context context) {
+   private boolean enableLaserAnimation = true;
+
+   public WalletBarCodeFinder(Context context, boolean enableLaserAnimation) {
       super(context);
+      this.enableLaserAnimation = enableLaserAnimation;
       init();
    }
 
@@ -76,8 +79,10 @@ public class WalletBarCodeFinder extends ViewFinderView {
    @Override
    public void drawLaser(Canvas canvas) {
       Rect framingRect = getFramingRect();
-      laserPaint.setAlpha(SCANNER_ALPHA[this.scannerAlpha]);
-      scannerAlpha = (this.scannerAlpha + 1) % SCANNER_ALPHA.length;
+      if (enableLaserAnimation) {
+         laserPaint.setAlpha(SCANNER_ALPHA[this.scannerAlpha]);
+         scannerAlpha = (this.scannerAlpha + 1) % SCANNER_ALPHA.length;
+      }
       int middle = framingRect.height() / 2 + framingRect.top;
       canvas.drawLine((float)(framingRect.left + 4), middle,
             (float)(framingRect.right - 4), middle, laserPaint);

@@ -139,6 +139,21 @@
    <string name="tv_read_more">Read more</string>
    <string name="action_add_review">Add review</string>
    <string name="text_awaiting_approval_review">You have a previous review for this location awaiting approval. Once approved you can review this location again.</string>
+   <string name="comment_review_title_sorry">We\'re sorry</string>
+   <string name="comment_review_profanity_text">\"Your review contains profanity and could not be submitted. Please edit your review and try again.\"</string>
+   <string name="comment_review_no_internet_message">There was a problem communicating with the DreamTrips servers. Please try again.</string>
+   <string name="comment_review_no_internet_confirm_text">Try again</string>
+   <string name="comment_review_no_internet_cancel_text">Cancel</string>
+   <string name="comment_review_error_unknown_title">We\'re sorry</string>
+   <string name="comment_review_error_unknown_text">There was a problem communicating with the DreamTrips servers. Please try again.</string>
+   <string name="comment_review_error_unknown_confirm">Try again</string>
+   <string name="comment_review_error_unknown_cancel">Cancel</string>
+   <string name="comment_review_error_limited_reached_content">All our server are busy right now. Please try again in a minute</string>
+   <string name="comment_review_unrecognized_error_content">Oops, we broke something. We\'re working on fixing it. Please try again tomorrow.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
    <string name="flag_text_menu">Flag</string>
    <string name="review_min_char">min %1$d </string>
    <string name="review_max_char">max %1$d</string>

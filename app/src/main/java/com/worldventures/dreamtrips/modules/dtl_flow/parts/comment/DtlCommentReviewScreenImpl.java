@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
 public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen, DtlCommentReviewsPresenter, DtlCommentReviewPath>
@@ -38,7 +39,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     View emptyView;
     @InjectView(R.id.errorView)
     View errorView;
-
     @InjectView(R.id.rbRating)
     RatingBar mRatingBar;
     @InjectView(R.id.etCommentReview)
@@ -196,11 +196,11 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     public void showNoInternetMessage(){
         errorDialog = new SweetAlertDialog(getActivity(),
               SweetAlertDialog.ERROR_TYPE);
-        errorDialog.setTitleText("We're sorry");
-        errorDialog.setContentText("There was a problem communicating with the DreamTrips servers. Please try again.");
-        errorDialog.setConfirmText("Try again");
+        errorDialog.setTitleText(getTextResource(R.string.comment_review_title_sorry));
+        errorDialog.setContentText(getTextResource(R.string.comment_review_no_internet_message));
+        errorDialog.setConfirmText(getTextResource(R.string.comment_review_no_internet_confirm_text));
         errorDialog.showCancelButton(true);
-        errorDialog.setCancelText("Cancel");
+        errorDialog.setCancelText(getTextResource(R.string.comment_review_no_internet_cancel_text));
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
             getPresenter().onPostClick();
@@ -208,12 +208,17 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         errorDialog.show();
     }
 
-    @Override
+   private String getTextResource(int idRes) {
+      return getContext().getString(idRes);
+   }
+
+   @Override
     public void showProfanityError() {
         errorDialog = new SweetAlertDialog(getActivity(),
-              SweetAlertDialog.NORMAL_TYPE);
-        errorDialog.setContentText("Your review contains profanity and could not be submitted. Please edit your review and try again.");
-        errorDialog.setConfirmText("OK");
+              SweetAlertDialog.ERROR_TYPE);
+        errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+        errorDialog.setContentText(getTextResource(R.string.comment_review_profanity_text));
+        errorDialog.setConfirmText(getTextResource(R.string.comment_review_confirm_text));
         errorDialog.showCancelButton(false);
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
@@ -225,11 +230,11 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     public void showErrorUnknown() {
         errorDialog = new SweetAlertDialog(getActivity(),
               SweetAlertDialog.ERROR_TYPE);
-        errorDialog.setTitleText("We're sorry");
-        errorDialog.setContentText("There was a problem communicating with the DreamTrips servers. Please try again.");
-        errorDialog.setConfirmText("Try again");
+        errorDialog.setTitleText(getTextResource(R.string.comment_review_error_unknown_title));
+        errorDialog.setContentText(getTextResource(R.string.comment_review_error_unknown_text));
+        errorDialog.setConfirmText(getTextResource(R.string.comment_review_error_unknown_confirm));
         errorDialog.showCancelButton(true);
-        errorDialog.setCancelText("Cancel");
+        errorDialog.setCancelText(getTextResource(R.string.comment_review_error_unknown_cancel));
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
             getPresenter().onPostClick();
@@ -240,10 +245,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public void showErrorLimitReached() {
         errorDialog = new SweetAlertDialog(getActivity(),
-              SweetAlertDialog. NORMAL_TYPE);
-        errorDialog.setTitleText("All our server are busy right now");
-        errorDialog.setContentText("Please try again in a minute");
-        errorDialog.setConfirmText("OK");
+              SweetAlertDialog. ERROR_TYPE);
+        errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+        errorDialog.setContentText(getTextResource(R.string.comment_review_error_limited_reached_content));
+        errorDialog.setConfirmText(getTextResource(R.string.comment_review_error_limited_reached_confirm));
         errorDialog.showCancelButton(false);
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
@@ -254,10 +259,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public void unrecognizedError() {
         errorDialog = new SweetAlertDialog(getActivity(),
-              SweetAlertDialog.NORMAL_TYPE);
-        //errorDialog.setTitleText("");
-        errorDialog.setContentText("Oops, we broke something. We're working on fixing it. Please try again tomorrow.");
-        errorDialog.setConfirmText("oK");
+              SweetAlertDialog.ERROR_TYPE);
+        errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+        errorDialog.setContentText(getTextResource(R.string.comment_review_unrecognized_error_content));
+        errorDialog.setConfirmText(getTextResource(R.string.comment_review_unrecognized_error_confirm));
         errorDialog.showCancelButton(false);
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();

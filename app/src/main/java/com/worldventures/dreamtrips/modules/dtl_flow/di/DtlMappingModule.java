@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
 
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributeConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.CommentReviewConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CoordinatesConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CurrencyConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.DisclaimerConverter;
@@ -146,6 +147,12 @@ public class DtlMappingModule {
    @Singleton
    Converter provideReviewTextConverter() {
       return new ReviewTextConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideCommentReviewConverter() {
+      return new CommentReviewConverter();
    }
 
    @Provides(type = Provides.Type.SET)

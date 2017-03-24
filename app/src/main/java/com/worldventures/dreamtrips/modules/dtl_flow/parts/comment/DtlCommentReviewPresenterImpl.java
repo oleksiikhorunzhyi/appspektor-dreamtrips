@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -114,15 +113,14 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     @Override
     public void sendAddReview(String description, Integer rating, boolean verified) {
         this.user = appSessionHolder.get().get().getUser();
-        ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
-              .observeWithReplay()
-              .compose(bindViewIoToMainComposer())
-              .subscribe(new ActionStateSubscriber<AddReviewAction>()
-                    .onSuccess(this::onMerchantsLoaded)
-                    .onProgress(this::onMerchantsLoading)
-                    .onFail(this::onMerchantsLoadingError));
+                .observe()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<AddReviewAction>()
+                        .onSuccess(this::onMerchantsLoaded)
+                        .onProgress(this::onMerchantsLoading)
+                        .onFail(this::onMerchantsLoadingError));
         addReviewActionActionPipe.send(AddReviewAction.create(ImmutableRequestReviewParams.builder()
               .brandId(BRAND_ID)
               .productId(merchant.id())
@@ -251,5 +249,9 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
             e.printStackTrace();
         }
         return isInternet;
+    }
+
+    public String getIpAddress() {
+        return "10.20.20.122";
     }
 }

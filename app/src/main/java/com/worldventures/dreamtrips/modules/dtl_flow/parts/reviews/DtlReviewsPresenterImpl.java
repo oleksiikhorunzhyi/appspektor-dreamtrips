@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 import android.content.Context;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Review;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;

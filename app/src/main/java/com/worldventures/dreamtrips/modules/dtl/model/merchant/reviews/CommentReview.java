@@ -12,13 +12,12 @@ import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public interface Review extends Serializable {
+public interface CommentReview extends Serializable {
 
-   @Nullable String lastModeratedTimeUtc();
    @Nullable String reviewId();
    @Nullable String brand();
    @Nullable String userNickName();
-   @Nullable UserImage userImage();
+   @Nullable String userImage();
    @Nullable String reviewText();
    @Nullable Integer rating();
    @Nullable Boolean verified();

@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -8,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
@@ -17,7 +21,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import javax.inject.Inject;
@@ -41,6 +44,10 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     private static final String BRAND_ID = "1";
     private User user;
 
+    private static final String ERROR_FORM_PROFANITY = "ERROR_FORM_PROFANITY";
+    private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
+    private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
+
     public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
         super(context);
         injector.inject(this);
@@ -61,6 +68,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         }
     }
 
+
+
     @Override
     public void navigateToDetail(String message) {
         Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
@@ -72,23 +81,22 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     }
 
     @Override
+    public void onPostClick() {
+        if (isInternetConnection()){
+            if (validateComment()) {
+                getView().sendPostReview();
+            }
+        } else {
+            getView().showNoInternetMessage();
+        }
+    }
+
+    @Override
     public boolean validateComment() {
         boolean validated = false;
         if (getView().isMinimumCharacterWrote()) {
             if (getView().isMaximumCharacterWrote()) {
                 if(getView().getRatingBar() > 0){
-                    if (merchant.reviews().total().equals("")){
-                        navigateToDetail(getContext().getString(R.string.snack_review_success));
-                    } else {
-                        Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
-                        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-                        historyBuilder.pop();
-                        if (getView().isFromListReview()){
-                            historyBuilder.pop();
-                        }
-                        historyBuilder.push(path);
-                        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-                    }
                     validated = true;
                 }
             } else {
@@ -106,7 +114,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
-                .observeWithReplay()
+                //.observeWithReplay()
+                .observe()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<AddReviewAction>()
                         .onSuccess(this::onMerchantsLoaded)
@@ -123,6 +132,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                 .verified(getView().isVerified())
                 .userId(String.valueOf(user.getId()))
                 .deviceFingerprint(getView().getFingerprintId())
+                .authorIpAddress("10.20.20.122")
                 .build()));
     }
 
@@ -145,7 +155,49 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     }
 
     private void onMerchantsLoaded(AddReviewAction action) {
-        getView().onRefreshSuccess();
+        //getView().onRefreshSuccess();
+        if (action.getResult().errors() != null){
+            /*if (action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code() == ""){
+
+            }*/
+        } else {
+            handlePostNavigation();
+        }
+    }
+
+    private void handlePostNavigation(){
+        if (merchant.reviews().total().equals("")){
+            navigateToDetail(getContext().getString(R.string.snack_review_success));
+        } else {
+            Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.pop();
+            if (getView().isFromListReview()){
+                historyBuilder.pop();
+            }
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+        }
+    }
+
+    private void validateCodeMessage(String message){
+        switch (message){
+            case ERROR_FORM_PROFANITY:
+                    getView().showProfanityError();
+                break;
+
+            case ERROR_UNKNOWN:
+                    getView().showErrorUnknown();
+                break;
+
+            case ERROR_REQUEST_LIMIT_REACHED:
+                    getView().showErrorLimitReached();
+                break;
+
+            default:
+                    getView().unrecognizedError();
+                break;
+        }
     }
 
     private void onMerchantsLoading(AddReviewAction action, Integer progress) {
@@ -154,5 +206,17 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
         getView().onRefreshError(throwable.getMessage());
+    }
+
+    public boolean isInternetConnection(){
+        boolean isInternet = false;
+        try{
+            ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            isInternet = activeNetwork.isConnectedOrConnecting();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return isInternet;
     }
 }

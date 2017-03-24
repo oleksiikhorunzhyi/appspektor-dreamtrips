@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlCommentReviewScreen extends DtlScreen {
 
-    void onPostClick();
-
     void showSnackbarMessage(String message);
 
     void showDialogMessage(String message);
@@ -35,4 +33,14 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     boolean isVerified();
 
     String getFingerprintId();
+
+    void showNoInternetMessage();
+
+    void showProfanityError();
+
+    void showErrorUnknown();
+
+    void showErrorLimitReached();
+
+    void unrecognizedError();
 }

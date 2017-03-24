@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class AddReviewAction extends Command<Review> implements InjectableAction {
+public class AddReviewAction extends Command<CommentReview> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;

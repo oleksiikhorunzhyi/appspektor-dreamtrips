@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -111,10 +110,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     @Override
     public void sendAddReview(String description, Integer rating) {
         this.user = appSessionHolder.get().get().getUser();
-        ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
-                //.observeWithReplay()
                 .observe()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<AddReviewAction>()
@@ -132,7 +129,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                 .verified(getView().isVerified())
                 .userId(String.valueOf(user.getId()))
                 .deviceFingerprint(getView().getFingerprintId())
-                .authorIpAddress("10.20.20.122")
+                .authorIpAddress(getIpAddress())
                 .build()));
     }
 
@@ -155,12 +152,13 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     }
 
     private void onMerchantsLoaded(AddReviewAction action) {
-        //getView().onRefreshSuccess();
         if (action.getResult().errors() != null){
-            /*if (action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code() == ""){
-
-            }*/
+            getView().onRefreshSuccess();
+            validateCodeMessage(action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code());
         } else {
+            this.user = appSessionHolder.get().get().getUser();
+            ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
+            getView().onRefreshSuccess();
             handlePostNavigation();
         }
     }
@@ -218,5 +216,9 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
             e.printStackTrace();
         }
         return isInternet;
+    }
+
+    public String getIpAddress() {
+        return "10.20.20.122";
     }
 }

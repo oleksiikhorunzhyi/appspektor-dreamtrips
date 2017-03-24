@@ -44,6 +44,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.city) EditText etCity;
    @InjectView(R.id.state) EditText etState;
    @InjectView(R.id.zip) EditText etZip;
+   @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
@@ -240,5 +241,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       bindSpannableStringToTarget(etCity, R.string.wallet_add_card_details_hint_city, true, true);
       bindSpannableStringToTarget(etState, R.string.wallet_add_card_details_hint_state, true, true);
       bindSpannableStringToTarget(etZip, R.string.wallet_add_card_details_hint_zip, true, true);
+      bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
+            R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }
 }

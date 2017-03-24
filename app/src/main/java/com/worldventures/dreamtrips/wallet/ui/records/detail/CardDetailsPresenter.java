@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.ChangeDefaultCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
@@ -69,8 +70,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       Screen view = getView();
 
       view.showWalletRecord(record);
-      view.showDefaultAddress(obtainAddressWithCountry());
 
+      fetchAddressByRecordId(record.id());
       updateCardConditionState();
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
@@ -78,6 +79,16 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       observeCardNickName();
       observeDefaultCardSwitcher();
       observeSaveCardData();
+   }
+
+   private void fetchAddressByRecordId(final String recordId) {
+      smartCardInteractor.cardsListPipe()
+            .createObservableResult(RecordListCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .map(command -> Queryable.from(command.getResult()).first(element -> element.id().equals(recordId)))
+            .subscribe(record -> getView().showDefaultAddress(
+                  obtainAddressWithCountry((this.record = record).addressInfo())),
+                  throwable -> Timber.e(throwable, ""));
    }
 
    private void observeSaveCardData() {
@@ -166,9 +177,9 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .subscribe(this::defaultCardSwitcherChanged);
    }
 
-   private AddressInfoWithLocale obtainAddressWithCountry() {
+   private AddressInfoWithLocale obtainAddressWithCountry(AddressInfo addressInfo) {
       return ImmutableAddressInfoWithLocale.builder()
-            .addressInfo(record.addressInfo())
+            .addressInfo(addressInfo)
             .locale(LocaleHelper.getDefaultLocale())
             .build();
    }
@@ -231,7 +242,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
          smartCardInteractor.cardsListPipe()
                .createObservable(RecordListCommand.fetch())
                .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
-               .map(actionState -> Queryable.from(actionState.action.getResult()).firstOrDefault(c -> TextUtils.equals(c.id(), defaultRecordId)))
+               .map(actionState -> Queryable.from(actionState.action.getResult())
+                     .firstOrDefault(c -> TextUtils.equals(c.id(), defaultRecordId)))
                .compose(bindViewIoToMainComposer())
                .subscribe(this::showChangeDefaultIdConfirmDialog);
       }

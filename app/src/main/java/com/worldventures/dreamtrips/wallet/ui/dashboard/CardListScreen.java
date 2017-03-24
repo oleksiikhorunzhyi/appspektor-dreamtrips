@@ -286,7 +286,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @OnClick(R.id.firmware_available)
    protected void firmwareAvailableBtnClick() {
-      getPresenter().firmwareAvailable();
+      getPresenter().installFirmwareClick();
    }
 
    @Override

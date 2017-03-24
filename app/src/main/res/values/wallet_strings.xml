@@ -10,7 +10,7 @@
    <string name="wallet_retry_label">Retry</string>
 
    <string name="wallet">flye\u2122 smart card</string>
-   <string name="wallet_dashboard_title">My flye\u2122 smart card</string>
+   <string name="wallet_dashboard_title">flye\u2122 smart card</string>
    <string name="wallet_wizard_title">flye\u2122 smart card</string>
    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
@@ -151,7 +151,6 @@
 
 
    <!--card list-->
-   <string name="wallet_card_list_title">My flye\u2122 smart card</string>
    <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
    <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your flye\u2122 smart card</string>

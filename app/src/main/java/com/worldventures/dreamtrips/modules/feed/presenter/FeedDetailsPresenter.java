@@ -74,7 +74,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {
-      if (!updatedFeedEntity.getUid().equals(feedEntity.getUid())) return;
+      if (!feedEntity.equals(updatedFeedEntity)) return;
       feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);

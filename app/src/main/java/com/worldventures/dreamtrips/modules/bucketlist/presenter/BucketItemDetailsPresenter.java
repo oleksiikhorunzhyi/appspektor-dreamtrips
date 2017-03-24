@@ -45,6 +45,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                   .map(bucketItemBucketPhotoModelPair -> bucketItemBucketPhotoModelPair.first))
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
+            .filter(newBucketItem -> bucketItem == null || bucketItem.equals(newBucketItem))
             .subscribe(item -> {
                bucketItem = item;
                syncUI();

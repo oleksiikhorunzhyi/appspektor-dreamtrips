@@ -5,7 +5,11 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributeConver
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CoordinatesConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CurrencyConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.DisclaimerConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ErrorsConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.FieldErrorsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.FlaggingConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.FormErrorsConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.InnerErrorConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.LocationsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantMediaConverter;
@@ -15,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationHourCo
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewSettingsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewSummaryConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewTextConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
@@ -111,6 +116,36 @@ public class DtlMappingModule {
    @Singleton
    Converter provideReviewConverter() {
       return new ReviewConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideErrorConverter() {
+      return new ErrorsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideInnerErrorConverter() {
+      return new InnerErrorConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFormErrorConverter() {
+      return new FormErrorsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFieldErrorConverter() {
+      return new FieldErrorsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReviewTextConverter() {
+      return new ReviewTextConverter();
    }
 
    @Provides(type = Provides.Type.SET)

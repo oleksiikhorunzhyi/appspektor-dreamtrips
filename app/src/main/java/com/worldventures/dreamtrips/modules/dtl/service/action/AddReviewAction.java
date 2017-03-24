@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewPara
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ReviewParams;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.CommentReview;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
 import javax.inject.Inject;
@@ -34,12 +35,12 @@ public class AddReviewAction extends Command<Review> implements InjectableAction
    }
 
    @Override
-   protected void run(CommandCallback<Review> callback) throws Throwable {
+   protected void run(CommandCallback<CommentReview> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpAction(actionParams, reviewParams))
             .map(AddReviewHttpAction::response)
-            .map(attributes -> mapperyContext.convert(attributes, Review.class))
+            .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 }

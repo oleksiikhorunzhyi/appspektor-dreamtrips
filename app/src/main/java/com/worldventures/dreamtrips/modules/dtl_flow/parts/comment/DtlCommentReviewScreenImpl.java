@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,7 +12,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -191,6 +193,79 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     }
 
     @Override
+    public void showNoInternetMessage(){
+        errorDialog = new SweetAlertDialog(getActivity(),
+              SweetAlertDialog.ERROR_TYPE);
+        errorDialog.setTitleText("We're sorry");
+        errorDialog.setContentText("There was a problem communicating with the DreamTrips servers. Please try again.");
+        errorDialog.setConfirmText("Try again");
+        errorDialog.showCancelButton(true);
+        errorDialog.setCancelText("Cancel");
+        errorDialog.setConfirmClickListener(listener -> {
+            listener.dismissWithAnimation();
+            getPresenter().onPostClick();
+        });
+        errorDialog.show();
+    }
+
+    @Override
+    public void showProfanityError() {
+        errorDialog = new SweetAlertDialog(getActivity(),
+              SweetAlertDialog.NORMAL_TYPE);
+        errorDialog.setContentText("Your review contains profanity and could not be submitted. Please edit your review and try again.");
+        errorDialog.setConfirmText("OK");
+        errorDialog.showCancelButton(false);
+        errorDialog.setConfirmClickListener(listener -> {
+            listener.dismissWithAnimation();
+        });
+        errorDialog.show();
+    }
+
+    @Override
+    public void showErrorUnknown() {
+        errorDialog = new SweetAlertDialog(getActivity(),
+              SweetAlertDialog.ERROR_TYPE);
+        errorDialog.setTitleText("We're sorry");
+        errorDialog.setContentText("There was a problem communicating with the DreamTrips servers. Please try again.");
+        errorDialog.setConfirmText("Try again");
+        errorDialog.showCancelButton(true);
+        errorDialog.setCancelText("Cancel");
+        errorDialog.setConfirmClickListener(listener -> {
+            listener.dismissWithAnimation();
+            getPresenter().onPostClick();
+        });
+        errorDialog.show();
+    }
+
+    @Override
+    public void showErrorLimitReached() {
+        errorDialog = new SweetAlertDialog(getActivity(),
+              SweetAlertDialog. NORMAL_TYPE);
+        errorDialog.setTitleText("All our server are busy right now");
+        errorDialog.setContentText("Please try again in a minute");
+        errorDialog.setConfirmText("OK");
+        errorDialog.showCancelButton(false);
+        errorDialog.setConfirmClickListener(listener -> {
+            listener.dismissWithAnimation();
+        });
+        errorDialog.show();
+    }
+
+    @Override
+    public void unrecognizedError() {
+        errorDialog = new SweetAlertDialog(getActivity(),
+              SweetAlertDialog.NORMAL_TYPE);
+        //errorDialog.setTitleText("");
+        errorDialog.setContentText("Oops, we broke something. We're working on fixing it. Please try again tomorrow.");
+        errorDialog.setConfirmText("oK");
+        errorDialog.showCancelButton(false);
+        errorDialog.setConfirmClickListener(listener -> {
+            listener.dismissWithAnimation();
+        });
+        errorDialog.show();
+    }
+
+    @Override
     public void enableInputs() {
         enableButtons(true);
     }
@@ -233,7 +308,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @OnClick(R.id.tvOnPost)
     public void onClick() {
-        onPostClick();
+        getPresenter().onPostClick();
     }
 
     @Override
@@ -283,5 +358,15 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public boolean isVerified() {
         return getPath().isVerified();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+              && event.getRepeatCount() == 0) {
+            getPresenter().onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

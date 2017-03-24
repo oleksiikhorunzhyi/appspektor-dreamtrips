@@ -42,13 +42,23 @@ public interface DtlCommentReviewScreen extends DtlScreen {
 
     String getFingerprintId();
 
+    void showErrorUnknown();
+
+    void showErrorLimitReached();
+
+    void showNoInternetMessage();
+
+    void showProfanityError();
+
     void showErrorMaxMessage();
 
     void setBoldStyleText();
 
-    void setNormalStyleText();
-
     void setInputChars(int charCounter);
 
     void setMaxLengthText(int maxValue);
+
+    void setNormalStyleText();
+
+    void unrecognizedError();
 }

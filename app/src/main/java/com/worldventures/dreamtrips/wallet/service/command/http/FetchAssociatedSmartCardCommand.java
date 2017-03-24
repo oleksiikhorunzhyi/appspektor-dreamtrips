@@ -13,11 +13,13 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddDummyRecordCommand;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,7 +50,9 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
       }
       janet.createPipe(GetAssociatedCardsHttpAction.class)
             .createObservableResult(new GetAssociatedCardsHttpAction(propertiesProvider.deviceId()))
-            .flatMap(action -> handleResponse(action.response()))
+            .map(GetAssociatedCardsHttpAction::response)
+            .doOnError(throwable -> Collections.emptyList())
+            .flatMap(this::handleResponse)
             .doOnNext(result -> janetWallet.createPipe(ConnectSmartCardCommand.class)
                   .send(new ConnectSmartCardCommand(result.smartCard(), true, true))
             )
@@ -67,6 +71,8 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
 
       /// TODO: 12/16/16 save photo url
       return createSmartCard(smartCardInfo)
+            .doOnNext(sc -> janetWallet.createPipe(AddDummyRecordCommand.class)
+                  .send(new AddDummyRecordCommand(sc.user(), true)))
             .flatMap(sc -> save(sc, smartCardDetails));
    }
 

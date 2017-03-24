@@ -7,6 +7,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 
 import javax.inject.Inject;
 
@@ -21,13 +23,16 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
 
    private final BankCard dummyCard1;
    private final BankCard dummyCard2;
+   private final boolean onlyToCache;
 
-   public AddDummyRecordCommand(SmartCardUser user) {
+   public AddDummyRecordCommand(SmartCardUser user, boolean onlyToCache) {
+      this.onlyToCache = onlyToCache;
       final String userLastName = user.lastName();
       final String userMiddleName = user.middleName();
       final String userFirstName = user.firstName();
 
       dummyCard1 = ImmutableBankCard.builder()
+            .id("0")
             .number("9999999999994984")
             .expDate("02/19")
             .cvv("748")
@@ -42,6 +47,7 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
                   .build())
             .build();
       dummyCard2 = ImmutableBankCard.builder()
+            .id("1")
             .number("9999_9999_9999_9274")
             .expDate("06/21")
             .cvv("5827")
@@ -59,10 +65,22 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      // first card should be default
-      addDummyCard(dummyCard1, true)
-            .flatMap(it -> addDummyCard(dummyCard2, false))
-            .subscribe(callback::onSuccess, callback::onFail);
+      // !!!! first card should be default !!!
+      if (onlyToCache) { // because synchronization of sample card is broken
+         smartCardInteractor.cardsListPipe()
+               .createObservableResult(CardListCommand.add(dummyCard1))
+               .flatMap(c -> smartCardInteractor.cardsListPipe()
+                     .createObservableResult(CardListCommand.add(dummyCard2)))
+               .flatMap(c-> smartCardInteractor.defaultCardIdPipe()
+                     .createObservableResult(DefaultCardIdCommand.set("0")))
+               .map(command -> (Void) null)
+               .onErrorReturn(throwable -> null)
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         addDummyCard(dummyCard1, true)
+               .flatMap(it -> addDummyCard(dummyCard2, false))
+               .subscribe(callback::onSuccess, callback::onFail);
+      }
    }
 
    private Observable<Void> addDummyCard(BankCard dummyCard, boolean isDefault) {
@@ -71,4 +89,5 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
             .map(command -> (Void) null)
             .onErrorReturn(throwable -> null);
    }
+
 }

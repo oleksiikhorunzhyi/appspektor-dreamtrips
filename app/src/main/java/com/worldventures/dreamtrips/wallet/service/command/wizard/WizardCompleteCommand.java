@@ -43,7 +43,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
       uploadUserDataAndAssociateSmartCard(smartCard)
             .flatMap(sc ->
                   walletJanet.createPipe(AddDummyRecordCommand.class)
-                        .createObservableResult(new AddDummyRecordCommand(sc.user()))
+                        .createObservableResult(new AddDummyRecordCommand(sc.user(), false))
                         .flatMap(command -> walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
                               .createObservableResult(new ActivateSmartCardCommand(ImmutableSmartCard.copyOf(sc)
                                     .withDeviceId(propertiesProvider.deviceId())))))

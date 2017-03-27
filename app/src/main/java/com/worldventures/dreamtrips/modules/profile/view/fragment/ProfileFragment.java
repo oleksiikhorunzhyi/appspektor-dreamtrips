@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +13,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -47,6 +49,8 @@ import butterknife.InjectView;
 public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBaseFragmentWithArgs<T, UserBundle>
       implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener, ProfileCellDelegate,
       FeedEntityEditingView {
+
+   private static final int LANDSCAPE_MARGIN_PERCENTAGE = 16;
 
    @InjectView(R.id.profile_toolbar) Toolbar profileToolbar;
    @InjectView(R.id.profile_toolbar_title) TextView profileToolbarTitle;
@@ -101,8 +105,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
       });
-      if (isTabletLandscape()) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16, true));
+      if (ViewUtils.isTablet(getContext())) {
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, true));
       }
       statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
          float percent = calculateOffset();
@@ -115,12 +119,16 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
             profileToolbarUserStatus.setVisibility(View.INVISIBLE);
          }
       });
-      //
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();
       registerCellDelegates();
-      //
-      initialToolbar();
+      initToolbar();
+   }
+
+   @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      initToolbar();
    }
 
    @Override
@@ -213,7 +221,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.openComments(feedItem, isVisibleOnScreen(), isTabletLandscape());
    }
 
-   protected abstract void initialToolbar();
+   protected abstract void initToolbar();
 
    protected abstract BaseDelegateAdapter createAdapter();
 

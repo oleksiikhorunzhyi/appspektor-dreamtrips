@@ -103,7 +103,7 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
    }
 
    @Override
-   protected void initialToolbar() {
+   protected void initToolbar() {
       profileToolbar.setNavigationIcon(R.drawable.back_icon);
       profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
    }

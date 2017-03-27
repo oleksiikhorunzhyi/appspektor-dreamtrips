@@ -8,10 +8,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 
 import com.crashlytics.android.Crashlytics;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ConfigChangesAwareComponentActivity;
 
 import timber.log.Timber;
 
@@ -52,8 +55,12 @@ public class RouterImpl implements Router {
 
    private void openActivity(Route route, NavigationConfig config) {
       ActivityRouter activityRouter = new ActivityRouter(activity);
-      if (config.getFlags() != -1) activityRouter.openComponentActivity(route, getArgs(config), config.getFlags());
-      else activityRouter.openComponentActivity(route, getArgs(config));
+      Bundle args = getArgs(config);
+      args.putSerializable(ComponentPresenter.ROUTE, route);
+      Class<? extends InjectingActivity> clazz = config.isManualComponentActivity() ?
+            ConfigChangesAwareComponentActivity.class : ComponentActivity.class;
+
+      activityRouter.startActivityWithArgs(clazz, args, config.getFlags());
    }
 
    private void openFragment(Route route, NavigationConfig config) {

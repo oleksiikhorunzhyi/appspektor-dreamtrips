@@ -131,7 +131,7 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
    }
 
    private void itemSelected(ComponentDescription component) {
-      activityRouter.openMainWithComponent(component.getKey(), this.getClass());
+      activityRouter.openMainWithComponent(component.getKey());
    }
 
    private void itemReseleted(ComponentDescription route) {

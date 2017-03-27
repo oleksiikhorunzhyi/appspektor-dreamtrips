@@ -84,6 +84,12 @@ public class TripsImagesModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTripImagesComponent() {
-      return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
+      return new ComponentDescription.Builder()
+            .key(TRIP_IMAGES)
+            .navMenuTitle(R.string.trip_images)
+            .toolbarTitle(R.string.trip_images)
+            .icon(R.drawable.ic_trip_images)
+            .fragmentClass(TripImagesTabsFragment.class)
+            .build();
    }
 }

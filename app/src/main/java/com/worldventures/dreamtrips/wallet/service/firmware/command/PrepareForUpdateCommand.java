@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
@@ -34,7 +34,7 @@ public class PrepareForUpdateCommand extends Command<FirmwareUpdateType> impleme
          callback.onSuccess(FirmwareUpdateType.NORMAL);
       } else {
          janet.createPipe(FactoryResetCommand.class)
-               .createObservableResult(new FactoryResetCommand(FactoryResetOptions.builder().build()))
+               .createObservableResult(new FactoryResetCommand(ResetOptions.builder().build()))
                .subscribe(command -> callback.onSuccess(FirmwareUpdateType.CRITICAL), callback::onFail);
       }
    }

@@ -446,4 +446,9 @@
    <string name="wallet_set_pin_info_gesture">Press and hold</string>
    <string name="wallet_confirm_factory_reset_msg">Are you sure you would you like to factory reset your Smart Card?</string>
 
+   <!-- Upload User Card Data screen -->
+   <string name="wallet_wizard_upload_profile_header">Upload User Card Data</string>
+   <string name="wallet_wizard_upload_profile_message">This could take a few minutes…</string>
+   <string name="wallet_error_uploading_retry">Connection error. Can\'t upload User Data. Please retry.</string>
+
 </resources>

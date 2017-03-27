@@ -5,15 +5,12 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class RemoveSmartCardDataCommand extends Command<Void> implements InjectableAction {
@@ -21,37 +18,23 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    @Inject SnappyRepository snappyRepository;
    @Inject RecordsStorage recordsStorage;
    @Inject LostCardRepository lostCardRepository;
-   @Inject SmartCardInteractor smartCardInteractor;
 
-   private final FactoryResetOptions factoryResetOptions;
+   private final ResetOptions factoryResetOptions;
 
-   public RemoveSmartCardDataCommand(FactoryResetOptions factoryResetOptions) {
+   public RemoveSmartCardDataCommand(ResetOptions factoryResetOptions) {
       this.factoryResetOptions = factoryResetOptions;
    }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new ActiveSmartCardCommand())
-            .flatMap(command -> removeCache())
-            .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private Observable<Void> removeCache() {
-      return Observable.defer(() -> {
-         try {
-            if (factoryResetOptions.isWithPaymentCards()) deletePaymentsData();
-            if (factoryResetOptions.isWithUserSmartCardData()) snappyRepository.deleteSmartCardUser();
-            snappyRepository.deleteSmartCardFirmware();
-            snappyRepository.deleteSmartCardDetails();
-            snappyRepository.deleteSmartCard();
-            snappyRepository.deleteTermsAndConditions();
-            lostCardRepository.clear();
-         } catch (Throwable e) {
-            return Observable.error(e);
-         }
-         return Observable.just(null);
-      });
+      if (factoryResetOptions.isWithPaymentCards()) deletePaymentsData();
+      if (factoryResetOptions.isWithUserSmartCardData()) snappyRepository.deleteSmartCardUser();
+      snappyRepository.deleteSmartCardFirmware();
+      snappyRepository.deleteSmartCardDetails();
+      snappyRepository.deleteSmartCard();
+      snappyRepository.deleteTermsAndConditions();
+      lostCardRepository.clear();
+      callback.onSuccess(null);
    }
 
    private void deletePaymentsData() {

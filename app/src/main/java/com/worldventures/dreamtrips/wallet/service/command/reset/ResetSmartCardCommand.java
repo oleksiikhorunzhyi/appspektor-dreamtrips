@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,13 +18,13 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class ResetSmartCardCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
-   private final FactoryResetOptions factoryResetOptions;
+   private final ResetOptions factoryResetOptions;
 
    public ResetSmartCardCommand() {
-      this(FactoryResetOptions.builder().build());
+      this(ResetOptions.builder().build());
    }
 
-   public ResetSmartCardCommand(FactoryResetOptions factoryResetOptions) {
+   public ResetSmartCardCommand(ResetOptions factoryResetOptions) {
       this.factoryResetOptions = factoryResetOptions;
    }
 

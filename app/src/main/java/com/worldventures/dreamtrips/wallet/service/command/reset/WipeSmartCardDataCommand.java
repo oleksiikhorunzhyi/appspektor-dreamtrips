@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
@@ -29,16 +28,16 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject Janet apiLibJanet;
 
-   private final FactoryResetOptions factoryResetOptions;
+   private final ResetOptions factoryResetOptions;
 
    public WipeSmartCardDataCommand() {
-      this.factoryResetOptions = FactoryResetOptions.builder()
+      this.factoryResetOptions = ResetOptions.builder()
             .wipePaymentCards(true)
             .wipeUserSmartCardData(true)
             .build();
    }
 
-   public WipeSmartCardDataCommand(FactoryResetOptions factoryResetOptions) {
+   public WipeSmartCardDataCommand(ResetOptions factoryResetOptions) {
       this.factoryResetOptions = factoryResetOptions;
    }
 

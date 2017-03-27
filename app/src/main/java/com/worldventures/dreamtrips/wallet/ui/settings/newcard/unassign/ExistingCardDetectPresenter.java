@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCar
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -118,7 +118,7 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
 
    void unassignCardOnBackend() {
       smartCardInteractor.wipeSmartCardDataCommandActionPipe()
-            .createObservable(new WipeSmartCardDataCommand(FactoryResetOptions.builder()
+            .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)
                   .build()))

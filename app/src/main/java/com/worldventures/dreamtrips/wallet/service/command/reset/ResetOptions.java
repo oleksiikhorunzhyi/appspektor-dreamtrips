@@ -1,12 +1,12 @@
-package com.worldventures.dreamtrips.wallet.domain.entity;
+package com.worldventures.dreamtrips.wallet.service.command.reset;
 
-public class FactoryResetOptions {
+public class ResetOptions {
 
    private boolean withEnterPin = false;
    private boolean withPaymentCards = true;
    private boolean withUserSmartCardData = true;
 
-   private FactoryResetOptions() {}
+   private ResetOptions() {}
 
    public static Builder builder() {
       return new Builder();
@@ -26,29 +26,29 @@ public class FactoryResetOptions {
 
    public static class Builder {
 
-      private FactoryResetOptions options;
+      private ResetOptions resetOptions;
 
       public Builder() {
-         options = new FactoryResetOptions();
+         resetOptions = new ResetOptions();
       }
 
       public Builder withEnterPin(boolean withEnterPin) {
-         options.withEnterPin = withEnterPin;
+         resetOptions.withEnterPin = withEnterPin;
          return this;
       }
 
       public Builder wipePaymentCards(boolean wiped) {
-         options.withPaymentCards = wiped;
+         resetOptions.withPaymentCards = wiped;
          return this;
       }
 
       public Builder wipeUserSmartCardData(boolean wiped) {
-         options.withUserSmartCardData = wiped;
+         resetOptions.withUserSmartCardData = wiped;
          return this;
       }
 
-      public FactoryResetOptions build() {
-         return options;
+      public ResetOptions build() {
+         return resetOptions;
       }
    }
 }

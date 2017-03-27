@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -62,7 +62,7 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
 
    void unassignCardOnBackend() {
       smartCardInteractor.wipeSmartCardDataCommandActionPipe()
-            .createObservable(new WipeSmartCardDataCommand(FactoryResetOptions.builder()
+            .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)
                   .build()))

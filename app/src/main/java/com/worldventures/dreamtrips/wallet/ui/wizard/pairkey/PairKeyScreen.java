@@ -6,12 +6,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -59,15 +61,15 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    }
 
    @Override
-   public OperationView<SetupUserDataCommand> provideOperationSetupUserData() {
+   public OperationView<CreateAndConnectToCardCommand> provideOperationCreateAndConnect() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.wallet_long_operation_hint, false),
-            ErrorViewFactory.<SetupUserDataCommand>builder()
-            .addProvider()
-            .addProvider()
-            .addProvider()
-            .addProvider()
-            .build()
-      );
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<CreateAndConnectToCardCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(
+                        getContext(),
+                        SmartCardConnectException.class,
+                        R.string.wallet_smartcard_connection_error,
+                        (dialog, which) -> presenter.goBack())
+                  ).build());
    }
 }

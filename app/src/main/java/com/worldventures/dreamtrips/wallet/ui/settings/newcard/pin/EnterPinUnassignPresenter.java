@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignEnteredAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
@@ -63,9 +63,10 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
    }
 
    private void factoryReset() {
-      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(FactoryResetOptions.builder()
+      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(ResetOptions.builder()
             .withEnterPin(true)
             .wipePaymentCards(false)
+            .wipeUserSmartCardData(false)
             .build()));
    }
 

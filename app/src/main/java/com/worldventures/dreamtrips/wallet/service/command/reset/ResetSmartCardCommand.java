@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -11,7 +11,6 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
-import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -20,16 +19,14 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class ResetSmartCardCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
-   private final SmartCard smartCard;
-   private final boolean withErasePaymentCardData;
+   private final FactoryResetOptions factoryResetOptions;
 
-   public ResetSmartCardCommand(SmartCard smartCard) {
-      this(smartCard, true);
+   public ResetSmartCardCommand() {
+      this(FactoryResetOptions.builder().build());
    }
 
-   public ResetSmartCardCommand(SmartCard smartCard, boolean withErasePaymentCardData) {
-      this.smartCard = smartCard;
-      this.withErasePaymentCardData = withErasePaymentCardData;
+   public ResetSmartCardCommand(FactoryResetOptions factoryResetOptions) {
+      this.factoryResetOptions = factoryResetOptions;
    }
 
    @Override
@@ -38,9 +35,6 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<Void> reset() {
-      // TODO: 2/20/17
-//      if (!smartCard.connectionStatus().isConnected()) return Observable.error(new NotConnectedException());
-
       return disableAutoLock()
             .flatMap(action -> wipeSmartCardData())
             .flatMap(action -> disconnect())
@@ -49,7 +43,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    private Observable<WipeSmartCardDataCommand> wipeSmartCardData() {
       return walletJanet.createPipe(WipeSmartCardDataCommand.class)
-            .createObservableResult(new WipeSmartCardDataCommand(withErasePaymentCardData));
+            .createObservableResult(new WipeSmartCardDataCommand(factoryResetOptions));
    }
 
    private Observable<EnableLockUnlockDeviceAction> disableAutoLock() {

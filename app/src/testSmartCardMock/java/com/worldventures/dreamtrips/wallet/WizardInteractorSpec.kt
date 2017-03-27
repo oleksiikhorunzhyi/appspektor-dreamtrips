@@ -123,12 +123,9 @@ class WizardInteractorSpec : BaseSpec({
          }
 
          it("disassociates SmartCard") {
-            val smartCard = TestSmartCard(MOCK_BARCODE)
-            whenever(mockDb.smartCard).thenReturn(smartCard)
-
             val testSubscriber: TestSubscriber<ActionState<ResetSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ResetSmartCardCommand::class.java)
-                  .createObservable(ResetSmartCardCommand(smartCard))
+                  .createObservable(ResetSmartCardCommand())
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
@@ -28,10 +29,17 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject Janet apiLibJanet;
 
-   private final boolean withPaymentCard;
+   private final FactoryResetOptions factoryResetOptions;
 
-   public WipeSmartCardDataCommand(boolean withPaymentCard) {
-      this.withPaymentCard = withPaymentCard;
+   public WipeSmartCardDataCommand() {
+      this.factoryResetOptions = FactoryResetOptions.builder()
+            .wipePaymentCards(true)
+            .wipeUserSmartCardData(true)
+            .build();
+   }
+
+   public WipeSmartCardDataCommand(FactoryResetOptions factoryResetOptions) {
+      this.factoryResetOptions = factoryResetOptions;
    }
 
    @Override
@@ -80,6 +88,6 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
 
    private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {
       return walletJanet.createPipe(RemoveSmartCardDataCommand.class)
-            .createObservableResult(new RemoveSmartCardDataCommand(withPaymentCard));
+            .createObservableResult(new RemoveSmartCardDataCommand(factoryResetOptions));
    }
 }

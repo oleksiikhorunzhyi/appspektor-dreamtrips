@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
@@ -21,10 +23,10 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    @Inject LostCardRepository lostCardRepository;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private final boolean withPaymentCards;
+   private final FactoryResetOptions factoryResetOptions;
 
-   public RemoveSmartCardDataCommand(boolean withPaymentCards) {
-      this.withPaymentCards = withPaymentCards;
+   public RemoveSmartCardDataCommand(FactoryResetOptions factoryResetOptions) {
+      this.factoryResetOptions = factoryResetOptions;
    }
 
    @Override
@@ -38,10 +40,8 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    private Observable<Void> removeCache() {
       return Observable.defer(() -> {
          try {
-            if (withPaymentCards) {
-               recordsStorage.deleteAllRecords();
-               recordsStorage.deleteDefaultRecordId();
-            }
+            if (factoryResetOptions.isWithPaymentCards()) deletePaymentsData();
+            if (factoryResetOptions.isWithUserSmartCardData()) snappyRepository.deleteSmartCardUser();
             snappyRepository.deleteSmartCardFirmware();
             snappyRepository.deleteSmartCardDetails();
             snappyRepository.deleteSmartCard();
@@ -54,4 +54,8 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
       });
    }
 
+   private void deletePaymentsData() {
+      recordsStorage.deleteAllRecords();
+      recordsStorage.deleteDefaultRecordId();
+   }
 }

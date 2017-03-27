@@ -84,7 +84,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             .toString()).skip(1);
 
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
-            R.string.wallet_add_card_details_hint_card_name_length, true, false);
+            R.string.wallet_add_card_details_hint_card_name_length, false, false);
    }
 
    private void setupToolbar() {

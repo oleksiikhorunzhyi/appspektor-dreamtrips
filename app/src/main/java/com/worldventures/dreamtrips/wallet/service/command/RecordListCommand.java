@@ -110,5 +110,4 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
          return record.id().equals(editedRecord.id()) ? editedRecord : record;
       }
    }
-
 }

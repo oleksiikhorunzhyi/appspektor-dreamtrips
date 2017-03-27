@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,17 +17,28 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
+import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
+import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
+import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
@@ -47,12 +57,11 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
-   @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
+   @InjectView(R.id.set_default_card_switcher) WalletSwitcher defaultPaymentCardSwitcher;
    @InjectView(R.id.confirm_button) View confirmButton;
    @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
    private final WalletRecordUtil walletRecordUtil;
-   private DialogOperationScreen dialogOperationScreen;
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
@@ -165,15 +174,13 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
-      return dialogOperationScreen;
-   }
+   public OperationScreen provideOperationDelegate() {return null;}
 
    @Override
    public void showChangeCardDialog(Record record) {
       new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(record))
-            .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
+            .setOnCancelAction(() -> getPresenter().onCardToDefaultClick(false))
+            .setOnConfirmAction(() -> getPresenter().onCardToDefaultClick(true))
             .show();
    }
 
@@ -195,6 +202,26 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public void hideCardNameError() {
       cardNameInputLayout.setError("");
+   }
+
+   @Override
+   public OperationView<GetDefaultAddressCommand> provideOperationGetDefaultAddress() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+      );
+   }
+
+   @Override
+   public OperationView<AddRecordCommand> provideOperationAddRecord() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<AddRecordCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), AddressFormatException.class, R.string.wallet_add_card_details_error_message))
+                  .build()
+      );
    }
 
    protected void navigateButtonClick() {

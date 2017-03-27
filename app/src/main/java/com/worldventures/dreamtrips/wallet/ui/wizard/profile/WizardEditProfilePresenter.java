@@ -10,7 +10,6 @@ import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -18,7 +17,6 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -27,18 +25,18 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarComman
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
-import com.worldventures.dreamtrips.wallet.util.FirstNameException;
-import com.worldventures.dreamtrips.wallet.util.LastNameException;
-import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -107,19 +105,12 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
-            .subscribe(OperationActionStateSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
-                  .onStart(getContext().getString(R.string.wallet_long_operation_hint))
-                  .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
-                  .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
-                        .handle(FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail)
-                        .handle(LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail)
-                        .handle(MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail)
-                        .handle(SetupUserDataCommand.MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen)
-                        .build())
-                  .wrap());
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
+                  .onSuccess(command -> onUserSetupSuccess())
+                  .create());
    }
 
-   private void onUserSetupSuccess(SmartCardUser user) {
+   private void onUserSetupSuccess() {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
       navigator.go(new WizardPinSetupPath(Action.SETUP));
@@ -145,8 +136,27 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    void setupUserData() {
       final String[] userNames = getView().getUserName();
+      if (isUserDataValid(userNames))
+         getView().showConfirmationDialog(String.format("%s %s", userNames[0], userNames[2]));
+   }
+
+   void onUserDataConfirmed() {
+      final String[] userNames = getView().getUserName();
       wizardInteractor.setupUserDataPipe()
             .send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2], preparedPhoto));
+   }
+
+   private boolean isUserDataValid(String[] userNames) {
+      try {
+         if (preparedPhoto == null || preparedPhoto.original() == null || !preparedPhoto.original().exists()) {
+            throw new MissedAvatarException();
+         }
+         WalletValidateHelper.validateUserFullNameOrThrow(userNames[0], userNames[1], userNames[2]);
+      } catch (FormatException | MissedAvatarException e) {
+         getView().provideOperationView().showError(null, e);
+         return false;
+      }
+      return true;
    }
 
    private void fetchAndStoreDefaultAddress() {
@@ -155,6 +165,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    public interface Screen extends WalletScreen {
+
+      OperationView<SetupUserDataCommand> provideOperationView();
+
       void pickPhoto();
 
       void cropPhoto(String photoPath);
@@ -171,5 +184,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       @NonNull
       String[] getUserName();
+
+      void showConfirmationDialog(String fullName);
    }
 }

@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -206,8 +206,8 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
-      tvAddress.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+   public void showDefaultAddress(AddressInfo addressInfo) {
+      tvAddress.setText(AddressUtil.obtainAddressLabel(addressInfo));
    }
 
    @Override

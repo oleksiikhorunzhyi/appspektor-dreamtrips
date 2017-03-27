@@ -7,15 +7,12 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -26,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordComma
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
@@ -82,16 +80,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDefaultAddress())
-                  .onSuccess(command -> setDefaultAddress(
-                        ImmutableAddressInfoWithLocale.builder()
-                              .addressInfo(command.getResult())
-                              .locale(LocaleHelper.getDefaultLocale())
-                              .build())
-                  ).create()
+                  .onSuccess(command -> setDefaultAddress(command.getResult()))
+                  .onFail((getDefaultAddressCommand, throwable) -> ErrorHandler.create(getContext()))
+                  .create()
             );
    }
 
-   private void setDefaultAddress(@Nullable AddressInfoWithLocale defaultAddress) {
+   private void setDefaultAddress(@Nullable AddressInfo defaultAddress) {
       if (defaultAddress == null) return;
       getView().defaultAddress(defaultAddress);
    }
@@ -260,7 +255,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       Observable<String> getCvvObservable();
 
-      void defaultAddress(AddressInfoWithLocale defaultAddress);
+      void defaultAddress(AddressInfo addressInfo);
 
       void defaultPaymentCard(boolean defaultPaymentCard);
 

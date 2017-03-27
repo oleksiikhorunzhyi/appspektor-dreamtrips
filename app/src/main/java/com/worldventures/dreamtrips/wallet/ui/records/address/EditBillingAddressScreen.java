@@ -13,7 +13,6 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -60,8 +59,7 @@ public class EditBillingAddressScreen extends WalletLinearLayout<EditBillingAddr
    }
 
    @Override
-   public void address(AddressInfoWithLocale defaultAddress) {
-      final AddressInfo addressInfo = defaultAddress.addressInfo();
+   public void address(AddressInfo addressInfo) {
       etAddress1.setText(addressInfo.address1());
       etAddress1.setSelection(etAddress1.length());
 

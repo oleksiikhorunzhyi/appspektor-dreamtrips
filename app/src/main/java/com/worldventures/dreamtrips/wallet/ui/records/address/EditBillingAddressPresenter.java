@@ -5,14 +5,11 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.BillingAddressSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.EditBillingAddressAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
@@ -43,10 +40,7 @@ public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddr
       super.onAttachedToWindow();
       trackScreen();
       connectToUpdateCardDetailsPipe();
-      getView().address(ImmutableAddressInfoWithLocale.builder()
-            .addressInfo(record.addressInfo())
-            .locale(LocaleHelper.getDefaultLocale())
-            .build());
+      getView().address(record.addressInfo());
    }
 
    private void trackScreen() {
@@ -82,7 +76,7 @@ public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddr
 
    public interface Screen extends WalletScreen {
 
-      void address(AddressInfoWithLocale defaultAddress);
+      void address(AddressInfo addressInfo);
    }
 
 }

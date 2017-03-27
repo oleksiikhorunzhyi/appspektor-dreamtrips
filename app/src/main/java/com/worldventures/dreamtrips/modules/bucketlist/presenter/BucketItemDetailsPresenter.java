@@ -9,13 +9,13 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 
 import java.util.List;
@@ -23,10 +23,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
-public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View, BucketPhoto> {
+public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View, BucketPhoto>
+      implements FeedEntityHolder {
 
    public BucketItemDetailsPresenter(BucketBundle bundle) {
       super(bundle);
@@ -34,23 +33,14 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
    @Inject TranslationFeedInteractor translationInteractor;
    @Inject BucketInteractor bucketInteractor;
+   @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
       TrackingHelper.bucketItemView(type.getName(), bucketItem.getUid());
-      Observable.merge(bucketInteractor.updatePipe().observeSuccess().map(UpdateBucketItemCommand::getResult),
-            bucketInteractor.deleteItemPhotoPipe().observeSuccess().map(DeleteItemPhotoCommand::getResult),
-            bucketInteractor.addBucketItemPhotoPipe().observeSuccess().map(AddBucketItemPhotoCommand::getResult)
-                  .map(bucketItemBucketPhotoModelPair -> bucketItemBucketPhotoModelPair.first))
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
-            .subscribe(item -> {
-               bucketItem = item;
-               syncUI();
-            });
-      subscribeToItemDoneEvents();
       subscribeToTranslations();
+      feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
    }
 
    @Override
@@ -80,18 +70,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       }
    }
 
-   private void subscribeToItemDoneEvents() {
-      bucketInteractor.updatePipe()
-            .observeSuccess()
-            .compose(bindViewToMainComposer())
-            .map(UpdateBucketItemCommand::getResult)
-            .filter(bucketItem -> bucketItem.equals(this.bucketItem))
-            .subscribe(item -> {
-               updateBucketItem(item);
-               syncUI();
-            });
-   }
-
    private void subscribeToTranslations() {
       translationInteractor.translateBucketItemPipe()
             .observe()
@@ -109,13 +87,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
    private void translationFailed(TranslateBucketItemCommand command, Throwable e) {
       handleError(command, e);
       view.setBucketItem(bucketItem);
-   }
-
-   public void onEvent(FeedEntityChangedEvent event) {
-      if (event.getFeedEntity().equals(bucketItem)) {
-         updateBucketItem((BucketItem) event.getFeedEntity());
-         syncUI();
-      }
    }
 
    public void onStatusUpdated(boolean status) {
@@ -139,12 +110,19 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       }
    }
 
-   private void updateBucketItem(BucketItem updatedItem) {
-      BucketItem tempItem = bucketItem;
-      bucketItem = updatedItem;
-      if (bucketItem.getOwner() == null) {
-         bucketItem.setOwner(tempItem.getOwner());
+   @Override
+   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
+      if (updatedFeedEntity.equals(bucketItem)) {
+         bucketItem = (BucketItem) updatedFeedEntity;
+         if (bucketItem.getOwner() == null) {
+            bucketItem.setOwner(updatedFeedEntity.getOwner());
+         }
+         syncUI();
       }
+   }
+
+   @Override
+   public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
    }
 
    @NonNull

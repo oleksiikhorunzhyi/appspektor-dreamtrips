@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmw
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.offline_mode.OfflineModePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
@@ -329,6 +330,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       navigator.go(new AboutPath());
    }
 
+   void openOfflineModeScreen() {
+      navigator.go(new OfflineModePath());
+   }
+
    void goToAddNewSmartCard() {
       navigator.go(new ExistingCardDetectPath());
    }
@@ -352,8 +357,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void firmwareVersion(@Nullable SmartCardFirmware version);
 
       void testFailInstallation(boolean failInstall);
-
-      Observable<Boolean> offlineMode();
 
       Observable<Boolean> lockStatus();
 

@@ -53,7 +53,7 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
 
       @Override
       public List<Record> call(List<Record> records) {
-         records.remove(Queryable.from(records).first(element -> element.id().equals(recordId)));
+         records.remove(Queryable.from(records).first(element -> recordId.equals(element.id())));
          return records;
       }
    }

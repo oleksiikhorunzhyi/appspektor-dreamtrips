@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.model.TestSmartCard
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
 import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
@@ -58,7 +58,7 @@ class WizardInteractorSpec : BaseSpec({
          staticMockTextUtils()
 
          mockDb = createMockDb()
-         persistentCardStorage = mock()
+         recordsStorage = mock()
          mappery = createMappery()
          janet = createJanet()
          wizardInteractor = createWizardInteractor(janet)
@@ -144,7 +144,7 @@ class WizardInteractorSpec : BaseSpec({
       const val MOCK_BARCODE = MOCK_SMART_CARD_ID.toString()
 
       lateinit var mockDb: SnappyRepository
-      lateinit var persistentCardStorage: PersistentRecordsStorage
+      lateinit var recordsStorage: RecordsStorage
 
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
@@ -157,7 +157,7 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var mockedDebitCard: Record
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultRecordIdStorage(persistentCardStorage), SmartCardActionStorage(mockDb), WalletRecordsDiskStorage(persistentCardStorage))
+         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsDiskStorage(recordsStorage))
       }
 
       fun staticMockTextUtils() {
@@ -196,7 +196,7 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
-         daggerCommandActionService.registerProvider(PersistentRecordsStorage::class.java) { persistentCardStorage }
+         daggerCommandActionService.registerProvider(RecordsStorage::class.java) { recordsStorage }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(WizardInteractor::class.java, { wizardInteractor })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })

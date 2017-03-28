@@ -7,20 +7,26 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 public class SimpleDialogProgressView<T> extends DialogProgressView<T> {
 
-   private int resIdMessage;
+   private CharSequence content;
    private boolean cancelable;
 
    private DialogInterface.OnCancelListener cancelListener;
 
    public SimpleDialogProgressView(Context context, int resIdMessage, boolean cancelable) {
-      super(context);
-      this.resIdMessage = resIdMessage;
-      this.cancelable = cancelable;
+      this(context, context.getString(resIdMessage), cancelable, null);
+   }
+
+   public SimpleDialogProgressView(Context context, CharSequence content, boolean cancelable) {
+      this(context, content, cancelable, null);
    }
 
    public SimpleDialogProgressView(Context context, int resIdMessage, boolean cancelable, DialogInterface.OnCancelListener cancelListener) {
+      this(context, context.getString(resIdMessage), cancelable, null);
+   }
+
+   public SimpleDialogProgressView(Context context, CharSequence content, boolean cancelable, DialogInterface.OnCancelListener cancelListener) {
       super(context);
-      this.resIdMessage = resIdMessage;
+      this.content = content;
       this.cancelable = cancelable;
       this.cancelListener = cancelListener;
    }
@@ -29,7 +35,7 @@ public class SimpleDialogProgressView<T> extends DialogProgressView<T> {
    protected MaterialDialog createDialog(T t, Context context) {
       return new MaterialDialog.Builder(context)
             .progress(true, 0)
-            .content(resIdMessage)
+            .content(content)
             .cancelable(cancelable)
             .canceledOnTouchOutside(cancelable)
             .cancelListener(cancelListener)

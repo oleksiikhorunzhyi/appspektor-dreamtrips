@@ -38,30 +38,37 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
       }
    }
 
-   private String fetchScId(SmartCard smartCard) {
+   @Nullable
+   private String fetchScId(@Nullable SmartCard smartCard) {
       return smartCard == null ? null : smartCard.smartCardId();
    }
 
-   private SmartCard.CardStatus fetchScStatus(SmartCard smartCard) {
-      return smartCard.cardStatus() == null ? null : smartCard.cardStatus();
+   @Nullable
+   private SmartCard.CardStatus fetchScStatus(@Nullable SmartCard smartCard) {
+      return smartCard == null ? null : smartCard.cardStatus();
    }
 
-   private ConnectionStatus fetchConnectionStatus(SmartCardStatus smartCardStatus) {
+   @Nullable
+   private ConnectionStatus fetchConnectionStatus(@Nullable SmartCardStatus smartCardStatus) {
       return smartCardStatus == null ? ConnectionStatus.DISCONNECTED : smartCardStatus.connectionStatus();
    }
 
-   private boolean fetchLockState(SmartCardStatus smartCardStatus) {
+   private boolean fetchLockState(@Nullable SmartCardStatus smartCardStatus) {
       return smartCardStatus == null || smartCardStatus.lock();
    }
 
-   private int fetchBatteryLevel(SmartCardStatus smartCardStatus) {
+   private int fetchBatteryLevel(@Nullable SmartCardStatus smartCardStatus) {
       return smartCardStatus == null ? 0 : smartCardStatus.batteryLevel();
    }
 
-   private void setSmartCardData(String scId, SmartCard.CardStatus cardState, ConnectionStatus connectionStatus, boolean lockStatus, int batteryLevel) {
+   private void setSmartCardData(@Nullable String scId, @Nullable SmartCard.CardStatus cardState, @Nullable ConnectionStatus connectionStatus,
+         boolean lockStatus, int batteryLevel) {
+
       setSmartCardId(scId);
-      boolean connected = connectionStatus.isConnected();
+
+      boolean connected = connectionStatus != null && connectionStatus.isConnected();
       setConnected(connected);
+
       if (connected && cardState != null && cardState == SmartCard.CardStatus.ACTIVE) {
          setLockStatus(lockStatus);
          setBatteryLevel(batteryLevel);

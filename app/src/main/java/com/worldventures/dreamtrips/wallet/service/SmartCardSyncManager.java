@@ -11,10 +11,10 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCo
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -30,10 +30,6 @@ import timber.log.Timber;
 import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.DFU;
 import static com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus.DISCONNECTED;
-import static com.worldventures.dreamtrips.wallet.service.command.RecordListCommand.add;
-import static com.worldventures.dreamtrips.wallet.service.command.RecordListCommand.edit;
-import static com.worldventures.dreamtrips.wallet.service.command.RecordListCommand.remove;
-import static java.lang.String.valueOf;
 
 public class SmartCardSyncManager {
 
@@ -183,30 +179,6 @@ public class SmartCardSyncManager {
             .retry(1)
             .subscribe(command -> {
             }, throwable -> Timber.e("", throwable));
-
-      interactor.deleteRecordPipe()
-            .observeSuccess()
-            .subscribe(deleteRecordAction ->
-                  interactor.cardsListPipe()
-                        .send(remove(valueOf(deleteRecordAction.recordId))));
-
-      interactor.addRecordPipe()
-            .observeSuccess()
-            .subscribe(attachCardCommand ->
-                  interactor.cardsListPipe()
-                        .send(add(attachCardCommand.getResult())));
-
-      interactor.updateRecordPipe()
-            .observeSuccess()
-            .subscribe(updateBankCardCommand -> interactor.cardsListPipe()
-                  .send(edit(updateBankCardCommand.getResult())));
-
-      //update cache default card
-      interactor.setDefaultCardOnDeviceCommandPipe()
-            .observeSuccess()
-            .map(Command::getResult)
-            .subscribe(id -> interactor.defaultRecordIdPipe().send(DefaultRecordIdCommand.set(id)), throwable -> {
-            });
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

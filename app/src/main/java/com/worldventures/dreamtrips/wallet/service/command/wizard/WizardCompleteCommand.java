@@ -5,13 +5,11 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 
@@ -43,8 +41,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .flatMap(user ->
                   walletJanet.createPipe(AssociateCardUserCommand.class)
                         .createObservableResult(new AssociateCardUserCommand(smartCard.smartCardId(), createRequestData(user)))
-                        .map(associateCardUserCommand -> user))
-            .flatMap(user -> activateSmartCard())
+                        .map(associateCardUserCommand -> (Void) null))
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 
@@ -73,14 +70,6 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
                   .photoUrl(photoUrl)
                   .build())
             .build();
-   }
-
-   private Observable<ActiveSmartCardCommand> activateSmartCard() {
-      return interactor.activeSmartCardPipe()
-            .createObservableResult(new ActiveSmartCardCommand(sc -> ImmutableSmartCard.builder()
-                  .from(sc)
-                  .cardStatus(SmartCard.CardStatus.ACTIVE)
-                  .build()));
    }
 
    private UpdateCardUserData createRequestData(SmartCardUser smartCardUser) {

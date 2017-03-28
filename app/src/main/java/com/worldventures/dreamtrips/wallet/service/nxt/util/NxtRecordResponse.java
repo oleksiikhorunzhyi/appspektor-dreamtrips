@@ -21,9 +21,9 @@ public abstract class NxtRecordResponse implements NxtRecord {
    @Nullable
    protected final String refIdPrefix;
 
-   protected NxtRecordResponse(@NonNull Record record, @NonNull List<MultiResponseBody> nxtResponses, @Nullable String refIdPrefix) {
+   protected NxtRecordResponse(@NonNull Record record, @NonNull List<MultiResponseBody> nxtResponses) {
       this.record = record;
-      this.refIdPrefix = refIdPrefix;
+      this.refIdPrefix = record.id();
       for (MultiResponseBody body : nxtResponses) {
          for (MultiResponseElement element : body.multiResponseElements()) {
             nxtValues.put(element.referenceId(), element.value());

@@ -17,22 +17,23 @@ import java.util.List;
 
 public class NxtBankCardHelper {
 
+   public static final String PAN = "number";
+   public static final String CVV = "cvv";
+   public static final String TRACK_1 = "track1";
+   public static final String TRACK_2 = "track2";
+   public static final String TRACK_3 = "track3";
+
+
    private static final String OPERATION_TOKENIZE = "tokenize";
    private static final String OPERATION_DETOKENIZE = "detokenize";
 
    private static final String TOKEN_NAME_GENERIC = "smartcardgeneric";
 
-   private static final String PAN = "number";
-   private static final String CVV = "cvv";
-   private static final String TRACK_1 = "track1";
-   private static final String TRACK_2 = "track2";
-   private static final String TRACK_3 = "track3";
-
    private NxtBankCardHelper() {
    }
 
    public static List<MultiRequestElement> getDataForTokenization(Record record) {
-      return getDataForTokenization(record, null);
+      return getDataForTokenization(record, record.id());
    }
 
    public static List<MultiRequestElement> getDataForTokenization(Record record, @Nullable String refIdPrefix) {
@@ -55,7 +56,7 @@ public class NxtBankCardHelper {
    }
 
    public static List<MultiRequestElement> getDataForDetokenization(Record record) {
-      return getDataForDetokenization(record, null);
+      return getDataForDetokenization(record, record.id());
    }
 
    public static List<MultiRequestElement> getDataForDetokenization(Record record, @Nullable String refIdPrefix) {
@@ -88,13 +89,13 @@ public class NxtBankCardHelper {
             .build();
    }
 
-   public static Record getDetokenizedRecord(DetokenizedRecord card) {
+   public static Record getDetokenizedRecord(DetokenizedRecord card, @Nullable String refIdPrefix) {
       return ImmutableRecord.builder().from(card.record)
-            .number(card.nxtValues.get(PAN))
-            .cvv(card.nxtValues.get(CVV))
-            .track1(getDecodedElement(card.nxtValues.get(TRACK_1)))
-            .track2(getDecodedElement(card.nxtValues.get(TRACK_2)))
-            .track3(getDecodedElement(card.nxtValues.get(TRACK_3)))
+            .number(card.nxtValues.get(prefixRefId(PAN, refIdPrefix)))
+            .cvv(card.nxtValues.get(prefixRefId(CVV, refIdPrefix)))
+            .track1(getDecodedElement(card.nxtValues.get(prefixRefId(TRACK_1, refIdPrefix))))
+            .track2(getDecodedElement(card.nxtValues.get(prefixRefId(TRACK_2, refIdPrefix))))
+            .track3(getDecodedElement(card.nxtValues.get(prefixRefId(TRACK_3, refIdPrefix))))
             .build();
    }
 
@@ -125,7 +126,7 @@ public class NxtBankCardHelper {
       }
    }
 
-   private static String prefixRefId(String refId, @Nullable String prefix) {
+   public static String prefixRefId(String refId, @Nullable String prefix) {
       return (prefix == null) ? refId : String.format("%s_%s", prefix, refId);
    }
 

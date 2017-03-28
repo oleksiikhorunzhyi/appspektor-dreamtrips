@@ -88,7 +88,7 @@
                android:text="@string/wallet_card_settings_general"
                />
 
-         <!--GONE About-->
+         <!--About-->
 
          <TextView
                android:id="@+id/item_about"
@@ -99,33 +99,25 @@
                android:text="@string/wallet_card_settings_about"
                />
 
-         <!--GONE Offline mode-->
+         <!--Offline mode-->
          <RelativeLayout
+               android:id="@+id/item_offline_mode"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
-               android:visibility="gone"
                >
 
             <TextView
-                  android:id="@+id/offline_mode"
+                  android:id="@+id/offline_mode_title"
                   style="@style/SettingsItemText"
                   android:text="@string/wallet_card_settings_offline_mode"
                   />
 
             <TextView
                   style="@style/SettingsItemSecondaryText"
-                  android:layout_below="@id/offline_mode"
+                  android:layout_below="@id/offline_mode_title"
                   android:text="@string/wallet_card_settings_loads_cards_without_inet"
-                  />
-
-            <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
-                  android:id="@+id/offline_mode_switcher"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:padding="@dimen/spacing_normal"
-                  tools:checked="true"
                   />
 
          </RelativeLayout>

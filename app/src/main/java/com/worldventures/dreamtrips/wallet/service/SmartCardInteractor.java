@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
@@ -20,25 +17,28 @@ import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.device.CardInChargerCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SecureMultipleRecordsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SecureRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 
 import java.util.concurrent.Executors;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
-import io.techery.janet.WriteActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
-import io.techery.janet.smartcard.action.records.AddRecordAction;
-import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
@@ -52,13 +52,14 @@ import rx.schedulers.Schedulers;
 public final class SmartCardInteractor {
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
    private final ActionPipe<RecordListCommand> cardsListPipe;
+   private final ActionPipe<SecureRecordCommand> secureRecordPipe;
+   private final ActionPipe<SecureMultipleRecordsCommand> secureMultipleRecordsPipe;
+   private final ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe;
    private final ActionPipe<UpdateRecordCommand> updateRecordPipe;
    private final ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCardPipe;
    private final ActionPipe<SyncRecordsCommand> syncRecordsPipe;
-   private final ActionPipe<AttachCardCommand> addRecordPipe;
-   private final WriteActionPipe<AddRecordAction> addNativeRecordPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
-   private final ActionPipe<AddRecordCommand> saveCardDetailsDataCommandPipe;
+   private final ActionPipe<AddRecordCommand> addRecordPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
    private final ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
@@ -70,13 +71,15 @@ public final class SmartCardInteractor {
    private final ActionPipe<DefaultRecordIdCommand> defaultRecordIdPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
-   private final ActionPipe<DeleteRecordAction> deleteRecordPipe;
-   private final ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe;
+   private final ActionPipe<DeleteRecordCommand> deleteRecordPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
    private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
    private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataOnBackedCommandActionPipe;
+
+   private final ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe;
+   private final ActionPipe<OfflineModeStatusCommand> offlineModeStatusPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
@@ -90,7 +93,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
    private final ActionPipe<ConnectAction> connectionActionPipe;
-   private final ActionPipe<CardInChargerCommand> cardInChargerCommandActionPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -112,30 +114,33 @@ public final class SmartCardInteractor {
 
       fetchFirmwareVersionPipe = sessionActionPipeCreator.createPipe(FetchFirmwareVersionCommand.class, Schedulers.io());
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
+      secureRecordPipe = sessionActionPipeCreator.createPipe(SecureRecordCommand.class, Schedulers.io());
+      secureMultipleRecordsPipe = sessionActionPipeCreator.createPipe(SecureMultipleRecordsCommand.class, Schedulers.io());
+      restoreOfflineModeDefaultStatePipe = sessionActionPipeCreator.createPipe(RestoreOfflineModeDefaultStateCommand.class, Schedulers
+            .io());
       updateRecordPipe = sessionActionPipeCreator.createPipe(UpdateRecordCommand.class, Schedulers.io());
       fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers
             .io());
       stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
-      addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
-      addNativeRecordPipe = sessionActionPipeCreator.createPipe(AddRecordAction.class);
 
       lockDeviceChangedEventPipe = sessionActionPipeCreator.createPipe(LockDeviceChangedEvent.class, Schedulers.io());
       setLockPipe = sessionActionPipeCreator.createPipe(SetLockStateCommand.class, Schedulers.io());
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
 
       getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
-      saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(AddRecordCommand.class, Schedulers.io());
+      addRecordPipe = sessionActionPipeCreator.createPipe(AddRecordCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
             .io());
       setPaymentCardActionActionPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
-      deleteRecordPipe = sessionActionPipeCreator.createPipe(DeleteRecordAction.class, Schedulers.io());
-      updateCardDetailsPipe = sessionActionPipeCreator.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
+      deleteRecordPipe = sessionActionPipeCreator.createPipe(DeleteRecordCommand.class, Schedulers.io());
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
       restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
       wipeSmartCardDataOnBackedCommandActionPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
             .io());
 
+      switchOfflineModePipe = sessionActionPipeCreator.createPipe(SwitchOfflineModeCommand.class, Schedulers.io());
+      offlineModeStatusPipe = sessionActionPipeCreator.createPipe(OfflineModeStatusCommand.class, Schedulers.io());
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
       cardSwipedEventPipe = sessionActionPipeCreator.createPipe(CardSwipedEvent.class, Schedulers.io());
@@ -151,7 +156,6 @@ public final class SmartCardInteractor {
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
       connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
-      cardInChargerCommandActionPipe = sessionActionPipeCreator.createPipe(CardInChargerCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -182,6 +186,18 @@ public final class SmartCardInteractor {
       return connectionPipe;
    }
 
+   public ActionPipe<SecureRecordCommand> secureRecordPipe() {
+      return secureRecordPipe;
+   }
+
+   public ActionPipe<SecureMultipleRecordsCommand> secureMultipleRecordsPipe() {
+      return secureMultipleRecordsPipe;
+   }
+
+   public ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe() {
+      return restoreOfflineModeDefaultStatePipe;
+   }
+
    public ActionPipe<UpdateRecordCommand> updateRecordPipe() {
       return updateRecordPipe;
    }
@@ -194,25 +210,12 @@ public final class SmartCardInteractor {
       return defaultRecordIdPipe;
    }
 
-   public ActionPipe<DeleteRecordAction> deleteRecordPipe() {
+   public ActionPipe<DeleteRecordCommand> deleteRecordPipe() {
       return deleteRecordPipe;
-   }
-
-   @Deprecated
-   public ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe() {
-      return updateCardDetailsPipe;
    }
 
    public ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCard() {
       return fetchAssociatedSmartCardPipe;
-   }
-
-   public ActionPipe<AttachCardCommand> addRecordPipe() {
-      return addRecordPipe;
-   }
-
-   public WriteActionPipe<AddRecordAction> addNativeRecordPipe() {
-      return addNativeRecordPipe;
    }
 
    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
@@ -231,8 +234,8 @@ public final class SmartCardInteractor {
       return lockDeviceChangedEventPipe;
    }
 
-   public ActionPipe<AddRecordCommand> saveCardDetailsDataPipe() {
-      return saveCardDetailsDataCommandPipe;
+   public ActionPipe<AddRecordCommand> addRecordPipe() {
+      return addRecordPipe;
    }
 
    public ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe() {
@@ -284,6 +287,14 @@ public final class SmartCardInteractor {
       return wipeSmartCardDataOnBackedCommandActionPipe;
    }
 
+   public ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe() {
+      return switchOfflineModePipe;
+   }
+
+   public ActionPipe<OfflineModeStatusCommand> offlineModeStatusPipe() {
+      return offlineModeStatusPipe;
+   }
+
    public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {
       return autoClearDelayPipe;
    }
@@ -308,7 +319,4 @@ public final class SmartCardInteractor {
       return connectionActionPipe;
    }
 
-   public ActionPipe<CardInChargerCommand> cardInChargerCommandActionPipe() {
-      return cardInChargerCommandActionPipe;
-   }
 }

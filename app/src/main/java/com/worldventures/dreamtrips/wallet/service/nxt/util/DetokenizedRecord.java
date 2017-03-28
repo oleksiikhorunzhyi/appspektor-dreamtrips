@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.nxt.util;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiResponseBody;
@@ -12,19 +11,15 @@ import java.util.List;
 public class DetokenizedRecord extends NxtRecordResponse {
 
    public static DetokenizedRecord from(@NonNull Record tokenizedRecord, @NonNull MultiResponseBody nxtResponses) {
-      return from(tokenizedRecord, Collections.singletonList(nxtResponses), null);
+      return from(tokenizedRecord, Collections.singletonList(nxtResponses));
    }
 
    public static DetokenizedRecord from(@NonNull Record tokenizedRecord, @NonNull List<MultiResponseBody> nxtResponses) {
-      return new DetokenizedRecord(tokenizedRecord, nxtResponses, null);
+      return new DetokenizedRecord(tokenizedRecord, nxtResponses);
    }
 
-   public static DetokenizedRecord from(@NonNull Record tokenizedRecord, @NonNull List<MultiResponseBody> nxtResponses, String refIdPrefix) {
-      return new DetokenizedRecord(tokenizedRecord, nxtResponses, refIdPrefix);
-   }
-
-   private DetokenizedRecord(@NonNull Record tokenizedRecord, @NonNull List<MultiResponseBody> nxtResponses, @Nullable String refIdPrefix) {
-      super(tokenizedRecord, nxtResponses, refIdPrefix);
+   private DetokenizedRecord(@NonNull Record tokenizedRecord, @NonNull List<MultiResponseBody> nxtResponses) {
+      super(tokenizedRecord, nxtResponses);
    }
 
    @Override
@@ -34,7 +29,7 @@ public class DetokenizedRecord extends NxtRecordResponse {
 
    @Override
    public Record getDetokenizedRecord() {
-      return NxtBankCardHelper.getDetokenizedRecord(this);
+      return NxtBankCardHelper.getDetokenizedRecord(this, refIdPrefix);
    }
 
 }

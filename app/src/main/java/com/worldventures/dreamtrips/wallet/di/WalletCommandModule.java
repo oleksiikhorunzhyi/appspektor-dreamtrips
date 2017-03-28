@@ -6,11 +6,8 @@ import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnal
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
@@ -29,10 +26,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.command.device.CardInChargerCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
@@ -41,8 +34,18 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDef
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateProfileModule;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SecureMultipleRecordsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SecureRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
@@ -58,9 +61,11 @@ import dagger.Module;
       injects = {
             GetCompatibleDevicesCommand.class,
             RecordListCommand.class,
-            AttachCardCommand.class,
-            UpdateCardDetailsDataCommand.class,
+            SecureRecordCommand.class,
+            SecureMultipleRecordsCommand.class,
+            RestoreOfflineModeDefaultStateCommand.class,
             UpdateRecordCommand.class,
+            DeleteRecordCommand.class,
             SyncRecordsCommand.class,
             SmartCardAvatarCommand.class,
             SetupUserDataCommand.class,
@@ -101,8 +106,9 @@ import dagger.Module;
             WipeSmartCardDataCommand.class,
             CreateNxtSessionCommand.class,
             LocateCardAnalyticsCommand.class,
-            CardInChargerCommand.class,
-            FetchFirmwareUpdateDataCommand.class
+            FetchFirmwareUpdateDataCommand.class,
+            OfflineModeStatusCommand.class,
+            SwitchOfflineModeCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

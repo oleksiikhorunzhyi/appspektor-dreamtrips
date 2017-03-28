@@ -5,14 +5,14 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 
 public class DefaultRecordIdStorage implements ActionStorage<String> {
 
-   private final PersistentRecordsStorage cardsStorage;
+   private final RecordsStorage cardsStorage;
 
-   public DefaultRecordIdStorage(PersistentRecordsStorage cardsStorage) {
+   public DefaultRecordIdStorage(RecordsStorage cardsStorage) {
       this.cardsStorage = cardsStorage;
    }
 

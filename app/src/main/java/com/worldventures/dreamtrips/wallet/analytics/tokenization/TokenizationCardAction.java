@@ -4,9 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.BaseCardDetailsAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtRecord;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 public class TokenizationCardAction extends BaseCardDetailsAction {
 
@@ -15,11 +14,11 @@ public class TokenizationCardAction extends BaseCardDetailsAction {
    private final ActionType actionType;
    private final boolean tokenize;
 
-   public static TokenizationCardAction from(NxtRecord nxtRecord, ActionType actionType, boolean tokenize) {
-      if (nxtRecord.getResponseErrors().isEmpty()) {
-         return new TokenizeSuccessAction(nxtRecord.getTokenizedRecord(), actionType, tokenize);
+   public static TokenizationCardAction from(Record record, boolean success, ActionType actionType, boolean tokenize) {
+      if (success) {
+         return new TokenizeSuccessAction(record, actionType, tokenize);
       } else {
-         return new TokenizeErrorAction(nxtRecord.getTokenizedRecord(), actionType, tokenize);
+         return new TokenizeErrorAction(record, actionType, tokenize);
       }
    }
 

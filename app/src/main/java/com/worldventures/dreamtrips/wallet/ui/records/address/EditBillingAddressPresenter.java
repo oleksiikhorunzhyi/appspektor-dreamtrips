@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;

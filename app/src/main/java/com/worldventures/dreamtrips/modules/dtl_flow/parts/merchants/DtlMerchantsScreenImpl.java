@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelp
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +73,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
    LayoutManagerScrollPersister scrollStatePersister = new LayoutManagerScrollPersister();
+
+   private int idResource = R.string.dtlt_search_hint;
+   public static List<String> merchantType = new ArrayList<>();
 
    @Override
    protected void onFinishInflate() {
@@ -192,6 +196,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterFood.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
+
+         setStatusMerchantType(FilterData.RESTAURANT);
       }
    }
 
@@ -201,6 +207,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterEntertainment.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
+
+         setStatusMerchantType(FilterData.ENTERTAINMENT);
       }
    }
 
@@ -210,12 +218,22 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterSpa.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
+
+         setStatusMerchantType(FilterData.SPAS);
       }
+   }
+
+   public static List<String> getFilterType(){
+      return merchantType;
+   }
+
+   private static void setStatusMerchantType(String type){
+      merchantType.clear();
+      merchantType = MerchantTypeUtil.getMerchantTypeList(type);
    }
 
     @Override
     public void updateMerchantType(List<String> type) {
-        int idResource = 0;
 
        if (type != null ) {
           if (type.size() > 1) {
@@ -235,6 +253,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
        }
        updateFiltersView(idResource);
     }
+
+   @Override
+   public int getMerchantType() {
+      return idResource;
+   }
 
    private void showhMerchantsError() {
       if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
@@ -419,7 +442,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       }
    }
 
-   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+   public void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
       getPresenter().onLoadMerchantsType(merchantType);
       updateFiltersView(stringResource);
       getPresenter().loadAmenities(merchantType);

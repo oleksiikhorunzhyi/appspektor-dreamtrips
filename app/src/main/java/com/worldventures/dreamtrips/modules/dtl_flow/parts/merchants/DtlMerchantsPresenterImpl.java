@@ -171,7 +171,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       setItemsOrRedirect(action.merchants());
    }
 
-   private void onMerchantsLoading(MerchantsAction action, Integer progress) {
+   private void onMerchantsLoading(MerchantsAction action, Integer progress){
       if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }

@@ -104,7 +104,7 @@
    <string name="dtl_load_merchant_error_caption">Results could not be loaded at this time.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Food &amp; Drink</string>
+   <string name="dtlt_search_hint">Food &amp; Drinks</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filters</string>
    <!-- DtlFilterButton Options Merchants Type strings -->

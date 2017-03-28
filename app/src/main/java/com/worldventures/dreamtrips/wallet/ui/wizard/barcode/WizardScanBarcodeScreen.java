@@ -39,17 +39,13 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    }
 
    @Override
-   protected void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      if (!isInEditMode()) {
+   protected void onWindowVisibilityChanged(int visibility) {
+      super.onWindowVisibilityChanged(visibility);
+      if (visibility == VISIBLE) {
          getPresenter().requestCamera();
+      } else {
+         scanner.stopCamera();
       }
-   }
-
-   @Override
-   protected void onDetachedFromWindow() {
-      super.onDetachedFromWindow();
-      scanner.stopCamera();
    }
 
    @NonNull

@@ -13,6 +13,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
@@ -31,7 +32,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.util.FullScreenPhot
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -42,7 +42,7 @@ import icepick.Icepick;
 public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo>
       implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
 
-   FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
+   private FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
    @InjectView(R.id.taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.flag) FlagView flag;
@@ -52,12 +52,13 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
    private PhotoTagHolderManager photoTagHolderManager;
    @Inject SnappyRepository db;
-   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity Injector injector;
+   @Inject Router router;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injectorProvider.get());
+      viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injector);
       viewDelegate.setContentVisibilityListener(this);
    }
 
@@ -304,5 +305,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    public void hideTranslationButton() {
       viewWithTranslation.hide();
       translateButton.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void back() {
+      router.back();
    }
 }

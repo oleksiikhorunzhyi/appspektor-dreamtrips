@@ -17,7 +17,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -34,7 +35,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
@@ -254,9 +254,9 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   public OperationView<DeleteRecordAction> provideOperationDeleteRecord() {
+   public OperationView<DeleteRecordCommand> provideOperationDeleteRecord() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<DeleteRecordAction>(getContext(), R.string.loading, false),
+            new SimpleDialogProgressView<DeleteRecordCommand>(getContext(), R.string.loading, false),
             new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
       );
    }

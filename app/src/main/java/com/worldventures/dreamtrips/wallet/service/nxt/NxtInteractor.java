@@ -9,11 +9,13 @@ public class NxtInteractor {
    private final ActionPipe<TokenizeRecordCommand> tokenizeRecordPipe;
    private final ActionPipe<TokenizeMultipleRecordsCommand> tokenizeMultipleRecordsPipe;
    private final ActionPipe<DetokenizeRecordCommand> detokenizeRecordPipe;
+   private final ActionPipe<DetokenizeMultipleRecordsCommand> detokenizeMultipleRecordsPipe;
 
    public NxtInteractor(Janet janet) {
       tokenizeRecordPipe = janet.createPipe(TokenizeRecordCommand.class, Schedulers.io());
       tokenizeMultipleRecordsPipe = janet.createPipe(TokenizeMultipleRecordsCommand.class, Schedulers.io());
       detokenizeRecordPipe = janet.createPipe(DetokenizeRecordCommand.class, Schedulers.io());
+      detokenizeMultipleRecordsPipe = janet.createPipe(DetokenizeMultipleRecordsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<TokenizeRecordCommand> tokenizeRecordPipe() {
@@ -28,4 +30,7 @@ public class NxtInteractor {
       return detokenizeRecordPipe;
    }
 
+   public ActionPipe<DetokenizeMultipleRecordsCommand> detokenizeMultipleRecordsPipe() {
+      return detokenizeMultipleRecordsPipe;
+   }
 }

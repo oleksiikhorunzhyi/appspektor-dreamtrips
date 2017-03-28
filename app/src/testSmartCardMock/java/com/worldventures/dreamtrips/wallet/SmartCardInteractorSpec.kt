@@ -5,7 +5,6 @@ import android.test.mock.MockContext
 import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.session.NxtSessionHolder
-import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
@@ -17,29 +16,42 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage
-import com.worldventures.dreamtrips.wallet.model.*
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.TestRecordsStorage
+import com.worldventures.dreamtrips.wallet.model.TestAddressInfo
+import com.worldventures.dreamtrips.wallet.model.TestMultiResponseBody
+import com.worldventures.dreamtrips.wallet.model.TestRecord
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
-import com.worldventures.dreamtrips.wallet.service.command.*
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService
+import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand
+import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand
+import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand
+import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand
+import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor
+import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleRecordsCommand
 import com.worldventures.dreamtrips.wallet.util.FormatException
+import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.SmartCardActionService
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction
-import io.techery.janet.smartcard.action.records.DeleteRecordAction
 import io.techery.janet.smartcard.action.support.ConnectAction
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
@@ -49,7 +61,6 @@ import org.junit.Assert
 import org.powermock.api.mockito.PowerMockito
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
-import timber.log.Timber
 
 class SmartCardInteractorSpec : BaseSpec({
    describe("SmartCard SDK actions") {
@@ -57,7 +68,7 @@ class SmartCardInteractorSpec : BaseSpec({
          staticMockTextUtils()
 
          mockDb = createMockDb()
-         cardStorage = mock()
+         cardStorage = TestRecordsStorage(offlineModeEnabled = true)
          mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
@@ -66,20 +77,14 @@ class SmartCardInteractorSpec : BaseSpec({
          nxtInteractor = createNxtInteractor(janet)
          analyticsInteractor = createAnalyticsInteractor(janet)
          nxtSessionHolder = mock()
+         networkService = mock()
 
          janet.connectToSmartCardSdk()
       }
 
       context("Default card id is fetching") {
 
-         it("should fetch default card id from storage") {
-            val testSmartCardId: String = "4"
-
-            whenever(cardStorage.readDefaultRecordId()).thenReturn(testSmartCardId)
-            assertActionSuccess(loadDefaultCardId(), { testSmartCardId == it.result })
-         }
-
-         it("should fetch default card id from sdk") {
+         it("saves default card id locally after sending to device ") {
             val testSmartCardId: String = "4"
 
             val testSubscriber = TestSubscriber<ActionState<DefaultRecordIdCommand>>()
@@ -91,106 +96,204 @@ class SmartCardInteractorSpec : BaseSpec({
                   .send(SetDefaultCardOnDeviceCommand.setAsDefault(testSmartCardId))
 
             assertActionSuccess(testSubscriber, { testSmartCardId == it.result })
+            assertActionSuccess(loadDefaultCardId(), { testSmartCardId == it.result })
          }
       }
 
-      context("Add card") {
-
-         it("should assigned ID after adding") {
-            val nxtBankCard = TestNxtRecord(TestRecord(null, cardType = RecordType.DEBIT))
-
-            val testSubscriber = TestSubscriber <ActionState <AttachCardCommand>>()
-            smartCardInteractor.addRecordPipe()
-                  .createObservable(AttachCardCommand(nxtBankCard, false))
-                  .subscribe(testSubscriber)
-
-            assertActionSuccess(testSubscriber, { it.result.id() != null })
-         }
-      }
-
-      context("Fetch list of cards") {
-         val defaultCardId = "101"
+      context("Records CRUD commands") {
 
          val debitCard = TestRecord(null, cardType = RecordType.DEBIT)
-         val creditCard = TestRecord(defaultCardId, cardType = RecordType.CREDIT)
+         val creditCard = TestRecord(null, cardType = RecordType.CREDIT)
 
-         val nxtDebitCard = TestNxtRecord(debitCard)
-         val nxtCreditCard = TestNxtRecord(creditCard)
-
-         beforeEach {
-            val cardList = listOf(debitCard, creditCard)
-            whenever(cardStorage.readRecords()).thenReturn(cardList)
-            whenever(cardStorage.readDefaultRecordId()).thenReturn(defaultCardId)
+         it("creates record with ID") {
+            val testSubscriber = addRecord(debitCard)
+            assertActionSuccess(testSubscriber, { it.result.id() != null })
          }
 
-         it("should fetch from cache") {
+         it("creates record with saving address as default") {
+            val testSubscriber = addRecord(debitCard, setAsDefaultCard = true, setAsDefaultAddress = true)
+            assertActionSuccess(testSubscriber, { it.result.id() != null })
+            verify(mockDb, times(1)).saveDefaultAddress(any())
+         }
+
+         it("creates record and saves default record id") {
+            val testSubscriber = addRecord(debitCard, setAsDefaultCard = true, setAsDefaultAddress = true)
+
+            var savedRecord: Record? = null
+            assertActionSuccess(testSubscriber, {
+               savedRecord = it.result
+               it.result.id() != null
+            })
+
+            val defaultIdSubscriber = loadDefaultCardId()
+            assertActionSuccess(defaultIdSubscriber, { it.result == savedRecord?.id() })
+         }
+
+         it("throws FormatException when creating record with invalid data") {
+            val subscriber = addRecord(debitCard, cvv = "pp", setAsDefaultCard = true, setAsDefaultAddress = true)
+            assertActionFail(subscriber, { it.cause is FormatException })
+         }
+
+         it("reads proper amount of records after adding") {
+            addRecord(debitCard)
+            addRecord(creditCard)
+
             fetchCardListOfCard { it.result.size == 2 }
          }
 
+         it("updates record data") {
+            val oldRecordName = "Foo"
+            val newRecordName = "Bar"
 
-         it("should fetch from device, even if cache is present") {
+            val testSubscriber = addRecord(debitCard, nickName = oldRecordName)
+            var savedRecord: Record? = null
+            assertActionSuccess(testSubscriber, {
+               savedRecord = it.result
+               it.result.id() != null
+            })
 
-            val testSubscriber = TestSubscriber<RecordListCommand>()
-            smartCardInteractor.cardsListPipe()
-                  .observeSuccess()
-                  .filter { it.hasOperationFunc() }
-                  .subscribe(testSubscriber)
+            val updateRecordSubscriber = TestSubscriber<ActionState<UpdateRecordCommand>>()
+            smartCardInteractor.updateRecordPipe()
+                  .createObservable(UpdateRecordCommand.updateNickName(savedRecord, newRecordName))
+                  .subscribe(updateRecordSubscriber)
 
-            smartCardInteractor.addRecordPipe()
-                  .createObservableResult(AttachCardCommand(nxtDebitCard, false))
-                  .subscribe()
-
-
-            testSubscriber.unsubscribe()
-            testSubscriber.assertNoErrors()
-            testSubscriber.assertUnsubscribed()
-            Assert.assertTrue(testSubscriber.onNextEvents.last().result.size == 3)
+            assertActionSuccess(updateRecordSubscriber, { true })
+            fetchCardListOfCard { it.result.size == 1 }
+            fetchCardListOfCard { it.result[0].nickName() == newRecordName }
          }
 
-         it("Add several card to SmartCard, check size after one by one options add") {
-            smartCardInteractor.addRecordPipe()
-                  .send(AttachCardCommand(nxtDebitCard, true))
-            smartCardInteractor.addRecordPipe()
-                  .send(AttachCardCommand(nxtCreditCard, false))
+         it("deletes record") {
+            var recordToDelete: Record? = null
 
-            fetchCardListOfCard {
-               it.result.size == 2
-            }
+            val testSubscriber = addRecord(debitCard)
+            assertActionSuccess(testSubscriber, {
+               recordToDelete = it.result
+               it.result.id() != null
+            })
+
+            fetchCardListOfCard { it.result.find { it.id() == recordToDelete?.id() } != null }
+
+            smartCardInteractor.deleteRecordPipe()
+                  .createObservable(DeleteRecordCommand(recordToDelete?.id()))
+                  .subscribe()
+
+            fetchCardListOfCard { it.result.find { it.id() == recordToDelete?.id() } == null }
          }
       }
 
-      context("Delete card") {
-         val removedCardId = "51"
-         val debitCard = TestRecord(removedCardId, cardType = RecordType.DEBIT)
-         val creditCard = TestRecord("52", cardType = RecordType.CREDIT)
+      context("Tokenization and Offline mode") {
 
-         beforeEach {
-            // mock active SmartCard
-            val smartCardId = "111"
-            val smartCard = mockSmartCard(smartCardId)
-            whenever(mockDb.smartCard).thenReturn(smartCard)
+         val defaultOfflineModeState = false
+         val testRecord = TestRecord(null)
 
-            // mock saving result after delete
-            var list = listOf<Record>(debitCard, creditCard)
-            whenever(cardStorage.readRecords()).thenAnswer { return@thenAnswer list }
-            whenever(cardStorage.saveRecords(anyList())).thenAnswer { invocation ->
-               list = invocation.arguments[0] as List<Record>
-               return@thenAnswer null
-            }
+         it("switches state properly") {
+
+            val testSubscriber = TestSubscriber<OfflineModeStatusCommand>()
+            smartCardInteractor.offlineModeStatusPipe()
+                  .observeSuccess()
+                  .subscribe(testSubscriber)
+
+            smartCardInteractor.offlineModeStatusPipe()
+                  .send(OfflineModeStatusCommand.save(true))
+            smartCardInteractor.offlineModeStatusPipe()
+                  .send(OfflineModeStatusCommand.save(false))
+            smartCardInteractor.offlineModeStatusPipe()
+                  .send(OfflineModeStatusCommand.save(true))
+
+            Assert.assertTrue(testSubscriber.onNextEvents.size == 3)
+            Assert.assertTrue(testSubscriber.onNextEvents[0].result == true)
+            Assert.assertTrue(testSubscriber.onNextEvents[1].result == false)
+            Assert.assertTrue(testSubscriber.onNextEvents[2].result == true)
          }
 
-         it("should delete item from cache of card list") {
-            fetchCardListOfCard {
-               it.result.find { it.id() == removedCardId } != null
-            }
+         it("restores state to default value") {
 
-            smartCardInteractor.deleteRecordPipe()
-                  .createObservable(DeleteRecordAction(Integer.parseInt(removedCardId)))
-                  .subscribe()
+            smartCardInteractor.offlineModeStatusPipe()
+                  .send(OfflineModeStatusCommand.save(!defaultOfflineModeState))
 
-            fetchCardListOfCard {
-               it.result.find { it.id() == removedCardId } == null
-            }
+            val stateNotDefaultSubscriber = TestSubscriber<ActionState<OfflineModeStatusCommand>>()
+            smartCardInteractor.offlineModeStatusPipe()
+                  .createObservable(OfflineModeStatusCommand.fetch())
+                  .subscribe(stateNotDefaultSubscriber)
+
+            val stateDefaultSubscriber = TestSubscriber<ActionState<OfflineModeStatusCommand>>()
+            smartCardInteractor.restoreOfflineModeDefaultStatePipe()
+                  .createObservableResult(RestoreOfflineModeDefaultStateCommand())
+                  .flatMap { v ->
+                     smartCardInteractor.offlineModeStatusPipe().createObservable(OfflineModeStatusCommand.fetch())
+                  }
+                  .subscribe(stateDefaultSubscriber)
+
+            assertActionSuccess(stateNotDefaultSubscriber, { it.result == !defaultOfflineModeState })
+            assertActionSuccess(stateDefaultSubscriber, { it.result == defaultOfflineModeState })
+         }
+
+         it("record is tokenized properly") {
+
+            val testSubscriber = TestSubscriber<ActionState<TokenizeMultipleRecordsCommand>>()
+            nxtInteractor.tokenizeMultipleRecordsPipe().createObservable(TokenizeMultipleRecordsCommand(listOf(
+                  TestRecord("0", cvv = "123"),
+                  TestRecord("1", number = "0000111122223333")),
+                  true))
+                  .subscribe(testSubscriber)
+
+            assertActionSuccess(testSubscriber, { it.result[0].cvv() == TestMultiResponseBody.TEST_CVV })
+            assertActionSuccess(testSubscriber, { it.result[1].number() == TestMultiResponseBody.TEST_NUMBER })
+         }
+
+         it("locally stored records processed when offline mode switches") {
+            whenever(networkService.isAvailable).thenReturn(true)
+
+            // Enable offline mode
+            smartCardInteractor.offlineModeStatusPipe()
+                  .send(OfflineModeStatusCommand.save(!defaultOfflineModeState))
+
+            // Add a record
+            addRecord(testRecord, cvv = "777")
+
+            // Switch offline mode
+            val switchOfflineModeSubscriber = TestSubscriber<ActionState<SwitchOfflineModeCommand>>()
+            smartCardInteractor.switchOfflineModePipe()
+                  .createObservable(SwitchOfflineModeCommand())
+                  .subscribe(switchOfflineModeSubscriber)
+
+            // Fetch offline mode state
+            val stateDefaultSubscriber = TestSubscriber<ActionState<OfflineModeStatusCommand>>()
+            smartCardInteractor.offlineModeStatusPipe()
+                  .createObservable(OfflineModeStatusCommand.fetch())
+                  .subscribe(stateDefaultSubscriber)
+
+            // Check if offline mode was switched successfully and it is disabled
+            assertActionSuccess(switchOfflineModeSubscriber, { true })
+            assertActionSuccess(stateDefaultSubscriber, { it.result == defaultOfflineModeState })
+
+            // Check that the record has tokenized cvv value
+            fetchCardListOfCard { it.result[0].cvv() == TestMultiResponseBody.TEST_CVV }
+         }
+
+         it("does not throw NetworkUnavailableException if network is unavailable and no records stored locally") {
+            whenever(networkService.isAvailable).thenReturn(false)
+
+            val switchOfflineModeNoRecordsSubscriber = TestSubscriber<ActionState<SwitchOfflineModeCommand>>()
+            smartCardInteractor.switchOfflineModePipe()
+                  .createObservable(SwitchOfflineModeCommand())
+                  .subscribe(switchOfflineModeNoRecordsSubscriber)
+
+            assertActionSuccess(switchOfflineModeNoRecordsSubscriber, { true })
+         }
+
+         it("throws NetworkUnavailableException if network is unavailable and some records stored locally") {
+            whenever(networkService.isAvailable).thenReturn(false)
+
+            val addRecordSubscriber = addRecord(testRecord)
+            assertActionSuccess(addRecordSubscriber, { true })
+
+            val switchOfflineModeWithRecordsSubscriber = TestSubscriber<ActionState<SwitchOfflineModeCommand>>()
+            smartCardInteractor.switchOfflineModePipe()
+                  .createObservable(SwitchOfflineModeCommand())
+                  .subscribe(switchOfflineModeWithRecordsSubscriber)
+
+            assertActionFail(switchOfflineModeWithRecordsSubscriber, { it.cause is NetworkUnavailableException })
          }
       }
 
@@ -220,54 +323,6 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(loadDefaultAddress(), { addressInfo.address1() == it.result.address1() })
          }
       }
-
-      context("Save bank card details data") {
-         val bankCard = TestRecord("11")
-
-         beforeEach {
-            val smartCardId = "111"
-            val smartCard = mockSmartCard(smartCardId)
-            whenever(mockDb.smartCard).thenReturn(smartCard)
-            whenever(nxtSessionHolder.get()).thenReturn(Optional.of(TestNxtSession("testNxtSessionToken")))
-         }
-
-         it("Card with valid data should be stored with default address and marked as default") {
-            whenever(cardStorage.readDefaultRecordId()).thenReturn(null)
-            val subscriber = saveBankCardData(bankCard, setAsDefaultCard = true, setAsDefaultAddress = true)
-            // rx.exceptions.OnErrorThrowable$OnNextValue: OnError while emitting onNext value: com.worldventures.dreamtrips.wallet.service.nxt.util.TokenizedRecord.class
-//            if (true) Timber.d("WTF")
-//            assertActionFail(subscriber, {
-//               System.out.println("WTF")
-//               it.printStackTrace()
-//               return@assertActionFail true
-//            })
-
-            assertActionSuccess(subscriber, { true })
-
-            verify(mockDb, times(1)).saveDefaultAddress(any())
-            verify(cardStorage, atLeast(1)).saveDefaultRecordId(any())
-         }
-
-         it("Card with valid data should be stored without default address and not marked as default") {
-            val defaultCardId = "9"
-            whenever(cardStorage.readDefaultRecordId()).thenReturn(defaultCardId)
-
-            val subscriber = saveBankCardData(bankCard, setAsDefaultCard = false, setAsDefaultAddress = false)
-
-            if (true) Timber.d("WTF")
-
-            assertActionSuccess(subscriber, { true })
-            verify(mockDb, times(0)).saveDefaultAddress(any())
-         }
-
-         it("Card with invalid data shouldn't be stored") {
-            val subscriber = saveBankCardData(bankCard, cvv = "pp", setAsDefaultCard = true, setAsDefaultAddress = true)
-            assertActionFail(subscriber, { it.cause is FormatException })
-
-            verify(mockDb, times(0)).saveDefaultAddress(any())
-            verify(cardStorage, times(0)).saveDefaultRecordId(any())
-         }
-      }
    }
 
 }) {
@@ -277,11 +332,12 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var firmwareInteractor: FirmwareInteractor
-      lateinit var cardStorage: PersistentRecordsStorage
+      lateinit var cardStorage: RecordsStorage
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var nxtInteractor: NxtInteractor
       lateinit var nxtSessionHolder: NxtSessionHolder
       lateinit var analyticsInteractor: AnalyticsInteractor
+      lateinit var networkService: WalletNetworkService
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultRecordIdStorage(cardStorage), SmartCardActionStorage(mockDb))
@@ -329,7 +385,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
-         daggerCommandActionService.registerProvider(PersistentRecordsStorage::class.java) { cardStorage }
+         daggerCommandActionService.registerProvider(RecordsStorage::class.java) { cardStorage }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
@@ -337,6 +393,7 @@ class SmartCardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(NxtInteractor::class.java, { nxtInteractor })
          daggerCommandActionService.registerProvider(AnalyticsInteractor::class.java, { analyticsInteractor })
          daggerCommandActionService.registerProvider(NxtSessionHolder::class.java, { nxtSessionHolder })
+         daggerCommandActionService.registerProvider(WalletNetworkService::class.java, { networkService })
 
          return janet
       }
@@ -381,26 +438,26 @@ class SmartCardInteractorSpec : BaseSpec({
          return testSubscriber
       }
 
-      fun saveBankCardData(record: Record,
-                           setAsDefaultAddress: Boolean,
-                           setAsDefaultCard: Boolean,
-                           useDefaultAddress: Boolean = false,
-                           manualAddressInfo: AddressInfo = TestAddressInfo(),
-                           nickName: String = "Test Card",
-                           cvv: String = "000"): TestSubscriber<ActionState<AddRecordCommand>> {
+      fun addRecord(record: Record,
+                    setAsDefaultAddress: Boolean = false,
+                    setAsDefaultCard: Boolean = false,
+                    useDefaultAddress: Boolean = false,
+                    manualAddressInfo: AddressInfo = TestAddressInfo(),
+                    nickName: String = "Test Card",
+                    cvv: String = "000"): TestSubscriber<ActionState<AddRecordCommand>> {
          // by default, mock payment card number is 123456789. It mean then cvv should be contain only 3 digit.
          val testSubscriber = TestSubscriber<ActionState<AddRecordCommand>>()
          val cmd = AddRecordCommand.Builder()
                .setRecord(record)
                .setManualAddressInfo(manualAddressInfo)
-               .setCardName(nickName)
+               .setRecordName(nickName)
                .setCvv(cvv)
                .setUseDefaultAddress(useDefaultAddress)
                .setSetAsDefaultAddress(setAsDefaultAddress)
-               .setSetAsDefaultCard(setAsDefaultCard)
+               .setSetAsDefaultRecord(setAsDefaultCard)
                .create()
 
-         smartCardInteractor.saveCardDetailsDataPipe()
+         smartCardInteractor.addRecordPipe()
                .createObservable(cmd)
                .subscribe(testSubscriber)
          return testSubscriber
@@ -408,7 +465,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun mockHttpService(): MockHttpActionService {
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200).body(TestMultiResponseBody()), { request ->
+               .bind(MockHttpActionService.Response(200).body(TestMultiResponseBody(listOf(null, "0", "1", "2"))), { request ->
                   request.url.contains("multifunction") && request.method.equals("post", true)
                })
                .build()
@@ -430,15 +487,6 @@ class SmartCardInteractorSpec : BaseSpec({
                .subscribe()
       }
 
-      fun mockSmartCard(cardId: String): SmartCard {
-         val mockedSmartCard: SmartCard = mock()
-         whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
-         whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
-//         whenever(mockedSmartCard.connectionStatus()).thenReturn(ConnectionStatus.DISCONNECTED)
-//         whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-
-         return mockedSmartCard
-      }
    }
 }
 

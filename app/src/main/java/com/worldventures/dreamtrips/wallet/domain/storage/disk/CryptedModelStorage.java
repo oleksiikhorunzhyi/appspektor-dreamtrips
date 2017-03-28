@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class CryptedModelStorage extends ModelStorage {
+public abstract class CryptedModelStorage extends BaseModelStorage {
 
    private final SnappyCrypter snappyCrypter;
 
@@ -20,6 +20,10 @@ public abstract class CryptedModelStorage extends ModelStorage {
 
    protected <T> T get(String key, Class<T> clazz) {
       return executeWithResult(db -> snappyCrypter.get(db, key, clazz)).orNull();
+   }
+
+   protected <T> T getOrDefault(String key, Class<T> clazz, T defaultValue) {
+      return executeWithResult(db -> snappyCrypter.get(db, key, clazz)).or(defaultValue);
    }
 
    protected <T> List<T> getList(String key) {

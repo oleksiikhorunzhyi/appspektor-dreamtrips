@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -35,19 +36,38 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      analyticsInteractor
-            .walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new SyncPaymentCardAction()));
 
+      observeOfflineModeStateCheck();
       observeSyncPaymentCards();
+
+      restoreOfflineModeDefaultState();
+   }
+
+   void retrySync() {
+      restoreOfflineModeDefaultState();
+   }
+
+   void finish() {
+      navigator.finish();
+   }
+
+   private void observeOfflineModeStateCheck() {
+      smartCardInteractor.restoreOfflineModeDefaultStatePipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().<RestoreOfflineModeDefaultStateCommand>provideOperationView())
+                  .onStart(command -> getView().setProgressInPercent(0))
+                  .onSuccess(command -> smartCardInteractor.recordsSyncPipe().send(new SyncRecordsCommand()))
+                  .create());
    }
 
    private void observeSyncPaymentCards() {
       smartCardInteractor.recordsSyncPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onStart(command -> getView().setProgressInPercent(0))
+            .subscribe(OperationActionSubscriber.forView(getView().<SyncRecordsCommand>provideOperationView())
                   .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
                   .create());
 
@@ -58,21 +78,16 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
             .subscribe(new ActionStateSubscriber<SyncRecordsCommand>()
                   .onProgress((command, progress) -> handleProgressSyncCard(command.getLocalOnlyRecordsCount(), progress))
             );
-
-      smartCardInteractor.recordsSyncPipe().send(new SyncRecordsCommand());
    }
 
-   void onRetryCanceled() {
-      smartCardInteractor.recordsSyncPipe().send(new SyncRecordsCommand());
+   private void restoreOfflineModeDefaultState() {
+      smartCardInteractor.restoreOfflineModeDefaultStatePipe()
+            .send(new RestoreOfflineModeDefaultStateCommand());
    }
 
    private void handleProgressSyncCard(int countOfCards, int progress) {
       getView().setCountPaymentCardsProgress(progress, countOfCards);
       getView().setProgressInPercent(calcPercent(progress, countOfCards));
-   }
-
-   void finish() {
-      navigator.finish();
    }
 
    private int calcPercent(int progress, int size) {
@@ -85,6 +100,6 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
 
       void setProgressInPercent(int percent);
 
-      OperationView<SyncRecordsCommand> provideOperationView();
+      <T> OperationView<T> provideOperationView();
    }
 }

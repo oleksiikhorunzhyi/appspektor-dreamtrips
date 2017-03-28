@@ -1,20 +1,15 @@
-package com.worldventures.dreamtrips.wallet.service.command;
+package com.worldventures.dreamtrips.wallet.service.command.record;
 
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
-import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
-import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtRecord;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
-import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,10 +26,10 @@ import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.vali
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
 
 @CommandAction
-public class UpdateRecordCommand extends Command<Record> implements InjectableAction {
+public class UpdateRecordCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject NxtInteractor nxtInteractor;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
 
@@ -57,13 +52,18 @@ public class UpdateRecordCommand extends Command<Record> implements InjectableAc
       );
    }
 
+   public Record getRecord() {
+      return record;
+   }
+
    @Override
-   protected void run(CommandCallback<Record> callback) throws Throwable {
+   protected void run(CommandCallback<Void> callback) throws Throwable {
       checkCardData();
-      detokenizeRecord(record)
-            .map(detokenizedRecord -> mapperyContext.convert(detokenizedRecord, io.techery.janet.smartcard.model.Record.class))
+      prepareRecordForSmartCard(record)
             .flatMap(this::pushRecord)
-            .subscribe(result -> callback.onSuccess(record), callback::onFail);
+            .map(record -> (Void) null)
+            .doOnNext(aVoid -> updateLocalRecord())
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private void checkCardData() throws FormatException {
@@ -71,25 +71,13 @@ public class UpdateRecordCommand extends Command<Record> implements InjectableAc
       validateAddressInfoOrThrow(record.addressInfo());
    }
 
-   private Observable<Record> detokenizeRecord(Record record) {
-      return nxtInteractor.detokenizeRecordPipe()
-            .createObservableResult(new DetokenizeRecordCommand(record))
+   private Observable<io.techery.janet.smartcard.model.Record> prepareRecordForSmartCard(Record record) {
+      return smartCardInteractor.secureRecordPipe()
+            .createObservableResult(SecureRecordCommand.Builder.prepareRecordForSmartCard(record)
+                  .withAnalyticsActionType(ActionType.UPDATE)
+                  .create())
             .map(Command::getResult)
-            .doOnNext(this::sendTokenizationAnalytics)
-            .flatMap(nxtRecord -> {
-               if (nxtRecord.getResponseErrors().isEmpty()) {
-                  return Observable.just(nxtRecord.getDetokenizedRecord());
-               } else {
-                  return Observable.error(new NxtMultifunctionException(
-                        NxtBankCardHelper.getResponseErrorMessage(nxtRecord.getResponseErrors())));
-               }
-            });
-   }
-
-   private void sendTokenizationAnalytics(NxtRecord nxtRecord) {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new TokenizationAnalyticsLocationCommand(
-            TokenizationCardAction.from(nxtRecord, ActionType.UPDATE, false)
-      ));
+            .map(detokenizedRecord -> mapperyContext.convert(detokenizedRecord, io.techery.janet.smartcard.model.Record.class));
    }
 
    private Observable<Record> pushRecord(io.techery.janet.smartcard.model.Record record) {
@@ -98,7 +86,8 @@ public class UpdateRecordCommand extends Command<Record> implements InjectableAc
             .map(result -> mapperyContext.convert(result.record, Record.class));
    }
 
-   public Record getRecord() {
-      return record;
+   private void updateLocalRecord() {
+      smartCardInteractor.cardsListPipe().send(RecordListCommand.edit(record));
    }
+
 }

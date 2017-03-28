@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnass
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.poweron.NewCardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.offline_mode.OfflineModePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
@@ -115,6 +116,7 @@ import dagger.Provides;
             WalletPuckConnectionPresenter.class,
             WizardAssignUserPresenter.class,
             AboutPresenter.class,
+            OfflineModePresenter.class,
             PairKeyPresenter.class,
             ConnectionErrorPresenter.class,
             StartFirmwareInstallPresenter.class,

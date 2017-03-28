@@ -105,7 +105,7 @@
    <string name="wallet_card_settings_sc_profile">Smart Card Profile</string>
    <string name="wallet_card_settings_general">General</string>
    <string name="wallet_card_settings_about">About</string>
-   <string name="wallet_card_settings_offline_mode">Offline mode</string>
+   <string name="wallet_card_settings_offline_mode">Offline Mode</string>
    <string name="wallet_card_settings_low_battery_alert">Low battery alert</string>
    <string name="wallet_card_settings_locate_sc">Locate Smart Card</string>
    <string name="wallet_card_settings_view_location_connected">View location of the last time it was connected</string>
@@ -133,7 +133,7 @@
    <string name="wallet_card_settings_unlock_error">Unlock is not supported</string>
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_unpair_sc">Unpair Smart Card</string>
-   <string name="wallet_card_settings_loads_cards_without_inet">Loads cards to device without internet</string>
+   <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>
 
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
@@ -376,6 +376,16 @@
    <!--<string name="wallet_location_service_settings_message">For correct work of this feature, need to enable Location Services.</string>-->
    <string name="wallet_disable_tracking_msg">Tracking your Smart Card helps you better protect your card from being lost or stolen. Are you sure you want to disable tracking?</string>
    <string name="wallet_disable_tracking">Disable Tracking</string>
+
+   <!-- Offline Mode screen -->
+   <string name="wallet_offline_mode_enable_label">Enable Offline Mode</string>
+   <string name="wallet_offline_mode_explain_message">Offline Mode allows you to add and swap cards between your app and Smart Card without being connected to the internet.</string>
+   <string name="wallet_offline_mode_please_note_message"><![CDATA[<b>Please note:</b>]]> Enabling Offline Mode could potentially make your cards less secure.</string>
+   <string name="wallet_offline_mode_enable_message">Enabling Offline Mode could potentially make your payment cards less secure. Do you want to continue?</string>
+   <string name="wallet_offline_mode_disable_message">By disabling Offline Mode you will be unable to manage payment cards without internet connection.</string>
+   <string name="wallet_offline_mode_progress_message"><![CDATA[<b>Preparing for you to manage payment cards in offline mode.</b><br/><br/>]]>This may take a few minutes</string>
+   <string name="wallet_offline_mode_error_default_message">We were unable to process your payment cards for Offline Mode.\nPlease try again.</string>
+   <string name="wallet_offline_mode_error_no_internet_message">You must be connected to the internet to change this setting.</string>
 
    <!-- Existing Card detect screen -->
    <string name="wallet_existing_card_detect_label">Existing Smart Card Detected</string>

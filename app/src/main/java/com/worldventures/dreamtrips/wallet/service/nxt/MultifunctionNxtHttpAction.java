@@ -49,11 +49,8 @@ public class MultifunctionNxtHttpAction {
    public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-
       MultifunctionNxtHttpAction that = (MultifunctionNxtHttpAction) o;
-
       return body != null ? body.equals(that.body) : that.body == null;
-
    }
 
    @Override

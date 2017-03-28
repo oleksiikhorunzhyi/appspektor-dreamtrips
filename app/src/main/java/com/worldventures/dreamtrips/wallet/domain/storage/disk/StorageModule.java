@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.domain.storage.disk;
 import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
 import com.worldventures.dreamtrips.wallet.domain.storage.persistent.PersistentSnappyModule;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -18,13 +18,13 @@ public class StorageModule {
 
    @Provides
    @Singleton
-   public SnappyStorageManager SnappyRepositoryImpl(PersistentRecordsStorage persistentRecordsStorage) {
-      return new SnappyStorageManager(Arrays.asList(persistentRecordsStorage));
+   public SnappyStorageManager SnappyRepositoryImpl(RecordsStorage recordsStorage) {
+      return new SnappyStorageManager(Collections.singletonList(recordsStorage));
    }
 
    @Provides
    @Singleton
-   public PersistentRecordsStorage persistentCardListStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage, SnappyCrypter snappyCrypter) {
+   public RecordsStorage persistentCardListStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage, SnappyCrypter snappyCrypter) {
       return new PersistentRecordsStorage(snappyStorage, snappyCrypter);
    }
 

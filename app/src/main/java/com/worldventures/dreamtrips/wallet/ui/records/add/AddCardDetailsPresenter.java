@@ -19,10 +19,10 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -97,7 +97,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void observeSavingCardDetailsData() {
-      smartCardInteractor.saveCardDetailsDataPipe()
+      smartCardInteractor.addRecordPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationAddRecord())
@@ -116,12 +116,12 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
-      smartCardInteractor.saveCardDetailsDataPipe()
+      smartCardInteractor.addRecordPipe()
             .send(new AddRecordCommand.Builder().setRecord(record)
                   .setManualAddressInfo(addressInfo)
-                  .setCardName(cardName)
+                  .setRecordName(cardName)
                   .setCvv(cvv)
-                  .setSetAsDefaultCard(setAsDefaultCard)
+                  .setSetAsDefaultRecord(setAsDefaultCard)
                   .create());
    }
 

@@ -48,4 +48,6 @@
    <dimen name="wallet_existing_card_margin_top">30dp</dimen>
    <dimen name="wallet_existing_card_margin_bottom">24dp</dimen>
    <dimen name="wallet_sc_id_existing_margin_left_right">32dp</dimen>
+
+   <dimen name="wallet_settings_offline_mode_spacing_side">52dp</dimen>
 </resources>

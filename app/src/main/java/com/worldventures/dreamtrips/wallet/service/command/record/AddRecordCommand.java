@@ -1,29 +1,28 @@
-package com.worldventures.dreamtrips.wallet.service.command;
+package com.worldventures.dreamtrips.wallet.service.command.record;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
-import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
-import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCardHelper;
-import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtRecord;
+import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
-import com.worldventures.dreamtrips.wallet.util.NxtMultifunctionException;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Command;
+import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.records.AddRecordAction;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
-import timber.log.Timber;
 
+import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCvvOrThrow;
@@ -31,34 +30,32 @@ import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.vali
 @CommandAction
 public class AddRecordCommand extends Command<Record> implements InjectableAction {
 
+   @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject MapperyContext mapperyContext;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject NxtInteractor nxtInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SnappyRepository snappyRepository;
 
    private final Record record;
    private final AddressInfo manualAddressInfo;
-   private final String cvv;
-   private final String cardName;
    private final boolean setAsDefaultAddress;
    private final boolean useDefaultAddress;
    private final boolean setAsDefaultRecord;
 
    private AddRecordCommand(Record record,
          AddressInfo manualAddressInfo,
-         String cardName,
-         String cvv,
          boolean useDefaultAddress,
          boolean setAsDefaultAddress,
          boolean setAsDefaultRecord
    ) {
       this.setAsDefaultAddress = setAsDefaultAddress;
       this.useDefaultAddress = useDefaultAddress;
-      this.cardName = cardName;
-      this.cvv = cvv;
       this.record = record;
       this.manualAddressInfo = manualAddressInfo;
       this.setAsDefaultRecord = setAsDefaultRecord;
+   }
+
+   public boolean setAsDefaultRecord() {
+      return setAsDefaultRecord;
    }
 
    @Override
@@ -66,26 +63,12 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
       checkCardData();
 
       createRecordWithAddress()
-            .flatMap(this::tokenizeRecord)
-            .flatMap(this::pushRecord)
-            .subscribe(record -> {
-               saveDefaultAddressIfNeed();
-               Timber.d("Record was added successfully");
-               callback.onSuccess(record);
-            }, throwable -> {
-               Timber.e(throwable, "Record was not added");
-               callback.onFail(throwable);
-            });
-   }
-
-   public boolean setAsDefaultRecord() {
-      return setAsDefaultRecord;
-   }
-
-   private void saveDefaultAddressIfNeed() {
-      if (setAsDefaultAddress) {
-         snappyRepository.saveDefaultAddress(manualAddressInfo);
-      }
+            .flatMap(recordWithAddress -> prepareRecordForLocalStorage(recordWithAddress)
+                  .flatMap((recordForLocalStorage) -> pushRecordToSmartCard(recordWithAddress)
+                        .map(recordId -> ImmutableRecord.copyOf(recordForLocalStorage).withId(recordId))))
+            .doOnNext(this::saveRecordLocally)
+            .doOnNext(recordForLocalStorageWithId -> saveDefaultAddressIfNeed())
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private Observable<Record> createRecordWithAddress() {
@@ -98,47 +81,55 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
       }
    }
 
-   private Observable<NxtRecord> tokenizeRecord(Record record) {
-      return nxtInteractor.tokenizeRecordPipe()
-            .createObservableResult(new TokenizeRecordCommand(record))
-            .map(Command::getResult)
-            .doOnNext(this::sendTokenizationAnalytics)
-            .flatMap(nxtRecord -> {
-               if (nxtRecord.getResponseErrors().isEmpty()) {
-                  return Observable.just(nxtRecord);
-               } else {
-                  return Observable.error(new NxtMultifunctionException(
-                        NxtBankCardHelper.getResponseErrorMessage(nxtRecord.getResponseErrors())));
-               }
-            });
-   }
-
-   private void sendTokenizationAnalytics(NxtRecord nxtRecord) {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new TokenizationAnalyticsLocationCommand(
-            TokenizationCardAction.from(nxtRecord, ActionType.ADD, true)
-      ));
-   }
-
-   private Observable<Record> pushRecord(NxtRecord nxtRecord) {
-      // Record without id -> AttachCardCommand -> Record with id
-      return smartCardInteractor.addRecordPipe()
-            .createObservableResult(new AttachCardCommand(nxtRecord, setAsDefaultRecord))
+   private Observable<Record> prepareRecordForLocalStorage(Record record) {
+      return smartCardInteractor.secureRecordPipe()
+            .createObservableResult(SecureRecordCommand.Builder.prepareRecordForLocalStorage(record)
+                  .withAnalyticsActionType(ActionType.ADD)
+                  .create())
             .map(Command::getResult);
+   }
+
+   /**
+    * Record without id -> AttachCardCommand -> Record id
+    */
+   private Observable<String> pushRecordToSmartCard(Record recordForSmartCard) {
+      return Observable.just(mapperyContext.convert(recordForSmartCard, io.techery.janet.smartcard.model.Record.class))
+            .flatMap(convertedRecord -> janet.createPipe(AddRecordAction.class)
+                  .createObservableResult(new AddRecordAction(convertedRecord)))
+            .map(it -> it.record) // id should be added in AddRecordAction
+            .map((recordWithId) -> String.valueOf(recordWithId.id()))
+            .flatMap(this::saveDefaultCard);
+   }
+
+   private Observable<String> saveDefaultCard(String recordId) {
+      return (setAsDefaultRecord) ? smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+            .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(recordId))
+            .map(command -> recordId)
+            : Observable.just(recordId);
+   }
+
+   private void saveRecordLocally(Record record) {
+      smartCardInteractor.cardsListPipe()
+            .send(RecordListCommand.add(record));
+   }
+
+   private void saveDefaultAddressIfNeed() {
+      if (setAsDefaultAddress) {
+         snappyRepository.saveDefaultAddress(manualAddressInfo);
+      }
    }
 
    private Record createRecord(AddressInfo address) {
       return ImmutableRecord.builder()
             .from(record)
-            .cvv(cvv)
-            .nickName(cardName)
             .addressInfo(address)
             .build();
    }
 
    private void checkCardData() throws FormatException {
-      validateCardNameOrThrow(cardName);
+      validateCardNameOrThrow(record.nickName());
       validateAddressInfoOrThrow(manualAddressInfo);
-      validateCvvOrThrow(cvv, record.number());
+      validateCvvOrThrow(record.cvv(), record.number());
    }
 
    public static class Builder {
@@ -146,10 +137,10 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
       private Record record;
       private AddressInfo manualAddressInfo;
       private String cvv;
-      private String cardName;
+      private String recordName;
       private boolean useDefaultAddress;
       private boolean setAsDefaultAddress;
-      private boolean setAsDefaultCard;
+      private boolean setAsDefaultRecord;
 
       public Builder setRecord(Record record) {
          this.record = record;
@@ -161,8 +152,8 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
          return this;
       }
 
-      public Builder setCardName(String cardName) {
-         this.cardName = cardName;
+      public Builder setRecordName(String recordName) {
+         this.recordName = recordName;
          return this;
       }
 
@@ -181,14 +172,14 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
          return this;
       }
 
-      public Builder setSetAsDefaultCard(boolean setAsDefaultCard) {
-         this.setAsDefaultCard = setAsDefaultCard;
+      public Builder setSetAsDefaultRecord(boolean setAsDefaultRecord) {
+         this.setAsDefaultRecord = setAsDefaultRecord;
          return this;
       }
 
       public AddRecordCommand create() {
-         return new AddRecordCommand(record, manualAddressInfo, cardName, cvv,
-               useDefaultAddress, setAsDefaultAddress, setAsDefaultCard);
+         return new AddRecordCommand(ImmutableRecord.builder().from(record).cvv(cvv).nickName(recordName).build(),
+               manualAddressInfo, useDefaultAddress, setAsDefaultAddress, setAsDefaultRecord);
       }
    }
 }

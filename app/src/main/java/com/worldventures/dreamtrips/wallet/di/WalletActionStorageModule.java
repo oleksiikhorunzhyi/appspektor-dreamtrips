@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActio
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import dagger.Module;
@@ -22,12 +22,12 @@ import dagger.Provides;
 public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage walletCardListStorage(PersistentRecordsStorage bankCardsStorage) {
+   ActionStorage walletCardListStorage(RecordsStorage bankCardsStorage) {
       return new WalletRecordsDiskStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)
-   ActionStorage defaultBankCardStorage(PersistentRecordsStorage bankCardsStorage) {
+   ActionStorage defaultBankCardStorage(RecordsStorage bankCardsStorage) {
       return new DefaultRecordIdStorage(bankCardsStorage);
    }
 

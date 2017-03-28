@@ -32,7 +32,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.status) TextView status;
 
-   @InjectView(R.id.offline_mode_switcher) WalletSwitcher offlineModeSwitcher;
    @InjectView(R.id.lock_switcher) WalletSwitcher lockSwitcher;
    @InjectView(R.id.stealth_mode_switcher) WalletSwitcher stealthModeSwitcher;
    @InjectView(R.id.alert_connection_switcher) WalletSwitcher alertConnectionSwitcher;
@@ -103,6 +102,11 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @OnClick(R.id.item_about)
    void onAboutClick() {
       presenter.openAboutScreen();
+   }
+
+   @OnClick(R.id.item_offline_mode)
+   void onOfflineModeClick() {
+      presenter.openOfflineModeScreen();
    }
 
    @OnClick(R.id.item_battery_alert)
@@ -212,11 +216,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @Override
    public void testFailInstallation(boolean failInstall) {
       testFailInstallFirmwareSwitcher.setCheckedWithoutNotify(failInstall);
-   }
-
-   @Override
-   public Observable<Boolean> offlineMode() {
-      return Observable.never();
    }
 
    @Override

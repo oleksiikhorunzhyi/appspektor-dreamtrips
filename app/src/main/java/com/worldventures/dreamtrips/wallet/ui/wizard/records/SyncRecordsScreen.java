@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
@@ -72,12 +71,11 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
    }
 
    @Override
-   public OperationView<SyncRecordsCommand> provideOperationView() {
+   public <T> OperationView<T> provideOperationView() {
       return new ComposableOperationView<>(
             new WalletProgressView<>(installProgress),
-            new RetryErrorDialogView<SyncRecordsCommand>(getContext(),
-                  getString(R.string.wallet_syncing_payment_cards_fail_msg),
-                  command -> presenter.onRetryCanceled(),
+            new RetryErrorDialogView<>(getContext(), getString(R.string.wallet_syncing_payment_cards_fail_msg),
+                  command -> presenter.retrySync(),
                   command -> presenter.finish())
       );
    }

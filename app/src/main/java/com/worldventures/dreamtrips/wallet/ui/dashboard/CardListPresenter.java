@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
-import android.net.NetworkInfo;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
 
-import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
@@ -22,12 +20,14 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -184,28 +184,33 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.goBack();
    }
 
+   @Inject WalletNetworkService networkService;
+
    void addCardRequired(int cardLoadedCount) {
       if (cardLoadedCount >= MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
          return;
       }
 
-      Observable.combineLatest(
-            ReactiveNetwork.observeNetworkConnectivity(getContext()).take(1),
-            smartCardInteractor.deviceStatePipe().observeSuccessWithReplay().take(1),
-            (connectivity, smartCardModifier) -> new Pair<>(connectivity.getState(), smartCardModifier.getResult()
-                  .connectionStatus()))
+      Observable.zip(
+            smartCardInteractor.offlineModeStatusPipe().createObservableResult(OfflineModeStatusCommand.fetch()),
+            smartCardInteractor.deviceStatePipe().createObservableResult(DeviceStateCommand.fetch()),
+            (offlineModeState, smartCardModifier) -> {
+               boolean needNetworkConnection = offlineModeState.getResult() || networkService.isAvailable();
+               boolean needSmartCardConnection = smartCardModifier.getResult().connectionStatus().isConnected();
+               return new Pair<>(needNetworkConnection, needSmartCardConnection);
+            })
             .compose(bindViewIoToMainComposer())
             .subscribe(connectionStatusPair -> {
-               if (connectionStatusPair.first != NetworkInfo.State.CONNECTED) {
+               if (!connectionStatusPair.first) {
                   getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
-               } else if (!connectionStatusPair.second.isConnected()) {
+               } else if (!connectionStatusPair.second) {
                   getView().showSCNonConnectionDialog();
                } else {
                   trackAddCard();
                   navigator.go(new WizardChargingPath());
                }
-            }, e -> Timber.e(e, "Could not subscribe to network and smartcard events"));
+            }, e -> Timber.e(e, "Could not subscribe to network and SmartCard events"));
    }
 
    private void trackAddCard() {

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
 import com.worldventures.dreamtrips.core.janet.TimberServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtHttpService;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleRecordsCommand;
@@ -38,8 +39,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @Module(
       injects = {
             TokenizeRecordCommand.class,
-            TokenizeMultipleRecordsCommand.class,
             DetokenizeRecordCommand.class,
+            TokenizeMultipleRecordsCommand.class,
+            DetokenizeMultipleRecordsCommand.class,
             NxtHttpService.class
       },
       complete = false, library = true)

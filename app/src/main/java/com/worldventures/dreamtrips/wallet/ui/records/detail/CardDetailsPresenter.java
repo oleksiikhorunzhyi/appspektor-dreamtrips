@@ -26,9 +26,11 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -42,12 +44,9 @@ import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 import rx.functions.Action1;
 import timber.log.Timber;
-
-import static java.lang.Integer.valueOf;
 
 public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
 
@@ -94,9 +93,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private void observeSaveCardData() {
       smartCardInteractor.updateRecordPipe()
             .observe()
+            .filter(state -> record.id().equals(state.action.getRecord().id()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSaveCardData())
-                  .onSuccess(command -> updateRecordVar(command.getResult()))
+                  .onSuccess(command -> updateRecordVar(command.getRecord()))
                   .create());
    }
 
@@ -108,16 +108,27 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .build();
    }
 
-   public void updateNickName() {
-      if (networkService.isAvailable()) {
-         if (!TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
-            nicknameUpdated(getView().getUpdateNickname());
+   void updateNickName() {
+      fetchOfflineModeState(offlineModeEnabled -> {
+         if (offlineModeEnabled || networkService.isAvailable()) {
+            if (!TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
+               nicknameUpdated(getView().getUpdateNickname());
+            } else {
+               getView().notifyCardDataIsSaved();
+            }
          } else {
-            getView().notifyCardDataIsSaved();
+            getView().showNetworkConnectionErrorDialog();
          }
-      } else {
-         getView().showNetworkConnectionErrorDialog();
-      }
+      });
+   }
+
+   private void fetchOfflineModeState(Action1<Boolean> action) {
+      smartCardInteractor.offlineModeStatusPipe()
+            .createObservable(OfflineModeStatusCommand.fetch())
+            .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+            .map(actionState -> actionState.action.getResult())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(action);
    }
 
    private void trackScreen() {
@@ -128,7 +139,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private void connectToDeleteCardPipe() {
       smartCardInteractor.deleteRecordPipe()
             .observeWithReplay()
-            .filter(state -> valueOf(record.id()).equals(state.action.recordId))
+            .filter(state -> state.action.getRecordId().equals(record.id()))
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteRecordPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationDeleteRecord())
@@ -219,7 +230,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    void onDeleteCardConfirmed() {
-      smartCardInteractor.deleteRecordPipe().send(new DeleteRecordAction(valueOf(record.id())));
+      smartCardInteractor.deleteRecordPipe().send(new DeleteRecordCommand(record.id()));
    }
 
    private void unsetCardAsDefault() {
@@ -361,7 +372,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
       void notifyCardDataIsSaved();
 
-      OperationView<DeleteRecordAction> provideOperationDeleteRecord();
+      OperationView<DeleteRecordCommand> provideOperationDeleteRecord();
 
       OperationView<SetDefaultCardOnDeviceCommand> provideOperationSetDefaultOnDevice();
 

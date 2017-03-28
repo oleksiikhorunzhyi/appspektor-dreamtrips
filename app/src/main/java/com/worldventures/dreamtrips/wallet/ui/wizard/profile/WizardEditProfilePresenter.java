@@ -33,8 +33,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPath;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
@@ -128,7 +127,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void onUserSetupSuccess(SmartCard smartCard) {
-      navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
+//      disable pin for 1.18
+//      navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
+      navigator.go(new WizardAssignUserPath(smartCard));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {

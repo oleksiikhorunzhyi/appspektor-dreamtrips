@@ -39,8 +39,10 @@ public class AttachCardCommand extends Command<BankCard> implements InjectableAc
             .createObservableResult(new AddRecordAction(record))
             .map(it -> it.record) // id should be added in AddRecordAction
             .flatMap(this::saveDefaultCard)
-            .subscribe(addedRecord -> callback.onSuccess(mapperyContext.convert(addedRecord, BankCard.class)),
-                  callback::onFail);
+            .map(addedRecord -> mapperyContext.convert(addedRecord, BankCard.class))
+            .flatMap(newCard -> interactor.cardsListPipe()
+                  .createObservableResult(CardListCommand.add(newCard)))
+            .subscribe(command -> callback.onSuccess((BankCard) command.getResult()), callback::onFail);
    }
 
    private Observable<Record> saveDefaultCard(Record record) {

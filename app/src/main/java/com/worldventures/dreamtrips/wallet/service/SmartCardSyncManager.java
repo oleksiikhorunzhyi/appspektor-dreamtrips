@@ -55,7 +55,6 @@ public class SmartCardSyncManager {
          observeConnection();
          connectUpdateSmartCard();
          connectFetchingBattery();
-         connectSyncCards();
          connectSyncDisabling();
          connectFetchingFirmwareVersion();
       }
@@ -235,6 +234,7 @@ public class SmartCardSyncManager {
                   }));
    }
 
+   @SuppressWarnings("unused") // for 1.18
    private void connectSyncCards() {
       subscriptions.add(Observable.interval(10, TimeUnit.MINUTES)
             .mergeWith(interactor.cardsListPipe().observeSuccess()

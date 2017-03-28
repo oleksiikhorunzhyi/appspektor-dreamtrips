@@ -36,7 +36,7 @@ android {
    def versionMajor = 1
    def versionMinor = 18
    def versionPatch = 0
-   def versionBuild = 1 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 4 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -136,7 +136,6 @@ android {
       buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
       buildConfigField 'String', 'API_VERSION', '"2"'
       buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-      buildConfigField 'boolean', 'SMARTCARD_ENABLED', 'true'
       buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
       resValue "string", "facebook_app_id", "761062457321921"
       resValue "string", "fb_login_protocol_scheme", "fb761062457321921"
@@ -235,7 +234,6 @@ android {
          //
          manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
          buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
-         buildConfigField 'boolean', 'SMARTCARD_ENABLED', 'false'
       }
    }
 

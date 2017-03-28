@@ -40,6 +40,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInf
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateProfileModule;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
@@ -94,6 +95,7 @@ import dagger.Module;
             RestartSmartCardCommand.class,
             AvailabilitySmartCardCommand.class,
             UpdateSmartCardUserCommand.class,
+            AddDummyRecordCommand.class,
             FactoryResetCommand.class
       },
       complete = false, library = true)

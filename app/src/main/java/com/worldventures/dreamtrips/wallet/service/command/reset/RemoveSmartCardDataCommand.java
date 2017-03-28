@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
-import com.worldventures.dreamtrips.wallet.domain.entity.FactoryResetOptions;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import javax.inject.Inject;

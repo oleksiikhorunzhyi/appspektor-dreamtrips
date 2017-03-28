@@ -170,7 +170,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void onFailMerchantLoad(FullMerchantAction command, Throwable throwable) {
       actionParamsHolder = FullMerchantParamsHolder.fromAction(command);
 
-      getView().hideBlockingProgress();
       getView().showError(command.getErrorMessage());
    }
 

@@ -46,9 +46,7 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
+   public OperationScreen provideOperationDelegate() {return null;}
 
    @Override
    protected boolean hasToolbar() {

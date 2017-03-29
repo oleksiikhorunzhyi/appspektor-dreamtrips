@@ -8,16 +8,13 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.ChangeDefaultCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
@@ -85,8 +82,9 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .createObservableResult(RecordListCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .map(command -> Queryable.from(command.getResult()).first(element -> element.id().equals(recordId)))
-            .subscribe(record -> getView().showDefaultAddress(
-                  obtainAddressWithCountry((this.record = record).addressInfo())),
+            .subscribe(record -> {
+                     this.record = record;
+                     getView().showDefaultAddress(record.addressInfo()); },
                   throwable -> Timber.e(throwable, ""));
    }
 
@@ -186,13 +184,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       getView().setAsDefaultPaymentCardCondition()
             .compose(bindView())
             .subscribe(this::defaultCardSwitcherChanged);
-   }
-
-   private AddressInfoWithLocale obtainAddressWithCountry(AddressInfo addressInfo) {
-      return ImmutableAddressInfoWithLocale.builder()
-            .addressInfo(addressInfo)
-            .locale(LocaleHelper.getDefaultLocale())
-            .build();
    }
 
    void onDeleteCardClick() {
@@ -340,7 +331,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    public interface Screen extends WalletScreen {
       void showWalletRecord(Record record);
 
-      void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
+      void showDefaultAddress(AddressInfo addressInfo);
 
       void showDefaultCardDialog(Record defaultRecord);
 

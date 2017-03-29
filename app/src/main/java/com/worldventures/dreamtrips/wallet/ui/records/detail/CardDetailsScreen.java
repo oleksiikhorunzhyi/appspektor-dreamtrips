@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -84,7 +84,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             .toString()).skip(1);
 
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
-            R.string.wallet_add_card_details_hint_card_name_length, true, false);
+            R.string.wallet_add_card_details_hint_card_name_length, false, false);
    }
 
    private void setupToolbar() {
@@ -206,8 +206,8 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
-      tvAddress.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+   public void showDefaultAddress(AddressInfo addressInfo) {
+      tvAddress.setText(AddressUtil.obtainAddressLabel(addressInfo));
    }
 
    @Override

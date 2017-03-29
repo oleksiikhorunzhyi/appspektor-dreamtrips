@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
@@ -150,8 +149,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void defaultAddress(AddressInfoWithLocale defaultAddress) {
-      final AddressInfo addressInfo = defaultAddress.addressInfo();
+   public void defaultAddress(AddressInfo addressInfo) {
       etAddress1.setText(addressInfo.address1());
       etAddress1.setSelection(etAddress1.length());
 

@@ -59,6 +59,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPre
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
@@ -129,8 +130,8 @@ import dagger.Provides;
             SyncRecordsPresenter.class,
             NewCardPowerOnPresenter.class,
             PreCheckNewCardPresenter.class,
-            PaymentSyncFinishPresenter.class
-
+            PaymentSyncFinishPresenter.class,
+            WizardUploadProfilePresenter.class
       },
       complete = false, library = true
 )

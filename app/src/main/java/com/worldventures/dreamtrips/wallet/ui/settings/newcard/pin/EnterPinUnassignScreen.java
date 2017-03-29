@@ -57,7 +57,7 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
    public OperationView<FactoryResetCommand> provideOperationView() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<FactoryResetCommand>(
-                  getContext(), R.string.loading, false, dialog -> presenter.cancelUnassign()
+                  getContext(), R.string.loading, true, dialog -> presenter.cancelUnassign()
             )
       );
    }

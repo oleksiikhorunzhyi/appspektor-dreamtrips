@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -55,7 +55,8 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
 
    @Override
    protected void run(CommandCallback<SmartCardUser> callback) throws Throwable {
-      validateUserNameAndCreateUser()
+      validateUserData()
+            .flatMap(aVoid -> createUserForSmartCard())
             .flatMap(user -> uploadOnSmartCard(user)
                   .map(aVoid -> convertToSmartCardUser(user)))
             .flatMap(user -> smartCardInteractor.smartCardUserPipe()
@@ -81,16 +82,19 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
             ).map(action -> null);
    }
 
-   private Observable<User> validateUserNameAndCreateUser() throws FormatException {
-      if (avatar == null) throw new MissedAvatarException("avatar == null");
-      if (avatar.original() == null)
-         throw new MissedAvatarException("Avatar file == null");
-      if (!avatar.original().exists())
-         throw new MissedAvatarException("Avatar does not exist");
+   private Observable<Void> validateUserData() {
+      try {
+         if (avatar == null || avatar.original() == null || !avatar.original().exists()) {
+            throw new MissedAvatarException();
+         }
+         WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
+      } catch (FormatException | MissedAvatarException e) {
+         return Observable.error(e);
+      }
+      return Observable.just(null);
+   }
 
-
-      WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
-
+   private Observable<User> createUserForSmartCard() {
       return smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .map(command -> ImmutableUser.builder()
@@ -110,10 +114,5 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
       return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 
-   public static class MissedAvatarException extends RuntimeException {
 
-      MissedAvatarException(String message) {
-         super(message);
-      }
-   }
 }

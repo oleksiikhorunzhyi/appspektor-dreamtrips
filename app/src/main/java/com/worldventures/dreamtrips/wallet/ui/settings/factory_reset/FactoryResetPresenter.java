@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
@@ -50,12 +51,16 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
                   .onSuccess(command -> navigator.single(new FactoryResetSuccessPath()))
                   .onFail(ErrorHandler.<ResetSmartCardCommand>builder(getContext())
                         .ignore(CancelException.class)
-                        .defaultAction(command ->  goBack())
+                        .defaultAction(command -> goBack())
                         .build())
                   .wrap()
             );
 
-      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
+      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(
+                  ResetOptions.builder()
+                        .withEnterPin(true)
+                        .build())
+      );
    }
 
    private void cancelFactoryReset() {

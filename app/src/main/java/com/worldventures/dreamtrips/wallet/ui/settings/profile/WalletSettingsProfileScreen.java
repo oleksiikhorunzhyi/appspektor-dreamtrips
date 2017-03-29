@@ -35,7 +35,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    private Observable<String> firstNameObservable;
    private Observable<String> middleNameObservable;
-   private Observable<String> lastNameObservable;
 
    /**
     * TODO
@@ -70,12 +69,14 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       });
 
       if (isInEditMode()) return;
+
+      etLastName.setKeyListener(null);
+
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
       firstNameObservable = RxTextView.afterTextChangeEvents(etFirstName).map(event -> event.editable().toString());
       middleNameObservable = RxTextView.afterTextChangeEvents(etMiddleName).map(event -> event.editable().toString());
-      lastNameObservable = RxTextView.afterTextChangeEvents(etLastName).map(event -> event.editable().toString());
       ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
    }
 
@@ -125,7 +126,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       etMiddleName.setSelection(etMiddleName.length());
 
       etLastName.setText(lastName);
-      etLastName.setSelection(etLastName.length());
    }
 
    @Override
@@ -162,11 +162,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    public Observable<String> middleNameObservable() {
       return middleNameObservable;
-   }
-
-   @Override
-   public Observable<String> lastNameObservable() {
-      return lastNameObservable;
    }
 
    @Override

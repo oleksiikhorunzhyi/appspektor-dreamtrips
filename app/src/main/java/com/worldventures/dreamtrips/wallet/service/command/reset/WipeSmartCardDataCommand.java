@@ -28,10 +28,17 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject Janet apiLibJanet;
 
-   private final boolean withPaymentCard;
+   private final ResetOptions factoryResetOptions;
 
-   public WipeSmartCardDataCommand(boolean withPaymentCard) {
-      this.withPaymentCard = withPaymentCard;
+   public WipeSmartCardDataCommand() {
+      this.factoryResetOptions = ResetOptions.builder()
+            .wipePaymentCards(true)
+            .wipeUserSmartCardData(true)
+            .build();
+   }
+
+   public WipeSmartCardDataCommand(ResetOptions factoryResetOptions) {
+      this.factoryResetOptions = factoryResetOptions;
    }
 
    @Override
@@ -80,6 +87,6 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
 
    private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {
       return walletJanet.createPipe(RemoveSmartCardDataCommand.class)
-            .createObservableResult(new RemoveSmartCardDataCommand(withPaymentCard));
+            .createObservableResult(new RemoveSmartCardDataCommand(factoryResetOptions));
    }
 }

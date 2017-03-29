@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.profile;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -239,15 +238,13 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
             view.firstNameObservable(),
             view.middleNameObservable(),
-            view.lastNameObservable(),
             smartCardUserDataInteractor.smartCardAvatarPipe()
                   .observeSuccess()
                   .map(Command::getResult)
                   .startWith(Observable.just(null)),
-            (user, firstName, middleName, lastName, newAvatar) -> {
+            (user, firstName, middleName, newAvatar) -> {
                handleFirstName(user.firstName(), firstName);
                handleMiddleName(user.middleName(), middleName);
-               handleLastName(user.lastName(), lastName);
                handleAvatar(user.userPhoto(), newAvatar);
                return null;
             })
@@ -268,14 +265,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
          changeProfileFlag &= 0xFF_FF_00_FF;
       } else {
          changeProfileFlag |= 0x00_00_FF_00;
-      }
-   }
-
-   private void handleLastName(String lastName, String newLastName) {
-      if (lastName.equals(newLastName)) {
-         changeProfileFlag &= 0xFF_00_FF_FF;
-      } else {
-         changeProfileFlag |= 0x00_FF_00_00;
       }
    }
 
@@ -316,8 +305,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       Observable<String> firstNameObservable();
 
       Observable<String> middleNameObservable();
-
-      Observable<String> lastNameObservable();
 
       void showError(Throwable throwable);
 

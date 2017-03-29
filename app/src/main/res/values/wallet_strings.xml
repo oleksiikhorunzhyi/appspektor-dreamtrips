@@ -38,6 +38,9 @@
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 3 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
+   <string name="wallet_edit_profile_confirmation_dialog_message">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s</b><br/>]]></string>
+   <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
+   <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>
@@ -442,5 +445,10 @@
    <string name="wallet_close">Close</string>
    <string name="wallet_set_pin_info_gesture">Press and hold</string>
    <string name="wallet_confirm_factory_reset_msg">Are you sure you would you like to factory reset your Smart Card?</string>
+
+   <!-- Upload User Card Data screen -->
+   <string name="wallet_wizard_upload_profile_header">Upload User Card Data</string>
+   <string name="wallet_wizard_upload_profile_message">This could take a few minutes…</string>
+   <string name="wallet_error_uploading_retry">Connection error. Can\'t upload User Data. Please retry.</string>
 
 </resources>

@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockContactLoader;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockConversationsLoader;
+import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,7 @@ import java.util.List;
 import io.techery.janet.ActionState;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.http.HttpClient;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
@@ -74,7 +76,9 @@ public class MessengerSyncDelegateTest extends MessengerBaseTest {
    @Mock MessengerServerFacade messengerServerFacade;
    @Mock UsersDelegate usersDelegate;
    @Mock UsersDAO usersDAO;
+   @Mock HttpClient httpClient;
 
+   private ReLoginInteractor reLoginInteractor;
    private MessengerSyncDelegate messengerSyncDelegate;
 
    @CallSuper
@@ -105,7 +109,8 @@ public class MessengerSyncDelegateTest extends MessengerBaseTest {
       daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
       daggerActionService.registerProvider(UsersDAO.class, () -> usersDAO);
 
-      messengerSyncDelegate = new MessengerSyncDelegate(janet);
+      reLoginInteractor = new ReLoginInteractor(httpClient);
+      messengerSyncDelegate = new MessengerSyncDelegate(janet, reLoginInteractor);
    }
 
    @Test

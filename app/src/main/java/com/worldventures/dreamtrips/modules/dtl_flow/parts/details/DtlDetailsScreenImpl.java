@@ -67,9 +67,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    public static final String MAP_TAG = "MAP_DETAILS_TAG";
 
-   public static int SIZE_COMMENTS = 7;
-   public static final float RATING_MERCHANT = 2.5f;
-
    @Inject ActivityResultDelegate activityResultDelegate;
    @Inject Router router;
 

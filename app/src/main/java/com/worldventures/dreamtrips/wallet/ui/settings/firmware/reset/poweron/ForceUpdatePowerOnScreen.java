@@ -55,7 +55,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
       hideAllView();
       postDelayed(this::startSoarAnimation, SHOW_SOAR_TITLE_DELAY);
-      wizardVideoView.playVideo(R.raw.anim_power_on_sc);
+      wizardVideoView.setVideoSource(R.raw.anim_power_on_sc);
    }
 
    @Override

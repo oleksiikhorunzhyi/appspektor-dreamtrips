@@ -54,7 +54,7 @@ public class NewCardPowerOnScreen extends WalletLinearLayout<NewCardPowerOnPrese
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-      wizardVideoView.playVideo(R.raw.anim_power_on_sc);
+      wizardVideoView.setVideoSource(R.raw.anim_power_on_sc);
    }
 
    @Override

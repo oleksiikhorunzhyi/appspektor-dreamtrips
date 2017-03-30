@@ -17,13 +17,13 @@
 
       <TextView
             android:id="@+id/tv_place"
-            style="@style/SettingsItemText"
+            style="@style/SettingsText.Primary"
             tools:text="Subway, Food"
             />
 
       <TextView
             android:id="@+id/tv_info"
-            style="@style/SettingsItemSecondaryText"
+            style="@style/SettingsText.Secondary"
             tools:text="Dominicana st, 29891"
             />
 

@@ -35,7 +35,7 @@ android {
    def versionMajor = 1
    def versionMinor = 19
    def versionPatch = 0
-   def versionBuild = 7 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 8 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -460,7 +460,7 @@ dependencies {
    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
    compile 'io.reactivex:rxjava:1.2.3'
    compile 'io.reactivex:rxandroid:1.1.0'
-   compile('com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'){
+   compile('com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0') {
       exclude group: 'com.android.support'
    }
    compile 'com.trello:rxlifecycle:0.4.0'
@@ -561,9 +561,6 @@ dependencies {
    compile(group: 'io.techery.janet', name: 'smartcard', version: '0.19.0-SNAPSHOT', changing: true) {
       exclude group: 'com.github.techery', module: 'mappery'
    }
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
 
    // Testing
    testCompile 'junit:junit:4.12'

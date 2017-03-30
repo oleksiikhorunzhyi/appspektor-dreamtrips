@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.TextView;
+import android.view.View;
 
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
@@ -23,7 +23,7 @@ import flow.path.Path;
 public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T> {
 
    private Injector injector;
-   private TextView connectionLabel;
+   private View connectionHeader;
    private boolean visibleConnectionLabel = true;
 
    public WalletLinearLayout(Context context) {
@@ -45,7 +45,8 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
       super.onFinishInflate();
       ButterKnife.inject(this);
 
-      connectionLabel = (TextView) LayoutInflater.from(getContext())
+
+      connectionHeader = LayoutInflater.from(getContext())
             .inflate(R.layout.wallet_smartcard_connection_plank, this, false);
    }
 
@@ -54,12 +55,11 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
 
       switch (connectionStatus) {
          case CONNECTED:
-            removeView(connectionLabel);
+            removeView(connectionHeader);
             break;
          case DISCONNECTED:
-            connectionLabel.setText(R.string.wallet_smart_card_enable_instruction);
-            if (indexOfChild(connectionLabel) < 0) {
-               addView(connectionLabel, hasToolbar() ? 1 : 0);
+            if (indexOfChild(connectionHeader) < 0) {
+               addView(connectionHeader, hasToolbar() ? 1 : 0);
             }
             break;
       }

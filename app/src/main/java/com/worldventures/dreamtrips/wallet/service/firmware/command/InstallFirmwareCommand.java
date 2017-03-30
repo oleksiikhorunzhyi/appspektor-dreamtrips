@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.firmware.command;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
@@ -35,8 +34,6 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject FirmwareRepository firmwareRepository;
    @Inject SmartCardInteractor smartCardInteractor;
-
-   @Inject TemporaryStorage temporaryStorage;
 
    private LoadFirmwareFilesCommand loadFirmwareFilesCommand;
    private ActionPipe<LoadFirmwareFilesCommand> loadFirmwareFilesCommandActionPipe;
@@ -82,8 +79,6 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
       return janet.createPipe(LoadFirmwareFilesCommand.class)
             .createObservableResult(loadFirmwareFilesCommand)
             .doOnCompleted(subscription::unsubscribe)
-            .flatMap(action ->//todo remove it when temporary storage will be useless
-                  temporaryStorage.failInstall() ? error(new RuntimeException()) : Observable.just(action))
             .map(it -> (Void) null);
    }
 

@@ -186,4 +186,8 @@ public class ViewUtils {
    public static void setViewVisibility(int visibility, View... views) {
       Queryable.from(views).forEachR(view -> setViewVisibility(view, visibility));
    }
+
+   public static String getStringById(Context context, @StringRes int text) {
+      return context.getResources().getString(text);
+   }
 }

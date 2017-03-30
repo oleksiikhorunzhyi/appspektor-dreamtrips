@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.HttpAction
 
 import java.util.List;
 
-
 public interface CategoryHttpActionCreator<Action extends AuthorizedHttpAction, Params extends HttpActionParams> {
 
    Action createAction(Params params, List<String> merchantTypes);

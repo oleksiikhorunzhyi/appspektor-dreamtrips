@@ -48,6 +48,8 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    boolean isHoursViewExpanded();
 
+   void showAllReviews();
+
    void addNoCommentsAndReviews();
 
    void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);

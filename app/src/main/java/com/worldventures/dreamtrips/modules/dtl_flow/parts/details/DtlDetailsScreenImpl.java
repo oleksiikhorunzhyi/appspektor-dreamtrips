@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,6 +68,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    public static final String MAP_TAG = "MAP_DETAILS_TAG";
 
+   public static int SIZE_COMMENTS = 7;
+   public static final float RATING_MERCHANT = 2.5f;
+
    @Inject ActivityResultDelegate activityResultDelegate;
    @Inject Router router;
 
@@ -74,6 +79,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
    @InjectView(R.id.merchant_address) TextView merchantAddress;
    @InjectView(R.id.tv_read_all_review) TextView mTvReadAllReviews;
+
+   @InjectView(R.id.container_comments) FrameLayout mContainerComments;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -374,5 +381,16 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    public DtlDetailsScreenImpl(Context context, AttributeSet attrs) {
       super(context, attrs);
+   }
+
+   @OnClick(R.id.button_see_list_reviews)
+   @Override
+   public void showAllReviews() {
+      getPresenter().addNewComments(RATING_MERCHANT, SIZE_COMMENTS, ReviewObject.getDummies(SIZE_COMMENTS));
+   }
+
+   @OnClick(R.id.tv_read_all_review)
+   public void onClickReadAllReviews() {
+      getPresenter().showAllReviews();
    }
 }

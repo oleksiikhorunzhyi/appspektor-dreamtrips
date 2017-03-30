@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -241,36 +242,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
    }
 
-   public void onShareClick() {
-      getView().share(merchant);
-   }
-
-   @Override
-   public void trackSharing(@ShareType String type) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(
-                  ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
-   }
-
-   @Override
-   public void trackPointEstimator() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
-   }
-
-   @Override
-   public void routeToMerchantRequested(@Nullable final Intent intent) {
-      locationDelegate.getLastKnownLocation().compose(bindViewIoToMainComposer()).subscribe(location -> {
-         analyticsInteractor.dtlAnalyticsCommandPipe()
-               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(location, merchant)));
-         getView().showMerchantMap(intent);
-      }, e -> {
-         analyticsInteractor.dtlAnalyticsCommandPipe()
-               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
-         getView().showMerchantMap(intent);
-      });
-   }
-
    @Override
    public void showAllReviews() {
       Flow.get(getContext()).set(new DtlReviewsPath(merchant));
@@ -310,5 +281,35 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          newListReviews.add(reviews.get(i));
       }
       return newListReviews;
+   }
+
+   public void onShareClick() {
+      getView().share(merchant);
+   }
+
+   @Override
+   public void trackSharing(@ShareType String type) {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(
+                  ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
+   }
+
+   @Override
+   public void trackPointEstimator() {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
+   }
+
+   @Override
+   public void routeToMerchantRequested(@Nullable final Intent intent) {
+      locationDelegate.getLastKnownLocation().compose(bindViewIoToMainComposer()).subscribe(location -> {
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(location, merchant)));
+         getView().showMerchantMap(intent);
+      }, e -> {
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
+         getView().showMerchantMap(intent);
+      });
    }
 }

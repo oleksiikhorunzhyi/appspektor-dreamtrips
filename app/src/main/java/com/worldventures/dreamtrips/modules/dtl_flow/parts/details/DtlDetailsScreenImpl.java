@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -383,14 +382,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       super(context, attrs);
    }
 
-   @OnClick(R.id.button_see_list_reviews)
    @Override
    public void showAllReviews() {
-      getPresenter().addNewComments(RATING_MERCHANT, SIZE_COMMENTS, ReviewObject.getDummies(SIZE_COMMENTS));
-   }
 
-   @OnClick(R.id.tv_read_all_review)
-   public void onClickReadAllReviews() {
-      getPresenter().showAllReviews();
    }
 }

@@ -93,7 +93,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    private void observeSavingCardDetailsData() {
       smartCardInteractor.addRecordPipe()
-            .observeWithReplay()
+            .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationAddRecord())
                   .onSuccess(this::onCardAdd)

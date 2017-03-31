@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -9,7 +11,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -36,7 +37,8 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
-      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+      if(isInEditMode()) return;
+      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
    }
 
    @NonNull

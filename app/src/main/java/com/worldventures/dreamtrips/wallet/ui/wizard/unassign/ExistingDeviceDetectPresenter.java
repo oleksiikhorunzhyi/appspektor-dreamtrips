@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 
 import javax.inject.Inject;
 
@@ -29,7 +30,8 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
    }
 
    void unpairConfirmed() {
-
+      // TODO: 4/3/17 change to real SmartCard Id, after implement domain of this screen
+      navigator.single(new PairKeyPath("68240988"));
    }
 
    public void goBack() {

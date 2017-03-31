@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import java.util.ArrayList;
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import android.support.design.widget.Snackbar;
 
 public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviewsPresenter, DtlReviewsPath>
@@ -26,6 +28,8 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView) View emptyView;
     @InjectView(R.id.errorView) View errorView;
+
+    SweetAlertDialog errorDialog;
 
     public DtlReviewsScreenImpl(Context context) {
         super(context);
@@ -104,6 +108,27 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @Override
     public void showEmpty(boolean isShow) {
         emptyView.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void showFrameLayoutReviews(boolean isShow) {
+        mContainerDetail.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void userHasPendingReview() {
+        errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+        errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+        errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+        errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+        errorDialog.showCancelButton(true);
+        errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+        errorDialog.show();
+    }
+
+    @Override
+    public String getMerchantId() {
+        return getPath().getMerchant().id();
     }
 
     @Override

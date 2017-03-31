@@ -116,8 +116,8 @@ import dagger.Provides;
             DtlReviewsScreenImpl.class,
             DtlCommentReviewScreenImpl.class,
             DtlCommentReviewPresenterImpl.class,
-            DtlDetailReviewScreenImpl.class,
-            DtlDetailReviewPresenterImpl.class
+            DtlDetailReviewPresenterImpl.class,
+            DtlDetailReviewScreenImpl.class
       },
       complete = false, library = true)
 public class DtlActivityModule {

@@ -81,17 +81,17 @@ public class OfferWithReviewFragment extends Fragment {
 
    private void initListener() {
       recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerAdapter,
-            new RecyclerClickListener() {
-               @Override
-               public void onClick(View view, int position) {
-                  Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position)));
-               }
+              new RecyclerClickListener() {
+                 @Override
+                 public void onClick(View view, int position) {
+                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId()));
+                 }
 
-               @Override
-               public void onLongClick(View view, int position) {
+                 @Override
+                 public void onLongClick(View view, int position) {
 
-               }
-            }));
+                 }
+              }));
    }
 
    @Override

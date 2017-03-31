@@ -13,7 +13,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
-import timber.log.Timber;
 
 @CommandAction
 public class AddReviewAction extends Command<Review> implements InjectableAction {
@@ -39,7 +38,7 @@ public class AddReviewAction extends Command<Review> implements InjectableAction
       callback.onProgress(0);
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpAction(actionParams, reviewParams))
-            .map(AddReviewHttpAction::review)
+            .map(AddReviewHttpAction::response)
             .map(attributes -> mapperyContext.convert(attributes, Review.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }

@@ -58,7 +58,7 @@
          android:layout_height="wrap_content"
          android:layout_below="@+id/earned_holder"
          android:layout_centerHorizontal="true"
-         android:layout_marginTop="@dimen/spacing_small"
+         android:layout_margin="@dimen/spacing_small"
          >
 
       <TextView
@@ -86,8 +86,7 @@
             />
 
    </LinearLayout>
-
-   <!--
+<!--
    <View
          android:id="@+id/divider_1"
          android:layout_width="match_parent"
@@ -125,8 +124,7 @@
          app:prb_totalTicks="5"
          app:prb_clickable="true"
          />
-   -->
-
+-->
    <View
          android:id="@+id/divider_2"
          android:layout_width="match_parent"

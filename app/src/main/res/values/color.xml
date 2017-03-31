@@ -217,4 +217,6 @@
    <color name="reviewBackground">#005E92</color>
    <color name="greenVerifiedView">#97c23b</color>
 
+   <color name="background_detail_review_menu">#f9f9f9</color>
+
 </resources>

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, DtlMerchantsState> {
 
@@ -30,4 +29,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
    void mapClicked();
 
    void offersOnlySwitched(boolean isOffersOnly);
+
+   void sendToRatingReview(ThinMerchant merchant);
 }

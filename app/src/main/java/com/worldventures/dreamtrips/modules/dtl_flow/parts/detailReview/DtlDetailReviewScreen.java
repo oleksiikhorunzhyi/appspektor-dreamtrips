@@ -17,4 +17,6 @@ public interface DtlDetailReviewScreen extends DtlScreen {
     void onRefreshError(String error);
 
     void showEmpty(boolean isShow);
+
+    String getMerchantId();
 }

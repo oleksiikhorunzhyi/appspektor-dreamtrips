@@ -48,14 +48,12 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     TextView mTvIsVerified;
     @InjectView(R.id.tvComment)
     TextView mTvComment;
+    @InjectView(R.id.toolbar_change)
+    Toolbar mTlMenuOption;
     @InjectView(R.id.iv_verified_buyer)
     ImageView mIvVerifiedBuyer;
 
     private SweetAlertDialog errorDialog;
-
-    private static final int MINIMUM_CHARACTER = 140;
-    private static final int MAJOR_CHARACTER = 2000;
-    public static final int REVIEW_COMMENT = 1;
 
     public DtlDetailReviewScreenImpl(Context context) {
         super(context);
@@ -81,18 +79,20 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);
 
+        mTlMenuOption.inflateMenu(getPresenter().getMenuFlag());
+        mTlMenuOption.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
         initData();
     }
 
     private void initData() {
         ReviewObject reviewObject = getPath().getReviewObject();
-        if (null != reviewObject){
+        if (null != reviewObject) {
             mTvUserName.setText(reviewObject.getNameUser());
             mTvCommentWrote.setText(reviewObject.getTimeWrote());
             if (reviewObject.isVerifiedReview()) {
                 mTvIsVerified.setVisibility(View.VISIBLE);
                 mIvVerifiedBuyer.setVisibility(View.VISIBLE);
-            }  else {
+            } else {
                 mTvIsVerified.setVisibility(View.GONE);
                 mIvVerifiedBuyer.setVisibility(View.GONE);
             }
@@ -168,6 +168,11 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     @Override
     public void showEmpty(boolean isShow) {
         emptyView.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public String getMerchantId() {
+        return getPath().getMerchantId();
     }
 
     @Override

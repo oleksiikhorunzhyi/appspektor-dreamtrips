@@ -126,6 +126,11 @@
                   android:background="@drawable/list_divider_with_right_padding"
                   />
 
+            <FrameLayout
+                android:id="@+id/container_comments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
                   android:id="@+id/disclaimer"
                   android:layout_width="match_parent"

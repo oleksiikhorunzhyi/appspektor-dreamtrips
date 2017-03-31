@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributeConver
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CoordinatesConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CurrencyConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.DisclaimerConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.FlaggingConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.LocationsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantMediaConverter;
@@ -12,6 +13,8 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.OfferConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationDayConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationHourConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewSettingsConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewSummaryConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
@@ -114,5 +117,23 @@ public class DtlMappingModule {
    @Singleton
    Converter provideUserImageConverter() {
       return new UserImageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReviewSummaryConverter() {
+      return new ReviewSummaryConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReviewSettingsConverter() {
+      return new ReviewSettingsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFlaggingConverterConverter() {
+      return new FlaggingConverter();
    }
 }

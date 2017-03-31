@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import javax.inject.Inject;
 
@@ -39,6 +40,11 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     private final Merchant merchant;
     private static final String BRAND_ID = "1";
+    private User user;
+
+    private String stringReview;
+    private int stringReviewLength = 0;
+    private boolean isStringReviewValid = false;
 
     public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
         super(context);
@@ -91,17 +97,18 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                     validated = true;
                 }
             } else {
-                getView().showSnackbarMessage(getContext().getString(R.string.review_comment_major_letter));
+                getView().showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_major_letter), maximumCharactersAllowed()));
             }
-        } else if (getView().getSizeComment() > 0){
-            getView().showSnackbarMessage(getContext().getString(R.string.review_comment_minor_letter));
+        } else if (getView().getSizeComment() > 0) {
+            getView().showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_minor_letter), minimumCharactersAllowed()));
         }
         return validated;
     }
 
     @Override
-    public void sendAddReview(String description, Integer rating, Boolean verified) {
-        User user = appSessionHolder.get().get().getUser();
+    public void sendAddReview(String description, Integer rating) {
+        this.user = appSessionHolder.get().get().getUser();
+        ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
               .observeWithReplay()
@@ -130,6 +137,24 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
               .build()));
     }
 
+    @Override
+    public int maximumCharactersAllowed() {
+        int maximumCharactersAllowed = 0;
+        if (merchant.reviews() != null && merchant.reviews().reviewSettings() != null) {
+            maximumCharactersAllowed = Integer.parseInt(merchant.reviews().reviewSettings().maximumCharactersAllowed());
+        }
+        return maximumCharactersAllowed;
+    }
+
+    @Override
+    public int minimumCharactersAllowed() {
+        int minimumCharactersAllowed = 0;
+        if (merchant.reviews() != null && merchant.reviews().reviewSettings() != null) {
+            minimumCharactersAllowed = Integer.parseInt(merchant.reviews().reviewSettings().minimumCharactersAllowed());
+        }
+        return minimumCharactersAllowed;
+    }
+
     private void onMerchantsLoaded(AddReviewAction action) {
         getView().onRefreshSuccess();
     }
@@ -140,5 +165,31 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
         getView().onRefreshError(throwable.getMessage());
+    }
+
+    @Override
+    public void handleStringReview(String stringReview) {
+        this.stringReview = stringReview;
+
+        int lineJumpOccurrences = 0;
+        for (int i = 0; i < stringReview.length(); i++) {
+            if (stringReview.charAt(i) == '\n') {
+                lineJumpOccurrences++;
+            }
+        }
+        stringReviewLength = stringReview.length() - lineJumpOccurrences;
+
+        getView().setInputChars(stringReviewLength);
+
+        if (stringReviewLength >= minimumCharactersAllowed()) {
+            isStringReviewValid = true;
+            getView().setNormalStyleText();
+        } else {
+            getView().setBoldStyleText();
+        }
+        getView().setMaxLengthText(maximumCharactersAllowed() + lineJumpOccurrences);
+        if (stringReviewLength >= maximumCharactersAllowed()){
+            getView().showErrorMaxMessage();
+        }
     }
 }

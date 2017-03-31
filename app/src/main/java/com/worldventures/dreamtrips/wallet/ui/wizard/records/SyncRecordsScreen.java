@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.records;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.tv_progress_count_cards_sync) TextView progressCountCardsSync;
-   @InjectView(R.id.tv_progress_status) TextView progressStatusLabel;
+   @InjectView(R.id.tv_progress_status) TextView progressPercentageLabel;
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
 
    private MaterialDialog retrySyncCardsDialog = null;
@@ -50,9 +51,10 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
    }
 
+   @NonNull
    @Override
    public SyncRecordsPresenter createPresenter() {
-      return new SyncRecordsPresenter(getContext(), getInjector());
+      return new SyncRecordsPresenter(getContext(), getInjector(), getPath().syncAction());
    }
 
    @Override
@@ -67,7 +69,7 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
 
    @Override
    public void setProgressInPercent(int percent) {
-      progressStatusLabel.setText(String.format(Locale.US, "%d%%", percent));
+      progressPercentageLabel.setText(String.format(Locale.US, "%d%%", percent));
    }
 
    @Override
@@ -78,6 +80,12 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
                   command -> presenter.retrySync(),
                   command -> presenter.finish())
       );
+   }
+
+   @Override
+   public void hideProgressOfProcess() {
+      progressPercentageLabel.setVisibility(INVISIBLE);
+      progressCountCardsSync.setText(R.string.wallet_syncing_payment_cards_message);
    }
 
    @Override

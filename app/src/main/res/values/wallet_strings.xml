@@ -433,6 +433,7 @@
    <string name="wallet_syncing_payment_cards">Syncing Payment Cards</string>
    <string name="wallet_syncing_payment_cards_fail_msg">Can\'t sync card. Check your card is power on and press retry button.</string>
    <string name="wallet_syncing_payment_cards_count" formatted="false">Syncing payment card %d of %d</string>
+   <string name="wallet_syncing_payment_cards_message" formatted="false">Syncing payment cards from Smart Card</string>
 
    <!-- New card power on screen -->
    <string name="wallet_new_card_power_on" formatted="false">Power on Smart Card <![CDATA[<b>%s</b>]]> by pressing and holding on the bottom-right corner of the chip.</string>

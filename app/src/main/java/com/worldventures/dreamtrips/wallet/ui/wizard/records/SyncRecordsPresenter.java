@@ -31,8 +31,11 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
    @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   public SyncRecordsPresenter(Context context, Injector injector) {
+   private final SyncAction syncAction;
+
+   public SyncRecordsPresenter(Context context, Injector injector, SyncAction syncAction) {
       super(context, injector);
+      this.syncAction = syncAction;
    }
 
    @Override
@@ -73,13 +76,17 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
                   .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
                   .create());
 
-      recordInteractor.recordsSyncPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .filter(action -> action.status == ActionState.Status.PROGRESS)
-            .subscribe(new ActionStateSubscriber<SyncRecordsCommand>()
-                  .onProgress((command, progress) -> handleProgressSyncCard(command.getLocalOnlyRecordsCount(), progress))
-            );
+      if (syncAction.isSyncToSmartCard()) {
+         recordInteractor.recordsSyncPipe()
+               .observe()
+               .compose(bindViewIoToMainComposer())
+               .filter(action -> action.status == ActionState.Status.PROGRESS)
+               .subscribe(new ActionStateSubscriber<SyncRecordsCommand>()
+                     .onProgress((command, progress) -> handleProgressSyncCard(command.getLocalOnlyRecordsCount(), progress))
+               );
+      } else {
+         getView().hideProgressOfProcess();
+      }
    }
 
    private void restoreOfflineModeDefaultState() {
@@ -103,5 +110,7 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
       void setProgressInPercent(int percent);
 
       <T> OperationView<T> provideOperationView();
+
+      void hideProgressOfProcess();
    }
 }

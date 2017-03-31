@@ -106,7 +106,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     }
 
     @Override
-    public void sendAddReview(String description, Integer rating) {
+    public void sendAddReview(String description, Integer rating, boolean verified) {
         this.user = appSessionHolder.get().get().getUser();
         ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
@@ -120,13 +120,6 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         addReviewActionActionPipe.send(AddReviewAction.create(ImmutableRequestReviewParams.builder()
               .brandId(BRAND_ID)
               .productId(merchant.id())
-              .userEmail(user.getEmail())
-              .userNickName(user.getUsername())
-              .reviewText(description)
-              .rating(String.valueOf(rating))
-              .verified(verified)
-              .userId(String.valueOf(user.getId()))
-              .deviceFingerprint(getView().getFingerprintId())
               .build(), ImmutableReviewParams.builder()
               .userEmail(user.getEmail())
               .userNickName(user.getUsername())
@@ -134,6 +127,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
               .rating(String.valueOf(rating))
               .verified(verified)
               .userId(String.valueOf(user.getId()))
+              .deviceFingerprint(getView().getFingerprintId())
+              .authorIpAddress(getIpAddress())
               .build()));
     }
 
@@ -191,5 +186,9 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         if (stringReviewLength >= maximumCharactersAllowed()){
             getView().showErrorMaxMessage();
         }
+    }
+
+    public String getIpAddress() {
+        return "192.168.1.15";
     }
 }

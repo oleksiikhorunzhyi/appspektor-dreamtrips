@@ -141,7 +141,4 @@
    <string name="review_max_char">max %1$d</string>
    <string name="input_major_limit">Your review has reached our limit. It has been shortened to fit.</string>
 
-   <string name="tv_read_more">Read more</string>
-   <string name="action_add_review">Add review</string>
-
 </resources>

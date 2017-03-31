@@ -284,14 +284,4 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     public boolean isVerified() {
         return getPath().isVerified();
     }
-
-    @Override
-    public String getFingerprintId() {
-        return getBlackbox(getContext().getApplicationContext());
-    }
-
-    @Override
-    public boolean isFromListReview(){
-        return getPath().isFromAddReview();
-    }
 }

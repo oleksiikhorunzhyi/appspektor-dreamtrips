@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
+import android.net.Uri;
 import android.support.v4.util.Pair;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
@@ -19,7 +21,6 @@ import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import io.techery.janet.smartcard.action.user.UpdateUserAction;
 import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -122,6 +124,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
       final SmartCardUserPhoto photo = changedFields.photo();
       if (photo != null) {
 
+         clearUserImageCache(user.userPhoto());
+
          return Observable
                .fromCallable(() -> getAvatarAsByteArray(photo))
                .flatMap(bytes ->  janet.createPipe(UpdateUserPhotoAction.class)
@@ -135,6 +139,14 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                      .build());
       } else {
          return Observable.just(ImmutableUpdateCardUserData.copyOf(userData).withPhotoUrl(user.userPhoto().photoUrl().toString()));
+      }
+   }
+
+   private void clearUserImageCache(SmartCardUserPhoto photo) {
+      try {
+         Fresco.getImagePipeline().evictFromCache(Uri.parse(photo.photoUrl()));
+      } catch (Exception e) {
+         Timber.e(e, "");
       }
    }
 

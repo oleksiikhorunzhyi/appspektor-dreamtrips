@@ -46,6 +46,7 @@ public class SmartCardWidget extends FrameLayout {
 
    private void setup() {
       LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_smartcard, this);
+      if (isInEditMode()) return;
       ButterKnife.inject(this);
       ImageUtils.applyGrayScaleColorFilter(scAvatar);
       setVisibility(INVISIBLE);

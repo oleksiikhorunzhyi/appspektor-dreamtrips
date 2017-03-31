@@ -16,6 +16,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import java.util.ArrayList;
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import android.support.design.widget.Snackbar;
 
 public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviewsPresenter, DtlReviewsPath>
         implements DtlReviewsScreen {
@@ -25,6 +28,8 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView) View emptyView;
     @InjectView(R.id.errorView) View errorView;
+
+    SweetAlertDialog errorDialog;
 
     public DtlReviewsScreenImpl(Context context) {
         super(context);
@@ -45,11 +50,18 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> {
-            getPresenter().onBackPressed();
             getActivity().onBackPressed();
         });
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);
+        showMessage();
+    }
+
+    private void showMessage() {
+        String message = getPath().getMessage();
+        if (message != null && message.length() > 0){
+            Snackbar.make(mContainerDetail, message, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -58,6 +70,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
         bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
         bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
+        bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, getPath().getMerchant().displayName());
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container_comments_detail, OfferWithReviewFragment.newInstance(bundle));
@@ -95,6 +108,27 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     @Override
     public void showEmpty(boolean isShow) {
         emptyView.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void showFrameLayoutReviews(boolean isShow) {
+        mContainerDetail.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void userHasPendingReview() {
+        errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+        errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+        errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+        errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+        errorDialog.showCancelButton(true);
+        errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+        errorDialog.show();
+    }
+
+    @Override
+    public String getMerchantId() {
+        return getPath().getMerchant().id();
     }
 
     @Override

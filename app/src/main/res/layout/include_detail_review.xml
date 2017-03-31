@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:orientation="vertical"
+      android:paddingBottom="16dp">
+
+
+   <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+         android:id="@+id/ivItemReview"
+         android:layout_width="@dimen/dtl_item_reviews_margin"
+         android:layout_height="@dimen/dtl_item_reviews_margin"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginLeft="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_item_reviews_margin_tw"
+         fresco:roundAsCircle="true"
+         fresco:actualImageScaleType="centerCrop"
+         fresco:placeholderImage="@drawable/noavatar_small"
+         fresco:placeholderImageScaleType="centerCrop"
+         />
+
+   <TextView
+         android:id="@+id/tvUserName"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignTop="@+id/ivItemReview"
+         android:layout_toEndOf="@+id/ivItemReview"
+         android:layout_toRightOf="@+id/ivItemReview"
+         android:layout_marginLeft="@dimen/dtl_item_reviews_margin_nine"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         android:textStyle="bold" />
+
+   <RatingBar
+         style="?android:attr/ratingBarStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:isIndicator="true"
+         android:numStars="5"
+         android:rating="0"
+         android:layout_marginTop="6dp"
+         android:theme="@style/rating_bar_style"
+         android:layout_alignLeft="@+id/tvUserName"
+         android:layout_alignStart="@+id/tvUserName"
+         android:layout_below="@+id/tvUserName"
+         android:id="@+id/rbRating" />
+
+   <TextView
+         android:id="@+id/tvCommentWrote"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/tvUserName"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:textColor="@color/color_item_review"
+         android:textSize="@dimen/dtl_all_reviews_text" />
+
+   <TextView
+         android:id="@+id/tvComment"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/rbRating"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:layout_alignStart="@+id/rbRating"
+         android:layout_below="@+id/rbRating"
+         android:ellipsize="end"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         />
+
+   <include layout="@layout/line_separator"/>
+
+   <include
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:layout_above="@+id/tvComment"
+         android:layout_toRightOf="@+id/rbRating"
+         android:layout_toEndOf="@+id/rbRating"
+         layout="@layout/include_verified_buyer" />
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar_change"
+         android:layout_width="match_parent"
+         android:layout_height="48dp"
+         android:layout_below="@+id/tvComment"
+         android:background="@color/background_detail_review_menu" />
+
+</RelativeLayout>

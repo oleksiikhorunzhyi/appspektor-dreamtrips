@@ -541,6 +541,9 @@ dependencies {
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
 
+   //FingerPrint Library
+   compile(name:'deviceprint-lib-release-2.3.3', ext:'aar')
+
    // Testing
    testCompile 'junit:junit:4.12'
    testCompile "org.robolectric:robolectric:$roboelectricVersion"

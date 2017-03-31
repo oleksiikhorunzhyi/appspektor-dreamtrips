@@ -137,6 +137,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -330,6 +333,28 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onOfferClick(ThinMerchant merchant, Offer offer) {
       getPresenter().onOfferClick(merchant, offer);
+   }
+
+   @Override
+   public void sendToRatingReview(ThinMerchant merchant) {
+      getPresenter().sendToRatingReview(merchant);
+   }
+
+   @Override
+   public void userHasPendingReview() {
+      errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   @Override
+   public void toggleOffersOnly(boolean enabled) {
+      if (dtlToolbar == null) return;
+      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

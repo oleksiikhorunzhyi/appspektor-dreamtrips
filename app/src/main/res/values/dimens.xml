@@ -386,5 +386,8 @@
    <dimen name="dtl_item_reviews_margin_nine">9dp</dimen>
    <dimen name="dtl_item_reviews_margin_eight">8dp</dimen>
    <dimen name="dtl_item_reviews_margin_seven">7dp</dimen>
+   <dimen name="dtl_item_map_width">100dp</dimen>
+   <dimen name="limit_chars_style">9sp</dimen>
+   <dimen name="margin_left_char">8dp</dimen>
 
 </resources>

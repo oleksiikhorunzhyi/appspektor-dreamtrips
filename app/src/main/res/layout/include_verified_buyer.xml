@@ -10,7 +10,7 @@
          android:layout_height="wrap_content"
          android:src="@drawable/success"
          android:layout_gravity="center"
-         android:layout_marginLeft="14dp"
+         android:layout_marginLeft="@dimen/dtl_all_reviews_margin_ft"
          />
 
    <TextView
@@ -19,9 +19,9 @@
          android:layout_height="wrap_content"
          android:layout_weight="1"
          android:layout_gravity="center"
-         android:layout_marginLeft="2dp"
+         android:layout_marginLeft="@dimen/dtl_review_small_margin"
          android:text="@string/tvVerifiedReview"
          android:textColor="@color/greenVerifiedView"
-         android:textSize="10sp"
+         android:textSize="@dimen/chat_list_date_entry_text_size"
          android:textStyle="bold" />
 </LinearLayout>

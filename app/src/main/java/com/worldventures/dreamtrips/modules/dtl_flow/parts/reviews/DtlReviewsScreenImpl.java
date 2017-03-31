@@ -128,6 +128,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
     }
 
     @Override
+    public String getMerchantId() {
+        return getPath().getMerchant().id();
+    }
+
+    @Override
     public boolean isTabletLandscape() {
         return false;
     }

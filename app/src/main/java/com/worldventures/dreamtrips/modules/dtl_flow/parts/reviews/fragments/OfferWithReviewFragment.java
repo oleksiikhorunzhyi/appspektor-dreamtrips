@@ -83,7 +83,7 @@ public class OfferWithReviewFragment extends Fragment {
               new RecyclerClickListener() {
                  @Override
                  public void onClick(View view, int position) {
-                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position)));
+                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId()));
                  }
 
                  @Override

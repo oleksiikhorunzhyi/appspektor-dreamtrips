@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -9,6 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import javax.inject.Inject;
@@ -174,13 +173,10 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         }
         stringReviewLength = stringReview.length() - lineJumpOccurrences;
 
-        Log.e("lineJumpOccurrences ", "" + lineJumpOccurrences);
-        Log.e("stringReviewLength ", "" + stringReviewLength);
-
         getView().setInputChars(stringReviewLength);
 
         if (stringReviewLength >= minimumCharactersAllowed()) {
-            isStringReviewValid = true; //Sure will be able to submit review
+            isStringReviewValid = true;
             getView().setNormalStyleText();
         } else {
             getView().setBoldStyleText();

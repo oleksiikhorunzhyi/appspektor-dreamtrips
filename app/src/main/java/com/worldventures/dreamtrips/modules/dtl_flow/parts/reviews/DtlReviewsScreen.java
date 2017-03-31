@@ -19,4 +19,6 @@ public interface DtlReviewsScreen extends DtlScreen {
    void showFrameLayoutReviews(boolean isShow);
 
    void userHasPendingReview();
+
+   String getMerchantId();
 }

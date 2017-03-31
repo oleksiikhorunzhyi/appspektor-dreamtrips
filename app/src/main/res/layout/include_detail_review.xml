@@ -98,5 +98,12 @@
             android:text="Verified Buyer" />
    </LinearLayout>
 
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar_change"
+         android:layout_width="match_parent"
+         android:layout_height="48dp"
+         android:layout_below="@+id/tvComment"
+         android:background="@color/background_detail_review_menu" />
+
 
 </RelativeLayout>

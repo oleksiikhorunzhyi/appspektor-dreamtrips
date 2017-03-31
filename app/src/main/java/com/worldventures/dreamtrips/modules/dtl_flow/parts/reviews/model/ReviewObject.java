@@ -76,11 +76,11 @@ public class ReviewObject implements Parcelable {
 
    private static ReviewObject getObject(Review review) {
       return new ReviewObject("null",
-            review.getUserNickName(),
-            review.getRating(),
-            review.getLastModeratedTimeUtc(),
-            review.getReviewText(),
-            review.getVerified());
+            review.userNickName(),
+            review.rating(),
+            review.lastModeratedTimeUtc(),
+            review.reviewText(),
+            review.verified());
    }
 
    public static ArrayList<ReviewObject> getReviewList(List<Review> reviewList) {

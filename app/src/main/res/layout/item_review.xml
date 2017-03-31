@@ -145,6 +145,14 @@
 
    </LinearLayout>
 
+   <include android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:layout_above="@+id/tvComment"
+         android:layout_toRightOf="@+id/rbRating"
+         android:layout_toEndOf="@+id/rbRating"
+         layout="@layout/include_verified_buyer" />
+
    <include layout="@layout/line_separator" />
 
 </RelativeLayout>

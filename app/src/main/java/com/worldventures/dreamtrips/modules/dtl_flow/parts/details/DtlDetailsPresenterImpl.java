@@ -40,6 +40,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -53,6 +55,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import flow.Flow;
+import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
@@ -84,6 +87,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
       preExpandOffers();
+      tryHideSuggestMerchantButton();
+      connectReviewMerchants(merchant.id());
    }
 
    @Override
@@ -137,6 +142,13 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (getViewState().isHoursViewExpanded()) {
          getView().expandHoursView();
       }
+   }
+
+   private void tryHideSuggestMerchantButton() {
+      boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
+      if (!merchant.asMerchantAttributes().hasOffers()) {
+         getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
+      } else processTransaction();
    }
 
    private void processTransaction() {
@@ -231,6 +243,13 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    @Override
+   public void onMerchantClick() {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant.asMerchantAttributes())));
+      getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
+   }
+
+   @Override
    public void onOfferClick(Offer offer) {
       MerchantMedia imageUrl = Queryable.from(offer.images()).firstOrDefault();
       if (imageUrl == null) return;
@@ -281,6 +300,24 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          newListReviews.add(reviews.get(i));
       }
       return newListReviews;
+   }
+
+   private void connectReviewMerchants(String idMerchant) {
+      ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
+      reviewActionPipe
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<ReviewMerchantsAction>()
+                  .onSuccess(this::onMerchantsLoaded));
+      reviewActionPipe.send(ReviewMerchantsAction.create(ImmutableReviewsMerchantsActionParams
+            .builder()
+            .brandId(BRAND_ID)
+            .productId(idMerchant)
+            .build()));
+   }
+
+   private void onMerchantsLoaded(ReviewMerchantsAction action) {
+      addNewComments(action);
    }
 
    public void onShareClick() {

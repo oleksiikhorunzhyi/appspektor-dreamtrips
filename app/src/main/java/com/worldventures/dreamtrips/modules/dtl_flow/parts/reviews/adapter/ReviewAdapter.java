@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -66,6 +67,8 @@ public class ReviewAdapter
       private TextView mCommentWrote;
       private RatingBar mRating;
       private TextView mComment;
+      private TextView mTvVerifiedReview;
+      private ImageView mIvVerifiedReview;
 
 
       public RecyclerViewHolder(View itemView) {
@@ -75,6 +78,8 @@ public class ReviewAdapter
          mCommentWrote = (TextView) itemView.findViewById(R.id.tvCommentWrote);
          mComment = (TextView) itemView.findViewById(R.id.tvComment);
          mRating = (RatingBar) itemView.findViewById(R.id.rbRating);
+         mTvVerifiedReview = (TextView) itemView.findViewById(R.id.tv_verified_buyer);
+         mIvVerifiedReview = (ImageView) itemView.findViewById(R.id.iv_verified_buyer);
       }
 
       public void bind(int position) {
@@ -90,6 +95,22 @@ public class ReviewAdapter
          }
          mComment.setText(mItems.get(position).getComment());
          mRating.setRating((mItems.get(position).getRatingCommentUser()));
+
+         setVerifiedReview(mItems.get(position).isVerifiedReview());
+      }
+
+      private void setVerifiedReview(boolean isVerified) {
+         if (isVerified){
+            changeVisibility(mTvVerifiedReview, View.VISIBLE);
+            changeVisibility(mIvVerifiedReview, View.VISIBLE);
+         } else {
+            changeVisibility(mTvVerifiedReview, View.INVISIBLE);
+            changeVisibility(mIvVerifiedReview, View.INVISIBLE);
+         }
+      }
+
+      private void changeVisibility(@NonNull View view, int type){
+         view.setVisibility(type);
       }
 
       private String getCorrectTimeWrote(String timeWrote) throws ParseException {

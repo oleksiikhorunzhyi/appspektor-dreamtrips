@@ -17,7 +17,6 @@ import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.model.ConnectionType;
 import io.techery.janet.smartcard.model.ImmutableConnectionParams;
@@ -26,7 +25,6 @@ import rx.Subscription;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static rx.Observable.error;
-import static rx.Observable.just;
 
 @CommandAction
 public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implements InjectableAction {
@@ -58,15 +56,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private Observable<Void> prepareCardAndInstallFirmware(CommandCallback callback) {
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       return connectSmartCard(firmwareUpdateData.smartCardId())
-            .flatMap(connectionType -> disableLock(connectionType)
-                  .flatMap(aVoid -> installFirmware(firmwareUpdateData, connectionType, callback)))
-            .doOnNext(aVoid -> enableLockUnlockDevice(true));
-   }
-
-   private Observable<Void> disableLock(ConnectionType connectionType) {
-      if (connectionType == ConnectionType.APP) return enableLockUnlockDevice(false);
-      else if (connectionType == ConnectionType.DFU) return just(null);
-      else return error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
+            .flatMap(connectionType -> installFirmware(firmwareUpdateData, connectionType, callback));
    }
 
    private Observable<ConnectionType> connectSmartCard(String scId) {
@@ -75,13 +65,6 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
             .map(connectAction -> connectAction.type)
             // hotfix for first Disconnect event from smart card
             .retry((count, throwable) -> count < 2);
-   }
-
-   private Observable<Void> enableLockUnlockDevice(boolean enable) {
-      return janet.createPipe(EnableLockUnlockDeviceAction.class)
-            .createObservableResult(new EnableLockUnlockDeviceAction(enable))
-            .onErrorResumeNext(Observable.just(null))
-            .map(action -> (Void) null);
    }
 
    private Observable<Void> installFirmware(FirmwareUpdateData firmwareUpdateData, ConnectionType connectionType, CommandCallback callback) {

@@ -313,7 +313,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId, boolean fromRating) {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
       fullMerchantInteractor.load(merchant.id(), expandedOfferId, fromRating);
-      hasPendingReview = merchant.reviewSummary().userHasPendingReview();
+      //hasPendingReview = merchant.reviewSummary().userHasPendingReview();
    }
 
    private void onEmptyMerchantsLoaded() {

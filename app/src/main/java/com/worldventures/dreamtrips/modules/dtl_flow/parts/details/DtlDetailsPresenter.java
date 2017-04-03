@@ -16,7 +16,6 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void onCheckInClicked();
    void locationNotGranted();
    void onEstimationClick();
-   void onMerchantClick();
    void onOfferClick(Offer offer);
    void onBackPressed();
    void showAllReviews();

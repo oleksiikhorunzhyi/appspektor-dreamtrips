@@ -120,15 +120,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       addNoCommentsAndReviews();
-
-      showMessage();
-   }
-
-   private void showMessage() {
-      String message = getPath().getMessage();
-      if (message != null && message.length() > 0){
-         Snackbar.make(merchantWrapper, message, Snackbar.LENGTH_LONG).show();
-      }
    }
 
    @Override

@@ -137,9 +137,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -349,12 +346,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       errorDialog.showCancelButton(true);
       errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
       errorDialog.show();
-   }
-
-   @Override
-   public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

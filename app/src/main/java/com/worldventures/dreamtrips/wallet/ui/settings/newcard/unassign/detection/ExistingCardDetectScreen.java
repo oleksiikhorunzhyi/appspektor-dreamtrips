@@ -1,15 +1,16 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign;
+package com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
@@ -27,11 +28,8 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.tv_sc_id) TextView tvSmartCardId;
-   @InjectView(R.id.container_have_card) View containerHaveCard;
-   @InjectView(R.id.unassign_button) View unassignButton;
-
-   MaterialDialog confirmUnassignDialog = null;
-   MaterialDialog dontHaveCardDialog = null;
+   @InjectView(R.id.unassign_button) Button unassignButton;
+   @InjectView(R.id.have_card_button) View haveCardButton;
 
    public ExistingCardDetectScreen(Context context) {
       super(context);
@@ -63,16 +61,6 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
    @Override
    protected boolean hasToolbar() {
       return true;
-   }
-
-   @OnClick(R.id.unassign_button)
-   public void onUnassignCard() {
-      presenter.prepareUnassignCard();
-   }
-
-   @OnClick(R.id.dont_have_card_button)
-   public void onClickDontHaveCard() {
-      presenter.prepareUnassignCardOnBackend();
    }
 
    @OnClick(R.id.have_card_button)
@@ -111,47 +99,43 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
 
    @Override
    public void modeConnectedSmartCard() {
-      containerHaveCard.setVisibility(GONE);
-      unassignButton.setVisibility(VISIBLE);
+      unassignButton.setText(R.string.wallet_unassign_card);
+      unassignButton.setOnClickListener(v -> unassignCardClick());
+      haveCardButton.setVisibility(GONE);
    }
 
    @Override
    public void modeDisconnectedSmartCard() {
-      containerHaveCard.setVisibility(VISIBLE);
-      unassignButton.setVisibility(GONE);
+      unassignButton.setText(R.string.wallet_i_dont_have_card);
+      unassignButton.setOnClickListener(v -> doNotHaveCardClick());
+      haveCardButton.setVisibility(VISIBLE);
+   }
+
+   private void doNotHaveCardClick() {
+      presenter.prepareUnassignCardOnBackend();
+   }
+
+   private void unassignCardClick() {
+      presenter.prepareUnassignCard();
    }
 
    @Override
    public void showConfirmationUnassignDialog(String scId) {
-      if (confirmUnassignDialog == null) {
-         confirmUnassignDialog = new MaterialDialog.Builder(getContext())
-               .content(Html.fromHtml(getString(R.string.wallet_unassign_card_confirm_message, scId)))
-               .positiveText(R.string.wallet_continue_label)
-               .onPositive((dialog, which) -> presenter.unassignCard())
-               .negativeText(R.string.cancel)
-               .build();
-      }
-      if(!confirmUnassignDialog.isShowing()) confirmUnassignDialog.show();
+      new MaterialDialog.Builder(getContext())
+            .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_unassign_card_confirm_message, scId)))
+            .positiveText(R.string.wallet_continue_label)
+            .onPositive((dialog, which) -> presenter.unassignCard())
+            .negativeText(R.string.cancel)
+            .show();
    }
 
    @Override
    public void showConfirmationUnassignOnBackend(String scId) {
-      if (dontHaveCardDialog == null) {
-         dontHaveCardDialog = new MaterialDialog.Builder(getContext())
-               .content(Html.fromHtml(getString(R.string.wallet_settings_dont_have_card_msg, scId)))
-               .positiveText(R.string.wallet_continue_label)
-               .negativeText(R.string.cancel)
-               .onPositive((dialog, which) -> presenter.unassignCardOnBackend())
-               .build();
-      }
-
-      if(!dontHaveCardDialog.isShowing()) dontHaveCardDialog.show();
-   }
-
-   @Override
-   protected void onDetachedFromWindow() {
-      if(confirmUnassignDialog != null) confirmUnassignDialog.dismiss();
-      if(dontHaveCardDialog != null) dontHaveCardDialog.dismiss();
-      super.onDetachedFromWindow();
+      new MaterialDialog.Builder(getContext())
+            .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_settings_dont_have_card_msg, scId)))
+            .positiveText(R.string.wallet_continue_label)
+            .negativeText(R.string.cancel)
+            .onPositive((dialog, which) -> presenter.unassignCardOnBackend())
+            .show();
    }
 }

@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.success.UnassignSuccessPath;
 
 import javax.inject.Inject;
 

@@ -1,6 +1,7 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success;
+package com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.success;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
@@ -36,6 +37,7 @@ public class UnassignSuccessScreen extends WalletLinearLayout<UnassignSuccessPre
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 
+   @NonNull
    @Override
    public UnassignSuccessPresenter createPresenter() {
       return new UnassignSuccessPresenter(getContext(), getInjector());

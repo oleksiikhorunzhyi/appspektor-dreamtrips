@@ -23,9 +23,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection.ExistingCardDetectPath;
 
 import javax.inject.Inject;
 

@@ -39,12 +39,12 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection.ExistingCardDetectPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
@@ -66,6 +66,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploa
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 
 import javax.inject.Singleton;
@@ -137,6 +138,7 @@ import dagger.Provides;
             NewCardPowerOnPresenter.class,
             PreCheckNewCardPresenter.class,
             PaymentSyncFinishPresenter.class,
+            ExistingDeviceDetectPresenter.class,
             WizardUploadProfilePresenter.class
       },
       complete = false, library = true

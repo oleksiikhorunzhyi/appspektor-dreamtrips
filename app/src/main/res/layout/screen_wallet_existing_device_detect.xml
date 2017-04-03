@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical"
+      android:paddingBottom="@dimen/spacing_large"
       android:theme="@style/WalletTheme"
       >
 
@@ -13,7 +14,7 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_existing_card_detect_label"
+         app:title="@string/wallet_existing_device_detect_title"
          />
 
    <View
@@ -28,21 +29,27 @@
          android:layout_marginEnd="@dimen/spacing_large"
          android:layout_marginStart="@dimen/spacing_large"
          android:gravity="center"
-         android:text="@string/wallet_device_currently_is_assigned"
+         android:text="@string/wallet_existing_device_detect_header"
          />
 
    <View
          android:layout_width="match_parent"
          android:layout_height="0dp"
-         android:layout_weight="2"
+         android:layout_weight="1"
          />
 
    <FrameLayout
-         android:id="@+id/barcode_container"
          android:layout_width="198dp"
          android:layout_height="198dp"
          android:layout_gravity="center_horizontal"
          >
+
+      <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/image_barcode_flyecard"
+            tools:ignore="ContentDescription"
+            />
 
       <TextView
             android:id="@+id/tv_sc_id"
@@ -55,13 +62,6 @@
             android:textColor="@color/white_text_color"
             android:textSize="@dimen/font_normal"
             tools:text="0000001231"
-            />
-
-      <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/image_barcode_flyecard"
-            tools:ignore="ContentDescription"
             />
    </FrameLayout>
 
@@ -78,7 +78,7 @@
          android:layout_marginEnd="@dimen/spacing_large"
          android:layout_marginStart="@dimen/spacing_large"
          android:gravity="center"
-         android:text="@string/wallet_only_one_device_can_be_assigned"
+         android:text="@string/wallet_existing_device_detect_text"
          />
 
    <View
@@ -87,32 +87,12 @@
          android:layout_weight="4"
          />
 
-   <LinearLayout
+   <Button
+         android:id="@+id/button_unpair"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:orientation="vertical"
-         android:paddingBottom="@dimen/spacing_large"
-         android:paddingEnd="@dimen/spacing_large"
-         android:paddingStart="@dimen/spacing_large"
-         >
-
-      <Button
-            android:id="@+id/unassign_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="@string/wallet_i_dont_have_card"
-            />
-
-      <TextView
-            android:id="@+id/have_card_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:gravity="center"
-            android:text="@string/wallet_i_have_card"
-            android:textColor="@color/wallet_new_card_have_not_card"
-            />
-
-   </LinearLayout>
-
-</com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectScreen>
+         android:layout_marginEnd="@dimen/spacing_large"
+         android:layout_marginStart="@dimen/spacing_large"
+         android:text="@string/wallet_existing_device_detect_unpair_button"
+         />
+</com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen>

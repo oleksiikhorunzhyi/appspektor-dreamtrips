@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign;
+package com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success;
+package com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.success;
 
 import android.content.Context;
 import android.os.Parcelable;

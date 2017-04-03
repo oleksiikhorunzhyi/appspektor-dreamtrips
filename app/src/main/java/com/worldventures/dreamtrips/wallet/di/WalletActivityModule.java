@@ -21,32 +21,35 @@ import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddress
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.download.WalletDownloadFirmwarePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.pair.ForcePairKeyPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron.ForceUpdatePowerOnPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.LostCardPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.check.PreCheckNewCardPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.pin.EnterPinUnassignPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.poweron.NewCardPowerOnPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.success.UnassignSuccessPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.ExistingCardDetectPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.offline_mode.OfflineModePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.WalletFirmwareChecksPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
@@ -96,7 +99,11 @@ import dagger.Provides;
             CardDetailsPresenter.class,
             CardListPresenter.class,
             WalletSettingsPresenter.class,
+            WalletGeneralSettingsPresenter.class,
+            WalletSecuritySettingsPresenter.class,
+            WalletHelpSettingsPresenter.class,
             WalletSettingsProfilePresenter.class,
+            WalletOfflineModeSettingsPresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
@@ -117,7 +124,6 @@ import dagger.Provides;
             WalletPuckConnectionPresenter.class,
             WizardAssignUserPresenter.class,
             AboutPresenter.class,
-            OfflineModePresenter.class,
             PairKeyPresenter.class,
             ConnectionErrorPresenter.class,
             StartFirmwareInstallPresenter.class,

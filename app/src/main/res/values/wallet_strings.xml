@@ -107,17 +107,22 @@
    <string name="wallet_card_settings_last_sync">Last synced %s</string>
    <string name="wallet_card_settings_sc_profile">Smart Card Profile</string>
    <string name="wallet_card_settings_general">General</string>
+   <string name="wallet_card_settings_security">Security</string>
+   <string name="wallet_card_settings_help">Help</string>
    <string name="wallet_card_settings_about">About</string>
+   <string name="wallet_card_settings_about_information_about_your_sc">Information about your Smart Card\'s software</string>
    <string name="wallet_card_settings_offline_mode">Offline Mode</string>
    <string name="wallet_card_settings_low_battery_alert">Low battery alert</string>
-   <string name="wallet_card_settings_locate_sc">Locate Smart Card</string>
-   <string name="wallet_card_settings_view_location_connected">View location of the last time it was connected</string>
-   <string name="wallet_card_settings_security">Security</string>
+   <string name="wallet_card_settings_find_my_sc">Find My Smart Card</string>
+   <string name="wallet_card_settings_view_location_connected">View your Smart Card\'s last connected location</string>
    <string name="wallet_card_settings_lock_card">Lock card</string>
    <string name="wallet_card_settings_requires_pin_entry_to_unlock">Requires PIN entry to unlock</string>
-   <string name="wallet_card_settings_disable_default_payment_after">Disable Default Payment After</string>
+   <string name="wallet_card_settings_disable_default_card">Disable Default Card</string>
+   <string name="wallet_card_settings_disable_default_card_after_time">Disable default card after a certain timeframe</string>
    <string name="wallet_card_settings_reset_pin">Reset PIN</string>
-   <string name="wallet_card_settings_auto_clear_sc_after">Auto Clear Smart Card After</string>
+   <string name="wallet_card_settings_if_you_forget_your_pin">If you forget your PIN you can reset it here</string>
+   <string name="wallet_card_settings_auto_clear">Auto Clear</string>
+   <string name="wallet_card_settings_auto_clear_sc_after">Automatically clear cards from your Smart Card</string>
    <string name="wallet_card_settings_keep_my_identity_private">Keep My Identity Private</string>
    <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
    <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
@@ -126,17 +131,26 @@
    <string name="wallet_card_settings_notifies_connectivity_lost">Notifies you when connectivity is lost</string>
    <string name="wallet_card_settings_updates">Updates</string>
    <string name="wallet_card_settings_flye_sc_update">Smart Card Update</string>
-   <string name="wallet_card_settings_updates_to_sc_software">Updates to Smart Card software</string>
+   <string name="wallet_card_settings_updates_to_sc_software">Updates to your Smart Card\'s software</string>
    <string name="wallet_card_settings_setup">Setup</string>
    <string name="wallet_card_settings_set_up_new_sc">Set up new Smart Card</string>
-   <string name="wallet_card_settings_factory_reset_sc">Factory Reset Smart Card</string>
+   <string name="wallet_card_settings_factory_reset_sc">Reset</string>
    <string name="wallet_card_settings_return_sc_factory_settings">Return your Smart Card to it\'s factory settings</string>
-   <string name="wallet_card_settings_restart_sc">Restart Smart Card</string>
    <string name="wallet_card_settings_restart">Restart</string>
+   <string name="wallet_card_settings_restart_your_sc">Restart your Smart Card</string>
    <string name="wallet_card_settings_unlock_error">Unlock is not supported</string>
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_unpair_sc">Unpair Smart Card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>
+
+   <string name="wallet_card_settings_documents">Documents</string>
+   <string name="wallet_card_settings_sc_manual_and_other_docs">Smart Card manual and other important documents</string>
+   <string name="wallet_card_settings_videos">Videos</string>
+   <string name="wallet_card_settings_learn_about_sc_features">Learn about important Smart Card features</string>
+   <string name="wallet_card_settings_send_feedback">Send Feedback</string>
+   <string name="wallet_card_settings_help_us_make_sc_better">Help us make Smart Card better</string>
+   <string name="wallet_card_settings_customer_support">Customer Support</string>
+   <string name="wallet_card_settings_contact_our_customer_support_team">Contact our customer support team</string>
 
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
@@ -444,7 +458,7 @@
    <string name="wallet_lock_label_tap_left_btn">Tap Left</string>
    <string name="wallet_close">Close</string>
    <string name="wallet_set_pin_info_gesture">Press and hold</string>
-   <string name="wallet_confirm_factory_reset_msg">Are you sure you would you like to factory reset your Smart Card?</string>
+   <string name="wallet_confirm_factory_reset_msg">Are you sure you would like to factory reset your Smart Card?</string>
 
    <!-- Upload User Card Data screen -->
    <string name="wallet_wizard_upload_profile_header">Upload User Card Data</string>

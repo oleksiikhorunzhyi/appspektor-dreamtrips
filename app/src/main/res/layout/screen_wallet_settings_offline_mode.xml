@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.offline_mode.OfflineModeScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -23,7 +23,7 @@
          >
 
       <TextView
-            style="@style/SettingsItemText"
+            style="@style/SettingsText.Primary"
             android:layout_centerVertical="true"
             android:text="@string/wallet_offline_mode_enable_label"
             />
@@ -96,4 +96,4 @@
 
    </FrameLayout>
 
-</com.worldventures.dreamtrips.wallet.ui.settings.offline_mode.OfflineModeScreen>
+</com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsScreen>

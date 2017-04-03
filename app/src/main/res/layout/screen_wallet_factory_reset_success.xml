@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -47,4 +47,4 @@
             android:text="@string/wallet_done_label"
             />
    </RelativeLayout>
-</com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessScreen>
+</com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessScreen>

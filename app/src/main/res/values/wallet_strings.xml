@@ -75,6 +75,8 @@
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
    <string name="waller_wizard_scan_barcode_progress_label">Connecting to Smart Card…</string>
 
+   <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart card is already assigned</string>
+
    <string name="wallet_add_credit_card">Add credit card</string>
    <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
@@ -84,6 +86,7 @@
    <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
    <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
+   <string name="wallet_wizard_manual_input_card_is_assigned">Smart card is already assigned</string>
 
    <!--details-->
    <string name="wallet_card_details_title">Card Details</string>

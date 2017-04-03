@@ -1,27 +1,29 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.barcode;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode;
 
 import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.SmartCardStatusHandler;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 
 import javax.inject.Inject;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import timber.log.Timber;
 
 public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
 
@@ -41,20 +43,29 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    private void observerAvailabilitySmartCard() {
-      wizardInteractor.availabilitySmartCardCommandActionPipe()
+      wizardInteractor.getSmartCardStatusCommandActionPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<AvailabilitySmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onStart(getContext().getString(R.string.wallet_wizard_assigning_msg))
-                  .onSuccess(command -> {
-                     analyticsInteractor.walletAnalyticsCommandPipe()
-                           .send(new WalletAnalyticsCommand(new ScidScannedAction(command.getSmartCardId())));
-                     navigator.go(new PairKeyPath(command.getSmartCardId()));
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationFetchCardStatus())
+                  .onSuccess(command -> SmartCardStatusHandler.handleSmartCardStatus(command.getResult(),
+                        statusUnassigned -> cardIsUnassigned(command.getSmartCardId()),
+                        statusAssignToAnotherDevice -> Timber.d("This card is assigned to another your device"), //todo: remove this after implement Assign new phone feature.
+                        statusAssignedToAnotherUser -> {
+                           getView().showErrorCardIsAssignedDialog();
+                           getView().restartCamera();
+                        }
+                  ))
+                  .onFail((command, throwable) -> {
+                     Timber.e(throwable, "");
+                     getView().restartCamera();
                   })
-                  .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
-                        .defaultAction(command -> getView().restartCamera())
-                        .build())
-                  .wrap());
+                  .create());
+   }
+
+   private void cardIsUnassigned(String smartCardId) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new ScidScannedAction(smartCardId)));
+      navigator.go(new PairKeyPath(smartCardId));
    }
 
    void requestCamera() {
@@ -66,7 +77,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    void barcodeScanned(String barcode) {
-      wizardInteractor.availabilitySmartCardCommandActionPipe().send(new AvailabilitySmartCardCommand(barcode));
+      wizardInteractor.getSmartCardStatusCommandActionPipe().send(new GetSmartCardStatusCommand(barcode));
    }
 
    void startManualInput() {
@@ -86,5 +97,9 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
       void showRationaleForCamera();
 
       void showDeniedForCamera();
+
+      OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus();
+
+      void showErrorCardIsAssignedDialog();
    }
 }

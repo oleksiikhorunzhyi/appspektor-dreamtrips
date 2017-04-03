@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.worldventures.dreamtrips.R;
 
@@ -26,11 +25,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class WizardVideoView extends FrameLayout implements TextureView.SurfaceTextureListener {
+public class WizardVideoView extends PercentFrameLayout implements TextureView.SurfaceTextureListener {
 
    public static final long CROSSFADE_DURATION = 1000;
 
-   @InjectView(R.id.videoView) TextureView textureView;
+   @InjectView(R.id.textureView) TextureView textureView;
    @InjectView(R.id.crossFade) View crossfadeView;
    private MediaPlayer mediaPlayer;
    private Uri videoUri;
@@ -97,17 +96,18 @@ public class WizardVideoView extends FrameLayout implements TextureView.SurfaceT
    }
 
    private void calibrateVideoDimensions() {
+      if (isInEditMode()) return;
+
       try {
          MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
          metaRetriever.setDataSource(getContext(), videoUri);
          String width = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
          String height = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-         float videoWidth = Float.parseFloat(width);
-         float videoHeight = Float.parseFloat(height);
 
-         PercentFrameLayout.LayoutParams params = (PercentFrameLayout.LayoutParams) textureView.getLayoutParams();
-         PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
-         info.aspectRatio = videoHeight / videoWidth;
+         float aspectRatio = Float.parseFloat(width) / Float.parseFloat(height);
+
+         ((PercentLayoutHelper.PercentLayoutParams) textureView.getLayoutParams()).getPercentLayoutInfo().aspectRatio = aspectRatio;
+         ((PercentLayoutHelper.PercentLayoutParams) crossfadeView.getLayoutParams()).getPercentLayoutInfo().aspectRatio = aspectRatio;
       } catch (Exception e) {
          Timber.e(e, "%s", e.getMessage());
       }

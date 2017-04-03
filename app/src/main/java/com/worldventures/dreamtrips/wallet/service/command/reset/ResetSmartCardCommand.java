@@ -8,7 +8,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 
@@ -34,8 +33,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<Void> reset() {
-      return disableAutoLock()
-            .flatMap(action -> wipeSmartCardData())
+      return wipeSmartCardData()
             .flatMap(action -> disconnect())
             .map(action -> null);
    }
@@ -43,12 +41,6 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    private Observable<WipeSmartCardDataCommand> wipeSmartCardData() {
       return walletJanet.createPipe(WipeSmartCardDataCommand.class)
             .createObservableResult(new WipeSmartCardDataCommand(factoryResetOptions));
-   }
-
-   private Observable<EnableLockUnlockDeviceAction> disableAutoLock() {
-      return walletJanet.createPipe(EnableLockUnlockDeviceAction.class)
-            .createObservableResult(new EnableLockUnlockDeviceAction(false))
-            .onErrorResumeNext(Observable.just(null));
    }
 
    private Observable<DisconnectAction> disconnect() {

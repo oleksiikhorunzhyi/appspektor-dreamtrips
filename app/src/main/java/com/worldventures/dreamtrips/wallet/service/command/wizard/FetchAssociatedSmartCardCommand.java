@@ -1,24 +1,19 @@
-package com.worldventures.dreamtrips.wallet.service.command.http;
+package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
-import com.worldventures.dreamtrips.api.smart_card.association_info.GetAssociatedCardsHttpAction;
-import com.worldventures.dreamtrips.api.smart_card.association_info.model.SmartCardInfo;
+import com.worldventures.dreamtrips.api.smart_card.user_association.GetAssociatedCardsHttpAction;
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,57 +68,9 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
       if (listSmartCardInfo.isEmpty()) return Observable.just(ImmutableAssociatedCard.of(false));
       final SmartCardInfo smartCardInfo = listSmartCardInfo.get(0);
 
-      final SmartCardDetails smartCardDetails = mappery.convert(smartCardInfo, SmartCardDetails.class);
-      final SmartCard smartCard = createSmartCard(smartCardInfo);
-
-      return createSmartCardUser(smartCardInfo)
-            .flatMap(user -> save(smartCard, user, smartCardDetails));
-   }
-
-   private Observable<SmartCardUser> createSmartCardUser(SmartCardInfo smartCardInfo) {
-      final com.worldventures.dreamtrips.api.smart_card.association_info.model.SmartCardUser user = smartCardInfo.user();
-      final SmartCardUser scUser = ImmutableSmartCardUser.builder()
-            .firstName(user.firstName())
-            .middleName(user.middleName() != null ? user.middleName() : "")
-            .lastName(user.lastName() != null ? user.lastName() : "")
-            .build();
-
-      if (user.displayPhoto() != null) {
-         final String photoUrl = user.displayPhoto();
-         return janetWallet.createPipe(SmartCardAvatarCommand.class)
-               .createObservableResult(SmartCardAvatarCommand.fromUrl(photoUrl))
-               .map(command -> changeUserPhoto(scUser, command.getResult()));
-      } else {
-         return Observable.just(scUser);
-      }
-   }
-
-   private SmartCard createSmartCard(SmartCardInfo smartCardInfo) {
-      return ImmutableSmartCard.builder()
-            .smartCardId(String.valueOf(smartCardInfo.scId()))
-            .deviceId(smartCardInfo.deviceId())
-            .cardStatus(SmartCard.CardStatus.ACTIVE)
-            .build();
-   }
-
-   private SmartCardUser changeUserPhoto(SmartCardUser user, SmartCardUserPhoto smartCardUserPhoto) {
-      final File originalFile = smartCardUserPhoto.original();
-      if (originalFile != null) {
-         return ImmutableSmartCardUser.builder()
-               .from(user)
-               .userPhoto(smartCardUserPhoto)
-               .build();
-      } else {
-         return user;
-      }
-   }
-
-   private Observable<AssociatedCard> save(SmartCard smartCard, SmartCardUser user, SmartCardDetails smartCardDetails) {
-      snappyRepository.saveSmartCard(smartCard);
-      snappyRepository.saveSmartCardDetails(smartCardDetails);
-      snappyRepository.saveSmartCardUser(user);
-
-      return Observable.just(createAssociatedCard(smartCard, smartCardDetails));
+      return new ProcessSmartCardInfoDelegate(snappyRepository, janetWallet, mappery)
+            .processSmartCardInfo(smartCardInfo)
+            .map(result -> createAssociatedCard(result.smartCard, result.details));
    }
 
    private AssociatedCard createAssociatedCard(SmartCard smartCard, SmartCardDetails smartCardDetails) {

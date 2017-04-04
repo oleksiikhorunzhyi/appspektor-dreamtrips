@@ -11,9 +11,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.DialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.CardIdUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDeviceDetectPresenter.Screen, ExistingDeviceDetectPresenter, ExistingDeviceDetectPath> implements ExistingDeviceDetectPresenter.Screen {
 
@@ -31,7 +37,7 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
    @NonNull
    @Override
    public ExistingDeviceDetectPresenter createPresenter() {
-      return new ExistingDeviceDetectPresenter(getContext(), getInjector());
+      return new ExistingDeviceDetectPresenter(getContext(), getInjector(), getPath().scId);
    }
 
    @Override
@@ -58,8 +64,16 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
    }
 
    @Override
+   public <T> OperationView<T> provideOperationView() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), 0, false),
+            ErrorViewFactory.<T>builder().build()
+      );
+   }
+
+   @Override
    public void setSmartCardId(String scId) {
-      tvSmartCardId.setText(scId);
+      tvSmartCardId.setText(CardIdUtil.pushZeroToSmartCardId(scId));
    }
 
    @Override

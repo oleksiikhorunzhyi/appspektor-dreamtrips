@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-import com.worldventures.dreamtrips.api.smart_card.association_info.model.SmartCardInfo;
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;

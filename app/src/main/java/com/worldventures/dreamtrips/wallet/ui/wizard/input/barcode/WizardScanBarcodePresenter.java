@@ -8,22 +8,16 @@ import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidScannedAction;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.SmartCardStatusHandler;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputDelegateView;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 
 import javax.inject.Inject;
-
-import io.techery.janet.operationsubscriber.OperationActionSubscriber;
-import io.techery.janet.operationsubscriber.view.OperationView;
-import timber.log.Timber;
 
 public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
 
@@ -32,6 +26,8 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject PermissionDispatcher permissionDispatcher;
 
+   private InputBarcodeDelegate inputBarcodeDelegate;
+
    public WizardScanBarcodePresenter(Context context, Injector injector) {
       super(context, injector);
    }
@@ -39,36 +35,14 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      observerAvailabilitySmartCard();
-   }
+      // analytics from this screen is sent from WizardSplashPresenter
 
-   private void observerAvailabilitySmartCard() {
-      wizardInteractor.getSmartCardStatusCommandActionPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationFetchCardStatus())
-                  .onSuccess(command -> SmartCardStatusHandler.handleSmartCardStatus(command.getResult(),
-                        statusUnassigned -> cardIsUnassigned(command.getSmartCardId()),
-                        statusAssignToAnotherDevice -> Timber.d("This card is assigned to another your device"), //todo: remove this after implement Assign new phone feature.
-                        statusAssignedToAnotherUser -> {
-                           getView().showErrorCardIsAssignedDialog();
-                           getView().restartCamera();
-                        }
-                  ))
-                  .onFail((command, throwable) -> {
-                     Timber.e(throwable, "");
-                     getView().restartCamera();
-                  })
-                  .create());
-   }
-
-   private void cardIsUnassigned(String smartCardId) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new ScidScannedAction(smartCardId)));
-      navigator.go(new PairKeyPath(smartCardId));
+      inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
+            getView(), InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor));
    }
 
    void requestCamera() {
+      //noinspection ConstantConditions
       permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
             .compose(bindView())
             .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().startCamera())
@@ -77,7 +51,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    void barcodeScanned(String barcode) {
-      wizardInteractor.getSmartCardStatusCommandActionPipe().send(new GetSmartCardStatusCommand(barcode));
+      inputBarcodeDelegate.barcodeEntered(barcode);
    }
 
    void startManualInput() {
@@ -88,18 +62,12 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
       navigator.goBack();
    }
 
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen, InputDelegateView {
 
       void startCamera();
-
-      void restartCamera();
 
       void showRationaleForCamera();
 
       void showDeniedForCamera();
-
-      OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus();
-
-      void showErrorCardIsAssignedDialog();
    }
 }

@@ -31,8 +31,6 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
    @InjectView(R.id.wallet_wizard_manual_input_scid) EditText scidNumberInput;
    @InjectView(R.id.wallet_wizard_manual_input_next_btn) View nextButton;
 
-   private MaterialDialog errorCardIsAssignedDialog = null;
-
    public WizardManualInputScreen(Context context) {
       super(context);
    }
@@ -101,19 +99,20 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
 
    @Override
    public void showErrorCardIsAssignedDialog() {
-      if (errorCardIsAssignedDialog == null) {
-         errorCardIsAssignedDialog = new MaterialDialog.Builder(getContext())
-               .content(R.string.wallet_wizard_manual_input_card_is_assigned)
-               .positiveText(R.string.ok)
-               .onPositive((dialog, which) -> dialog.dismiss())
-               .build();
-      }
-      if (!errorCardIsAssignedDialog.isShowing()) errorCardIsAssignedDialog.show();
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_wizard_manual_input_card_is_assigned)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.dismiss())
+            .show();
    }
 
    @Override
-   protected void onDetachedFromWindow() {
-      if (errorCardIsAssignedDialog != null) errorCardIsAssignedDialog.dismiss();
-      super.onDetachedFromWindow();
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public void reset() {
+      //nothing
    }
 }

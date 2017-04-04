@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 
@@ -27,6 +28,7 @@ public final class WizardInteractor {
    private final ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe;
 
    private final ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe;
+   private final ActionPipe<ReAssignCardCommand> reAssignCardPipe;
 
    private final ActionPipe<WizardCompleteCommand> completePipe;
 
@@ -41,6 +43,7 @@ public final class WizardInteractor {
 
       fetchAndStoreDefaultAddressInfoPipe = sessionActionPipeCreator.createPipe(FetchAndStoreDefaultAddressInfoCommand.class, Schedulers
             .io());
+      reAssignCardPipe = sessionActionPipeCreator.createPipe(ReAssignCardCommand.class, Schedulers.io());
       getSmartCardStatusCommandActionPipe = sessionActionPipeCreator.createPipe(GetSmartCardStatusCommand.class, Schedulers
             .io());
 
@@ -65,6 +68,10 @@ public final class WizardInteractor {
 
    public ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe() {
       return activateSmartCardPipe;
+   }
+
+   public ActionPipe<ReAssignCardCommand> reAssignCardPipe() {
+      return reAssignCardPipe;
    }
 
    public ActionPipe<WizardCheckCommand> checksPipe() {

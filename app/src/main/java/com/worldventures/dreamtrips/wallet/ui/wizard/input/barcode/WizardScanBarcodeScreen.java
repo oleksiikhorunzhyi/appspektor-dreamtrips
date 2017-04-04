@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.Result;
@@ -26,8 +27,6 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.scanner_view) ZXingScannerView scanner;
-
-   private MaterialDialog errorCardIsAssignedDialog = null;
 
    public WizardScanBarcodeScreen(Context context) {
       super(context);
@@ -72,11 +71,6 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    }
 
    @Override
-   public void restartCamera() {
-      scanner.resumeCameraPreview(this);
-   }
-
-   @Override
    public void showRationaleForCamera() {
       Snackbar.make(this, R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
    }
@@ -96,14 +90,21 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
 
    @Override
    public void showErrorCardIsAssignedDialog() {
-      if (errorCardIsAssignedDialog == null) {
-         errorCardIsAssignedDialog = new MaterialDialog.Builder(getContext())
+      new MaterialDialog.Builder(getContext())
                .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
                .positiveText(R.string.ok)
                .onPositive((dialog, which) -> dialog.dismiss())
-               .build();
-      }
-      if (!errorCardIsAssignedDialog.isShowing()) errorCardIsAssignedDialog.show();
+               .show();
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public void reset() {
+      scanner.resumeCameraPreview(this);
    }
 
    @Override
@@ -121,9 +122,4 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       return true;
    }
 
-   @Override
-   protected void onDetachedFromWindow() {
-      if (errorCardIsAssignedDialog != null) errorCardIsAssignedDialog.dismiss();
-      super.onDetachedFromWindow();
-   }
 }

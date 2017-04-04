@@ -26,20 +26,18 @@
             style="@style/WalletTheme.HeaderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            android:layout_above="@+id/wizard_video_view"
             android:layout_alignParentTop="true"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
-            android:paddingTop="@dimen/spacing_large"
-            android:textSize="@dimen/font_large"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             tools:text="@string/wallet_wizard_setup_pin_header"
             />
 
       <com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView
             android:id="@+id/wizard_video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/header_text_view"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             />
 

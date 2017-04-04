@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
@@ -19,6 +21,7 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
@@ -43,8 +46,12 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
    @InjectView(R.id.empty_card_view) View emptyCardListView;
+   @InjectView(R.id.ll_sync_payments_block) LinearLayout llSyncPaymentsBlock;
+   @InjectView(R.id.tv_fail_sync_msg) TextView tvFailsSyncMsg;
    @InjectView(R.id.add_card_button) FloatingActionButton addCardButton;
+   @InjectView(R.id.btn_sync_cards) FloatingActionButton btnSyncPaymentCards;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
+   @InjectView(R.id.tv_remove_payment_cards) View removePaymentCards;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private IgnoreFirstItemAdapter adapter;
@@ -75,6 +82,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onPostAttachToWindowView() {
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
+      tvFailsSyncMsg.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_wizard_card_list_remove_payment_cards_message)));
 
       setupCardStackList();
    }
@@ -348,5 +356,15 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             .positiveText(R.string.ok)
             .build();
       scNonConnectionDialog.show();
+   }
+
+   @OnClick(R.id.btn_sync_cards)
+   protected void onSyncPaymentsCardsButtonClick() {
+      // TODO: 4/4/17 start sync payment cards
+   }
+
+   @OnClick(R.id.tv_remove_payment_cards)
+   protected void onRemovePaymentCardsClick() {
+      // TODO: 4/4/17 Add logic for remove payment cards, and change ic on FAB
    }
 }

@@ -29,6 +29,7 @@
    <!-- typical font sizes  -->
    <dimen name="font_extra_large">25sp</dimen>
    <dimen name="font_large">20sp</dimen>
+   <dimen name="font_extra_normal">18sp</dimen>
    <dimen name="font_normal">16sp</dimen>
    <dimen name="font_medium">14sp</dimen>
    <dimen name="font_small">12sp</dimen>

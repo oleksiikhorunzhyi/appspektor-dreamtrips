@@ -182,6 +182,8 @@
    <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
    <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your Smart Card</string>
    <string name="wallet_wizard_card_list_card_synchronization_dialog_text">Payment cards synchronization</string>
+   <string name="wallet_wizard_card_list_remove_payment_cards">Remove Payment Cards</string>
+   <string name="wallet_wizard_card_list_remove_payment_cards_message"><![CDATA[<b>Payment cards were not<br>synced after multiple attempts</br></b><br>Try syncing again or remove them</br><br>from your Smart Card.</br>]]></string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>

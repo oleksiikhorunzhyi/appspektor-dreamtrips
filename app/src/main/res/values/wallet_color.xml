@@ -39,6 +39,9 @@
    <color name="wallet_color_divider">#1e000000</color>
    <color name="wallet_about_item_value">#8E8E93</color>
 
+   <color name="wallet_card_list_fail_sync_payments_color">#080808</color>
+   <color name="wallet_remove_payment_cards">#005e92</color>
+
    <color name="wallet_new_card_have_not_card">#005e92</color>
    <color name="wallet_new_card_power_on">#005e92</color>
 

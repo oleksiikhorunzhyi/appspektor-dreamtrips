@@ -21,12 +21,15 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardListHeaderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
@@ -39,6 +42,9 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.exception.WaitingResponseException;
 
 public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
 
@@ -51,7 +57,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @InjectView(R.id.add_card_button) FloatingActionButton addCardButton;
    @InjectView(R.id.btn_sync_cards) FloatingActionButton btnSyncPaymentCards;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
-   @InjectView(R.id.tv_remove_payment_cards) View removePaymentCards;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private IgnoreFirstItemAdapter adapter;
@@ -82,7 +87,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onPostAttachToWindowView() {
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
-      tvFailsSyncMsg.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_wizard_card_list_remove_payment_cards_message)));
 
       setupCardStackList();
    }
@@ -252,7 +256,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
                .cancelListener(dialog -> getPresenter().navigateBack())
                .onNegative((dialog, which) -> getPresenter().navigateBack())
                .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
-               .onPositive((dialog, which) -> getPresenter().handleForceFirmwareUpdateConfirmation())
+               .onPositive((dialog, which) -> getPresenter().confirmForceFirmwareUpdate())
                .build();
       } else {
          forceUpdateDialog.dismiss();
@@ -264,15 +268,17 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @Override
    public void showFactoryResetConfirmationDialog() {
-      factoryResetConfirmationDialog = new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_dashboard_factory_reset_dialog_content)
-            .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
-            .cancelListener(dialog -> getPresenter().navigateBack())
-            .onNegative((dialog, which) -> getPresenter().navigateBack())
-            .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
-            .onPositive((dialog, which) -> getPresenter().navigateToFirmwareUpdate())
-            .build();
-      factoryResetConfirmationDialog.show();
+      if (factoryResetConfirmationDialog == null) {
+         factoryResetConfirmationDialog = new MaterialDialog.Builder(getContext())
+               .content(R.string.wallet_dashboard_factory_reset_dialog_content)
+               .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
+               .cancelListener(dialog -> getPresenter().navigateBack())
+               .onNegative((dialog, which) -> getPresenter().navigateBack())
+               .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
+               .onPositive((dialog, which) -> getPresenter().navigateToFirmwareUpdate())
+               .build();
+      }
+      if (!factoryResetConfirmationDialog.isShowing()) factoryResetConfirmationDialog.show();
    }
 
    @Override
@@ -350,21 +356,60 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @Override
    public void showSCNonConnectionDialog() {
-      scNonConnectionDialog = new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_card_settings_cant_connected)
-            .content(R.string.wallet_card_settings_message_cant_connected)
-            .positiveText(R.string.ok)
-            .build();
-      scNonConnectionDialog.show();
+      if (scNonConnectionDialog == null) {
+         scNonConnectionDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_card_settings_cant_connected)
+               .content(R.string.wallet_card_settings_message_cant_connected)
+               .positiveText(R.string.ok)
+               .build();
+      }
+      if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
+   }
+
+   @Override
+   public void modeDefaultFab() {
+      llSyncPaymentsBlock.setVisibility(GONE);
+      addCardButton.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public boolean isModeSyncPaymentsFab() {
+      return llSyncPaymentsBlock.getVisibility() == VISIBLE;
+   }
+
+   @Override
+   public void modeSyncPaymentsFab() {
+      llSyncPaymentsBlock.setVisibility(VISIBLE);
+      emptyCardListView.setVisibility(GONE);
+      addCardButton.setVisibility(GONE);
+   }
+
+   @Override
+   public void showSyncFailedOptionsDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_wizard_card_list_sync_fail_dialog_title)
+            .content(R.string.wallet_wizard_card_list_sync_fail_dialog_message)
+            .positiveText(R.string.wallet_wizard_card_list_sync_fail_dialog_cancel)
+            .neutralText(R.string.wallet_wizard_card_list_sync_fail_dialog_retry)
+            .negativeText(R.string.wallet_wizard_card_list_sync_fail_dialog_factory_reset)
+            .onPositive((dialog, which) -> dialog.dismiss())
+            .onNeutral((dialog, which) -> presenter.syncPayments())
+            .onNegative((dialog, which) -> presenter.goToFactoryReset())
+            .build().show();
+   }
+
+   @Override
+   public OperationView<SyncRecordsCommand> provideOperationSyncPayments() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_card_list_card_synchronization_dialog_text, false),
+            ErrorViewFactory.<SyncRecordsCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
+                  .build()
+      );
    }
 
    @OnClick(R.id.btn_sync_cards)
    protected void onSyncPaymentsCardsButtonClick() {
-      // TODO: 4/4/17 start sync payment cards
-   }
-
-   @OnClick(R.id.tv_remove_payment_cards)
-   protected void onRemovePaymentCardsClick() {
-      // TODO: 4/4/17 Add logic for remove payment cards, and change ic on FAB
+      presenter.syncPayments();
    }
 }

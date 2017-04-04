@@ -78,7 +78,7 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
             new WalletProgressView<>(installProgress),
             new RetryErrorDialogView<>(getContext(), R.string.wallet_syncing_payment_cards_fail_msg,
                   command -> presenter.retrySync(),
-                  command -> presenter.finish())
+                  command -> presenter.navigateToWallet())
       );
    }
 

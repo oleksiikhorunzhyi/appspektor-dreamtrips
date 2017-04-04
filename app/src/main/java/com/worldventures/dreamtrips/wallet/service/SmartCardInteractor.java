@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmw
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
@@ -62,6 +63,7 @@ public final class SmartCardInteractor {
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
+   private final ActionPipe<SyncRecordStatusCommand> syncRecordStatusCommandActionPipe;
 
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
@@ -108,6 +110,8 @@ public final class SmartCardInteractor {
       cardSwipedEventPipe = sessionActionPipeCreator.createPipe(CardSwipedEvent.class, Schedulers.io());
       startCardRecordingPipe = sessionActionPipeCreator.createPipe(StartCardRecordingAction.class, Schedulers.io());
       stopCardRecordingPipe = sessionActionPipeCreator.createPipe(StopCardRecordingAction.class, Schedulers.io());
+
+      syncRecordStatusCommandActionPipe = sessionActionPipeCreator.createPipe(SyncRecordStatusCommand.class, Schedulers.io());
 
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
@@ -184,6 +188,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<StopCardRecordingAction> stopCardRecordingPipe() {
       return stopCardRecordingPipe;
+   }
+
+   public ActionPipe<SyncRecordStatusCommand> syncRecordStatusCommandActionPipe() {
+      return syncRecordStatusCommandActionPipe;
    }
 
    public ActionPipe<DisconnectAction> disconnectPipe() {

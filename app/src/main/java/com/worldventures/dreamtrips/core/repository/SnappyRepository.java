@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -85,6 +86,7 @@ public interface SnappyRepository {
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
    String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
    String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
+   String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
 
    void clearAll();
 
@@ -277,4 +279,8 @@ public interface SnappyRepository {
    void saveEnabledTracking(boolean enable);
 
    boolean isEnableTracking();
+
+   void saveSyncRecordsStatus(SyncRecordsStatus data);
+
+   SyncRecordsStatus getSyncRecordsStatus();
 }

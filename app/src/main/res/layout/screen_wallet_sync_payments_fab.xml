@@ -37,15 +37,4 @@
          app:fab_size="normal"
          />
 
-   <TextView
-         android:id="@+id/tv_remove_payment_cards"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_gravity="bottom|center_horizontal"
-         android:layout_marginBottom="@dimen/spacing_normal"
-         android:gravity="center"
-         android:text="@string/wallet_wizard_card_list_remove_payment_cards"
-         android:textColor="@color/wallet_remove_payment_cards"
-         />
-
 </LinearLayout>

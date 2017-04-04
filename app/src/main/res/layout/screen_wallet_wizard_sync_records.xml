@@ -8,13 +8,6 @@
       android:theme="@style/WalletTheme"
       >
 
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_syncing_payment_cards"
-         />
-
    <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
@@ -27,6 +20,9 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_huge"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
             android:textStyle="bold"
             tools:text="@string/wallet_syncing_payment_cards_count"
             />
@@ -70,5 +66,12 @@
             />
 
    </RelativeLayout>
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_syncing_payment_cards"
+         />
 
 </com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsScreen>

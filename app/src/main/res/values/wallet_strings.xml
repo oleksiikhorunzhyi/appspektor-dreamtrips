@@ -183,7 +183,12 @@
    <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your Smart Card</string>
    <string name="wallet_wizard_card_list_card_synchronization_dialog_text">Payment cards synchronization</string>
    <string name="wallet_wizard_card_list_remove_payment_cards">Remove Payment Cards</string>
-   <string name="wallet_wizard_card_list_remove_payment_cards_message"><![CDATA[<b>Payment cards were not<br>synced after multiple attempts</br></b><br>Try syncing again or remove them</br><br>from your Smart Card.</br>]]></string>
+   <string name="wallet_wizard_card_list_remove_payment_cards_message">Your flye\u2122 smart card has\npayment cards waiting to\nbe synced.</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_title">Unable to Sync Cards</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_message">Your payment cards could not be synced at this time. Please try again or factory reset your Smart Card.</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_retry">Retry</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_factory_reset">Factory Reset</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_cancel">Cancel</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>

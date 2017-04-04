@@ -28,12 +28,11 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
@@ -41,6 +40,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
@@ -54,8 +54,9 @@ import flow.Flow;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.exception.NotConnectedException;
-import io.techery.janet.smartcard.exception.WaitingResponseException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -89,9 +90,25 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
+      fetchSyncRecordsStatus();
+
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       recordInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());
       trackScreen();
+   }
+
+   private void fetchSyncRecordsStatus() {
+      smartCardInteractor.syncRecordStatusCommandActionPipe()
+            .createObservable(SyncRecordStatusCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<SyncRecordStatusCommand>()
+                  .onSuccess(this::handleSyncRecordStatus));
+   }
+
+   private void handleSyncRecordStatus(SyncRecordStatusCommand command) {
+      if (command.getResult().isFailAfterProvision()) {
+         getView().modeSyncPaymentsFab();
+      }
    }
 
    private void observeSmartCard() {
@@ -143,7 +160,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       firmwareInteractor.firmwareInfoCachedPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> firmwareLoaded(command.getResult()));
+            .subscribe(command -> firmwareLoaded(command.getResult()), throwable -> Timber.e(throwable, ""));
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
@@ -238,25 +255,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       recordInteractor.recordsSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<SyncRecordsCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncPayments())
                   .onStart(syncCardsCommand -> getView().showCardSynchronizationDialog(true))
-                  .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
-                  .onFail(throwable -> {
-                     getView().showCardSynchronizationDialog(false);
-                     return null;
-                  })
-                  .wrap());
+                  .onSuccess(this::handleSuccessSyncCards)
+                  .onFail(this::handleFailureSyncCards)
+                  .create());
+   }
 
-      recordInteractor.recordsSyncPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<SyncRecordsCommand>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.<SyncRecordsCommand>builder(getContext())
-                        .ignore(NotConnectedException.class)
-                        .handle(WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected)
-                        .build())
-                  .wrap());
+   private void handleSuccessSyncCards(SyncRecordsCommand command) {
+      getView().showCardSynchronizationDialog(false);
+      getView().modeDefaultFab();
+   }
 
+   private void handleFailureSyncCards(SyncRecordsCommand command, Throwable throwable) {
+      getView().showCardSynchronizationDialog(false);
+
+      if (throwable instanceof NotConnectedException) return;
+
+      if (command.getSyncRecordsStatus().isFailAfterProvision()) {
+         getView().showSyncFailedOptionsDialog();
+      }
    }
 
    private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
@@ -269,7 +287,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
-   public void handleForceFirmwareUpdateConfirmation() {
+   void confirmForceFirmwareUpdate() {
       // TODO: 3/6/17 can be better
       firmwareInteractor.firmwareInfoCachedPipe()
             .createObservable(FirmwareInfoCachedCommand.fetch())
@@ -283,6 +301,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                      }
                   })
             );
+   }
+
+   void syncPayments() {
+      recordInteractor.recordsSyncPipe().send(new SyncRecordsCommand());
+   }
+
+   void goToFactoryReset() {
+      navigator.single(new FactoryResetPath());
    }
 
    public interface Screen extends WalletScreen {
@@ -321,5 +347,15 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       @interface ErrorDialogType {}
 
       void showSCNonConnectionDialog();
+
+      void modeDefaultFab();
+
+      boolean isModeSyncPaymentsFab();
+
+      void modeSyncPaymentsFab();
+
+      void showSyncFailedOptionsDialog();
+
+      OperationView<SyncRecordsCommand> provideOperationSyncPayments();
    }
 }

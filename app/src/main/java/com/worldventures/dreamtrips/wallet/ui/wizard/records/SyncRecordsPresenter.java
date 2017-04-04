@@ -7,18 +7,19 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
@@ -54,8 +55,8 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
       restoreOfflineModeDefaultState();
    }
 
-   void finish() {
-      navigator.finish();
+   void navigateToWallet() {
+      navigator.single(new CardListPath());
    }
 
    private void observeOfflineModeStateCheck() {
@@ -73,7 +74,7 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SyncRecordsCommand>provideOperationView())
-                  .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
+                  .onFail((syncRecordsCommand, throwable) -> changeSyncPaymentStatus(SyncRecordsStatus.FAIL_AFTER_PROVISION))
                   .create());
 
       if (syncAction.isSyncToSmartCard()) {
@@ -87,6 +88,10 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
       } else {
          getView().hideProgressOfProcess();
       }
+   }
+
+   private void changeSyncPaymentStatus(SyncRecordsStatus recordsStatus) {
+      smartCardInteractor.syncRecordStatusCommandActionPipe().send(SyncRecordStatusCommand.save(recordsStatus));
    }
 
    private void restoreOfflineModeDefaultState() {

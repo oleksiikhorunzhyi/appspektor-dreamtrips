@@ -23,8 +23,8 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -376,10 +376,10 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public OperationView<SyncRecordsCommand> provideOperationSyncPayments() {
+   public OperationView<SyncSmartCardCommand> provideOperationSyncSmartCard() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_card_list_card_synchronization_dialog_text, false),
-            ErrorViewFactory.<SyncRecordsCommand>builder()
+            ErrorViewFactory.<SyncSmartCardCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
                   .build()
       );

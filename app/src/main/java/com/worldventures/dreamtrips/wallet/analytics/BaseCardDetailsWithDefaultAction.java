@@ -8,7 +8,7 @@ public abstract class BaseCardDetailsWithDefaultAction extends BaseCardDetailsAc
    @Attribute("defaultpaycard") String defaultPaycard;
 
    public void fillPaycardInfo(Record record, boolean isDefault) {
-      fillPaycardInfo(record);
+      fillRecordDetails(record);
       defaultPaycard = isDefault ? "Yes" : "No";
    }
 }

@@ -14,7 +14,7 @@ public class SetDefaultCardAction extends BaseSetDefaultCardAction {
    public static SetDefaultCardAction forBankCard(Record record) {
       SetDefaultCardAction action = new SetDefaultCardAction();
       action.setDefaultWhere = "In-App:Wallet Home";
-      action.fillPaycardInfo(record);
+      action.fillRecordDetails(record);
       return action;
    }
 }

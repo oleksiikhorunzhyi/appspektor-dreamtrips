@@ -26,7 +26,7 @@ public class TokenizationCardAction extends BaseCardDetailsAction {
       this.actionType = actionType;
       this.tokenize = tokenize;
 
-      fillPaycardInfo(record);
+      fillRecordDetails(record);
    }
 
    void setCoordinates(@Nullable WalletCoordinates coordinates) {

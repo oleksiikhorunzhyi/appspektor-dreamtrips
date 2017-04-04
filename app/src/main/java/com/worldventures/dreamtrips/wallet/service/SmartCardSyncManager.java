@@ -11,11 +11,11 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionC
 import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -49,7 +49,7 @@ public class SmartCardSyncManager {
       this.recordInteractor = recordInteractor;
       observeConnection();
       connectUpdateSmartCard();
-      connectSyncCards();
+      connectSyncSmartCard();
       connectSyncDisabling();
    }
 
@@ -191,7 +191,7 @@ public class SmartCardSyncManager {
                   interactor.fetchFirmwareVersionPipe().send(new FetchFirmwareVersionCommand()));
    }
 
-   private void connectSyncCards() {
+   private void connectSyncSmartCard() {
       Observable.interval(10, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
@@ -202,8 +202,8 @@ public class SmartCardSyncManager {
                   .createObservableResult(SyncRecordStatusCommand.fetch()))
             .map(Command::getResult)
             .filter(status -> !status.isFailAfterProvision())
-            .flatMap(aLong -> recordInteractor.recordsSyncPipe()
-                  .createObservableResult(new SyncRecordsCommand()))
+            .flatMap(aLong -> interactor.smartCardSyncPipe()
+                  .createObservableResult(new SyncSmartCardCommand()))
             .retry(1)
             .subscribe(command -> {
             }, throwable -> Timber.e("", throwable));

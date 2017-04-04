@@ -31,7 +31,7 @@ import io.techery.janet.smartcard.event.CardInChargerEvent;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.cardIsCharged;
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.chargerRequered;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.chargerRequired;
 
 public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwareChecksPresenter.Screen, Parcelable> {
 
@@ -100,7 +100,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       }
 
       return new FirmwareChecksState(bluetoothEnabled, connectionStatus.isConnected(),
-            cardIsCharged(batteryLevel), chargerRequered(data), cardInCharger);
+            cardIsCharged(batteryLevel), chargerRequired(data.currentFirmwareVersion()), cardInCharger);
    }
 
    private void updateViewStates(FirmwareChecksState checksState) {

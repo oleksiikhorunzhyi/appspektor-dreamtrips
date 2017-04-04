@@ -291,4 +291,15 @@ public class PersistentDeviceStorage implements DeviceStorage {
    public boolean isPinEnabled() {
       return memoryStorage.isPinEnabled();
    }
+
+   @Override
+   public void setCardTime(long time) {
+      memoryStorage.setCardTime(time);
+      persistStorage();
+   }
+
+   @Override
+   public long getCardTime() {
+      return memoryStorage.getCardTime();
+   }
 }

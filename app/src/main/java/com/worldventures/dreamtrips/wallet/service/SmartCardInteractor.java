@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
@@ -50,6 +52,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe;
    private final ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCardPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
+   private final ActionPipe<SyncSmartCardCommand> smartCardSyncPipe;
    private final ReadActionPipe<GetStealthModeAction> getStealthModePipe;
    private final ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
@@ -87,12 +90,15 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe;
    private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
 
+   private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
+
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
    }
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
       //synchronized pipes
+      smartCardSyncPipe = sessionActionPipeCreator.createPipe(SyncSmartCardCommand.class, cacheSchedulerFactory.call());
       activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, cacheSchedulerFactory
             .call());
       deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, cacheSchedulerFactory.call());
@@ -139,10 +145,13 @@ public final class SmartCardInteractor {
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
       connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
+
       checkPinStatusActionPipe = sessionActionPipeCreator.createPipe(CheckPinStatusAction.class, Schedulers.io());
       setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
       getPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(GetPinEnabledCommand.class, Schedulers.io());
       setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
+
+      getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -171,6 +180,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe() {
       return restoreOfflineModeDefaultStatePipe;
+   }
+
+   public ActionPipe<SyncSmartCardCommand> smartCardSyncPipe() {
+      return smartCardSyncPipe;
    }
 
    public ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCard() {
@@ -288,4 +301,9 @@ public final class SmartCardInteractor {
    public ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe() {
       return setPinEnabledCommandActionPipe;
    }
+
+   public ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe() {
+      return getOnCardAnalyticsPipe;
+   }
+
 }

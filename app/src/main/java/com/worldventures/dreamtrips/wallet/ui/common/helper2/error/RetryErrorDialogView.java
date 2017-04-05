@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.helper2.error;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
@@ -13,9 +14,9 @@ public class RetryErrorDialogView<T> extends DialogErrorView<T> {
    private final Action1<T> retryAction;
    private final Action1<T> cancelAction;
 
-   public RetryErrorDialogView(Context context, String message, Action1<T> retryAction, Action1<T> cancelAction) {
+   public RetryErrorDialogView(Context context, @StringRes int message, Action1<T> retryAction, Action1<T> cancelAction) {
       super(context);
-      this.message = message;
+      this.message = context.getString(message);
       this.retryAction = retryAction;
       this.cancelAction = cancelAction;
    }

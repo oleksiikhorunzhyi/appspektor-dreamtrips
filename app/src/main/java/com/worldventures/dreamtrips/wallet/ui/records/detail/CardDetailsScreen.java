@@ -22,7 +22,10 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
@@ -244,7 +247,14 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    public OperationView<UpdateRecordCommand> provideOperationSaveCardData() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_card_details_progress_save, false),
-            new SimpleToastSuccessView<>(getContext(), R.string.wallet_card_details_success_save)
+            new SimpleToastSuccessView<>(getContext(), R.string.wallet_card_details_success_save),
+            ErrorViewFactory.<UpdateRecordCommand>builder()
+                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_card_details_error_default,
+                        command -> presenter.updateNickName(), command -> {
+                  }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> presenter.updateNickName(), command -> {
+                  }))
+                  .build()
       );
    }
 

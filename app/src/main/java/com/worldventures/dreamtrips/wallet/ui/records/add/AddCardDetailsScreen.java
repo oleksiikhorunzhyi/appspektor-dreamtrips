@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
@@ -21,9 +20,10 @@ import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressComm
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.DialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
@@ -213,27 +213,16 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
             ErrorViewFactory.<AddRecordCommand>builder()
-                  .defaultErrorView(getDefaultErrorDialogProvider())
+                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_add_card_details_error_default,
+                        command -> addRecordWithCurrentData(), command -> {
+                  }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData(), command -> {
+                  }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), AddressFormatException.class, R.string.wallet_add_card_details_error_message))
                   .build()
       );
-   }
-
-   @NonNull
-   private DialogErrorView<AddRecordCommand> getDefaultErrorDialogProvider() {
-      return new DialogErrorView<AddRecordCommand>(getContext()) {
-         @Override
-         protected MaterialDialog createDialog(AddRecordCommand command, Throwable throwable, Context context) {
-            return new MaterialDialog.Builder(getContext())
-                  .content(R.string.wallet_add_card_details_error_default)
-                  .positiveText(R.string.retry)
-                  .onPositive((dialog, which) -> addRecordWithCurrentData())
-                  .negativeText(R.string.cancel)
-                  .build();
-         }
-      };
    }
 
    protected void navigateButtonClick() {

@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.content.Intent;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -19,7 +17,6 @@ import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -30,6 +27,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPre
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.AccountTimelineStorageCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
@@ -58,7 +56,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    private static final int DEFAULT_RATIO_X = 3;
    private static final int DEFAULT_RATIO_Y = 1;
 
-   @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
    @Inject DownloadFileInteractor downloadFileInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
@@ -188,8 +185,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
-                           .cast(PostCompoundOperationModel.class).toList();
+                     postUploads = compoundOperationsCommand.getResult();
                      refreshFeedItems();
                   }));
    }

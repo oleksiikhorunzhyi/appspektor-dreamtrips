@@ -65,6 +65,12 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
       super.fillWithItem(item);
    }
 
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      feedItemDetailsCell.clearResources();
+   }
+
    private FeedItemDetailsCell createCell(ITEM item) {
       LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
       switch (item.getType()) {

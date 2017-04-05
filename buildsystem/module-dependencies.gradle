@@ -11,6 +11,7 @@ ext {
          { o -> o.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } },
+         { o -> o.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
          { o -> o.maven { url 'http://nexus.idamob.ru/content/groups/public' } },
          { o -> o.maven { url 'https://github.com/shaubert/maven-repo/raw/master/snapshots' } },
          { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
@@ -174,6 +175,8 @@ ext {
          materialRangeBar      : [c: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [c: 'me.leolin:ShortcutBadger:1.1.3@aar'],
          circleindicator       : [c: 'me.relex:circleindicator:1.2.2@aar'],
+         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:+'],
+         jwPlayerCore         :  [c: 'com.longtailvideo.jwplayer:jwplayer-common:+'],
    ]
    //
    def leakCanaryVersion = '1.3.1'

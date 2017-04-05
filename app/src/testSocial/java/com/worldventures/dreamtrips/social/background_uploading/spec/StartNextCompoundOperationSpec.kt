@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand
 import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import rx.observers.TestSubscriber
 
 class StartNextCompoundOperationSpec : BaseUploadingInteractorSpec({
@@ -14,8 +16,8 @@ class StartNextCompoundOperationSpec : BaseUploadingInteractorSpec({
       context("Has scheduled and doesn't have started compound operations") {
          initJanet(compoundOperationsHasScheduledAndDontHaveStarted())
 
-         context("Starting next compound operation") {
-            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
+         on("Starting next compound operation") {
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
 
             backgroundUploadingInteractor.postProcessingPipe().observe().subscribe(testSubscriber)
             backgroundUploadingInteractor.startNextCompoundPipe().send(StartNextCompoundOperationCommand())
@@ -29,8 +31,8 @@ class StartNextCompoundOperationSpec : BaseUploadingInteractorSpec({
       context("Has scheduled and has started compound operations") {
          initJanet(compoundOperationsHasScheduledAndHasStarted())
 
-         context("Starting next compound operation") {
-            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
+         on("Starting next compound operation") {
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
 
             backgroundUploadingInteractor.postProcessingPipe().observe().subscribe(testSubscriber)
             backgroundUploadingInteractor.startNextCompoundPipe().send(StartNextCompoundOperationCommand())

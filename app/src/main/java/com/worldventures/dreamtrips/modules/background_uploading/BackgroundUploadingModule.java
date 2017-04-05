@@ -10,12 +10,15 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Compoun
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CancelCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PauseCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PhotoAttachmentUploadingCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.PhotoPostProcessingCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ResumeCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.VideoPostProcessingCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import java.util.concurrent.Executors;
 
@@ -29,6 +32,8 @@ import rx.schedulers.Schedulers;
 @Module(
       injects = {
             PostProcessingCommand.class,
+            PhotoPostProcessingCommand.class,
+            VideoPostProcessingCommand.class,
             PhotoAttachmentUploadingCommand.class,
             ScheduleCompoundOperationCommand.class,
             CancelCompoundOperationCommand.class,

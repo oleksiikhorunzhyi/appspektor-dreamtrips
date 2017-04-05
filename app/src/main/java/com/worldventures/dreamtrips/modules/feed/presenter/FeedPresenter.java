@@ -22,10 +22,8 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompo
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -39,7 +37,6 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
@@ -52,8 +49,8 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -87,21 +84,18 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedStorageDelegate feedStorageDelegate;
 
-   @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
-   @Inject TripImagesInteractor tripImagesInteractor;
-   @Inject PostsInteractor postsInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    private Circle filterCircle;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
 
-   @State ArrayList<FeedItem> feedItems;
    private List<PostCompoundOperationModel> postUploads;
    private List<PhotoPickerModel> suggestedPhotos;
+   @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
 
    @Override
@@ -298,9 +292,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
-                           .cast(PostCompoundOperationModel.class)
-                           .toList();
+                     postUploads = compoundOperationsCommand.getResult();
                      refreshFeedItems();
                   }));
    }

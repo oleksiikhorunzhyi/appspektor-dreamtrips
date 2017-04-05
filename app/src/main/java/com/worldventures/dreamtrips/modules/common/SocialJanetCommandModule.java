@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.UploadVideoFileChunksCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.UploadVideoFileCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -254,7 +256,9 @@ import dagger.Module;
       GetVideosFromGalleryCommand.class,
       GetVideoDurationCommand.class,
       GetMediaFromGalleryCommand.class,
+      UploadVideoFileCommand.class,
+      UploadVideoFileChunksCommand.class,
       MigrateFromCachedEntity.class,
-      MediaAttachmentPrepareCommand.class
+      MediaAttachmentPrepareCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

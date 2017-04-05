@@ -7,21 +7,21 @@ import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
@@ -37,8 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -53,9 +51,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @InjectView(R.id.translate) View translateButton;
    @Optional @InjectView(R.id.collage) CollageView collageView;
    @Optional @InjectView(R.id.tag) ImageView tag;
-
-   @Inject FragmentManager fragmentManager;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Optional @InjectView(R.id.videoAttachment) VideoAttachmentView videoAttachmentView;
 
    public PostFeedItemCell(View view) {
       super(view);
@@ -76,14 +72,14 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       PostFeedItem postFeedItem = getModelObject();
       TextualPost textualPost = postFeedItem.getItem();
 
-      if (!appSessionHolder.get().isPresent()) {
+      if (!sessionHolder.get().isPresent()) {
          hideTranslationUi();
          return;
       }
 
-      boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownPost = textualPost.getOwner().getId() == sessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
-      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguage());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(sessionHolder, textualPost.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguage());
 
       if (!ownPost && !emptyPostText && !ownLanguage && !emptyPostLanguage) {
@@ -127,25 +123,34 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    protected void processAttachments(List<FeedEntityHolder> attachments) {
-      if (collageView == null) return;
-      //
       if (attachments != null && !attachments.isEmpty()) {
-         collageView.setItemClickListener(new CollageView.ItemClickListener() {
-            @Override
-            public void itemClicked(int position) {
-               openFullscreenPhotoList(position);
-            }
-
-            @Override
-            public void moreClicked() {
-               openFeedItemDetails();
-            }
-         });
-         collageView.setItems(attachmentsToCollageItems(attachments), cardViewWrapper.getWidth());
+         if (attachments.get(0).getItem() instanceof Photo) {
+            videoAttachmentView.hide();
+            processPhotos();
+         } else if (attachments.get(0).getItem() instanceof Video) {
+            collageView.clear();
+            processVideo((Video) attachments.get(0).getItem());
+         }
       } else {
+         videoAttachmentView.hide();
          collageView.clear();
       }
       processTags(attachments);
+   }
+
+   private void processPhotos() {
+      collageView.setItemClickListener(new CollageView.ItemClickListener() {
+         @Override
+         public void itemClicked(int position) {
+            openFullscreenPhotoList(position);
+         }
+
+         @Override
+         public void moreClicked() {
+            openFeedItemDetails();
+         }
+      });
+      collageView.setItems(attachmentsToCollageItems(getModelObject().getItem().getAttachments()), itemView.getWidth());
    }
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
@@ -197,6 +202,10 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
             .build());
    }
 
+   private void processVideo(Video video) {
+      videoAttachmentView.setup(video);
+   }
+
    @OnClick(R.id.translate)
    public void translate() {
       translateButton.setVisibility(View.GONE);
@@ -218,5 +227,14 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Override
    protected void onMore() {
       showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+   }
+
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      if (videoAttachmentView != null) {
+         Timber.d("Clear resources");
+         videoAttachmentView.clearResources();
+      }
    }
 }

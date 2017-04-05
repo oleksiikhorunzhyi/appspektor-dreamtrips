@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -50,6 +51,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       } else if (item instanceof BucketItem) {
          feedItem = new BucketFeedItem();
          type = Type.BUCKET_LIST_ITEM;
+      } else if (item instanceof Video) {
+         feedItem = new VideoFeedItem();
+         type = Type.VIDEO;
       } else if (item instanceof TripModel) {
          feedItem = new TripFeedItem();
          type = Type.TRIP;

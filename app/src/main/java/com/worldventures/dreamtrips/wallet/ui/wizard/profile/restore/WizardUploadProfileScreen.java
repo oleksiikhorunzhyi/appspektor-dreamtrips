@@ -67,7 +67,7 @@ public class WizardUploadProfileScreen extends WalletLinearLayout<WizardUploadPr
       if (retryUploadDataDialog == null) {
          retryUploadDataDialog = new MaterialDialog.Builder(getContext())
                .content(R.string.wallet_error_uploading_retry)
-               .positiveText(R.string.ok)
+               .positiveText(R.string.retry)
                .negativeText(R.string.cancel)
                .onPositive((dialog, which) -> presenter.retryUpload())
                .build();

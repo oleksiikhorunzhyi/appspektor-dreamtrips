@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util;
 
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
 import java.util.Comparator;
 
@@ -9,10 +9,10 @@ import java.util.Comparator;
  * Sorts CompoundOperationModelComparator in descending order depending on state and
  * the place in the queue
  */
-public class PostCompoundOperationModelComparator implements Comparator<CompoundOperationModel> {
+public class PostCompoundOperationModelComparator implements Comparator<PostCompoundOperationModel> {
 
    @Override
-   public int compare(CompoundOperationModel o1, CompoundOperationModel o2) {
+   public int compare(PostCompoundOperationModel o1, PostCompoundOperationModel o2) {
       int displayPriorityDiff = getDisplayPriorityByState(o2.state()) -
             getDisplayPriorityByState(o1.state());
       if (displayPriorityDiff == 0 && o1.state().equals(o2.state())) {

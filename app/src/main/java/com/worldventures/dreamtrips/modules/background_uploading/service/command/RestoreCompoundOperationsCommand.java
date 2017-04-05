@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
@@ -15,20 +14,20 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class RestoreCompoundOperationsCommand extends Command<List<CompoundOperationModel>> implements InjectableAction {
+public class RestoreCompoundOperationsCommand extends Command<List<PostCompoundOperationModel>> implements InjectableAction {
 
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    @Override
-   protected void run(CommandCallback<List<CompoundOperationModel>> callback) throws Throwable {
+   protected void run(CommandCallback<List<PostCompoundOperationModel>> callback) throws Throwable {
       //When app started, it means that there can be commands which are in STARTED state, but actually they are not loading
       //We need to set that PAUSED state
       compoundOperationsInteractor.compoundOperationsPipe()
             .createObservableResult(new QueryCompoundOperationsCommand())
             .subscribe(command -> {
-               List<CompoundOperationModel> cachedModels = command.getResult();
+               List<PostCompoundOperationModel> cachedModels = command.getResult();
                for (int i = 0; i < cachedModels.size(); i++) {
-                  CompoundOperationModel item = cachedModels.get(i);
+                  PostCompoundOperationModel item = cachedModels.get(i);
                   if (item instanceof PostCompoundOperationModel &&
                         cachedModels.get(i).state() == CompoundOperationState.STARTED) {
                      cachedModels.remove(i);

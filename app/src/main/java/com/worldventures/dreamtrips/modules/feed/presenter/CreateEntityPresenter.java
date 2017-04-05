@@ -3,13 +3,13 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.net.Uri;
 
 import com.techery.spares.annotations.State;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
@@ -69,12 +70,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .map(Command::getResult)
             .compose(bindViewToMainComposer())
             .subscribe(postCompoundOperationModel -> {
-               if (postCompoundOperationModel.body().attachments().size() > 0) {
+               if (postCompoundOperationModel.type() == PostBody.Type.TEXT) {
+                  createTextualPost(postCompoundOperationModel);
+               } else {
                   closeView();
                   backgroundUploadingInteractor.scheduleOperationPipe()
                         .send(new ScheduleCompoundOperationCommand(postCompoundOperationModel));
-               } else {
-                  createTextualPost(postCompoundOperationModel);
                }
             });
       postsInteractor.createPostPipe()
@@ -132,7 +133,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .observeOn(Schedulers.io())
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
-                        .send(new CreatePostCompoundOperationCommand(cachedText, creationItems, location, origin))
+                        .send(new CreatePostCompoundOperationCommand(cachedText, creationItems, selectedVideoPathUri.getPath(),
+                              location, origin))
             );
    }
 

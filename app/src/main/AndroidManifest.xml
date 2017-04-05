@@ -108,13 +108,13 @@
 
       <activity
             android:name=".modules.common.view.activity.MainActivity"
-            android:configChanges="layoutDirection|locale"
+            android:configChanges="layoutDirection|locale|keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/trips"
             android:windowSoftInputMode="adjustResize"
             />
       <activity
             android:name=".modules.common.view.activity.ComponentActivity"
-            android:configChanges="layoutDirection|locale"
+            android:configChanges="layoutDirection|locale|keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:parentActivityName=".modules.common.view.activity.MainActivity"
             android:windowSoftInputMode="adjustResize"
@@ -131,6 +131,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             />
 
+      <meta-data
+            android:name="JW_LICENSE_KEY"
+            android:value="k/oXE6R4JCQeSPhvZ4qNjiNOqL49dRMASkD4MEOLWVb3BeGX"
+            />
       <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
@@ -211,8 +215,7 @@
       <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="${applicationId}.com.facebook.app.FacebookContentProvider761062457321921"
-            android:exported="false"
-            />
+            android:exported="false"/>
 
       <activity
             android:name="com.yalantis.ucrop.UCropActivity"

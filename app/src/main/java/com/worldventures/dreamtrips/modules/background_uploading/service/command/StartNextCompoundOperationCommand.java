@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.background_uploading.service.comman
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
@@ -28,26 +27,26 @@ public class StartNextCompoundOperationCommand extends Command<Void> implements 
             .map(Command::getResult)
             .subscribe(existingUploads -> {
                if (hasScheduledOperations(existingUploads) && !hasStartedOperations(existingUploads)) {
-                  backgroundUploadingInteractor.postProcessingPipe().send(new PostProcessingCommand(getNextOperation(existingUploads)));
+                  backgroundUploadingInteractor.postProcessingPipe()
+                        .send(PostProcessingCommand.createPostProcessing(getNextOperation(existingUploads)));
                }
                callback.onSuccess(null);
 
             });
    }
 
-   private boolean hasScheduledOperations(List<CompoundOperationModel> existingUploads) {
+   private boolean hasScheduledOperations(List<PostCompoundOperationModel> existingUploads) {
       return existingUploads != null && Queryable.from(existingUploads)
             .any(item -> item.state() == CompoundOperationState.SCHEDULED);
    }
 
-   private boolean hasStartedOperations(List<CompoundOperationModel> existingUploads) {
+   private boolean hasStartedOperations(List<PostCompoundOperationModel> existingUploads) {
       return existingUploads != null && Queryable.from(existingUploads)
             .any(item -> item.state() == CompoundOperationState.STARTED);
    }
 
-   private PostCompoundOperationModel getNextOperation(List<CompoundOperationModel> existingUploads) {
+   private PostCompoundOperationModel getNextOperation(List<PostCompoundOperationModel> existingUploads) {
       return Queryable.from(existingUploads)
-            .cast(PostCompoundOperationModel.class)
             .first(item -> item.state() == CompoundOperationState.SCHEDULED);
    }
 }

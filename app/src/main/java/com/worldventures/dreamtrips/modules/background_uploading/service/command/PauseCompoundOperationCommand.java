@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 
 import javax.inject.Inject;
 
@@ -15,7 +13,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class PauseCompoundOperationCommand extends Command<CompoundOperationModel> implements InjectableAction {
+public class PauseCompoundOperationCommand extends Command<PostCompoundOperationModel> implements InjectableAction {
 
    private PostCompoundOperationModel compoundOperationModel;
 
@@ -28,7 +26,7 @@ public class PauseCompoundOperationCommand extends Command<CompoundOperationMode
    }
 
    @Override
-   protected void run(CommandCallback<CompoundOperationModel> callback) throws Throwable {
+   protected void run(CommandCallback<PostCompoundOperationModel> callback) throws Throwable {
       Observable.just(compoundOperationObjectMutator.pause(compoundOperationModel))
             .doOnNext(model -> backgroundUploadingInteractor.postProcessingPipe().cancelLatest())
             .flatMap(this::notifyCompoundOperationChanged)
@@ -36,7 +34,7 @@ public class PauseCompoundOperationCommand extends Command<CompoundOperationMode
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<CompoundOperationModel> notifyCompoundOperationChanged(CompoundOperationModel model) {
+   private Observable<PostCompoundOperationModel> notifyCompoundOperationChanged(PostCompoundOperationModel model) {
       return compoundOperationsInteractor.compoundOperationsPipe()
             .createObservableResult(CompoundOperationsCommand.compoundCommandChanged(model))
             .map(command -> model);

@@ -33,6 +33,13 @@
          style="@style/TranslateButton"
          />
 
+   <com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView
+         android:id="@+id/videoAttachment"
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/video_creation_cell_height"
+         android:visibility="gone"
+         />
+
    <FrameLayout
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"

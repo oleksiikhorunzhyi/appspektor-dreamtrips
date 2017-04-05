@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 
@@ -14,12 +14,12 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CancelCompoundOperationCommand extends Command implements InjectableAction {
 
-   private CompoundOperationModel compoundOperationModel;
+   private PostCompoundOperationModel compoundOperationModel;
 
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
-   public CancelCompoundOperationCommand(CompoundOperationModel compoundOperationModel) {
+   public CancelCompoundOperationCommand(PostCompoundOperationModel compoundOperationModel) {
       this.compoundOperationModel = compoundOperationModel;
    }
 

@@ -206,7 +206,6 @@ tasks.whenTaskAdded { task ->
 tasks.withType(JavaCompile) {
    options.compilerArgs << "-Xmaxerrs" << "400"
 }
-
 // configuration & dependencies
 
 def deps = project.ext.moduleDependencies

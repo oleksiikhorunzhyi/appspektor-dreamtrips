@@ -18,11 +18,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoAttachmentPreviewView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoPreviewViewFactory;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util.UploadingTimeLeftFormatter;
@@ -80,7 +79,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       this.compoundOperationModel = compoundOperationModel;
       this.cellDelegate = delegate;
 
-      PostWithAttachmentBody postWithAttachmentBody = compoundOperationModel.body();
+      PostWithPhotoAttachmentBody postWithAttachmentBody = (PostWithPhotoAttachmentBody) compoundOperationModel.body();
       List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
 
       refreshPhotoPreviewView(compoundOperationModel.state(), attachments);
@@ -106,7 +105,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       photoPreviewView.showPreview(attachments, state == CompoundOperationState.STARTED);
    }
 
-   private void updateViewsAccordingToState(CompoundOperationModel compoundOperationModel) {
+   private void updateViewsAccordingToState(PostCompoundOperationModel compoundOperationModel) {
       if (compoundOperationModel.state() != CompoundOperationState.FINISHED) {
          resetAnimationsForFinishedState();
       }
@@ -129,8 +128,8 @@ public class UploadingPhotoPostCell extends FrameLayout {
       }
    }
 
-   private void updateAccordingToStartedState(CompoundOperationModel compoundOperationModel) {
-      PostWithAttachmentBody postWithAttachmentBody = (PostWithAttachmentBody) compoundOperationModel.body();
+   private void updateAccordingToStartedState(PostCompoundOperationModel compoundOperationModel) {
+      PostWithPhotoAttachmentBody postWithAttachmentBody = (PostWithPhotoAttachmentBody) compoundOperationModel.body();
       List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
 
       initViewsForGeneralUploadState();
@@ -199,7 +198,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       uploadFinishedView.setVisibility(View.GONE);
    }
 
-   private void updateAccordingToFinishedState(CompoundOperationModel compoundOperationModel) {
+   private void updateAccordingToFinishedState(PostCompoundOperationModel compoundOperationModel) {
       updateAccordingToStartedState(compoundOperationModel);
       generalUploadContainer.setAlpha(0.1f);
       // show finished view as overlay
@@ -216,7 +215,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
    private void startAnimatingUploadFinishedState() {
       ObjectAnimator fadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
       fadeOut.setDuration(ANIMATION_DURATION_FADE_OUT);
-      ValueAnimator slideUp = ValueAnimator.ofInt(0, - getHeight());
+      ValueAnimator slideUp = ValueAnimator.ofInt(0, -getHeight());
       slideUp.addUpdateListener(animation -> {
          ((MarginLayoutParams) getLayoutParams()).topMargin = (int) animation.getAnimatedValue();
          requestLayout();

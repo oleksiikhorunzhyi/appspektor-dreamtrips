@@ -61,6 +61,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.notification.Notifica
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
@@ -162,6 +163,7 @@ import dagger.Provides;
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
             UploadingPhotoPostsSectionCell.class,
+            VideoAttachmentView.class,
             VideoPickerModelCell.class
       },
       complete = false,

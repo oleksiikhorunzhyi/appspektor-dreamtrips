@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -108,6 +109,8 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
             return new PostFeedItem();
          case PHOTO:
             return new PhotoFeedItem();
+         case VIDEO:
+            return new VideoFeedItem();
          case BUCKET_LIST_ITEM:
             return new BucketFeedItem();
          case TRIP:

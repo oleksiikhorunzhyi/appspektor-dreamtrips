@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
@@ -204,10 +203,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @Override
    public OperationView<GetDefaultAddressCommand> provideOperationGetDefaultAddress() {
-      return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
-            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
-      );
+      return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, false));
    }
 
    @Override

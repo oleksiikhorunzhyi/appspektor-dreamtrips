@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordComma
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
@@ -82,7 +81,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDefaultAddress())
                   .onSuccess(command -> setDefaultAddress(command.getResult()))
-                  .onFail((getDefaultAddressCommand, throwable) -> ErrorHandler.create(getContext()))
                   .create()
             );
    }
@@ -136,7 +134,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    private void setCardAsDefault() {
       fetchDefaultRecordId()
-            .filter(defaultRecordId -> !TextUtils.isEmpty(defaultRecordId))
+            .filter(defaultRecordId -> defaultRecordId != null)
             .flatMap(defaultRecordId -> fetchLocalRecords().map(records ->
                   Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.id()))))
             .filter(defaultRecord -> defaultRecord != null)

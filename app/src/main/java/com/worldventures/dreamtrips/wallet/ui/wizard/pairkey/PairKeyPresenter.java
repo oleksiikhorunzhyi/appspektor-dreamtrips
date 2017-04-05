@@ -9,47 +9,48 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CardConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CheckFrontAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.ProvisioningMode;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import timber.log.Timber;
 
 public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject WizardInteractor wizardInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
 
+   @Inject WizardInteractor wizardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+
+   private final PairDelegate pairDelegate;
    private final String barcode;
 
-   public PairKeyPresenter(Context context, Injector injector, String barcode) {
+   public PairKeyPresenter(Context context, Injector injector, ProvisioningMode provisioningMode, String barcode) {
       super(context, injector);
+      this.pairDelegate = PairDelegate.create(provisioningMode, navigator, smartCardInteractor);
       this.barcode = barcode;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      pairDelegate.prepareView(getView());
+
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new CheckFrontAction()));
 
       observeCreateAndConnectSmartCard();
    }
 
    private void observeCreateAndConnectSmartCard() {
+      //noinspection ConstantConditions
       wizardInteractor.createAndConnectActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -60,20 +61,8 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
    }
 
    private void smartCardConnected() {
-      smartCardInteractor.smartCardUserPipe()
-            .createObservableResult(SmartCardUserCommand.fetch())
-            .compose(bindViewIoToMainComposer())
-            .map(Command::getResult)
-            .subscribe(this::handleSmartCardUserExisting, throwable -> Timber.e(throwable, ""));
-   }
-
-   private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
+      pairDelegate.navigateOnNextScreen(getView());
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new CardConnectedAction()));
-      if (smartCardUser != null) {
-         navigator.withoutLast(new WizardUploadProfilePath());
-      } else {
-         navigator.withoutLast(new WizardEditProfilePath());
-      }
    }
 
    void tryToPairAndConnectSmartCard() {
@@ -84,7 +73,7 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
       navigator.goBack();
    }
 
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen, PairView {
 
       OperationView<CreateAndConnectToCardCommand> provideOperationCreateAndConnect();
    }

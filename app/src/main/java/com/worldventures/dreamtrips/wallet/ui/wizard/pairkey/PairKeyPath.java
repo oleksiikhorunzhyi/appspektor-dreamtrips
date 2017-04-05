@@ -4,18 +4,17 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
+import com.worldventures.dreamtrips.wallet.ui.wizard.ProvisioningMode;
 
 @Layout(R.layout.screen_wallet_wizard_pairkey)
 public class PairKeyPath extends StyledPath {
 
-   private String barcode;
+   public final ProvisioningMode mode;
+   public final String barcode;
 
-   public PairKeyPath(String barcode) {
+   public PairKeyPath(ProvisioningMode mode, String barcode) {
+      this.mode = mode;
       this.barcode = barcode;
-   }
-
-   public String getBarcode() {
-      return barcode;
    }
 
    @Override

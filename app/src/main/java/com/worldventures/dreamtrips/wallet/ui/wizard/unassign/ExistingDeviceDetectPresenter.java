@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
+import com.worldventures.dreamtrips.wallet.ui.wizard.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 
 import javax.inject.Inject;
@@ -37,11 +37,12 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
       observeReAssignCommand();
    }
 
-   void unpair() {
+   void repair() {
+      //noinspection ConstantConditions
       getView().showConfirmDialog(smartCardId);
    }
 
-   void unpairConfirmed() {
+   void repairConfirmed() {
       wizardInteractor.reAssignCardPipe().send(new ReAssignCardCommand(smartCardId));
    }
 
@@ -50,6 +51,7 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
    }
 
    private void bindSmartCardId() {
+      //noinspection ConstantConditions
       getView().setSmartCardId(smartCardId);
    }
 
@@ -65,7 +67,7 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
    }
 
    private void reAssignSuccess() {
-      navigator.single(new PairKeyPath(smartCardId));
+      navigator.single(new PairKeyPath(ProvisioningMode.NEW_DEVICE, smartCardId));
    }
 
    public interface Screen extends WalletScreen {

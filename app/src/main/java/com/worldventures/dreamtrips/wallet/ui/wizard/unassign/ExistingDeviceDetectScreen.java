@@ -12,9 +12,8 @@ import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.DialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.helper.CardIdUtil;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -60,13 +59,13 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
 
    @OnClick(R.id.button_unpair)
    public void onClickUnpair() {
-      presenter.unpair();
+      presenter.repair();
    }
 
    @Override
    public <T> OperationView<T> provideOperationView() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), 0, false),
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_existing_device_detect_progress, false),
             ErrorViewFactory.<T>builder().build()
       );
    }
@@ -81,7 +80,7 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
       new MaterialDialog.Builder(getContext())
             .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_unassign_card_confirm_message, scId)))
             .positiveText(R.string.wallet_continue_label)
-            .onPositive((dialog, which) -> presenter.unpairConfirmed())
+            .onPositive((dialog, which) -> presenter.repairConfirmed())
             .negativeText(R.string.wallet_cancel_label)
             .show();
    }

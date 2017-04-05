@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
@@ -37,14 +38,13 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
-      if(isInEditMode()) return;
-      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
    }
 
    @NonNull
    @Override
    public PairKeyPresenter createPresenter() {
-      return new PairKeyPresenter(getContext(), getInjector(), getPath().getBarcode());
+      final PairKeyPath path = getPath();
+      return new PairKeyPresenter(getContext(), getInjector(), path.mode, path.barcode);
    }
 
    @Override
@@ -71,5 +71,22 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
                         R.string.wallet_smartcard_connection_error,
                         (dialog, which) -> presenter.goBack())
                   ).build());
+   }
+
+   @Override
+   public void showBackButton() {
+      toolbar.setNavigationIcon(R.drawable.back_icon);
+      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+   }
+
+   @Override
+   public void hideBackButton() {
+      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      toolbar.setNavigationOnClickListener(null);
+   }
+
+   @Override
+   public View getView() {
+      return this;
    }
 }

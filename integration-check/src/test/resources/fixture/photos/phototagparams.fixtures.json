@@ -1,0 +1,15 @@
+{
+  "photo_tag": {
+    "target_user_id": 1,
+    "position": {
+      "top_left": {
+        "x": 0.1,
+        "y": 0.1
+      },
+      "bottom_right": {
+        "x": 0.2,
+        "y": 0.2
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ public class CreateFeedPostFragment extends CreateEntityFragment {
       super.onResume();
       if (getArgs() != null && getArgs().isShowPickerImmediately()) {
          showMediaPicker();
-         getArgs().setShowPickerImmediately(false);
+         getArgs().setShowPickerImmediately(true);
       }
       updatePickerState();
    }

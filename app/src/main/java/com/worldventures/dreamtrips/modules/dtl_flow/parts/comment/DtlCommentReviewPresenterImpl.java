@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -42,10 +44,13 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     private final Merchant merchant;
     private static final String BRAND_ID = "1";
     private User user;
-
+    private String stringReview;
+    private int stringReviewLength = 0;
+    private boolean isStringReviewValid = false;
     private static final String ERROR_FORM_PROFANITY = "ERROR_FORM_PROFANITY";
     private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
     private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
+    private int mCount = 0;
 
     public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
         super(context);
@@ -67,8 +72,6 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         }
     }
 
-
-
     @Override
     public void navigateToDetail(String message) {
         Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
@@ -84,6 +87,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         if (isInternetConnection()){
             if (validateComment()) {
                 getView().sendPostReview();
+                getView().disableInputs();
             }
         } else {
             getView().showNoInternetMessage();
@@ -108,8 +112,9 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     }
 
     @Override
-    public void sendAddReview(String description, Integer rating) {
+    public void sendAddReview(String description, Integer rating, boolean verified) {
         this.user = appSessionHolder.get().get().getUser();
+        Log.i("post", "count" + mCount++);
         ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
                 .observe()
@@ -154,6 +159,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     private void onMerchantsLoaded(AddReviewAction action) {
         if (action.getResult().errors() != null){
             getView().onRefreshSuccess();
+            getView().enableInputs();
             validateCodeMessage(action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code());
         } else {
             this.user = appSessionHolder.get().get().getUser();
@@ -204,6 +210,33 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
         getView().onRefreshError(throwable.getMessage());
+        getView().enableInputs();
+    }
+
+    @Override
+    public void handleStringReview(String stringReview) {
+        this.stringReview = stringReview;
+
+        int lineJumpOccurrences = 0;
+        for (int i = 0; i < stringReview.length(); i++) {
+            if (stringReview.charAt(i) == '\n') {
+                lineJumpOccurrences++;
+            }
+        }
+        stringReviewLength = stringReview.length() - lineJumpOccurrences;
+
+        getView().setInputChars(stringReviewLength);
+
+        if (stringReviewLength >= minimumCharactersAllowed()) {
+            isStringReviewValid = true;
+            getView().setNormalStyleText();
+        } else {
+            getView().setBoldStyleText();
+        }
+        getView().setMaxLengthText(maximumCharactersAllowed() + lineJumpOccurrences);
+        if (stringReviewLength >= maximumCharactersAllowed()){
+            getView().showErrorMaxMessage();
+        }
     }
 
     public boolean isInternetConnection(){

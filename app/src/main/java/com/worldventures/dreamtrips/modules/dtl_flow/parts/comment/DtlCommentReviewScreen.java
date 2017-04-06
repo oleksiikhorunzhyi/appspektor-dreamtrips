@@ -8,6 +8,14 @@ public interface DtlCommentReviewScreen extends DtlScreen {
 
     void showDialogMessage(String message);
 
+    void enableInputs();
+
+    void disableInputs();
+
+    void onBackClick();
+
+    boolean isFromListReview();
+
     int getSizeComment();
 
     int getRatingBar();
@@ -28,19 +36,27 @@ public interface DtlCommentReviewScreen extends DtlScreen {
 
     void sendPostReview();
 
-    boolean isFromListReview();
-
     boolean isVerified();
 
     String getFingerprintId();
+
+    void showErrorUnknown();
+
+    void showErrorLimitReached();
 
     void showNoInternetMessage();
 
     void showProfanityError();
 
-    void showErrorUnknown();
+    void showErrorMaxMessage();
 
-    void showErrorLimitReached();
+    void setBoldStyleText();
+
+    void setInputChars(int charCounter);
+
+    void setMaxLengthText(int maxValue);
+
+    void setNormalStyleText();
 
     void unrecognizedError();
 }

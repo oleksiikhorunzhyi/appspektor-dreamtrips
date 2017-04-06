@@ -41,7 +41,7 @@ configurations.all {
 
 android {
    compileSdkVersion 24
-   buildToolsVersion "24.0.3"
+   buildToolsVersion '25.0.0'
 
    // App version
    def versionMajor = 1
@@ -86,7 +86,8 @@ android {
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
+         'DreamTripsApi'    : '"https://dtapp-dev.worldventures.biz/"',
+         //'DreamTripsApi'    : '"http://10.28.149.141:8000/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
          'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
@@ -181,7 +182,7 @@ android {
       dev {
          dimension "build"
          applicationIdSuffix = DEV_CODE
-         minSdkVersion 23
+         //minSdkVersion 23
          ext.enableCrashlytics = false
          buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
          buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
@@ -375,6 +376,23 @@ android {
       exclude 'META-INF/services/javax.annotation.processing.Processor'
       exclude 'META-INF/LICENSE.txt'
       exclude 'META-INF/NOTICE.txt'
+
+      exclude 'org/joda/time/format/messages.properties'
+      exclude 'org/joda/time/format/messages_es.properties'
+      exclude 'org/joda/time/format/messages_en.properties'
+      exclude 'org/joda/time/format/messages_cs.properties'
+      exclude 'org/joda/time/format/messages_da.properties'
+      exclude 'org/joda/time/format/messages_de.properties'
+      exclude 'org/joda/time/format/messages_fr.properties'
+      exclude 'org/joda/time/format/messages_it.properties'
+      exclude 'org/joda/time/format/messages_ja.properties'
+      exclude 'org/joda/time/format/messages_nl.properties'
+      exclude 'org/joda/time/format/messages_pl.properties'
+      exclude 'org/joda/time/format/messages_pt.properties'
+      exclude 'org/joda/time/format/messages_ru.properties'
+      exclude 'org/joda/time/format/messages_tr.properties'
+      exclude 'META-INF/rxjava.properties'
+      exclude 'META-INF/LICENSE'
    }
    useLibrary 'org.apache.http.legacy'
    sourceSets {
@@ -430,10 +448,6 @@ dependencies {
    compile 'de.greenrobot:eventbus:2.4.0'
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
-   // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.10-STAGE-SNAPSHOT', changing: true) {
-      exclude group: "joda-time"
-   }
    compile 'com.squareup.okhttp:okhttp:2.7.5'
    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.5.0'
@@ -555,6 +569,9 @@ dependencies {
 
    //FingerPrint Library
    compile(name:'deviceprint-lib-release-2.3.3', ext:'aar')
+
+   compile project(':integration-check')
+   compile project(':library')
 
    // Testing
    testCompile 'junit:junit:4.12'

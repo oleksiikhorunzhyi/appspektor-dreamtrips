@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews;
 
 import android.support.annotation.Nullable;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
@@ -16,11 +15,12 @@ public interface Review extends Serializable {
 
    @Nullable String lastModeratedTimeUtc();
    @Nullable String reviewId();
-   @Nullable String brand();
+   @Nullable Integer brand();
    @Nullable String userNickName();
    @Nullable UserImage userImage();
    @Nullable String reviewText();
    @Nullable Integer rating();
    @Nullable Boolean verified();
    @Nullable List<Errors> errors();
+   @Nullable List<ReviewImages> reviewPhotos();
 }

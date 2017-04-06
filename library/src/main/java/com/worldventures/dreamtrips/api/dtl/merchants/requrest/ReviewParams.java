@@ -8,14 +8,20 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ReviewParams {
 
-   @SerializedName("userEmail")
-   String userEmail();
-   @SerializedName("userNickName")
-   String userNickName();
-   @SerializedName("reviewText")
-   String reviewText();
-   @SerializedName("rating")
-   String rating();
-   @SerializedName("verified")
-   Boolean verified();
+    @SerializedName("userEmail")
+    String userEmail();
+    @SerializedName("userNickName")
+    String userNickName();
+    @SerializedName("reviewText")
+    String reviewText();
+    @SerializedName("rating")
+    String rating();
+    @SerializedName("verified")
+    Boolean verified();
+    @SerializedName("userId")
+    String userId();
+    @SerializedName("deviceFingerprint")
+    String deviceFingerprint();
+    @SerializedName("authorIpAddress")
+    String authorIpAddress();
 }

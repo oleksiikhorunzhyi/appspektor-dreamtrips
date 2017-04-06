@@ -15,7 +15,7 @@ import java.util.List;
 public interface CommentReview extends Serializable {
 
    @Nullable String reviewId();
-   @Nullable String brand();
+   @Nullable Integer brand();
    @Nullable String userNickName();
    @Nullable String userImage();
    @Nullable String reviewText();

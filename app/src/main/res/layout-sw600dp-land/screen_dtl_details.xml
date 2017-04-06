@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/root_detail_view"
       android:layout_width="match_parent"
@@ -54,26 +55,6 @@
                android:background="@drawable/divider_list"
                />
 
-         <FrameLayout
-               android:id="@+id/merchant_details_merchant_wrapper"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:background="#eeeeee"
-               android:orientation="horizontal"
-               android:padding="@dimen/spacing_normal"
-               >
-
-            <Button
-                  android:id="@+id/merchant_details_suggest_merchant"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center"
-                  android:text="@string/suggest_merchant"
-                  android:textColor="@color/black"
-                  android:theme="@style/WhiteButtonTheme"
-                  />
-         </FrameLayout>
-
          <LinearLayout
                android:id="@+id/description_header"
                android:layout_width="match_parent"
@@ -117,6 +98,12 @@
                   android:layout_height="wrap_content"
                   app:el_contentLayout="@layout/adapter_item_merchant_hours_content"
                   app:el_headerLayout="@layout/adapter_item_merchant_hours_header"
+                  />
+
+            <View
+                  android:layout_width="match_parent"
+                  android:layout_height="1dp"
+                  android:background="@drawable/list_divider_with_right_padding"
                   />
 
             <FrameLayout

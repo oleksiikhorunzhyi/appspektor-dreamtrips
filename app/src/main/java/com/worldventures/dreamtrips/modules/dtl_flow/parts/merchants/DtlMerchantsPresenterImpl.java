@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
@@ -51,6 +52,7 @@ import flow.path.Path;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
@@ -61,6 +63,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject AttributesInteractor attributesInteractor;
 
    @State boolean initialized;
    @State FullMerchantParamsHolder actionParamsHolder;
@@ -126,17 +129,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .subscribe(getView()::updateToolbarSearchCaption);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
-            .compose(bindViewIoToMainComposer())
-            .map(FilterDataAction::getResult)
-            .map(FilterData::isOffersOnly)
-            .subscribe(getView()::toggleOffersOnly);
-      filterDataInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
             .map(FilterDataAction::getResult)
             .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setFilterButtonState);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::getMerchantType)
+            .subscribe(getView()::updateMerchantType);
    }
 
    private void connectFullMerchantLoading() {
@@ -226,6 +229,16 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onLoadMerchantsType(List<String> merchantType) {
+      filterDataInteractor.applyMerchantTypes(merchantType);
+   }
+
+   @Override
+   public void loadAmenities(List<String> merchantType) {
+      attributesInteractor.requestAmenities(merchantType);
+   }
+
+   @Override
    public void sendToRatingReview(ThinMerchant merchant) {
       loadMerchant(merchant, null, true);
    }
@@ -300,7 +313,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId, boolean fromRating) {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
       fullMerchantInteractor.load(merchant.id(), expandedOfferId, fromRating);
-      hasPendingReview = merchant.reviewSummary().userHasPendingReview();
+      //hasPendingReview = merchant.reviewSummary().userHasPendingReview();
    }
 
    private void onEmptyMerchantsLoaded() {

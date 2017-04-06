@@ -50,7 +50,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> {
-            getPresenter().onBackPressed();
             getActivity().onBackPressed();
         });
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -125,6 +124,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         errorDialog.showCancelButton(true);
         errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
         errorDialog.show();
+    }
+
+    @Override
+    public String getMerchantId() {
+        return getPath().getMerchant().id();
     }
 
     @Override

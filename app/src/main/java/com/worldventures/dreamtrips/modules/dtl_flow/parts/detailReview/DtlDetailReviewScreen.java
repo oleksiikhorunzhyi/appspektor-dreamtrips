@@ -4,6 +4,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlDetailReviewScreen extends DtlScreen {
 
+    void enableInputs();
+
+    void disableInputs();
+
     void finish();
 
     void onRefreshSuccess();
@@ -13,4 +17,6 @@ public interface DtlDetailReviewScreen extends DtlScreen {
     void onRefreshError(String error);
 
     void showEmpty(boolean isShow);
+
+    String getMerchantId();
 }

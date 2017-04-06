@@ -1,0 +1,10 @@
+{
+  "firmware_data_old": {
+    "firmware_version": "1.0.0",
+    "sdk_version": "1.0.0"
+  },
+  "firmware_data_new": {
+    "firmware_version": "11.0.0",
+    "sdk_version": "11.0.0"
+  }
+}

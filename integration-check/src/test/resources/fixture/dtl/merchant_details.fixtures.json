@@ -1,0 +1,56 @@
+{
+  "merchant_id": "dcda9e0b-18bf-41d5-b170-d8c511716d36",
+  "coordinates": "51.50,0",
+  "radius": 80.6,
+  "brandId": "1",
+  "transaction": {
+    "receipt_photo_url": "http://dtappprd.s3.amazonaws.com/dtuploads/A476762C.jpg",
+    "checkin_time": "2015-12-30T16:10:27Z",
+    "merchant_token": "CB3AAA409074808E9E1E699480EEC1F7",
+    "bill_total": 100.00,
+    "currency_code": "USD",
+    "location": {
+      "city": "Plano",
+      "state": "TX",
+      "country": "US",
+      "ll": "48.461893,35.042325"
+    }
+  },
+
+  "thin_merchants_query_params": {
+    "coordinates": "33.019844,-96.698883",
+    "partner_status": [
+      "participant",
+      "pending"
+    ],
+    "budget_min": 0,
+    "budget_max": 5,
+    "radius": 80.4,
+    "filter_attrib": [
+      "amenity:122"
+    ],
+    "offset": 0,
+    "limit": 20
+  },
+
+  "add_reviews_query_params": {
+    "brandId": "1",
+    "productId": "dba529d3-6bbd-49c3-83de-f8bf4e43aa36",
+    "userEmail": "john.sullivan@gmail.com",
+    "userNickName": "John Sullivan",
+    "reviewText": "Lorem ipsum dolor sit amet, consectetur review extra.",
+    "rating": 3,
+    "verified": false,
+    "userId": "1",
+    "deviceFingerprint": "1"
+  },
+
+  "body_add_reviews_query_params": {
+    "userEmail": "john.sullivan@gmail.com",
+    "userNickName": "John Sullivan",
+    "reviewText": "Lorem ipsum dolor sit amet, consectetur review extra.",
+    "rating": 3,
+    "verified": false,
+    "userId": "1"
+  }
+}

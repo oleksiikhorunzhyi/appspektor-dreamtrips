@@ -11,14 +11,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
-
-import java.util.ArrayList;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
+
+import java.util.ArrayList;
 import flow.Flow;
 
 public class OfferWithReviewFragment extends Fragment {
@@ -28,7 +28,6 @@ public class OfferWithReviewFragment extends Fragment {
    private TextView tvReview;
    private TextView tvReviewCount;
    private View lineSeparator;
-
    private ReviewAdapter mAdapter;
 
    public static final String ARRAY = "arrayList";
@@ -83,7 +82,7 @@ public class OfferWithReviewFragment extends Fragment {
               new RecyclerClickListener() {
                  @Override
                  public void onClick(View view, int position) {
-                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position)));
+                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId()));
                  }
 
                  @Override

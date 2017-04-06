@@ -79,7 +79,10 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
       return merchantId;
    }
 
-   public boolean getFromRating() { return fromRating; }
+   public boolean getFromRating()
+   {
+      return fromRating;
+   }
 
    @Override
    public int getFallbackErrorMessage() {

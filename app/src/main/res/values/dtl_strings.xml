@@ -108,6 +108,10 @@
    <string name="dtlt_search_hint">Food &amp; Drinks</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filters</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_food">Food</string>
+   <string name="filter_merchant_entertainment">Entertainment</string>
+   <string name="filter_merchant_spa">Spas</string>
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">RATE &amp; REVIEW</string>
    <string name="first_reviews_text">Be the first to review this location</string>
@@ -150,4 +154,10 @@
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>
 
+   <string name="flag_text_menu">Flag</string>
+   <string name="review_min_char">min %1$d </string>
+   <string name="review_max_char">max %1$d</string>
+   <string name="input_major_limit">Your review has reached our limit. It has been shortened to fit.</string>
+
+   <string name="text_add_photos_and_videos">Add photos</string>
 </resources>

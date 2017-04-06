@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      android:orientation="vertical">
-
+      android:orientation="vertical"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior">
    <RatingBar
          android:id="@+id/rbRating"
          android:layout_width="wrap_content"
@@ -13,27 +12,79 @@
          android:layout_gravity="center"
          android:layout_marginTop="19dp"
          android:numStars="5"
-         android:stepSize="1"
          android:rating="0"
-         android:theme="@style/rating_bar_style" />
-
-   <EditText
-         android:id="@+id/etCommentReview"
+         android:stepSize="1"
+         android:theme="@style/rating_bar_style"/>
+   <RelativeLayout
          android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_marginBottom="24dp"
-         android:layout_marginLeft="16dp"
-         android:layout_marginRight="16dp"
-         android:layout_marginTop="19dp"
-         android:background="@drawable/shape_edittext"
-         android:textSize="12sp"
-         android:textColor="@color/textCommentColorReview"
-         android:gravity="start"
-         android:inputType="textMultiLine"
-         android:hint="@string/hint_comment_review"
-         android:paddingLeft="10dp"
-         android:paddingTop="10dp"
-         android:paddingRight="10dp"
-         android:paddingBottom="10dp"/>
-
+         android:layout_height="match_parent">
+      <EditText
+            android:id="@+id/etCommentReview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/shape_edittext"
+            android:gravity="start"
+            android:hint="@string/hint_comment_review"
+            android:inputType="textMultiLine"
+            android:paddingBottom="80dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/textCommentColorReview"
+            android:textSize="12sp"
+            />
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="19dp"
+            >
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginEnd="12dp"
+               android:orientation="horizontal"
+               android:gravity="right"
+               android:layout_gravity="right">
+            <TextView
+                  android:id="@+id/tv_min_chars"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/review_min_char"
+                  android:textSize="@dimen/limit_chars_style"/>
+            <TextView
+                  android:id="@+id/tv_max_chars"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/margin_left_char"
+                  android:text="@string/review_max_char"
+                  android:textSize="@dimen/limit_chars_style"/>
+         </LinearLayout>
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/spacing_tiniest"
+               android:background="@color/reviews_line_separator"
+               android:paddingBottom="15dp"
+               android:layout_marginTop="10dp"/>
+         <TextView
+               android:id="@+id/tv_char_counter"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="0"
+               android:gravity="right"
+               android:layout_marginTop="15dp"
+               android:layout_marginRight="15dp"
+               android:layout_marginBottom="15dp"
+               android:textStyle="bold"
+               android:textSize="@dimen/limit_chars_style"/>
+      </LinearLayout>
+   </RelativeLayout>
 </LinearLayout>

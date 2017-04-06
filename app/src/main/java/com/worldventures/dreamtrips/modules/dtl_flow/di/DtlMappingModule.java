@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.CurrencyConvert
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.DisclaimerConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ErrorsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.FieldErrorsConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.FlaggingConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.FormErrorsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.InnerErrorConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.LocationsConverter;
@@ -17,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.OfferConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationDayConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationHourConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewImagesConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewSettingsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewSummaryConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewTextConverter;
@@ -170,5 +172,17 @@ public class DtlMappingModule {
    @Singleton
    Converter provideReviewSettingsConverter() {
       return new ReviewSettingsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFlaggingConverterConverter() {
+      return new FlaggingConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReviewImageConverter() {
+      return new ReviewImagesConverter();
    }
 }

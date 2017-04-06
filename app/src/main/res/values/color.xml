@@ -4,6 +4,8 @@
    <color name="theme_main_darker">#76b2fe</color>
    <color name="accent">#76b2fe</color>
 
+   <color name="merchant_buttons">#cc55184f</color>
+
    <color name="white">@android:color/white</color>
 
    <color name="black">#000000</color>
@@ -217,4 +219,11 @@
    <color name="reviewBackground">#005E92</color>
    <color name="greenVerifiedView">#97c23b</color>
 
+   <color name="background_detail_review_menu">#f9f9f9</color>
+   <color name="textCommentColorReview">#9b9b9b</color>
+
+   <color name="dtl_text_color_disabled_filters">#8e99a8</color>
+   <color name="dtl_stroke_filters_map">#e3e3e3</color>
+   <color name="dtl_stroke_filters_map_pressed">#53b5fe</color>
+   <color name="dtl_filter_options_card">#f3f6f8</color>
 </resources>

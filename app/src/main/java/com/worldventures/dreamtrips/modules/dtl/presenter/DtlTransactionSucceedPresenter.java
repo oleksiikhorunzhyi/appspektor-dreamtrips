@@ -31,9 +31,9 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject LocationDelegate locationDelegate;
    @Inject SessionHolder<UserSession> appSessionHolder;
-   //
+
    @State int stars;
-   //
+
    private final Merchant merchant;
    private User user;
 

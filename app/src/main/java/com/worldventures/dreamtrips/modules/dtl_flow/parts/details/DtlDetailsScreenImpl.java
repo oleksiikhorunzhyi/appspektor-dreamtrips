@@ -14,9 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,12 +55,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.Off
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -80,7 +77,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
-   @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
    @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
    @InjectView(R.id.merchant_address) TextView merchantAddress;
    @InjectView(R.id.tv_read_all_review) TextView mTvReadAllReviews;
@@ -88,6 +84,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.text_view_rating) TextView textViewRating;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
+
+   @InjectView(R.id.container_comments) FrameLayout mContainerComments;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -122,15 +120,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       addNoCommentsAndReviews();
-
-      showMessage();
-   }
-
-   private void showMessage() {
-      String message = getPath().getMessage();
-      if (message != null && message.length() > 0){
-         Snackbar.make(merchantWrapper, message, Snackbar.LENGTH_LONG).show();
-      }
    }
 
    @Override
@@ -377,19 +366,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return false;
    }
 
-   @OnClick(R.id.merchant_details_suggest_merchant)
-   void suggestMerchantClick() {
-      getPresenter().onMerchantClick();
-   }
-
    @OnClick(R.id.btn_rate_and_review)
    void onClickRateView() {
       getPresenter().onClickRateView();
-   }
-
-   @Override
-   public void setSuggestMerchantButtonAvailable(boolean available) {
-      merchantWrapper.setVisibility(available ? View.VISIBLE : View.GONE);
    }
 
    @Override
@@ -469,5 +448,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    public DtlDetailsScreenImpl(Context context, AttributeSet attrs) {
       super(context, attrs);
+   }
+
+   @Override
+   public void showAllReviews() {
    }
 }

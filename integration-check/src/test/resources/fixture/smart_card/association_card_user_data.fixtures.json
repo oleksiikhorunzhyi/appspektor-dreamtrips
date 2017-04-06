@@ -1,0 +1,38 @@
+{
+  "card_user_data": {
+    "scID": 13371341,
+    "deviceId": "qwertyuiop1234567",
+    "pairedDeviceModel": "samsung note 7",
+    "pairedDeviceOsVersion": "Android 7.0",
+    "acceptedTACVersion": 1,
+    "user": {
+      "firstName": "James",
+      "middleName": "Alan",
+      "lastName": "Hetfield",
+      "displayPhoto": "http://www.clipartkid.com/images/372/the-latest-perspectives-article-demonizing-the-rich-highlights-a-z7fz2S-clipart.jpg"
+    }
+  },
+  "alternative_card_user_data": {
+    "scID": 13371352,
+    "deviceId": "qwertyuiop1234567",
+    "pairedDeviceModel": "samsung note 7",
+    "pairedDeviceOsVersion": "Android 7.0",
+    "acceptedTACVersion": 1,
+    "user": {
+      "firstName": "Jake",
+      "middleName": "Steward",
+      "lastName": "Jackman",
+      "displayPhoto": "http://www.clipartkid.com/images/372/the-latest-perspectives-article-demonizing-the-rich-highlights-a-z7fz2S-clipart.jpg"
+    }
+  },
+  "update_card_user_data": {
+    "displayName": "Mr.Rich",
+    "displayPhoto": "http://www.clipartkid.com/images/372/the-latest-perspectives-article-demonizing-the-rich-highlights-a-z7fz2S-clipart.jpg"
+  },
+  "new_update_card_user_data": {
+    "firstName": "Jake",
+    "middleName": "Steward",
+    "lastName": "Jackman",
+    "displayPhoto": "http://www.clipartkid.com/images/372/the-latest-perspectives-article-demonizing-the-rich-highlights-a-z7fz2S-clipart.jpg"
+  }
+}

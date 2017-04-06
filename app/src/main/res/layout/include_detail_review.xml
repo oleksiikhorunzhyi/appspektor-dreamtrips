@@ -29,11 +29,10 @@
          android:layout_alignTop="@+id/ivItemReview"
          android:layout_toEndOf="@+id/ivItemReview"
          android:layout_toRightOf="@+id/ivItemReview"
-         android:layout_marginLeft="9dp"
-         android:textSize="14sp"
-         android:textStyle="bold"
-         android:textColor="#222222"
-         android:text="Kenneth Rivera" />
+         android:layout_marginLeft="@dimen/dtl_item_reviews_margin_nine"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
+         android:textStyle="bold" />
 
    <RatingBar
          style="?android:attr/ratingBarStyleSmall"
@@ -41,7 +40,7 @@
          android:layout_height="wrap_content"
          android:isIndicator="true"
          android:numStars="5"
-         android:rating="3"
+         android:rating="0"
          android:layout_marginTop="6dp"
          android:theme="@style/rating_bar_style"
          android:layout_alignLeft="@+id/tvUserName"
@@ -56,47 +55,40 @@
          android:layout_alignParentEnd="true"
          android:layout_alignParentRight="true"
          android:layout_alignTop="@+id/tvUserName"
-         android:layout_marginRight="16dp"
-         android:text="3 min ago"
-         android:textColor="#929292"
-         android:textSize="14sp" />
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:textColor="@color/color_item_review"
+         android:textSize="@dimen/dtl_all_reviews_text" />
 
    <TextView
          android:id="@+id/tvComment"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginTop="6dp"
          android:layout_alignLeft="@+id/rbRating"
-         android:layout_marginRight="16dp"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
          android:layout_alignStart="@+id/rbRating"
          android:layout_below="@+id/rbRating"
-         android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
          android:ellipsize="end"
-         android:textSize="14sp"
-         android:textColor="#222222"
+         android:textColor="@color/rating_normal"
+         android:textSize="@dimen/dtl_all_reviews_text"
          />
 
    <include layout="@layout/line_separator"/>
 
-   <LinearLayout
+   <include
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:orientation="horizontal"
          android:layout_above="@+id/tvComment"
          android:layout_toRightOf="@+id/rbRating"
-         android:layout_toEndOf="@+id/rbRating">
+         android:layout_toEndOf="@+id/rbRating"
+         layout="@layout/include_verified_buyer" />
 
-      <TextView
-            android:id="@+id/tvVerifiedBuyer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#97c23b"
-            android:textSize="10sp"
-            android:layout_marginLeft="26dp"
-            android:textStyle="bold"
-            android:text="Verified Buyer" />
-   </LinearLayout>
-
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar_change"
+         android:layout_width="match_parent"
+         android:layout_height="48dp"
+         android:layout_below="@+id/tvComment"
+         android:background="@color/background_detail_review_menu" />
 
 </RelativeLayout>

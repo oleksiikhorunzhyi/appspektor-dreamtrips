@@ -86,45 +86,7 @@
             />
 
    </LinearLayout>
-<!--
-   <View
-         android:id="@+id/divider_1"
-         android:layout_width="match_parent"
-         android:layout_height="0.5dp"
-         android:layout_below="@+id/total_holder"
-         android:layout_marginLeft="@dimen/spacing_huge"
-         android:layout_marginRight="@dimen/spacing_huge"
-         android:layout_marginTop="@dimen/spacing_small"
-         android:background="@drawable/list_divider"
-         />
 
-
-   <TextView
-         android:id="@+id/rate_hint"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/divider_1"
-         android:layout_marginTop="@dimen/spacing_small"
-         android:gravity="center"
-         android:text="@string/rate_hint"
-         android:textColor="@color/black"
-         android:textSize="@dimen/font_normal"
-         />
-
-   <io.techery.properratingbar.ProperRatingBar
-         android:id="@+id/rating_bar"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/rate_hint"
-         android:layout_centerHorizontal="true"
-         app:prb_defaultRating="0"
-         app:prb_tickSpacing="8dp"
-         app:prb_tickNormalDrawable="@drawable/ic_star_normal"
-         app:prb_tickSelectedDrawable="@drawable/ic_star_selected"
-         app:prb_totalTicks="5"
-         app:prb_clickable="true"
-         />
--->
    <View
          android:id="@+id/divider_2"
          android:layout_width="match_parent"
@@ -161,6 +123,5 @@
             android:textColor="@color/theme_main_darker"
             />
    </LinearLayout>
-
 
 </RelativeLayout>

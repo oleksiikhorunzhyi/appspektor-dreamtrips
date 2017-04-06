@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewO
 import java.text.ParseException;
 
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, DtlDetailReviewPresenter, DtlDetailReviewPath>
         implements DtlDetailReviewScreen {
@@ -42,10 +44,16 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     RatingBar mRatingBar;
     @InjectView(R.id.tvCommentWrote)
     TextView mTvCommentWrote;
-    @InjectView(R.id.tvVerifiedBuyer)
+    @InjectView(R.id.tv_verified_buyer)
     TextView mTvIsVerified;
     @InjectView(R.id.tvComment)
     TextView mTvComment;
+    @InjectView(R.id.toolbar_change)
+    Toolbar mTlMenuOption;
+    @InjectView(R.id.iv_verified_buyer)
+    ImageView mIvVerifiedBuyer;
+
+    private SweetAlertDialog errorDialog;
 
     public DtlDetailReviewScreenImpl(Context context) {
         super(context);
@@ -57,7 +65,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
 
     @Override
     public DtlDetailReviewPresenter createPresenter() {
-        return new DtlDetailReviewPresenterImpl(getContext(), injector);
+        return new DtlDetailReviewPresenterImpl(getContext(), injector, getPath().getMerchant(), getPath().getReviewObject());
     }
 
     @Override
@@ -65,12 +73,14 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         inflateToolbarMenu(toolbar);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view ->
-                getActivity().onBackPressed());
+              getActivity().onBackPressed());
         toolbar.setTitle(getPath().getMerchant());
 
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);
 
+        mTlMenuOption.inflateMenu(getPresenter().getMenuFlag());
+        mTlMenuOption.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
         initData();
     }
 
@@ -81,8 +91,10 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
             mTvCommentWrote.setText(reviewObject.getTimeWrote());
             if (reviewObject.isVerifiedReview()) {
                 mTvIsVerified.setVisibility(View.VISIBLE);
+                mIvVerifiedBuyer.setVisibility(View.VISIBLE);
             } else {
                 mTvIsVerified.setVisibility(View.GONE);
+                mIvVerifiedBuyer.setVisibility(View.GONE);
             }
             mTvComment.setText(reviewObject.getComment());
             mRatingBar.setRating(reviewObject.getRatingCommentUser());
@@ -96,7 +108,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         try {
             CSTConverter converter = new CSTConverter();
             mTvCommentWrote.setText(converter.getCorrectTimeWrote(getContext(),
-                    timeWrote));
+                  timeWrote));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -120,6 +132,18 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     public void finish() {
     }
 
+    @Override
+    public void enableInputs() {
+        enableButtons(true);
+    }
+
+    @Override
+    public void disableInputs() {
+        enableButtons(false);
+    }
+
+    private void enableButtons(boolean status) {
+    }
 
     @Override
     public void onRefreshSuccess() {
@@ -144,6 +168,11 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     @Override
     public void showEmpty(boolean isShow) {
         emptyView.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    @Override
+    public String getMerchantId() {
+        return getPath().getMerchantId();
     }
 
     @Override

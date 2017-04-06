@@ -51,20 +51,4 @@
          tools:background="@color/dtlfb_disabled_background_color"
          />
 
-   <android.support.v7.widget.SwitchCompat
-         android:id="@+id/filterDiningsSwitch"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_gravity="center_vertical|end"
-         android:layout_margin="8dp"
-         android:gravity="center_vertical|right"
-         android:checked="false"
-         android:text="@string/dtl_show_offers_only"
-         android:textColor="@android:color/white"
-         android:textSize="@dimen/dtlfb_caption_text_size"
-         android:textAllCaps="true"
-         textAllCaps="true"
-         app:switchPadding="@dimen/dtlfb_icon_padding"
-         app:theme="@style/Theme.DreamTripsTheme"
-         />
 </LinearLayout>

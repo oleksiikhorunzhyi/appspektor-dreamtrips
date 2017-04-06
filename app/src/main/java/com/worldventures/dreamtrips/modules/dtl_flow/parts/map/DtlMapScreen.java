@@ -36,8 +36,6 @@ public interface DtlMapScreen extends DtlScreen {
 
    void centerIn(LatLng location);
 
-   void toggleOffersOnly(boolean enabled);
-
    void cameraPositionChange(CameraPosition cameraPosition);
 
    void markerClick(Marker marker);
@@ -59,4 +57,6 @@ public interface DtlMapScreen extends DtlScreen {
    void showError(String error);
 
    void setFilterButtonState(boolean enabled);
+
+   void updateMerchantType(List<String> type);
 }

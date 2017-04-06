@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
@@ -90,7 +91,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
       preExpandOffers();
-      tryHideSuggestMerchantButton();
    }
 
    @Override
@@ -144,13 +144,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (getViewState().isHoursViewExpanded()) {
          getView().expandHoursView();
       }
-   }
-
-   private void tryHideSuggestMerchantButton() {
-      boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-      if (!merchant.asMerchantAttributes().hasOffers()) {
-         getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
-      } else processTransaction();
    }
 
    private void processTransaction() {
@@ -245,13 +238,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    @Override
-   public void onMerchantClick() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant.asMerchantAttributes())));
-      getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
-   }
-
-   @Override
    public void onOfferClick(Offer offer) {
       MerchantMedia imageUrl = Queryable.from(offer.images()).firstOrDefault();
       if (imageUrl == null) return;
@@ -263,36 +249,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
    }
 
-   public void onShareClick() {
-      getView().share(merchant);
-   }
-
-   @Override
-   public void trackSharing(@ShareType String type) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(
-                  ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
-   }
-
-   @Override
-   public void trackPointEstimator() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
-   }
-
-   @Override
-   public void routeToMerchantRequested(@Nullable final Intent intent) {
-      locationDelegate.getLastKnownLocation().compose(bindViewIoToMainComposer()).subscribe(location -> {
-         analyticsInteractor.dtlAnalyticsCommandPipe()
-               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(location, merchant)));
-         getView().showMerchantMap(intent);
-      }, e -> {
-         analyticsInteractor.dtlAnalyticsCommandPipe()
-               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
-         getView().showMerchantMap(intent);
-      });
-   }
-
    @Override
    public void showAllReviews() {
       Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
@@ -301,13 +257,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void addNewComments(Merchant merchant) {
       //List Review have not to be null
-      if (merchant.reviews() != null) {
-         if (!merchant.reviews().total().equals("")) {
-            ArrayList<ReviewObject> listReviews = ReviewObject.getReviewList(merchant.reviews().reviews());
-            if (listReviews != null && !listReviews.isEmpty()) {
-               //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
-               int countReview = Integer.parseInt(merchant.reviews().total());
-               float ratingMerchant = Float.parseFloat(merchant.reviews().ratingAverage());
+      Reviews reviews = merchant.reviews();
+      if (reviews != null && !reviews.total().isEmpty()) {
+         ArrayList<ReviewObject> listReviews = ReviewObject.getReviewList(reviews.reviews());
+         if (listReviews != null && !listReviews.isEmpty()) {
+            //Business logic: If the size is equals than 0, so we need to show an screen without info
+            int countReview = Integer.parseInt(reviews.total());
+            float ratingMerchant = Float.parseFloat(reviews.ratingAverage());
+            if (getView() != null) {
                if (countReview == 0) {
                   getView().addNoCommentsAndReviews();
                } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
@@ -350,5 +307,35 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          newListReviews.add(reviews.get(i));
       }
       return newListReviews;
+   }
+
+   public void onShareClick() {
+      getView().share(merchant);
+   }
+
+   @Override
+   public void trackSharing(@ShareType String type) {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(
+                  ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
+   }
+
+   @Override
+   public void trackPointEstimator() {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
+   }
+
+   @Override
+   public void routeToMerchantRequested(@Nullable final Intent intent) {
+      locationDelegate.getLastKnownLocation().compose(bindViewIoToMainComposer()).subscribe(location -> {
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(location, merchant)));
+         getView().showMerchantMap(intent);
+      }, e -> {
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
+         getView().showMerchantMap(intent);
+      });
    }
 }

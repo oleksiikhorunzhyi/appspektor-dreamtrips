@@ -1,0 +1,8 @@
+{
+  "push_notification_subscription_params": {
+    "platform": "android",
+    "token": "test_token",
+    "app_version": "0.0.0",
+    "os_version": "21"
+  }
+}

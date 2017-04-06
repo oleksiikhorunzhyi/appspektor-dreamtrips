@@ -69,7 +69,7 @@ public class CSTConverter {
     private Calendar getCorrectTime(@NonNull String dateToConvert) {
         SimpleDateFormat df = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
         df.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
-        Date date;
+        Date date = null;
         Calendar calendar = null;
         try {
             date = df.parse(dateToConvert);

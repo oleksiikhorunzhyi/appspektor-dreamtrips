@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
-
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.schedulers.Schedulers;
@@ -24,6 +24,7 @@ public class MerchantsInteractor {
    private final ActionPipe<MerchantsAction> thinMerchantsPipe;
    private final ActionPipe<ReviewMerchantsAction> reviewsMerchantsPipe;
    private final ActionPipe<AddReviewAction> addReviewsPipe;
+   private final ActionPipe<FlaggingReviewAction> addFlaggingPipe;
 
    public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor dtlLocationInteractor,
          ClearMemoryInteractor clearMemoryInteractor) {
@@ -34,6 +35,7 @@ public class MerchantsInteractor {
       this.thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
       this.reviewsMerchantsPipe = sessionActionPipeCreator.createPipe(ReviewMerchantsAction.class, Schedulers.io());
       this.addReviewsPipe = sessionActionPipeCreator.createPipe(AddReviewAction.class, Schedulers.io());
+      this.addFlaggingPipe = sessionActionPipeCreator.createPipe(FlaggingReviewAction.class, Schedulers.io());
 
       connectNewRelicTracking();
       connectForLocationUpdates();
@@ -82,6 +84,10 @@ public class MerchantsInteractor {
 
    public ActionPipe<AddReviewAction> addReviewsHttpPipe() {
       return addReviewsPipe;
+   }
+
+   public ActionPipe<FlaggingReviewAction> flaggingReviewHttpPipe() {
+      return addFlaggingPipe;
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

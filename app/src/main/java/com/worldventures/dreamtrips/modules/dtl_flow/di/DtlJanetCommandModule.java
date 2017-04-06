@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCom
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ClearMerchantsStorageAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
@@ -26,7 +27,8 @@ import dagger.Module;
             MerchantsAction.class,
             NearbyLocationAction.class,
             ReviewMerchantsAction.class,
-            AddReviewAction.class
+            AddReviewAction.class,
+            FlaggingReviewAction.class
       },
       complete = false, library = true)
 public class DtlJanetCommandModule {

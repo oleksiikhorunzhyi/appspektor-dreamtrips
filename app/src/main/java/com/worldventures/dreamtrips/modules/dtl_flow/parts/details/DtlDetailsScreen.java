@@ -26,8 +26,6 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void setTransaction(DtlTransaction dtlTransaction);
 
-   void setSuggestMerchantButtonAvailable(boolean available);
-
    void share(Merchant merchant);
 
    void locationResolutionRequired(Status status);
@@ -49,6 +47,8 @@ public interface DtlDetailsScreen extends DtlScreen {
    List<String> getExpandedOffersIds();
 
    boolean isHoursViewExpanded();
+
+   void showAllReviews();
 
    void addNoCommentsAndReviews();
 

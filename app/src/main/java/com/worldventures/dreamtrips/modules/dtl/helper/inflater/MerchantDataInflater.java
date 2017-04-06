@@ -1,13 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.view.View;
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.ButterKnife;
 
 public abstract class MerchantDataInflater implements MerchantInflater {

@@ -133,27 +133,6 @@
                android:background="@drawable/divider_list"
                />
 
-         <FrameLayout
-               android:id="@+id/merchant_details_merchant_wrapper"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:background="#eeeeee"
-               android:orientation="horizontal"
-               android:padding="@dimen/spacing_normal"
-               >
-
-            <Button
-                  android:id="@+id/merchant_details_suggest_merchant"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center"
-                  android:text="@string/suggest_merchant"
-                  android:textAllCaps="false"
-                  android:textColor="@color/white"
-                  android:theme="@style/Theme.DreamTripsTheme.TripButton"
-                  />
-         </FrameLayout>
-
          <LinearLayout
                android:id="@+id/description_header"
                android:layout_width="match_parent"

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
@@ -19,7 +18,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
-
 import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -31,14 +29,12 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
 
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
-   //@InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
 
    @Inject CloseDialogEventDelegate closeDialogEventDelegate;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      //properRatingBar.setListener(ratingBar -> getPresenter().rate(ratingBar.getRating()));
    }
 
    @Override

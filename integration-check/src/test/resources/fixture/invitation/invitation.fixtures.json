@@ -1,0 +1,18 @@
+{
+  "create_invitation_params": {
+    "filled_template_id": 0,
+    "contacts": [
+      "develop.techery@gmail.com"
+    ],
+    "type": "email"
+  },
+  "filled_invitation_params": {
+    "template_id": 0,
+    "message": "My Custom Message For Test!",
+    "cover_photo_url": "http://www.pixelstalk.net/wp-content/uploads/2016/04/Mountain-wallpaper-HD-768x432.jpeg"
+  },
+  "preview_invitation_params": {
+    "message": "My Custom Message For Test!",
+    "cover_photo_url": "http://www.pixelstalk.net/wp-content/uploads/2016/04/Mountain-wallpaper-HD-768x432.jpeg"
+  }
+}

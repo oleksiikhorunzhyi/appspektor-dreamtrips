@@ -1,0 +1,15 @@
+{
+  "updated_photo": {
+    "title": "Updated title #hashtagUpdated",
+    "shot_at": "2012-12-01 18:30:31",
+    "coordinates": {
+      "lat": 48.464717,
+      "lng": 35.046183
+    },
+    "tags": [
+      "Tag3",
+      "Tag4"
+    ],
+    "location_name": "Location name updated"
+  }
+}

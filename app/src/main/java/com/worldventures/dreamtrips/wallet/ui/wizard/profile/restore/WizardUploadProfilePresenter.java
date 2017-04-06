@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
 
 import javax.inject.Inject;
 
@@ -70,16 +69,12 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    }
 
    private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
-      if (smartCardUser != null) {
-         wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(
-               smartCardUser.firstName(),
-               smartCardUser.middleName(),
-               smartCardUser.lastName(),
-               smartCardUser.userPhoto())
-         );
-      } else {
-         navigator.withoutLast(new WizardEditProfilePath());
-      }
+      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(
+            smartCardUser.firstName(),
+            smartCardUser.middleName(),
+            smartCardUser.lastName(),
+            smartCardUser.userPhoto())
+      );
    }
 
    private void onUserSetupSuccess() {

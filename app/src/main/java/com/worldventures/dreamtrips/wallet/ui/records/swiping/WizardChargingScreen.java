@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -39,13 +40,18 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      if (isInEditMode()) return;
+
       toolbar.setNavigationOnClickListener(v -> navigateClick());
+      userPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0f, .5f));
       ImageUtils.applyGrayScaleColorFilter(userPhoto);
    }
 
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
+      if (isInEditMode()) return;
+
       swipingAnimations.animateSmartCard(smartCard);
       swipingAnimations.animateBankCard(creditCard, Animation.INFINITE);
    }
@@ -72,17 +78,19 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
 
    @Override
    public void checkConnection(ConnectionStatus connectionStatus) {
-      if(!connectionStatus.isConnected()) presenter.showConnectionErrorScreen();
+      if (!connectionStatus.isConnected()) presenter.showConnectionErrorScreen();
    }
 
    @Override
    public void showSwipeError() {
-      operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {});
+      operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {
+      });
    }
 
    @Override
    public void trySwipeAgain() {
-      operationScreen.showError(getString(R.string.wallet_receive_data_error), o -> {});
+      operationScreen.showError(getString(R.string.wallet_receive_data_error), o -> {
+      });
    }
 
    @Override

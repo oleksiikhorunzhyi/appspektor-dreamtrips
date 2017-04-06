@@ -18,16 +18,16 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,7 +36,6 @@ import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
@@ -62,6 +61,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      presetRecordToDefaultIfNeeded();
       observeDefaultCardChangeByUser();
       observeFetchingDefaultAddress();
       observeSavingCardDetailsData();
@@ -81,7 +81,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDefaultAddress())
                   .onSuccess(command -> setDefaultAddress(command.getResult()))
-                  .onFail((getDefaultAddressCommand, throwable) -> ErrorHandler.create(getContext()))
                   .create()
             );
    }
@@ -120,52 +119,44 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                   .create());
    }
 
+   private void presetRecordToDefaultIfNeeded() {
+      Observable.zip(fetchLocalRecords(), fetchDefaultRecordId(),
+            (records, defaultRecordId) -> (records.isEmpty() || defaultRecordId == null))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(shouldBeDefault -> getView().defaultPaymentCard(shouldBeDefault), throwable -> Timber.e(throwable, ""));
+   }
+
    private void onUpdateStatusDefaultCard(boolean setDefaultCard) {
       if (setDefaultCard) {
          setCardAsDefault();
-      } else {
-         unsetCardAsDefault();
       }
    }
 
    private void setCardAsDefault() {
-      fetchDefaultRecordId(defaultRecordId -> {
-         if (WalletRecordUtil.isRealRecord(record)) {
-            smartCardInteractor.cardsListPipe()
-                  .createObservableResult(RecordListCommand.fetch())
-                  .compose(bindViewIoToMainComposer())
-                  .filter(command -> !command.getResult().isEmpty())
-                  .subscribe(command -> getView().showChangeCardDialog(Queryable.from(command.getResult())
-                              .first(element -> element.id().equals(defaultRecordId))),
-                        throwable -> Timber.e(throwable, ""));
-         }
-      });
-   }
-
-   private void unsetCardAsDefault() {
-      fetchDefaultRecordId(defaultRecordId -> {
-         if (WalletRecordUtil.equals(defaultRecordId, record)) {
-            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                  .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
-         }
-      });
-   }
-
-   private void fetchDefaultRecordId(Action1<String> action) {
-      smartCardInteractor.defaultRecordIdPipe()
-            .createObservableResult(DefaultRecordIdCommand.fetch())
-            .map(Command::getResult)
+      fetchDefaultRecordId()
+            .filter(defaultRecordId -> defaultRecordId != null)
+            .flatMap(defaultRecordId -> fetchLocalRecords().map(records ->
+                  Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.id()))))
+            .filter(defaultRecord -> defaultRecord != null)
             .compose(bindViewIoToMainComposer())
-            .switchIfEmpty(Observable.just(record.id()))
-            .subscribe(action, throwable -> Timber.e(throwable, ""));
+            .subscribe(defaultRecord -> getView().showChangeCardDialog(defaultRecord), throwable -> Timber.e(throwable, ""));
+   }
+
+   private Observable<List<Record>> fetchLocalRecords() {
+      return smartCardInteractor.cardsListPipe()
+            .createObservableResult(RecordListCommand.fetch())
+            .map(Command::getResult);
+   }
+
+   private Observable<String> fetchDefaultRecordId() {
+      return smartCardInteractor.defaultRecordIdPipe()
+            .createObservableResult(DefaultRecordIdCommand.fetch())
+            .map(Command::getResult);
    }
 
    void onCardToDefaultClick(boolean confirmed) {
       if (!confirmed) {
          getView().defaultPaymentCard(false);
-      } else {
-         smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-               .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
       }
    }
 

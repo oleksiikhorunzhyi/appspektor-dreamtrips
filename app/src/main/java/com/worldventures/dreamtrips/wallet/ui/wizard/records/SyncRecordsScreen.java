@@ -11,8 +11,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import java.util.Locale;
@@ -74,7 +74,7 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
    public <T> OperationView<T> provideOperationView() {
       return new ComposableOperationView<>(
             new WalletProgressView<>(installProgress),
-            new RetryErrorDialogView<>(getContext(), getString(R.string.wallet_syncing_payment_cards_fail_msg),
+            new RetryErrorDialogView<>(getContext(), R.string.wallet_syncing_payment_cards_fail_msg,
                   command -> presenter.retrySync(),
                   command -> presenter.finish())
       );

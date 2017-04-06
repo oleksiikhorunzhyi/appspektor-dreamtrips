@@ -98,6 +98,7 @@
    <string name="wallet_card_details_progress_save">Apply changes&#8230;</string>
    <string name="wallet_card_details_title_action_save">Save</string>
    <string name="wallet_card_details_success_save">Card data is updated!</string>
+   <string name="wallet_card_details_error_default">Failed to update Card data.</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
@@ -202,6 +203,7 @@
    <string name="wallet_view_card_details_hint_nickname_card">i.e. \"Pacific Bank Card\"</string>
    <string name="wallet_tap_confirm_try_again">Did not save to Smart Card.\nTap Confirm to try again.</string>
    <string name="wallet_card_details_nickname_error">Please use letters, numbers, spaces or dashes</string>
+   <string name="wallet_add_card_details_error_default">Failed to add Payment Card.</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>

@@ -21,8 +21,9 @@ import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordComma
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
@@ -204,10 +205,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @Override
    public OperationView<GetDefaultAddressCommand> provideOperationGetDefaultAddress() {
-      return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
-            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
-      );
+      return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, false));
    }
 
    @Override
@@ -215,6 +213,11 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
             ErrorViewFactory.<AddRecordCommand>builder()
+                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_add_card_details_error_default,
+                        command -> addRecordWithCurrentData(), command -> {
+                  }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData(), command -> {
+                  }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), AddressFormatException.class, R.string.wallet_add_card_details_error_message))
@@ -237,6 +240,10 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @OnClick(R.id.confirm_button)
    public void onConfirmButtonClicked() {
+      addRecordWithCurrentData();
+   }
+
+   private void addRecordWithCurrentData() {
       String cvv = etCardCvv.getText().toString().trim();
       String nickname = etCardNickname.getText().toString().trim();
       boolean setAsDefaultCard = defaultPaymentCardSwitcher.isChecked();

@@ -432,10 +432,10 @@
    <string name="wallet_error_enter_pin_msg">An error occurred while attempting to unassign your previous Smart Card from this device</string>
 
    <!-- Existing device detect screen -->
-   <string name="wallet_existing_device_detect_title">flye\u2122 smart card Number</string>
-   <string name="wallet_existing_device_detect_header">The following Smart Card is paired with another device:</string>
-   <string name="wallet_existing_device_detect_text">A Smart Card can only be paired with one device at a time. You must unpair it from your previous device in order to pair it with this one.</string>
-   <string name="wallet_existing_device_detect_unpair_button">Unpair flye\u2122 smart card</string>
+   <string name="wallet_existing_device_detect_title">Existing Device Detected</string>
+   <string name="wallet_existing_device_detect_header">The following Smart Card is assigned to another device in our system:</string>
+   <string name="wallet_existing_device_detect_text">Only one device can be assigned to a Smart Card.</string>
+   <string name="wallet_existing_device_detect_unpair_button">Unassign Card</string>
    <string name="wallet_existing_device_detect_progress">Unassigning…</string>
    <string name="wallet_existing_device_detect_unpair_dialog">Are you sure you want to anassign Smart Card <![CDATA[<b>%s</b>]]> from it\'s previous device?</string>
 

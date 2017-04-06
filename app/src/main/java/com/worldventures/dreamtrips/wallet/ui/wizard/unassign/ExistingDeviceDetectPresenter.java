@@ -42,6 +42,10 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
       getView().showConfirmDialog(smartCardId);
    }
 
+   void retryReAssigning() {
+      repairConfirmed();
+   }
+
    void repairConfirmed() {
       wizardInteractor.reAssignCardPipe().send(new ReAssignCardCommand(smartCardId));
    }
@@ -72,7 +76,7 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
 
    public interface Screen extends WalletScreen {
 
-      <T> OperationView<T> provideOperationView();
+      OperationView<ReAssignCardCommand> provideOperationView();
 
       void setSmartCardId(String scId);
 

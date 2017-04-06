@@ -9,9 +9,11 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
 
@@ -63,10 +65,12 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
    }
 
    @Override
-   public <T> OperationView<T> provideOperationView() {
+   public OperationView<ReAssignCardCommand> provideOperationView() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_existing_device_detect_progress, false),
-            ErrorViewFactory.<T>builder().build()
+            ErrorViewFactory.<ReAssignCardCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> presenter.retryReAssigning(), command -> { /*nothing*/}))
+                  .build()
       );
    }
 

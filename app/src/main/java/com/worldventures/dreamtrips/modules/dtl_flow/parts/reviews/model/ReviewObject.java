@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewImages;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.UserImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,9 @@ public class ReviewObject implements Parcelable {
    private String timeWrote;
    private String comment;
    private boolean isVerifiedReview;
+   private List<ReviewImages> urlReviewImages;
 
-   public ReviewObject(String reviewId, String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment, boolean isVerifiedReview) {
+   public ReviewObject(String reviewId, String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment, boolean isVerifiedReview, List<ReviewImages> urlReviewImages) {
       this.reviewId = reviewId;
       this.urlImageUser = urlImageUser;
       this.nameUser = nameUser;
@@ -25,6 +27,7 @@ public class ReviewObject implements Parcelable {
       this.timeWrote = timeWrote;
       this.comment = comment;
       this.isVerifiedReview = isVerifiedReview;
+      this.urlReviewImages = urlReviewImages;
    }
 
    public String getUrlImageUser() {
@@ -79,6 +82,14 @@ public class ReviewObject implements Parcelable {
       return reviewId;
    }
 
+   public List<ReviewImages> getUrlReviewImages() {
+      return urlReviewImages;
+   }
+
+   public void setUrlReviewImages(List<ReviewImages> arrayList) {
+      this.urlReviewImages = arrayList;
+   }
+
    private static ReviewObject getObject(Review review) {
       return new ReviewObject(review.reviewId(),
             getUrlImageUser(review.userImage()),
@@ -86,7 +97,8 @@ public class ReviewObject implements Parcelable {
             review.rating(),
             review.lastModeratedTimeUtc(),
             review.reviewText(),
-            review.verified());
+            review.verified(),
+            review.reviewImagesList());
    }
 
    public static ArrayList<ReviewObject> getReviewList(List<Review> reviewList) {
@@ -116,6 +128,7 @@ public class ReviewObject implements Parcelable {
       dest.writeString(this.timeWrote);
       dest.writeString(this.comment);
       dest.writeByte(this.isVerifiedReview ? (byte) 1 : (byte) 0);
+      dest.writeList(this.urlReviewImages);
    }
 
    protected ReviewObject(Parcel in) {
@@ -125,6 +138,7 @@ public class ReviewObject implements Parcelable {
       this.timeWrote = in.readString();
       this.comment = in.readString();
       this.isVerifiedReview = in.readByte() != 0;
+      this.urlReviewImages = in.readParcelable(ReviewImages.class.getClassLoader());
    }
 
    protected static String getUrlImageUser(UserImage userImage) {

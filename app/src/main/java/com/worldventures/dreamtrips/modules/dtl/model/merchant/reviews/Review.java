@@ -22,5 +22,5 @@ public interface Review extends Serializable {
    @Nullable Integer rating();
    @Nullable Boolean verified();
    @Nullable List<Errors> errors();
-   @Nullable List<ReviewImages> reviewPhotos();
+   @Nullable List<ReviewImages> reviewImagesList();
 }

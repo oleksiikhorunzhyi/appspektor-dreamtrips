@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -21,9 +21,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-
-public class ReviewAdapter
-      extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder> {
 
    private ArrayList<ReviewObject> mItems = new ArrayList<>();
    private Context context;
@@ -63,7 +61,8 @@ public class ReviewAdapter
       private TextView mComment;
       private TextView mTvVerifiedReview;
       private ImageView mIvVerifiedReview;
-
+      private LinearLayout mPhotosIndicatorLayout;
+      private TextView mPhotosNumber;
 
       public RecyclerViewHolder(View itemView) {
          super(itemView);
@@ -74,6 +73,8 @@ public class ReviewAdapter
          mRating = (RatingBar) itemView.findViewById(R.id.rbRating);
          mTvVerifiedReview = (TextView) itemView.findViewById(R.id.tv_verified_buyer);
          mIvVerifiedReview = (ImageView) itemView.findViewById(R.id.iv_verified_buyer);
+         mPhotosIndicatorLayout = (LinearLayout) itemView.findViewById(R.id.photos_indicator_layout);
+         mPhotosNumber = (TextView) itemView.findViewById(R.id.pics_number_tv);
       }
 
       public void bind(int position) {
@@ -92,6 +93,12 @@ public class ReviewAdapter
          mRating.setRating((mItems.get(position).getRatingCommentUser()));
 
          setVerifiedReview(mItems.get(position).isVerifiedReview());
+
+         if(mItems.get(position).getUrlReviewImages().size() > 0){
+            mPhotosNumber.setText(String.valueOf(mItems.get(position).getUrlReviewImages().size()));
+         } else {
+            mPhotosIndicatorLayout.setVisibility(View.INVISIBLE);
+         }
       }
 
       private void setVerifiedReview(boolean isVerified) {

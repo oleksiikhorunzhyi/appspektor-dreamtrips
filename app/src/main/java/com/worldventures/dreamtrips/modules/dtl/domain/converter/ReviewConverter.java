@@ -33,7 +33,7 @@ public class ReviewConverter implements Converter<com.worldventures.dreamtrips.a
             .rating(review.rating())
             .verified(review.verified())
             .errors(review.errors() != null ? mapperyContext.convert(review.errors(), Errors.class) : null)
-            .reviewPhotos(review.photos() != null ? mapperyContext.convert(review.photos(), ReviewImages.class) : null)
+            .reviewImagesList(review.reviewImagesList() != null ? mapperyContext.convert(review.reviewImagesList(), ReviewImages.class) : null)
             .build();
    }
 }

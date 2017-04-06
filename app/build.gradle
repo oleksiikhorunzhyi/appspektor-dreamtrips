@@ -89,7 +89,7 @@ android {
          'DreamTripsApi'    : '"https://dtapp-dev.worldventures.biz/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
+         'UPLOADERY_API_URL': '"http://techery-dt-preprod.techery.io/"',
    ]
    def CONFIG_MAP_DTL = [
          'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',
@@ -181,7 +181,7 @@ android {
       dev {
          dimension "build"
          applicationIdSuffix = DEV_CODE
-         //minSdkVersion 23
+         minSdkVersion 23
          ext.enableCrashlytics = false
          buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
          buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
@@ -447,6 +447,12 @@ dependencies {
    compile 'de.greenrobot:eventbus:2.4.0'
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
+
+   // Networking
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.10-STAGE-SNAPSHOT', changing: true) {
+      exclude group: "joda-time"
+   }
+
    compile 'com.squareup.okhttp:okhttp:2.7.5'
    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.5.0'
@@ -588,4 +594,5 @@ dependencies {
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {
       exclude group: 'org.mockito', module: 'mockito-core'
    }
+
 }

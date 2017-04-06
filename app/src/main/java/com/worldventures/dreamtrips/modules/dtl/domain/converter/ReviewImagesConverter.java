@@ -19,10 +19,10 @@ public class ReviewImagesConverter implements Converter<com.worldventures.dreamt
    }
 
    @Override
-   public ReviewImages convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewImages review) {
+   public ReviewImages convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewImages reviewImages) {
       return ImmutableReviewImages.builder()
-            .normalUrl(review.normalUrl())
-            .thumbnailUrl(review.thumbnailUrl())
-            .build();
+            .normalUrl(reviewImages.normalUrl())
+            .thumbnailUrl(reviewImages.thumbnailUrl())
+          .build();
    }
 }

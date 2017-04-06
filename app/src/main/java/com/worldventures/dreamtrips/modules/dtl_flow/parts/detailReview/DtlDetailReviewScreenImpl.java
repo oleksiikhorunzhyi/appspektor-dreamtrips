@@ -5,10 +5,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -16,6 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewImagesAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 
@@ -46,12 +50,19 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     TextView mTvCommentWrote;
     @InjectView(R.id.tv_verified_buyer)
     TextView mTvIsVerified;
-    @InjectView(R.id.tvComment)
-    TextView mTvComment;
     @InjectView(R.id.toolbar_change)
     Toolbar mTlMenuOption;
     @InjectView(R.id.iv_verified_buyer)
     ImageView mIvVerifiedBuyer;
+    @InjectView(R.id.photos_indicator_layout)
+    LinearLayout mPhotosIndicatorLayout;
+    @InjectView(R.id.pics_number_tv)
+    TextView mPhotosNumberIndicator;
+    @InjectView(R.id.photos)
+    RecyclerView mPhotosRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private ReviewImagesAdapter mImagesAdapter;
+    private ReviewObject reviewObject;
 
     private SweetAlertDialog errorDialog;
 
@@ -85,7 +96,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     }
 
     private void initData() {
-        ReviewObject reviewObject = getPath().getReviewObject();
+        reviewObject = getPath().getReviewObject();
         if (null != reviewObject) {
             mTvUserName.setText(reviewObject.getNameUser());
             mTvCommentWrote.setText(reviewObject.getTimeWrote());
@@ -96,11 +107,17 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
                 mTvIsVerified.setVisibility(View.GONE);
                 mIvVerifiedBuyer.setVisibility(View.GONE);
             }
-            mTvComment.setText(reviewObject.getComment());
             mRatingBar.setRating(reviewObject.getRatingCommentUser());
 
             initTimeZone(reviewObject.getTimeWrote());
             initImageFromServer(reviewObject.getUrlImageUser());
+
+            if(reviewObject.getUrlReviewImages().size() > 0){
+                mPhotosNumberIndicator.setText(String.valueOf(reviewObject.getUrlReviewImages().size()));
+            } else  {
+                mPhotosIndicatorLayout.setVisibility(View.INVISIBLE);
+            }
+            setupPhotosList();
         }
     }
 
@@ -126,6 +143,14 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
 
     private void hideRefreshMerchantsError() {
         errorView.setVisibility(GONE);
+    }
+
+    private void setupPhotosList(){
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mPhotosRecyclerView.setLayoutManager(mLayoutManager);
+        mPhotosRecyclerView.setHasFixedSize(true);
+        mImagesAdapter = new ReviewImagesAdapter(reviewObject.getComment(), reviewObject.getUrlReviewImages());
+        mPhotosRecyclerView.setAdapter(mImagesAdapter);
     }
 
     @Override

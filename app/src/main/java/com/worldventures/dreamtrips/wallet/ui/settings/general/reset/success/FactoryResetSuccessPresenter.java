@@ -33,8 +33,8 @@ public class FactoryResetSuccessPresenter extends WalletPresenter<FactoryResetSu
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
-   public void navigateNext() {
-         navigator.goBack();
+   void navigateNext() {
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

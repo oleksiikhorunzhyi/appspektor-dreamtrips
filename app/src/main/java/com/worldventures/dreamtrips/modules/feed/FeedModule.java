@@ -162,17 +162,30 @@ import dagger.Provides;
       complete = false,
       library = true)
 public class FeedModule {
-   public static final String FEED = Route.FEED.name();
+   public static final String FEED = "FEED";
    public static final String NOTIFICATIONS = Route.NOTIFICATIONS.name();
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideFeedComponent() {
-      return new ComponentDescription(FEED, R.string.feed_title, R.string.feed_title, R.drawable.ic_feed, FeedFragment.class);
+      return new ComponentDescription.Builder()
+            .key(FEED)
+            .navMenuTitle(R.string.feed_title)
+            .toolbarTitle(R.string.feed_title)
+            .icon(R.drawable.ic_feed)
+            .fragmentClass(FeedFragment.class)
+            .shouldFinishMainActivity(true)
+            .build();
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideNotificationComponent() {
-      return new ComponentDescription(NOTIFICATIONS, R.string.notifications_title, R.string.notifications_title, R.drawable.ic_notifications, NotificationFragment.class);
+      return new ComponentDescription.Builder()
+            .key(NOTIFICATIONS)
+            .navMenuTitle(R.string.notifications_title)
+            .toolbarTitle(R.string.notifications_title)
+            .icon(R.drawable.ic_notifications)
+            .fragmentClass(NotificationFragment.class)
+            .build();
    }
 
    @Provides

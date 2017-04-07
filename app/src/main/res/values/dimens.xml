@@ -71,7 +71,6 @@
    <dimen name="podcast_preview_size">245dp</dimen>
 
    /////Map info sizes
-   <dimen name="map_trip_info_size">275dp</dimen>
    <dimen name="map_trip_detail_spacing">220dp</dimen>
    <dimen name="map_trip_detail_cell_height">100dp</dimen>
    <dimen name="map_trip_detail_cover_size">100dp</dimen>

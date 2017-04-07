@@ -86,16 +86,34 @@ public class InfoModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTermsOfServiceComponent() {
-      return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
+      return new ComponentDescription.Builder()
+            .key(TERMS)
+            .navMenuTitle(R.string.legal_terms)
+            .toolbarTitle(R.string.legal_terms)
+            .icon(R.drawable.ic_termsconditions)
+            .fragmentClass(TermsTabFragment.class)
+            .build();
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideHelpComponent() {
-      return new ComponentDescription(HELP, R.string.help, R.string.help, R.drawable.ic_help, HelpFragment.class);
+      return new ComponentDescription.Builder()
+            .key(HELP)
+            .navMenuTitle(R.string.help)
+            .toolbarTitle(R.string.help)
+            .icon(R.drawable.ic_help)
+            .fragmentClass(HelpFragment.class)
+            .build();
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideFeedbackComponent() {
-      return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback, R.drawable.ic_send_feedback, SendFeedbackFragment.class);
+      return new ComponentDescription.Builder()
+            .key(SEND_FEEDBACK)
+            .navMenuTitle(R.string.send_feedback)
+            .toolbarTitle(R.string.send_feedback)
+            .icon(R.drawable.ic_send_feedback)
+            .fragmentClass(SendFeedbackFragment.class)
+            .build();
    }
 }

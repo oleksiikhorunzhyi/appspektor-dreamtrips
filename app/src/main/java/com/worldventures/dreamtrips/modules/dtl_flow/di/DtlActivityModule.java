@@ -114,6 +114,13 @@ public class DtlActivityModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideDtlComponent() {
-      return new ComponentDescription(DTL, R.string.dtl_local, R.string.dtl_local, R.drawable.ic_dtl, true, null);
+      return new ComponentDescription.Builder()
+            .key(DTL)
+            .navMenuTitle(R.string.dtl_local)
+            .toolbarTitle(R.string.dtl_local)
+            .icon(R.drawable.ic_dtl)
+            .skipGeneralToolbar(true)
+            .shouldFinishMainActivity(true)
+            .build();
    }
 }

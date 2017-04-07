@@ -23,6 +23,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
@@ -56,6 +57,8 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_hashtag_feed)
 public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPresenter, HashtagFeedBundle>
       implements HashtagFeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, FeedEntityEditingView {
+
+   private static final int LANDSCAPE_MARGIN_PERCENTAGE = 16;
 
    @InjectView(R.id.empty_view) ViewGroup emptyView;
    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
@@ -95,8 +98,8 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
       });
-      if (isTabletLandscape()) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
+      if (ViewUtils.isTablet(getContext())) {
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, true));
       }
       fragmentWithFeedDelegate.init(feedAdapter);
       BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());

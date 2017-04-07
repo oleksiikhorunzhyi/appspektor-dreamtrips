@@ -34,6 +34,7 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       scanner.setResultHandler(this);
    }
@@ -41,6 +42,7 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    @Override
    protected void onWindowVisibilityChanged(int visibility) {
       super.onWindowVisibilityChanged(visibility);
+      if (isInEditMode()) return;
       if (visibility == VISIBLE) {
          getPresenter().requestCamera();
       } else {

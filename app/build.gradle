@@ -401,7 +401,7 @@ tasks.whenTaskAdded { task ->
    }
 }
 
-def googleLibrariesVersion = '24.2.0'
+def googleLibrariesVersion = '25.2.0'
 def googlePlayServicesVersion = '10.2.0'
 def leakCanaryVersion = '1.3.1'
 def roboelectricVersion = '3.1.2'
@@ -525,7 +525,7 @@ dependencies {
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
-   compile('com.github.techery:mappery:8675fb6') {
+   compile('com.github.techery:mappery:35aec77') {
       exclude group: "org.jetbrains.kotlin"
    }
    compile 'com.jaredrummler:android-device-names:1.1.2'
@@ -559,7 +559,9 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true) {
+      exclude group: 'com.github.techery', module: 'mappery'
+   }
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)

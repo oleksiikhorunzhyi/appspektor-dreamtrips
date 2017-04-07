@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
@@ -66,15 +67,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
       PostFeedItem obj = getModelObject();
-      if (width > 0) {
-         itemView.setVisibility(View.VISIBLE);
+      ViewUtils.runTaskAfterMeasure(itemView, () -> {
          processAttachments(obj.getItem().getAttachments());
          processPostText(obj.getItem());
          processTranslations();
-      } else {
-         itemView.setVisibility(View.INVISIBLE);
-         itemView.post(this::syncUIStateWithModel);
-      }
+      });
    }
 
    private void processTranslations() {

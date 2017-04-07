@@ -6,13 +6,13 @@ import android.util.AttributeSet;
 import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class WalletBarCodeScaner extends ZXingScannerView {
+public class WalletBarCodeScanner extends ZXingScannerView {
 
-   public WalletBarCodeScaner(Context context) {
+   public WalletBarCodeScanner(Context context) {
       super(context);
    }
 
-   public WalletBarCodeScaner(Context context, AttributeSet attributeSet) {
+   public WalletBarCodeScanner(Context context, AttributeSet attributeSet) {
       super(context, attributeSet);
    }
 

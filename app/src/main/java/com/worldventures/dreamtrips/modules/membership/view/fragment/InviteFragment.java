@@ -124,7 +124,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
    }
 
    @Override
-   protected void track() {
+   protected void trackViewFromViewPagerIfNeeded() {
       getPresenter().track();
    }
 

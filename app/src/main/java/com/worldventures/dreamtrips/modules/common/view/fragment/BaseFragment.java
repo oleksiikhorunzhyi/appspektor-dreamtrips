@@ -30,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import dagger.ObjectGraph;
 import icepick.Icepick;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -100,7 +99,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      if (userVisibleHints.contains(true)) track();
+      if (userVisibleHints.contains(true)) trackViewFromViewPagerIfNeeded();
    }
 
    @Override
@@ -113,7 +112,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    public void setUserVisibleHint(boolean isVisibleToUser) {
       super.setUserVisibleHint(isVisibleToUser);
       userVisibleHints.add(isVisibleToUser);
-      if (isVisibleToUser && presenter != null) track();
+      if (isVisibleToUser && presenter != null) trackViewFromViewPagerIfNeeded();
    }
 
    /**
@@ -214,7 +213,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
       offlineWarningDelegate.showOfflineWarning(getActivity());
    }
 
-   protected void track() {
+   protected void trackViewFromViewPagerIfNeeded() {
 
    }
 

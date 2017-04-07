@@ -18,6 +18,6 @@ public class DocumentsConverter implements Converter<com.worldventures.dreamtrip
 
    @Override
    public Document convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.documents.model.Document document) {
-      return new Document(document.name(), document.url());
+      return new Document(document.name(), document.originalName(), document.url());
    }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.service.analytics.ViewDocumentAnalyticAction;
 
 import javax.inject.Inject;
@@ -9,15 +10,18 @@ public class DocumentPresenter extends WebViewFragmentPresenter<DocumentPresente
 
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   public DocumentPresenter(String url) {
-      super(url);
+   private String analyticsAction;
+
+   public DocumentPresenter(Document document, String analyticsAction) {
+      super(document.getUrl());
+      this.analyticsAction = analyticsAction;
    }
 
    @Override
    public void pageLoaded(String url) {
       super.pageLoaded(url);
-      String document = url.substring(url.lastIndexOf("/") + 1);
-      analyticsInteractor.analyticsActionPipe().send(new ViewDocumentAnalyticAction(document));
+      analyticsInteractor.analyticsActionPipe().send(new ViewDocumentAnalyticAction(analyticsAction,
+            getAccountUserId()));
    }
 
    public interface View extends WebViewFragmentPresenter.View {

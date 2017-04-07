@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.list_storage
+package com.worldventures.dreamtrips.social.common.janet.storage
 
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle

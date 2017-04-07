@@ -6,12 +6,12 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 
 import java.util.List;
 
-public abstract class PaginatedCombinedStorage<T> implements PaginatedStorage<List<T>>, ClearableStorage {
+public abstract class CombinedListStorage<T> implements Storage<List<T>>, ClearableStorage {
 
-   private PaginatedMemoryStorage<T> memoryStorage;
-   private PaginatedDiskStorage<T> diskStorage;
+   private Storage<List<T>> memoryStorage;
+   private Storage<List<T>> diskStorage;
 
-   public PaginatedCombinedStorage(PaginatedMemoryStorage<T> memoryStorage, PaginatedDiskStorage<T> diskStorage) {
+   public CombinedListStorage(Storage<List<T>> memoryStorage, Storage<List<T>> diskStorage) {
       this.memoryStorage = memoryStorage;
       this.diskStorage = diskStorage;
    }
@@ -33,6 +33,8 @@ public abstract class PaginatedCombinedStorage<T> implements PaginatedStorage<Li
 
    @Override
    public void clearMemory() {
-      memoryStorage.clearMemory();
+      if (memoryStorage instanceof ClearableStorage) {
+         ((ClearableStorage)memoryStorage).clearMemory();
+      }
    }
 }

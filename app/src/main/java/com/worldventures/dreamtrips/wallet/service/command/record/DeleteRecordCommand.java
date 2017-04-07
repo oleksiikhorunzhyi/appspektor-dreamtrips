@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command.record;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 public class DeleteRecordCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
 
    private final String recordId;
 
@@ -33,7 +33,7 @@ public class DeleteRecordCommand extends Command<Void> implements InjectableActi
    protected void run(CommandCallback<Void> callback) throws Throwable {
       janet.createPipe(DeleteRecordAction.class)
             .createObservableResult(new DeleteRecordAction(Integer.valueOf(recordId)))
-            .flatMap(aVoid -> smartCardInteractor.cardsListPipe()
+            .flatMap(aVoid -> recordInteractor.cardsListPipe()
                   .createObservableResult(RecordListCommand.remove(recordId)))
             .map(deleteRecordAction -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);

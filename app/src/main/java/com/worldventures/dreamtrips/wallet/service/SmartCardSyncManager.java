@@ -5,7 +5,6 @@ import android.support.v4.util.Pair;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
@@ -35,14 +34,17 @@ public class SmartCardSyncManager {
 
    private final Janet janet;
    private final SmartCardInteractor interactor;
+   private final RecordInteractor recordInteractor;
    private final FirmwareInteractor firmwareInteractor;
 
    private volatile boolean syncDisabled = false;
 
-   public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor) {
+   public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor,
+         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor) {
       this.janet = janet;
       this.interactor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
+      this.recordInteractor = recordInteractor;
       observeConnection();
       connectUpdateSmartCard();
       connectSyncCards();
@@ -96,7 +98,7 @@ public class SmartCardSyncManager {
 
    private void activeCardConnected() {
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
-      interactor.cardsListPipe().send(RecordListCommand.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();
    }
@@ -169,12 +171,12 @@ public class SmartCardSyncManager {
 
    private void connectSyncCards() {
       Observable.interval(10, TimeUnit.MINUTES)
-            .mergeWith(interactor.cardsListPipe().observeSuccess()
+            .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .throttleFirst(10, TimeUnit.MINUTES)
-            .flatMap(aLong -> interactor.recordsSyncPipe()
+            .flatMap(aLong -> recordInteractor.recordsSyncPipe()
                   .createObservableResult(new SyncRecordsCommand()))
             .retry(1)
             .subscribe(command -> {

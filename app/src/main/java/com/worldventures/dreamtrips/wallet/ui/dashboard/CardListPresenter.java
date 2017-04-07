@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -67,6 +68,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject RecordInteractor recordInteractor;
 
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
@@ -86,8 +88,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
-      smartCardInteractor.cardsListPipe().send(RecordListCommand.fetch());
-      smartCardInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      recordInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());
       trackScreen();
    }
 
@@ -156,7 +158,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void trackScreen() {
-      smartCardInteractor.cardsListPipe()
+      recordInteractor.cardsListPipe()
             .observeSuccessWithReplay()
             .take(1)
             .map(c -> c.getResult().size())
@@ -219,20 +221,20 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    private void observeChanges() {
       Observable.combineLatest(
-            smartCardInteractor.cardsListPipe()
+            recordInteractor.cardsListPipe()
                   .observeWithReplay()
-                  .compose(new ActionPipeCacheWiper<>(smartCardInteractor.cardsListPipe()))
+                  .compose(new ActionPipeCacheWiper<>(recordInteractor.cardsListPipe()))
                   .compose(new ActionStateToActionTransformer<>()),
-            smartCardInteractor.defaultRecordIdPipe()
+            recordInteractor.defaultRecordIdPipe()
                   .observeWithReplay()
-                  .compose(new ActionPipeCacheWiper<>(smartCardInteractor.defaultRecordIdPipe()))
+                  .compose(new ActionPipeCacheWiper<>(recordInteractor.defaultRecordIdPipe()))
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .compose(bindViewIoToMainComposer())
             .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
             } /*ignore here*/);
 
-      smartCardInteractor.recordsSyncPipe()
+      recordInteractor.recordsSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<SyncRecordsCommand>forView(getView().provideOperationDelegate())
@@ -244,7 +246,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   })
                   .wrap());
 
-      smartCardInteractor.recordsSyncPipe()
+      recordInteractor.recordsSyncPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<SyncRecordsCommand>forView(getView().provideOperationDelegate())

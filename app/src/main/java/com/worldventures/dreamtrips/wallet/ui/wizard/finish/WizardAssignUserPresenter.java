@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupC
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupCompleteAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -37,6 +38,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardAssignUserPresenter(Context context, Injector injector) {
@@ -71,7 +73,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
    }
 
    private void prepareToNextScreen() {
-      smartCardInteractor.cardsListPipe()
+      recordInteractor.cardsListPipe()
             .createObservableResult(new RecordListCommand())
             .map(Command::getResult)
             .onErrorReturn(throwable -> Collections.emptyList())

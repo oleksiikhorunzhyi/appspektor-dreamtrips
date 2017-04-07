@@ -56,7 +56,8 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          smartCardInteractor = createSmartCardInteractor(janet)
          smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
          firmwareInteractor = createFirmwareInteractor(janet)
-         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
+         recordInteractor = createRecordInteractor(janet)
+         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
          walletDetectLocationService = createWalletDetectLocationService()
          locationStorage = mockLostCardStorage()
 
@@ -141,6 +142,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var walletDetectLocationService: WalletDetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var firmwareInteractor: FirmwareInteractor
+      lateinit var recordInteractor: RecordInteractor
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var locationStorage: LostCardRepository
 
@@ -177,6 +179,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(ReactiveLocationProvider::class.java) { mock() }
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
+         daggerCommandActionService.registerProvider(RecordInteractor::class.java, { recordInteractor })
 
          return janet
       }
@@ -196,7 +199,9 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
+      fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
 
       fun mockLostCardStorage(): LostCardRepository {
          val lostCardRepository: LostCardRepository = mock()

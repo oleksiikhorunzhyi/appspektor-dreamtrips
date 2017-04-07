@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class SetDefaultCardOnDeviceCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
 
    private final String cardId;
    private final boolean isSetDefault;
@@ -64,7 +64,7 @@ public class SetDefaultCardOnDeviceCommand extends Command<Void> implements Inje
 
    @NonNull
    private Observable<Void> saveDefaultRecordIdLocally(@Nullable String recordId) {
-      return smartCardInteractor.defaultRecordIdPipe().createObservableResult(DefaultRecordIdCommand.set(recordId))
+      return recordInteractor.defaultRecordIdPipe().createObservableResult(DefaultRecordIdCommand.set(recordId))
             .map(command -> (Void) null);
    }
 }

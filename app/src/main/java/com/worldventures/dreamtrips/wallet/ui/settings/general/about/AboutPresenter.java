@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsActi
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
@@ -29,6 +30,7 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
    public AboutPresenter(Context context, Injector injector) {
@@ -43,7 +45,7 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
 
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
-      smartCardInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
 
       trackScreen();
    }
@@ -67,7 +69,7 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
    }
 
    private void observePayCardsInfo() {
-      smartCardInteractor.cardsListPipe()
+      recordInteractor.cardsListPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bindCardList(command.getResult()));

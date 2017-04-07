@@ -27,10 +27,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.disk.TestRecordsStorag
 import com.worldventures.dreamtrips.wallet.model.TestAddressInfo
 import com.worldventures.dreamtrips.wallet.model.TestMultiResponseBody
 import com.worldventures.dreamtrips.wallet.model.TestRecord
-import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
-import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService
+import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand
@@ -73,7 +70,8 @@ class SmartCardInteractorSpec : BaseSpec({
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
          firmwareInteractor = createFirmwareInteractor(janet)
-         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
+         recordInteractor = createRecordInteractor(janet)
+         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
          nxtInteractor = createNxtInteractor(janet)
          analyticsInteractor = createAnalyticsInteractor(janet)
          nxtSessionHolder = mock()
@@ -153,7 +151,7 @@ class SmartCardInteractorSpec : BaseSpec({
             })
 
             val updateRecordSubscriber = TestSubscriber<ActionState<UpdateRecordCommand>>()
-            smartCardInteractor.updateRecordPipe()
+            recordInteractor.updateRecordPipe()
                   .createObservable(UpdateRecordCommand.updateNickName(savedRecord, newRecordName))
                   .subscribe(updateRecordSubscriber)
 
@@ -173,7 +171,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
             fetchCardListOfCard { it.result.find { it.id() == recordToDelete?.id() } != null }
 
-            smartCardInteractor.deleteRecordPipe()
+            recordInteractor.deleteRecordPipe()
                   .createObservable(DeleteRecordCommand(recordToDelete?.id()))
                   .subscribe()
 
@@ -332,6 +330,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var firmwareInteractor: FirmwareInteractor
+      lateinit var recordInteractor: RecordInteractor
       lateinit var cardStorage: RecordsStorage
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var nxtInteractor: NxtInteractor
@@ -364,11 +363,13 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
 
+      fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate()})
+
       fun createNxtInteractor(janet: Janet) = NxtInteractor(janet)
 
       fun createAnalyticsInteractor(janet: Janet) = AnalyticsInteractor(SessionActionPipeCreator(janet))
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor)
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -390,6 +391,7 @@ class SmartCardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
+         daggerCommandActionService.registerProvider(RecordInteractor::class.java, { recordInteractor })
          daggerCommandActionService.registerProvider(NxtInteractor::class.java, { nxtInteractor })
          daggerCommandActionService.registerProvider(AnalyticsInteractor::class.java, { analyticsInteractor })
          daggerCommandActionService.registerProvider(NxtSessionHolder::class.java, { nxtSessionHolder })
@@ -414,7 +416,7 @@ class SmartCardInteractorSpec : BaseSpec({
       fun loadDefaultCardId(): TestSubscriber<ActionState<DefaultRecordIdCommand>> {
          val testSubscriber = TestSubscriber<ActionState<DefaultRecordIdCommand>>()
 
-         smartCardInteractor.defaultRecordIdPipe()
+         recordInteractor.defaultRecordIdPipe()
                .createObservable(DefaultRecordIdCommand.fetch())
                .subscribe(testSubscriber)
          return testSubscriber
@@ -423,7 +425,7 @@ class SmartCardInteractorSpec : BaseSpec({
       fun fetchCardListOfCard(predicate: (command: RecordListCommand) -> Boolean): Unit {
          val testSubscriber: TestSubscriber<ActionState<RecordListCommand>> = TestSubscriber()
 
-         smartCardInteractor.cardsListPipe()
+         recordInteractor.cardsListPipe()
                .createObservable(RecordListCommand.fetch())
                .subscribe(testSubscriber)
          assertActionSuccess(testSubscriber, { predicate(it) })
@@ -432,7 +434,7 @@ class SmartCardInteractorSpec : BaseSpec({
       fun loadDefaultAddress(): TestSubscriber<ActionState<GetDefaultAddressCommand>> {
          val testSubscriber = TestSubscriber<ActionState<GetDefaultAddressCommand>>()
 
-         smartCardInteractor.defaultAddressCommandPipe
+         recordInteractor.defaultAddressCommandPipe
                .createObservable(GetDefaultAddressCommand())
                .subscribe(testSubscriber)
          return testSubscriber
@@ -457,7 +459,7 @@ class SmartCardInteractorSpec : BaseSpec({
                .setSetAsDefaultRecord(setAsDefaultCard)
                .create()
 
-         smartCardInteractor.addRecordPipe()
+         recordInteractor.addRecordPipe()
                .createObservable(cmd)
                .subscribe(testSubscriber)
          return testSubscriber

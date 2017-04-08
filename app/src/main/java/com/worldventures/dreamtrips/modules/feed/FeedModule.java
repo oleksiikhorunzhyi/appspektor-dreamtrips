@@ -60,6 +60,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragm
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateReviewPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.DescriptionCreatorFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
@@ -133,6 +134,7 @@ import de.greenrobot.event.EventBus;
             ActionEntityPresenter.class,
             CreateTripImageFragment.class,
             CreateFeedPostFragment.class,
+            CreateReviewPostFragment.class,
             CreateEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl
-      android:id="@+id/root_reviews_view"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl android:id="@+id/root_reviews_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
@@ -11,6 +10,7 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:theme="@style/ToolBarStyle"
+         android:visibility="gone"
          >
 
       <!-- style="@style/ToolBarStyle" -->
@@ -80,10 +80,32 @@
          android:layout_height="match_parent"
          >
 
-      <include
-            android:id="@+id/include3"
-            layout="@layout/include_review_comment"
-            />
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+         <include
+               android:id="@+id/include3"
+               layout="@layout/include_review_comment"
+               android:visibility="gone"
+               />
+
+         <!-- <fragment
+               android:id="@+id/list"
+               android:name="com.worldventures.dreamtrips.modules.feed.view.fragment.CreateReviewPostFragment"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               /> -->
+         <FrameLayout
+               android:id="@+id/container_details_floating"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:clickable="false"
+               android:visibility="gone"
+               />
+      </LinearLayout>
 
    </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -137,5 +159,22 @@
             />
 
    </LinearLayout>
+
+   <!-- remove this viewgroup -->
+   <include
+         layout="@layout/include_min_max_chars"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:layout_marginBottom="24dp"
+         android:layout_marginLeft="16dp"
+         android:layout_marginRight="16dp"
+         android:layout_marginTop="19dp"
+         android:paddingBottom="80dp"
+         android:paddingLeft="10dp"
+         android:paddingRight="10dp"
+         android:paddingTop="10dp"
+         android:visibility="gone"
+         />
 
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl>

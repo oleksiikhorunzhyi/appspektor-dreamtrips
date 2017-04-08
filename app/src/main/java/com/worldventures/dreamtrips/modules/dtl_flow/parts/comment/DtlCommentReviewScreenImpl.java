@@ -59,6 +59,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     TextView mMaxChars;
     @InjectView(R.id.tvOnPost)
     TextView mTvPost;
+   @InjectView(R.id.container_details_floating)
+   FrameLayout mFlContainerReview;
+
+   @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     private SweetAlertDialog errorDialog;
 
@@ -86,6 +90,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         initEditTextListener();
         initLengthText();
         setMaxLengthText(getPresenter().maximumCharactersAllowed());
+
+       mFlContainerReview.setVisibility(View.VISIBLE);
+       fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
+                                             new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED));
     }
 
     private void initLengthText() {

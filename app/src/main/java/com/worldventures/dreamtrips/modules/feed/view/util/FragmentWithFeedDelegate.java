@@ -212,7 +212,7 @@ public class FragmentWithFeedDelegate {
    }
 
    public void openSharePhoto(FragmentManager fragmentManager, CreateEntityBundle bundle) {
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+      /*router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_details_floating)
             .fragmentManager(fragmentManager)
             .build());
@@ -221,6 +221,32 @@ public class FragmentWithFeedDelegate {
             .fragmentManager(fragmentManager)
             .containerId(R.id.container_details_floating)
             .data(bundle)
+            .build());*/
+      openReviewPhoto(fragmentManager, bundle);
+   }
+
+   //Created by ARCH
+   public void openReviewPhoto(FragmentManager fragmentManager, CreateEntityBundle bundle) {
+      router.moveTo(Route.POST_REVIEW, NavigationConfigBuilder.forRemoval()
+            .containerId(R.id.container_details_floating)
+            .fragmentManager(fragmentManager)
+            .build());
+      router.moveTo(Route.POST_REVIEW, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(false)
+            .fragmentManager(fragmentManager)
+            .containerId(R.id.container_details_floating)
+            .data(bundle)
+            .build());
+   }
+
+   //Created by ARCH
+   public void showMediaPicker(FragmentManager fragmentManager, int idRequest) {
+      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder
+            .forFragment()
+            .backStackEnabled(false)
+            .fragmentManager(fragmentManager)
+            .containerId(R.id.picker_container)
+            .data(new PickerBundle(idRequest, 5))
             .build());
    }
 

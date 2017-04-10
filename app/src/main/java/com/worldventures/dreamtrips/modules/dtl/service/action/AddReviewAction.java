@@ -67,8 +67,8 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    protected void run(CommandCallback<CommentReview> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(AddReviewHttpAction.class)
-            .createObservableResult(new AddReviewHttpAction(actionParams, getFile(), userEmail, userNickName, reviewText,
-                  rating, verified.toString(), userId, deviceFingerprint, authorIpAddress))
+            .createObservableResult(new AddReviewHttpAction(actionParams, userEmail, userNickName, reviewText,
+                  rating, verified.toString(), userId, deviceFingerprint, authorIpAddress, getFile(), getFile(), getFile(), getFile(), getFile()))
             .map(AddReviewHttpAction::response)
             .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
             .subscribe(callback::onSuccess, callback::onFail);

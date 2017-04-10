@@ -2,13 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.graphics.Typeface;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -19,7 +16,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -31,7 +27,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
-import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
+import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +60,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    @InjectView(R.id.progress_loader) ProgressBar mProgressBar;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   private TextView tvPostButton;
 
    private static final String BRAND_ID = "1";
    private User user;
@@ -89,13 +86,14 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
       initLengthText();
       setMaxLengthText(maximumCharactersAllowed());
 
-      TextView tvPostButton = (TextView) toolbar.findViewById(R.id.tvOnPost);
+      tvPostButton = (TextView) toolbar.findViewById(R.id.tvOnPost);
 
       tvPostButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            sendPostReview();
+            onRefreshProgress();
             disableInputs();
+            sendPostReview();
          }
       });
    }
@@ -341,10 +339,10 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
       getActivity().onBackPressed();
    }
 
-   private void enableButtons(boolean status) {
+   public void enableButtons(boolean status) {
       mComment.setEnabled(status);
       mRatingBar.setEnabled(status);
-      toolbar.setEnabled(status);
+      tvPostButton.setEnabled(status);
    }
 
    @Override
@@ -373,6 +371,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void onRefreshProgress() {
+      this.mProgressBar.setVisibility(View.VISIBLE);
       this.refreshProgress(true);
       //this.hideRefreshMerchantsError();
       this.showEmpty(false);
@@ -466,8 +465,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    private void onMerchantsLoaded(AddReviewAction action) {
       if (action.getResult().errors() != null){
-         onRefreshSuccess();
-         enableInputs();
          try {
             validateCodeMessage(action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code());
          } catch (Exception e){
@@ -476,16 +473,17 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
       } else {
          this.user = appSessionHolder.get().get().getUser();
          ReviewStorage.saveReviewsPosted(getContext(), String.valueOf(user.getId()), getMerchantId());
-         onRefreshSuccess();
          handlePostNavigation();
       }
+      onRefreshSuccess();
+      enableInputs();
    }
 
    private void onMerchantsLoading(AddReviewAction action, Integer progress) {
-      onRefreshProgress();
    }
 
    private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
+      onRefreshSuccess();
       onRefreshError(throwable.getMessage());
       enableInputs();
    }

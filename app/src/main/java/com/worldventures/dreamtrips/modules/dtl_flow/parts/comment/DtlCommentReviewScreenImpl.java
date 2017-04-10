@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -22,7 +24,9 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateReviewPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 
 import java.util.List;
@@ -92,13 +96,30 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         setMaxLengthText(getPresenter().maximumCharactersAllowed());
 
        mFlContainerReview.setVisibility(View.VISIBLE);
-       fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
 
+       Bundle bundle = new Bundle();
+       /*bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
+       bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
+       bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
+       bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, merchant.displayName());*/
+       bundle.putParcelable("data", new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
+             getPresenter().minimumCharactersAllowed(),
+             getPresenter().maximumCharactersAllowed(),
+             getPath().getMerchant().id(),
+             isFromListReview(),
+             getPath().getMerchant()));
+
+       FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+       transaction.replace(R.id.container_details_floating, CreateReviewPostFragment.newInstance(bundle));
+       transaction.commit();
+/*      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
              new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
                                                                     getPresenter().minimumCharactersAllowed(),
                                                                     getPresenter().maximumCharactersAllowed(),
                                                                      getPath().getMerchant().id(),
-                                                                     isFromListReview()));
+                                                                     isFromListReview(),
+                                                                     getPath().getMerchant()));*/
+
     }
 
     private void initLengthText() {
@@ -284,7 +305,13 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         });
         errorDialog.show();
     }
-    public void enableInputs() {
+
+   @Override
+   public void validateCodeMessage(String message) {
+
+   }
+
+   public void enableInputs() {
         enableButtons(true);
     }
 

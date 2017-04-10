@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -27,17 +28,15 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
-import com.worldventures.dreamtrips.modules.trips.model.Schedule;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 
 import javax.inject.Inject;
 
@@ -77,18 +76,42 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    private static final String ERROR_FORM_PROFANITY = "ERROR_FORM_PROFANITY";
    private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
    private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
+   private Merchant merchant;
 
    private SweetAlertDialog errorDialog;
+
+   private CreateEntityBundle bundle;
+
+   public CreateReviewPostFragment() {
+   }
+
+   public static CreateReviewPostFragment newInstance(Bundle arguments) {
+      CreateReviewPostFragment f = new CreateReviewPostFragment();
+      if (arguments != null) {
+         f.setArguments(arguments);
+      }
+      return f;
+   }
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       toolbar.setNavigationIcon(R.drawable.back_icon);
+      toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            onBackClick();
+         }
+      });
+
+      Bundle args = getArguments();
+      bundle = args.getParcelable("data");
       /*AppCompatActivity activity = (AppCompatActivity) getActivity();
       activity.setSupportActionBar(toolbar);
       activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
       //toolbar.setNavigationOnClickListener(view -> super.onBackPressed());
-
+      //merchant = getArgs().getmMerchant();
+      merchant = bundle.getmMerchant();
       initEditTextListener();
       initLengthText();
       setMaxLengthText(maximumCharactersAllowed());
@@ -153,11 +176,13 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    private int maximumCharactersAllowed() {
-      return getArgs().getMaxCharactersAllow();
+      //return getArgs().getMaxCharactersAllow();
+      return bundle.getMaxCharactersAllow();
    }
 
    private int minimumCharactersAllowed() {
-      return getArgs().getMinCharactersAllow();
+      //return getArgs().getMinCharactersAllow();
+      return bundle.getMinCharactersAllow();
    }
 
    @Override
@@ -232,7 +257,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void finish() {
-      //navigateToDetail("");
+      navigateToDetail("");
    }
 
    @Override
@@ -242,34 +267,44 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void showDialogMessage(String message) {
-      errorDialog = new SweetAlertDialog(getActivity(),
-            SweetAlertDialog.WARNING_TYPE);
-      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
-      errorDialog.setContentText(message);
-      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_yes));
-      errorDialog.showCancelButton(true);
-      errorDialog.setCancelText(getActivity().getString(R.string.apptentive_no));
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
-         getActivity().onBackPressed();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            errorDialog = new SweetAlertDialog(getActivity(),
+                  SweetAlertDialog.WARNING_TYPE);
+            errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+            errorDialog.setContentText(message);
+            errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_yes));
+            errorDialog.showCancelButton(true);
+            errorDialog.setCancelText(getActivity().getString(R.string.apptentive_no));
+            errorDialog.setConfirmClickListener(listener -> {
+               listener.dismissWithAnimation();
+               navigateToDetail("");
+            });
+            errorDialog.show();
+         }
       });
-      errorDialog.show();
    }
 
    @Override
    public void showNoInternetMessage(){
-      errorDialog = new SweetAlertDialog(getActivity(),
-            SweetAlertDialog.ERROR_TYPE);
-      errorDialog.setTitleText(getTextResource(R.string.comment_review_title_sorry));
-      errorDialog.setContentText(getTextResource(R.string.comment_review_no_internet_message));
-      errorDialog.setConfirmText(getTextResource(R.string.comment_review_no_internet_confirm_text));
-      errorDialog.showCancelButton(true);
-      errorDialog.setCancelText(getTextResource(R.string.comment_review_no_internet_cancel_text));
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
-         sendPostReview();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            errorDialog = new SweetAlertDialog(getActivity(),
+                  SweetAlertDialog.ERROR_TYPE);
+            errorDialog.setTitleText(getTextResource(R.string.comment_review_title_sorry));
+            errorDialog.setContentText(getTextResource(R.string.comment_review_no_internet_message));
+            errorDialog.setConfirmText(getTextResource(R.string.comment_review_no_internet_confirm_text));
+            errorDialog.showCancelButton(true);
+            errorDialog.setCancelText(getTextResource(R.string.comment_review_no_internet_cancel_text));
+            errorDialog.setConfirmClickListener(listener -> {
+               listener.dismissWithAnimation();
+               sendPostReview();
+            });
+            errorDialog.show();
+         }
       });
-      errorDialog.show();
    }
 
    private String getTextResource(int idRes) {
@@ -278,16 +313,21 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void showProfanityError() {
-      errorDialog = new SweetAlertDialog(getActivity(),
-            SweetAlertDialog.ERROR_TYPE);
-      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
-      errorDialog.setContentText(getTextResource(R.string.comment_review_profanity_text));
-      errorDialog.setConfirmText(getTextResource(R.string.comment_review_confirm_text));
-      errorDialog.showCancelButton(false);
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            errorDialog = new SweetAlertDialog(getActivity(),
+                  SweetAlertDialog.ERROR_TYPE);
+            errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+            errorDialog.setContentText(getTextResource(R.string.comment_review_profanity_text));
+            errorDialog.setConfirmText(getTextResource(R.string.comment_review_confirm_text));
+            errorDialog.showCancelButton(false);
+            errorDialog.setConfirmClickListener(listener -> {
+               listener.dismissWithAnimation();
+            });
+            errorDialog.show();
+         }
       });
-      errorDialog.show();
    }
 
    @Override
@@ -297,46 +337,61 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void showErrorUnknown() {
-      errorDialog = new SweetAlertDialog(getActivity(),
-            SweetAlertDialog.ERROR_TYPE);
-      errorDialog.setTitleText(getTextResource(R.string.comment_review_error_unknown_title));
-      errorDialog.setContentText(getTextResource(R.string.comment_review_error_unknown_text));
-      errorDialog.setConfirmText(getTextResource(R.string.comment_review_error_unknown_confirm));
-      errorDialog.showCancelButton(true);
-      errorDialog.setCancelText(getTextResource(R.string.comment_review_error_unknown_cancel));
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
-         //onPostClick();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            errorDialog = new SweetAlertDialog(getActivity(),
+                  SweetAlertDialog.ERROR_TYPE);
+            errorDialog.setTitleText(getTextResource(R.string.comment_review_error_unknown_title));
+            errorDialog.setContentText(getTextResource(R.string.comment_review_error_unknown_text));
+            errorDialog.setConfirmText(getTextResource(R.string.comment_review_error_unknown_confirm));
+            errorDialog.showCancelButton(true);
+            errorDialog.setCancelText(getTextResource(R.string.comment_review_error_unknown_cancel));
+            errorDialog.setConfirmClickListener(listener -> {
+               listener.dismissWithAnimation();
+               //onPostClick();
+            });
+            errorDialog.show();
+         }
       });
-      errorDialog.show();
    }
 
    @Override
    public void showErrorLimitReached() {
-      errorDialog = new SweetAlertDialog(getActivity(),
-            SweetAlertDialog. ERROR_TYPE);
-      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
-      errorDialog.setContentText(getTextResource(R.string.comment_review_error_limited_reached_content));
-      errorDialog.setConfirmText(getTextResource(R.string.comment_review_error_limited_reached_confirm));
-      errorDialog.showCancelButton(false);
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            errorDialog = new SweetAlertDialog(getActivity(),
+                  SweetAlertDialog. ERROR_TYPE);
+            errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+            errorDialog.setContentText(getTextResource(R.string.comment_review_error_limited_reached_content));
+            errorDialog.setConfirmText(getTextResource(R.string.comment_review_error_limited_reached_confirm));
+            errorDialog.showCancelButton(false);
+            errorDialog.setConfirmClickListener(listener -> {
+               listener.dismissWithAnimation();
+            });
+            errorDialog.show();
+         }
       });
-      errorDialog.show();
    }
 
    @Override
    public void unrecognizedError() {
-      errorDialog = new SweetAlertDialog(getActivity(),
-            SweetAlertDialog.ERROR_TYPE);
-      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
-      errorDialog.setContentText(getTextResource(R.string.comment_review_unrecognized_error_content));
-      errorDialog.setConfirmText(getTextResource(R.string.comment_review_unrecognized_error_confirm));
-      errorDialog.showCancelButton(false);
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            errorDialog = new SweetAlertDialog(getActivity(),
+                  SweetAlertDialog.ERROR_TYPE);
+            errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+            errorDialog.setContentText(getTextResource(R.string.comment_review_unrecognized_error_content));
+            errorDialog.setConfirmText(getTextResource(R.string.comment_review_unrecognized_error_confirm));
+            errorDialog.showCancelButton(false);
+            errorDialog.setConfirmClickListener(listener -> {
+               listener.dismissWithAnimation();
+            });
+            errorDialog.show();
+         }
       });
-      errorDialog.show();
    }
    public void enableInputs() {
       enableButtons(true);
@@ -349,13 +404,22 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void onBackClick() {
-      getActivity().onBackPressed();
+      if (getRatingBar() > 0 || getSizeComment() > 0) {
+         showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
+      } else {
+         navigateToDetail("");
+      }
    }
 
    public void enableButtons(boolean status) {
-      mComment.setEnabled(status);
-      mRatingBar.setEnabled(status);
-      tvPostButton.setEnabled(status);
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            mComment.setEnabled(status);
+            mRatingBar.setEnabled(status);
+            tvPostButton.setEnabled(status);
+         }
+      });
    }
 
    @Override
@@ -462,7 +526,8 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public boolean isFromListReview(){
-      return getArgs().isFromAddReview();
+      //return getArgs().isFromAddReview();
+      return bundle.isFromAddReview();
    }
 
    @Override
@@ -479,6 +544,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
          try {
             validateCodeMessage(action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code());
          } catch (Exception e){
+            showErrorUnknown();
             e.printStackTrace();
          }
       } else {
@@ -500,22 +566,20 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    private void handlePostNavigation(){
-      //if (merchant.reviews().total().equals("")){
-      //   navigateToDetail(getContext().getString(R.string.snack_review_success));
-      //} else {
-         //Send merchant TODO
-         Path path = new DtlReviewsPath(null, getContext().getString(R.string.snack_review_success));
-         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-         historyBuilder.pop();
-         if (isFromListReview()){
-            historyBuilder.pop();
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            if (merchant.reviews().total().equals("")){
+               navigateToDetail(getContext().getString(R.string.snack_review_success));
+            } else {
+               Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+            }
          }
-         historyBuilder.push(path);
-         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-      //}
+      });
    }
 
-   private void validateCodeMessage(String message){
+   @Override
+   public void validateCodeMessage(String message){
       switch (message){
          case ERROR_FORM_PROFANITY:
             showProfanityError();
@@ -540,19 +604,8 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    public String getMerchantId() {
-      return getArgs().getMerchantId();
-   }
-
-   public List<File> getListImage() {
-      List<File> array = new ArrayList<>();
-      try {
-         File image = File.createTempFile("/data/user/0/com.worldventures.dreamtrips.dev.dtl.preprod.debug/cache/dreamtrips_cache_images/IMG_20170405_100106",
-                                          ".jpg");
-         array.add(image);
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-      return array;
+      //return getArgs().getMerchantId();
+      return bundle.getMerchantId();
    }
 
    public boolean isInternetConnection(){
@@ -581,5 +634,19 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
          showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_minor_letter), minimumCharactersAllowed()));
       }
       return validated;
+   }
+
+   public void navigateToDetail(String message) {
+      getActivity().runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            //historyBuilder.pop();
+            //historyBuilder.pop();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
+         }
+      });
    }
 }

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public class CreateEntityBundle implements Parcelable {
 
@@ -14,19 +15,22 @@ public class CreateEntityBundle implements Parcelable {
    private int maxCharactersAllow;
    private String merchantId;
    private boolean isFromAddReview;
+   private Merchant mMerchant;
 
    public CreateEntityBundle(boolean showPickerImmediately, Origin origin) {
       this.showPickerImmediately = showPickerImmediately;
       this.origin = origin;
    }
 
-   public CreateEntityBundle(boolean showPickerImmediately, Origin origin, int minChar, int maxChar, String merchantId, boolean isFromAddReview) {
+   public CreateEntityBundle(boolean showPickerImmediately, Origin origin, int minChar, int maxChar, String merchantId, boolean isFromAddReview,
+                           Merchant merchant) {
       this.showPickerImmediately = showPickerImmediately;
       this.origin = origin;
       this.minCharactersAllow = minChar;
       this.maxCharactersAllow = maxChar;
       this.merchantId = merchantId;
       this.isFromAddReview = isFromAddReview;
+      this.mMerchant = merchant;
    }
 
    public CreateEntityBundle(MediaAttachment mediaAttachment, Origin origin) {
@@ -58,6 +62,10 @@ public class CreateEntityBundle implements Parcelable {
       return showPickerImmediately;
    }
 
+   public Merchant getmMerchant() {
+      return mMerchant;
+   }
+
    public void setShowPickerImmediately(boolean showPickerImmediately) {
       this.showPickerImmediately = showPickerImmediately;
    }
@@ -82,6 +90,7 @@ public class CreateEntityBundle implements Parcelable {
       dest.writeInt(this.maxCharactersAllow);
       dest.writeString(this.merchantId);
       dest.writeByte(this.isFromAddReview ? (byte) 1 : (byte) 0);
+      dest.writeSerializable(this.mMerchant);
    }
 
    protected CreateEntityBundle(Parcel in) {
@@ -93,6 +102,7 @@ public class CreateEntityBundle implements Parcelable {
       this.maxCharactersAllow = in.readInt();
       this.merchantId = in.readString();
       this.isFromAddReview = in.readByte() != 0;
+      this.mMerchant = (Merchant) in.readSerializable();
    }
 
    public static final Creator<CreateEntityBundle> CREATOR = new Creator<CreateEntityBundle>() {

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.analytics.EditBillingAddressAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -25,8 +25,8 @@ import javax.inject.Inject;
 public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddressPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject RecordInteractor recordInteractor;
 
    private final Record record;
 
@@ -49,7 +49,7 @@ public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddr
    }
 
    private void connectToUpdateCardDetailsPipe() {
-      smartCardInteractor.updateRecordPipe()
+      recordInteractor.updateRecordPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<UpdateRecordCommand>forView(getView().provideOperationDelegate())
@@ -67,7 +67,7 @@ public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddr
    }
 
    void onCardAddressConfirmed(AddressInfo addressInfo) {
-      smartCardInteractor.updateRecordPipe().send(UpdateRecordCommand.updateAddress(record, addressInfo));
+      recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateAddress(record, addressInfo));
    }
 
    public void goBack() {

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
@@ -43,6 +44,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject RecordInteractor recordInteractor;
 
    private final Record record;
 
@@ -76,7 +78,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void observeFetchingDefaultAddress() {
-      smartCardInteractor.getDefaultAddressCommandPipe()
+      recordInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDefaultAddress())
@@ -91,7 +93,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void observeSavingCardDetailsData() {
-      smartCardInteractor.addRecordPipe()
+      recordInteractor.addRecordPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationAddRecord())
@@ -106,11 +108,11 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void loadDataFromDevice() {
-      smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
+      recordInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 
    void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
-      smartCardInteractor.addRecordPipe()
+      recordInteractor.addRecordPipe()
             .send(new AddRecordCommand.Builder().setRecord(record)
                   .setManualAddressInfo(addressInfo)
                   .setRecordName(cardName)
@@ -143,13 +145,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private Observable<List<Record>> fetchLocalRecords() {
-      return smartCardInteractor.cardsListPipe()
+      return recordInteractor.cardsListPipe()
             .createObservableResult(RecordListCommand.fetch())
             .map(Command::getResult);
    }
 
    private Observable<String> fetchDefaultRecordId() {
-      return smartCardInteractor.defaultRecordIdPipe()
+      return recordInteractor.defaultRecordIdPipe()
             .createObservableResult(DefaultRecordIdCommand.fetch())
             .map(Command::getResult);
    }

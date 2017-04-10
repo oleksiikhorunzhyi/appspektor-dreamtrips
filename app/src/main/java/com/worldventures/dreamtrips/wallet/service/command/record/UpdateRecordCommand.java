@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
@@ -29,9 +29,9 @@ import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.vali
 public class UpdateRecordCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
+   @Inject RecordInteractor recordInteractor;
 
    private Record record;
 
@@ -72,7 +72,7 @@ public class UpdateRecordCommand extends Command<Void> implements InjectableActi
    }
 
    private Observable<io.techery.janet.smartcard.model.Record> prepareRecordForSmartCard(Record record) {
-      return smartCardInteractor.secureRecordPipe()
+      return recordInteractor.secureRecordPipe()
             .createObservableResult(SecureRecordCommand.Builder.prepareRecordForSmartCard(record)
                   .withAnalyticsActionType(ActionType.UPDATE)
                   .create())
@@ -87,7 +87,7 @@ public class UpdateRecordCommand extends Command<Void> implements InjectableActi
    }
 
    private void updateLocalRecord() {
-      smartCardInteractor.cardsListPipe().send(RecordListCommand.edit(record));
+      recordInteractor.cardsListPipe().send(RecordListCommand.edit(record));
    }
 
 }

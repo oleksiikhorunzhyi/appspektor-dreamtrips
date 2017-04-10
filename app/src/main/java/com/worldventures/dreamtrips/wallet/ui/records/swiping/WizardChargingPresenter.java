@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
@@ -38,6 +39,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardChargingPresenter(Context context, Injector injector) {
@@ -112,7 +114,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeBankCardCreation() {
-      smartCardInteractor.bankCardPipe()
+      recordInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<CreateRecordCommand>forView(getView().provideOperationDelegate())
@@ -148,7 +150,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void cardSwiped(io.techery.janet.smartcard.model.Record card) {
-      smartCardInteractor.bankCardPipe().send(new CreateRecordCommand(card));
+      recordInteractor.bankCardPipe().send(new CreateRecordCommand(card));
    }
 
    private void bankCardCreated(Record record) {

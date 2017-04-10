@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -32,8 +32,8 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject SnappyRepository snappyRepository;
+   @Inject RecordInteractor recordInteractor;
 
    private final Record record;
    private final AddressInfo manualAddressInfo;
@@ -73,7 +73,7 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
 
    private Observable<Record> createRecordWithAddress() {
       if (useDefaultAddress) {
-         return smartCardInteractor.getDefaultAddressCommandPipe()
+         return recordInteractor.getDefaultAddressCommandPipe()
                .createObservableResult(new GetDefaultAddressCommand())
                .map(defaultAddressAction -> createRecord(defaultAddressAction.getResult()));
       } else {
@@ -82,7 +82,7 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
    }
 
    private Observable<Record> prepareRecordForLocalStorage(Record record) {
-      return smartCardInteractor.secureRecordPipe()
+      return recordInteractor.secureRecordPipe()
             .createObservableResult(SecureRecordCommand.Builder.prepareRecordForLocalStorage(record)
                   .withAnalyticsActionType(ActionType.ADD)
                   .create())
@@ -102,14 +102,14 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
    }
 
    private Observable<String> saveDefaultCard(String recordId) {
-      return (setAsDefaultRecord) ? smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+      return (setAsDefaultRecord) ? recordInteractor.setDefaultCardOnDeviceCommandPipe()
             .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(recordId))
             .map(command -> recordId)
             : Observable.just(recordId);
    }
 
    private void saveRecordLocally(Record record) {
-      smartCardInteractor.cardsListPipe()
+      recordInteractor.cardsListPipe()
             .send(RecordListCommand.add(record));
    }
 

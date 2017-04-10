@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
@@ -27,6 +28,7 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
    public SyncRecordsPresenter(Context context, Injector injector) {
@@ -59,19 +61,19 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<RestoreOfflineModeDefaultStateCommand>provideOperationView())
                   .onStart(command -> getView().setProgressInPercent(0))
-                  .onSuccess(command -> smartCardInteractor.recordsSyncPipe().send(new SyncRecordsCommand()))
+                  .onSuccess(command -> recordInteractor.recordsSyncPipe().send(new SyncRecordsCommand()))
                   .create());
    }
 
    private void observeSyncPaymentCards() {
-      smartCardInteractor.recordsSyncPipe()
+      recordInteractor.recordsSyncPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SyncRecordsCommand>provideOperationView())
                   .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
                   .create());
 
-      smartCardInteractor.recordsSyncPipe()
+      recordInteractor.recordsSyncPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .filter(action -> action.status == ActionState.Status.PROGRESS)

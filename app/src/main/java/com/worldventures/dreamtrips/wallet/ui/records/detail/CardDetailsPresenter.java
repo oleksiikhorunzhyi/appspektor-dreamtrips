@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
@@ -49,6 +50,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject WalletNetworkService networkService;
 
@@ -78,7 +80,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void fetchAddressByRecordId(final String recordId) {
-      smartCardInteractor.cardsListPipe()
+      recordInteractor.cardsListPipe()
             .createObservableResult(RecordListCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .map(command -> Queryable.from(command.getResult()).first(element -> element.id().equals(recordId)))
@@ -89,7 +91,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void observeSaveCardData() {
-      smartCardInteractor.updateRecordPipe()
+      recordInteractor.updateRecordPipe()
             .observe()
             .filter(state -> record.id().equals(state.action.getRecord().id()))
             .compose(bindViewIoToMainComposer())
@@ -135,18 +137,18 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void connectToDeleteCardPipe() {
-      smartCardInteractor.deleteRecordPipe()
+      recordInteractor.deleteRecordPipe()
             .observeWithReplay()
             .filter(state -> state.action.getRecordId().equals(record.id()))
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteRecordPipe()))
+            .compose(new ActionPipeCacheWiper<>(recordInteractor.deleteRecordPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationDeleteRecord())
                   .onSuccess(deleteRecordAction -> navigator.goBack())
                   .create());
    }
 
    private void connectToSetDefaultCardIdPipe() {
-      smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+      recordInteractor.setDefaultCardOnDeviceCommandPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetDefaultOnDevice())
@@ -154,10 +156,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void connectSetPaymentCardPipe() {
-      smartCardInteractor.setPaymentCardActionActionPipe()
+      recordInteractor.setPaymentCardActionActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.setPaymentCardActionActionPipe()))
+            .compose(new ActionPipeCacheWiper<>(recordInteractor.setPaymentCardActionActionPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetPaymentCardAction())
                   .onSuccess(action -> getView().showCardIsReadyDialog(record.nickName()))
                   .create());
@@ -209,7 +211,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    void payThisCard() {
       fetchConnectionStats(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(record));
+            recordInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(record));
          } else {
             getView().showSCNonConnectionDialog();
          }
@@ -221,13 +223,13 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    void onDeleteCardConfirmed() {
-      smartCardInteractor.deleteRecordPipe().send(new DeleteRecordCommand(record.id()));
+      recordInteractor.deleteRecordPipe().send(new DeleteRecordCommand(record.id()));
    }
 
    private void unsetCardAsDefault() {
       fetchDefaultRecordId(defaultRecordId -> {
          if (WalletRecordUtil.equals(defaultRecordId, record)) {
-            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+            recordInteractor.setDefaultCardOnDeviceCommandPipe()
                   .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
          }
       });
@@ -241,7 +243,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       if (defaultRecordId == null) {
          applyDefaultId();
       } else {
-         smartCardInteractor.cardsListPipe()
+         recordInteractor.cardsListPipe()
                .createObservable(RecordListCommand.fetch())
                .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
                .map(actionState -> Queryable.from(actionState.action.getResult())
@@ -253,7 +255,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    private void applyDefaultId() {
       trackSetAsDefault();
-      smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+      recordInteractor.setDefaultCardOnDeviceCommandPipe()
             .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
    }
 
@@ -284,7 +286,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void nicknameUpdated(String nickName) {
-      smartCardInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(record, nickName));
+      recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(record, nickName));
    }
 
    private void defaultCardSwitcherChanged(boolean setDefaultCard) {
@@ -321,7 +323,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void fetchDefaultRecordId(Action1<String> action) {
-      smartCardInteractor.defaultRecordIdPipe()
+      recordInteractor.defaultRecordIdPipe()
             .createObservableResult(DefaultRecordIdCommand.fetch())
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())

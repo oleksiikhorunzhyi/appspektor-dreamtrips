@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
@@ -33,7 +33,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class SyncRecordsCommand extends Command<Void> implements InjectableAction {
 
-   @Inject SmartCardInteractor interactor;
+   @Inject RecordInteractor recordInteractor;
    @Inject NxtInteractor nxtInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
@@ -49,13 +49,13 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
                   .flatMap(action -> Observable.from(action.records)
                         .map(record -> mapperyContext.convert(record, Record.class))
                         .toList()),
-            interactor.cardsListPipe()
+            recordInteractor.cardsListPipe()
                   .createObservableResult(RecordListCommand.fetch())
                   .flatMap(action -> Observable.from(action.getResult()).toList()),
             janet.createPipe(GetDefaultRecordAction.class)
                   .createObservableResult(new GetDefaultRecordAction())
                   .map(getDefaultRecordAction -> getDefaultRecordAction.recordId),
-            interactor.defaultRecordIdPipe()
+            recordInteractor.defaultRecordIdPipe()
                   .createObservableResult(DefaultRecordIdCommand.fetch())
                   .map(DefaultRecordIdCommand::getResult),
             (deviceRecords, localRecords, deviceDefaultRecordId, localDefaultRecordId) -> {
@@ -111,12 +111,12 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
 
       // Sync default record id
       if (bundle.deviceDefaultRecordId != null && bundle.localDefaultRecordId == null) {
-         operations.add(interactor.defaultRecordIdPipe()
+         operations.add(recordInteractor.defaultRecordIdPipe()
                .createObservableResult(DefaultRecordIdCommand.set(bundle.deviceDefaultRecordId))
                .map(command -> null)
          );
       } else if (bundle.localDefaultRecordId != null && !bundle.localDefaultRecordId.equals(bundle.deviceDefaultRecordId)) {
-         operations.add(interactor.setDefaultCardOnDeviceCommandPipe()
+         operations.add(recordInteractor.setDefaultCardOnDeviceCommandPipe()
                .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.localDefaultRecordId))
                .map(value -> null));
       }
@@ -127,7 +127,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    }
 
    private Observable<List<Record>> prepareRecordsForLocalStorage(List<? extends Record> records) {
-      return interactor.secureMultipleRecordsPipe()
+      return recordInteractor.secureMultipleRecordsPipe()
             .createObservableResult(SecureMultipleRecordsCommand.Builder.prepareRecordForLocalStorage(records)
                   .skipTokenizationErrors(true)
                   .create())
@@ -135,7 +135,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    }
 
    private Observable<io.techery.janet.smartcard.model.Record> prepareRecordForSmartCard(Record record) {
-      return interactor.secureRecordPipe()
+      return recordInteractor.secureRecordPipe()
             .createObservableResult(SecureRecordCommand.Builder.prepareRecordForSmartCard(record)
                   .withAnalyticsActionType(ActionType.RESTORE)
                   .create())
@@ -144,7 +144,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    }
 
    private Observable<Void> saveRecords(List<Record> records) {
-      return interactor.cardsListPipe()
+      return recordInteractor.cardsListPipe()
             .createObservableResult(RecordListCommand.replace(records))
             .map(o -> null);
    }

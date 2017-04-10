@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.Context;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
@@ -58,6 +63,8 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    @InjectView(R.id.tv_max_chars) TextView mMaxChars;
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.progress_loader) ProgressBar mProgressBar;
+   @InjectView(R.id.post_container) RelativeLayout mContainer;
+
    @Inject MerchantsInteractor merchantInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
    private TextView tvPostButton;
@@ -91,9 +98,15 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
       tvPostButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            onRefreshProgress();
-            disableInputs();
-            sendPostReview();
+            if (isInternetConnection()){
+               if (validateComment()) {
+                  disableInputs();
+                  onRefreshProgress();
+                  sendPostReview();
+               }
+            } else {
+               showNoInternetMessage();
+            }
          }
       });
    }
@@ -140,11 +153,11 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    private int maximumCharactersAllowed() {
-      return 2000;
+      return getArgs().getMaxCharactersAllow();
    }
 
    private int minimumCharactersAllowed() {
-      return 50;
+      return getArgs().getMinCharactersAllow();
    }
 
    @Override
@@ -224,7 +237,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void showSnackbarMessage(String message) {
-      //Snackbar.make(refreshLayout, message, Snackbar.LENGTH_SHORT).show();
+      Snackbar.make(mContainer, message, Snackbar.LENGTH_SHORT).show();
    }
 
    @Override
@@ -254,7 +267,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
       errorDialog.setCancelText(getTextResource(R.string.comment_review_no_internet_cancel_text));
       errorDialog.setConfirmClickListener(listener -> {
          listener.dismissWithAnimation();
-         //onPostClick();
+         sendPostReview();
       });
       errorDialog.show();
    }
@@ -279,7 +292,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void showErrorMaxMessage() {
-
+      Snackbar.make(mContainer, R.string.input_major_limit, Snackbar.LENGTH_LONG).show();
    }
 
    @Override
@@ -449,13 +462,11 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public boolean isFromListReview(){
-      //return getPath().isFromAddReview();
-      return false;
+      return getArgs().isFromAddReview();
    }
 
    @Override
    public boolean isVerified() {
-      //return getPath().isVerified();
       return false;
    }
 
@@ -529,7 +540,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    public String getMerchantId() {
-      return "25433dae-73ea-4d99-99a2-00a6d1325df4";
+      return getArgs().getMerchantId();
    }
 
    public List<File> getListImage() {
@@ -542,5 +553,33 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
          e.printStackTrace();
       }
       return array;
+   }
+
+   public boolean isInternetConnection(){
+      boolean isInternet = false;
+      try{
+         ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+         isInternet = activeNetwork.isConnectedOrConnecting();
+      } catch(Exception e){
+         e.printStackTrace();
+      }
+      return isInternet;
+   }
+
+   public boolean validateComment() {
+      boolean validated = false;
+      if (isMinimumCharacterWrote()) {
+         if (isMaximumCharacterWrote()) {
+            if(getRatingBar() > 0){
+               validated = true;
+            }
+         } else {
+            showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_major_letter), maximumCharactersAllowed()));
+         }
+      } else if (getSizeComment() >= 0 && getSizeComment() < minimumCharactersAllowed()) {
+         showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_minor_letter), minimumCharactersAllowed()));
+      }
+      return validated;
    }
 }

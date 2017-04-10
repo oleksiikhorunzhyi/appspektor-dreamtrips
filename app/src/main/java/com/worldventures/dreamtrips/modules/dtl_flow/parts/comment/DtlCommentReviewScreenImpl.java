@@ -93,7 +93,12 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
        mFlContainerReview.setVisibility(View.VISIBLE);
        fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
-                                             new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED));
+
+             new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
+                                                                    getPresenter().minimumCharactersAllowed(),
+                                                                    getPresenter().maximumCharactersAllowed(),
+                                                                     getPath().getMerchant().id(),
+                                                                     isFromListReview()));
     }
 
     private void initLengthText() {

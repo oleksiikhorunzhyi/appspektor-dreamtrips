@@ -91,14 +91,6 @@
                   android:text="@string/wallet_card_settings_updates_to_sc_software"
                   />
 
-            <TextView
-                  android:id="@+id/firmware_version_label"
-                  style="@style/SettingsText.Secondary"
-                  android:layout_alignParentEnd="true"
-                  android:layout_centerVertical="true"
-                  tools:text="4.20"
-                  />
-
             <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
                   android:id="@+id/badgeFirmwareUpdates"
                   android:layout_width="28dp"

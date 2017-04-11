@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUse
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
@@ -110,6 +111,7 @@ import dagger.Module;
             FetchFirmwareUpdateDataCommand.class,
             OfflineModeStatusCommand.class,
             ReAssignCardCommand.class,
+            SyncRecordOnNewDeviceCommand.class,
             SwitchOfflineModeCommand.class
       },
       complete = false, library = true)

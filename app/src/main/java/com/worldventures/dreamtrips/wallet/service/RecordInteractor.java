@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordI
 import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SecureMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SecureRecordCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 
@@ -34,6 +36,8 @@ public final class RecordInteractor {
    private final ActionPipe<DeleteRecordCommand> deleteRecordPipe;
    private final ActionPipe<CreateRecordCommand> recordIssuerInfoPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
+   private final ActionPipe<SyncRecordOnNewDeviceCommand> syncRecordOnNewDevicePipe;
+   private final ActionPipe<SyncRecordStatusCommand> syncRecordStatusPipe;
 
    public RecordInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, RecordInteractor::singleThreadScheduler);
@@ -53,6 +57,9 @@ public final class RecordInteractor {
       deleteRecordPipe = sessionActionPipeCreator.createPipe(DeleteRecordCommand.class, Schedulers.io());
       recordIssuerInfoPipe = sessionActionPipeCreator.createPipe(CreateRecordCommand.class, Schedulers.io());
       getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
+      syncRecordOnNewDevicePipe = sessionActionPipeCreator.createPipe(SyncRecordOnNewDeviceCommand.class, Schedulers.io());
+      syncRecordStatusPipe = sessionActionPipeCreator.createPipe(SyncRecordStatusCommand.class, Schedulers.io());
+
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -105,5 +112,13 @@ public final class RecordInteractor {
 
    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
       return getDefaultAddressCommandPipe;
+   }
+
+   public ActionPipe<SyncRecordOnNewDeviceCommand> syncRecordOnNewDevicePipe() {
+      return syncRecordOnNewDevicePipe;
+   }
+
+   public ActionPipe<SyncRecordStatusCommand> syncRecordStatusPipe() {
+      return syncRecordStatusPipe;
    }
 }

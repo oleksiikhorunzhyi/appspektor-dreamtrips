@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
@@ -43,23 +42,10 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    @Inject @Named(JANET_WALLET) Janet janet;
 
    private int localOnlyRecordsCount = 0;
-   private SyncRecordsStatus syncRecordsStatus;
-   private final boolean startFromProvision;
-
-   public SyncRecordsCommand() {
-      startFromProvision = false;
-   }
-
-   public SyncRecordsCommand(boolean startFromProvision) {
-      this.startFromProvision = startFromProvision;
-   }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.zip(
-            interactor.syncRecordStatusCommandActionPipe()
-                  .createObservableResult(SyncRecordStatusCommand.fetch())
-                  .map(command -> this.syncRecordsStatus = command.getResult()),
             janet.createPipe(GetMemberRecordsAction.class)
                   .createObservableResult(new GetMemberRecordsAction())
                   .flatMap(action -> Observable.from(action.records)
@@ -74,7 +60,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
             recordInteractor.defaultRecordIdPipe()
                   .createObservableResult(DefaultRecordIdCommand.fetch())
                   .map(DefaultRecordIdCommand::getResult),
-            (syncRecordsStatus, deviceRecords, localRecords, deviceDefaultRecordId, localDefaultRecordId) -> {
+            (deviceRecords, localRecords, deviceDefaultRecordId, localDefaultRecordId) -> {
                SyncBundle bundle = new SyncBundle();
                bundle.deviceRecords = deviceRecords;
                bundle.localRecords = localRecords;
@@ -83,22 +69,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
                return bundle;
             })
             .flatMap(syncBundle -> sync(syncBundle, callback))
-            .subscribe(aVoid -> handleSuccess(callback), throwable -> handleFail(throwable, callback));
-   }
-
-   private void handleFail(Throwable throwable, CommandCallback<Void> callback) {
-      interactor.syncRecordStatusCommandActionPipe().send(SyncRecordStatusCommand
-            .save(startFromProvision ? SyncRecordsStatus.FAIL_AFTER_PROVISION : SyncRecordsStatus.FAIL));
-      callback.onFail(throwable);
-   }
-
-   private void handleSuccess(CommandCallback<Void> callback) {
-      interactor.syncRecordStatusCommandActionPipe().send(SyncRecordStatusCommand.save(SyncRecordsStatus.SUCCESS));
-      callback.onSuccess(null);
-   }
-
-   public SyncRecordsStatus getSyncRecordsStatus() {
-      return syncRecordsStatus;
+            .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 
    public int getLocalOnlyRecordsCount() {

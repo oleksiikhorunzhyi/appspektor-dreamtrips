@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -54,7 +55,7 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
    @NonNull
    @Override
    public SyncRecordsPresenter createPresenter() {
-      return new SyncRecordsPresenter(getContext(), getInjector(), getPath().syncAction());
+      return new SyncRecordsPresenter(getContext(), getInjector(), getPath().syncAction);
    }
 
    @Override
@@ -86,6 +87,11 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
    public void hideProgressOfProcess() {
       progressPercentageLabel.setVisibility(INVISIBLE);
       progressCountCardsSync.setText(R.string.wallet_syncing_payment_cards_message);
+   }
+
+   @Override
+   public View getView() {
+      return this;
    }
 
    @Override

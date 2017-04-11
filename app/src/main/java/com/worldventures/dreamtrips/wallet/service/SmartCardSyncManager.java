@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
@@ -176,6 +177,10 @@ public class SmartCardSyncManager {
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .throttleFirst(10, TimeUnit.MINUTES)
+            .flatMap(aLong -> recordInteractor.syncRecordStatusPipe()
+                  .createObservableResult(SyncRecordStatusCommand.fetch()))
+                  .map(Command::getResult)
+            .filter(status -> !status.isFailAfterProvision())
             .flatMap(aLong -> recordInteractor.recordsSyncPipe()
                   .createObservableResult(new SyncRecordsCommand()))
             .retry(1)

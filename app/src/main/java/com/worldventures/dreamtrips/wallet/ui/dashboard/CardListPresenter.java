@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -28,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
@@ -56,7 +58,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -90,6 +91,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
+      observeSyncRecordsStatus();
       fetchSyncRecordsStatus();
 
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
@@ -98,16 +100,28 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void fetchSyncRecordsStatus() {
-      smartCardInteractor.syncRecordStatusCommandActionPipe()
-            .createObservable(SyncRecordStatusCommand.fetch())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SyncRecordStatusCommand>()
-                  .onSuccess(this::handleSyncRecordStatus));
+      recordInteractor.syncRecordStatusPipe().send(SyncRecordStatusCommand.fetch());
    }
 
-   private void handleSyncRecordStatus(SyncRecordStatusCommand command) {
-      if (command.getResult().isFailAfterProvision()) {
+   private void observeSyncRecordsStatus() {
+      recordInteractor.syncRecordStatusPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> handleSyncRecordStatus(command.getResult()));
+
+      recordInteractor.syncRecordOnNewDevicePipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
+               .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
+            );
+   }
+
+   private void handleSyncRecordStatus(SyncRecordsStatus status) {
+      if (status.isFailAfterProvision()) {
          getView().modeSyncPaymentsFab();
+      } else {
+         getView().modeDefaultFab();
       }
    }
 
@@ -249,32 +263,13 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
-            } /*ignore here*/);
+            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> { /*ignore here*/ });
 
+      //noinspection ConstantConditions
       recordInteractor.recordsSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncPayments())
-                  .onStart(syncCardsCommand -> getView().showCardSynchronizationDialog(true))
-                  .onSuccess(this::handleSuccessSyncCards)
-                  .onFail(this::handleFailureSyncCards)
-                  .create());
-   }
-
-   private void handleSuccessSyncCards(SyncRecordsCommand command) {
-      getView().showCardSynchronizationDialog(false);
-      getView().modeDefaultFab();
-   }
-
-   private void handleFailureSyncCards(SyncRecordsCommand command, Throwable throwable) {
-      getView().showCardSynchronizationDialog(false);
-
-      if (throwable instanceof NotConnectedException) return;
-
-      if (command.getSyncRecordsStatus().isFailAfterProvision()) {
-         getView().showSyncFailedOptionsDialog();
-      }
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncPayments()).create());
    }
 
    private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
@@ -304,7 +299,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void syncPayments() {
-      recordInteractor.recordsSyncPipe().send(new SyncRecordsCommand());
+      recordInteractor.syncRecordOnNewDevicePipe().send(new SyncRecordOnNewDeviceCommand());
    }
 
    void goToFactoryReset() {
@@ -341,16 +336,12 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showFactoryResetConfirmationDialog();
 
-      void showCardSynchronizationDialog(boolean visible);
-
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}
 
       void showSCNonConnectionDialog();
 
       void modeDefaultFab();
-
-      boolean isModeSyncPaymentsFab();
 
       void modeSyncPaymentsFab();
 

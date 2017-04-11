@@ -63,7 +63,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private CardStackHeaderHolder cardStackHeaderHolder;
 
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
-   private Dialog synchronizationDialog;
    private MaterialDialog forceUpdateDialog;
    private Dialog addCardErrorDialog;
    private Dialog factoryResetConfirmationDialog;
@@ -99,7 +98,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    private void dismissDialogs() {
-      if (synchronizationDialog != null) synchronizationDialog.dismiss();
       if (installFirmwareErrorDialog != null) installFirmwareErrorDialog.dismiss();
       if (forceUpdateDialog != null) forceUpdateDialog.dismiss();
       if (addCardErrorDialog != null) addCardErrorDialog.dismiss();
@@ -229,24 +227,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void showCardSynchronizationDialog(boolean visible) {
-      if (visible) {
-         if (synchronizationDialog == null) createSynchronizationDialog();
-         synchronizationDialog.show();
-      } else {
-         if (synchronizationDialog != null) synchronizationDialog.dismiss();
-      }
-   }
-
-   private void createSynchronizationDialog() {
-      synchronizationDialog = new MaterialDialog.Builder(getContext())
-            .content(getString(R.string.wallet_wizard_card_list_card_synchronization_dialog_text))
-            .progress(true, 0)
-            .cancelable(false)
-            .build();
-   }
-
-   @Override
    public void showForceFirmwareUpdateDialog() {
       if (forceUpdateDialog == null) {
          forceUpdateDialog = new MaterialDialog.Builder(getContext())
@@ -373,11 +353,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public boolean isModeSyncPaymentsFab() {
-      return llSyncPaymentsBlock.getVisibility() == VISIBLE;
-   }
-
-   @Override
    public void modeSyncPaymentsFab() {
       llSyncPaymentsBlock.setVisibility(VISIBLE);
       emptyCardListView.setVisibility(GONE);
@@ -392,7 +367,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             .positiveText(R.string.wallet_wizard_card_list_sync_fail_dialog_cancel)
             .neutralText(R.string.wallet_wizard_card_list_sync_fail_dialog_retry)
             .negativeText(R.string.wallet_wizard_card_list_sync_fail_dialog_factory_reset)
-            .onPositive((dialog, which) -> dialog.dismiss())
             .onNeutral((dialog, which) -> presenter.syncPayments())
             .onNegative((dialog, which) -> presenter.goToFactoryReset())
             .build().show();

@@ -58,8 +58,12 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
       navigator.go(new WizardManualInputPath());
    }
 
-   public void goBack() {
+   void goBack() {
       navigator.goBack();
+   }
+
+   void retry(String barcode) {
+      inputBarcodeDelegate.retry(barcode);
    }
 
    public interface Screen extends WalletScreen, InputDelegateView {

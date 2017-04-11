@@ -15,7 +15,7 @@ public class GetSmartCardStatusCommand extends Command<SmartCardStatus> implemen
 
    @Inject Janet apiJanet;
 
-   private final String barcode;
+   public final String barcode;
    private String smartCardId;
 
    public GetSmartCardStatusCommand(String barcode) {

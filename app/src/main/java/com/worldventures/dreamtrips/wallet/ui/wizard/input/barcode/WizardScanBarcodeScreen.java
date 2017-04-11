@@ -13,7 +13,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
 import butterknife.InjectView;
@@ -84,17 +85,19 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    public OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
-            new SimpleErrorDialogView<GetSmartCardStatusCommand>(getContext(), R.string.smth_went_wrong)
+            ErrorViewFactory.<GetSmartCardStatusCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), c -> presenter.retry(c.barcode), c -> { /*nothing*/ }))
+                  .build()
       );
    }
 
    @Override
    public void showErrorCardIsAssignedDialog() {
       new MaterialDialog.Builder(getContext())
-               .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
-               .positiveText(R.string.ok)
-               .onPositive((dialog, which) -> dialog.dismiss())
-               .show();
+            .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.dismiss())
+            .show();
    }
 
    @Override

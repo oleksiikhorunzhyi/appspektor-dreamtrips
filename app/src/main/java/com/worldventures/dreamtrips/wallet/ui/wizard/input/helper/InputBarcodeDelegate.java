@@ -33,6 +33,14 @@ public class InputBarcodeDelegate {
    }
 
    public void barcodeEntered(String barcode) {
+      fetchCardStatus(barcode);
+   }
+
+   public void retry(String barcode) {
+      fetchCardStatus(barcode);
+   }
+
+   private void fetchCardStatus(String barcode) {
       wizardInteractor.getSmartCardStatusCommandActionPipe().send(new GetSmartCardStatusCommand(barcode));
    }
 

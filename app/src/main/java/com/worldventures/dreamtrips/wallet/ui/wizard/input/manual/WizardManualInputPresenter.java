@@ -74,6 +74,10 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
       navigator.goBack();
    }
 
+   void retry(String barcode) {
+      inputBarcodeDelegate.retry(barcode);
+   }
+
    public interface Screen extends WalletScreen, InputDelegateView {
 
       void buttonEnable(boolean isEnable);

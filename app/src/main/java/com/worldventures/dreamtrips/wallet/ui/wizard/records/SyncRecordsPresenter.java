@@ -27,7 +27,7 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
 
    public SyncRecordsPresenter(Context context, Injector injector, SyncAction syncAction) {
       super(context, injector);
-      syncRecordDelegate = SyncRecordDelegate.create(syncAction, smartCardInteractor, recordInteractor);
+      syncRecordDelegate = SyncRecordDelegate.create(syncAction, smartCardInteractor, recordInteractor, navigator);
    }
 
    @Override

@@ -6,7 +6,10 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPath;
 
+import flow.Flow;
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
@@ -16,28 +19,30 @@ abstract class SyncRecordDelegate {
 
    protected final SmartCardInteractor smartCardInteractor;
    protected final RecordInteractor recordInteractor;
+   protected final Navigator navigator;
 
-   private SyncRecordDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor) {
+   private SyncRecordDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
       this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
+      this.navigator = navigator;
    }
 
    public abstract void retry();
 
    public abstract void bindView(SyncView view);
 
-   public static SyncRecordDelegate create(SyncAction action, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor) {
+   public static SyncRecordDelegate create(SyncAction action, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
       if (action == SyncAction.TO_DEVICE) {
-         return new SyncToDeviceDelegate(smartCardInteractor, recordInteractor);
+         return new SyncToDeviceDelegate(smartCardInteractor, recordInteractor, navigator);
       } else {
-         return new SyncToCardDelegate(smartCardInteractor, recordInteractor);
+         return new SyncToCardDelegate(smartCardInteractor, recordInteractor, navigator);
       }
    }
 
    private static class SyncToDeviceDelegate extends SyncRecordDelegate {
 
-      private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor) {
-         super(smartCardInteractor, recordInteractor);
+      private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
+         super(smartCardInteractor, recordInteractor, navigator);
       }
 
       @Override
@@ -63,14 +68,15 @@ abstract class SyncRecordDelegate {
                .compose(RxLifecycle.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<SyncRecordOnNewDeviceCommand>provideOperationView())
+                     .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
                      .create());
       }
    }
 
    private static class SyncToCardDelegate extends SyncRecordDelegate {
 
-      private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor) {
-         super(smartCardInteractor, recordInteractor);
+      private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
+         super(smartCardInteractor, recordInteractor, navigator);
       }
 
       @Override
@@ -108,7 +114,9 @@ abstract class SyncRecordDelegate {
                .observe()
                .compose(RxLifecycle.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
-               .subscribe(OperationActionSubscriber.forView(view.<SyncRecordsCommand>provideOperationView()).create());
+               .subscribe(OperationActionSubscriber.forView(view.<SyncRecordsCommand>provideOperationView())
+                     .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
+                     .create());
       }
 
       private void observeSyncProgress(SyncView view) {

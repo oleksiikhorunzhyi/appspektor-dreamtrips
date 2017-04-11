@@ -15,10 +15,11 @@ public class GetSmartCardStatusCommand extends Command<SmartCardStatus> implemen
 
    @Inject Janet apiJanet;
 
-   private final String smartCardId;
+   private final String barcode;
+   private String smartCardId;
 
-   public GetSmartCardStatusCommand(String smartCardId) {
-      this.smartCardId = smartCardId;
+   public GetSmartCardStatusCommand(String barcode) {
+      this.barcode = barcode;
    }
 
    public String getSmartCardId() {
@@ -27,8 +28,10 @@ public class GetSmartCardStatusCommand extends Command<SmartCardStatus> implemen
 
    @Override
    protected void run(CommandCallback<SmartCardStatus> callback) throws Throwable {
+      smartCardId = Long.toString(Long.parseLong(barcode));
+
       apiJanet.createPipe(SmartCardStatusHttpAction.class)
-            .createObservableResult(new SmartCardStatusHttpAction(smartCardId))
+            .createObservableResult(new SmartCardStatusHttpAction(barcode))
             .map(action -> action.status().status())
             .subscribe(callback::onSuccess, callback::onFail);
    }

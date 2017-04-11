@@ -82,7 +82,7 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
    @Override
    public void showConfirmDialog(String scId) {
       new MaterialDialog.Builder(getContext())
-            .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_unassign_card_confirm_message, scId)))
+            .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_existing_device_detect_unpair_dialog, scId)))
             .positiveText(R.string.wallet_continue_label)
             .onPositive((dialog, which) -> presenter.repairConfirmed())
             .negativeText(R.string.wallet_cancel_label)

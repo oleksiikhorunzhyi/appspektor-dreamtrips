@@ -558,7 +558,7 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.19.0-SNAPSHOT', changing: true) {
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.20.2-SNAPSHOT', changing: true) {
       exclude group: 'com.github.techery', module: 'mappery'
    }
 

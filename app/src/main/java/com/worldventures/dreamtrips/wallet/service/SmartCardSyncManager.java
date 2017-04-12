@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
@@ -110,22 +111,38 @@ public class SmartCardSyncManager {
                   interactor.deviceStatePipe().send(DeviceStateCommand.battery(command.getResult()))
             );
 
-      interactor.stealthModePipe()
-            .observeSuccess()
-            .subscribe(command ->
-                  interactor.deviceStatePipe().send(DeviceStateCommand.stealthMode(command.getResult()))
+      Observable.merge(
+            interactor.getStealthModePipe()
+                  .observeSuccess()
+                  .map(action -> action.enabled),
+            interactor.stealthModePipe()
+                  .observeSuccess()
+                  .map(Command::getResult)
+      )
+            .subscribe(stealthModeEnabled ->
+                  interactor.deviceStatePipe().send(DeviceStateCommand.stealthMode(stealthModeEnabled))
             );
 
-      interactor.disableDefaultCardDelayPipe()
-            .observeSuccess()
-            .subscribe(command ->
-                  interactor.deviceStatePipe().send(DeviceStateCommand.disableCardDelay(command.getResult()))
+      Observable.merge(
+            interactor.disableDefaultCardDelayPipe()
+                  .observeSuccess()
+                  .map(Command::getResult),
+            interactor.getDisableDefaultCardDelayPipe()
+                  .observeSuccess()
+                  .map(action -> action.delay))
+            .subscribe(disableCardDelay ->
+                  interactor.deviceStatePipe().send(DeviceStateCommand.disableCardDelay(disableCardDelay))
             );
 
-      interactor.autoClearDelayPipe()
-            .observeSuccess()
-            .subscribe(command ->
-                  interactor.deviceStatePipe().send(DeviceStateCommand.clearFlyeDelay(command.getResult()))
+      Observable.merge(
+            interactor.autoClearDelayPipe()
+                  .observeSuccess()
+                  .map(Command::getResult),
+            interactor.getAutoClearDelayPipe()
+                  .observeSuccess()
+                  .map(action -> action.delay))
+            .subscribe(clearDelay ->
+                  interactor.deviceStatePipe().send(DeviceStateCommand.clearFlyeDelay(clearDelay))
             );
 
       interactor.fetchFirmwareVersionPipe()
@@ -138,6 +155,9 @@ public class SmartCardSyncManager {
             );
 
       Observable.merge(
+            interactor.getLockPipe()
+                  .observeSuccess()
+                  .map(action -> action.locked),
             interactor.lockDeviceChangedEventPipe()
                   .observeSuccess()
                   .map(event -> event.locked),
@@ -176,6 +196,10 @@ public class SmartCardSyncManager {
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .throttleFirst(10, TimeUnit.MINUTES)
+            .flatMap(aLong -> recordInteractor.syncRecordStatusPipe()
+                  .createObservableResult(SyncRecordStatusCommand.fetch()))
+            .map(Command::getResult)
+            .filter(status -> !status.isFailAfterProvision())
             .flatMap(aLong -> recordInteractor.recordsSyncPipe()
                   .createObservableResult(new SyncRecordsCommand()))
             .retry(1)

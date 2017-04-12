@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsPath;
 
 import java.util.Collections;
@@ -83,7 +84,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
 
    private void navigateToNextScreen(boolean needToSyncPaymentCards) {
       if (needToSyncPaymentCards) {
-         navigator.go(new SyncRecordsPath());
+         navigator.go(new SyncRecordsPath(SyncAction.TO_CARD));
       } else {
          finishSetupAndNavigateToDashboard();
       }

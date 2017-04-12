@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.manual;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,15 +8,21 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInputPresenter.Screen, WizardManualInputPresenter, WizardManualInputPath> implements WizardManualInputPresenter.Screen {
@@ -56,9 +62,7 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
+   public OperationScreen provideOperationDelegate() { return null; }
 
    @OnClick(R.id.wallet_wizard_manual_input_next_btn)
    void onNextClicked() {
@@ -79,5 +83,34 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
+            ErrorViewFactory.<GetSmartCardStatusCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> presenter.retry(command.barcode), c -> { /*nothing*/ })
+                  ).build()
+      );
+   }
+
+   @Override
+   public void showErrorCardIsAssignedDialog() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_wizard_manual_input_card_is_assigned)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.dismiss())
+            .show();
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public void reset() {
+      //nothing
    }
 }

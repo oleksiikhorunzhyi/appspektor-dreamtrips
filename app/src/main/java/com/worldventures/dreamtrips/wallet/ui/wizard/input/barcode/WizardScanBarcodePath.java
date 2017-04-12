@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.barcode;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

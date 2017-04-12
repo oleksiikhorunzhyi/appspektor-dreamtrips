@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelComm
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
@@ -16,11 +15,11 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
 
@@ -28,6 +27,10 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
+import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
+import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
+import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
+import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
@@ -43,9 +46,11 @@ public final class SmartCardInteractor {
    private final ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe;
    private final ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCardPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
-   private final ActionPipe<SetLockStateCommand> setLockPipe;
-   private final ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
+   private final ReadActionPipe<GetStealthModeAction> getStealthModePipe;
    private final ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe;
+   private final ActionPipe<SetLockStateCommand> setLockPipe;
+   private final ReadActionPipe<GetLockDeviceStatusAction> getLockPipe;
+   private final ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
    private final ActionPipe<ActiveSmartCardCommand> activeSmartCardActionPipe;
    private final ActionPipe<DeviceStateCommand> deviceStatePipe;
    private final ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe;
@@ -65,7 +70,9 @@ public final class SmartCardInteractor {
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
 
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
+   private final ReadActionPipe<GetClearRecordsDelayAction> getAutoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
+   private final ReadActionPipe<GetDisableDefaultCardDelayAction> getDisableDefaultCardDelayPipe;
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
@@ -92,9 +99,12 @@ public final class SmartCardInteractor {
       fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers
             .io());
       stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
+      getStealthModePipe = sessionActionPipeCreator.createPipe(GetStealthModeAction.class); //read action pipe
 
       lockDeviceChangedEventPipe = sessionActionPipeCreator.createPipe(LockDeviceChangedEvent.class, Schedulers.io());
       setLockPipe = sessionActionPipeCreator.createPipe(SetLockStateCommand.class, Schedulers.io());
+      getLockPipe = sessionActionPipeCreator.createPipe(GetLockDeviceStatusAction.class); //read action pipe
+
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
@@ -111,7 +121,10 @@ public final class SmartCardInteractor {
       stopCardRecordingPipe = sessionActionPipeCreator.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
+      getAutoClearDelayPipe = sessionActionPipeCreator.createPipe(GetClearRecordsDelayAction.class); //read action pipe
+
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+      getDisableDefaultCardDelayPipe = sessionActionPipeCreator.createPipe(GetDisableDefaultCardDelayAction.class); //read action pipe
 
       cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
@@ -155,8 +168,16 @@ public final class SmartCardInteractor {
       return stealthModePipe;
    }
 
+   public ReadActionPipe<GetStealthModeAction> getStealthModePipe() {
+      return getStealthModePipe;
+   }
+
    public ActionPipe<SetLockStateCommand> lockPipe() {
       return setLockPipe;
+   }
+
+   public ReadActionPipe<GetLockDeviceStatusAction> getLockPipe() {
+      return getLockPipe;
    }
 
    public ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe() {
@@ -207,8 +228,16 @@ public final class SmartCardInteractor {
       return offlineModeStatusPipe;
    }
 
+   public ReadActionPipe<GetClearRecordsDelayAction> getAutoClearDelayPipe() {
+      return getAutoClearDelayPipe;
+   }
+
    public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {
       return autoClearDelayPipe;
+   }
+
+   public ReadActionPipe<GetDisableDefaultCardDelayAction> getDisableDefaultCardDelayPipe() {
+      return getDisableDefaultCardDelayPipe;
    }
 
    public ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardDelayPipe() {

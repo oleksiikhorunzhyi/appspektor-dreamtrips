@@ -45,6 +45,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -330,6 +331,17 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public boolean isEnableTracking() {
       return actWithResult(db -> db.getBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING)).or(false);
+   }
+
+   @Override
+   public void saveSyncRecordsStatus(SyncRecordsStatus data) {
+      act(db -> db.put(WALLET_SYNC_RECORD_STATUS, data));
+   }
+
+   @Override
+   public SyncRecordsStatus getSyncRecordsStatus() {
+      return actWithResult(db -> db.get(WALLET_SYNC_RECORD_STATUS, SyncRecordsStatus.class))
+            .or(SyncRecordsStatus.SUCCESS);
    }
 
    ///////////////////////////////////////////////////////////////////////////

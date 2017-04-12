@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/spacing_large"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_existing_device_detect_title"
+         />
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="3"
+         />
+
+   <TextView
+         android:id="@+id/textView9"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="@dimen/spacing_large"
+         android:layout_marginStart="@dimen/spacing_large"
+         android:gravity="center"
+         android:text="@string/wallet_existing_device_detect_header"
+         />
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         />
+
+   <RelativeLayout
+         android:layout_width="wrap_content"
+         android:layout_height="0dp"
+         android:layout_gravity="center_horizontal"
+         android:layout_weight="7"
+         >
+
+      <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/image_barcode_flyecard"
+            tools:ignore="ContentDescription"
+            />
+
+      <View
+            android:id="@+id/center_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            />
+
+      <TextView
+            android:id="@+id/tv_sc_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/center_view"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/white_text_color"
+            android:textSize="12sp"
+            tools:text="0000001231"
+            />
+   </RelativeLayout>
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         />
+
+   <TextView
+         android:id="@+id/textView10"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentStart="true"
+         android:layout_marginEnd="@dimen/spacing_large"
+         android:layout_marginStart="@dimen/spacing_large"
+         android:gravity="center"
+         android:text="@string/wallet_existing_device_detect_text"
+         />
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="4"
+         />
+
+   <Button
+         android:id="@+id/button_unpair"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="@dimen/spacing_large"
+         android:layout_marginStart="@dimen/spacing_large"
+         android:text="@string/wallet_existing_device_detect_unpair_button"
+         />
+</com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen>

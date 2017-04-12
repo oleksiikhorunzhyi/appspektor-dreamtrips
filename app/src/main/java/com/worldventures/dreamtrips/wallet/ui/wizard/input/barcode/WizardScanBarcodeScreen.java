@@ -1,19 +1,26 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.barcode;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.Result;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath>
@@ -57,18 +64,11 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
+   public OperationScreen provideOperationDelegate() { return null; }
 
    @Override
    public void startCamera() {
       scanner.startCamera();
-   }
-
-   @Override
-   public void restartCamera() {
-      scanner.resumeCameraPreview(this);
    }
 
    @Override
@@ -79,6 +79,35 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    @Override
    public void showDeniedForCamera() {
       Snackbar.make(this, R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
+            ErrorViewFactory.<GetSmartCardStatusCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), c -> presenter.retry(c.barcode), c -> { /*nothing*/ }))
+                  .build()
+      );
+   }
+
+   @Override
+   public void showErrorCardIsAssignedDialog() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.dismiss())
+            .show();
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public void reset() {
+      scanner.resumeCameraPreview(this);
    }
 
    @Override
@@ -95,4 +124,5 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    protected boolean hasToolbar() {
       return true;
    }
+
 }

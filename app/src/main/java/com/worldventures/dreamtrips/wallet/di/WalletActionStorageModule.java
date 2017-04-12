@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SyncRecordsStatusActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
@@ -69,5 +70,10 @@ public class WalletActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage firmwareUpdateActionStorage(FirmwareRepository repository) {
       return new FirmwareUpdateActionStorage(repository);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   ActionStorage syncRecordsStatusActionStorage(SnappyRepository snappyRepository) {
+      return new SyncRecordsStatusActionStorage(snappyRepository);
    }
 }

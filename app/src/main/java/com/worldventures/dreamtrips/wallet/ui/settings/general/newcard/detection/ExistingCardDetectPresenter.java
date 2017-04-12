@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign;
+package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -14,11 +14,11 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCar
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;

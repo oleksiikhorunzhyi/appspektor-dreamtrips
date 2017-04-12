@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
@@ -34,6 +35,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class SyncRecordsCommand extends Command<Void> implements InjectableAction {
 
    @Inject RecordInteractor recordInteractor;
+   @Inject SmartCardInteractor interactor;
    @Inject NxtInteractor nxtInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
@@ -67,7 +69,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
                return bundle;
             })
             .flatMap(syncBundle -> sync(syncBundle, callback))
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 
    public int getLocalOnlyRecordsCount() {

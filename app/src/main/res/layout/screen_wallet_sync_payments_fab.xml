@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ll_sync_payments_block"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:visibility="gone"
+      tools:visibility="visible"
+      >
+
+   <TextView
+         android:id="@+id/tv_fail_sync_msg"
+         android:layout_width="match_parent"
+         android:layout_height="154dp"
+         android:layout_gravity="bottom"
+         android:layout_marginLeft="30dp"
+         android:layout_marginRight="30dp"
+         android:background="@drawable/background_empty_card_list_message"
+         android:gravity="top|center_horizontal"
+         android:padding="@dimen/spacing_normal"
+         android:text="@string/wallet_wizard_card_list_remove_payment_cards_message"
+         android:textColor="@color/wallet_card_list_fail_sync_payments_color"
+         android:textSize="@dimen/font_extra_normal"
+         />
+
+   <android.support.design.widget.FloatingActionButton
+         android:id="@+id/btn_sync_cards"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom|center_horizontal"
+         android:layout_marginBottom="@dimen/spacing_normal"
+         android:src="@drawable/ic_sync"
+         app:backgroundTint="@color/wallet_add_card_button_color"
+         app:backgroundTintMode="src_atop"
+         app:fab_size="normal"
+         />
+
+</LinearLayout>

@@ -75,6 +75,8 @@
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
    <string name="waller_wizard_scan_barcode_progress_label">Connecting to Smart Card…</string>
 
+   <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart card is already assigned</string>
+
    <string name="wallet_add_credit_card">Add credit card</string>
    <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
@@ -84,6 +86,7 @@
    <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
    <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
+   <string name="wallet_wizard_manual_input_card_is_assigned">Smart card is already assigned</string>
 
    <!--details-->
    <string name="wallet_card_details_title">Card Details</string>
@@ -179,6 +182,13 @@
    <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
    <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your Smart Card</string>
    <string name="wallet_wizard_card_list_card_synchronization_dialog_text">Payment cards synchronization</string>
+   <string name="wallet_wizard_card_list_remove_payment_cards">Remove Payment Cards</string>
+   <string name="wallet_wizard_card_list_remove_payment_cards_message">Your flye\u2122 smart card has\npayment cards waiting to\nbe synced.</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_title">Unable to Sync Cards</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_message">Your payment cards could not be synced at this time. Please try again or factory reset your Smart Card.</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_retry">Retry</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_factory_reset">Factory Reset</string>
+   <string name="wallet_wizard_card_list_sync_fail_dialog_cancel">Cancel</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>
@@ -426,10 +436,19 @@
    <string name="wallet_error_enter_pin_title">Unable to Unassign</string>
    <string name="wallet_error_enter_pin_msg">An error occurred while attempting to unassign your previous Smart Card from this device</string>
 
+   <!-- Existing device detect screen -->
+   <string name="wallet_existing_device_detect_title">Existing Device Detected</string>
+   <string name="wallet_existing_device_detect_header">The following Smart Card is assigned to another device in our system:</string>
+   <string name="wallet_existing_device_detect_text">Only one device can be assigned to a Smart Card.</string>
+   <string name="wallet_existing_device_detect_unpair_button">Unassign Card</string>
+   <string name="wallet_existing_device_detect_progress">Unassigning…</string>
+   <string name="wallet_existing_device_detect_unpair_dialog">Are you sure you want to anassign Smart Card <![CDATA[<b>%s</b>]]> from it\'s previous device?</string>
+
    <!-- Sync payment cards screen -->
    <string name="wallet_syncing_payment_cards">Syncing Payment Cards</string>
    <string name="wallet_syncing_payment_cards_fail_msg">Can\'t sync card. Check your card is power on and press retry button.</string>
    <string name="wallet_syncing_payment_cards_count" formatted="false">Syncing payment card %d of %d</string>
+   <string name="wallet_syncing_payment_cards_message" formatted="false">Syncing payment cards from Smart Card</string>
 
    <!-- New card power on screen -->
    <string name="wallet_new_card_power_on" formatted="false">Power on Smart Card <![CDATA[<b>%s</b>]]> by pressing and holding on the bottom-right corner of the chip.</string>

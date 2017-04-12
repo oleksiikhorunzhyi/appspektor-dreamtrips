@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -15,111 +15,103 @@
          app:title="@string/wallet_existing_card_detect_label"
          />
 
-   <RelativeLayout
+   <View
          android:layout_width="match_parent"
-         android:layout_height="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="3"
+         />
+
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="@dimen/spacing_large"
+         android:layout_marginStart="@dimen/spacing_large"
+         android:gravity="center"
+         android:text="@string/wallet_device_currently_is_assigned"
+         />
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="2"
+         />
+
+   <FrameLayout
+         android:id="@+id/barcode_container"
+         android:layout_width="198dp"
+         android:layout_height="198dp"
+         android:layout_gravity="center_horizontal"
          >
 
       <TextView
-            android:id="@+id/tv_device_currently_is_assigned"
+            android:id="@+id/tv_sc_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/wallet_existing_card_margin_bottom"
-            android:layout_marginEnd="@dimen/wallet_existing_card_margin_start_end"
-            android:layout_marginStart="@dimen/wallet_existing_card_margin_start_end"
-            android:layout_marginTop="@dimen/wallet_existing_card_margin_top"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="74dp"
             android:gravity="center"
-            android:text="@string/wallet_device_currently_is_assigned"
+            android:maxLines="1"
+            android:textColor="@color/white_text_color"
+            android:textSize="@dimen/font_normal"
+            tools:text="0000001231"
             />
 
-      <FrameLayout
-            android:id="@+id/barcode_container"
-            android:layout_width="198dp"
-            android:layout_height="198dp"
-            android:layout_below="@+id/tv_device_currently_is_assigned"
-            android:layout_centerHorizontal="true"
-            >
-
-         <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:src="@drawable/image_barcode_flyecard"
-               />
-
-         <TextView
-               android:id="@+id/tv_sc_id"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_gravity="bottom"
-               android:layout_marginBottom="74dp"
-               android:layout_marginLeft="@dimen/wallet_sc_id_existing_margin_left_right"
-               android:layout_marginRight="@dimen/wallet_sc_id_existing_margin_left_right"
-               android:gravity="center"
-               android:maxLines="1"
-               android:textColor="@color/white_text_color"
-               android:textSize="@dimen/font_normal"
-               tools:text="0000001231"
-               />
-      </FrameLayout>
-
-      <TextView
-            android:id="@+id/tv_only_one_device_can_be_assigned"
+      <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/barcode_container"
-            android:layout_marginTop="@dimen/wallet_existing_card_margin_bottom"
-            android:gravity="center"
-            android:text="@string/wallet_only_one_device_can_be_assigned"
+            android:layout_height="match_parent"
+            android:src="@drawable/image_barcode_flyecard"
+            tools:ignore="ContentDescription"
             />
+   </FrameLayout>
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         />
+
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentStart="true"
+         android:layout_marginEnd="@dimen/spacing_large"
+         android:layout_marginStart="@dimen/spacing_large"
+         android:gravity="center"
+         android:text="@string/wallet_only_one_device_can_be_assigned"
+         />
+
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="4"
+         />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:paddingBottom="@dimen/spacing_large"
+         android:paddingEnd="@dimen/spacing_large"
+         android:paddingStart="@dimen/spacing_large"
+         >
 
       <Button
             android:id="@+id/unassign_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_gravity="bottom"
-            android:layout_margin="@dimen/spacing_large"
-            android:text="@string/wallet_unassign_card"
-            tools:visibility="gone"
+            tools:text="@string/wallet_i_dont_have_card"
             />
 
-      <LinearLayout
-            android:id="@+id/container_have_card"
+      <TextView
+            android:id="@+id/have_card_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
+            android:layout_marginTop="@dimen/spacing_small"
+            android:gravity="center"
+            android:text="@string/wallet_i_have_card"
+            android:textColor="@color/wallet_new_card_have_not_card"
+            />
 
-         <Button
-               android:id="@+id/dont_have_card_button"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_gravity="bottom"
-               android:layout_marginLeft="@dimen/spacing_large"
-               android:layout_marginRight="@dimen/spacing_large"
-               android:text="@string/wallet_i_dont_have_card"
-               />
+   </LinearLayout>
 
-         <TextView
-               android:id="@+id/have_card_button"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginBottom="@dimen/spacing_large"
-               android:layout_marginLeft="@dimen/spacing_large"
-               android:layout_marginRight="@dimen/spacing_large"
-               android:layout_marginTop="@dimen/spacing_small"
-               android:gravity="center"
-               android:text="@string/wallet_i_have_card"
-               android:textColor="@color/wallet_new_card_have_not_card"
-               />
-
-      </LinearLayout>
-
-   </RelativeLayout>
-
-</com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.unassign.ExistingCardDetectScreen>
+</com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectScreen>

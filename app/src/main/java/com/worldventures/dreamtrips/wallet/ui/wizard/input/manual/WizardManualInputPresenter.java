@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.manual;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,17 +9,15 @@ import android.view.WindowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputDelegateView;
 
 import javax.inject.Inject;
 
@@ -32,34 +30,22 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Activity activity;
 
-   private int scidLength;
+   private final int scidLength;
+   private InputBarcodeDelegate inputBarcodeDelegate;
 
    public WizardManualInputPresenter(Context context, Injector injector) {
       super(context, injector);
+      scidLength = context.getResources().getInteger(R.integer.wallet_smart_card_id_length);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      observerAvailabilitySmartCard();
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new ManualCardInputAction()));
 
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ManualCardInputAction()));
-   }
-
-   private void observerAvailabilitySmartCard() {
-      wizardInteractor.availabilitySmartCardCommandActionPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<AvailabilitySmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onStart(getContext().getString(R.string.wallet_wizard_assigning_msg))
-                  .onSuccess(command -> {
-                     analyticsInteractor.walletAnalyticsCommandPipe()
-                           .send(new WalletAnalyticsCommand(new ScidEnteredAction(command.getSmartCardId())));
-                     navigator.go(new PairKeyPath(command.getSmartCardId()));
-                  })
-                  .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
-                        .build())
-                  .wrap());
+      inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
+            getView(), InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor));
    }
 
    @Override
@@ -69,29 +55,35 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
       // hotfix, web view brake SoftInputMode (set ADJUST_RESIZE)
       activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-      scidLength = getContext().getResources().getInteger(R.integer.wallet_smart_card_id_length);
+
       observeScidInput();
    }
 
    private void observeScidInput() {
+      //noinspection ConstantConditions
       getView().scidInput()
             .compose(bindView())
             .subscribe(scid -> getView().buttonEnable(scid.length() == scidLength));
    }
 
    void checkBarcode(String barcode) {
-      wizardInteractor.availabilitySmartCardCommandActionPipe().send(new AvailabilitySmartCardCommand(barcode));
+      inputBarcodeDelegate.barcodeEntered(barcode);
    }
 
    public void goBack() {
       navigator.goBack();
    }
 
-   public interface Screen extends WalletScreen {
+   void retry(String barcode) {
+      inputBarcodeDelegate.retry(barcode);
+   }
+
+   public interface Screen extends WalletScreen, InputDelegateView {
 
       void buttonEnable(boolean isEnable);
 
       @NonNull
       Observable<CharSequence> scidInput();
+
    }
 }

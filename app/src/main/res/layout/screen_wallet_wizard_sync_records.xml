@@ -27,6 +27,9 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_huge"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
             android:textStyle="bold"
             tools:text="@string/wallet_syncing_payment_cards_count"
             />

@@ -392,7 +392,7 @@
    <dimen name="margin_left_char">8dp</dimen>
    <dimen name="add_photos_text_size">14sp</dimen>
    <dimen name="dtl_item_review_images_comment_margin">50dp</dimen>
-   <dimen name="dtl_item_review_images_height">200dp</dimen>
+   <dimen name="dtl_item_review_images_height">250dp</dimen>
    <dimen name="dtl_item_review_images_margin">10dp</dimen>
    <dimen name="dtl_item_review_images_separation">6dp</dimen>
    <dimen name="dtl_item_review_images_recycler_view_margin_top">20dp</dimen>

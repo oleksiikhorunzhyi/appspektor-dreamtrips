@@ -95,6 +95,6 @@ public class ReviewImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          super(view);
          reviewComment = (TextView) view.findViewById(R.id.user_comment);
       }
-
    }
+
 }

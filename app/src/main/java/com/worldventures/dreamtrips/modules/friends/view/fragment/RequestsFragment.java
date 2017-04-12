@@ -4,20 +4,17 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -28,9 +25,12 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
+import com.worldventures.dreamtrips.modules.friends.model.AcceptanceHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
+import com.worldventures.dreamtrips.modules.friends.view.cell.AcceptanceHeaderCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestCellDelegate;
@@ -42,36 +42,22 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import butterknife.InjectView;
-
 @Layout(R.layout.fragment_requests)
 @MenuResource(R.menu.menu_friend)
-public class RequestsFragment extends BaseFragment<RequestsPresenter> implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener, RequestCellDelegate {
-
-   @InjectView(R.id.requests) RecyclerView recyclerView;
-   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
-
-   RecyclerViewStateDelegate stateDelegate;
-   BaseDelegateAdapter<Object> adapter;
+public class RequestsFragment extends BaseFragment<RequestsPresenter> implements RequestsPresenter.View,
+      SwipeRefreshLayout.OnRefreshListener, RequestCellDelegate {
 
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle savedInstanceState;
+   private BaseDelegateAdapter<Object> adapter;
    private MaterialDialog blockingProgressDialog;
-
-   private WeakHandler weakHandler;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      weakHandler = new WeakHandler();
-      stateDelegate = new RecyclerViewStateDelegate();
-      stateDelegate.onCreate(savedInstanceState);
-   }
-
-   @Override
-   public void onSaveInstanceState(Bundle outState) {
-      super.onSaveInstanceState(outState);
-      stateDelegate.saveStateIfNeeded(outState);
+      this.savedInstanceState = savedInstanceState;
    }
 
    @Override
@@ -89,12 +75,10 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      stateDelegate.setRecyclerView(recyclerView);
-      recyclerView.setLayoutManager(getLayoutManager());
-
       adapter = new BaseDelegateAdapter<>(getActivity(), this);
       adapter.registerCell(User.class, RequestCell.class);
       adapter.registerCell(RequestHeaderModel.class, RequestHeaderCell.class);
+      adapter.registerCell(AcceptanceHeaderModel.class, AcceptanceHeaderCell.class);
       adapter.registerDelegate(User.class, this);
       adapter.registerDelegate(RequestHeaderModel.class, new RequestHeaderCellDelegate() {
          @Override
@@ -103,19 +87,18 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
          }
 
          @Override
-         public void onCellClicked(RequestHeaderModel model) {
-
-         }
+         public void onCellClicked(RequestHeaderModel model) { }
       });
 
-      recyclerView.setAdapter(adapter);
-
-      recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
-      refreshLayout.setOnRefreshListener(this);
-      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState, getLayoutManager());
+      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+      statePaginatedRecyclerViewManager.addItemDecoration(
+            new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
    }
 
-   private RecyclerView.LayoutManager getLayoutManager() {
+   private LinearLayoutManager getLayoutManager() {
       if (ViewUtils.isLandscapeOrientation(getActivity())) {
          int spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 1;
          GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -148,17 +131,12 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
 
    @Override
    public void finishLoading() {
-      weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
-      });
-      stateDelegate.restoreStateIfNeeded();
+      statePaginatedRecyclerViewManager.finishLoading();
    }
 
    @Override
    public void startLoading() {
-      weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
-      });
+      statePaginatedRecyclerViewManager.startLoading();
    }
 
    @Override
@@ -196,6 +174,12 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    }
 
    @Override
+   public void itemsLoaded(List<Object> sortedItems, boolean noMoreElements) {
+      getAdapter().setItems(sortedItems);
+      statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreElements);
+   }
+
+   @Override
    public void acceptRequest(User user) {
       getPresenter().acceptRequest(user);
    }
@@ -221,7 +205,5 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    }
 
    @Override
-   public void onCellClicked(User model) {
-
-   }
+   public void onCellClicked(User model) { }
 }

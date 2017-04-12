@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import io.techery.janet.ActionService
+import io.techery.janet.command.test.Contract
+import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.DescribeBody
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.junit.JUnitSpekRunner
@@ -61,6 +63,13 @@ abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
          callback = spy()
          return callback
       }
+
+      fun mockActionService(service: ActionService, mockContracts: List<Contract>) = MockCommandActionService.Builder()
+            .apply {
+               actionService(service)
+               for (contract in mockContracts) addContract(contract)
+            }
+            .build()
 
       fun mockSessionHolder() : SessionHolder<UserSession> {
          val sessionHolder: SessionHolder<UserSession> = mock()

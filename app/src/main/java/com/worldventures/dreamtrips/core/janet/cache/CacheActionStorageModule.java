@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStor
 import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
+import com.worldventures.dreamtrips.modules.friends.storage.RequestsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage;
@@ -215,6 +216,12 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {
       return new DocumentsStorage(new PaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideRequestsStorage() {
+      return new RequestsStorage();
    }
 
    @Singleton

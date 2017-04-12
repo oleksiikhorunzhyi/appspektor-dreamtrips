@@ -5,11 +5,13 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
+import com.worldventures.dreamtrips.modules.friends.model.AcceptanceHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
@@ -37,65 +39,85 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject SnappyRepository db;
+
+   private int currentPage = 1;
+   private int acceptedRequestsCount = 0;
 
    @Override
-   public void onResume() {
-      super.onResume();
+   public void takeView(View view) {
+      super.takeView(view);
+      observeRequests();
       reloadRequests();
    }
 
-   private void onCirclesStart() {
-      view.showBlockingProgress();
-   }
-
-   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
-      view.hideBlockingProgress();
-      handleError(commandWithError, throwable);
-   }
-
-   public void reloadRequests() {
+   private void observeRequests() {
       friendsInteractor.getRequestsPipe()
-            .createObservable(new GetRequestsCommand())
+            .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetRequestsCommand>()
                   .onStart(getRequestsCommand -> view.startLoading())
+                  .onFinish(getRequestsCommand -> view.finishLoading())
                   .onSuccess(this::requestsLoaded)
-                  .onFail(this::onError));
+                  .onFail(this::handleError));
+   }
+
+   public void reloadRequests() {
+      acceptedRequestsCount = 0;
+      currentPage = 1;
+      friendsInteractor.getRequestsPipe().send(new GetRequestsCommand(currentPage));
    }
 
    private void requestsLoaded(GetRequestsCommand getRequestsCommand) {
-      view.finishLoading();
-      setItems(getRequestsCommand.getResult());
+      currentPage++;
+      showRequests(getRequestsCommand.items(), getRequestsCommand.isNoMoreElements());
+   }
+
+   private void showRequests(List<User> items, boolean noMoreElements) {
+      List<Object> sortedItems = new ArrayList<>();
+      List<User> incoming = getIncomingRequests(items);
+
+      if (acceptedRequestsCount != 0 || !incoming.isEmpty()) {
+         RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming_long), true);
+         incomingHeader.setCount(incoming.size());
+         sortedItems.add(incomingHeader);
+      }
+
+      if (acceptedRequestsCount != 0){
+         sortedItems.add(new AcceptanceHeaderModel(acceptedRequestsCount));
+      } else if(!incoming.isEmpty()) {
+         sortedItems.addAll(incoming);
+      }
+
+      List<User> outgoing = getOutgoingRequests(items);
+      if (!outgoing.isEmpty()) {
+         sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing_long)));
+         sortedItems.addAll(outgoing);
+      }
+
+      view.itemsLoaded(sortedItems, noMoreElements);
+   }
+
+   private List<User> getIncomingRequests(List<User> items) {
+      return Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList();
+   }
+
+   private List<User> getOutgoingRequests(List<User> items) {
+      return Queryable.from(items)
+            .filter(item -> (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
+            .toList();
+   }
+
+   private int getFriendsRequestsCount() {
+      return db.getFriendsRequestsCount();
+   }
+
+   public void loadNext() {
+      friendsInteractor.getRequestsPipe().send(new GetRequestsCommand(currentPage));
    }
 
    public void userClicked(User user) {
       view.openUser(new UserBundle(user));
-   }
-
-   private void setItems(List<User> items) {
-      if (items != null) {
-         List<Object> sortedItems = new ArrayList<>();
-
-         List<User> incoming = Queryable.from(items)
-               .filter(item -> item.getRelationship() == INCOMING_REQUEST)
-               .toList();
-         if (!incoming.isEmpty()) {
-            RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming_long), true);
-            incomingHeader.setCount(incoming.size());
-            sortedItems.add(incomingHeader);
-            sortedItems.addAll(incoming);
-         }
-
-         List<User> outgoing = Queryable.from(items)
-               .filter(item -> (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
-               .toList();
-         if (!outgoing.isEmpty()) {
-            sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing_long)));
-            sortedItems.addAll(outgoing);
-         }
-
-         view.getAdapter().setItems(sortedItems);
-      }
    }
 
    private Observable<ActionState<GetCirclesCommand>> getCirclesObservable() {
@@ -116,20 +138,14 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       view.hideBlockingProgress();
       view.showAddFriendDialog(circles, position ->
             friendsInteractor.acceptAllPipe()
-                  .createObservable(new AcceptAllFriendRequestsCommand(Queryable.from(view.getAdapter().getItems())
-                        .filter(e -> e instanceof User && ((User) e).getRelationship() == INCOMING_REQUEST)
-                        .map(e -> (User) e)
-                        .toList(), circles.get(position).getId()))
+                  .createObservable(new AcceptAllFriendRequestsCommand(circles.get(position).getId()))
                   .compose(bindView())
                   .observeOn(AndroidSchedulers.mainThread())
                   .subscribe(new ActionStateSubscriber<AcceptAllFriendRequestsCommand>()
                         .onStart(action -> view.startLoading())
-                        .onSuccess(action -> {
-                           view.finishLoading();
-                           reloadRequests();
-                           updateRequestsCount();
-                        })
-                        .onFail(this::onError))
+                        .onFinish(action -> view.finishLoading())
+                        .onSuccess(action -> allFriendRequestsAccepted())
+                        .onFail(this::handleError))
       );
    }
 
@@ -149,11 +165,12 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                   .observeOn(AndroidSchedulers.mainThread())
                   .subscribe(new ActionStateSubscriber<ActOnFriendRequestCommand.Accept>()
                         .onStart(action -> view.startLoading())
+                        .onFinish(action -> view.finishLoading())
                         .onSuccess(action -> {
                            onSuccess(user);
                            updateRequestsCount();
                         })
-                        .onFail(this::onError))
+                        .onFail(this::handleError))
       );
    }
 
@@ -164,11 +181,12 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActOnFriendRequestCommand.Reject>()
                   .onStart(action -> view.startLoading())
+                  .onFinish(action -> view.finishLoading())
                   .onSuccess(action -> {
                      onSuccess(user);
                      updateRequestsCount();
                   })
-                  .onFail(this::onError));
+                  .onFail(this::handleError));
    }
 
    public void hideRequest(User user) {
@@ -186,8 +204,9 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeleteFriendRequestCommand>()
                   .onStart(action -> view.startLoading())
+                  .onFinish(action -> view.finishLoading())
                   .onSuccess(action -> onSuccess(user))
-                  .onFail(this::onError));
+                  .onFail(this::handleError));
    }
 
    private void onSuccess(User user) {
@@ -195,9 +214,14 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       view.getAdapter().remove(user);
    }
 
-   private void onError(CommandWithError commandWithError, Throwable throwable) {
-      view.finishLoading();
-      handleError(commandWithError, throwable);
+   private void allFriendRequestsAccepted() {
+      acceptedRequestsCount = getFriendsRequestsCount();
+      List<User> outgoingUsers = Queryable.from(view.getAdapter().getItems())
+            .filter(item -> item instanceof User)
+            .map(item -> (User) item)
+            .filter(item -> (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
+            .toList();
+      showRequests(outgoingUsers, true);
    }
 
    private void updateRequestsCount() {
@@ -209,12 +233,23 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       }
    }
 
+   private void onCirclesStart() {
+      view.showBlockingProgress();
+   }
+
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
+      view.hideBlockingProgress();
+      handleError(commandWithError, throwable);
+   }
+
    public interface View extends Presenter.View, BlockingProgressView {
       void startLoading();
 
       void openUser(UserBundle userBundle);
 
       void finishLoading();
+
+      void itemsLoaded(List<Object> sortedItems, boolean noMoreElements);
 
       void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 

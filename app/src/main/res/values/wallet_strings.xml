@@ -125,9 +125,7 @@
    <string name="wallet_card_settings_auto_clear">Auto Clear</string>
    <string name="wallet_card_settings_auto_clear_sc_after">Automatically clear cards from your Smart Card</string>
    <string name="wallet_card_settings_keep_my_identity_private">Keep My Identity Private</string>
-   <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
-   <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
-   <string name="wallet_card_settings_do_not_notify_merchants">Do not notify merchants of my arrival</string>
+   <string name="wallet_card_settings_do_not_notify_merchants">Don\'t alert merchants of my arrival</string>
    <string name="wallet_card_settings_alert">Alert</string>
    <string name="wallet_card_settings_notifies_connectivity_lost">Notifies you when connectivity is lost</string>
    <string name="wallet_card_settings_updates">Updates</string>

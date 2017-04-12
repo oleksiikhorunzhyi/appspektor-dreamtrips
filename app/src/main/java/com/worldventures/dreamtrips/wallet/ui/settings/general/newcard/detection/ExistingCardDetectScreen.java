@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection;
+package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

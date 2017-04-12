@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection;
+package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.success.UnassignSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
 
 import javax.inject.Inject;
 

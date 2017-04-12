@@ -43,8 +43,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSet
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.detection.ExistingCardDetectPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.newcard.unassign.success.UnassignSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;

@@ -71,12 +71,8 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
             .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(action -> {
-                     trackSmartCardStealthMode(action.stealthModeEnabled);
-                     stealthModeChangedMessage(action.stealthModeEnabled);
-                  })
-                  .onFail(ErrorHandler.create(getContext(),
-                        command -> stealthModeFailed()))
+                  .onSuccess(action -> trackSmartCardStealthMode(action.stealthModeEnabled))
+                  .onFail(ErrorHandler.create(getContext(), command -> stealthModeFailed()))
                   .wrap()
             );
 
@@ -170,12 +166,6 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
    private void lockStatusChanged(boolean lock) {
       smartCardInteractor.lockPipe().send(new SetLockStateCommand(lock));
-   }
-
-   private String stealthModeChangedMessage(boolean isEnabled) {
-      return getContext().getString(
-            isEnabled ? R.string.wallet_card_settings_stealth_mode_on : R.string.wallet_card_settings_stealth_mode_off
-      );
    }
 
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {

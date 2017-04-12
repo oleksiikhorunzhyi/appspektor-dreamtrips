@@ -268,6 +268,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       //noinspection ConstantConditions
       recordInteractor.recordsSyncPipe()
             .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(recordInteractor.recordsSyncPipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncPayments()).create());
    }

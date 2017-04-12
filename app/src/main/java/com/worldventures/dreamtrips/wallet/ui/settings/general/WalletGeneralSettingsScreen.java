@@ -26,7 +26,6 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    @InjectView(R.id.profile_photo) SimpleDraweeView profilePhoto;
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
-   @InjectView(R.id.firmware_version_label) TextView firmwareVersionLabel;
 
    private MaterialDialog confirmFactoryResetDialog = null;
    private MaterialDialog noConnectionDialog = null;
@@ -43,6 +42,7 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       badgeFirmwareUpdates.hide();
    }
@@ -93,20 +93,13 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    }
 
    @Override
-   public void firmwareVersion(String version) {
-      firmwareVersionLabel.setText(version);
-   }
-
-   @Override
    public void showFirmwareVersion() {
       badgeFirmwareUpdates.hide(true);
-      firmwareVersionLabel.setVisibility(VISIBLE);
    }
 
    @Override
    public void showFirmwareBadge() {
       badgeFirmwareUpdates.show(true);
-      firmwareVersionLabel.setVisibility(GONE);
    }
 
    @Override

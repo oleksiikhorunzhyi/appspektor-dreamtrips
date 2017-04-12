@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.RestartSmartCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -54,7 +53,6 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
       super.attachView(view);
 
       observeSmartCardUserChanges();
-      observeSmartCardChanges();
       observeFirmwareUpdates();
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
@@ -127,20 +125,9 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
             .subscribe(this::bindSmartCardUser, throwable -> Timber.e(throwable, ""));
    }
 
-   private void observeSmartCardChanges() {
-      smartCardInteractor.smartCardFirmwarePipe().observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .map(Command::getResult)
-            .subscribe(this::bindSmartCardFirmware);
-   }
-
    private void bindSmartCardUser(SmartCardUser it) {
       getView().setPreviewPhoto(it.userPhoto().photoUrl());
       getView().setUserName(it.firstName(), it.middleName(), it.lastName());
-   }
-
-   private void bindSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
-      getView().firmwareVersion(smartCardFirmware == null ? "" : smartCardFirmware.nordicAppVersion());
    }
 
    private void observeFirmwareUpdates() {
@@ -183,8 +170,6 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
       void setUserName(String firstName, String middleName, String lastName);
 
       void firmwareUpdateCount(int count);
-
-      void firmwareVersion(String version);
 
       void showFirmwareVersion();
 

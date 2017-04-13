@@ -104,6 +104,14 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
             BucketPhoto photo = photos.get(position);
             ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
          }
+
+         @Override
+         public int getItemPosition(Object object) {
+            // force current page to be recreated each time we call notifyDatasetChanged()
+            // TODO: 3/21/17 Implement descendant of BaseStatePagerAdapter to track positions of the fragments
+            // and return actual position if item still exists in the adapter
+            return POSITION_NONE;
+         }
       };
       viewPagerBucketGallery.setAdapter(adapter);
    }
@@ -281,18 +289,16 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       this.photos.addAll(newPhotos);
       adapter.clear();
       Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
-      adapter.notifyDataSetChanged();
 
       // initialize once, initializing with empty list in view pager causes crash
       if (!photos.isEmpty() && !viewPagerIndicatorInitialized) {
          circleIndicator.setViewPager(viewPagerBucketGallery);
          viewPagerIndicatorInitialized = true;
+         adapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
       }
 
-      circleIndicator.setViewPager(viewPagerBucketGallery);
-      circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
-
       viewPagerBucketGallery.setCurrentItem(checkedPosition);
+      adapter.notifyDataSetChanged();
    }
 
    private void subscribeToBucketImagesClicks() {

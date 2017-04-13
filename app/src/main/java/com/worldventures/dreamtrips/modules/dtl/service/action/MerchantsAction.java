@@ -54,9 +54,9 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
       callback.onProgress(0);
-      janet.createPipe(GetThinMerchantsHttpAction.class, Schedulers.io())
+      janet.createPipe(CategoryMerchantsHttpAction.class, Schedulers.io())
             .createObservableResult(actionCreator.createAction(actionParams))
-            .map(GetThinMerchantsHttpAction::merchants)
+            .map(CategoryMerchantsHttpAction::merchants)
             .map(merchants -> mapperyContext.convert(merchants, ThinMerchant.class))
             .doOnNext(action -> clearCacheIfNeeded())
             .subscribe(callback::onSuccess, callback::onFail);

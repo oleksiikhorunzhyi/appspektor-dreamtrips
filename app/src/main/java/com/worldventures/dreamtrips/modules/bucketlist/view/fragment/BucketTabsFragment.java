@@ -70,18 +70,19 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
       PageSelectionDetector.listenPageSelection(pager, pageNumber -> {
          SelectablePagerFragment fragment = (SelectablePagerFragment) adapter.getCurrentFragment();
          fragment.onSelectedFromPager();
-         notifyPosition();
+         notifyPosition(pageNumber);
       });
    }
 
    @Override
    public void onResume() {
       super.onResume();
-      notifyPosition();
+      notifyPosition(pager.getCurrentItem());
       TrackingHelper.viewBucketListScreen();
    }
 
-   private void notifyPosition() {
+   private void notifyPosition(int currentSelectedTabPosition) {
+      this.currentPosition = currentSelectedTabPosition;
       getPresenter().onTabChange(BucketType.values()[currentPosition]);
    }
 

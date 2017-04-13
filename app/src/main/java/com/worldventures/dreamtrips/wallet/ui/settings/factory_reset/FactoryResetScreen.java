@@ -36,7 +36,7 @@ public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter
    @Override
    public OperationScreen provideOperationDelegate() {
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
-      dialogOperationScreen.setCancelStrategy(new ExplicitCancelStrategy(dialog -> getPresenter().cancelFactoryReset()));
+      dialogOperationScreen.setCancelStrategy(new SimpleCancelStrategy());
       return dialogOperationScreen;
    }
 

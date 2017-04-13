@@ -72,7 +72,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {
-      if (!updatedFeedEntity.getUid().equals(feedEntity.getUid())) return;
+      if (!feedEntity.equals(updatedFeedEntity)) return;
       feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);
@@ -95,6 +95,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>()
+                  .onSuccess(updateBucketItemCommand -> updateFullEventInfo(updateBucketItemCommand.getResult()))
                   .onFail((updateBucketItemCommand, throwable) -> {
                      if (feedEntity.getUid().equals(updateBucketItemCommand.getBucketItemId())) {
                         handleError(updateBucketItemCommand, throwable);

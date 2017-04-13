@@ -88,7 +88,6 @@
    <string name="bucket_list_choose">Välj från populära drömresmål</string>
    <string name="bucket_list_create_new">Skapa min egen lista</string>
    <string name="bucket_list_action_create_error">Det gick inte att lägga till drömresmål</string>
-   <string name="bucket_list_action_update_error">Det gick inte att uppdatera drömresmål</string>
    <string name="bucket_list_action_change_order_error">Det gick inte att uppdatera drömresmål</string>
    <string name="bucket_list_action_delete_error">Det gick inte att ta bort drömresmål</string>
    <string name="bucket_hint_title">Titel</string>
@@ -119,8 +118,6 @@
    <string name="ss_filter_show_favorites">Visa favoriter</string>
    <string name="other_travel">Boka resa</string>
    <string name="training_videos">Instruktionsvideor</string>
-   <string name="error_while_sync">Något gick fel</string>
-   <string name="can_not_like_photo">Du kan inte gilla fotot</string>
    <string name="like">%1$d gillar</string>
    <string name="likes">%1$d gillar</string>
    <string name="comment_single">%1$d kommentar</string>
@@ -478,7 +475,7 @@
    <string name="error_fail_to_load_documents">Det gick inte att läsa in dokument</string>
    <string name="tag_people">Tagga personer</string>
 
-   <string name="uploading_post_status_progress_singular">Fotot överförs …</string>
+   <string name="uploading_post_status_progress_singular">Fotot överförs ...</string>
    <string name="uploading_post_status_progress_plural">Överför %1$d foton…</string>
    <string name="uploading_post_status_paused">Överföring pausad</string>
    <string name="uploading_post_status_waiting">Väntar</string>
@@ -493,8 +490,6 @@
    <string name="uploading_post_cancel_upload_message">Vill du avbryta överföringen?</string>
    <string name="uploading_post_cancel_upload_positive_button">Ja</string>
    <string name="uploading_post_cancel_upload_negative_button">Nej</string>
-
-   <string name="say_something">Berätta något för världen</string>
 
    <string name="update">Uppdatera</string>
    <string name="add_location">Lägg till plats</string>
@@ -537,6 +532,12 @@
    <string name="podcasts_button_pause">Paus</string>
    <string name="podcasts_button_stop">Avbryt</string>
 
+   <string name="app_update_alert_title">Uppdatering tillgänglig</string>
+   <string name="app_update_alert_neutral_button">Inte nu</string>
+   <string name="app_update_alert_pos_button">Uppdatera</string>
+   <string name="app_update_alert_optional_update_message">Programvaruuppdateringar är redo för DreamTrips-appen. För en förbättrad upplevelse, uppdatera innan %1$s</string>
+   <string name="app_update_alert_force_update_message">Programvaruuppdateringar är redo för DreamTrips-appen. Uppdateringen tar bara några minuter att installera. </string>
+
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Säg någonting, lägg till en #hashtag</string>
    <string name="add_text">Skriv text</string>
@@ -572,4 +573,7 @@
 
    <string name="documents">Dokument</string>
    <string name="documents_empty_text">Det gick inte att läsa in dokumenten just nu.</string>
+
+   <string name="show_original">Visa ursprunglig</string>
+   
 </resources>

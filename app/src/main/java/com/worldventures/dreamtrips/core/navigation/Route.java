@@ -54,6 +54,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedback
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -186,7 +187,7 @@ public enum Route {
 
    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
-   ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
+   ENROLL_REP(EnrollRepFragment.class),
    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
    SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 

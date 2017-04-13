@@ -19,6 +19,7 @@
          >
 
       <TextView
+            android:visibility="gone"
             android:id="@+id/header_text_view"
             style="@style/WalletTheme.HeaderTextStyle"
             android:layout_width="match_parent"

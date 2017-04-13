@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.Fac
 import javax.inject.Inject;
 
 import io.techery.janet.CancelException;
-import io.techery.janet.smartcard.action.lock.LockDeviceAction;
 
 public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter.Screen, Parcelable> {
 
@@ -33,7 +32,6 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
    public void attachView(Screen view) {
       super.attachView(view);
       resetSmartCard();
-      observeUnlockCard();
    }
 
    private void resetSmartCard() {
@@ -52,25 +50,20 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
       factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
    }
 
-   private void observeUnlockCard() {
-      smartCardInteractor.lockDeviceChangedEventPipe()
-            .observeSuccess()
-            .compose(bindViewIoToMainComposer())
-            .filter(lockDeviceChangedEvent -> !lockDeviceChangedEvent.locked)
-            .take(1)
-            .subscribe(lockDeviceChangedEvent ->  getView().restrictCancel());
+   public void cancelFactoryReset() {
+//      not needed for 1.18
+//      factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
+//      factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
+//      goBack();
    }
 
-   public void cancelFactoryReset() {
-      factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
-      factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
-      goBack();
-   }
    public void goBack() {
       navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {
+      @Deprecated
+      @SuppressWarnings("unused")
       void restrictCancel();
    }
 }

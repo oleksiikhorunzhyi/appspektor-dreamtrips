@@ -101,7 +101,10 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
             .createObservable(new DeletePhotoCommand(photo))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
-                  .onSuccess(deletePhotoCommand -> view.informUser(context.getString(R.string.photo_deleted)))
+                  .onSuccess(deletePhotoCommand -> {
+                     view.informUser(context.getString(R.string.photo_deleted));
+                     view.back();
+                  })
                   .onFail(this::handleError));
    }
 
@@ -245,5 +248,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       void showContentWrapper();
 
       void openEdit(EditPhotoBundle bundle);
+
+      void back();
    }
 }

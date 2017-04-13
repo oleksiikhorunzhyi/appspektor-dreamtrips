@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.dtl.service.action.CategoryMerchantsHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 
 import java.util.ArrayList;
@@ -21,14 +22,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 
-public class MerchantsActionCreator implements HttpActionCreator<GetThinMerchantsHttpAction, MerchantsActionParams> {
+public class MerchantsActionCreator implements HttpActionCreator<CategoryMerchantsHttpAction, MerchantsActionParams> {
 
    @Inject
    public MerchantsActionCreator(){}
 
    @Override
-   public GetThinMerchantsHttpAction createAction(MerchantsActionParams params) {
-      return new GetThinMerchantsHttpAction(createMerchantsActionParams(params));
+   public CategoryMerchantsHttpAction createAction(MerchantsActionParams params) {
+      return new CategoryMerchantsHttpAction(createMerchantsActionParams(params), params.filterData().getMerchantType());
    }
 
    private static ThinMerchantsActionParams createMerchantsActionParams(MerchantsActionParams bundle) {

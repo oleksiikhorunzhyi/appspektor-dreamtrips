@@ -88,7 +88,6 @@
    <string name="bucket_list_choose">從熱門項目中選擇</string>
    <string name="bucket_list_create_new">創建我自己的清單</string>
    <string name="bucket_list_action_create_error">無法添加願望清單項目</string>
-   <string name="bucket_list_action_update_error">無法更新願望清單項目</string>
    <string name="bucket_list_action_change_order_error">無法更改願望清單項目順序</string>
    <string name="bucket_list_action_delete_error">無法刪除願望清單項目</string>
    <string name="bucket_hint_title">標題</string>
@@ -119,8 +118,6 @@
    <string name="ss_filter_show_favorites">顯示收藏夾</string>
    <string name="other_travel">旅遊預訂</string>
    <string name="training_videos">培訓視頻</string>
-   <string name="error_while_sync">出了些問題</string>
-   <string name="can_not_like_photo">不能點贊照片</string>
    <string name="like">%1$d點贊</string>
    <string name="likes">%1$d點贊</string>
    <string name="comment_single">%1$d評論</string>
@@ -238,7 +235,7 @@
    <string name="feed_photo">照片</string>
    <string name="feed_bucket">人生願望清單項目</string>
    <string name="coming_soon">即將推出</string>
-   <string name="loading">載入中…</string>
+   <string name="loading">載入中...</string>
    <string name="filter_video_title_language">選擇語言</string>
    <string name="filter_video_title_country">選擇國家</string>
    <string name="comments_title">評論</string>
@@ -376,7 +373,7 @@
    <string name="logout_component">退出</string>
    <string name="start_typing_name">開始鍵入名稱</string>
 
-   <string name="multiple_dates">多個日期， %1$s …</string>
+   <string name="multiple_dates">多個日期， %1$s ...</string>
 
    <string name="tag_photo">標記了您</string>
 
@@ -478,23 +475,21 @@
    <string name="error_fail_to_load_documents">無法加載文件</string>
    <string name="tag_people">給人加標籤</string>
 
-   <string name="uploading_post_status_progress_singular">上傳照片…</string>
+   <string name="uploading_post_status_progress_singular">上傳照片...</string>
    <string name="uploading_post_status_progress_plural">上傳%1$d張相片…</string>
    <string name="uploading_post_status_paused">上傳已暫停</string>
    <string name="uploading_post_status_waiting">等候</string>
    <string name="uploading_post_status_failed_connection">失去連接</string>
    <string name="uploading_post_status_uploaded">帖子上傳成功！</string>
-   <string name="uploading_post_time_left_posting">正在發布…</string>
+   <string name="uploading_post_time_left_posting">正在發布...</string>
    <string name="uploading_post_time_time_left">離開</string>
    <string name="uploading_post_time_left_seconds">S</string>
    <string name="uploading_post_time_left_minutes">M</string>
    <string name="uploading_post_time_left_hours">h</string>
-   <string name="uploading_post_time_left_more_than_one_day">超過1天…</string>
+   <string name="uploading_post_time_left_more_than_one_day">超過1天...</string>
    <string name="uploading_post_cancel_upload_message">取消上傳？</string>
    <string name="uploading_post_cancel_upload_positive_button">是</string>
    <string name="uploading_post_cancel_upload_negative_button">不是</string>
-
-   <string name="say_something">向世界說點什麼</string>
 
    <string name="update">更新</string>
    <string name="add_location">添加位置</string>
@@ -537,6 +532,9 @@
    <string name="podcasts_button_pause">暫停</string>
    <string name="podcasts_button_stop">停</string>
 
+   <string name="app_update_alert_title">更新可用</string>
+   <string name="app_update_alert_neutral_button">不是現在</string>
+   <string name="app_update_alert_pos_button">更新</string>
    <string name="min">分鐘</string>
    <string name="post_hint_with_hashtag">說些什麼，添加#標籤</string>
    <string name="add_text">添加文字</string>
@@ -572,4 +570,7 @@
 
    <string name="documents">文件</string>
    <string name="documents_empty_text">此次文件無法加載。</string>
+
+   <string name="show_original">顯示最初的</string>
+   
 </resources>

@@ -36,7 +36,7 @@ public class MultiSelectionManager extends SimpleSelectionManager {
       if (selectableWrapperAdapter.getItemCount() == 0) return false;
 
       return Queryable.from(selectableWrapperAdapter.getSelectedItems())
-            .filter(pos -> selectableWrapperAdapter.getItemViewType((Integer) pos) == itemViewTypeId)
+            .filter(pos -> (Integer) pos > 0 && selectableWrapperAdapter.getItemViewType((Integer) pos) == itemViewTypeId)
             .count() == Queryable.range(0, selectableWrapperAdapter.getItemCount())
             .filter(pos -> selectableWrapperAdapter.getItemViewType(pos) == itemViewTypeId)
             .count();

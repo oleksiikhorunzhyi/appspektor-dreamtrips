@@ -33,10 +33,10 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedHashtagFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
@@ -53,6 +53,8 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -122,7 +124,7 @@ public enum Route {
   
    MEMBERSHIP(MembershipFragment.class),
    TRAINING_VIDEOS(TrainingVideosFragment.class),
-   ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class, R.string.enroll_member),
+   ENROLL_MEMBER(EnrollMemberFragment.class, R.string.enroll_member),
    ENROLL_MERCHANT(StaticInfoFragment.EnrollMerchantFragment.class, R.string.suggest_merchant_title),
    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
    INVITE(InviteFragment.class),
@@ -163,7 +165,7 @@ public enum Route {
    SHARE(ShareFragment.class, R.string.action_share),
    USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
    FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
-   FEED_HASHTAG(FeedHashtagFragment.class, R.string.empty),
+   FEED_HASHTAG(HashtagFeedFragment.class, R.string.empty),
    FEEDBACK_IMAGE_ATTACHMENTS(FeedbackImageAttachmentsFragment.class, R.string.empty),
    FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT(FeedbackImageAttachmentFullscreenFragment.class, R.string.empty),
 
@@ -185,7 +187,7 @@ public enum Route {
 
    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
-   ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
+   ENROLL_REP(EnrollRepFragment.class),
    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
    SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 

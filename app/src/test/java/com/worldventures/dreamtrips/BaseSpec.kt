@@ -2,10 +2,16 @@ package com.worldventures.dreamtrips
 
 import android.location.Location
 import android.text.TextUtils
+import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.whenever
+import com.techery.spares.session.SessionHolder
+import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
+import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
+import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import io.techery.janet.ActionService
@@ -41,11 +47,27 @@ abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
          return this
       }
 
+      fun CacheResultWrapper.bindMultipleStorageSet(multipleStorageSet: Set<MultipleActionStorage<*>>): CacheResultWrapper {
+         multipleStorageSet.forEach { storage ->
+            storage.actionClasses.forEach { actionClass ->
+               bindStorage(actionClass, storage)
+            }
+         }
+
+         return this
+      }
+
       fun StubServiceWrapper.spyCallback(): StubServiceWrapper.Callback {
          callback = spy()
          return callback
       }
 
+      fun mockSessionHolder() : SessionHolder<UserSession> {
+         val sessionHolder: SessionHolder<UserSession> = mock()
+         val userSession: UserSession = mock()
+         whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
+         return sessionHolder;
+      }
       //hard code because mockito_kotlin doesn't work with String correctly
       fun anyString() = Mockito.any(String::class.java)
 

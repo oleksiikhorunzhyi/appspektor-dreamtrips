@@ -3,27 +3,28 @@ package com.worldventures.dreamtrips.modules.bucketlist.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.DeleteBucketItemHttpAction;
 import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.http.annotations.HttpAction;
-import io.techery.janet.http.annotations.Path;
-import timber.log.Timber;
 
 @CommandAction
-public class DeleteBucketItemCommand extends ApiActionCommand<DeleteBucketItemHttpAction, Object> {
-   @Path("uid") String uid;
+public class DeleteBucketItemCommand extends ApiActionCommand<DeleteBucketItemHttpAction, FeedEntity> {
 
-   public DeleteBucketItemCommand(String uid) {
-      this.uid = uid;
+   private BucketItem bucketItem;
+
+   public DeleteBucketItemCommand(BucketItem bucketItem) {
+      this.bucketItem = bucketItem;
    }
 
-   public String getBucketItemUid() {
-      return uid;
+   @Override
+   protected FeedEntity mapHttpActionResult(DeleteBucketItemHttpAction httpAction) {
+      return bucketItem;
    }
 
    @Override
    protected DeleteBucketItemHttpAction getHttpAction() {
-      return new DeleteBucketItemHttpAction(uid);
+      return new DeleteBucketItemHttpAction(bucketItem.getUid());
    }
 
    @Override

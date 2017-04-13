@@ -4,8 +4,10 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.analytics.BucketItemAddedAnalyticsAction;
+import com.worldventures.dreamtrips.modules.bucketlist.analytics.BucketTabViewAnalyticsAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
@@ -29,7 +31,6 @@ import icepick.State;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
@@ -38,7 +39,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
    @Inject Janet janetApi;
    @Inject BucketInteractor bucketInteractor;
-   @Inject LoginInteractor loginInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    @State BucketItem.BucketType type;
    @State boolean showToDO = true;
@@ -88,6 +89,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                view.finishLoading();
                refresh();
             });
+   }
+
+   public void onSelected() {
+      analyticsInteractor.analyticsActionPipe().send(new BucketTabViewAnalyticsAction(type));
    }
 
    private void refresh() {
@@ -146,14 +151,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    private void openDetails(BucketItem bucketItem) {
       lastOpenedBucketItem = bucketItem;
 
-      BucketBundle bundle = new BucketBundle();
-      bundle.setType(type);
-      bundle.setBucketItem(bucketItem);
-
-      view.openDetails(bucketItem);
-      // set selected
       Queryable.from(bucketItems).forEachR(item -> item.setSelected(bucketItem.equals(item)));
 
+      view.openDetails(bucketItem);
       view.getAdapter().notifyDataSetChanged();
    }
 
@@ -184,10 +184,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    private void markAsDone(BucketItem bucketItem) {
-      view.bind(bucketInteractor.updatePipe()
+      bucketInteractor.updatePipe()
             .createObservable(new UpdateBucketItemCommand(ImmutableBucketBodyImpl.builder().id(bucketItem.getUid())
                   .status(getMarkAsDoneStatus(bucketItem)).build()))
-            .observeOn(AndroidSchedulers.mainThread()))
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onFail((markItemAsDoneAction, throwable) -> {
                refresh();
                handleError(markItemAsDoneAction, throwable);
@@ -195,23 +195,23 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public void itemMoved(int fromPosition, int toPosition) {
-      if (fromPosition == toPosition) {
-         return;
-      }
-
+      if (fromPosition == toPosition) return;
       bucketInteractor.bucketListActionPipe()
             .send(BucketListCommand.move(getOriginalPosition(fromPosition), getOriginalPosition(toPosition), type));
    }
 
    public void addToBucketList(String title) {
-      view.bind(bucketInteractor.createPipe()
-            .createObservable(new CreateBucketItemCommand(ImmutableBucketPostBody.builder()
+      bucketInteractor.createPipe()
+            .createObservable(new CreateBucketItemCommand(ImmutableBucketPostBody
+                  .builder()
                   .type(type.getName())
                   .name(title)
                   .status(NEW)
                   .build()))
-            .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>().onFail(this::handleError));
+            .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
+                  .onSuccess(command -> analyticsInteractor.analyticsActionPipe()
+                        .send(new BucketItemAddedAnalyticsAction(title)))
+                  .onFail(this::handleError));
    }
 
    public boolean isShowToDO() {
@@ -235,20 +235,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public void trackAnalyticsActionBucket(String actionAttribute) {
-      TrackingHelper.actionBucket(actionAttribute, getTabAttributeAnalytic());
-   }
-
-   private String getTabAttributeAnalytic() {
-      switch (type) {
-         case LOCATION:
-            return TrackingHelper.ATTRIBUTE_LOCATIONS;
-         case ACTIVITY:
-            return TrackingHelper.ATTRIBUTE_ACTIVITIES;
-         case DINING:
-            return TrackingHelper.ATTRIBUTE_DINING;
-         default:
-            return "";
-      }
+      TrackingHelper.actionBucket(actionAttribute, type.getAnalyticsName());
    }
 
    public interface View extends RxView {

@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
@@ -54,6 +55,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
+   @Inject AttributesInteractor attributesInteractor;
 
    @State boolean initialized;
    @State FullMerchantParamsHolder actionParamsHolder;
@@ -128,6 +130,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setFilterButtonState);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::getMerchantType)
+            .subscribe(getView()::updateMerchantType);
    }
 
    private void connectFullMerchantLoading() {
@@ -162,7 +171,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       setItemsOrRedirect(action.merchants());
    }
 
-   private void onMerchantsLoading(MerchantsAction action, Integer progress) {
+   private void onMerchantsLoading(MerchantsAction action, Integer progress){
       if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }
@@ -204,6 +213,16 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void offersOnlySwitched(boolean isOffersOnly) {
       filterDataInteractor.applyOffersOnly(isOffersOnly);
+   }
+
+   @Override
+   public void onLoadMerchantsType(List<String> merchantType) {
+      filterDataInteractor.applyMerchantTypes(merchantType);
+   }
+
+   @Override
+   public void loadAmenities(List<String> merchantType) {
+      attributesInteractor.requestAmenities(merchantType);
    }
 
    @Override

@@ -69,7 +69,9 @@
                android:layout_marginTop="@dimen/spacing_normal"
                />
 
+         <!--remove for 1.18-->
          <TextView
+               android:visibility="gone"
                android:id="@+id/item_smartcard_profile"
                style="@style/SettingsItemText"
                android:paddingBottom="@dimen/spacing_large"
@@ -79,18 +81,23 @@
                />
 
          <!--divider-->
-         <View style="@style/SettingsItemDividerStyle" />
+         <!--remove for 1.18-->
+         <View
+               android:visibility="gone"
+               style="@style/SettingsItemDividerStyle" />
 
          <!--General-->
+         <!--remove for 1.18-->
          <TextView
+               android:visibility="gone"
                style="@style/SettingsItemSubTitleStyle"
                android:layout_marginTop="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_general"
                />
 
-         <!--GONE About-->
-
+         <!--remove for 1.18-->
          <TextView
+               android:visibility="gone"
                android:id="@+id/item_about"
                style="@style/SettingsItemText"
                android:paddingBottom="@dimen/spacing_large"
@@ -155,7 +162,9 @@
          </LinearLayout>
 
          <!--Locate smart card-->
+         <!--remove for 1.18-->
          <LinearLayout
+               android:visibility="gone"
                android:id="@+id/item_last_location"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -178,17 +187,24 @@
          </LinearLayout>
 
          <!--divider-->
-         <View style="@style/SettingsItemDividerStyle" />
+         <!--remove for 1.18-->
+         <View
+               android:visibility="gone"
+               style="@style/SettingsItemDividerStyle" />
 
          <!--Security-->
+         <!--remove for 1.18-->
          <TextView
+               android:visibility="gone"
                style="@style/SettingsItemSubTitleStyle"
                android:layout_marginTop="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_security"
                />
 
          <!--Lock card-->
+         <!--remove for 1.18-->
          <RelativeLayout
+               android:visibility="gone"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:paddingBottom="@dimen/spacing_large"
@@ -216,7 +232,9 @@
          </RelativeLayout>
 
          <!--Disable default payment after-->
+         <!--remove for 1.18-->
          <LinearLayout
+               android:visibility="gone"
                android:id="@+id/item_disable_default_payment_card"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -240,7 +258,9 @@
          </LinearLayout>
 
          <!--Reset PIN-->
+         <!--remove for 1.18-->
          <TextView
+               android:visibility="gone"
                android:id="@+id/item_reset_pin"
                style="@style/SettingsItemText"
                android:paddingBottom="@dimen/spacing_large"
@@ -250,7 +270,9 @@
                />
 
          <!--Auto Clear smart card After-->
+         <!--remove for 1.18-->
          <LinearLayout
+               android:visibility="gone"
                android:id="@+id/item_auto_delete_cards"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -274,7 +296,9 @@
          </LinearLayout>
 
          <!--Keep My Identity Private-->
+         <!--remove for 1.18-->
          <RelativeLayout
+               android:visibility="gone"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:paddingBottom="@dimen/spacing_large"
@@ -336,7 +360,10 @@
          </RelativeLayout>
 
          <!--divider-->
-         <View style="@style/SettingsItemDividerStyle" />
+         <!--remove for 1.18-->
+         <View
+               android:visibility="gone"
+               style="@style/SettingsItemDividerStyle" />
 
          <!--Updates-->
          <TextView
@@ -395,7 +422,10 @@
          </RelativeLayout>
 
          <!--divider-->
-         <View style="@style/SettingsItemDividerStyle" />
+         <!--remove for 1.18-->
+         <View
+               android:visibility="gone"
+               style="@style/SettingsItemDividerStyle" />
 
          <!--Setup-->
          <TextView
@@ -437,7 +467,9 @@
          </LinearLayout>
 
          <!--Restart smart card-->
+         <!--remove for 1.18-->
          <TextView
+               android:visibility="gone"
                android:id="@+id/item_restart_sc"
                style="@style/SettingsItemText"
                android:paddingBottom="@dimen/spacing_large"

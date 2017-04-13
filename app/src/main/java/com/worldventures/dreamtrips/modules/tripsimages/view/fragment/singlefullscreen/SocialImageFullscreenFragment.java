@@ -5,19 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -30,7 +32,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.util.FullScreenPhot
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -41,22 +42,23 @@ import icepick.Icepick;
 public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo>
       implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
 
-   FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
+   private FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
-   //For resolving Fresco onFinalImageSet callback double launch (here onImageGlobalLayout() method)
-
-   @InjectView(R.id.flag) protected FlagView flag;
-   @InjectView(R.id.taggable_holder) protected PhotoTagHolder photoTagHolder;
-   @InjectView(R.id.tag) protected ImageView tag;
+   @InjectView(R.id.taggable_holder) PhotoTagHolder photoTagHolder;
+   @InjectView(R.id.flag) FlagView flag;
+   @InjectView(R.id.tag) ImageView tag;
+   @InjectView(R.id.translate) TextView translateButton;
+   @InjectView(R.id.translate_view) TranslateView viewWithTranslation;
 
    private PhotoTagHolderManager photoTagHolderManager;
    @Inject SnappyRepository db;
-   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity Injector injector;
+   @Inject Router router;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injectorProvider.get());
+      viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injector);
       viewDelegate.setContentVisibilityListener(this);
    }
 
@@ -276,13 +278,37 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
       informUser(R.string.flag_sent_success_msg);
    }
 
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
+   @OnClick(R.id.translate)
+   void onTranlsate() {
+      getPresenter().onTranslateClicked();
    }
 
    @Override
-   public void onApiCallFailed() {
+   public void showTranslation(String translation, String language) {
+      viewWithTranslation.showTranslation(translation, language);
+      translateButton.setVisibility(View.GONE);
+   }
 
+   @Override
+   public void showTranslationInProgress() {
+      viewWithTranslation.showProgress();
+      translateButton.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void showTranslationButton() {
+      viewWithTranslation.hide();
+      translateButton.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideTranslationButton() {
+      viewWithTranslation.hide();
+      translateButton.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void back() {
+      router.back();
    }
 }

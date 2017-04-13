@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.core.repository.SnappyModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.facebook.FacebookAppModule;
 import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
@@ -18,11 +19,11 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
-import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
+import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -64,6 +65,8 @@ import dagger.Provides;
             //
             SecurityModule.class, DeviceModule.class,
             BackgroundUploadingModule.class,
+            FacebookAppModule.class,
+            VersionCheckModule.class
       },
       library = true,
       complete = false,

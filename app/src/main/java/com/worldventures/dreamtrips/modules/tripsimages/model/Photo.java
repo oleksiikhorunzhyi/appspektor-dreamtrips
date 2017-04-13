@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 import android.os.Parcel;
+import android.support.annotation.Nullable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -24,7 +25,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
    private Location location;
    private List<String> tags;
    private Image images;
-   private String taskId;
    private List<PhotoTag> photoTags;
    private int photoTagsCount;
    private int width;
@@ -125,7 +125,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
             ", location=" + location +
             ", tags=" + tags +
             ", images=" + images +
-            ", taskId='" + taskId + '\'' +
             ", photoTags=" + photoTags +
             ", photoTagsCount=" + photoTagsCount +
             ", width=" + width +
@@ -133,12 +132,9 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
             '}';
    }
 
-   public String getTaskId() {
-      return taskId;
-   }
-
-   public void setTaskId(String taskId) {
-      this.taskId = taskId;
+   @Override
+   public String getOriginalText() {
+      return getTitle();
    }
 
    @Override
@@ -254,7 +250,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       parcel.writeParcelable(location, i);
       parcel.writeStringList(tags);
       parcel.writeParcelable(images, i);
-      parcel.writeString(taskId);
       parcel.writeParcelable(owner, i);
       parcel.writeTypedList(photoTags);
       parcel.writeInt(photoTagsCount);
@@ -272,7 +267,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       location = in.readParcelable(Location.class.getClassLoader());
       tags = in.createStringArrayList();
       images = in.readParcelable(Image.class.getClassLoader());
-      taskId = in.readString();
       owner = in.readParcelable(User.class.getClassLoader());
       photoTags = new ArrayList<>();
       in.readTypedList(photoTags, PhotoTag.CREATOR);

@@ -9,10 +9,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
+import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 
 import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
@@ -30,8 +32,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
    @InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
-
-   @Inject CloseDialogEventDelegate closeDialogEventDelegate;
+   @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -62,7 +63,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    @OnClick(R.id.done)
    void onDoneClicked() {
       getPresenter().done();
-      closeDialogEventDelegate.post(new Object());
+      dialogNavigatorInteractor.closeDialogActionPipe().send(new CloseDialogCommand());
    }
 
    @Override

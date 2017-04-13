@@ -10,6 +10,7 @@ import android.util.Patterns;
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.delegate.MembersSelectedEventDelegate;
@@ -17,6 +18,9 @@ import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.model.SentInvite;
 import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.AddContactInviteScreenAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.SearchInInviteScreenAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.ViewInviteScreenAction;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneContactsCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
 
@@ -36,6 +40,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
    @Inject InviteShareInteractor inviteShareInteractor;
    @Inject SearchFocusChangedDelegate searchFocusChangedDelegate;
    @Inject MembersSelectedEventDelegate membersSelectedEventDelegate;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    @State ArrayList<Member> members = new ArrayList<>();
 
@@ -281,7 +286,15 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
    }
 
    public void track() {
-      TrackingHelper.inviteShare(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ViewInviteScreenAction());
+   }
+
+   public void onSearchStart() {
+      analyticsInteractor.analyticsActionPipe().send(new SearchInInviteScreenAction());
+   }
+
+   public void addContactRequired() {
+      analyticsInteractor.analyticsActionPipe().send(new AddContactInviteScreenAction());
    }
 
    public interface View extends Presenter.View {

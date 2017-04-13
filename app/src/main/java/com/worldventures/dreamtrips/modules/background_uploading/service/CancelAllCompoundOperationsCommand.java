@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 
 import javax.inject.Inject;
 

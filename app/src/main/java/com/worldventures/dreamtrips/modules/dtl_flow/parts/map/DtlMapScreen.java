@@ -61,4 +61,6 @@ public interface DtlMapScreen extends DtlScreen {
    void showError(String error);
 
    void setFilterButtonState(boolean enabled);
+
+   void updateMerchantType(List<String> type);
 }

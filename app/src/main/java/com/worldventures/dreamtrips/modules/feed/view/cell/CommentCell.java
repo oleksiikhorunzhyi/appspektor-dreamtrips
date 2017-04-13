@@ -74,8 +74,8 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
       User owner = getModelObject().getOwner();
 
       boolean ownComment = owner.getId() == appSessionHolder.get().get().getUser().getId();
-      boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguageFrom());
-      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, getModelObject().getLanguageFrom());
+      boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguage());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, getModelObject().getLanguage());
       boolean alreadyTranslated = getModelObject().isTranslated();
 
       if (ownComment) {
@@ -92,7 +92,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
             hideTranslationButton();
          }
          if (alreadyTranslated) {
-            viewWithTranslation.showTranslation(getModelObject().getTranslation(), getModelObject().getLanguageFrom());
+            viewWithTranslation.showTranslation(getModelObject().getTranslation(), getModelObject().getLanguage());
          } else {
             viewWithTranslation.hide();
          }

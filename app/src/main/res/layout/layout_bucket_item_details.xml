@@ -246,6 +246,11 @@
                   />
 
          </LinearLayout>
+
+         <include layout="@layout/view_bucket_item_translation" />
+
+         <include layout="@layout/horizontal_separator" />
+
       </LinearLayout>
    </ScrollView>
 </RelativeLayout>

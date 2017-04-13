@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketItem extends BaseFeedEntity {
-
    public static final String NEW = "new";
    public static final String COMPLETED = "completed";
 
@@ -35,6 +35,7 @@ public class BucketItem extends BaseFeedEntity {
    private DiningItem dining;
 
    private transient boolean selected;
+   private transient String translationDescription;
 
    @Override
    public String place() {
@@ -219,6 +220,19 @@ public class BucketItem extends BaseFeedEntity {
       this.dining = dining;
    }
 
+   @Override
+   public String getOriginalText() {
+      return name;
+   }
+
+   public String getTranslationDescription() {
+      return translationDescription;
+   }
+
+   public void setTranslationDescription(String translationDescription) {
+      this.translationDescription = translationDescription;
+   }
+
    public enum BucketType {
       LOCATION("location", R.string.bucket_locations),
       ACTIVITY("activity", R.string.bucket_activities),
@@ -234,6 +248,19 @@ public class BucketItem extends BaseFeedEntity {
 
       public String getName() {
          return name;
+      }
+
+      public String getAnalyticsName() {
+         switch (this) {
+            case LOCATION:
+               return BucketListModule.ANALYTICS_LOCATIONS;
+            case ACTIVITY:
+               return BucketListModule.ANALYTICS_ACTIVITIES;
+            case DINING:
+               return BucketListModule.ANALYTICS_DINING;
+            default:
+               return "";
+         }
       }
 
       @StringRes

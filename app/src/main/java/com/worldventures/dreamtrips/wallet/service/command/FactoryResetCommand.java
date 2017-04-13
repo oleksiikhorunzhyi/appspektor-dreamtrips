@@ -38,13 +38,15 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       if (withEnterPin) {
-         Observable.merge(
-               walletJanet.createPipe(GetLockDeviceStatusAction.class)
-                     .createObservableResult(new GetLockDeviceStatusAction())
-                     .flatMap(action -> lockObservable(action.locked))
-                     .flatMap(confirmResetCommand -> observeUnlockCard())
-                     .flatMap(lockDeviceChangedEvent -> resetSmartCard()),
-               resetCommandPublishSubject).subscribe(action -> callback.onSuccess(null), callback::onFail);
+//         remove pin for 1.18
+//         Observable.merge(
+//               walletJanet.createPipe(GetLockDeviceStatusAction.class)
+//                     .createObservableResult(new GetLockDeviceStatusAction())
+//                     .flatMap(action -> lockObservable(action.locked))
+//                     .flatMap(confirmResetCommand -> observeUnlockCard())
+//                     .flatMap(lockDeviceChangedEvent -> resetSmartCard()),
+//               resetCommandPublishSubject)
+         resetSmartCard().subscribe(action -> callback.onSuccess(null), callback::onFail);
       } else {
          resetSmartCard().subscribe(action -> callback.onSuccess(null), callback::onFail);
       }

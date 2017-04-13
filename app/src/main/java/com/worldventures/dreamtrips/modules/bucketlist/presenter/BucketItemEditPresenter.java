@@ -67,8 +67,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       selectedDate = bucketItem.getTargetDate();
       List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
       if (!list.isEmpty()) {
-         view.setCategoryItems(list);
-         view.setCategory(list.indexOf(bucketItem.getCategory()));
+         view.setCategoryItems(list, bucketItem.getCategory());
       }
    }
 
@@ -79,6 +78,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             .createObservableResult(new MergeBucketItemPhotosWithStorageCommand(bucketItem.getUid(), bucketItem.getPhotos()))
             .map(Command::getResult)
             .observeOn(Schedulers.immediate())).subscribe(entityStateHolders -> {
+         putCoverPhotoAsFirst(bucketItem.getPhotos());
          view.setImages(entityStateHolders);
       });
    }
@@ -246,9 +246,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    public interface View extends BucketDetailsBasePresenter.View<EntityStateHolder<BucketPhoto>> {
       void showError();
 
-      void setCategory(int selection);
-
-      void setCategoryItems(List<CategoryItem> items);
+      void setCategoryItems(List<CategoryItem> items, CategoryItem selectedItem);
 
       CategoryItem getSelectedItem();
 

@@ -10,8 +10,9 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
+import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
@@ -32,7 +33,7 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    @InjectView(R.id.progressBar) ProgressBar progressBar;
    @InjectView(R.id.info) TextView info;
    @InjectView(R.id.currency) TextView currency;
-   @Inject CloseDialogEventDelegate closeDialogEventDelegate;
+   @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
 
    private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
       @Override
@@ -106,7 +107,7 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
 
    @OnClick(R.id.button_cancel)
    void onCancel() {
-      closeDialogEventDelegate.post(new Object());
+      dialogNavigatorInteractor.closeDialogActionPipe().send(new CloseDialogCommand());
    }
 
    @Override

@@ -13,8 +13,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableF
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.Collections;
+import java.util.List;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -53,6 +56,7 @@ public class FilterDataInteractor implements Initializable {
             .map(filterData -> ImmutableFilterData.builder()
                   .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
                   .isOffersOnly(filterData.isOffersOnly())
+                  .merchantType(DtlMerchantsScreenImpl.getFilterType())
                   .build())
             .subscribe(this::send);
    }
@@ -118,6 +122,14 @@ public class FilterDataInteractor implements Initializable {
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
                   .withPage(0)
                   .withIsOffersOnly(isOffersOnly))
+            .subscribe(this::send);
+   }
+
+   public void applyMerchantTypes(final List<String> merchantType) {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(0)
+                  .withMerchantType(merchantType))
             .subscribe(this::send);
    }
 

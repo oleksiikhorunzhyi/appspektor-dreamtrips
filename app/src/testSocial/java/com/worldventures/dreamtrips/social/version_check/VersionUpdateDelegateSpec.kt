@@ -4,12 +4,16 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider
 import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate
 import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateUiDelegate
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
+import io.techery.janet.Janet
 import org.mockito.Mockito.*
 
 class VersionUpdateDelegateSpec : BaseSpec ({
@@ -70,8 +74,9 @@ class VersionUpdateDelegateSpec : BaseSpec ({
 
       fun setupForTest() {
          versionUpdateUiDelegate = spy<VersionUpdateUiDelegate>()
+         val janet = Janet.Builder().addService(MockAnalyticsService()).build()
          versionUpdateDelegate = VersionUpdateDelegate(mockDb, versionComparator, versionUpdateUiDelegate,
-               appInfoProvider)
+               appInfoProvider, AnalyticsInteractor(SessionActionPipeCreator(janet)))
       }
 
       fun getTimeInFuture(): Long {

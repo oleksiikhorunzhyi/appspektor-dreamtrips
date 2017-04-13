@@ -64,6 +64,7 @@ import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
 import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;

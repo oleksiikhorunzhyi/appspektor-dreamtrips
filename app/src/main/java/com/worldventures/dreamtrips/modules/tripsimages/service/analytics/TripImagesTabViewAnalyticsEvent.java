@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-@AnalyticsEvent(action = "dta:trip_images:${tabName}",
+@AnalyticsEvent(action = "trip_images:${tabName}",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction{
 

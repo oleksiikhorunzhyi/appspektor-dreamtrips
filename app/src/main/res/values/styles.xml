@@ -13,6 +13,15 @@
       <item name="android:background">?attr/colorPrimary</item>
    </style>
 
+   <style name="ToolBarStyleFeed" parent="Widget.AppCompat.ActionBar">
+      <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+      <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">?attr/actionBarSize</item>
+      <item name="android:background">?attr/colorPrimary</item>
+      <item name="android:textSize">18sp</item>
+   </style>
+
    <style name="ToolBarStyle.Transient">
       <item name="android:background">@android:color/transparent</item>
    </style>

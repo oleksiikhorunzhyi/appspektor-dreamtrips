@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ConfigChangesAwareComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
@@ -52,6 +53,7 @@ import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.ce
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
+import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
@@ -86,6 +88,7 @@ import dagger.Provides;
             TermsConditionsDialog.class,
             LaunchActivity.class,
             MainActivity.class,
+            FeedActivity.class,
             PlayerActivity.class,
             ShareFragment.class,
             Player360Activity.class,
@@ -96,6 +99,7 @@ import dagger.Provides;
             PodcastPlayerActivity.class,
             DtlActivity.class,
             ComponentActivity.class,
+            ConfigChangesAwareComponentActivity.class,
             ComponentPresenter.class,
             CopyFileCommand.class,
             ProgressDialogFragment.class,
@@ -124,7 +128,11 @@ public class CommonModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideLogoutComponent() {
-      return new ComponentDescription(LOGOUT, 0, R.string.logout_component, R.drawable.ic_logout, null);
+      return new ComponentDescription.Builder()
+            .key(LOGOUT)
+            .navMenuTitle(R.string.logout_component)
+            .icon(R.drawable.ic_logout)
+            .build();
    }
 
    @Provides
@@ -148,7 +156,7 @@ public class CommonModule {
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
 
       activeComponents.add(BucketListModule.BUCKETLIST);
-      activeComponents.add(ProfileModule.MY_PROFILE);
+      activeComponents.add(ProfileModule.ACCOUNT_PROFILE);
 
       featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));
 

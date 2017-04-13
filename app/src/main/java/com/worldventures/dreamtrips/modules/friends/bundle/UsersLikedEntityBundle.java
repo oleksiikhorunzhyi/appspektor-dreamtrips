@@ -2,34 +2,20 @@ package com.worldventures.dreamtrips.modules.friends.bundle;
 
 import android.os.Parcel;
 
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+
 public class UsersLikedEntityBundle extends BaseUsersBundle {
 
-   private String uid;
+   private FeedEntity feedEntity;
    private int likersCount;
 
-   public UsersLikedEntityBundle(String uid, int likersCount) {
-      this.uid = uid;
+   public UsersLikedEntityBundle(FeedEntity feedEntity, int likersCount) {
+      this.feedEntity = feedEntity;
       this.likersCount = likersCount;
    }
 
-   protected UsersLikedEntityBundle(Parcel in) {
-      uid = in.readString();
-   }
-
-   public static final Creator<UsersLikedEntityBundle> CREATOR = new Creator<UsersLikedEntityBundle>() {
-      @Override
-      public UsersLikedEntityBundle createFromParcel(Parcel in) {
-         return new UsersLikedEntityBundle(in);
-      }
-
-      @Override
-      public UsersLikedEntityBundle[] newArray(int size) {
-         return new UsersLikedEntityBundle[size];
-      }
-   };
-
-   public String getUid() {
-      return uid;
+   public FeedEntity getFeedEntity() {
+      return feedEntity;
    }
 
    public int getLikersCount() {
@@ -37,12 +23,24 @@ public class UsersLikedEntityBundle extends BaseUsersBundle {
    }
 
    @Override
-   public int describeContents() {
-      return 0;
-   }
+   public int describeContents() { return 0; }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeString(uid);
+      dest.writeSerializable(this.feedEntity);
+      dest.writeInt(this.likersCount);
    }
+
+   protected UsersLikedEntityBundle(Parcel in) {
+      this.feedEntity = (FeedEntity) in.readSerializable();
+      this.likersCount = in.readInt();
+   }
+
+   public static final Creator<UsersLikedEntityBundle> CREATOR = new Creator<UsersLikedEntityBundle>() {
+      @Override
+      public UsersLikedEntityBundle createFromParcel(Parcel source) {return new UsersLikedEntityBundle(source);}
+
+      @Override
+      public UsersLikedEntityBundle[] newArray(int size) {return new UsersLikedEntityBundle[size];}
+   };
 }

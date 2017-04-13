@@ -3,14 +3,9 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
-import javax.inject.Inject;
-
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
-
-   @Inject RootComponentsProvider rootComponentsProvider;
 
    @Override
    public void takeView(View view) {
@@ -27,10 +22,5 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
       }
    }
 
-   public interface View extends ActivityPresenter.View {
-
-      void setTitle(int title);
-
-      void makeActionBarGone(boolean hide);
-   }
+   public interface View extends ActivityPresenter.View {}
 }

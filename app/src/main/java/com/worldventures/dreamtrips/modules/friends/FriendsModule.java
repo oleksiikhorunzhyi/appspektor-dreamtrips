@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresent
 import com.worldventures.dreamtrips.modules.friends.presenter.MutualFriendsPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.UsersLikedItemPresenter;
+import com.worldventures.dreamtrips.modules.friends.view.cell.AcceptanceHeaderCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.MutualFriendCell;
@@ -39,7 +40,7 @@ import dagger.Provides;
 
             RequestsFragment.class, RequestsPresenter.class,
 
-            RequestCell.class, RequestHeaderCell.class, UserSearchCell.class,
+            RequestCell.class, RequestHeaderCell.class, AcceptanceHeaderCell.class, UserSearchCell.class,
 
             SmartAvatarView.class},
       complete = false,

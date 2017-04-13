@@ -7,22 +7,16 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.InjectingActivityModule;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
-import de.greenrobot.event.EventBus;
 
 public abstract class InjectingActivity extends AppCompatActivity implements Injector {
 
    private ObjectGraph objectGraph;
-
-   @Inject @Global protected EventBus eventBus;
 
    @Override
    public ObjectGraph getObjectGraph() {
@@ -83,24 +77,6 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
 
    protected void afterCreateView(Bundle savedInstanceState) {
       //nothing to here
-   }
-
-   @Override
-   protected void onResume() {
-      super.onResume();
-      try {
-         this.eventBus.registerSticky(this);
-      } catch (Exception e) {
-         //Ignored
-      }
-   }
-
-   @Override
-   protected void onPause() {
-      super.onPause();
-      if (eventBus.isRegistered(this)) {
-         this.eventBus.unregister(this);
-      }
    }
 
    @Override

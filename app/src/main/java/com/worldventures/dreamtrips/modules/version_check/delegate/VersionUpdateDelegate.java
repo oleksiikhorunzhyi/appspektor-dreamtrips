@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.modules.version_check.delegate;
 
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
+import com.worldventures.dreamtrips.modules.version_check.service.analytics.UpdateAppAction;
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator;
 
 import java.util.concurrent.TimeUnit;
@@ -18,16 +20,19 @@ public class VersionUpdateDelegate {
    private VersionComparator versionComparator;
    private VersionUpdateUiDelegate versionUpdateUiDelegate;
    private AppInfoProvider appInfoProvider;
+   private AnalyticsInteractor analyticsInteractor;
 
    private long optionalDialogMinInterval = OPTIONAL_DIALOG_MIN_INTERVAL;
    private boolean updateDialogAlreadyShown;
 
    public VersionUpdateDelegate(SnappyRepository snappyRepository, VersionComparator versionComparator,
-         VersionUpdateUiDelegate versionUpdateUiDelegate, AppInfoProvider appInfoProvider) {
+         VersionUpdateUiDelegate versionUpdateUiDelegate, AppInfoProvider appInfoProvider,
+         AnalyticsInteractor analyticsInteractor) {
       this.snappyRepository = snappyRepository;
       this.versionComparator = versionComparator;
       this.versionUpdateUiDelegate = versionUpdateUiDelegate;
       this.appInfoProvider = appInfoProvider;
+      this.analyticsInteractor = analyticsInteractor;
    }
 
    public void processUpdateRequirement(UpdateRequirement updateRequirement) {
@@ -52,15 +57,17 @@ public class VersionUpdateDelegate {
             if (timeSinceShownLast < optionalDialogMinInterval) return;
          }
       }
-      showUpdateUpdateDialog(forceUpdate, updateRequirement.getTimeStamp());
+      showUpdateUpdateDialog(forceUpdate, updateRequirement);
+      return;
    }
 
-   private void showUpdateUpdateDialog(boolean forceUpdate, long updateByTimestamp) {
+   private void showUpdateUpdateDialog(boolean forceUpdate, UpdateRequirement updateRequirement) {
       if (forceUpdate) {
          versionUpdateUiDelegate.showForceUpdateDialog();
       } else {
-         versionUpdateUiDelegate.showOptionalUpdateDialog(updateByTimestamp);
+         versionUpdateUiDelegate.showOptionalUpdateDialog(updateRequirement.getTimeStamp());
       }
       updateDialogAlreadyShown = true;
+      analyticsInteractor.analyticsActionPipe().send(new UpdateAppAction(updateRequirement.getAppVersion()));
    }
 }

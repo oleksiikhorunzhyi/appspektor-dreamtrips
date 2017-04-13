@@ -123,6 +123,19 @@
                />
 
       </activity>
+      <activity
+            android:name=".modules.common.view.activity.ConfigChangesAwareComponentActivity"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".modules.common.view.activity.MainActivity"
+               />
+
+      </activity>
 
       <activity
             android:name=".modules.common.view.activity.Player360Activity"
@@ -134,6 +147,13 @@
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:screenOrientation="sensorLandscape"
             />
+
+      <activity
+            android:name=".modules.feed.view.activity.FeedActivity"
+            android:launchMode="singleTop"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            >
+      </activity>
 
       <!--Chat activities-->
       <activity

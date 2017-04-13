@@ -54,6 +54,12 @@ public class MembershipModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMembershipComponent() {
-      return new ComponentDescription(Route.MEMBERSHIP.name(), R.string.membership, R.string.membership, R.drawable.ic_membership, MembershipFragment.class);
+      return new ComponentDescription.Builder()
+            .key(Route.MEMBERSHIP.name())
+            .navMenuTitle(R.string.membership)
+            .toolbarTitle(R.string.membership)
+            .icon(R.drawable.ic_membership)
+            .fragmentClass(MembershipFragment.class)
+            .build();
    }
 }

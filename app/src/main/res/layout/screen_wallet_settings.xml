@@ -15,96 +15,213 @@
          app:title="@string/wallet_card_settings_title"
          />
 
-   <android.support.v4.widget.NestedScrollView
+   <LinearLayout
          android:layout_width="match_parent"
-         android:layout_height="match_parent"
+         android:layout_height="wrap_content"
+         android:divider="@drawable/divider_horizontal_wallet_settings"
+         android:orientation="vertical"
+         android:showDividers="middle|end"
          >
 
       <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@drawable/divider_horizontal_wallet_settings"
-            android:orientation="vertical"
-            android:showDividers="middle|end"
+            android:layout_height="115dp"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
             >
+
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:contentDescription="@string/wallet_card_settings_flye_sc"
+               android:src="@drawable/flyecard_angle_common_settings"
+               />
 
          <LinearLayout
                android:layout_width="match_parent"
-               android:layout_height="115dp"
-               android:orientation="horizontal"
-               android:paddingTop="20dp"
-               >
-
-            <ImageView
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:contentDescription="@string/wallet_card_settings_flye_sc"
-                  android:src="@drawable/flyecard_angle_common_settings"
-                  />
-
-            <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginStart="@dimen/spacing_large"
-                  android:orientation="vertical"
-                  >
-
-               <TextView
-                     style="@style/SettingsText.Primary"
-                     android:text="@string/wallet_card_settings_flye_sc"
-                     />
-
-               <TextView
-                     android:id="@+id/status"
-                     style="@style/SettingsText.Secondary"
-                     android:layout_marginTop="@dimen/spacing_tiny"
-                     tools:text="Version 1.13.2\nBattery Level: 20%\nLast synced 9/18, 2:53pm"
-                     />
-
-            </LinearLayout>
-
-         </LinearLayout>
-
-         <RelativeLayout
-               android:id="@+id/item_general"
-               style="@style/SettingsMenuItem"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="@dimen/spacing_large"
+               android:orientation="vertical"
                >
 
             <TextView
                   style="@style/SettingsText.Primary"
-                  android:text="@string/wallet_card_settings_general"
+                  android:text="@string/wallet_card_settings_flye_sc"
                   />
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
-                  android:id="@+id/badgeFirmwareUpdates"
-                  android:layout_width="28dp"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentEnd="true"
-                  android:layout_centerVertical="true"
-                  android:gravity="center"
-                  android:paddingTop="6dp"
-                  android:textAppearance="?android:attr/textAppearanceSmall"
-                  android:textColor="@color/white"
-                  app:background_color="?attr/colorPrimaryDark"
-                  tools:text="1"
+            <TextView
+                  android:id="@+id/status"
+                  style="@style/SettingsText.Secondary"
+                  android:layout_marginTop="@dimen/spacing_tiny"
+                  tools:text="Version 1.13.2\nBattery Level: 20%\nLast synced 9/18, 2:53pm"
                   />
 
-         </RelativeLayout>
+         </LinearLayout>
+
+      </LinearLayout>
+
+      <RelativeLayout
+            android:id="@+id/item_general"
+            style="@style/SettingsMenuItem"
+            >
 
          <TextView
-               android:id="@+id/item_security"
-               style="@style/SettingsMenuItem.Text"
-               android:text="@string/wallet_card_settings_security"
+               style="@style/SettingsText.Primary"
+               android:text="@string/wallet_card_settings_general"
+               />
+
+         <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+               android:id="@+id/badgeFirmwareUpdates"
+               android:layout_width="28dp"
+               android:layout_height="wrap_content"
+               android:layout_alignParentEnd="true"
+               android:layout_centerVertical="true"
+               android:gravity="center"
+               android:paddingTop="6dp"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="@color/white"
+               app:background_color="?attr/colorPrimaryDark"
+               tools:text="1"
+               />
+
+      </RelativeLayout>
+
+      <TextView
+            android:id="@+id/item_security"
+            style="@style/SettingsMenuItem.Text"
+            android:text="@string/wallet_card_settings_security"
+            />
+
+   </LinearLayout>
+
+   <RelativeLayout
+         android:layout_width="wrap_content"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         android:paddingStart="@dimen/spacing_normal"
+         android:paddingEnd="@dimen/spacing_normal"
+         >
+
+      <ImageView
+            android:id="@+id/ic_phone_international_collect"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/ic_settings_phone_number"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ic_phone_international_collect"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/ic_phone_international_collect"
+            android:layout_toEndOf="@+id/ic_phone_international_collect"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+         <TextView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:fontFamily="@string/font_fontFamily_medium"
+               android:gravity="center_vertical"
+               android:text="@string/wallet_card_settings_international_collect"
+               android:textAppearance="?android:attr/textAppearanceSmall"
                />
 
          <TextView
-               android:id="@+id/item_help"
-               style="@style/SettingsMenuItem.Text"
-               android:text="@string/wallet_card_settings_help"
+               android:id="@+id/text_phone_international_collect"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:background="@drawable/background_wallet_settings_menu_item"
+               android:fontFamily="@string/font_fontFamily_medium"
+               android:gravity="center"
+               android:text="@string/wallet_card_settings_international_collect_phone"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="#ed015f93"
                />
 
       </LinearLayout>
 
-   </android.support.v4.widget.NestedScrollView>
+      <ImageView
+            android:id="@+id/ic_phone_us_customer_care"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/ic_phone_international_collect"
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/ic_settings_phone_number"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ic_phone_us_customer_care"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/ic_phone_us_customer_care"
+            android:layout_toEndOf="@+id/ic_phone_us_customer_care"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+         <TextView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:fontFamily="@string/font_fontFamily_medium"
+               android:gravity="center_vertical"
+               android:text="@string/wallet_card_settings_us_customer_care"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               />
+
+         <TextView
+               android:id="@+id/text_phone_us_customer_care"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:background="@drawable/background_wallet_settings_menu_item"
+               android:fontFamily="@string/font_fontFamily_medium"
+               android:gravity="center"
+               android:text="@string/wallet_card_settings_us_customer_care_phone"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="#ed015f93"
+               />
+
+      </LinearLayout>
+
+      <ImageView
+            android:id="@+id/ic_headphones"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/ic_phone_us_customer_care"
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/ic_settings_headphones"
+            />
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ic_headphones"
+            android:layout_alignTop="@+id/ic_headphones"
+            android:layout_toEndOf="@+id/ic_headphones"
+            android:gravity="center"
+            android:text="@string/wallet_card_settings_need_assistance"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
+
+   </RelativeLayout>
+
 
 </com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen>

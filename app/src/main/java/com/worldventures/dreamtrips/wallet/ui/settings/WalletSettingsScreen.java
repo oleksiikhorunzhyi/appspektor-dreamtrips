@@ -60,9 +60,14 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       presenter.openSecurityScreen();
    }
 
-   @OnClick(R.id.item_help)
-   void onClickHelp() {
-      presenter.openHelpScreen();
+   @OnClick(R.id.text_phone_us_customer_care)
+   void onClickPhoneUsCustomerCare() {
+      presenter.dialPhoneNumber(getString(R.string.wallet_card_settings_us_customer_care_phone));
+   }
+
+   @OnClick(R.id.text_phone_international_collect)
+   void onClickPhoneInternationalCollect() {
+      presenter.dialPhoneNumber(getString(R.string.wallet_card_settings_international_collect_phone));
    }
 
    @Override

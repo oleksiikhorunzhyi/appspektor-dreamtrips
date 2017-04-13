@@ -96,7 +96,8 @@ android {
    def CONFIG_MAP_PROD = [
          'DreamTripsApi'        : '"https://dtapp.worldventures.biz"',
          'S3Api'                : '"http://dtappprd.s3.amazonaws.com/config"',
-         'VERSION_CHECK_API_URL': '""',
+         //TODO VERSION_CHECK_API_URL should be updated once config service released, for its usage is commented
+         'VERSION_CHECK_API_URL': '"https://dtapp.worldventures.biz"',
          'MESSENGER_API_URL'    : '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY'     : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL'    : '"http://dtappuploads.wvholdings.com"',

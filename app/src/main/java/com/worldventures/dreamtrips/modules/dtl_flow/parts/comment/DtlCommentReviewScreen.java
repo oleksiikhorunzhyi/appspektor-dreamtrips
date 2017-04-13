@@ -61,4 +61,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     void unrecognizedError();
 
     void validateCodeMessage(String message);
+
+    void onPostClick();
 }

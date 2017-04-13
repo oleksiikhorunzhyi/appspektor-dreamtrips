@@ -67,22 +67,37 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public void navigateToDetail(String message) {
         Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-        historyBuilder.pop();
-        historyBuilder.pop();
+        //historyBuilder.pop();
         historyBuilder.push(path);
         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
     }
 
     @Override
+    public void navigateToListReview(String message) {
+        Path path = new DtlReviewsPath(merchant, message);
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+        //historyBuilder.pop();
+        historyBuilder.push(path);
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+        /*
+        Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+        historyBuilder.pop();
+        historyBuilder.pop();
+        historyBuilder.push(path);
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);*/
+    }
+
+    @Override
     public void onPostClick() {
-        if (isInternetConnection()){
+        /*if (isInternetConnection()){
             if (validateComment()) {
                 getView().sendPostReview();
                 getView().disableInputs();
             }
         } else {
             getView().showNoInternetMessage();
-        }
+        }*/
     }
 
     @Override

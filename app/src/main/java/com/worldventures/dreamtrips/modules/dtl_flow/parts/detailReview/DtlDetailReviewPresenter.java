@@ -12,4 +12,10 @@ public interface DtlDetailReviewPresenter extends DtlPresenter<DtlDetailReviewSc
     void sendFlag();
 
     void onItemClick();
+
+    void validateComingFrom();
+
+    void navigateToListReview(String message);
+
+    void navigateToDetail(String message);
 }

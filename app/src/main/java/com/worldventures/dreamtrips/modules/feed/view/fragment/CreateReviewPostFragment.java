@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -33,6 +32,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
@@ -60,13 +60,11 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    @InjectView(R.id.tv_char_counter) TextView mCharCounter;
    @InjectView(R.id.tv_min_chars) TextView mMinChars;
    @InjectView(R.id.tv_max_chars) TextView mMaxChars;
-   @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.progress_loader) ProgressBar mProgressBar;
    @InjectView(R.id.post_container) RelativeLayout mContainer;
 
    @Inject MerchantsInteractor merchantInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
-   private TextView tvPostButton;
 
    private static final String BRAND_ID = "1";
    private User user;
@@ -96,13 +94,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      toolbar.setNavigationIcon(R.drawable.back_icon);
-      toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-            onBackClick();
-         }
-      });
 
       Bundle args = getArguments();
       bundle = args.getParcelable("data");
@@ -115,23 +106,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
       initEditTextListener();
       initLengthText();
       setMaxLengthText(maximumCharactersAllowed());
-
-      tvPostButton = (TextView) toolbar.findViewById(R.id.tvOnPost);
-
-      tvPostButton.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-            if (isInternetConnection()){
-               if (validateComment()) {
-                  disableInputs();
-                  onRefreshProgress();
-                  sendPostReview();
-               }
-            } else {
-               showNoInternetMessage();
-            }
-         }
-      });
    }
 
    @Override
@@ -349,7 +323,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
             errorDialog.setCancelText(getTextResource(R.string.comment_review_error_unknown_cancel));
             errorDialog.setConfirmClickListener(listener -> {
                listener.dismissWithAnimation();
-               //onPostClick();
+               sendPostReview();
             });
             errorDialog.show();
          }
@@ -404,11 +378,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void onBackClick() {
-      if (getRatingBar() > 0 || getSizeComment() > 0) {
-         showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
-      } else {
-         navigateToDetail("");
-      }
+
    }
 
    public void enableButtons(boolean status) {
@@ -417,7 +387,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
          public void run() {
             mComment.setEnabled(status);
             mRatingBar.setEnabled(status);
-            tvPostButton.setEnabled(status);
          }
       });
    }
@@ -549,7 +518,12 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
          }
       } else {
          this.user = appSessionHolder.get().get().getUser();
-         ReviewStorage.saveReviewsPosted(getContext(), String.valueOf(user.getId()), getMerchantId());
+         try{
+            ReviewStorage.saveReviewsPosted(getContext(), String.valueOf(user.getId()), getMerchantId());
+         } catch (Exception e){
+            e.printStackTrace();
+         }
+
          handlePostNavigation();
       }
       onRefreshSuccess();
@@ -572,7 +546,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
             if (merchant.reviews().total().equals("")){
                navigateToDetail(getContext().getString(R.string.snack_review_success));
             } else {
-               Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+               Flow.get(getContext()).set(new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success)));
             }
          }
       });
@@ -596,6 +570,19 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
          default:
             unrecognizedError();
             break;
+      }
+   }
+
+   @Override
+   public void onPostClick() {
+      if (isInternetConnection()){
+         if (validateComment()) {
+            disableInputs();
+            onRefreshProgress();
+            sendPostReview();
+         }
+      } else {
+         showNoInternetMessage();
       }
    }
 
@@ -637,16 +624,28 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    public void navigateToDetail(String message) {
-      getActivity().runOnUiThread(new Runnable() {
-         @Override
-         public void run() {
-            Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
+      //getActivity().runOnUiThread(new Runnable() {
+         //@Override
+         //public void run() {
+            /*Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
             History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
             //historyBuilder.pop();
             //historyBuilder.pop();
             historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);*/
+
+            /*Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);*/
+
+            Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, "");
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.pop();
+            //historyBuilder.pop();
+            historyBuilder.push(path);
             Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
-         }
-      });
+        // }
+      //});
    }
 }

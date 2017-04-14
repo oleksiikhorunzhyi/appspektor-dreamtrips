@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
@@ -99,6 +100,7 @@ public class SmartCardSyncManager {
 
    private void activeCardConnected() {
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
+      interactor.getPinEnabledCommandActionPipe().send(new GetPinEnabledCommand());
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();

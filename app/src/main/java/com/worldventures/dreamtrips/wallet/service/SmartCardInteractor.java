@@ -7,10 +7,12 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelComm
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
@@ -29,8 +31,10 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
 import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
+import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
+import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
@@ -77,6 +81,11 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
    private final ActionPipe<ConnectAction> connectionActionPipe;
+
+   private final ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe;
+   private final ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe;
+   private final ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe;
+   private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -130,6 +139,10 @@ public final class SmartCardInteractor {
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
       connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
+      checkPinStatusActionPipe = sessionActionPipeCreator.createPipe(CheckPinStatusAction.class, Schedulers.io());
+      setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
+      getPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(GetPinEnabledCommand.class, Schedulers.io());
+      setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -258,5 +271,21 @@ public final class SmartCardInteractor {
 
    public ActionPipe<ConnectAction> connectionActionPipe() {
       return connectionActionPipe;
+   }
+
+   public ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe() {
+      return checkPinStatusActionPipe;
+   }
+
+   public ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe() {
+      return setPinEnabledActionPipe;
+   }
+
+   public ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe() {
+      return getPinEnabledCommandActionPipe;
+   }
+
+   public ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe() {
+      return setPinEnabledCommandActionPipe;
    }
 }

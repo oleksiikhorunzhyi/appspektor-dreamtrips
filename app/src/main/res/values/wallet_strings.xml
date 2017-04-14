@@ -123,6 +123,9 @@
    <string name="wallet_card_settings_requires_pin_entry_to_unlock">Requires PIN entry to unlock</string>
    <string name="wallet_card_settings_disable_default_card">Disable Default Card</string>
    <string name="wallet_card_settings_disable_default_card_after_time">Disable default card after a certain timeframe</string>
+   <string name="wallet_card_settings_add_pin">Add PIN</string>
+   <string name="wallet_card_settings_remove_pin">Remove PIN</string>
+   <string name="wallet_card_settings_pin_keeps_secure">Using a PIN helps keep your card secure</string>
    <string name="wallet_card_settings_reset_pin">Reset PIN</string>
    <string name="wallet_card_settings_if_you_forget_your_pin">If you forget your PIN you can reset it here</string>
    <string name="wallet_card_settings_auto_clear">Auto Clear</string>

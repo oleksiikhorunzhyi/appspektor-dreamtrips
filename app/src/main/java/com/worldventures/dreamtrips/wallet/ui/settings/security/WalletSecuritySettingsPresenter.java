@@ -15,7 +15,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -28,7 +30,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCar
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +60,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
       observeStealthModeController(view);
       observeLockController(view);
+      smartCardInteractor.getPinEnabledCommandActionPipe().send(new GetPinEnabledCommand());
    }
 
    private void observeSmartCardChanges() {
@@ -88,6 +91,44 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
                         .build()
                   )
                   .wrap());
+
+      Observable.merge(
+            smartCardInteractor.getPinEnabledCommandActionPipe()
+                  .observeSuccessWithReplay()
+                  .map(Command::getResult),
+            smartCardInteractor.setPinEnabledCommandActionPipe()
+                  .observeSuccessWithReplay()
+                  .map(Command::getResult))
+            .startWith(true)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(this::applyPinStatus);
+   }
+
+   void addPin() {
+      fetchConnectionStatus(connectionStatus -> {
+         if (connectionStatus.isConnected()) {
+            navigator.go(new EnterPinPath(Action.ADD));
+         } else {
+            //noinspection ConstantConditions
+            getView().showSCNonConnectionDialog();
+         }
+      });
+   }
+
+   void removePin() {
+      fetchConnectionStatus(connectionStatus -> {
+         if (connectionStatus.isConnected()) {
+            smartCardInteractor.setPinEnabledCommandActionPipe().send(new SetPinEnabledCommand(false));
+         } else {
+            //noinspection ConstantConditions
+            getView().showSCNonConnectionDialog();
+         }
+      });
+   }
+
+   private void applyPinStatus(boolean isEnabled) {
+      //noinspection ConstantConditions
+      getView().setAddRemovePinState(isEnabled);
    }
 
    private void trackSmartCardStealthMode(boolean stealthModeEnabled) {
@@ -103,6 +144,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    }
 
    private void stealthModeFailed() {
+      //noinspection ConstantConditions
       smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
@@ -110,6 +152,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    }
 
    private void lockStatusFailed() {
+      //noinspection ConstantConditions
       smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
@@ -145,8 +188,9 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    void resetPin() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            navigator.go(new WizardPinSetupPath(Action.RESET));
+            navigator.go(new EnterPinPath(Action.RESET));
          } else {
+            //noinspection ConstantConditions
             getView().showSCNonConnectionDialog();
          }
       });
@@ -187,6 +231,8 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    }
 
    public interface Screen extends WalletScreen {
+
+      void setAddRemovePinState(boolean isEnabled);
 
       void stealthModeStatus(boolean isEnabled);
 

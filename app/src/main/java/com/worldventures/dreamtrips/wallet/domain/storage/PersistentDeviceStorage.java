@@ -280,4 +280,15 @@ public class PersistentDeviceStorage implements DeviceStorage {
    public boolean isLockUnlockCardEnabled() {
       return memoryStorage.isLockUnlockCardEnabled();
    }
+
+   @Override
+   public void setPinEnabled(boolean enabled) {
+      memoryStorage.setPinEnabled(enabled);
+      persistStorage();
+   }
+
+   @Override
+   public boolean isPinEnabled() {
+      return memoryStorage.isPinEnabled();
+   }
 }

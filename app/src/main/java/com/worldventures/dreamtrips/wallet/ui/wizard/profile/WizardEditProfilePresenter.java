@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
@@ -113,7 +113,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    private void onUserSetupSuccess() {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
-      navigator.go(new WizardPinSetupPath(Action.SETUP));
+      navigator.go(new EnterPinPath(Action.SETUP));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {

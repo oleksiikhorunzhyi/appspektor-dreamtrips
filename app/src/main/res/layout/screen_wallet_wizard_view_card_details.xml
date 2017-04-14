@@ -82,7 +82,6 @@
                android:id="@+id/default_payment_card_checkbox"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
                android:text="@string/wallet_add_card_details_option_set_as_default_card"
                />
 

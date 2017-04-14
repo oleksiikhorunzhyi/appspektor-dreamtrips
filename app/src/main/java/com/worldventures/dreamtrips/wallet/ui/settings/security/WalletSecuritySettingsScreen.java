@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -18,7 +19,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDe
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 
+import java.util.List;
+
+import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 import rx.Observable;
 
@@ -29,8 +34,14 @@ public class WalletSecuritySettingsScreen extends WalletLinearLayout<WalletSecur
    @InjectView(R.id.lock_switcher) WalletSwitcher lockSwitcher;
    @InjectView(R.id.stealth_mode_switcher) WalletSwitcher stealthModeSwitcher;
 
+   @InjectView(R.id.add_remove_pin) TextView addRemovePinLabel;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
    @InjectView(R.id.auto_delete_cards_labels) TextView autoDeleteCardLabel;
+
+   @InjectView(R.id.item_add_remove_pin) View addRemovePinItem;
+
+   @InjectViews({R.id.item_reset_pin, R.id.item_reset_pin_label, R.id.item_reset_pin_sub_label})
+   List<View> resetPinItemViews;
 
    private Observable<Boolean> lockSwitcherObservable;
    private Observable<Boolean> stealthModeSwitcherObservable;
@@ -97,6 +108,19 @@ public class WalletSecuritySettingsScreen extends WalletLinearLayout<WalletSecur
    @OnClick(R.id.item_auto_delete_cards)
    void onAutoDeleteCardsClick() {
       presenter.autoClearSmartCardClick();
+   }
+
+   @Override
+   public void setAddRemovePinState(boolean isEnabled) {
+      if (isEnabled) {
+         addRemovePinLabel.setText(R.string.wallet_card_settings_remove_pin);
+         addRemovePinItem.setOnClickListener(v -> presenter.removePin());
+         ButterKnife.apply(resetPinItemViews, (view, i) -> view.setEnabled(true));
+      } else {
+         addRemovePinLabel.setText(R.string.wallet_card_settings_add_pin);
+         addRemovePinItem.setOnClickListener(v -> presenter.addPin());
+         ButterKnife.apply(resetPinItemViews, (view, i) -> view.setEnabled(false));
+      }
    }
 
    @Override

@@ -76,6 +76,26 @@
 
          </LinearLayout>
 
+         <!--Add Remove PIN-->
+         <LinearLayout
+               android:id="@+id/item_add_remove_pin"
+               style="@style/SettingsMenuItem"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  android:id="@+id/add_remove_pin"
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_add_pin"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:text="@string/wallet_card_settings_pin_keeps_secure"
+                  />
+
+         </LinearLayout>
+
          <!--Reset PIN-->
          <LinearLayout
                android:id="@+id/item_reset_pin"
@@ -84,11 +104,13 @@
                >
 
             <TextView
+                  android:id="@+id/item_reset_pin_label"
                   style="@style/SettingsText.Primary"
                   android:text="@string/wallet_card_settings_reset_pin"
                   />
 
             <TextView
+                  android:id="@+id/item_reset_pin_sub_label"
                   style="@style/SettingsText.Secondary"
                   android:text="@string/wallet_card_settings_if_you_forget_your_pin"
                   />

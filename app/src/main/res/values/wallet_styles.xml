@@ -114,12 +114,12 @@
    </style>
 
    <style name="SettingsText.Primary">
-      <item name="android:textColor">@color/wallet_settings_menu_item_primary</item>
+      <item name="android:textColor">@color/color_selector_wallet_settings_item_primery</item>
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
    </style>
 
    <style name="SettingsText.Secondary">
-      <item name="android:textColor">@color/wallet_settings_menu_item_secondary</item>
+      <item name="android:textColor">@color/color_selector_wallet_settings_item_secondary</item>
       <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
    </style>
 

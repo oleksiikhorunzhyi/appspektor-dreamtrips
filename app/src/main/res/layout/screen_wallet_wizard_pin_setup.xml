@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -50,4 +50,4 @@
             tools:text="@string/wallet_got_it_label"
             />
    </RelativeLayout>
-</com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupScreen>
+</com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen>

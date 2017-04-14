@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,12 +12,11 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath> implements WizardPinSetupPresenter.Screen {
+public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen, EnterPinPresenter, EnterPinPath> implements EnterPinPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.header_text_view) TextView headerTextView;
@@ -27,11 +26,11 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    private DialogOperationScreen dialogOperationScreen;
    private MaterialDialog infoLockGesturesDialog = null;
 
-   public WizardPinSetupScreen(Context context) {
+   public EnterPinScreen(Context context) {
       super(context);
    }
 
-   public WizardPinSetupScreen(Context context, AttributeSet attrs) {
+   public EnterPinScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 
@@ -73,20 +72,10 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
       presenter.goBack();
    }
 
-   @Override
-   public void showMode(Action mode) {
-      if (mode == Action.RESET) {
-         nextButton.setText(R.string.wallet_continue_label);
-      } else {
-         nextButton.setText(R.string.wallet_got_it_label);
-         supportConnectionStatusLabel(false);
-      }
-   }
-
    @NonNull
    @Override
-   public WizardPinSetupPresenter createPresenter() {
-      return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().action);
+   public EnterPinPresenter createPresenter() {
+      return new EnterPinPresenter(getContext(), getInjector(), getPath().action);
    }
 
    @OnClick(R.id.button_next)
@@ -109,5 +98,21 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    protected void onDetachedFromWindow() {
       if(infoLockGesturesDialog != null) infoLockGesturesDialog.dismiss();
       super.onDetachedFromWindow();
+   }
+
+   @Override
+   public void addMode() {
+      nextButton.setText(R.string.wallet_continue_label);
+   }
+
+   @Override
+   public void setupMode() {
+      nextButton.setText(R.string.wallet_got_it_label);
+      supportConnectionStatusLabel(false);
+   }
+
+   @Override
+   public void resetMode() {
+      nextButton.setText(R.string.wallet_continue_label);
    }
 }

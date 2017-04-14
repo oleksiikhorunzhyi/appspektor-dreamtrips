@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
@@ -49,6 +50,7 @@ import rx.schedulers.Schedulers;
 
 public final class SmartCardInteractor {
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
+   private final ActionPipe<SetSmartCardTimeCommand> setSmartCardTimePipe;
    private final ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe;
    private final ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCardPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
@@ -109,6 +111,7 @@ public final class SmartCardInteractor {
 
       fetchFirmwareVersionPipe = sessionActionPipeCreator.createPipe(FetchFirmwareVersionCommand.class, Schedulers.io());
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
+      setSmartCardTimePipe = sessionActionPipeCreator.createPipe(SetSmartCardTimeCommand.class, Schedulers.io());
       restoreOfflineModeDefaultStatePipe = sessionActionPipeCreator.createPipe(RestoreOfflineModeDefaultStateCommand.class, Schedulers
             .io());
       fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers
@@ -176,6 +179,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
       return connectionPipe;
+   }
+
+   public ActionPipe<SetSmartCardTimeCommand> setSmartCardTimePipe() {
+      return setSmartCardTimePipe;
    }
 
    public ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe() {

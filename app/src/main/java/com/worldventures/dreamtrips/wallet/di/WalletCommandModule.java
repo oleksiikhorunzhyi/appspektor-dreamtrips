@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCard
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -90,6 +91,7 @@ import dagger.Module;
             SetStealthModeCommand.class,
             ActiveSmartCardCommand.class,
             ConnectSmartCardCommand.class,
+            SetSmartCardTimeCommand.class,
             FetchCardPropertiesCommand.class,
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,

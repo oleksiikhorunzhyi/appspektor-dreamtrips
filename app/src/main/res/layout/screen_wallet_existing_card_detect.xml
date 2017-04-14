@@ -43,6 +43,13 @@
          android:layout_gravity="center_horizontal"
          >
 
+      <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/image_barcode_flyecard"
+            tools:ignore="ContentDescription"
+            />
+
       <TextView
             android:id="@+id/tv_sc_id"
             android:layout_width="match_parent"
@@ -54,13 +61,6 @@
             android:textColor="@color/white_text_color"
             android:textSize="@dimen/font_normal"
             tools:text="0000001231"
-            />
-
-      <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/image_barcode_flyecard"
-            tools:ignore="ContentDescription"
             />
    </FrameLayout>
 

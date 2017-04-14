@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Acceptera</string>
    <string name="flag_description_negative">Avbryt</string>
    <string name="log_in">Logga in</string>
+   <string name="facebook_error_loading_albums">Kunde inte ladda album</string>
+   <string name="facebook_error_loading_photos">Kunda inte ladda bilder</string>
+   <string name="facebook_login_error">Kunda inte logga in på Facebook</string>
    <string name="fab_posted">Publiceringen på Facebook har genomförts</string>
+   <string name="facebook_posting_error"> Kunda inte göra inlägg på Facebook </string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -575,5 +579,8 @@
    <string name="documents_empty_text">Det gick inte att läsa in dokumenten just nu.</string>
 
    <string name="show_original">Visa ursprunglig</string>
+   <string name="error_fail_to_translate_bucket_item">Kunde inte översätta hinkobjektet</string>
+
    
+
 </resources>

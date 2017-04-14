@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Acceptați</string>
    <string name="flag_description_negative">Anulați</string>
    <string name="log_in">Conectați-vă</string>
+   <string name="facebook_error_loading_albums">Albumele nu au putut fi încărcate </string>
+   <string name="facebook_error_loading_photos">Fotografiile nu au putut fi încărcate</string>
+   <string name="facebook_login_error"> Autentificarea pe Facebook nu a reușit </string>
    <string name="fab_posted">S-a postat pe Facebook</string>
+   <string name="facebook_posting_error">Postarea pe Facebook nu a reușit</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -575,5 +579,8 @@
    <string name="documents_empty_text">Documentele nu au putut fi încărcate în acest moment.</string>
 
    <string name="show_original">Afișați originalul</string>
+   <string name="error_fail_to_translate_bucket_item">Traducerea elementului de bucket a eșuat</string>
+
    
+
 </resources>

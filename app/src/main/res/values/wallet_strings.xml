@@ -8,6 +8,8 @@
    <string name="wallet_got_it_label">Got it!</string>
    <string name="wallet_error_label">Error</string>
    <string name="wallet_retry_label">Retry</string>
+   <string name="wallet_label_yes">Yes</string>
+   <string name="wallet_label_no">No</string>
 
    <string name="wallet">flye\u2122 smart card</string>
    <string name="wallet_dashboard_title">flye\u2122 smart card</string>
@@ -147,6 +149,7 @@
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_unpair_sc">Unpair Smart Card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>
+   <string name="wallet_settings_prepare_remove_pin">A PIN helps protect your payment cards from theft. Are you sure you want to disable PIN?</string>
 
    <string name="wallet_card_settings_documents">Documents</string>
    <string name="wallet_card_settings_sc_manual_and_other_docs">Smart Card manual and other important documents</string>

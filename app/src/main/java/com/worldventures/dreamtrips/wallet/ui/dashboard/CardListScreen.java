@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -51,11 +50,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
-   @InjectView(R.id.empty_card_view) View emptyCardListView;
-   @InjectView(R.id.ll_sync_payments_block) LinearLayout llSyncPaymentsBlock;
-   @InjectView(R.id.tv_fail_sync_msg) TextView tvFailsSyncMsg;
-   @InjectView(R.id.add_card_button) FloatingActionButton addCardButton;
-   @InjectView(R.id.btn_sync_cards) FloatingActionButton btnSyncPaymentCards;
+   @InjectView(R.id.empty_card_view) TextView emptyCardListView;
+   @InjectView(R.id.fab_button) FloatingActionButton fabButton;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -319,11 +315,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             .build();
    }
 
-   @OnClick(R.id.add_card_button)
-   protected void addCardButtonClick() {
-      getPresenter().addCardRequired(cardStackHeaderHolder.cardCount());
-   }
-
    @OnClick(R.id.firmware_available)
    protected void firmwareAvailableBtnClick() {
       getPresenter().navigateToFirmwareUpdate();
@@ -347,16 +338,25 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void modeDefaultFab() {
-      llSyncPaymentsBlock.setVisibility(GONE);
-      addCardButton.setVisibility(VISIBLE);
+   public void modeAddCard() {
+      emptyCardListView.setText(R.string.wallet_wizard_empty_card_list_label);
+      fabButton.setImageResource(R.drawable.ic_white_plus);
+      fabButton.setOnClickListener(v -> addCardButtonClick());
    }
 
    @Override
    public void modeSyncPaymentsFab() {
-      llSyncPaymentsBlock.setVisibility(VISIBLE);
-      emptyCardListView.setVisibility(GONE);
-      addCardButton.setVisibility(GONE);
+      emptyCardListView.setText(R.string.wallet_wizard_card_list_remove_payment_cards_message);
+      fabButton.setImageResource(R.drawable.ic_sync);
+      fabButton.setOnClickListener(v -> onSyncPaymentsCardsButtonClick());
+   }
+
+   private void addCardButtonClick() {
+      getPresenter().addCardRequired(cardStackHeaderHolder.cardCount());
+   }
+
+   protected void onSyncPaymentsCardsButtonClick() {
+      presenter.syncPayments();
    }
 
    @Override
@@ -380,10 +380,5 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
                   .build()
       );
-   }
-
-   @OnClick(R.id.btn_sync_cards)
-   protected void onSyncPaymentsCardsButtonClick() {
-      presenter.syncPayments();
    }
 }

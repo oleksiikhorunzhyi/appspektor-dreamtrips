@@ -40,7 +40,6 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
@@ -72,6 +71,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordInteractor recordInteractor;
+   @Inject WalletNetworkService networkService;
 
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
@@ -121,7 +121,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       if (status.isFailAfterProvision()) {
          getView().modeSyncPaymentsFab();
       } else {
-         getView().modeDefaultFab();
+         getView().modeAddCard();
       }
    }
 
@@ -217,8 +217,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    void navigateBack() {
       navigator.goBack();
    }
-
-   @Inject WalletNetworkService networkService;
 
    void addCardRequired(int cardLoadedCount) {
       if (cardLoadedCount >= MAX_CARD_LIMIT) {
@@ -342,7 +340,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showSCNonConnectionDialog();
 
-      void modeDefaultFab();
+      void modeAddCard();
 
       void modeSyncPaymentsFab();
 

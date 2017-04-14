@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -22,12 +23,14 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.AnimatorProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardListHeaderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
@@ -379,6 +382,13 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             ErrorViewFactory.<SyncRecordsCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
                   .build()
+      );
+   }
+
+   public OperationView<SyncRecordOnNewDeviceCommand> provideReSyncOperationView() {
+      return new ComposableOperationView<>(
+            new AnimatorProgressView<>(ObjectAnimator.ofFloat(fabButton, View.ROTATION.getName(), 0f, -360f)
+                  .setDuration(650))
       );
    }
 }

@@ -109,18 +109,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> handleSyncRecordStatus(command.getResult()));
 
+      //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
                .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
             );
+      //noinspection ConstantConditions
+      recordInteractor.syncRecordOnNewDevicePipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().provideReSyncOperationView()).create());
    }
 
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
       if (status.isFailAfterProvision()) {
+         //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
       } else {
+         //noinspection ConstantConditions
          getView().modeAddCard();
       }
    }
@@ -347,5 +355,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void showSyncFailedOptionsDialog();
 
       OperationView<SyncRecordsCommand> provideOperationSyncPayments();
+
+      OperationView<SyncRecordOnNewDeviceCommand> provideReSyncOperationView();
    }
 }

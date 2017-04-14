@@ -114,13 +114,24 @@ public class WalletSecuritySettingsScreen extends WalletLinearLayout<WalletSecur
    public void setAddRemovePinState(boolean isEnabled) {
       if (isEnabled) {
          addRemovePinLabel.setText(R.string.wallet_card_settings_remove_pin);
-         addRemovePinItem.setOnClickListener(v -> presenter.removePin());
+         addRemovePinItem.setOnClickListener(v -> prepareRemovePin());
          ButterKnife.apply(resetPinItemViews, (view, i) -> view.setEnabled(true));
       } else {
          addRemovePinLabel.setText(R.string.wallet_card_settings_add_pin);
          addRemovePinItem.setOnClickListener(v -> presenter.addPin());
          ButterKnife.apply(resetPinItemViews, (view, i) -> view.setEnabled(false));
       }
+   }
+
+   private void prepareRemovePin() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_settings_prepare_remove_pin)
+            .positiveText(R.string.wallet_label_yes)
+            .onPositive((dialog, which) -> presenter.removePin())
+            .negativeText(R.string.wallet_label_no)
+            .onNegative((dialog, which) -> dialog.dismiss())
+            .build()
+            .show();
    }
 
    @Override

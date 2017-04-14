@@ -14,7 +14,10 @@ public class SyncRecordStatusCommand extends CachedValueCommand<SyncRecordsStatu
    }
 
    public static SyncRecordStatusCommand fetch() {
-      return new SyncRecordStatusCommand(syncRecordsStatus -> syncRecordsStatus);
+      return new SyncRecordStatusCommand(syncRecordsStatus -> {
+         if (syncRecordsStatus == null) return SyncRecordsStatus.SUCCESS;
+         return syncRecordsStatus;
+      });
    }
 
    public static SyncRecordStatusCommand save(SyncRecordsStatus status) {

@@ -340,8 +340,7 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
 
    @Override
    public SyncRecordsStatus getSyncRecordsStatus() {
-      return actWithResult(db -> db.get(WALLET_SYNC_RECORD_STATUS, SyncRecordsStatus.class))
-            .or(SyncRecordsStatus.SUCCESS);
+      return actWithResult(db -> db.get(WALLET_SYNC_RECORD_STATUS, SyncRecordsStatus.class)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////

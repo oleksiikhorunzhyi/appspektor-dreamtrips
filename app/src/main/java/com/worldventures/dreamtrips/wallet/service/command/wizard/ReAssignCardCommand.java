@@ -5,7 +5,10 @@ import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartC
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,6 +23,7 @@ import rx.Observable;
 public class ReAssignCardCommand extends Command<Void> implements InjectableAction {
 
    @Inject Janet janet;
+   @Inject RecordInteractor recordInteractor;
    @Inject @Named(JanetModule.JANET_WALLET) Janet janetWallet;
    @Inject SystemPropertiesProvider systemPropertiesProvider;
    @Inject SnappyRepository snappyRepository;
@@ -36,7 +40,11 @@ public class ReAssignCardCommand extends Command<Void> implements InjectableActi
       updateDeviceId()
             .flatMap(smartCardInfo -> new ProcessSmartCardInfoDelegate(snappyRepository, janetWallet, mappery)
                   .processSmartCardInfo(smartCardInfo))
-            .subscribe(result -> callback.onSuccess(null), callback::onFail);
+            .subscribe(result -> {
+               recordInteractor.syncRecordStatusPipe() // set default value for this flow
+                     .send(SyncRecordStatusCommand.save(SyncRecordsStatus.FAIL_AFTER_PROVISION));
+               callback.onSuccess(null);
+            }, callback::onFail);
    }
 
    private Observable<SmartCardInfo> updateDeviceId() {

@@ -40,7 +40,6 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
@@ -72,6 +71,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordInteractor recordInteractor;
+   @Inject WalletNetworkService networkService;
 
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
@@ -109,19 +109,27 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> handleSyncRecordStatus(command.getResult()));
 
+      //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
                .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
             );
+      //noinspection ConstantConditions
+      recordInteractor.syncRecordOnNewDevicePipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().provideReSyncOperationView()).create());
    }
 
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
       if (status.isFailAfterProvision()) {
+         //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
       } else {
-         getView().modeDefaultFab();
+         //noinspection ConstantConditions
+         getView().modeAddCard();
       }
    }
 
@@ -217,8 +225,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    void navigateBack() {
       navigator.goBack();
    }
-
-   @Inject WalletNetworkService networkService;
 
    void addCardRequired(int cardLoadedCount) {
       if (cardLoadedCount >= MAX_CARD_LIMIT) {
@@ -342,12 +348,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showSCNonConnectionDialog();
 
-      void modeDefaultFab();
+      void modeAddCard();
 
       void modeSyncPaymentsFab();
 
       void showSyncFailedOptionsDialog();
 
       OperationView<SyncRecordsCommand> provideOperationSyncPayments();
+
+      OperationView<SyncRecordOnNewDeviceCommand> provideReSyncOperationView();
    }
 }

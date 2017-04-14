@@ -60,7 +60,7 @@
                   />
 
             <android.support.design.widget.FloatingActionButton
-                  android:id="@+id/add_card_button"
+                  android:id="@+id/fab_button"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="bottom|center_horizontal"
@@ -92,12 +92,6 @@
                android:textSize="@dimen/font_extra_normal"
                />
 
-         <include
-               layout="@layout/screen_wallet_sync_payments_fab"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_alignParentBottom="true"
-               />
       </RelativeLayout>
    </LinearLayout>
 </com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen>

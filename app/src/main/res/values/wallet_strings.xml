@@ -160,6 +160,12 @@
    <string name="wallet_card_settings_customer_support">Customer Support</string>
    <string name="wallet_card_settings_contact_our_customer_support_team">Contact our customer support team</string>
 
+   <string name="wallet_card_settings_need_assistance">Need assistance?</string>
+   <string name="wallet_card_settings_us_customer_care">US Customer Care</string>
+   <string name="wallet_card_settings_us_customer_care_phone">(855) 999–3593</string>
+   <string name="wallet_card_settings_international_collect">International Collect</string>
+   <string name="wallet_card_settings_international_collect_phone">(469) 609–4830</string>
+
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
    <string name="wallet_card_settings_profile_firstname_hint">First name</string>

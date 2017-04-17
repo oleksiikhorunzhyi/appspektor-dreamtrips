@@ -94,7 +94,6 @@
             layout="@layout/include_review_comment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/app_bar_comment_review"
             />
 
       <include

@@ -12,7 +12,6 @@
          android:theme="@style/ToolBarStyle"
          >
 
-      <!-- style="@style/ToolBarStyle" -->
       <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_actionbar"
             style="@style/MyToolbar"
@@ -91,12 +90,6 @@
                android:visibility="gone"
                />
 
-         <!-- <fragment
-               android:id="@+id/list"
-               android:name="com.worldventures.dreamtrips.modules.feed.view.fragment.CreateReviewPostFragment"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               /> -->
          <FrameLayout
                android:id="@+id/container_details_floating"
                android:layout_width="match_parent"
@@ -105,7 +98,6 @@
                android:visibility="gone"
                />
       </LinearLayout>
-
    </android.support.v4.widget.SwipeRefreshLayout>
 
    <LinearLayout

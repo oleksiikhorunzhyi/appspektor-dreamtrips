@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateReviewPostFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 
 import javax.inject.Inject;
@@ -93,10 +93,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
        mFlContainerReview.setVisibility(View.VISIBLE);
 
        Bundle bundle = new Bundle();
-       /*bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
-       bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
-       bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
-       bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, merchant.displayName());*/
        bundle.putParcelable("data", new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
              getPresenter().minimumCharactersAllowed(),
              getPresenter().maximumCharactersAllowed(),
@@ -108,16 +104,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
        transaction.replace(R.id.container_details_floating, fragment);
        transaction.commit();
-       //toolbar.setNavigationOnClickListener(view -> getPresenter().onBackPressed());
        toolbar.setNavigationOnClickListener(view -> onBackPressed());
-/*      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
-             new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
-                                                                    getPresenter().minimumCharactersAllowed(),
-                                                                    getPresenter().maximumCharactersAllowed(),
-                                                                     getPath().getMerchant().id(),
-                                                                     isFromListReview(),
-                                                                     getPath().getMerchant()));*/
-
     }
 
    @Override
@@ -382,7 +369,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @OnClick(R.id.tvOnPost)
     public void onClick() {
        fragment.onPostClick();
-        //getPresenter().onPostClick();
     }
 
     @Override

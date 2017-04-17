@@ -54,7 +54,6 @@ import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 @Layout(R.layout.layout_review_post)
 public class CreateReviewPostFragment extends CreateEntityFragment implements DtlCommentReviewScreen {
 
-   //@InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.rbRating) RatingBar mRatingBar;
    @InjectView(R.id.etCommentReview) EditText mComment;
    @InjectView(R.id.tv_char_counter) TextView mCharCounter;
@@ -97,11 +96,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
       Bundle args = getArguments();
       bundle = args.getParcelable("data");
-      /*AppCompatActivity activity = (AppCompatActivity) getActivity();
-      activity.setSupportActionBar(toolbar);
-      activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-      //toolbar.setNavigationOnClickListener(view -> super.onBackPressed());
-      //merchant = getArgs().getmMerchant();
       merchant = bundle.getmMerchant();
       initEditTextListener();
       initLengthText();
@@ -150,12 +144,10 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    private int maximumCharactersAllowed() {
-      //return getArgs().getMaxCharactersAllow();
       return bundle.getMaxCharactersAllow();
    }
 
    private int minimumCharactersAllowed() {
-      //return getArgs().getMinCharactersAllow();
       return bundle.getMinCharactersAllow();
    }
 
@@ -394,7 +386,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    @Override
    public void onRefreshSuccess() {
       this.refreshProgress(false);
-      //this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
@@ -419,19 +410,16 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    public void onRefreshProgress() {
       this.mProgressBar.setVisibility(View.VISIBLE);
       this.refreshProgress(true);
-      //this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
-      //this.refreshProgress(false);
       this.showEmpty(false);
    }
 
    @Override
    public void showEmpty(boolean isShow) {
-      //emptyView.setVisibility(isShow ? VISIBLE : GONE);
    }
 
    @Override
@@ -450,13 +438,13 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
                                           .brandId(BRAND_ID)
                                           .productId(getMerchantId())
                                           .build(), user.getEmail(),
-                                                                    user.getFullName(),
-                                                                           getDescription(),
-                                                                           String.valueOf(getRatingBar()),
-                                                                           isVerified(),
-                                                                           String.valueOf(user.getId()),
-                                                                           getFingerprintId(),
-                                                                           getIpAddress()));
+                                                    user.getFullName(),
+                                                    getDescription(),
+                                                    String.valueOf(getRatingBar()),
+                                                    isVerified(),
+                                                    String.valueOf(user.getId()),
+                                                    getFingerprintId(),
+                                                    getIpAddress()));
    }
 
    @Override
@@ -495,7 +483,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public boolean isFromListReview(){
-      //return getArgs().isFromAddReview();
       return bundle.isFromAddReview();
    }
 
@@ -591,7 +578,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    public String getMerchantId() {
-      //return getArgs().getMerchantId();
       return bundle.getMerchantId();
    }
 
@@ -624,28 +610,10 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    public void navigateToDetail(String message) {
-      //getActivity().runOnUiThread(new Runnable() {
-         //@Override
-         //public void run() {
-            /*Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
-            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-            //historyBuilder.pop();
-            //historyBuilder.pop();
-            historyBuilder.push(path);
-            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);*/
-
-            /*Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
-            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-            historyBuilder.push(path);
-            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);*/
-
-            Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, "");
-            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-            historyBuilder.pop();
-            //historyBuilder.pop();
-            historyBuilder.push(path);
-            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
-        // }
-      //});
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, "");
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      historyBuilder.pop();
+      historyBuilder.push(path);
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
    }
 }

@@ -411,6 +411,7 @@ dependencies {
    // Di
    compile 'com.squareup.dagger:dagger:1.2.2'
    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+   apt files('libs/apt/dagger-proguard-helper-processor-1.0.1-SNAPSHOT.jar')
    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
    compile 'javax.annotation:jsr250-api:1.0'
    // janet

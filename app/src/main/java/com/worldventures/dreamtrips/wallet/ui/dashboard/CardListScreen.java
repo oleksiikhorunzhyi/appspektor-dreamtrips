@@ -36,10 +36,13 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardListHeaderAdapt
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.dialog.InstallFirmwareErrorDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -58,7 +61,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
-   private IgnoreFirstItemAdapter adapter;
+//   private IgnoreFirstItemAdapter adapter;
    private CardStackHeaderHolder cardStackHeaderHolder;
 
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
@@ -66,6 +69,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private Dialog addCardErrorDialog;
    private Dialog factoryResetConfirmationDialog;
    private Dialog scNonConnectionDialog;
+
+   private MultiHolderAdapter multiAdapter;
 
    public CardListScreen(Context context) {
       this(context, null);
@@ -86,8 +91,11 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    protected void onPostAttachToWindowView() {
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
 
-      setupCardStackList();
+//      setupCardStackList();
+
+      setupCardStackListAlternative();
    }
+
 
    @Override
    protected void onDetachedFromWindow() {
@@ -111,9 +119,11 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @Override
    public void showRecordsInfo(List<CardStackViewModel> result) {
-      adapter.clear();
-      adapter.addItems(result);
-      emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
+//      adapter.clear();
+//      adapter.addItems(result);
+//      emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
+
+      multiAdapter.upDateItems(presenter.mapStackToViewModel(result));
    }
 
    @Override
@@ -162,16 +172,16 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    private void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
-      Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
-      int headerPosition = 0;
-      if (header != null) {
-         headerPosition = adapter.getItems().indexOf(header);
-         adapter.replaceItem(headerPosition, cardStackHeaderHolder);
-         adapter.notifyItemChanged(headerPosition);
-      } else {
-         adapter.addItem(headerPosition, cardStackHeaderHolder);
-         adapter.notifyItemInserted(headerPosition);
-      }
+//      Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
+//      int headerPosition = 0;
+//      if (header != null) {
+//         headerPosition = adapter.getItems().indexOf(header);
+//         adapter.replaceItem(headerPosition, cardStackHeaderHolder);
+//         adapter.notifyItemChanged(headerPosition);
+//      } else {
+//         adapter.addItem(headerPosition, cardStackHeaderHolder);
+//         adapter.notifyItemInserted(headerPosition);
+//      }
    }
 
    @Override
@@ -274,41 +284,58 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       super.onRestoreInstanceState(state);
    }
 
-   private void setupCardStackList() {
-      adapter = new IgnoreFirstItemAdapter(getContext(), getInjector());
-      adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
-      adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
-         @Override
-         public void onCardClicked(Record record) {
-            getPresenter().cardClicked(record);
-         }
-      });
-      adapter.registerIdDelegate(CardStackViewModel.class, model -> {
-         CardStackViewModel vm = ((CardStackViewModel) model);
-         return vm.getHeaderTitle() != null ? vm.getHeaderTitle().hashCode() : 0;
-      });
+   private static final double VISIBLE_SCALE = 0.64;
 
-      adapter.registerCell(ImmutableCardStackHeaderHolder.class, CardStackHeaderCell.class);
-      adapter.registerDelegate(ImmutableCardStackHeaderHolder.class, new CardStackHeaderCell.Delegate() {
-         @Override
-         public void onCellClicked(CardStackHeaderHolder model) {
+   private void setupCardStackListAlternative() {
 
-         }
-
-         @Override
-         public void onSettingsChosen() {
-            presenter.onSettingsChosen();
-         }
-      });
-
-      bankCardList.setAdapter(adapter);
+      int dimension = getContext().getResources().getDimensionPixelSize(R.dimen.wallet_card_height);
+      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>());
+      bankCardList.setAdapter(multiAdapter);
       final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
       listAnimator.setSupportsChangeAnimations(false);
       bankCardList.setItemAnimator(listAnimator);
-      bankCardList.addItemDecoration(getStickyHeadersItemDecoration(adapter));
+      bankCardList.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
       LinearLayoutManager layout = new LinearLayoutManager(getContext());
       layout.setAutoMeasureEnabled(true);
       bankCardList.setLayoutManager(layout);
+
+   }
+
+   private void setupCardStackList() {
+//      adapter = new IgnoreFirstItemAdapter(getContext(), getInjector());
+//      adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
+//      adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
+//         @Override
+//         public void onCardClicked(Record record) {
+//            getPresenter().cardClicked(record);
+//         }
+//      });
+//      adapter.registerIdDelegate(CardStackViewModel.class, model -> {
+//         CardStackViewModel vm = ((CardStackViewModel) model);
+//         return vm.getHeaderTitle() != null ? vm.getHeaderTitle().hashCode() : 0;
+//      });
+//
+//      adapter.registerCell(ImmutableCardStackHeaderHolder.class, CardStackHeaderCell.class);
+//      adapter.registerDelegate(ImmutableCardStackHeaderHolder.class, new CardStackHeaderCell.Delegate() {
+//         @Override
+//         public void onCellClicked(CardStackHeaderHolder model) {
+//
+//         }
+//
+//         @Override
+//         public void onSettingsChosen() {
+//            presenter.onSettingsChosen();
+//         }
+//      });
+//
+//      bankCardList.setAdapter(adapter);
+//      final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
+//      listAnimator.setSupportsChangeAnimations(false);
+//      bankCardList.setItemAnimator(listAnimator);
+//      bankCardList.addItemDecoration(getStickyHeadersItemDecoration(adapter));
+//      LinearLayoutManager layout = new LinearLayoutManager(getContext());
+//      layout.setAutoMeasureEnabled(true);
+//      bankCardList.setLayoutManager(layout);
    }
 
    private StickyHeadersItemDecoration getStickyHeadersItemDecoration(BaseArrayListAdapter adapter) {
@@ -391,4 +418,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
                   .setDuration(650))
       );
    }
+
+
 }

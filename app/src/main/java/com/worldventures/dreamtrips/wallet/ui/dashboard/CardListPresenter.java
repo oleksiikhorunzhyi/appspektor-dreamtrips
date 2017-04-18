@@ -36,7 +36,9 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.BankCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
@@ -46,6 +48,7 @@ import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -281,7 +284,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
       List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedRecords, defaultRecordId);
-      getView().setCardsCount(WalletRecordUtil.stacksToItemsCount(cards));
+//      getView().setCardsCount(WalletRecordUtil.stacksToItemsCount(cards));
       getView().showRecordsInfo(cards);
    }
 
@@ -311,6 +314,27 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    void goToFactoryReset() {
       navigator.single(new FactoryResetPath());
+   }
+
+   public List mapStackToViewModel(List<CardStackViewModel> result) {
+
+      if (null == result.get(0) || null == result.get(0).getCardList()) {
+         return new ArrayList();
+      }
+      List<CommonCardViewModel> viewModels = new ArrayList<>();
+      for (BankCardViewModel bankCardViewModel : result.get(0).getCardList()) {
+         Record currentRecord = bankCardViewModel.record;
+         viewModels.add(new CommonCardViewModel(
+               currentRecord.nickName(),
+               currentRecord.recordType().name(),
+               bankCardViewModel.defaultCard,
+               currentRecord.numberLastFourDigits(),
+               currentRecord.cardHolderFirstName(),
+               currentRecord.number(),
+               currentRecord.expDate()
+         ));
+      }
+      return viewModels;
    }
 
    public interface Screen extends WalletScreen {

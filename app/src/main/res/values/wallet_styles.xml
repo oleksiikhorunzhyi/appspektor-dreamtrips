@@ -21,8 +21,10 @@
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
+      <item name="android:editTextStyle">@style/WalletTheme.EditTextStyle</item>
       <item name="android:buttonStyle">@style/WalletTheme.ButtonStyle</item>
-      <item name="buttonStyle">@style/WalletTheme.ButtonStyle</item> <!--for support V7 -->
+      <item name="editTextStyle">@style/WalletTheme.EditTextStyle</item> <!--for support V7 -->
+      <item name="buttonStyle">@style/WalletTheme.ButtonStyle</item>
       <item name="switchStyle">@style/WalletTheme.SwitchStyle</item>
 
       <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>
@@ -62,7 +64,10 @@
    </style>
 
    <style name="WalletTheme.EditTextStyle" parent="Widget.AppCompat.EditText">
-      <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+      <item name="android:background">@drawable/wallet_background_edit_text</item>
+      <item name="android:paddingTop">@dimen/wallet_edit_text_spaces_top_bottom</item>
+      <item name="android:paddingBottom">@dimen/wallet_edit_text_spaces_top_bottom</item>
+      <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
       <item name="android:textColorHint">?android:attr/textColorHint</item>
       <item name="android:singleLine">true</item>
    </style>

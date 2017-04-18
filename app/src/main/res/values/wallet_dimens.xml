@@ -47,4 +47,5 @@
    <dimen name="wallet_settings_menu_item_vertical_spacing">20dp</dimen>
    <dimen name="wallet_settings_offline_mode_spacing_side">52dp</dimen>
 
+   <dimen name="wallet_edit_text_spaces_top_bottom">8dp</dimen>
 </resources>

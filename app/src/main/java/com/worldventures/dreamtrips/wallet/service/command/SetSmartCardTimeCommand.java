@@ -21,7 +21,6 @@ public class SetSmartCardTimeCommand extends Command<Void> implements Injectable
    @Inject SmartCardInteractor smartCardInteractor;
 
    @Override
-   @Deprecated
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.smartCardFirmwarePipe()
             .createObservableResult(SmartCardFirmwareCommand.fetch())

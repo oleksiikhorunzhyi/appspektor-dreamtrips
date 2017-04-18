@@ -73,6 +73,16 @@ public final class AssertUtil {
             .get(subscriber.getOnNextEvents().size() - 1).exception));
    }
 
+   public static <T> void assertActionStateFail(TestSubscriber<ActionState<T>> subscriber, Func1<ActionState<T>, Boolean> assertPredicate) {
+      subscriber.unsubscribe();
+      subscriber.assertNoErrors();
+      subscriber.assertUnsubscribed();
+      assertStatusCount(subscriber, ActionState.Status.START, 1);
+      assertStatusCount(subscriber, ActionState.Status.FAIL, 1);
+      Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents()
+            .get(subscriber.getOnNextEvents().size() - 1)));
+   }
+
    public static <T> void assertNoStatuses(TestSubscriber<ActionState<T>> subscriber) {
       subscriber.assertNoErrors();
       subscriber.assertValueCount(0);

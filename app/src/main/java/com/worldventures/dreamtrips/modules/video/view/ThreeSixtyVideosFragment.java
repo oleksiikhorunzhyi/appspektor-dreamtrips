@@ -13,6 +13,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
@@ -28,7 +29,8 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
-public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideosPresenter> implements ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
+public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideosPresenter> implements
+      ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate, SelectablePagerFragment {
 
    @Optional @InjectView(R.id.recyclerViewFeatured) protected RecyclerView recyclerViewFeatured;
    @Optional @InjectView(R.id.recyclerViewRecent) protected RecyclerView recyclerViewRecent;
@@ -76,6 +78,11 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
       this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
       setUpRecyclerViews();
+   }
+
+   @Override
+   public void onSelectedFromPager() {
+      getPresenter().onSelected();
    }
 
    @Override
@@ -179,5 +186,10 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    @Override
    public void onCellClicked(Video model) {
 
+   }
+
+   @Override
+   public void onPlayVideoClicked(Video entity) {
+      getPresenter().onPlayVideo(entity);
    }
 }

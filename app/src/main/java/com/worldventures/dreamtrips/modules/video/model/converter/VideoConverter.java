@@ -23,6 +23,7 @@ public class VideoConverter implements Converter<Video, com.worldventures.dreamt
             video.videoUrl(),
             video.name(),
             video.category(),
-            video.duration());
+            video.duration(),
+            video.language());
    }
 }

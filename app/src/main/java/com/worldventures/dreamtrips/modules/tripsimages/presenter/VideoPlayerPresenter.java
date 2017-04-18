@@ -6,12 +6,12 @@ import android.content.IntentFilter;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.video.utils.HeadphonesPlugReceiver;
 
-public class VideoPlayerPresenter extends ActivityPresenter<VideoPlayerPresenter.View> {
+public class VideoPlayerPresenter<T extends VideoPlayerPresenter.View> extends ActivityPresenter<T> {
 
    private HeadphonesPlugReceiver headphonesPlugReceiver;
 
    @Override
-   public void takeView(View view) {
+   public void takeView(T view) {
       super.takeView(view);
       registerHeadphonesPlugReceiver();
    }

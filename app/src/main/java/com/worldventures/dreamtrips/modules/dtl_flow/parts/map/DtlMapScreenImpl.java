@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,7 +32,9 @@ import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
@@ -65,6 +68,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @InjectView(R.id.noGoogleContainer) FrameLayout noGoogleContainer;
    @InjectView(R.id.redoMerchants) View redoMerchants;
    @InjectView(R.id.loadMoreMerchants) View loadMoreMerchants;
+
+   @InjectView(R.id.btn_filter_merchant_food) View filterFood;
+   @InjectView(R.id.btn_filter_merchant_entertainment) View filterEntertainment;
+   @InjectView(R.id.btn_filter_merchant_spa) View filterSpa;
 
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
 
@@ -131,6 +138,29 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       dtlToolbar.setFilterEnabled(!isDefault);
    }
 
+    @Override
+    public void updateMerchantType(List<String> type) {
+        int idResource = 0;
+
+       if (type != null ) {
+          if (type.size() > 1) {
+             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
+                filterFood.setSelected(true);
+                idResource = R.string.dtlt_search_hint;
+             }
+          } else {
+             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
+                filterEntertainment.setSelected(true);
+                idResource = R.string.filter_merchant_entertainment;
+             } else if (type.get(0).equals(FilterData.SPAS)) {
+                filterSpa.setSelected(true);
+                idResource = R.string.filter_merchant_spa;
+             }
+          }
+       }
+       updateFiltersView(idResource);
+    }
+
    private void checkMapAvailable() {
       if (MapsInitializer.initialize(getActivity()) != ConnectionResult.SUCCESS) {
          destroyMap();
@@ -185,6 +215,30 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @OnClick(R.id.redoMerchants)
    public void onRedoMerchantsClick() {
       getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_food)
+   public void onFilterFoodClick() {
+      if (!filterFood.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
+      }
+   }
+
+   @OnClick(R.id.btn_filter_merchant_entertainment)
+   public void onFilterEntertainmentClick() {
+      if (!filterEntertainment.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
+      }
+   }
+
+   @OnClick(R.id.btn_filter_merchant_spa)
+   public void onFilterSpaClick() {
+      if (!filterSpa.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
+      }
    }
 
    @Override
@@ -371,5 +425,30 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
          infoContainer.removeAllViews();
          getPresenter().onMarkerPopupDismiss();
       }
+   }
+
+   private void updateFiltersView(int stringResource) {
+
+      ViewUtils.setCompatDrawable(filterFood, MerchantTypeUtil.filterMapDrawable(filterFood));
+
+      ViewUtils.setCompatDrawable(filterEntertainment, MerchantTypeUtil.filterMapDrawable(filterEntertainment));
+
+      ViewUtils.setCompatDrawable(filterSpa, MerchantTypeUtil.filterMapDrawable(filterSpa));
+
+      ViewUtils.setTextColor((Button) filterFood, MerchantTypeUtil.filterMerchantColor(filterFood));
+
+      ViewUtils.setTextColor((Button) filterEntertainment, MerchantTypeUtil.filterMerchantColor(filterEntertainment));
+
+      ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
+
+      if (stringResource != 0 && dtlToolbar != null) {
+         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
+      }
+   }
+
+   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+      getPresenter().onLoadMerchantsType(merchantType);
+      updateFiltersView(stringResource);
+      getPresenter().loadAmenities(merchantType);
    }
 }

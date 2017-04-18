@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
@@ -69,6 +70,9 @@ public interface SnappyRepository {
    String DOCUMENTS = "DOCUMENTS";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
+   String UPDATE_REQUIREMENT = "UPDATE_REQUIREMENT";
+   String UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP = "UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP";
+
    String NOTIFICATIONS = "notifications";
    String UNDEFINED_FEED_ITEM = "undefined";
    String PHOTO_FEED_ITEM = "photo";
@@ -117,6 +121,14 @@ public interface SnappyRepository {
    void saveLastSuggestedPhotosSyncTime(long time);
 
    long getLastSuggestedPhotosSyncTime();
+
+   void saveAppUpdateRequirement(UpdateRequirement updateRequirement);
+
+   UpdateRequirement getAppUpdateRequirement();
+
+   void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp);
+
+   long getAppUpdateOptionalDialogConfirmedTimestamp();
 
    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
 

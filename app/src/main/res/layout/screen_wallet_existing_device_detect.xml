@@ -68,7 +68,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/white_text_color"
+            android:textColor="@android:color/white"
             android:textSize="12sp"
             tools:text="0000001231"
             />

@@ -62,6 +62,7 @@ import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<T, P> implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
+   public static final String BLANK_PAGE = "about:blank";
 
    @Inject protected StaticPageProvider provider;
    @Inject protected HeaderProvider headerProvider;
@@ -143,12 +144,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          @Override
          public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            isLoading = false;
-            if (!(isDetached() || isRemoving() || refreshLayout == null)) {
-               weakHandler.post(() -> {
-                  if (refreshLayout != null) refreshLayout.setRefreshing(false);
-               });
-            }
+            getPresenter().pageLoaded(url);
          }
 
          @Override
@@ -319,6 +315,16 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             });
 
       if (savedState != null) webView.restoreState(savedState);
+   }
+
+   @Override
+   public void hideLoadingProgress() {
+      isLoading = false;
+      if (!(isDetached() || isRemoving() || refreshLayout == null)) {
+         weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         });
+      }
    }
 
    @Override
@@ -572,27 +578,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    @Layout(R.layout.fragment_webview)
-   public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
-
-      @Override
-      protected String getURL() {
-         return provider.getEnrollMemberUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         webView.getSettings().setLoadWithOverviewMode(true);
-         webView.getSettings().setUseWideViewPort(true);
-      }
-
-      @Override
-      protected void track() {
-         getPresenter().track(Route.ENROLL_MEMBER);
-      }
-   }
-
-   @Layout(R.layout.fragment_webview)
    public static class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<MerchantIdBundle> {
 
       @Override
@@ -611,28 +596,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       protected void track() {
          getPresenter().track(Route.ENROLL_MERCHANT);
       }
-   }
-
-   @Layout(R.layout.fragment_webview)
-   public static class EnrollRepFragment extends AuthorizedStaticInfoFragment {
-
-      @Override
-      protected String getURL() {
-         return provider.getEnrollRepUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         webView.getSettings().setLoadWithOverviewMode(true);
-         webView.getSettings().setUseWideViewPort(true);
-      }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-         TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
-      }
-
    }
 
    @Layout(R.layout.fragment_webview)

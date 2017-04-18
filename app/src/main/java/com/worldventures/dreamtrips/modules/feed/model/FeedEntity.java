@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public interface FeedEntity extends Serializable, UidItem {
+public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
 
    User getOwner();
 
@@ -42,5 +42,5 @@ public interface FeedEntity extends Serializable, UidItem {
    void syncLikeState(FeedEntity feedEntity);
 
    @Nullable
-   String getLanguageFrom();
+   String getLanguage();
 }

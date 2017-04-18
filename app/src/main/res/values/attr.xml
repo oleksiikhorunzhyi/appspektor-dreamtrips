@@ -127,4 +127,7 @@
       <attr name="infoViewImage" format="reference"/>
    </declare-styleable>
 
+   <declare-styleable name="TranslateView">
+      <attr name="translatedTextColor" format="reference"/>
+   </declare-styleable>
 </resources>

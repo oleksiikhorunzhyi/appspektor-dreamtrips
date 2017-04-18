@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.modules.video.presenter;
 
+import android.content.Context;
+import android.net.Uri;
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -143,6 +147,21 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
       cachedEntityDelegate.cancelCaching(entity, getPathForCache(entity));
       TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, entity
             .getName());
+   }
+
+   public void onPlayVideo(Video video) {
+      Context context = activityRouter.getContext();
+      CachedEntity videoEntity = video.getCacheEntity();
+      Uri parse = Uri.parse(video.getVideoUrl());
+      if (videoEntity.isCached(activityRouter.getContext())) {
+         parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
+      }
+
+      activityRouter.openPlayerActivity(parse, video.getVideoName(), obtainVideoLanguage(video), getClass());
+   }
+
+   protected String obtainVideoLanguage(Video video) {
+      return !TextUtils.isEmpty(video.getLanguage())? video.getLanguage() : "null";
    }
 
    private String getPathForCache(CachedEntity entity) {

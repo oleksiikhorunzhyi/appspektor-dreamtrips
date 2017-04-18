@@ -31,6 +31,7 @@ android {
    compileSdkVersion 25
    buildToolsVersion "25.0.2"
 
+   def APPLICATION_PACKAGE_PROD = "com.worldventures.dreamtrips"
    // App version
    def versionMajor = 1
    def versionMinor = 19
@@ -62,8 +63,8 @@ android {
    def ALLOW_BUILD_LOG = true
    def BUILD_LOG_TAG = "BUILD_LOG"
    //
-   def apptentiveEnabled = project.hasProperty("apptentive") ?
-         project.getProperties().get("apptentive").equals("true") : true
+   def qaAutomationModeEnabled = project.hasProperty("qa_automation_mode") ?
+         project.getProperties().get("qa_automation_mode") : false
    //
    def CONFIG_MAP_DEFAULT = [
          'DreamTripsApi'        : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
@@ -71,8 +72,10 @@ android {
          'MESSENGER_API_URL'    : '"dtmsgapp-dev.worldventures.biz"',
          'NEWRELIC_API_KEY'     : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
          'UPLOADERY_API_URL'    : '"http://techery-dt-staging-uploadery.techery.io"',
-         'SMART_CARD_SDK_CLIENT': '"nxtid"',
-         'NXT_API'              : '"https://demo.nxt-security.com/api/services/evtservice/v2"'
+         'VERSION_CHECK_API_URL': '"http://qafortius-ucservices.wvhservices.com/"',
+         'NXT_API'              : '"https://demo.nxt-security.com/api/services/evtservice/v2"',
+         'SMART_CARD_SDK_CLIENT': '"nxtid"'
+
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
@@ -117,7 +120,7 @@ android {
    ]
 
    defaultConfig {
-      applicationId "com.worldventures.dreamtrips"
+      applicationId = APPLICATION_PACKAGE_PROD
       //
       archivesBaseName = "DreamTrips"
       versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
@@ -128,6 +131,7 @@ android {
       //
       multiDexEnabled true
       //
+      buildConfigField 'String', 'APPLICATION_PACKAGE_PROD', "\"${APPLICATION_PACKAGE_PROD}\""
       buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
       buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
       buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
@@ -137,6 +141,7 @@ android {
       buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
       buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
       resValue "string", "facebook_app_id", "761062457321921"
+      resValue "string", "fb_login_protocol_scheme", "fb761062457321921"
       //
       buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
       buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
@@ -157,11 +162,12 @@ android {
       //
       buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
       buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
-      buildConfigField 'boolean', 'APPTENTIVE_ENABLED', "${apptentiveEnabled}"
+      buildConfigField 'boolean', 'QA_AUTOMATION_MODE_ENABLED', "${qaAutomationModeEnabled}"
+      //
+      buildConfigField 'String', 'SURVEY_API_TOKEN', '"7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"'
       //
       manifestPlaceholders = [:]
       manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
-      manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
    }
 
    testOptions {
@@ -408,6 +414,7 @@ dependencies {
    // Di
    compile 'com.squareup.dagger:dagger:1.2.2'
    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+   apt files('libs/apt/dagger-proguard-helper-processor-1.0.1-SNAPSHOT.jar')
    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
    compile 'javax.annotation:jsr250-api:1.0'
    // janet
@@ -443,10 +450,7 @@ dependencies {
    compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
    //
    compile 'me.dm7.barcodescanner:zxing:1.9'
-   compile('com.facebook.android:facebook-android-sdk:3.23.1') {
-      exclude module: 'bolts-android'
-      exclude module: 'bolts-tasks'
-   }
+   compile 'com.facebook.android:facebook-android-sdk:4.18.0'
    compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
       transitive = true;
    }
@@ -454,7 +458,7 @@ dependencies {
       transitive = true;
    }
    compile 'com.newrelic.agent.android:android-agent:5.8.4'
-   compile 'com.apptentive:apptentive-android:2.0.1@aar'
+   compile 'com.apptentive:apptentive-android:3.4.0@aar'
    compile 'com.github.techery:job-executor:0.1.1'
    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
@@ -492,7 +496,7 @@ dependencies {
    compile 'com.github.techery:material-range-bar:db6fec9fdd'
    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
    compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
-   compile 'me.relex:circleindicator:1.1.5@aar'
+   compile 'me.relex:circleindicator:1.2.2@aar'
    compile 'com.ms-square:expandableTextView:0.1.4'
    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'

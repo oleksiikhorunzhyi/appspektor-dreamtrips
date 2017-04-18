@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.bucketlist.analytics.BucketItemAddedFromPopularAnalyticsAction;
+import com.worldventures.dreamtrips.modules.bucketlist.analytics.BucketPopularTabViewAnalyticsAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -17,7 +20,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
@@ -27,6 +29,8 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    @Inject BucketInteractor bucketInteractor;
 
    private BucketItem.BucketType type;
+
+   @State String query;
 
    public BucketPopularPresenter(BucketItem.BucketType type) {
       super();
@@ -40,6 +44,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    }
 
    public void onSearch(String query) {
+      this.query = query;
       if (query.length() > 2) {
          bucketInteractor.getPopularBucketItemSuggestionsPipe()
                .createObservable(new GetPopularBucketItemSuggestionsCommand(type, query))
@@ -49,6 +54,10 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                      .onFail(this::handleError)
                      .onSuccess(command -> onSearchSucceed(command.getResult())));
       }
+   }
+
+   public void onSelected() {
+      analyticsInteractor.analyticsActionPipe().send(new BucketPopularTabViewAnalyticsAction(type));
    }
 
    private void onSearchSucceed(List<PopularBucketItem> items) {
@@ -77,11 +86,11 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                   .id(String.valueOf(popularBucketItem.getId()))
                   .status(done ? COMPLETED : NEW)
                   .build()))
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
                   .onSuccess(createBucketItemHttpAction -> {
                      BucketItem bucketItem = createBucketItemHttpAction.getResult();
+                     analyticsInteractor.analyticsActionPipe().send(new BucketItemAddedFromPopularAnalyticsAction(query));
                      bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
                            .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
                      view.notifyItemWasAddedToBucketList(bucketItem);

@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 
-import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
@@ -30,6 +32,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripIm
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageLikedAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedInteractor feedInteractor;
-   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
+   @Inject TranslationFeedInteractor translationFeedInteractor;
 
    private FlagDelegate flagDelegate;
 
@@ -56,6 +59,8 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      setupTranslationState();
+      subscribeToTranslation();
       subscribeToLikesChanges();
       loadEntity();
    }
@@ -64,6 +69,19 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    public void onInjected() {
       super.onInjected();
       flagDelegate = new FlagDelegate(flagsInteractor);
+   }
+
+   private void setupTranslationState() {
+      boolean ownPost = photo.getOwner() != null &&
+            photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean emptyPostText = TextUtils.isEmpty(photo.getFSDescription());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
+      boolean emptyPostLanguage = TextUtils.isEmpty(photo.getLanguage());
+      if (ownPost || emptyPostText || ownLanguage || emptyPostLanguage) {
+         view.hideTranslationButton();
+      } else {
+         view.showTranslationButton();
+      }
    }
 
    private void loadEntity() {
@@ -84,6 +102,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
                         view.showContentWrapper();
                      }
                      setupActualViewState();
+                     setupTranslationState();
                   })
                   .onFail(this::handleError));
    }
@@ -91,12 +110,12 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void onDeleteAction() {
       tripImagesInteractor.deletePhotoPipe()
-            .createObservable(new DeletePhotoCommand(photo.getFSId()))
+            .createObservable(new DeletePhotoCommand(photo))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
                   .onSuccess(deletePhotoCommand -> {
                      view.informUser(context.getString(R.string.photo_deleted));
-                     entityDeletedEventDelegate.post(photo);
+                     view.back();
                   })
                   .onFail(this::handleError));
    }
@@ -200,7 +219,34 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       return photo;
    }
 
+   public void onTranslateClicked() {
+      translationFeedInteractor.translatePhotoPipe().send(new TranslatePhotoCommand(photo));
+   }
+
+   private void subscribeToTranslation() {
+      translationFeedInteractor.translatePhotoPipe()
+            .observe()
+            .filter(commandState -> commandState.action.getPhoto().equals(photo))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<TranslatePhotoCommand>()
+                  .onStart(command -> view.showTranslationInProgress())
+                  .onSuccess(command -> view.showTranslation(command.getResult(), command.getPhoto().getLanguage()))
+                  .onFail(this::photoTranslationError));
+   }
+
+   private void photoTranslationError(TranslatePhotoCommand action, Throwable e) {
+      handleError(action, e);
+      view.showTranslationButton();
+   }
+
    public interface View extends SocialFullScreenPresenter.View, FlagDelegate.View {
+      void showTranslationButton();
+
+      void hideTranslationButton();
+
+      void showTranslation(String translation, String languageFrom);
+
+      void showTranslationInProgress();
 
       void showProgress();
 
@@ -209,5 +255,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       void showContentWrapper();
 
       void openEdit(EditPhotoBundle bundle);
+
+      void back();
    }
 }

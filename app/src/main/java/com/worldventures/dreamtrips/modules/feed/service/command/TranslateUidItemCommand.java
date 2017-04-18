@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -34,8 +34,8 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   protected T mapResult(String translatedText) {
-      translatableItem.setTranslation(translatedText);
+   private T mapResult(String translation) {
+      translatableItem.setTranslation(translation);
       translatableItem.setTranslated(true);
       return translatableItem;
    }
@@ -45,12 +45,11 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
       return R.string.error_fail_to_translate_text;
    }
 
-   public static TranslateCommentCommand forComment(Comment comment, String languageTo) {
-      return new TranslateCommentCommand(comment, languageTo);
-   }
-
-   public static TranslatePostCommand forPost(PostFeedItem postFeedItem, String languageTo) {
-      return new TranslatePostCommand(postFeedItem, languageTo);
+   @CommandAction
+   public static class TranslateFeedEntityCommand extends TranslateUidItemCommand<FeedEntity> {
+      public TranslateFeedEntityCommand(FeedEntity translatableItem, String languageTo) {
+         super(translatableItem, languageTo);
+      }
    }
 
    @CommandAction
@@ -60,10 +59,4 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
       }
    }
 
-   @CommandAction
-   public static class TranslatePostCommand extends TranslateUidItemCommand<PostFeedItem> {
-      public TranslatePostCommand(PostFeedItem translatableItem, String languageTo) {
-         super(translatableItem, languageTo);
-      }
-   }
 }

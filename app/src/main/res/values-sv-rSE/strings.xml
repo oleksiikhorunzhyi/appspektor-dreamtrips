@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="web_title">Webb</string>
-   <string name="new_photo">Webb</string>
-   <string name="detailed_trip">Detaljerad resa</string>
    <string name="membership">Medlemskap</string>
    <string name="trip_images">Resebilder</string>
    <string name="bucket_list">Drömresmål</string>
    <string name="my_profile">Min profil</string>
-   <string name="terms">Villkor</string>
    <string name="terms_of_service">Användarvillkor</string>
-   <string name="faq">Vanliga frågor</string>
    <string name="privacy">Sekretesspolicy</string>
    <string name="cookie">POLICY FÖR COOKIEFILER</string>
-   <string name="action_settings">Inställningar</string>
    <string name="action_quick_input">Lägg till snabbt</string>
    <string name="action_popular_string">Lägg till från populära</string>
    <string name="action_done">Klar</string>
    <string name="action_cancel">Avbryt</string>
-   <string name="action_enroll">Registrera dig</string>
    <string name="action_filter">Filtrera</string>
    <string name="action_map">Karta</string>
    <string name="action_like">Gilla</string>
-   <string name="title_activity_login">Inloggningsaktivitet</string>
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menyn har öppnats</string>
    <string name="drawer_close">Meny stängd</string>
@@ -33,16 +25,12 @@
    <string name="member_images">Medlemsbilder</string>
    <string name="my_images">Mina bilder</string>
    <string name="you_should_be_here">DU SKULLE VARA HÄR</string>
-   <string name="title_activity_full_screen_photo">DreamTrips</string>
-   <string name="skip_login">Hoppa över inloggning</string>
    <string name="duration">%1$d nätter</string>
    <string name="smth_went_wrong">Något gick fel =(</string>
    <string name="inspire_me">Ge mig inspiration</string>
    <string name="three_sixty">360-upplevelsen</string>
    <string name="book_it">Boka den!</string>
    <string name="reload_trip_details">Läs in resedetaljer igen</string>
-   <string name="title_book_it">Boka den</string>
-   <string name="title_enroll_it">Registrera dig</string>
    <string name="user_id_hint">WV-medlems-id</string>
    <string name="user_password_hint">WV-medlemslösenord</string>
    <string name="type_your_reason">Ange ditt skäl</string>
@@ -59,24 +47,13 @@
    <string name="trip_details">Detaljer om resa</string>
    <string name="trip_featured">UTVALD</string>
    <string name="profile_from_hint">Från</string>
-   <string name="profile_location_hint">Bor i</string>
    <string name="profile_enroll_hint">Registreringsdatum</string>
    <string name="profile_birth_hint">Födelsedatum</string>
    <string name="profile_user_id_hint">Användar-id</string>
    <string name="bucket_locations">Platser</string>
    <string name="bucket_activities">Aktiviteter</string>
    <string name="bucket_restaurants">Middagar</string>
-   <string name="photo_what">Vad</string>
-   <string name="photo_what_hint">Skriv en kort beskrivning av ditt foto</string>
-   <string name="photo_where">Var</string>
-   <string name="photo_where_hint">Ange plats</string>
-   <string name="photo_when">När</string>
-   <string name="photo_when_date_hint">Datum</string>
-   <string name="photo_when_time_hint">Tid</string>
-   <string name="photo_tags">Taggar</string>
-   <string name="photo_tags_hint">Lägg till kommaseparerade taggar här</string>
    <string name="photo_deleted">Fotot har tagits bort</string>
-   <string name="photo_flagged">Fotot har taggats</string>
    <string name="delete_photo_title">Ta bort foto</string>
    <string name="delete_photo_text">Är du säker på att du vill ta bort fotot?</string>
    <string name="delete_photo_positiove">Ta bort</string>
@@ -89,17 +66,7 @@
    <string name="flag_description_positive">Acceptera</string>
    <string name="flag_description_negative">Avbryt</string>
    <string name="log_in">Logga in</string>
-   <string name="error_log_in">Ditt inloggnings-id och/eller lösenord är felaktigt – använd ditt medlems-id och lösenord till WorldVentures för att logga in</string>
-   <string name="error_image_not_loaded">Bilden har inte lästs in än</string>
-   <string name="error_while_loading">Fel vid inläsningen av bilden</string>
-   <string name="fab_select_album">Välj album</string>
-   <string name="fab_select_photo">Välj foto</string>
    <string name="fab_posted">Publiceringen på Facebook har genomförts</string>
-   <string-array name="photo_dialog_items">
-      <item>Ta foto</item>
-      <item>Välj foto</item>
-      <item>Välj från Facebook</item>
-   </string-array>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -109,25 +76,18 @@
       <item>Twitter</item>
       <item>Spara till galleriet</item>
    </string-array>
-   <string name="buffering">Buffrar …</string>
-   <string name="profile_select_avatar_header">Välj avatarbild</string>
-   <string name="profile_select_cover_header">Välj omslagsbild</string>
    <string name="error_internal_server">Internt serverfel</string>
    <string name="username_empty">Användarnamnet är tomt</string>
    <string name="username_not_valid">Användarnamnet är ogiltigt</string>
    <string name="password_empty">Lösenordet är tomt</string>
    <string name="password_not_valid">Lösenordet är ogiltigt</string>
-   <string name="bucket_list_my_title">Lägg till objekt till listan över drömresmål</string>
    <string name="bucket_list_location_popular">Populära drömresmål</string>
-   <string name="bucket_list_activity_popular">Populära aktiviteter för drömresmål</string>
-   <string name="bucket_list_dinning_popular">Populära drömresmål: restauranger och underhållning</string>
    <string name="bucket_list_edit_header">Redigera drömresmål</string>
    <string name="bucket_list_add">Lägg till %1$s till dina drömresmål</string>
    <string name="bucket_list_create_message">Du har för närvarande inga drömresmål. Du kan välja bland populära drömresmål eller skapa dina egna</string>
    <string name="bucket_list_choose">Välj från populära drömresmål</string>
    <string name="bucket_list_create_new">Skapa min egen lista</string>
    <string name="bucket_list_action_create_error">Det gick inte att lägga till drömresmål</string>
-   <string name="bucket_list_action_update_error">Det gick inte att uppdatera drömresmål</string>
    <string name="bucket_list_action_change_order_error">Det gick inte att uppdatera drömresmål</string>
    <string name="bucket_list_action_delete_error">Det gick inte att ta bort drömresmål</string>
    <string name="bucket_hint_title">Titel</string>
@@ -135,55 +95,36 @@
    <string name="bucket_hint_description_text">Ange din beskrivning här</string>
    <string name="bucket_hint_time">Tid</string>
    <string name="bucket_hint_time_text">När vill du uppnå det här målet?</string>
-   <string name="bucket_hint_location">Plats</string>
-   <string name="bucket_hint_location_text">Finns det en specifik plats för det här målet?</string>
    <string name="bucket_hint_people">Personer</string>
    <string name="bucket_hint_people_text">Lägg till personer som du vill uppnå målet med</string>
    <string name="bucket_hint_tags">Taggar</string>
    <string name="bucket_hint_tags_text">Lägg till taggar som beskriver ditt drömresmål</string>
-   <string name="bucket_item_edit_done">Drömresmålet har sparats!</string>
-   <string name="bucket_item_edit_error">Ett fel inträffade när resmålet sparades</string>
-   <string name="bucket_item_photos">Lägg till bilder</string>
    <string name="category">Kategori</string>
    <string name="bucket_added">%1$s har lagts till bland dina drömresmål</string>
    <string name="trip_liked">%1$s har lagts till bland dina favoriter</string>
    <string name="trip_unliked">%1$s har tagits bort från dina favoriter</string>
    <string name="congrats">Grattis!</string>
-   <string name="bucket_delete_undo">Objektet har tagits bort</string>
-   <string name="undo">ÅNGRA</string>
-   <string name="location">plats</string>
-   <string name="activity">aktivitet</string>
-   <string name="dinning">och äta middag</string>
    <string name="show_all">Visa alla</string>
    <string name="show_completed">Visa slutförda</string>
    <string name="show_to_do">Visa ATT GÖRA</string>
    <string name="rep_tools">Representantverktyg</string>
    <string name="success_stories">Framgångsberättelser</string>
-   <string name="to_do">Att göra</string>
-   <string name="completed">Klar</string>
    <string name="action_share">Dela</string>
    <string name="recent_header">Nyligen tillagd 360-upplevelse</string>
    <string name="recently_added">Nyligen tillagda</string>
    <string name="featured_header">Utvald 360-upplevelse</string>
-   <string name="title_activity_success_story_details">FramgångsberättelseDetaljerAktivitet</string>
-   <string name="hello_world">Hej världen!</string>
    <string name="ss_has_been_added_to_favorites">Framgångsberättelsen har lagts till bland dina favoriter</string>
    <string name="ss_has_been_removed_from_favorites">Framgångsberättelsen har tagits bort från dina favoriter</string>
    <string name="ss_filter_show_favorites">Visa favoriter</string>
    <string name="other_travel">Boka resa</string>
    <string name="training_videos">Instruktionsvideor</string>
-   <string name="error_while_sync">Något gick fel</string>
-   <string name="can_not_like_photo">Du kan inte gilla fotot</string>
    <string name="like">%1$d gillar</string>
    <string name="likes">%1$d gillar</string>
    <string name="comment_single">%1$d kommentar</string>
    <string name="comments">%1$d kommentarer</string>
-   <string name="wrong_image">Fel bild</string>
-   <string name="could_not_load">Det gick inte att läsa in </string>
    <string name="someday">Någon gång</string>
    <string name="who">Vem: </string>
    <string name="tags">Taggar: </string>
-   <string name="my_pictures">Mina bilder</string>
    <string name="today">Idag</string>
    <string name="rep_enrollment">Registrering av representant</string>
    <string name="no_connection">Ingen internetanslutning</string>
@@ -205,16 +146,12 @@
       <item>Nästa år</item>
       <item>Någon gång</item>
    </string-array>
-   <string name="choose_fb">Välj från Facebook</string>
-   <string name="choose_camera">Ta ett foto</string>
    <string name="choose_gallery">Välj ett foto</string>
    <string name="uploading_photo">Fotot överförs</string>
    <string name="bucket_photo_cover">Ange som omslagsbild</string>
    <string name="bucket_photo_delete">Ta bort</string>
    <string name="add_pictures">Lägg till bilder</string>
-   <string name="select_photo">Välj foto</string>
    <string name="bucket_photo_dialog">Foto från favoritresmål</string>
-   <string name="download_in_progress">Hämtning pågår</string>
    <string name="delete_cached_video_title">Video</string>
    <string name="delete_cached_video_text">Är du säker på att du vill ta bort videon från det lokala cacheminnet?</string>
    <string name="fail">Misslyckades</string>
@@ -234,7 +171,6 @@
    <string name="action_send">Skicka</string>
    <string name="action_preview">Förhandsgranska</string>
    <string name="title_edit_template">Redigera mall</string>
-   <string name="title_activity_invite">Bjud in</string>
    <string name="invitation_continue">Fortsätt</string>
    <string name="invitation_select_contacts">Välj kontakter</string>
    <string name="invitation_select_template">Välj mall för inbjudan</string>
@@ -243,69 +179,47 @@
    <string name="invitation_to">Till:</string>
    <string name="invitation_subject">Ämne:</string>
 
-   <string name="invite_add_last_name">Efternamn</string>
-   <string name="preview_template">Förhandsgranska mall</string>
    <string name="selected">Valt: %1$d</string>
-   <string name="error_personal_message_is_empty">Det personliga meddelandet kan inte vara tomt</string>
    <string name="email_is_not_valid">Ogiltig e-postadress</string>
    <string name="invitation_deselect_all">Avmarkera alla</string>
    <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det <a href=\"%3$s\">här</a>.]]></string>
-   <string name="terms_and_conditions"><![CDATA[Jag har läst och godkänner <a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">användarvillkoren</a>]]></string>
    <string name="invite_add_photo">Lägg till foto</string>
    <string name="invite_select_first">Välj kontakter först</string>
    <string name="filters_show_favorite">VISA FAVORITRESOR</string>
    <string name="filter_recently_added">NYLIGEN TILLAGDA</string>
    <string name="bucketlist_share" formatted="false">Bland mina drömresmål: %1$s</string>
-   <string name="choose_multiselect">Välj foton</string>
    <string name="last_sent">Senast skickade</string>
    <string name="search_trips">Sök efter resor</string>
    <string name="search">Sök</string>
 
-   <string name="profile_update_info">Uppdatera info</string>
    <string name="profile_zero_trip_images">Resebilder</string>
    <string name="profile_zero_bucket_list">Drömresmål</string>
    <string name="profile_trip_images">%1$d resebilder</string>
    <string name="profile_bucket_list">%1$d drömresmål</string>
-   <string name="profile_post">Publicera</string>
    <string name="profile_friends">Vänner</string>
-   <string name="profile_messages">Meddelanden</string>
-   <string name="profile_more">Mer</string>
    <string name="profile_platinum">Platinummedlem</string>
    <string name="profile_golden">Goldmedlem</string>
    <string name="profile_dt_points">&lt;b&gt;%1$s&lt;/b&gt; DT-poäng</string>
    <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt; Rovia Bucks</string>
-   <string name="bucket_delete_dialog">Är du säker på att du vill ta bort det här drömresmålet?</string>
 
    <string name="action_add_to_bucket">Lägg till bland drömresmål</string>
-   <string name="profile_dream_trips">%1$d drömresor</string>
    <string name="profile_add_friend">Lägg till vän</string>
    <string name="profile_friend_request" formatted="false">%1$s har skickat en vänförfrågan</string>
-   <string name="profile_accept">Bekräfta</string>
-   <string name="profile_reject">Datum för begäran</string>
-   <string name="title_activity_friends">Vänner</string>
-   <string name="profile_request">Förfrågan</string>
    <string name="profile_respond">Svara</string>
    <string name="profile_waiting">Väntar</string>
    <string name="social_my_friends">Mina vänner</string>
    <string name="social_requests">Förfrågningar</string>
    <string name="social_add_friend_yes">Ja</string>
    <string name="social_add_friend_no">Nej</string>
-   <string name="social_add_friend_title">Lägg till vän</string>
-   <string name="social_add_friend_content" formatted="false">Lägga till %1$s som din vän?</string>
    <string name="social_postfix_mutual_friends_one">%1$d gemensam vän</string>
    <string name="social_postfix_mutual_friends">%1$d gemansamma vänner</string>
    <string name="social_user_wrapper_cell_actions">Åtgärder</string>
    <string name="social_remove_friend_title">Ta bort vän</string>
-   <string name="action_social_show_all">Visa alla</string>
    <string name="friend_search_placeholder">Sök efter namn, grupper</string>
-   <string name="bucket_photo_upload_error">Fotot kunde inte överföras</string>
-   <string name="training_video_hint">Välj språk</string>
    <string name="friend_reject">Avvisa</string>
    <string name="friend_accept">Acceptera</string>
    <string name="friend_hide">Dölj</string>
    <string name="friend_cancel">Avbryt</string>
-   <string name="request_incoming">Inkommande</string>
-   <string name="request_outgoing">Utgående</string>
    <string name="friend_global_search">Sök bland alla medlemmar</string>
    <string name="friend_add_to">Lägg till i:</string>
    <string name="bucket_current_cover">Aktuellt omslagsfoto</string>
@@ -328,14 +242,11 @@
    <string name="comment_add_hint">Lägg till en kommentar</string>
    <string name="comment_post_btn_title">Publicera</string>
    <string name="comment_view_more">Se fler kommentarer</string>
-   <string name="comment_edit">Redigera kommentar</string>
    <string name="save">Spara</string>
    <string name="comment_delete">Ta bort kommentar</string>
    <string name="comment_delete_caption">Är du säker på att du vill ta bort kommentaren?</string>
    <string name="comment_delete_confirm">Ja, ta bort den!</string>
    <string name="post_visibility_public">Offentligt</string>
-   <string name="post_hint">Vad sysslar du med?</string>
-   <string name="photo_hint">Säg någonting om fotot …</string>
    <string name="post">Publicera</string>
 
    /////////Date time relative strings
@@ -345,19 +256,13 @@
    <string name="minutes_ago">%1$d minuter sedan</string>
    <string name="months_ago">%1$d månader sedan</string>
    <string name="weeks_ago">%1$d veckor sedan</string>
-   <string name="seconds_ago">%1$d sekunder sedan</string>
    <string name="minute_ago">En minut sedan</string>
    <string name="hour_ago">En timme sedan</string>
    <string name="last_month">För en månad sedan</string>
    <string name="last_week">För en vecka sedan</string>
    <string name="last_year">Förra året</string>
    <string name="yesterday">I går</string>
-   <string name="year_ago">Ett år sedan</string>
-   <string name="month_ago">En månad sedan</string>
-   <string name="week_ago">En vecka sedan</string>
-   <string name="day_ago">En dag sedan</string>
 
-   <string name="social_remove_and_block_friend_title">Ta bort vän och blockera</string>
    <string name="social_friend_preference_title">Redigera vänpreferenser</string>
    <string name="friend_pref_create_new_list">Skapa ny lista</string>
    <string name="friend_pref_lists_title">Listor</string>
@@ -367,13 +272,10 @@
    <string name="social_unfriend_confiramation_cancel">Nej</string>
    <string name="feed_title">Aktivitetsflöde</string>
    <string name="post_cancel_message">Är du säker på att du vill kasta bort ändringarna?</string>
-   <string name="pictures">Bilder</string>
    <string name="bucket_list_foreign_message">Den här användaren har inga drömresmål för närvarande</string>
 
    <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
    <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
-   <string name="configuration_acitve_button">Försök igen</string>
-   <string name="configuration_failed">Konfigurationen kunde inte läsas in</string>
    <string name="email_app_choose_dialog_title">Välj program</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; gillar detta</string>
@@ -382,7 +284,6 @@
    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;%1$s och %2$d till&lt;/b&gt; gillar detta</string>
 
    <string name="users_who_liked_title">Personer som gillar</string>
-   <string name="users_who_liked_empty">Ingen gillar detta</string>
    <string name="notifications_title">Aviseringar</string>
    <string name="accept_request">har accepterat din förfrågan</string>
    <string name="reject_request">tackade nej till din förfrågan</string>
@@ -390,17 +291,14 @@
    <string name="send_request">skicka en förfrågan till din vän</string>
 
    <string name="post_delete">Ta bort uppdatering</string>
-   <string name="post_edit">Redigera uppdatering</string>
    <string name="post_delete_caption">Är du säker på att du vill ta bort uppdateringen?</string>
    <string name="post_delete_confirm">Ja, ta bort den!</string>
 
    <string name="photo_delete">Ta bort foto</string>
-   <string name="photo_edit">Redigera foto</string>
    <string name="photo_delete_caption">Är du säker på att du vill ta bort fotot?</string>
    <string name="photo_edit_error">Det gick inte att redigera foto</string>
 
    <string name="bucket_delete">Ta bort drömresmål</string>
-   <string name="bucket_edit">Redigera drömresmål</string>
    <string name="bucket_delete_caption">Är du säker på att du vill ta bort drömresmålet?</string>
 
    <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
@@ -443,7 +341,6 @@
    <string name="feed_share_post">Dela uppdatering</string>
    <string name="feed_share_photos">Dela foto</string>
    <string name="feed_view_profile_btn">Visa profil</string>
-   <string name="feed_close_friends">Nära vänner</string>
    <string name="start_searching">Skriv för att börja söka</string>
 
    <string name="people_liked_one">%1$s gillar</string>
@@ -463,7 +360,6 @@
    <string name="no_friends">Du har inga vänner i den här listan än</string>
    <string name="feed_add_friends">Lägg till vänner</string>
    <string name="all_friends">Alla vänner</string>
-   <string name="trip_view_and_book"><![CDATA[Visa och boka den]]></string>
    <string name="accept_all">Acceptera alla</string>
    <string name="request_count_desc">Du har %1$d inkommande vänförfrågningar</string>
 
@@ -481,7 +377,6 @@
 
    <string name="tag_photo">taggade dig i</string>
 
-   <string name="user_already_exists">%1$s finns redan</string>
    <string name="photo_tag_title">Tryck på valfri plats för att tagga personer</string>
    <string name="profile_friend_formatter">%1$d vän</string>
    <string name="profile_friends_formatter">%1$d vänner</string>
@@ -526,18 +421,10 @@
    <string name="error_fail_to_load_success_stories">Det gick inte att ladda framgångshistorier</string>
    <string name="error_fail_to_like_success_story">Det gick inte att gilla framgångshistoria</string>
    <string name="error_fail_to_unlike_success_story">Det gick inte att ogilla framgångshistoria</string>
-   <string name="error_fail_to_load_settings">Det gick inte att ladda inställning</string>
    <string name="error_fail_to_update_settings">Det gick inte att uppdatera inställningar</string>
-   <string name="error_fail_to_load_bl">Det gick inte att ladda önskelista</string>
-   <string name="error_fail_to_delete_bl">Det gick inte att ta bort objekt på önskelista</string>
-   <string name="error_fail_to_create_bl">Det gick inte att skapa objekt på önskelista</string>
-   <string name="error_fail_to_edit_bl">Det gick inte att redigera objekt på önskelista</string>
    <string name="error_fail_to_load_categories">Det gick inte att ladda kategorier</string>
    <string name="error_fail_to_load_suggestions">Det gick inte att ladda förslag</string>
    <string name="error_fail_to_load_popular_bl">Det gick inte att ladda populära objekt för önskelista</string>
-   <string name="error_fail_to_add_bl_item">Det gick inte att lägga till objekt</string>
-   <string name="error_fail_to_upload_bl_photo">Det gick inte att lägga upp foto</string>
-   <string name="error_fail_to_delete_bl_photo">Det gick inte att ta bort foto</string>
    <string name="error_fail_to_load_circles">Det gick inte att ladda cirklar</string>
    <string name="error_fail_to_load_feed">Det gick inte att ladda flöde</string>
    <string name="error_fail_to_load_item_details">Det gick inte att ladda detaljer för objekt</string>
@@ -550,7 +437,6 @@
    <string name="error_fail_to_edit_comment">Det gick inte att redigera kommentar</string>
    <string name="error_fail_to_load_flag_reason">Det gick inte att ladda flaggorsaker</string>
    <string name="error_fail_to_flag_item">Det gick inte att flagga objekt</string>
-   <string name="error_fail_to_accept_friend_requests">Det gick inte att godkänna vänförfrågningar</string>
    <string name="error_fail_to_accept_friend_request">Det gick inte att godkänna vänförfrågan</string>
    <string name="error_fail_to_reject_friend_request">Det gick inte att avvisa vänförfrågan</string>
    <string name="error_fail_to_hide_friend_request">Det gick inte att dölja vänförfrågan</string>
@@ -565,29 +451,18 @@
    <string name="error_failed_to_load_mutual_friends">Det gick inte att ladda gemensamma vänner</string>
    <string name="error_failed_to_load_notifications">Det gick inte att ladda meddelanden</string>
    <string name="error_failed_to_accept_terms_and_conditions">Det gick inte att godkänna villkor</string>
-   <string name="error_failed_to_load_my_images">Det gick inte att ladda mina bilder</string>
    <string name="error_failed_to_load_member_images">Det gick inte att ladda medlemsbilder</string>
-   <string name="error_failed_to_load_ysbh_images">Det gick inte att ladda \"you should be here\"-bilder</string>
    <string name="error_failed_to_load_inspire_images">Det gick inte att ladda \"inspire me\"-bilder</string>
-   <string name="error_failed_to_create_image">Det gick inte att skapa bild</string>
-   <string name="error_failed_to_edit_image">Det gick inte att redigera bild</string>
    <string name="error_failed_to_delete_image">Det gick inte att ta bort bild</string>
    <string name="string_failed_to_load_trips">Det gick inte att ladda resor</string>
    <string name="error_failed_to_load_activities">Det gick inte att ladda aktiviteter</string>
    <string name="error_failed_to_load_users">Det gick inte att ladda användare</string>
-   <string name="error_failed_to_load_feedback_reasons">Det gick inte att ladda feedback</string>
-   <string name="error_fail_to_tag_people">"Det gick inte att tagga personer"</string>
    <string name="error_fail_to_delete_tag">Det gick inte att ta bort tagg</string>
    <string name="error_fail_to_load_feedback_reasons">Det gick inte att ladda feedback</string>
    <string name="error_fail_to_send_feedback">Det gick inte att skicka feedback</string>
-   <string name="error_fail_to_upload_image">Det gick inte att lägga upp bild</string>
    <string name="error_fail_to_load_timeline">Det gick inte att ladda tidslinje</string>
-   <string name="error_fail_to_download_video">Det gick inte att hämta videoklipp</string>
    <string name="error_fail_to_get_invitations">Det gick inte att hämta inbjudningar</string>
-   <string name="error_fail_to_create_invitation">Det gick inte att skapa inbjudan</string>
-   <string name="error_fail_to_send_invitation">Det gick inte att skicka inbjudan</string>
    <string name="error_fail_to_invitation_templates">Det gick inte att hämta inbjudningsmallar</string>
-   <string name="error_fail_to_fill_template">Det gick inte att fylla i mall</string>
    <string name="error_fail_to_get_preview_for_template">Det gick inte att hämta förhandsgranskning för mall</string>
    <string name="error_fail_to_locales">Det gick inte att hämta språk</string>
    <string name="error_fail_to_login">Det gick inte att logga in</string>
@@ -600,7 +475,7 @@
    <string name="error_fail_to_load_documents">Det gick inte att läsa in dokument</string>
    <string name="tag_people">Tagga personer</string>
 
-   <string name="uploading_post_status_progress_singular">Fotot överförs …</string>
+   <string name="uploading_post_status_progress_singular">Fotot överförs ...</string>
    <string name="uploading_post_status_progress_plural">Överför %1$d foton…</string>
    <string name="uploading_post_status_paused">Överföring pausad</string>
    <string name="uploading_post_status_waiting">Väntar</string>
@@ -615,8 +490,6 @@
    <string name="uploading_post_cancel_upload_message">Vill du avbryta överföringen?</string>
    <string name="uploading_post_cancel_upload_positive_button">Ja</string>
    <string name="uploading_post_cancel_upload_negative_button">Nej</string>
-
-   <string name="say_something">Berätta något för världen</string>
 
    <string name="update">Uppdatera</string>
    <string name="add_location">Lägg till plats</string>
@@ -654,11 +527,16 @@
    <string name="cancel_cached_podcast_title">Podcast</string>
    <string name="cancel_cached_podcast_text">Är du säker på att du vill avbryta filhämtningen?</string>
    <string name="audio_app_not_found_exception">Ingen ljudapp hittades</string>
-   <string name="complete_action_with">Slutför åtgärden med</string>
    <string name="error_fail_to_load_podcast">Podcasten kunde inte läsas in</string>
    <string name="podcasts_button_resume">Sammanfattning</string>
    <string name="podcasts_button_pause">Paus</string>
    <string name="podcasts_button_stop">Avbryt</string>
+
+   <string name="app_update_alert_title">Uppdatering tillgänglig</string>
+   <string name="app_update_alert_neutral_button">Inte nu</string>
+   <string name="app_update_alert_pos_button">Uppdatera</string>
+   <string name="app_update_alert_optional_update_message">Programvaruuppdateringar är redo för DreamTrips-appen. För en förbättrad upplevelse, uppdatera innan %1$s</string>
+   <string name="app_update_alert_force_update_message">Programvaruuppdateringar är redo för DreamTrips-appen. Uppdateringen tar bara några minuter att installera. </string>
 
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Säg någonting, lägg till en #hashtag</string>
@@ -695,4 +573,7 @@
 
    <string name="documents">Dokument</string>
    <string name="documents_empty_text">Det gick inte att läsa in dokumenten just nu.</string>
+
+   <string name="show_original">Visa ursprunglig</string>
+   
 </resources>

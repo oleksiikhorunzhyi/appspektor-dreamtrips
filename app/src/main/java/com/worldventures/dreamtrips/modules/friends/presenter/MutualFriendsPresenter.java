@@ -20,16 +20,11 @@ public class MutualFriendsPresenter extends BaseUserListPresenter<MutualFriendsP
    @Override
    protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
       friendsInteractor.getMutualFriendsPipe()
-            .createObservable(new GetMutualFriendsCommand(userId))
+            .createObservable(new GetMutualFriendsCommand(userId, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetMutualFriendsCommand>()
                   .onSuccess(getMutualFriendsCommand -> onSuccessAction.call(getMutualFriendsCommand.getResult()))
                   .onFail(this::onError));
-   }
-
-   @Override
-   public void scrolled(int totalItemCount, int lastVisible) {
-      // now api doesn't have pagination therefore lazy loading is disabled
    }
 
    @Override

@@ -58,7 +58,7 @@
             android:layout_marginBottom="74dp"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/white_text_color"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/font_normal"
             tools:text="0000001231"
             />

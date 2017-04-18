@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.api.photos.DeletePhotoHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,21 +14,21 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DeletePhotoCommand extends CommandWithError<String> implements InjectableAction {
+public class DeletePhotoCommand extends CommandWithError<Photo> implements InjectableAction {
 
    @Inject Janet janet;
 
-   private String photoId;
+   private Photo photo;
 
-   public DeletePhotoCommand(String photoId) {
-      this.photoId = photoId;
+   public DeletePhotoCommand(Photo photo) {
+      this.photo = photo;
    }
 
    @Override
-   protected void run(CommandCallback<String> callback) throws Throwable {
+   protected void run(CommandCallback<Photo> callback) throws Throwable {
       janet.createPipe(DeletePhotoHttpAction.class)
-            .createObservableResult(new DeletePhotoHttpAction(photoId))
-            .map(deletePhotoHttpAction -> photoId)
+            .createObservableResult(new DeletePhotoHttpAction(photo.getUid()))
+            .map(deletePhotoHttpAction -> photo)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

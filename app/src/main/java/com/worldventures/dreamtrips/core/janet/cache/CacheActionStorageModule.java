@@ -15,10 +15,16 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBuc
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
+import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookAlbumsStorage;
+import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookPhotosStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.AccountTimelineStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage;
@@ -175,5 +181,41 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {
       return new DocumentsStorage(new PaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFacebookAlbumsStorage() {
+      return new FacebookAlbumsStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFacebookPhotosStorage() {
+      return new FacebookPhotosStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFeedItemsStorage() {
+      return new FeedStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTimelineStorage() {
+      return new AccountTimelineStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideUserTimelineStorage() {
+      return new UserTimelineStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideHashtagFeedStorage() {
+      return new HashtagFeedStorage();
    }
 }

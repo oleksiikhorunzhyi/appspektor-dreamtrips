@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.feed.presenter.delegate;
 
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CancelCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.PauseCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.ResumeCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CancelCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.PauseCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.ResumeCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
 
 public class UploadingPresenterDelegate implements UploadingListenerPresenter {

@@ -28,10 +28,8 @@ public class PhotoCell extends AbstractDelegateCell<IFullScreenObject, CellDeleg
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView draweeViewPhoto;
    @Optional @InjectView(R.id.user_photo) SmartAvatarView imageViewUser;
-   @Optional @InjectView(R.id.user_location) TextView userLocation;
    @Optional @InjectView(R.id.user_name) TextView userName;
    @Optional @InjectView(R.id.title) TextView title;
-   @Optional @InjectView(R.id.shot_location) TextView shotLocation;
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
@@ -43,8 +41,6 @@ public class PhotoCell extends AbstractDelegateCell<IFullScreenObject, CellDeleg
    protected void syncUIStateWithModel() {
       if (imageViewUser != null) {
          User user = getModelObject().getUser();
-         this.userLocation.setText(user.getLocation());
-         this.shotLocation.setText(getModelObject().getFSLocation());
          this.title.setText(getModelObject().getFSTitle());
          this.userName.setText(user.getFullName());
          imageViewUser.setup(getModelObject().getUser(), injectorProvider.get());

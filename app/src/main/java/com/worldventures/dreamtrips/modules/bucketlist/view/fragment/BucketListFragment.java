@@ -50,6 +50,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAu
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
@@ -61,7 +62,8 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFragment<T> implements BucketListPresenter.View {
+public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFragment<T>
+      implements BucketListPresenter.View, SelectablePagerFragment {
 
    public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
    public static final int MIN_SYMBOL_COUNT = 3;
@@ -149,6 +151,11 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       stateDelegate.setRecyclerView(recyclerView);
    }
 
+   @Override
+   public void onSelectedFromPager() {
+      getPresenter().onSelected();
+   }
+
    private void initAdapter() {
       adapter = new BucketItemAdapter(getActivity(), this);
       if (isSwipeEnabled()) {
@@ -227,7 +234,6 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
             v.setText(null);
             getPresenter().addToBucketList(s);
             SoftInputUtil.showSoftInputMethod(quickInputEditText);
-            getPresenter().trackAnalyticsActionBucket(TrackingHelper.ATTRIBUTE_ADD);
          }
          return false;
       });

@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetails
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetailsPresenter, FeedItemDetailsBundle> implements FeedItemDetailsPresenter.View {
@@ -31,6 +33,12 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
       adapter.registerCell(BucketFeedItem.class, BucketFeedItemDetailsCell.class);
       adapter.registerCell(PhotoFeedItem.class, PhotoFeedItemDetailsCell.class);
       adapter.registerCell(TripFeedItem.class, TripFeedItemDetailsCell.class);
+
+      BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());
+      adapter.registerDelegate(PhotoFeedItem.class, delegate);
+      adapter.registerDelegate(TripFeedItem.class, delegate);
+      adapter.registerDelegate(BucketFeedItem.class, delegate);
+      adapter.registerDelegate(PostFeedItem.class, delegate);
    }
 
    @Override

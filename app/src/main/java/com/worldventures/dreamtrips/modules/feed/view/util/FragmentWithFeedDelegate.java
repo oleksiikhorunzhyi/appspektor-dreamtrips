@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsB
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
@@ -36,7 +38,9 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
@@ -120,7 +124,7 @@ public class FragmentWithFeedDelegate {
     */
    public void resetTranslatedStatus() {
       Queryable.from(adapter.getItems()).forEachR(item -> {
-         if (item instanceof FeedItem) ((FeedItem) item).setTranslated(false);
+         if (item instanceof FeedItem) ((FeedItem) item).getItem().setTranslated(false);
       });
       notifyDataSetChanged();
    }
@@ -153,6 +157,34 @@ public class FragmentWithFeedDelegate {
 
    public void openFriends(FriendMainBundle bundle) {
       router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity().data(bundle).build());
+   }
+
+   public void openTextualPostEdit(FragmentManager fragmentManager, TextualPost textualPost) {
+      @IdRes int containerId = R.id.container_details_floating;
+      router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
+            .containerId(containerId)
+            .fragmentManager(fragmentManager)
+            .build());
+      router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forFragment()
+            .containerId(containerId)
+            .backStackEnabled(false)
+            .fragmentManager(fragmentManager)
+            .data(new EditPostBundle(textualPost))
+            .build());
+   }
+
+   public void openPhotoEdit(FragmentManager fragmentManager, Photo photo) {
+      @IdRes int containerId = R.id.container_details_floating;
+      router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
+            .containerId(containerId)
+            .fragmentManager(fragmentManager)
+            .build());
+      router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forFragment()
+            .containerId(containerId)
+            .backStackEnabled(false)
+            .fragmentManager(fragmentManager)
+            .data(new EditPhotoBundle(photo))
+            .build());
    }
 
    public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {

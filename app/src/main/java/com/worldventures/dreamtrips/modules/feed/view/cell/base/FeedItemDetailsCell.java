@@ -30,12 +30,12 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import timber.log.Timber;
 
-public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDelegate<I>> extends BaseFeedCell<I, D> {
+public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeedCell.FeedCellDelegate<I>> extends BaseFeedCell<I, D> {
 
    FeedItemCommonDataHelper feedItemCommonDataHelper;
 
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity protected Provider<Injector> injectorProvider;
    @Inject FeedViewInjector feedViewInjector;
 
    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;

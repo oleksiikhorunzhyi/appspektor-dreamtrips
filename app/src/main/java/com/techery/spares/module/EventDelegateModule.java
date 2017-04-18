@@ -1,8 +1,6 @@
 package com.techery.spares.module;
 
-import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
 import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
-import com.techery.spares.utils.delegate.EditCommentCloseDelegate;
 import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
@@ -33,18 +31,6 @@ public class EventDelegateModule {
    @Singleton
    ScreenChangedEventDelegate provideScreenChangedDelegate() {
       return new ScreenChangedEventDelegate();
-   }
-
-   @Provides
-   @Singleton
-   CloseDialogEventDelegate provideCloseDialogEventDelegate() {
-      return new CloseDialogEventDelegate();
-   }
-
-   @Provides
-   @Singleton
-   EditCommentCloseDelegate provideEditCommentCloseDelegate() {
-      return new EditCommentCloseDelegate();
    }
 
    @Provides

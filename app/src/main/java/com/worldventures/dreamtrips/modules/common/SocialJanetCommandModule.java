@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCatego
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
@@ -30,6 +31,7 @@ import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityC
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
@@ -49,6 +51,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggesti
 import com.worldventures.dreamtrips.modules.feed.service.command.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
@@ -102,6 +105,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspi
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
@@ -134,7 +139,7 @@ import dagger.Module;
       FeedByHashtagCommand.Refresh.class,
       FeedByHashtagCommand.LoadNext.class,
       TranslateUidItemCommand.TranslateCommentCommand.class,
-      TranslateUidItemCommand.TranslatePostCommand.class,
+      TranslateUidItemCommand.TranslateFeedEntityCommand.class,
       TranslateTextCachedCommand.class,
       AcceptTermsCommand.class,
       GetSuccessStoriesCommand.class,
@@ -153,6 +158,7 @@ import dagger.Module;
       SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class,
       CreatePostCommand.class,
+      PostCreatedCommand.class,
       EditPostCommand.class,
       DeletePostCommand.class,
       CreateCommentCommand.class,
@@ -223,5 +229,9 @@ import dagger.Module;
       CleanTempDirectoryCommand.class,
       CheckTripsByUidCommand.class,
       GetDocumentsCommand.class,
+      TranslatePhotoCommand.class,
+      TranslateBucketItemCommand.class,
+      SendAnalyticsIfNeedAction.class,
+      GetAlbumsCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

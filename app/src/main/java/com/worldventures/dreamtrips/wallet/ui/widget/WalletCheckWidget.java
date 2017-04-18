@@ -59,6 +59,7 @@ public class WalletCheckWidget extends RelativeLayout {
 
    private void init(Context context, @Nullable AttributeSet attrs) {
       LayoutInflater.from(getContext()).inflate(R.layout.wallet_check_widget, this);
+      if(isInEditMode()) return;
       ButterKnife.inject(this);
 
       if (attrs != null) {

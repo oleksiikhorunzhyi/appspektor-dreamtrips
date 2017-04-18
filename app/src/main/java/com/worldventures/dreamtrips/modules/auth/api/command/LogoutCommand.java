@@ -9,6 +9,8 @@ import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.util.CrashlyticsTracker;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.session.NxtSessionHolder;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
@@ -32,7 +34,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWar
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
-import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 
 import java.security.KeyStoreException;
 import java.util.Arrays;
@@ -67,7 +68,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SmartCardSyncManager smartCardSyncManager;
+   @Inject NxtSessionHolder nxtSessionHolder;
 
    private boolean userDataCleared;
 
@@ -98,7 +99,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    private Observable clearWallet() {
       return Observable.create(subscriber -> {
          sessionWalletActionPipeCreator.clearReplays();
-         smartCardSyncManager.disconnect();
+         nxtSessionHolder.destroy();
          subscriber.onNext(null);
          subscriber.onCompleted();
       });

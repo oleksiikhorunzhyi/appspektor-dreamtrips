@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,6 +18,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class SetLockStateCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject SmartCardInteractor smartCardInteractor;
 
    private final boolean lock;
 
@@ -25,9 +28,13 @@ public class SetLockStateCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.lock(lock));
       janet.createPipe(LockDeviceAction.class)
             .createObservableResult(new LockDeviceAction(lock))
-            .subscribe(action -> callback.onSuccess(null), callback::onFail);
+            .subscribe(action -> callback.onSuccess(null), throwable -> {
+               smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.lock(!lock));
+               callback.onFail(throwable);
+            });
    }
 
    public boolean isLock() {

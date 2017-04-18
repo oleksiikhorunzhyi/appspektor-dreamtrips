@@ -7,6 +7,12 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.worldventures.dreamtrips.R;
+
+/**
+ *  Behavior is used in {@link R.layout.screen_wallet_cardlist}
+ */
+@SuppressWarnings("unused")
 public class ScrollFABBehavior extends FloatingActionButton.Behavior {
 
    public ScrollFABBehavior(Context context, AttributeSet attrs) {
@@ -26,7 +32,13 @@ public class ScrollFABBehavior extends FloatingActionButton.Behavior {
       super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
 
       if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
-         child.hide();
+         //todo: this behavior was broken in 25.1.0 revision
+         child.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+            @Override
+            public void onHidden(FloatingActionButton fab) {
+               child.setVisibility(View.INVISIBLE);
+            }
+         });
       } else if (dyConsumed < 0 && child.getVisibility() != View.VISIBLE) {
          child.show();
       }

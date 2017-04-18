@@ -1,12 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.firmware
 
-import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.model.TestFirmwareUpdateData
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService
-import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand
-import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.SmartCardActionService
@@ -17,7 +14,6 @@ import io.techery.janet.smartcard.mock.device.DeviceStorage
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import rx.Observable
-import rx.observers.TestSubscriber
 
 class FirmwareInteractorSpec : BaseSpec({
 
@@ -30,34 +26,7 @@ class FirmwareInteractorSpec : BaseSpec({
          deviceStore.batteryLevel = "100"
       }
 
-      context("Pre installation checks") {
 
-         it("smart card is ready for updates") {
-            val testSubscriber = runPreInstallationCommandSubscriber()
-            AssertUtil.assertActionSuccess(testSubscriber, { it.result.bluetoothIsEnabled() })
-            AssertUtil.assertActionSuccess(testSubscriber, { it.result.smartCardIsConnected() })
-            AssertUtil.assertActionSuccess(testSubscriber, { it.result.smartCardIsCharged() })
-         }
-
-         it("smart card has low battery level") {
-            deviceStore.batteryLevel = "43"
-
-            val testSubscriber = runPreInstallationCommandSubscriber()
-            AssertUtil.assertActionSuccess(testSubscriber, { it.result.bluetoothIsEnabled() })
-            AssertUtil.assertActionSuccess(testSubscriber, { it.result.smartCardIsConnected() })
-            AssertUtil.assertActionSuccess(testSubscriber, { !it.result.smartCardIsCharged() })
-         }
-
-         it("bluetooth is disable") {
-            bluetoothService = createBluetoothService(enable = false)
-
-            val testSubscriber = runPreInstallationCommandSubscriber()
-            AssertUtil.assertActionSuccess(testSubscriber, { !it.result.bluetoothIsEnabled() })
-            AssertUtil.assertActionSuccess(testSubscriber, { !it.result.smartCardIsConnected() })
-            AssertUtil.assertActionSuccess(testSubscriber, { !it.result.smartCardIsCharged() })
-         }
-
-      }
    }
 }) {
    companion object {
@@ -104,15 +73,6 @@ class FirmwareInteractorSpec : BaseSpec({
          return TestFirmwareRepositry(
                TestFirmwareUpdateData(scId, true, false, false, TestFirmware())
          )
-      }
-
-      fun runPreInstallationCommandSubscriber(): TestSubscriber<ActionState<PreInstallationCheckCommand>> {
-         val testSubscriber: TestSubscriber<ActionState<PreInstallationCheckCommand>> = TestSubscriber()
-         janet.createPipe(PreInstallationCheckCommand::class.java)
-               .createObservable(PreInstallationCheckCommand())
-               .toBlocking()
-               .subscribe(testSubscriber)
-         return testSubscriber
       }
 
       fun Janet.connectToSmartCardSdk() {

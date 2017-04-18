@@ -8,11 +8,13 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -27,18 +29,18 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.exception.NotConnectedException;
-import io.techery.janet.smartcard.model.Record;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
-   @Inject SmartCardInteractor smartCardInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Navigator navigator;
+   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardChargingPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -48,6 +50,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      fetchUserPhoto();
       observeCharger();
       observeBankCardCreation();
       //observeConnectionStatus();
@@ -56,17 +59,25 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       //TODO: uncomment by request in future
    }
 
+   private void fetchUserPhoto() {
+      smartCardInteractor.smartCardUserPipe()
+            .createObservable(SmartCardUserCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
+                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto().photoUrl()))
+            );
+   }
+
    private void observeConnectionStatus() {
-      smartCardInteractor.activeSmartCardPipe()
+      smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(Command::getResult)
-            .map(SmartCard::connectionStatus)
+            .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::checkConnection);
 
-      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
    private void observeCharger() {
@@ -103,11 +114,11 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeBankCardCreation() {
-      smartCardInteractor.bankCardPipe()
+      recordInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
-                  .onFail(createErrorHandlerBuilder(CreateBankCardCommand.class).build())
+            .subscribe(OperationActionStateSubscriberWrapper.<CreateRecordCommand>forView(getView().provideOperationDelegate())
+                  .onFail(createErrorHandlerBuilder(CreateRecordCommand.class).build())
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
    }
@@ -138,12 +149,12 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       navigator.goBack();
    }
 
-   private void cardSwiped(Record card) {
-      smartCardInteractor.bankCardPipe().send(new CreateBankCardCommand(card));
+   private void cardSwiped(io.techery.janet.smartcard.model.Record card) {
+      recordInteractor.bankCardPipe().send(new CreateRecordCommand(card));
    }
 
-   private void bankCardCreated(BankCard bankCard) {
-      navigator.withoutLast(new AddCardDetailsPath(bankCard));
+   private void bankCardCreated(Record record) {
+      navigator.withoutLast(new AddCardDetailsPath(record));
    }
 
    public void showConnectionErrorScreen() {
@@ -152,12 +163,14 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
 
    public interface Screen extends WalletScreen {
 
-      void checkConnection(SmartCard.ConnectionStatus connectionStatus);
+      void checkConnection(ConnectionStatus connectionStatus);
 
       void showSwipeError();
 
       void trySwipeAgain();
 
       void showSwipeSuccess();
+
+      void userPhoto(String photoUrl);
    }
 }

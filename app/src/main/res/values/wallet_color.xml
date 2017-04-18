@@ -50,4 +50,9 @@
    <color name="wallet_delete_button_color">#e72a3c</color>
    <color name="wallet_laser_line_color">#99dc1431</color>
 
+
+   <color name="wallet_edit_text_normal_state">#000</color>
+   <color name="wallet_edit_text_disabled_state">#8f8f8f</color>
+   <color name="wallet_edit_text_focused_state">#006699</color>
+
 </resources>

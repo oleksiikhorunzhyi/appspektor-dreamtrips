@@ -18,7 +18,7 @@ public class AddCardDetailsAction extends BaseCardDetailsAction {
    public static AddCardDetailsAction forBankCard(Record record, boolean online) {
       String addState = online ? "Online" : "Offline";
       AddCardDetailsAction action = new AddCardDetailsAction(addState);
-      action.fillPaycardInfo(record);
+      action.fillRecordDetails(record);
       return action;
    }
 }

@@ -4,6 +4,9 @@ import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.oncard.SendOnCardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
@@ -24,10 +27,12 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCard
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
@@ -70,6 +75,7 @@ import dagger.Module;
             RestoreOfflineModeDefaultStateCommand.class,
             UpdateRecordCommand.class,
             DeleteRecordCommand.class,
+            SyncSmartCardCommand.class,
             SyncRecordsCommand.class,
             SmartCardAvatarCommand.class,
             SetupUserDataCommand.class,
@@ -85,6 +91,7 @@ import dagger.Module;
             SetStealthModeCommand.class,
             ActiveSmartCardCommand.class,
             ConnectSmartCardCommand.class,
+            SetSmartCardTimeCommand.class,
             FetchCardPropertiesCommand.class,
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,
@@ -97,6 +104,9 @@ import dagger.Module;
             WalletAnalyticsCommand.class,
             WalletFirmwareAnalyticsCommand.class,
             PaycardAnalyticsCommand.class,
+            TokenizationAnalyticsLocationCommand.class,
+            SendOnCardAnalyticsCommand.class,
+            GetOnCardAnalyticsCommand.class,
             SetDisableDefaultCardDelayCommand.class,
             FetchAndStoreDefaultAddressInfoCommand.class,
             RemoveSmartCardDataCommand.class,

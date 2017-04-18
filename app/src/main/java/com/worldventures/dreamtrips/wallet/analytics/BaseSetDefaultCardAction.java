@@ -10,8 +10,8 @@ abstract class BaseSetDefaultCardAction extends BaseCardDetailsWithDefaultAction
    @Attribute("setdefaultwhere") String setDefaultWhere;
 
    @Override
-   public void fillPaycardInfo(Record record) {
-      super.fillPaycardInfo(record);
+   public void fillRecordDetails(Record record) {
+      super.fillRecordDetails(record);
       defaultPaycard = "Yes";
    }
 }

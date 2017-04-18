@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.oncard.SendOnCardAnalyticsCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.WriteActionPipe;
@@ -19,6 +20,7 @@ public class AnalyticsInteractor {
    private final ActionPipe<PaycardAnalyticsCommand> paycardAnalyticsCommandPipe;
    private final ActionPipe<LocateCardAnalyticsCommand> locateCardAnalyticsCommandActionPipe;
    private final ActionPipe<WalletFirmwareAnalyticsCommand> walletFirmwareAnalyticsPipe;
+   private final ActionPipe<SendOnCardAnalyticsCommand> onCardAnalyticsPipe;
 
    public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       analyticsActionPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
@@ -27,6 +29,7 @@ public class AnalyticsInteractor {
       paycardAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(PaycardAnalyticsCommand.class, Schedulers.io());
       locateCardAnalyticsCommandActionPipe = sessionActionPipeCreator.createPipe(LocateCardAnalyticsCommand.class, Schedulers.io());
       walletFirmwareAnalyticsPipe = sessionActionPipeCreator.createPipe(WalletFirmwareAnalyticsCommand.class, Schedulers.io());
+      onCardAnalyticsPipe = sessionActionPipeCreator.createPipe(SendOnCardAnalyticsCommand.class, Schedulers.io());
    }
 
    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {
@@ -51,5 +54,9 @@ public class AnalyticsInteractor {
 
    public WriteActionPipe<WalletFirmwareAnalyticsCommand> walletFirmwareAnalyticsPipe() {
       return walletFirmwareAnalyticsPipe;
+   }
+
+   public WriteActionPipe<SendOnCardAnalyticsCommand> onCardAnalyticsPipe() {
+      return onCardAnalyticsPipe;
    }
 }

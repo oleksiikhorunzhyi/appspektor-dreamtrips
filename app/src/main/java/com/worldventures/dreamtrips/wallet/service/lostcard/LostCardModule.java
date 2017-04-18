@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -28,8 +27,7 @@ import dagger.Provides;
             DetectGeoLocationCommand.class,
             FetchAddressWithPlacesCommand.class,
             CardTrackingStatusCommand.class,
-            WalletLocationCommand.class,
-            TokenizationAnalyticsLocationCommand.class
+            WalletLocationCommand.class
       },
       library = true, complete = false)
 public class LostCardModule {

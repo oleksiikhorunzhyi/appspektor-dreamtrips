@@ -26,12 +26,12 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -68,9 +68,9 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject RecordInteractor recordInteractor;
    @Inject WalletNetworkService networkService;
 
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
@@ -272,11 +272,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> { /*ignore here*/ });
 
       //noinspection ConstantConditions
-      recordInteractor.recordsSyncPipe()
+      smartCardInteractor.smartCardSyncPipe()
             .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(recordInteractor.recordsSyncPipe()))
+            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.smartCardSyncPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncPayments()).create());
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncSmartCard()).create());
    }
 
    private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
@@ -354,7 +354,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showSyncFailedOptionsDialog();
 
-      OperationView<SyncRecordsCommand> provideOperationSyncPayments();
+      OperationView<SyncSmartCardCommand> provideOperationSyncSmartCard();
 
       OperationView<SyncRecordOnNewDeviceCommand> provideReSyncOperationView();
    }

@@ -49,11 +49,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       subscribeToLoadTrips();
       subscribeToFilterEvents();
       subscribeToLikesChanges();
-   }
 
-   @Override
-   public void onResume() {
-      super.onResume();
       loadWithStatus = true;
       reload();
    }

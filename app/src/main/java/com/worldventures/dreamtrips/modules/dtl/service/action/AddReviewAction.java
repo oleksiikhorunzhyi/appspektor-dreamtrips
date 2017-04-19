@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
+import android.util.Log;
+
 import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -62,6 +64,7 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    protected void run(CommandCallback<CommentReview> callback) throws Throwable {
       callback.onProgress(0);
 
+      Log.e("1","1");
       List<BasePhotoPickerModel> selectedImagesList = getSelectedImagesList();
 
       janet.createPipe(AddReviewHttpAction.class)
@@ -72,6 +75,7 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
             .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
             .subscribe(callback::onSuccess, callback::onFail);
 
+      Log.e("2","2");
       /*
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpAction(actionParams, userEmail, userNickName, reviewText,
@@ -148,9 +152,9 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       public AddReviewHttpActionBuilder addFiles(List<BasePhotoPickerModel> imagesList){//List<File> files) {
 
          for(int i=0; i<imagesList.size(); i++){
+            Log.e("Image: ",""+imagesList.get(i).getImageUri());
             files.add(i, new File(imagesList.get(i).getImageUri()));
          }
-
          //files.addAll(imagesList.get);
          return this;
       }
@@ -158,12 +162,15 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       public AddReviewHttpAction build() throws IOException {
          AddReviewHttpAction action =  null;
 
+         Log.e("file Size: ",""+files.size());
          if (files.size() == 1) {
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
                   this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile());
          } else if(files.size() == 2){
+            Log.e("15","15");
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
                   this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile());
+            Log.e("16","16");
          } else if(files.size() == 3){
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
                   this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile(), files.get(2).getAbsoluteFile());
@@ -175,6 +182,7 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
                   this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile(), files.get(2).getAbsoluteFile(), files.get(3).getAbsoluteFile(), files.get(4).getAbsoluteFile());
          }
 
+         Log.e("action ","action");
          return action;
       }
 

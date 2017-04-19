@@ -126,7 +126,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    @Override
-   public void postjESUS() {
+   public void post() {
       Observable.from(cachedCreationItems)
             .concatMap(item -> tripImagesInteractor.fetchLocationFromExifPipe()
                   .createObservableResult(new FetchLocationFromExifCommand(item.getFilePath()))

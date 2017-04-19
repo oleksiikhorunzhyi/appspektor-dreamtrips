@@ -64,7 +64,6 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    protected void run(CommandCallback<CommentReview> callback) throws Throwable {
       callback.onProgress(0);
 
-      Log.e("1", "1");
       List<BasePhotoPickerModel> selectedImagesList = getSelectedImagesList();
 
       janet.createPipe(AddReviewHttpAction.class)

@@ -12,11 +12,16 @@ import android.widget.FrameLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import java.util.ArrayList;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 import android.support.design.widget.Snackbar;
 
@@ -50,7 +55,10 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> {
-            getActivity().onBackPressed();
+            Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), getPath().getMerchant(), null, "");
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
         });
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);
@@ -71,6 +79,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
         bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
         bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, getPath().getMerchant().displayName());
+        bundle.putBoolean(OfferWithReviewFragment.IS_FROM_LIST_REVIEW, true);
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container_comments_detail, OfferWithReviewFragment.newInstance(bundle));

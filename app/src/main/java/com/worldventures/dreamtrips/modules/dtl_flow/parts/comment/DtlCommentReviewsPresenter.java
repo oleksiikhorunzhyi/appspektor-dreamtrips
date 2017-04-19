@@ -20,4 +20,6 @@ public interface DtlCommentReviewsPresenter extends DtlPresenter<DtlCommentRevie
     void onPostClick();
 
     void handleStringReview(String stringReview);
+
+    void navigateToListReview(String message);
 }

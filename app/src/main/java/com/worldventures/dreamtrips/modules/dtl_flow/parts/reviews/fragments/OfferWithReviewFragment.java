@@ -34,11 +34,13 @@ public class OfferWithReviewFragment extends Fragment {
    public static final String RATING_MERCHANT = "ratingMerchant";
    public static final String COUNT_REVIEW = "countReview";
    public static final String MERCHANT_NAME = "merchantName";
+   public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
    private ArrayList<ReviewObject> mArrayInfo;
 
    private float mRatingMerchant;
    private int mCountReview;
    private String mMerchantName;
+   private boolean mIsFromListReview = false;
 
    public OfferWithReviewFragment() {
    }
@@ -68,6 +70,7 @@ public class OfferWithReviewFragment extends Fragment {
       mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
       mCountReview = bundle.getInt(COUNT_REVIEW, 0);
       mMerchantName = bundle.getString(MERCHANT_NAME, "");
+      mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
       setRetainInstance(true);
 
       initRecycler();
@@ -82,7 +85,7 @@ public class OfferWithReviewFragment extends Fragment {
               new RecyclerClickListener() {
                  @Override
                  public void onClick(View view, int position) {
-                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId()));
+                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId(), mIsFromListReview));
                  }
 
                  @Override

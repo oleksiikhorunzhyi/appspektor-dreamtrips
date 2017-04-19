@@ -11,11 +11,18 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
 import javax.inject.Inject;
 
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 import io.techery.janet.ActionPipe;
 
 public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailReviewScreen, ViewState.EMPTY> implements DtlDetailReviewPresenter {
@@ -77,6 +84,43 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
         sendFlag();
     }
 
+    @Override
+    public void validateComingFrom() {
+        if (getView().isFromListReview()){
+            navigateToListReview("");
+        } else {
+            navigateToDetail("");
+        }
+    }
+
+    @Override
+    public void navigateToListReview(String message) {
+        try{
+            //TODO add merchant
+            Path path = new DtlReviewsPath(null, message);
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.pop();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void navigateToDetail(String message) {
+        try{
+            Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), null, null, message);
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.pop();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void onMerchantsLoaded(AddReviewAction action) {
         getView().onRefreshSuccess();
     }
@@ -90,6 +134,6 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
     }
 
     public String getIpAddress() {
-        return "190.99.101.25";
+        return NetworkUtils.getIpAddress(true);
     }
 }

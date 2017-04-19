@@ -105,7 +105,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
       toolbar.setNavigationIcon(R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> {
-         getPresenter().onBackPressed();
+         //getPresenter().onBackPressed();
          getActivity().onBackPressed();
       });
 
@@ -136,6 +136,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
       bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, merchant.displayName());
+      bundle.putBoolean(OfferWithReviewFragment.IS_FROM_LIST_REVIEW, false);
 
       FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
       transaction.replace(R.id.container_comments, OfferWithReviewFragment.newInstance(bundle));

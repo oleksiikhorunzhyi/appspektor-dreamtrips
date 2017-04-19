@@ -70,9 +70,9 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       postButton.setText(getPostButtonText());
       //
       adapter = new BaseDelegateAdapter(getContext(), this);
-      adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
-      adapter.registerCell(PostDescription.class, PostCreationTextCell.class);
-      adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {
+      adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);//Tag
+      adapter.registerCell(PostDescription.class, PostCreationTextCell.class);//hashtag
+      adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {//desc photo
          @Override
          public void onCellClicked(PostDescription model) {
             router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()

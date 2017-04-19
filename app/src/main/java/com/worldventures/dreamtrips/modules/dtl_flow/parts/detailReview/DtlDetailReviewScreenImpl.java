@@ -84,7 +84,8 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         inflateToolbarMenu(toolbar);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view ->
-              getActivity().onBackPressed());
+                getActivity().onBackPressed());
+              //getPresenter().validateComingFrom());
         toolbar.setTitle(getPath().getMerchant());
 
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -198,6 +199,11 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     @Override
     public String getMerchantId() {
         return getPath().getMerchantId();
+    }
+
+    @Override
+    public boolean isFromListReview() {
+        return getPath().isFromListReview();
     }
 
     @Override

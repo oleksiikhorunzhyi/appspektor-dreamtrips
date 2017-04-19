@@ -64,14 +64,13 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
 
       List<BasePhotoPickerModel> selectedImagesList = getSelectedImagesList();
 
-
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpActionBuilder().setActionParams(actionParams).setEmail(userEmail)
                         .setNickname(userNickName).setReviewText(reviewText).setRating(rating).setVerified(verified.toString())
-                        .setUserId(userId).setDeviceFingerPrint(deviceFingerprint).setAuthorIpAddress(authorIpAddress).addFiles(selectedImagesList).build()
+                        .setUserId(userId).setDeviceFingerPrint(deviceFingerprint).setAuthorIpAddress(authorIpAddress).addFiles(selectedImagesList).build())
             .map(AddReviewHttpAction::response)
             .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
-            .subscribe(callback::onSuccess, callback::onFail));
+            .subscribe(callback::onSuccess, callback::onFail);
 
       /*
       janet.createPipe(AddReviewHttpAction.class)
@@ -146,8 +145,13 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
          return this;
       }
 
-      public AddReviewHttpActionBuilder addFiles(List<File> files) {
-         files.addAll(files);
+      public AddReviewHttpActionBuilder addFiles(List<BasePhotoPickerModel> imagesList){//List<File> files) {
+
+         for(int i=0; i<imagesList.size(); i++){
+            files.add(i, new File(imagesList.get(i).getImageUri()));
+         }
+
+         //files.addAll(imagesList.get);
          return this;
       }
 

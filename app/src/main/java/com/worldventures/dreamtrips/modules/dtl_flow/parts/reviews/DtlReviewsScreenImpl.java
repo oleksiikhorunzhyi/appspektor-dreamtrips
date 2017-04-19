@@ -55,11 +55,8 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> {
-            //getActivity().onBackPressed();
             Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), getPath().getMerchant(), null, "");
             History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-            //historyBuilder.pop();
-            //historyBuilder.pop();
             historyBuilder.push(path);
             Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
         });

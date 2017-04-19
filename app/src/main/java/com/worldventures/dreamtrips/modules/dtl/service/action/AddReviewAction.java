@@ -58,13 +58,14 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       callback.onProgress(0);
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpAction(actionParams, userEmail, userNickName, reviewText,
-                  rating, verified.toString(), userId, deviceFingerprint, authorIpAddress, getFile(), getFile(), getFile(), getFile(), getFile()))
+                  rating, verified.toString(), userId, deviceFingerprint, authorIpAddress, getFile()))
             .map(AddReviewHttpAction::response)
             .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
+   //TODO: Change URL image route
    public File getFile() {
-      return new File("/mnt/sdcard/DCIM/Camera/IMG_20170405_100106.jpg");
+      return new File("");
    }
 }

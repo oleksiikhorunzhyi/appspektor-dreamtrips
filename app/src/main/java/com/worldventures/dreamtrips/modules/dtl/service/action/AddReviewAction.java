@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import android.util.Log;
-
 import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
 import com.worldventures.dreamtrips.core.janet.JanetModule;

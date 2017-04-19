@@ -94,6 +94,8 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
 
+      getPresenter().post();
+
       Bundle args = getArguments();
       bundle = args.getParcelable("data");
       merchant = bundle.getmMerchant();

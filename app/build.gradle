@@ -182,7 +182,7 @@ android {
       dev {
          dimension "build"
          applicationIdSuffix = DEV_CODE
-         //minSdkVersion 23
+         minSdkVersion 23
          ext.enableCrashlytics = false
          buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
          buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'

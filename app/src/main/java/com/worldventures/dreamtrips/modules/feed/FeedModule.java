@@ -13,6 +13,9 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Backgro
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -131,17 +134,20 @@ import de.greenrobot.event.EventBus;
             DtGalleryFragment.class,
             GalleryPresenter.class,
             ActionEntityFragment.class,
+            ActionReviewEntityFragment.class,
             ActionEntityPresenter.class,
             CreateTripImageFragment.class,
             CreateFeedPostFragment.class,
             CreateReviewPostFragment.class,
             CreateEntityFragment.class,
+            CreateReviewEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,
             LocationPresenter.class,
             SuggestedPhotosCell.class,
             SuggestionPhotoCell.class,
             PhotoPostCreationCell.class,
+            PhotoReviewPostCreationCell.class,
             PostCreationTextCell.class,
             SubPhotoAttachmentCell.class,
             PostFeedItemDetailsCell.class,

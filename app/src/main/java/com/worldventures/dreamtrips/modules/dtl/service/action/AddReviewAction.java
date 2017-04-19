@@ -42,7 +42,7 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    private final String authorIpAddress;
 
    public static AddReviewAction create(RequestReviewParams params, String userEmail, String userNickName, String reviewText,
-                                       String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress) {
+         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress) {
       return new AddReviewAction(params, userEmail, userNickName, reviewText,
             rating, verified, userId, deviceFingerprint, authorIpAddress);
    }
@@ -64,31 +64,24 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    protected void run(CommandCallback<CommentReview> callback) throws Throwable {
       callback.onProgress(0);
 
-      Log.e("1","1");
+      Log.e("1", "1");
       List<BasePhotoPickerModel> selectedImagesList = getSelectedImagesList();
 
       janet.createPipe(AddReviewHttpAction.class)
-            .createObservableResult(new AddReviewHttpActionBuilder().setActionParams(actionParams).setEmail(userEmail)
-                        .setNickname(userNickName).setReviewText(reviewText).setRating(rating).setVerified(verified.toString())
-                        .setUserId(userId).setDeviceFingerPrint(deviceFingerprint).setAuthorIpAddress(authorIpAddress).addFiles(selectedImagesList).build())
+            .createObservableResult(new AddReviewHttpActionBuilder().setActionParams(actionParams)
+                  .setEmail(userEmail)
+                  .setNickname(userNickName)
+                  .setReviewText(reviewText)
+                  .setRating(rating)
+                  .setVerified(verified.toString())
+                  .setUserId(userId)
+                  .setDeviceFingerPrint(deviceFingerprint)
+                  .setAuthorIpAddress(authorIpAddress)
+                  .addFiles(selectedImagesList)
+                  .build())
             .map(AddReviewHttpAction::response)
             .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
             .subscribe(callback::onSuccess, callback::onFail);
-
-      Log.e("2","2");
-      /*
-      janet.createPipe(AddReviewHttpAction.class)
-            .createObservableResult(new AddReviewHttpAction(actionParams, userEmail, userNickName, reviewText,
-                  rating, verified.toString(), userId, deviceFingerprint, authorIpAddress, getFile()))
-            .map(AddReviewHttpAction::response)
-            .map(attributes -> mapperyContext.convert(attributes, CommentReview.class))
-            .subscribe(callback::onSuccess, callback::onFail);
-            */
-   }
-
-   //TODO: Change URL image route
-   public File getFile() {
-      return new File("");
    }
 
    //TODO Refactor AddReviewHttpAction to support constructor with  ellipsis instead of overload
@@ -114,81 +107,77 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
          return this;
       }
 
-      public AddReviewHttpActionBuilder setNickname(String nickName){
+      public AddReviewHttpActionBuilder setNickname(String nickName) {
          this.nickName = nickName;
          return this;
       }
 
-      public AddReviewHttpActionBuilder setReviewText(String reviewText){
+      public AddReviewHttpActionBuilder setReviewText(String reviewText) {
          this.reviewText = reviewText;
          return this;
       }
 
-      public AddReviewHttpActionBuilder setRating(String rating){
+      public AddReviewHttpActionBuilder setRating(String rating) {
          this.rating = rating;
          return this;
       }
 
-      public AddReviewHttpActionBuilder setVerified(String verified){
+      public AddReviewHttpActionBuilder setVerified(String verified) {
          this.verified = verified;
          return this;
       }
 
-      public AddReviewHttpActionBuilder setUserId(String userId){
+      public AddReviewHttpActionBuilder setUserId(String userId) {
          this.userId = userId;
          return this;
       }
 
-      public AddReviewHttpActionBuilder setDeviceFingerPrint(String deviceFingerPrint){
+      public AddReviewHttpActionBuilder setDeviceFingerPrint(String deviceFingerPrint) {
          this.deviceFingerPrint = deviceFingerPrint;
          return this;
       }
 
-      public AddReviewHttpActionBuilder setAuthorIpAddress(String authorIpAddress){
+      public AddReviewHttpActionBuilder setAuthorIpAddress(String authorIpAddress) {
          this.authorIpAddress = authorIpAddress;
          return this;
       }
 
-      public AddReviewHttpActionBuilder addFiles(List<BasePhotoPickerModel> imagesList){//List<File> files) {
-
-         for(int i=0; i<imagesList.size(); i++){
-            Log.e("Image: ",""+imagesList.get(i).getImageUri());
-            files.add(i, new File(imagesList.get(i).getImageUri()));
+      public AddReviewHttpActionBuilder addFiles(List<BasePhotoPickerModel> imagesList) {
+         for (BasePhotoPickerModel photo : imagesList) {
+            files.add(new File(photo.getAbsolutePath()));
          }
-         //files.addAll(imagesList.get);
          return this;
       }
 
       public AddReviewHttpAction build() throws IOException {
-         AddReviewHttpAction action =  null;
+         AddReviewHttpAction action = null;
 
-         Log.e("file Size: ",""+files.size());
          if (files.size() == 1) {
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile());
-         } else if(files.size() == 2){
-            Log.e("15","15");
+                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0));
+         } else if (files.size() == 2) {
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile());
-            Log.e("16","16");
-         } else if(files.size() == 3){
+                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
+                  .get(1));
+         } else if (files.size() == 3) {
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile(), files.get(2).getAbsoluteFile());
-         } else if(files.size() == 4){
+                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
+                  .get(1), files.get(2));
+         } else if (files.size() == 4) {
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile(), files.get(2).getAbsoluteFile(), files.get(3).getAbsoluteFile());
-         } else if(files.size() == 5){
+                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
+                  .get(1), files.get(2), files.get(3));
+         } else if (files.size() == 5) {
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0).getAbsoluteFile(), files.get(1).getAbsoluteFile(), files.get(2).getAbsoluteFile(), files.get(3).getAbsoluteFile(), files.get(4).getAbsoluteFile());
+                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
+                  .get(1), files.get(2), files.get(3), files.get(4));
          }
-
-         Log.e("action ","action");
          return action;
       }
 
    }
 
-   private List<BasePhotoPickerModel> getSelectedImagesList(){
+   private List<BasePhotoPickerModel> getSelectedImagesList() {
       return BasePickerPresenter.getSelectedImagesList();
    }
 

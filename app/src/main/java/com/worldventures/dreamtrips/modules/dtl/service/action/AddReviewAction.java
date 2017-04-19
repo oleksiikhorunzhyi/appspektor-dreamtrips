@@ -1,30 +1,20 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.Errors;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ReviewParams;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.CommentReview;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
-import com.worldventures.dreamtrips.modules.trips.view.cell.filter.BoolCell;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
-import io.techery.janet.body.FileBody;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.http.annotations.Part;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction

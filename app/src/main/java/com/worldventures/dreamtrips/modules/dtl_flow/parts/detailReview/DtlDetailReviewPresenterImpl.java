@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
 import javax.inject.Inject;
 
@@ -99,7 +100,6 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
             Path path = new DtlReviewsPath(null, message);
             History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
             historyBuilder.pop();
-            //historyBuilder.pop();
             historyBuilder.push(path);
             Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
         } catch (Exception e){
@@ -111,11 +111,9 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
     @Override
     public void navigateToDetail(String message) {
         try{
-            //TODO add merchant
             Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), null, null, message);
             History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
             historyBuilder.pop();
-            //historyBuilder.pop();
             historyBuilder.push(path);
             Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
         } catch (Exception e){
@@ -136,6 +134,6 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
     }
 
     public String getIpAddress() {
-        return "190.99.101.25";
+        return NetworkUtils.getIpAddress(true);
     }
 }

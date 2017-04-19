@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.Fac
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
@@ -133,7 +134,8 @@ import dagger.Provides;
             PreCheckNewCardPresenter.class,
             PaymentSyncFinishPresenter.class,
             ExistingDeviceDetectPresenter.class,
-            WizardUploadProfilePresenter.class
+            WizardUploadProfilePresenter.class,
+            SendFeedbackPresenter.class
       },
       complete = false, library = true
 )

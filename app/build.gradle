@@ -522,6 +522,7 @@ dependencies {
    compile('com.github.techery:OperationActionSubscriber:1.0.0') {
       exclude group: 'org.jetbrains', module: 'annotations-java5'
    }
+   compile 'com.android.support.constraint:constraint-layout:1.0.1'
    // Util
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
    compile 'com.google.maps.android:android-maps-utils:0.4'

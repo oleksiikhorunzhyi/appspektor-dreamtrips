@@ -64,12 +64,11 @@ public class WalletHelpSettingsScreen extends WalletLinearLayout<WalletHelpSetti
 
    @OnClick(R.id.item_send_feedback)
    void onClickSendFeedback() {
-
+      getPresenter().openSendFeedbackSection();
    }
 
    @OnClick(R.id.item_customer_support)
    void onClickCustomerSupport() {
 
    }
-
 }

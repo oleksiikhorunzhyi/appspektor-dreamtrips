@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?actionBarSize"
+         app:title="@string/wallet_settings_help_feedback_title_screen"
+         />
+
+   <android.support.constraint.ConstraintLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/wallet_settings_help_feedback_user_approve_info"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/WalletTheme.TextAppearanceSmall"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            />
+
+      <EditText
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/background_message_feedback"
+            android:ems="10"
+            android:gravity="top"
+            android:hint="@string/wallet_settings_help_feedback_enter_comment_hint"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minLines="6"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textAppearance="@style/WalletTheme.TextAppearanceMedium"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:layout_constraintHorizontal_bias="0.0"
+            />
+
+      <View
+            android:id="@+id/view3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/wallet_settings_feedback_line_divider"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            />
+
+      <com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView
+            android:id="@+id/feedback_attachments"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:overScrollMode="never"
+            android:visibility="visible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feedback_add_photos"
+            />
+
+      <RelativeLayout
+            android:id="@+id/feedback_add_photos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="0dp"
+            android:padding="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view3"
+            >
+
+         <ImageView
+               android:id="@+id/add_photos_image_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerVertical="true"
+               android:paddingLeft="@dimen/spacing_small"
+               android:paddingRight="@dimen/suggest_merchant_default_vertical_margin"
+               android:src="@drawable/ic_post_add_image_normal"
+               />
+
+         <TextView
+               android:id="@+id/share_photo"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_toRightOf="@+id/add_photos_image_view"
+               android:gravity="center"
+               android:paddingBottom="@dimen/spacing_medium"
+               android:paddingTop="@dimen/spacing_medium"
+               android:text="@string/feedback_add_photos"
+               android:textSize="@dimen/font_normal"
+               />
+
+      </RelativeLayout>
+   </android.support.constraint.ConstraintLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackScreen>

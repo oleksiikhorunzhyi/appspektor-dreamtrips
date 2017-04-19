@@ -55,4 +55,7 @@
    <color name="wallet_edit_text_disabled_state">#8f8f8f</color>
    <color name="wallet_edit_text_focused_state">#006699</color>
 
+   <color name="wallet_settings_feedback_message_stroke">#76b2fe</color>
+   <color name="wallet_settings_feedback_line_divider">#76b2fe</color>
+
 </resources>

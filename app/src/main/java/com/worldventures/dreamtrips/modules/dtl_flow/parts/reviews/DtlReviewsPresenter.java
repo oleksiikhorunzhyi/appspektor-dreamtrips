@@ -6,6 +6,4 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 public interface DtlReviewsPresenter extends DtlPresenter<DtlReviewsScreen, ViewState.EMPTY> {
 
    void onBackPressed();
-
-   void onAddClick();
 }

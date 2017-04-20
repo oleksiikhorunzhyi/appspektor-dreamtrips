@@ -214,16 +214,11 @@
    <color name="reviews_line_separator">#4d929292</color>
    <color name="color_item_review">#929292</color>
    <color name="color_item_review_gray">#4C5058</color>
-   <color name="toolbarColor">#005E92</color>
-   <color name="reviewTextColor">#7FADC7</color>
-   <color name="reviewBackground">#005E92</color>
-   <color name="greenVerifiedView">#97c23b</color>
-
-   <color name="background_detail_review_menu">#f9f9f9</color>
-   <color name="textCommentColorReview">#9b9b9b</color>
 
    <color name="dtl_text_color_disabled_filters">#8e99a8</color>
+
    <color name="dtl_stroke_filters_map">#e3e3e3</color>
    <color name="dtl_stroke_filters_map_pressed">#53b5fe</color>
    <color name="dtl_filter_options_card">#f3f6f8</color>
+
 </resources>

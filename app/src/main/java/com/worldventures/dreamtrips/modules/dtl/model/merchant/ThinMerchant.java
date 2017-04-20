@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttribut
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributesFactory;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +35,6 @@ public abstract class ThinMerchant implements Serializable {
    @Nullable public abstract List<ThinAttribute> categories();
    @Nullable public abstract List<MerchantMedia> images();
    @Nullable public abstract List<OperationDay> operationDays();
-   @Nullable public abstract ReviewSummary reviewSummary();
 
    @Value.Derived public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);

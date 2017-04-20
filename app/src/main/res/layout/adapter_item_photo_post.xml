@@ -72,7 +72,6 @@
             android:drawablePadding="@dimen/spacing_small"
             android:text="@string/tag_people"
             android:textColor="@android:color/white"
-            android:visibility="gone"
             />
    </FrameLayout>
 
@@ -84,6 +83,5 @@
          android:background="@null"
          android:hint="@string/add_title"
          android:padding="10dp"
-         android:visibility="gone"
          />
 </RelativeLayout>

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import io.techery.mappery.MapperyContext;
 
@@ -33,7 +32,6 @@ public class ThinMerchantConverter implements Converter<com.worldventures.dreamt
             .images(thinMerchant.images() != null ? mapperyContext.convert(thinMerchant.images(), MerchantMedia.class) : null)
             .categories(thinMerchant.categories() != null ? mapperyContext.convert(thinMerchant.categories(), ThinAttribute.class) : null)
             .operationDays(thinMerchant.operationDays() != null ? mapperyContext.convert(thinMerchant.operationDays(), OperationDay.class) : null)
-            .reviewSummary(thinMerchant.reviewSummary() != null ? mapperyContext.convert(thinMerchant.reviewSummary(), ReviewSummary.class) : null)
             .build();
    }
 

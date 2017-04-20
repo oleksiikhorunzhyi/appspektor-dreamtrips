@@ -174,10 +174,6 @@ android {
       enabled = true
    }
 
-   dataBinding{
-      enabled = true
-   }
-
    testOptions {
       unitTests.returnDefaultValues = true
    }

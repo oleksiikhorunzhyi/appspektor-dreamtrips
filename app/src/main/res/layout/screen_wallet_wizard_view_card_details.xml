@@ -22,7 +22,7 @@
          android:layout_height="match_parent"
          >
 
-      <LinearLayout
+      <RelativeLayout
             style="@style/WalletTheme.ContentContainerStyle"
             android:orientation="vertical"
             android:theme="@style/WalletTheme"
@@ -33,111 +33,122 @@
                android:layout_width="match_parent"
                android:layout_height="@dimen/wallet_card_height"
                app:cardDrawable="blue"
-               />
-
-         <Button
-               android:id="@+id/pay_this_card_button"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
-               android:text="@string/wallet_card_details_button_pay_with_this"
-               android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
-               />
-
-         <TextView
-               android:id="@+id/card_nickname_label"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-               android:text="@string/wallet_card_details_label_card_nickname"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               android:textColor="@color/wallet_card_details_address_text_color"
-               />
-
-         <android.support.design.widget.TextInputLayout
-               android:id="@+id/cardNameInputLayout"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingTop="@dimen/spacing_small"
-               app:errorEnabled="true"
-               app:errorTextAppearance="@style/WalletTheme.ErrorTextAppearance"
-               app:hintEnabled="false"
-               >
-
-            <EditText
-                  android:id="@+id/card_name"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:drawableEnd="@drawable/ic_wallet_pencil_gray"
-                  android:hint="@string/wallet_view_card_details_hint_nickname_card"
-                  android:imeOptions="actionDone"
-                  android:inputType="textCapSentences"
-                  android:maxLength="@integer/wallet_card_name_length"
-                  android:singleLine="true"
-                  />
-
-         </android.support.design.widget.TextInputLayout>
-
-         <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
-               android:id="@+id/default_payment_card_checkbox"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="@string/wallet_add_card_details_option_set_as_default_card"
+               android:visibility="gone"
+               tools:visibility="visible"
                />
 
          <LinearLayout
-               android:id="@+id/billing_address_label"
+               android:id="@+id/controls_layout"
+               android:layout_below="@+id/card"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:orientation="horizontal"
+               android:orientation="vertical"
                >
+            <Button
+                  android:id="@+id/pay_this_card_button"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
+                  android:text="@string/wallet_card_details_button_pay_with_this"
+                  android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
+                  />
 
             <TextView
-                  android:layout_width="0dp"
+                  android:id="@+id/card_nickname_label"
+                  android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-                  android:layout_weight="1"
-                  android:text="@string/wallet_card_details_label_billing_address"
+                  android:text="@string/wallet_card_details_label_card_nickname"
                   android:textAppearance="?android:attr/textAppearanceSmall"
                   android:textColor="@color/wallet_card_details_address_text_color"
                   />
 
-            <ImageView
-                  android:id="@+id/edit_billing_address"
-                  android:layout_width="wrap_content"
+            <android.support.design.widget.TextInputLayout
+                  android:id="@+id/cardNameInputLayout"
+                  android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_gravity="bottom"
-                  android:padding="@dimen/spacing_tiny"
-                  android:src="@drawable/ic_wallet_pencil_gray"
+                  android:paddingTop="@dimen/spacing_small"
+                  app:errorEnabled="true"
+                  app:errorTextAppearance="@style/WalletTheme.ErrorTextAppearance"
+                  app:hintEnabled="false"
+                  >
+
+               <EditText
+                     android:id="@+id/card_name"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:drawableEnd="@drawable/ic_wallet_pencil_gray"
+                     android:hint="@string/wallet_view_card_details_hint_nickname_card"
+                     android:imeOptions="actionDone"
+                     android:inputType="textCapSentences"
+                     android:maxLength="@integer/wallet_card_name_length"
+                     android:singleLine="true"
+                     />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
+                  android:id="@+id/default_payment_card_checkbox"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="@string/wallet_add_card_details_option_set_as_default_card"
+                  />
+
+            <LinearLayout
+                  android:id="@+id/billing_address_label"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  >
+
+               <TextView
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+                     android:layout_weight="1"
+                     android:text="@string/wallet_card_details_label_billing_address"
+                     android:textAppearance="?android:attr/textAppearanceSmall"
+                     android:textColor="@color/wallet_card_details_address_text_color"
+                     />
+
+               <ImageView
+                     android:id="@+id/edit_billing_address"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="bottom"
+                     android:padding="@dimen/spacing_tiny"
+                     android:src="@drawable/ic_wallet_pencil_gray"
+                     />
+
+            </LinearLayout>
+
+            <TextView
+                  android:id="@+id/address_textview"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/spacing_large"
+                  android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
+                  android:importantForAccessibility="no"
+                  android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
+                  android:textAppearance="?android:attr/textAppearanceMedium"
+                  android:textSize="@dimen/wallet_details_screen_address_text_size"
+                  tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
+                  />
+
+            <Button
+                  android:id="@+id/delete_button"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="@string/wallet_card_details_button_delete_card"
+                  android:textColor="@color/red_btn_bg_pressed_color"
+                  android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
+                  app:backgroundTint="@color/white"
+                  tools:ignore="MissingPrefix"
                   />
 
          </LinearLayout>
 
-         <TextView
-               android:id="@+id/address_textview"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginBottom="@dimen/spacing_large"
-               android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
-               android:importantForAccessibility="no"
-               android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
-               android:textAppearance="?android:attr/textAppearanceMedium"
-               android:textSize="@dimen/wallet_details_screen_address_text_size"
-               tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
-               />
-
-         <Button
-               android:id="@+id/delete_button"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="@string/wallet_card_details_button_delete_card"
-               android:textColor="@color/red_btn_bg_pressed_color"
-               android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
-               app:backgroundTint="@color/white"
-               tools:ignore="MissingPrefix"
-               />
-
-      </LinearLayout>
+      </RelativeLayout>
 
    </ScrollView>
 

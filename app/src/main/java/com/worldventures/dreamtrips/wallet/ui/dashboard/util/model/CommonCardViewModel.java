@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
 
 import android.databinding.BindingAdapter;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
@@ -12,101 +10,83 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.HolderTypeF
 
 public class CommonCardViewModel extends BaseViewModel {
 
-    private String cardName;
-    private String cardType;
-    private boolean defaultCard;
-    private String cardLastDigitsShort;
-    private String cardHolderName;
-    private String cardLastDigitsLong;
-    private String goodThrough;
-    private int cardBackGround;
+   private String recordId;
+   private CharSequence cardName;
+   private StackType cardType;
+   private String cardTypeName;
+   private boolean defaultCard;
+   private CharSequence cardLastDigitsShort;
+   private String cardHolderName;
+   private CharSequence cardLastDigitsLong;
+   private CharSequence goodThrough;
+   private boolean cardBackGround;
 
-    public CommonCardViewModel(String cardName, String cardType, boolean defaultCard, String cardLastDigitsShort,
-                               String cardHolderName, String cardLastDigitsLong, String goodThrough) {
-        this.cardName = cardName;
-        this.cardType = cardType;
-        this.defaultCard = defaultCard;
-        this.cardLastDigitsShort = cardLastDigitsShort;
-        this.cardHolderName = cardHolderName;
-        this.cardLastDigitsLong = cardLastDigitsLong;
-        this.goodThrough = goodThrough;
-    }
+   public CommonCardViewModel(String recordId, CharSequence cardName, StackType cardType, String cardTypeName, boolean defaultCard, CharSequence cardLastDigitsShort,
+         String cardHolderName, CharSequence cardLastDigitsLong, CharSequence goodThrough, boolean cardBackGround) {
+      this.recordId = recordId;
+      this.cardName = cardName;
+      this.cardType = cardType;
+      this.cardTypeName = cardTypeName;
+      this.defaultCard = defaultCard;
+      this.cardLastDigitsShort = cardLastDigitsShort;
+      this.cardHolderName = cardHolderName;
+      this.cardLastDigitsLong = cardLastDigitsLong;
+      this.goodThrough = goodThrough;
+      this.cardBackGround = cardBackGround;
+   }
 
-    protected CommonCardViewModel(Parcel in) {
-        cardName = in.readString();
-        cardType = in.readString();
-        defaultCard = in.readByte() != 0;
-        cardLastDigitsShort = in.readString();
-        cardHolderName = in.readString();
-        cardLastDigitsLong = in.readString();
-        goodThrough = in.readString();
-        cardBackGround = in.readInt();
-    }
+   public String getRecordId() {
+      return recordId;
+   }
 
-    public static final Parcelable.Creator<CommonCardViewModel> CREATOR = new Parcelable.Creator<CommonCardViewModel>() {
-        @Override
-        public CommonCardViewModel createFromParcel(Parcel in) {
-            return new CommonCardViewModel(in);
-        }
+   public CharSequence getCardName() {
+      return cardName;
+   }
 
-        @Override
-        public CommonCardViewModel[] newArray(int size) {
-            return new CommonCardViewModel[size];
-        }
-    };
+   public StackType getCardType() {
+      return cardType;
+   }
 
-    public String getCardName() {
-        return cardName;
-    }
+   public String getCardTypeName() {
+      return cardTypeName;
+   }
 
-    public String getCardType() {
-        return cardType;
-    }
+   public boolean isDefaultCard() {
+      return defaultCard;
+   }
 
-    public boolean isDefaultCard() {
-        return defaultCard;
-    }
+   public CharSequence getCardLastDigitsShort() {
+      return cardLastDigitsShort;
+   }
 
-    public String getCardLastDigitsShort() {
-        return cardLastDigitsShort;
-    }
+   public String getCardHolderName() {
+      return cardHolderName;
+   }
 
-    public String getCardHolderName() {
-        return cardHolderName;
-    }
+   public CharSequence getCardLastDigitsLong() {
+      return cardLastDigitsLong;
+   }
 
-    public String getCardLastDigitsLong() {
-        return cardLastDigitsLong;
-    }
+   public CharSequence getGoodThrough() {
+      return goodThrough;
+   }
 
-    public String getGoodThrough() {
-        return goodThrough;
-    }
+   public boolean isCardBackGround() {
+      return cardBackGround;
+   }
 
-    @BindingAdapter({"bind:cardBackground"})
-    public static void getCardBackground(View view, boolean defaultBackGroound) {
-        view.setBackgroundResource(R.drawable.card_blue_bcgd);
-    }
+   @BindingAdapter({"bind:cardBackground"})
+   public static void getCardBackground(View view, boolean backGround) {
+      view.setBackgroundResource(backGround ? R.drawable.background_card_blue : R.drawable.background_card_dark_blue);
+   }
 
-    @Override
-    public int type(HolderTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int type(HolderTypeFactory typeFactory) {
+      return typeFactory.type(this);
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(cardName);
-        dest.writeString(cardType);
-        dest.writeByte((byte) (defaultCard ? 1 : 0));
-        dest.writeString(cardLastDigitsShort);
-        dest.writeString(cardHolderName);
-        dest.writeString(cardLastDigitsLong);
-        dest.writeString(goodThrough);
-        dest.writeInt(cardBackGround);
-    }
+   public enum StackType {
+      PAYMENT, LOYALTY
+   }
 }

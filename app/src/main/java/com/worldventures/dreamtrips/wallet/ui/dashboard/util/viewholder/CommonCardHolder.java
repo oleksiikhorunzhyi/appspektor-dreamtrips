@@ -7,15 +7,19 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardVie
 
 public class CommonCardHolder extends BaseHolder<CommonCardViewModel> {
 
-    private CardCellBindingBinding binding;
+   private CardCellBindingBinding binding;
 
-    public CommonCardHolder(CardCellBindingBinding binding) {
-        super(binding.getRoot());
-        this.binding = binding;
-    }
+   public CommonCardHolder(CardCellBindingBinding binding) {
+      super(binding.getRoot());
+      this.binding = binding;
+   }
 
-    @Override
-    public void setData(CommonCardViewModel data) {
-        binding.setCardModel(data);
-    }
+   @Override
+   public void setData(CommonCardViewModel data) {
+      binding.setCardModel(data);
+   }
+
+   public CommonCardViewModel getData() {
+      return binding.getCardModel();
+   }
 }

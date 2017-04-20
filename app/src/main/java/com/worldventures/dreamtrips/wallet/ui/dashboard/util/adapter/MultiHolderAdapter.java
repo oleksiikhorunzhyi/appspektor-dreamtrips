@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-
 import java.util.List;
 
 public class MultiHolderAdapter<T extends BaseViewModel> extends RecyclerView.Adapter<BaseHolder> {
@@ -37,7 +36,7 @@ public class MultiHolderAdapter<T extends BaseViewModel> extends RecyclerView.Ad
       return items.get(position).type(this.factory);
    }
 
-   public void upDateItems(List<T> items) {
+   public void updateItems(List<T> items) {
       this.items = items;
       notifyDataSetChanged();
    }

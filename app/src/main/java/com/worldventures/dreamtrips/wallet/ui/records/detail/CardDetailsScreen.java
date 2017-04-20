@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.wallet.ui.records.detail;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +32,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDi
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
@@ -45,8 +50,11 @@ import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSp
 public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath>
       implements CardDetailsPresenter.Screen {
 
+   private static final long CARD_TRANSITION_DURATION = 350;
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
+   @InjectView(R.id.controls_layout) LinearLayout controlsLayout;
 
    @InjectView(R.id.address_textview) TextView tvAddress;
    @InjectView(R.id.card_name) EditText etCardNickname;
@@ -285,6 +293,40 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             new SimpleDialogProgressView<SetPaymentCardAction>(getContext(), R.string.loading, false),
             new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
       );
+   }
+
+   @Override
+   public void animateCard() {
+      TransitionModel transitionModel = getPath().getTransitionModel();
+      if (transitionModel != null) {
+
+         setUpViewPosition(transitionModel, bankCardWidget);
+         bankCardWidget.setBankCardHolder(transitionModel.isBackground()
+               ? R.drawable.background_card_blue
+               : R.drawable.background_card_dark_blue);
+
+         bankCardWidget.setVisibility(View.VISIBLE);
+         controlsLayout.setAlpha(0);
+
+         bankCardWidget
+               .animate()
+               .translationY(0)
+               .setListener(new AnimatorListenerAdapter() {
+                  @Override
+                  public void onAnimationEnd(Animator animation) {
+                     super.onAnimationEnd(animation);
+                     controlsLayout.animate().alpha(1).setDuration(500);
+                  }
+               })
+               .setDuration(CARD_TRANSITION_DURATION)
+               .start();
+      }
+   }
+
+   private void setUpViewPosition(TransitionModel params, View view) {
+      int[] coords = new int[2];
+      view.getLocationOnScreen(coords);
+      view.setTranslationY(params.getTop() - coords[1] + params.getOverlap());
    }
 
    @Override

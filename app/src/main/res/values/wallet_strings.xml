@@ -82,6 +82,7 @@
    <string name="wallet_add_credit_card">Add credit card</string>
    <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
+   <string name="wallet_loyalty_cards_title">Loyalty cards</string>
 
    <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode.</string>

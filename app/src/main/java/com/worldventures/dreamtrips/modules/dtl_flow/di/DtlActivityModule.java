@@ -30,6 +30,10 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragm
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;
@@ -109,7 +113,11 @@ import dagger.Provides;
             BaseExpandableAdapter.class,
             BaseExpandableDelegateAdapter.class,
             DtlReviewsPresenterImpl.class,
-            DtlReviewsScreenImpl.class
+            DtlReviewsScreenImpl.class,
+            DtlCommentReviewScreenImpl.class,
+            DtlCommentReviewPresenterImpl.class,
+            DtlDetailReviewPresenterImpl.class,
+            DtlDetailReviewScreenImpl.class
       },
       complete = false, library = true)
 public class DtlActivityModule {

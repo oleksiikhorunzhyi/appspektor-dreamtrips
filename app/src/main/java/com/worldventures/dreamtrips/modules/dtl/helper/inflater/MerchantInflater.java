@@ -9,4 +9,6 @@ public interface MerchantInflater {
    void applyMerchantAttributes(MerchantAttributes merchant);
 
    void release();
+
+   void registerRatingsClickListener(RatingsReviewClickListener listener);
 }

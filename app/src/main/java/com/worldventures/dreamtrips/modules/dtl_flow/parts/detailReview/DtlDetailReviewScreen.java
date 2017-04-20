@@ -19,4 +19,6 @@ public interface DtlDetailReviewScreen extends DtlScreen {
     void showEmpty(boolean isShow);
 
     String getMerchantId();
+
+    boolean isFromListReview();
 }

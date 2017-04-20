@@ -27,7 +27,7 @@ public class CommentReviewConverter implements Converter<com.worldventures.dream
    public CommentReview convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.CommentReview review) {
       return ImmutableCommentReview.builder()
             .reviewId(review.reviewId())
-            .brand(Integer.parseInt(review.brand()))
+            .brand(review.brand())
             .userNickName(review.userNickName())
             .userImage(review.userImage())
             .reviewText(review.reviewText())

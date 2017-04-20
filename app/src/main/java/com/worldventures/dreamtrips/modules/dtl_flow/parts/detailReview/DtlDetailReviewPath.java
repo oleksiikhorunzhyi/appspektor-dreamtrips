@@ -14,12 +14,14 @@ public class DtlDetailReviewPath extends DtlMasterPath {
     private final String merchantName;
     private final ReviewObject reviewObject;
     private final String merchantId;
+    private final boolean isFromListReview;
 
-    public DtlDetailReviewPath(String merchantName, ReviewObject reviewObject, String merchantId) {
+    public DtlDetailReviewPath(String merchantName, ReviewObject reviewObject, String merchantId, boolean isFromListReview) {
         super();
         this.merchantName = merchantName;
         this.reviewObject = reviewObject;
         this.merchantId = merchantId;
+        this.isFromListReview = isFromListReview;
     }
 
     @Override
@@ -42,5 +44,9 @@ public class DtlDetailReviewPath extends DtlMasterPath {
 
     public String getMerchantId() {
         return merchantId;
+    }
+
+    public boolean isFromListReview() {
+        return isFromListReview;
     }
 }

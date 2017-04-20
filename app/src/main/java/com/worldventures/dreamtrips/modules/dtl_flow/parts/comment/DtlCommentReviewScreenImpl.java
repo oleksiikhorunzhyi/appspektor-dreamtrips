@@ -2,15 +2,16 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -19,13 +20,10 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -59,6 +57,12 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     TextView mMaxChars;
     @InjectView(R.id.tvOnPost)
     TextView mTvPost;
+    @InjectView(R.id.container_details_floating)
+    FrameLayout mFlContainerReview;
+
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+
+    private CreateReviewPostFragment fragment;
 
     private SweetAlertDialog errorDialog;
 
@@ -79,16 +83,55 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     protected void onPostAttachToWindowView() {
         inflateToolbarMenu(toolbar);
         toolbar.setNavigationIcon(R.drawable.back_icon);
-        toolbar.setNavigationOnClickListener(view -> getPresenter().onBackPressed());
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(false);
 
         initEditTextListener();
         initLengthText();
         setMaxLengthText(getPresenter().maximumCharactersAllowed());
+
+       mFlContainerReview.setVisibility(View.VISIBLE);
+
+       Bundle bundle = new Bundle();
+       bundle.putParcelable("data", new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
+             getPresenter().minimumCharactersAllowed(),
+             getPresenter().maximumCharactersAllowed(),
+             getPath().getMerchant().id(),
+             isFromListReview(),
+             getPath().getMerchant()));
+
+       fragment = CreateReviewPostFragment.newInstance(bundle);
+       FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+       transaction.replace(R.id.container_details_floating, fragment);
+       transaction.commit();
+       toolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
-    private void initLengthText() {
+   @Override
+   protected void onDetachedFromWindow() {
+      fragment = null;
+      super.onDetachedFromWindow();
+   }
+
+   private void onBackPressed() {
+      if (null != fragment){
+         if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
+            showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
+         } else {
+            validateComingFrom("");
+         }
+      }
+   }
+
+   private void validateComingFrom(String message) {
+      if (isFromListReview()){
+         getPresenter().navigateToListReview(message);
+      } else {
+         getPresenter().navigateToDetail(message);
+      }
+   }
+
+   private void initLengthText() {
         mMinChars.setText(String.format(getActivity().getResources().getString(R.string.review_min_char), getPresenter().minimumCharactersAllowed()));
         mMaxChars.setText(String.format(getActivity().getResources().getString(R.string.review_max_char), getPresenter().maximumCharactersAllowed()));
     }
@@ -189,7 +232,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         errorDialog.setCancelText(getActivity().getString(R.string.apptentive_no));
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
-            getActivity().onBackPressed();
+            validateComingFrom("");
         });
         errorDialog.show();
     }
@@ -271,7 +314,18 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         });
         errorDialog.show();
     }
-    public void enableInputs() {
+
+   @Override
+   public void validateCodeMessage(String message) {
+
+   }
+
+   @Override
+   public void onPostClick() {
+
+   }
+
+   public void enableInputs() {
         enableButtons(true);
     }
 
@@ -314,7 +368,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @OnClick(R.id.tvOnPost)
     public void onClick() {
-        getPresenter().onPostClick();
+       fragment.onPostClick();
     }
 
     @Override
@@ -364,15 +418,5 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public boolean isVerified() {
         return getPath().isVerified();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-              && event.getRepeatCount() == 0) {
-            getPresenter().onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 }

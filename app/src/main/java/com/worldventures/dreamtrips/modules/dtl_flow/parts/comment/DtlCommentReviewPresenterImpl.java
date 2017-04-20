@@ -8,15 +8,12 @@ import android.util.Log;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableReviewParams;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAddReviewsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -29,8 +26,6 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
-import io.techery.janet.ActionPipe;
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentReviewScreen, ViewState.EMPTY> implements DtlCommentReviewsPresenter {
 
@@ -55,12 +50,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
         super(context);
         injector.inject(this);
+        this.context = context;
         this.merchant = merchant;
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
     }
 
     @Override
@@ -76,22 +67,37 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public void navigateToDetail(String message) {
         Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-        historyBuilder.pop();
-        historyBuilder.pop();
+        //historyBuilder.pop();
         historyBuilder.push(path);
         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
     }
 
     @Override
+    public void navigateToListReview(String message) {
+        Path path = new DtlReviewsPath(merchant, message);
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+        //historyBuilder.pop();
+        historyBuilder.push(path);
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+        /*
+        Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+        historyBuilder.pop();
+        historyBuilder.pop();
+        historyBuilder.push(path);
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);*/
+    }
+
+    @Override
     public void onPostClick() {
-        if (isInternetConnection()){
+        /*if (isInternetConnection()){
             if (validateComment()) {
                 getView().sendPostReview();
                 getView().disableInputs();
             }
         } else {
             getView().showNoInternetMessage();
-        }
+        }*/
     }
 
     @Override
@@ -105,7 +111,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
             } else {
                 getView().showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_major_letter), maximumCharactersAllowed()));
             }
-        } else if (getView().getSizeComment() > 0) {
+        } else if (getView().getSizeComment() > 0 && getView().getSizeComment() < minimumCharactersAllowed()) {
             getView().showSnackbarMessage(String.format(getContext().getString(R.string.review_comment_minor_letter), minimumCharactersAllowed()));
         }
         return validated;
@@ -115,7 +121,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public void sendAddReview(String description, Integer rating, boolean verified) {
         this.user = appSessionHolder.get().get().getUser();
         Log.i("post", "count" + mCount++);
-        ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
+        /*ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
         addReviewActionActionPipe
                 .observe()
                 .compose(bindViewIoToMainComposer())
@@ -123,19 +129,29 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                         .onSuccess(this::onMerchantsLoaded)
                         .onProgress(this::onMerchantsLoading)
                         .onFail(this::onMerchantsLoadingError));
-        addReviewActionActionPipe.send(AddReviewAction.create(ImmutableRequestReviewParams.builder()
-                .brandId(BRAND_ID)
-                .productId(merchant.id())
-                .build(), ImmutableReviewParams.builder()
-                .userEmail(user.getEmail())
-                .userNickName(user.getFullName())
-                .reviewText(description)
-                .rating(String.valueOf(rating))
-                .verified(getView().isVerified())
-                .userId(String.valueOf(user.getId()))
-                .deviceFingerprint(getView().getFingerprintId())
-                .authorIpAddress(getIpAddress())
-                .build()));
+        addReviewActionActionPipe.send(AddReviewAction.create(
+              ImmutableRequestReviewParams.builder()
+                                            .brandId(BRAND_ID)
+                                            .productId(merchant.id())
+                                            .build(), ImmutableReviewParams.builder()
+                                                                            .userEmail(user.getEmail())
+                                                                            .userNickName(user.getFullName())
+                                                                            .reviewText(description)
+                                                                            .rating(String.valueOf(rating))
+                                                                            .verified(getView().isVerified())
+                                                                            .userId(String.valueOf(user.getId()))
+                                                                            .deviceFingerprint(getView().getFingerprintId())
+                                                                            .authorIpAddress(getIpAddress()),
+                                                      user.getEmail(),
+                                                      .userNickName(user.getFullName())
+                                                      .reviewText(description)
+                                                      .rating(String.valueOf(rating))
+                                                      .verified(getView().isVerified())
+                                                      .userId(String.valueOf(user.getId()))
+                                                      .deviceFingerprint(getView().getFingerprintId())
+                                                      .authorIpAddress(getIpAddress()),
+
+                                            .build()));*/
     }
 
     @Override

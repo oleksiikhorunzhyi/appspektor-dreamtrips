@@ -31,6 +31,7 @@
    <string name="dtl_perks_description">Perks</string>
    <string name="dtl_description">Description</string>
    <string name="ok">OK</string>
+   <string name="continue_option">CONTINUE</string>
    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
    <string name="permission_location_rationale">Access to the location is needed for detection</string>
    <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
@@ -111,4 +112,52 @@
    <string name="filter_merchant_food">Food</string>
    <string name="filter_merchant_entertainment">Entertainment</string>
    <string name="filter_merchant_spa">Spas</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">RATE &amp; REVIEW</string>
+   <string name="first_reviews_text">Be the first to review this location</string>
+   <string name="format_review_text">%1$d Review</string>
+   <string name="format_reviews_text">%1$d Reviews</string>
+   <string name="reviews_text">Reviews</string>
+   <string name="without_reviews_text">0 Reviews</string>
+   <string name="year_ago_text">%1$d years ago</string>
+   <string name="months_ago_text">%1$d months ago</string>
+   <string name="days_ago_text">%1$d days ago</string>
+   <string name="hours_ago_text">%1$d hours ago</string>
+   <string name="min_ago_text">%1$d min ago</string>
+   <string name="sec_ago_text">%1$d sec ago</string>
+   <string name="total_reviews_text"> READ ALL REVIEWS(%1$d)</string>
+   <string name="to_be_first_reviews">Be the first to review</string>
+   <string name="btn_rate_and_review"><![CDATA[Rate & Review]]></string>
+   <string name="tvVerifiedReview">Verified Buyer</string>
+   <string name="review_comment_minor_letter">Your review needs to be at least %1$d characters long.</string>
+   <string name="review_comment_major_letter">Your review needs to be less than %1$d characters long.</string>
+   <string name="review_comment_discard_changes">Are you sure you want to delete this review?</string>
+   <string name="titleReview">Review</string>
+   <string name="hint_comment_review">How was the service, environment, food, etc?</string>
+   <string name="snack_review_success">Your review has been submitted and will be posted once it\'s approved.</string>
+   <string name="menu_post">POST</string>
+   <string name="tv_read_more">Read more</string>
+   <string name="action_add_review">Add review</string>
+   <string name="text_awaiting_approval_review">You have a previous review for this location awaiting approval. Once approved you can review this location again.</string>
+   <string name="comment_review_title_sorry">We\'re sorry</string>
+   <string name="comment_review_profanity_text">\"Your review contains profanity and could not be submitted. Please edit your review and try again.\"</string>
+   <string name="comment_review_no_internet_message">There was a problem communicating with the DreamTrips servers. Please try again.</string>
+   <string name="comment_review_no_internet_confirm_text">Try again</string>
+   <string name="comment_review_no_internet_cancel_text">Cancel</string>
+   <string name="comment_review_error_unknown_title">We\'re sorry</string>
+   <string name="comment_review_error_unknown_text">There was a problem communicating with the DreamTrips servers. Please try again.</string>
+   <string name="comment_review_error_unknown_confirm">Try again</string>
+   <string name="comment_review_error_unknown_cancel">Cancel</string>
+   <string name="comment_review_error_limited_reached_content">All our server are busy right now. Please try again in a minute</string>
+   <string name="comment_review_unrecognized_error_content">Oops, we broke something. We\'re working on fixing it. Please try again tomorrow.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
+   <string name="flag_text_menu">Flag</string>
+   <string name="review_min_char">min %1$d </string>
+   <string name="review_max_char">max %1$d</string>
+   <string name="input_major_limit">Your review has reached our limit. It has been shortened to fit.</string>
+
+   <string name="text_add_photos_and_videos">Add photos</string>
 </resources>

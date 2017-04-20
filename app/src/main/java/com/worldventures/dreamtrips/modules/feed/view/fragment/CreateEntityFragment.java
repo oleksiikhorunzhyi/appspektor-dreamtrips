@@ -45,7 +45,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
 
    @Override
    protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
-      return new CreateEntityPresenter(getArgs().getOrigin());
+      return new CreateEntityPresenter(CreateEntityBundle.Origin.FEED);
    }
 
    @Override

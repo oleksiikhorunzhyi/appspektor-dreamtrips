@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      >
+
+   <RatingBar
+         android:id="@+id/rbRating"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginTop="19dp"
+         android:numStars="5"
+         android:rating="0"
+         android:stepSize="1"
+         android:theme="@style/rating_bar_style"
+         />
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@drawable/shape_edittext"
+         android:layout_marginBottom="24dp"
+         android:layout_marginLeft="16dp"
+         android:layout_marginRight="16dp"
+         android:layout_marginTop="19dp"
+         >
+
+      <EditText
+            android:id="@+id/etCommentReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:hint="@string/hint_comment_review"
+            android:inputType="textMultiLine"
+            android:textColor="@color/textCommentColorReview"
+            android:textSize="12sp"
+            android:background="@android:color/transparent"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            />
+
+      <LinearLayout
+            android:id="@+id/recycler_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etCommentReview"
+            android:layout_marginBottom="35dp"
+            android:layout_marginTop="19dp"
+            android:orientation="vertical"
+            >
+
+         <android.support.v7.widget.RecyclerView
+               android:id="@+id/photos"
+               android:layout_below="@+id/swipe_container"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_above="@+id/divider"
+               android:layout_marginBottom="35dp"
+               />
+      </LinearLayout>
+   </RelativeLayout>
+</LinearLayout>

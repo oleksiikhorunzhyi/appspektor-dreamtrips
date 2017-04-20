@@ -53,6 +53,11 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
+   private void hideInfo(){
+      photoTitle.setVisibility(View.GONE);
+      tagButton.setVisibility(View.GONE);
+   }
+
    public PhotoPostCreationCell(View view) {
       super(view);
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -116,6 +121,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       photoTitle.setEnabled(titleChangesEnabled);
       invalidateAddTagBtn();
       invalidateDeleteBtn();
+      hideInfo();
    }
 
    private int calculateHeight() {
@@ -187,7 +193,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    }
 
    private void invalidateAddTagBtn() {
-      tagButton.setVisibility(getModelObject().isCanEdit() ? View.VISIBLE : View.GONE);
+      /*tagButton.setVisibility(getModelObject().isCanEdit() ? View.VISIBLE : View.GONE);
       //
       if (getModelObject().getCombinedTags().isEmpty()) {
          tagButton.setText(R.string.tag_people);
@@ -195,7 +201,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       } else {
          tagButton.setText(R.string.empty);
          tagButton.setSelected(true);
-      }
+      }*/
    }
 
    private void invalidateDeleteBtn() {

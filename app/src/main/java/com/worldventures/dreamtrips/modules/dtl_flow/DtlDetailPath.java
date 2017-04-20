@@ -33,4 +33,5 @@ public abstract class DtlDetailPath extends DtlPath {
                .findFragmentByTag(DtlDetailsScreenImpl.MAP_TAG)).commit();
       }
    }
+
 }

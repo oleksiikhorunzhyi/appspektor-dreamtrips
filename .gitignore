@@ -64,3 +64,5 @@ dagger-proguard-keepnames.cfg
 #smartling translations
 translations/
 buildscript.properties
+integration-check/
+library/

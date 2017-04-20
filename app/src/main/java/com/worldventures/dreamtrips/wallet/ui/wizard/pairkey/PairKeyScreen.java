@@ -69,7 +69,7 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
                         getContext(),
                         SmartCardConnectException.class,
                         R.string.wallet_smartcard_connection_error,
-                        (dialog, which) -> presenter.goBack())
+                        command -> presenter.goBack())
                   ).build());
    }
 

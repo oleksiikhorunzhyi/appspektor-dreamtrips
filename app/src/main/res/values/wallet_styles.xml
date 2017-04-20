@@ -5,6 +5,8 @@
    <color name="wallet_color_primary_dark">#006699</color>
    <color name="wallet_text_color_primary">#222222</color>
    <color name="wallet_text_color_medium">#dd222222</color>
+   <color name="wallet_text_color_menu_item">#fff</color>
+   <color name="wallet_text_color_menu_item_disabled">#c7c7c7</color>
 
    <color name="wallet_button_color_disabled">#8f8f8f</color>
    <color name="wallet_button_text_color_disabled">#b4b4b4</color>
@@ -19,6 +21,8 @@
       <item name="colorPrimary">@color/wallet_color_primary</item>
       <item name="colorPrimaryDark">@color/wallet_color_primary_dark</item>
       <item name="android:textColorPrimary">@color/wallet_text_color_primary</item>
+      <item name="android:actionMenuTextColor">@color/color_selector_wallet_settings_item_white</item>
+      <item name="actionMenuTextColor">@color/color_selector_wallet_settings_item_white</item>
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>

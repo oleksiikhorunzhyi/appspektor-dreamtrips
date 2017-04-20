@@ -32,14 +32,14 @@
             android:text="@string/wallet_settings_help_feedback_user_approve_info"
             android:textAlignment="viewStart"
             android:textAppearance="@style/WalletTheme.TextAppearanceSmall"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             />
 
       <EditText
-            android:id="@+id/editText"
+            android:id="@+id/et_feedback_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -56,10 +56,10 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:textAppearance="@style/WalletTheme.TextAppearanceMedium"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
-            app:layout_constraintHorizontal_bias="0.0"
             />
 
       <View
@@ -73,21 +73,25 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:layout_constraintTop_toBottomOf="@+id/et_feedback_message"
             />
 
       <com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView
             android:id="@+id/feedback_attachments"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="328dp"
+            android:layout_height="79dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:overScrollMode="never"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/feedback_add_photos"
+            app:layout_constraintVertical_bias="0.0"
             />
 
       <RelativeLayout
@@ -109,7 +113,7 @@
                android:layout_height="wrap_content"
                android:layout_centerVertical="true"
                android:paddingLeft="@dimen/spacing_small"
-               android:paddingRight="@dimen/suggest_merchant_default_vertical_margin"
+               android:paddingRight="@dimen/spacing_small"
                android:src="@drawable/ic_post_add_image_normal"
                />
 

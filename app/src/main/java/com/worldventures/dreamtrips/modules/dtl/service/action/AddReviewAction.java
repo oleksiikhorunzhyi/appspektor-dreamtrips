@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.CommentReview;
-import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -25,9 +22,8 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class AddReviewAction extends Command<CommentReview> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
-   @Inject ReviewsActionCreator reviewsActionCreator;
 
    private final RequestReviewParams actionParams;
    private final String userEmail;

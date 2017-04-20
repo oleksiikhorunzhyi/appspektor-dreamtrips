@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
@@ -19,22 +20,19 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import flow.Flow;
-import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_transaction_succeed)
 public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTransactionSucceedPresenter, MerchantBundle> implements DtlTransactionSucceedPresenter.View {
 
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
-   @InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
    @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
-
-   @Inject CloseDialogEventDelegate closeDialogEventDelegate;
 
    @Override
    public void afterCreateView(View rootView) {

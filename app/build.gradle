@@ -86,7 +86,7 @@ android {
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
+         'DreamTripsApi'    : '"https://dtapp-dev.worldventures.biz/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
          'UPLOADERY_API_URL': '"http://techery-dt-preprod.techery.io/"',
@@ -432,7 +432,7 @@ dependencies {
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
 
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.24-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.25-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
 
@@ -514,7 +514,7 @@ dependencies {
    compile 'com.jakewharton:butterknife:6.1.0'
    compile 'com.jakewharton.timber:timber:4.0.1'
    compile 'com.innahema:collections-query:0.2.9'
-   compile 'net.danlew:android.joda:2.9.4'
+   compile 'net.danlew:android.joda:2.9.0'
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'

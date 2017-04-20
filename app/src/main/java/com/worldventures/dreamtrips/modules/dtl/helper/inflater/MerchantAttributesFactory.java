@@ -55,7 +55,6 @@ public class MerchantAttributesFactory {
             .images(merchant.images())
             .operationDays(merchant.operationDays())
             .categories(merchant.categories())
-            .reviewSummary(merchant.reviewSummary())
             .build();
    }
 }

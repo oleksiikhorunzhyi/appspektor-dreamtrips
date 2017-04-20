@@ -26,19 +26,19 @@ public class FullMerchantInteractor {
       return fullMerchantPipe.asReadOnly();
    }
 
-   public void load(String merchantId, boolean fromRating) {
-      load(merchantId, null, fromRating);
+   public void load(String merchantId) {
+      load(merchantId, null);
    }
 
    public void load(FullMerchantParamsHolder fullMerchantParamsHolder) {
-      load(fullMerchantParamsHolder.getMerchantId(), fullMerchantParamsHolder.getOfferId(), false);
+      load(fullMerchantParamsHolder.getMerchantId(), fullMerchantParamsHolder.getOfferId());
    }
 
-   public void load(String merchantId, String offerId, boolean fromRating) {
+   public void load(String merchantId, String offerId) {
       dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .take(1)
             .map(Command::getResult)
-            .map(location -> FullMerchantAction.create(merchantId, offerId, location, fromRating))
+            .map(location -> FullMerchantAction.create(merchantId, offerId, location))
             .subscribe(fullMerchantPipe::send);
    }
 }

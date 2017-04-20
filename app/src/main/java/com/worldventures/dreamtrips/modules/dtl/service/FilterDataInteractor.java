@@ -58,14 +58,6 @@ public class FilterDataInteractor {
             .subscribe(this::send);
    }
 
-   public void resetAmenities() {
-      getLastFilterObservable()
-            .map(filterData -> ImmutableFilterData.copyOf(filterData)
-                  .withPage(0)
-                  .withSelectedAmenities(Collections.emptyList()))
-            .subscribe(this::send);
-   }
-
    public void mergeAndApply(FilterData newFilterData) {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)

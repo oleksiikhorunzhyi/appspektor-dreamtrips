@@ -78,30 +78,6 @@
          android:textSize="@dimen/dtl_all_reviews_text"
          />
 
-   <LinearLayout
-         android:id="@+id/photos_indicator_layout"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentEnd="true"
-         android:layout_below="@+id/tvCommentWrote"
-         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
-         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
-         android:orientation="horizontal">
-
-      <TextView
-            android:id="@+id/pics_number_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/dtl_item_reviews_number_pics_text_size" />
-
-      <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:background="@drawable/ic_pics"/>
-
-   </LinearLayout>
-
    <TextView
          android:id="@+id/tvReadMore"
          android:layout_width="wrap_content"
@@ -113,16 +89,61 @@
          android:textColor="@color/rating_background_button"
          android:textSize="@dimen/dtl_all_reviews_text"
          android:textStyle="bold"
-         android:text="@string/tv_read_more"
+         android:visibility="gone"
          />
 
-   <include android:layout_width="wrap_content"
+   <LinearLayout
+         android:id="@+id/linearLayout"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/tvReadMore"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
          android:orientation="horizontal"
-         android:layout_above="@+id/tvComment"
-         android:layout_toRightOf="@+id/rbRating"
-         android:layout_toEndOf="@+id/rbRating"
-         layout="@layout/include_verified_buyer" />
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:id="@+id/textView15"
+            android:layout_width="@dimen/dtl_item_reviews_margin_seven"
+            android:layout_height="@dimen/dtl_no_reviews_margin"
+            android:layout_marginRight="@dimen/dtl_all_reviews_elevation"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="@color/color_item_review_gray"
+            />
+
+      <TextView
+            android:id="@+id/textView14"
+            android:layout_width="@dimen/dtl_no_reviews_margin"
+            android:layout_height="@dimen/dtl_all_reviews_margin_ft"
+            android:layout_marginRight="@dimen/dtl_item_reviews_margin_eight"
+            android:layout_weight="1"
+            android:background="@color/color_item_review_gray"
+            />
+
+      <TextView
+            android:id="@+id/textView13"
+            android:layout_width="@dimen/dtl_item_reviews_margin_seven"
+            android:layout_height="@dimen/dtl_no_reviews_margin"
+            android:layout_marginRight="@dimen/dtl_all_reviews_elevation"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/color_item_review_gray"
+            />
+
+      <TextView
+            android:id="@+id/textView12"
+            android:layout_width="@dimen/dtl_no_reviews_margin"
+            android:layout_height="@dimen/dtl_all_reviews_margin_ft"
+            android:layout_weight="1"
+            android:background="@color/color_item_review_gray"
+            />
+
+   </LinearLayout>
 
    <include layout="@layout/line_separator" />
 

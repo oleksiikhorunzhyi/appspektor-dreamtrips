@@ -12,9 +12,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.Attributes
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAttributesActionParams;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
 import rx.Observable;

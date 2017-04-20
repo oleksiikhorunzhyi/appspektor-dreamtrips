@@ -20,6 +20,4 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void onBackPressed();
    void showAllReviews();
    void addNewComments(Merchant merchant);
-   void onClickRatingsReview(Merchant merchant);
-   void onClickRateView();
 }

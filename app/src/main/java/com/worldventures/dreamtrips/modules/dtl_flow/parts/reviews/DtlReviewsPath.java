@@ -16,19 +16,12 @@ public class DtlReviewsPath extends DtlMasterPath {
 
    private final Merchant merchant;
 
-   private final String message;
-
-   public DtlReviewsPath(@NonNull Merchant merchant, String message) {
+   public DtlReviewsPath(@NonNull Merchant merchant) {
       super();
       this.merchant = merchant;
-      this.message = message;
    }
 
-   public String getMessage() {
-      return message;
-   }
-
-      @Override
+   @Override
    public PathAttrs getAttrs() {
       return PathAttrs.WITHOUT_DRAWER;
    }

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout android:id="@+id/btn_rate_and_review"
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="@dimen/dtl_all_reviews_height"
+      android:layout_marginBottom="@dimen/dtl_all_reviews_margin_small"
       android:layout_marginLeft="@dimen/dtl_all_reviews_margin"
       android:layout_marginRight="@dimen/dtl_all_reviews_margin"
       android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+      android:background="@color/rating_background_button"
       android:elevation="@dimen/dtl_all_reviews_elevation"
       >
 
    <TextView
-         android:id="@+id/btn_rate_and_review"
-         android:layout_width="match_parent"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_centerHorizontal="true"
          android:layout_centerVertical="true"
          android:text="@string/rate_and_reviews_text"
          android:textColor="@android:color/white"
          android:textSize="@dimen/dtl_all_reviews_text"
-         style="@style/DtlButtonTheme"
          />
 </RelativeLayout>

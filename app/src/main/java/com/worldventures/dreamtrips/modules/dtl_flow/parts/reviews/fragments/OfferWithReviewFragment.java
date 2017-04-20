@@ -8,39 +8,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
 import java.util.ArrayList;
-import flow.Flow;
 
 public class OfferWithReviewFragment extends Fragment {
 
-   private RecyclerView recyclerAdapter;
-   private RatingBar ratingBar2;
-   private TextView tvReview;
-   private TextView tvReviewCount;
-   private View lineSeparator;
+   RecyclerView recyclerAdapter;
+   RatingBar ratingBar2;
+   TextView tvReview;
+   TextView tvReviewCount;
+   View lineSeparator;
+   RelativeLayout btnRateAndReview;
+
    private ReviewAdapter mAdapter;
 
    public static final String ARRAY = "arrayList";
    public static final String RATING_MERCHANT = "ratingMerchant";
    public static final String COUNT_REVIEW = "countReview";
-   public static final String MERCHANT_NAME = "merchantName";
-   public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
    private ArrayList<ReviewObject> mArrayInfo;
 
    private float mRatingMerchant;
    private int mCountReview;
-   private String mMerchantName;
-   private boolean mIsFromListReview = false;
 
    public OfferWithReviewFragment() {
    }
@@ -63,36 +58,19 @@ public class OfferWithReviewFragment extends Fragment {
       tvReview = (TextView) v.findViewById(R.id.tv_Review);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
       lineSeparator = v.findViewById(R.id.line_separator);
+      btnRateAndReview = (RelativeLayout) v.findViewById(R.id.btn_rate_and_review);
 
       Bundle bundle = getArguments();
       mArrayInfo = new ArrayList<>();
       mArrayInfo.addAll(bundle.<ReviewObject>getParcelableArrayList(ARRAY));
       mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
       mCountReview = bundle.getInt(COUNT_REVIEW, 0);
-      mMerchantName = bundle.getString(MERCHANT_NAME, "");
-      mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
       setRetainInstance(true);
 
       initRecycler();
       initAdapter();
-      initListener();
 
       return v;
-   }
-
-   private void initListener() {
-      recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerAdapter,
-              new RecyclerClickListener() {
-                 @Override
-                 public void onClick(View view, int position) {
-                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId(), mIsFromListReview));
-                 }
-
-                 @Override
-                 public void onLongClick(View view, int position) {
-
-                 }
-              }));
    }
 
    @Override

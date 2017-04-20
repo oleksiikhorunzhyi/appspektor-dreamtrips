@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -29,7 +28,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerc
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
 
 import java.util.List;
@@ -57,8 +55,6 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
    @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
-   @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
-   @InjectView(R.id.text_view_rating) TextView textViewRating;
 
    @Inject AnalyticsInteractor analyticsInteractor;
 
@@ -86,7 +82,6 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       // TODO :: expandable implementation until release or at most latest - until next release
       // TODO :: please tear off my hands
       setExpandedArea();
-      setRatingAndPerk();
    }
 
    private void setSelection(View view) {
@@ -223,26 +218,5 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @Override
    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
       this.selectableDelegate = selectableDelegate;
-   }
-
-   @OnClick(R.id.layout_rating_reviews)
-   void onClickRateView() {
-      if (getModelObject().reviewSummary().userHasPendingReview() && Integer.parseInt(getModelObject().reviewSummary().total()) < 1) {
-         cellDelegate.userHasPendingReview();
-      } else {
-         cellDelegate.sendToRatingReview(getModelObject());
-      }
-   }
-
-   private void setRatingAndPerk() {
-      ReviewSummary reviewSummary = getModelObject().reviewSummary();
-      if (reviewSummary != null) {
-         String stringTotal = reviewSummary.total();
-         if (mRatingBar != null && stringTotal != null && !stringTotal.isEmpty()
-                 && Integer.parseInt(reviewSummary.total()) > 0) {
-            mRatingBar.setRating(Float.parseFloat(reviewSummary.ratingAverage()));
-            textViewRating.setText(ViewUtils.getLabelReviews(itemView.getContext(), Integer.parseInt(reviewSummary.total())));
-         }
-      }
    }
 }

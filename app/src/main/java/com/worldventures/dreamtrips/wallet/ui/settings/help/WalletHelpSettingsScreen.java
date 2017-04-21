@@ -59,7 +59,7 @@ public class WalletHelpSettingsScreen extends WalletLinearLayout<WalletHelpSetti
 
    @OnClick(R.id.item_videos)
    void onClickVideos() {
-
+      getPresenter().openVideoSection();
    }
 
    @OnClick(R.id.item_send_feedback)

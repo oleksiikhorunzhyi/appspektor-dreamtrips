@@ -20,7 +20,7 @@ public abstract class DialogProgressView<T> implements ProgressView<T> {
       if (progressDialog == null) {
          progressDialog = createDialog(t, context);
       }
-      if (!progressDialog.isShowing()) progressDialog.show();
+      progressDialog.show();
    }
 
    @Override
@@ -30,7 +30,10 @@ public abstract class DialogProgressView<T> implements ProgressView<T> {
 
    @Override
    public void hideProgress() {
-      if (progressDialog != null) progressDialog.dismiss();
+      if (progressDialog != null) {
+         progressDialog.dismiss();
+         progressDialog = null;
+      }
    }
 
    protected abstract MaterialDialog createDialog(T t, Context context);

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -50,14 +51,14 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
    protected void onFinishInflate() {
       super.onFinishInflate();
       if (isInEditMode()) return;
-      toolbar.setNavigationOnClickListener(v -> presenter.cancelUnassign());
+      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 
    @Override
-   public OperationView<FactoryResetCommand> provideOperationView() {
+   public OperationView<ResetSmartCardCommand> provideOperationView() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<FactoryResetCommand>(
-                  getContext(), R.string.loading, true, dialog -> presenter.cancelUnassign()
+            new SimpleDialogProgressView<ResetSmartCardCommand>(
+                  getContext(), R.string.loading, false, dialog -> presenter.goBack()
             )
       );
    }
@@ -71,7 +72,7 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
                .positiveText(R.string.retry)
                .negativeText(R.string.cancel)
                .onPositive((dialog, which) -> presenter.retryEnterPinAndUnassign())
-               .onNegative((dialog, which) -> presenter.cancelUnassign())
+               .onNegative((dialog, which) -> presenter.goBack())
                .build();
       }
       if (!errorEnterPinDialog.isShowing()) errorEnterPinDialog.show();

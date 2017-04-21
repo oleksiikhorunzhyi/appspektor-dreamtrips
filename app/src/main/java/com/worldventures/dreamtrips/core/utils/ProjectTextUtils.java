@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.utils;
 
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Base64;
@@ -98,5 +99,13 @@ public class ProjectTextUtils {
       } else {
          return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY);
       }
+   }
+
+   public static boolean isEmpty(@Nullable CharSequence str) {
+      return str == null || str.length() == 0;
+   }
+
+   public static String defaultIfEmpty(@Nullable String str, String defaultStr) {
+      return (str == null || str.length() == 0) ? defaultStr : str;
    }
 }

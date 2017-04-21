@@ -1,32 +1,27 @@
 package com.worldventures.dreamtrips.modules.feed.api.response;
 
-import android.os.Handler;
-
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
+import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import retrofit.client.Header;
+import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.utils.InterceptingOkClient.ResponseHeaderListener;
 
-public class HeaderChangedInformerListener implements ResponseHeaderListener {
+public class HeaderChangedInformerListener implements NewDreamTripsHttpService.ResponseListener {
 
    private static final long DELAY = 1000L;
    private NotificationCountEventDelegate notificationCountEventDelegate;
-   //
-   private Handler handler = new Handler();
-   private Runnable runnable = () -> notificationCountEventDelegate.post(null);
 
    public HeaderChangedInformerListener(NotificationCountEventDelegate notificationCountEventDelegate) {
       this.notificationCountEventDelegate = notificationCountEventDelegate;
    }
 
    @Override
-   public void onResponse(List<Header> headers) {
-      handler.removeCallbacks(runnable);
-      handler.postDelayed(runnable, DELAY);
+   public void onResponse(BaseHttpAction baseHttpAction) {
+      Observable.timer(DELAY, TimeUnit.MILLISECONDS)
+            .subscribe(delay -> notificationCountEventDelegate.post(null));
    }
-
 
 }

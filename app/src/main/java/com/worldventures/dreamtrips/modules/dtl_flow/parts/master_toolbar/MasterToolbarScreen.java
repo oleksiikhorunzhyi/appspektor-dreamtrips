@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
@@ -17,13 +16,15 @@ public interface MasterToolbarScreen extends DtlScreen {
 
    void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-   void toggleDiningFilterSwitch(boolean enabled);
+   void connectToggleUpdate();
+
+   void toggleOffersOnly(boolean enabled);
 
    void setFilterButtonState(boolean enabled);
 
    void locationResolutionRequired(Status status);
 
-   void setItems(List<DtlExternalLocation> locations, boolean addLocationHeader);
+   void setItems(List<DtlLocation> locations, boolean addLocationHeader);
 
    void showProgress();
 

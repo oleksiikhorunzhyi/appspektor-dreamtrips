@@ -6,14 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.webkit.MimeTypeMap;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
+import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 
 import java.io.File;
@@ -39,6 +42,14 @@ public class ActivityRouter extends ActivityBoundRouter {
 
    public void openLaunch() {
       startActivity(LaunchActivity.class, null, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+   }
+
+   public void openPlayerActivity(Uri url, String videoName, String language, Class launchComponent) {
+      Intent intent = new Intent(getContext(), PlayerActivity.class).setData(url)
+            .putExtra(PlayerActivity.EXTRA_VIDEO_NAME, videoName)
+            .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, launchComponent)
+            .putExtra(PlayerActivity.EXTRA_LANGUAGE, language);
+      getContext().startActivity(intent);
    }
 
    public void open360Activity(String url, String title) {
@@ -90,4 +101,5 @@ public class ActivityRouter extends ActivityBoundRouter {
       intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(intent);
    }
+
 }

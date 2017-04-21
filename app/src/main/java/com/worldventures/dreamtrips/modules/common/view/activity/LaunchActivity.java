@@ -13,10 +13,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.Observable;
 
 @Layout(R.layout.activity_launch)
 public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresenter> implements LaunchActivityPresenter.View {
@@ -26,9 +30,11 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    @InjectView(R.id.et_password) DTEditText passwordEditText;
    @InjectView(R.id.btn_login) Button loginButton;
    @InjectView(R.id.login_progress) View loginProgress;
+   @InjectView(R.id.content_layout) View contentView;
 
    @InjectView(R.id.login_edittexts_holder) View loginEditTextsHolder;
    @InjectView(R.id.login_mode_holder) View loginModeHolder;
+   private SocialConnectionOverlay connectionOverlay;
 
    @Override
    protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -66,15 +72,9 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    }
 
    @Override
-   public void alert(String s) {
-      runOnUiThread(() -> {
-         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-         builder.title(R.string.alert)
-               .content(s)
-               .positiveText(R.string.OK)
-               .onPositive((dialog, which) -> finish())
-               .show();
-      });
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
+      connectionOverlay = new SocialConnectionOverlay(new SocialConnectionOverlayViewFactory(this, contentView));
+      connectionOverlay.startProcessingState(connectionStateObservable, stopper);
    }
 
    @Override
@@ -107,12 +107,15 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    }
 
    @Override
-   public void alertLogin(String message) {
-      super.alert(message);
-      dismissLoginProgress();
+   public void informUser(String message) {
+      runOnUiThread(() -> {
+         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+         builder.title(R.string.alert).content(message).positiveText(R.string.OK).show();
+      });
    }
 
-   private void dismissLoginProgress() {
+   @Override
+   public void dismissLoginProgress() {
       new WeakHandler().postDelayed(() -> {
          if (loginButton != null) {
             usernameEditText.setEnabled(true);

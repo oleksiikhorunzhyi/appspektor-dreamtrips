@@ -137,7 +137,7 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
    }
 
    @Override
-   public void refreshNotifications(List<FeedItem<FeedEntity>> notifications) {
+   public void refreshNotifications(List<FeedItem> notifications) {
       adapter.clearAndUpdateItems(notifications);
    }
 

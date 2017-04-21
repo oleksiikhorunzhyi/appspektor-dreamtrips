@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
@@ -48,29 +47,28 @@ import butterknife.InjectView;
 import rx.Observable;
 import timber.log.Timber;
 
-public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, MasterToolbarPresenter, MasterToolbarPath> implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener {
+public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, MasterToolbarPresenter, MasterToolbarPath>
+      implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener {
 
    @Inject ActivityResultDelegate activityResultDelegate;
-   //
+
    @InjectView(R.id.dtlToolbar) DtlToolbar toolbar;
-   //
-   View searchContentView, autoDetectNearMe, progress;
-   RecyclerView recyclerView;
-   //
-   BaseDelegateAdapter adapter;
-   //
-   PopupWindow popupWindow;
+
+   private View searchContentView, autoDetectNearMe, progress;
+   private RecyclerView recyclerView;
+   private BaseDelegateAdapter adapter;
+   private PopupWindow popupWindow;
 
    @Override
    protected void onPostAttachToWindowView() {
       super.onPostAttachToWindowView();
       injector.inject(this);
       initDtlToolbar();
-      //
+
       prepareViews();
       setupPopup();
       setupRecyclerView();
-      //
+
       activityResultDelegate.addListener(this);
    }
 
@@ -82,17 +80,22 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    protected void initDtlToolbar() {
-      RxDtlToolbar.merchantSearchTextChanges(toolbar)
-            .debounce(250L, TimeUnit.MILLISECONDS)
-            .skipWhile(TextUtils::isEmpty)
+      RxDtlToolbar.merchantSearchApplied(toolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::applySearch);
       RxDtlToolbar.filterButtonClicks(toolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.diningFilterChanges(toolbar)
+      RxDtlToolbar.offersOnlyToggleChanges(toolbar)
             .compose(RxLifecycle.bindView(this))
-            .subscribe(getPresenter()::applyOffersOnlyFilterState);
+            .subscribe(getPresenter()::offersOnlySwitched);
+   }
+
+   @Override
+   public void connectToggleUpdate() {
+      RxDtlToolbar.offersOnlyToggleChanges(toolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -106,13 +109,13 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    @Override
-   public void toggleDiningFilterSwitch(boolean enabled) {
-      toolbar.toggleDiningFilterSwitch(enabled);
+   public void toggleOffersOnly(boolean enabled) {
+      toolbar.toggleOffersOnly(enabled);
    }
 
    @Override
-   public void setFilterButtonState(boolean enabled) {
-      toolbar.setFilterEnabled(enabled);
+   public void setFilterButtonState(boolean isDefault) {
+      toolbar.setFilterEnabled(!isDefault);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -122,13 +125,13 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    private void prepareViews() {
       searchContentView = LayoutInflater.from(getContext()).inflate(R.layout.view_dtl_location_search, null);
       searchContentView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-      //
+
       popupWindow = new PopupWindow(searchContentView, searchContentView.getMeasuredWidth(), WindowManager.LayoutParams.WRAP_CONTENT);
       popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
       popupWindow.setBackgroundDrawable(new ColorDrawable());
       popupWindow.setOutsideTouchable(true);
       popupWindow.setOnDismissListener(() -> SoftInputUtil.hideSoftInputMethod(this));
-      //
+
       this.progress = ButterKnife.findById(searchContentView, R.id.progress);
       this.recyclerView = ButterKnife.<RecyclerView>findById(searchContentView, R.id.locationsList);
       this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
@@ -152,22 +155,23 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
          adapter.clear();
          popupWindow.showAsDropDown(toolbar.getLocationSearchInput());
          getPresenter().onShowToolbar();
+         autoDetectNearMe.setVisibility(getPresenter().needShowAutodetectButton() ? VISIBLE : GONE);
       } else {
          popupWindow.dismiss();
       }
    }
 
    private void setupRecyclerView() {
-      adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injector);
-      adapter.registerCell(DtlExternalLocation.class, DtlLocationSearchCell.class);
+      adapter = new BaseDelegateAdapter<DtlLocation>(getActivity(), injector);
+      adapter.registerCell(ImmutableDtlLocation.class, DtlLocationSearchCell.class);
       adapter.registerCell(DtlLocationSearchHeaderCell.HeaderModel.class, DtlLocationSearchHeaderCell.class);
       adapter.registerCell(DtlNearbyHeaderCell.NearbyHeaderModel.class, DtlNearbyHeaderCell.class);
-      //
-      adapter.registerDelegate(DtlExternalLocation.class, location -> onLocationClicked((DtlExternalLocation) location));
-      //
+
+      adapter.registerDelegate(ImmutableDtlLocation.class, location -> onLocationClicked((DtlLocation) location));
+
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.dtl_location_change_list_divider), false));
-      //
+
       recyclerView.setAdapter(adapter);
    }
 
@@ -202,7 +206,6 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    public void showProgress() {
       ViewUtils.setViewVisibility(VISIBLE, progress);
       ViewUtils.setViewVisibility(GONE, recyclerView);
-      ViewUtils.setViewVisibility(GONE, autoDetectNearMe);
    }
 
    @Override
@@ -211,7 +214,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       ViewUtils.setViewVisibility(View.VISIBLE, recyclerView);
    }
 
-   public void onLocationClicked(DtlExternalLocation location) {
+   public void onLocationClicked(DtlLocation location) {
       hideSoftInput();
       getPresenter().locationSelected(location);
    }
@@ -254,15 +257,14 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    @Override
-   public void setItems(List<DtlExternalLocation> items, boolean showNearbyHeader) {
+   public void setItems(List<DtlLocation> items, boolean showNearbyHeader) {
       hideProgress();
-      //
+
       List<Object> locations = prepareHeader(showNearbyHeader);
       locations.addAll(items);
       adapter.clearAndUpdateItems(locations);
       autoDetectNearMe.setVisibility(getPresenter().needShowAutodetectButton() ? VISIBLE : GONE);
    }
-
 
    ///////////////////////////////////////////////////////////////////////////
    // Boilerplate stuff

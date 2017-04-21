@@ -258,6 +258,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
       });
       searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
       searchView.setQuery(getPresenter().getQuery(), false);
+      getPresenter().onMenuInflated();
    }
 
    @Override

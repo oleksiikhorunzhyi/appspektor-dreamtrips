@@ -17,7 +17,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle> implements CreateEntityPresenter.View {
+public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
+      implements CreateEntityPresenter.View {
 
    @State boolean pickerDisabled;
    @State boolean imageFromArgsAlreadyAttached;
@@ -43,6 +44,11 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
    }
 
    @Override
+   protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
+      return new CreateEntityPresenter(getArgs().getOrigin());
+   }
+
+   @Override
    public void cancel() {
       pickerContainer.setOnHierarchyChangeListener(null);
       super.cancel();
@@ -51,12 +57,6 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
    @Override
    protected int getPostButtonText() {
       return R.string.post;
-   }
-
-   @Override
-   public void onProgressClicked(PhotoCreationItem item) {
-      super.onProgressClicked(item);
-      getPresenter().startUpload(item);
    }
 
    @Override
@@ -102,7 +102,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(getPresenter().getMediaRequestId(), getPresenter().getRemainingPhotosCount()))
+            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
             .build());
    }
 

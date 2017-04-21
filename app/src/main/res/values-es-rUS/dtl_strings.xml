@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Herramientas de DT Local  </string>
    <string name="dtl_details_share_title">Voy a ganar puntos Dreamtrips en %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">He ganado %1$s puntos de DreamTrips en %2$s</string>
-   <string name="dtl_wait_for_receipt">Espera... Cargando recibo</string>
-   <string name="dtl_wait_for_earn">Espera... Ganando puntos</string>
+   <string name="dtl_wait_for_receipt">Espera… Cargando recibo</string>
+   <string name="dtl_wait_for_earn">Espera… Ganando puntos</string>
    <string name="dtl_wait_for_offers">Buscando ofertas cercanas.</string>
    <string name="dtl_wait_for_dinings">Buscando comerciantes cercanos.</string>
    <string name="dtl_estimator_explanation">Los puntos se calculan en función de una cantidad mínima gastada en un comerciante y del día de la semana</string>

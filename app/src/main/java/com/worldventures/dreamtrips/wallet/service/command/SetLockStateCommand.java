@@ -25,10 +25,12 @@ public class SetLockStateCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      if (!lock) throw new IllegalArgumentException("Unlock is not supported");
-
       janet.createPipe(LockDeviceAction.class)
-            .createObservableResult(new LockDeviceAction(true))
+            .createObservableResult(new LockDeviceAction(lock))
             .subscribe(action -> callback.onSuccess(null), callback::onFail);
+   }
+
+   public boolean isLock() {
+      return lock;
    }
 }

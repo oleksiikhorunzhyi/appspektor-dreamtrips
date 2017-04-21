@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Alat DT Local </string>
    <string name="dtl_details_share_title">Saya akan memperoleh mata Dreamtrips dalam %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">Saya telah mendapat %1$s mata DreamTrips dalam %2$s</string>
-   <string name="dtl_wait_for_receipt">Tunggu... Resit muat naik</string>
-   <string name="dtl_wait_for_earn">Tunggu... Memperoleh mata</string>
+   <string name="dtl_wait_for_receipt">Tunggu… Resit muat naik</string>
+   <string name="dtl_wait_for_earn">Tunggu… Memperoleh mata</string>
    <string name="dtl_wait_for_offers">Mencari tawaran yang berhampiran.</string>
    <string name="dtl_wait_for_dinings">Mencari pedagang yang berhampiran.</string>
    <string name="dtl_estimator_explanation">Mata dikira berdasarkan amaun minimum dibelanjakan di saudagar dan hari minggu tersebut</string>

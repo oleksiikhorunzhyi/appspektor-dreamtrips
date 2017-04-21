@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -41,7 +42,6 @@ import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayou
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -92,7 +92,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    private Context context;
    private OnExpandedListener onExpandedListener;
    private DecimalFormat df = new DecimalFormat("#0.00");
-   private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+   private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", LocaleHelper.getDefaultLocale());
    private boolean isExpandEnabled = true;
 
    public ProfileCell(View view) {
@@ -262,7 +262,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    }
 
    private void setFriendsCount(int count) {
-      int stringResource = QuantityHelper.chooseResource(count, R.string.empty, R.string.profile_friend_formatter, R.string.profile_friends_formatter);
+      int stringResource = QuantityHelper.chooseResource(count,  R.string.profile_friends_formatter, R.string.profile_friend_formatter, R.string.profile_friends_formatter);
       friends.setText(String.format(context.getString(stringResource), count));
    }
 

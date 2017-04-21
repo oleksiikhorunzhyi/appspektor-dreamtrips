@@ -8,12 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import icepick.Icepick;
-import icepick.State;
 import timber.log.Timber;
 
 public abstract class Tracker {
 
-   @State protected HashMap headerData;
+   HashMap<String, Object> headerData;
 
    public abstract String getKey();
 
@@ -31,7 +30,7 @@ public abstract class Tracker {
    public void onPause(@Nullable Activity activity) {
    }
 
-   public void setHeaderData(HashMap data) {
+   public void setHeaderData(HashMap<String, Object> data) {
       headerData = data;
    }
 

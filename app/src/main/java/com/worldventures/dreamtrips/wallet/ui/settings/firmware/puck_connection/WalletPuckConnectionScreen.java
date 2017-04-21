@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -8,7 +9,7 @@ import android.view.View;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim.ChargingSwipingAnimations;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,16 +30,16 @@ public class WalletPuckConnectionScreen extends WalletLinearLayout<WalletPuckCon
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    public WalletPuckConnectionPresenter createPresenter() {
-      return new WalletPuckConnectionPresenter(getContext(), getInjector(), getPath().firmwareInfo, getPath().filePath);
+      return new WalletPuckConnectionPresenter(getContext(), getInjector());
    }
 
    @Override
    protected void onFinishInflate() {
-      super.onFinishInflate();
-
       supportConnectionStatusLabel(false);
+      super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 

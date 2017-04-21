@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketCoverBody;
@@ -47,12 +46,13 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
    public void onResume() {
       super.onResume();
 
-      if (bucketItem != null && bucketItem.getCoverPhoto() != null && !foreign) {
-         view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
+      if (bucketItem != null && !foreign) {
+         BucketPhoto coverPhoto = bucketItem.getCoverPhoto();
+         view.showCheckbox(coverPhoto != null && coverPhoto.equals(photo));
       } else {
          view.hideCheckBox();
       }
-      if (bucketItem != null) view.showDeleteBtn();
+      if (bucketItem != null && !foreign) view.showDeleteBtn();
       else view.hideDeleteBtn();
    }
 
@@ -64,39 +64,36 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
                .observeOn(AndroidSchedulers.mainThread())).subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
                .onSuccess(deleteItemPhotoAction -> {
                   view.informUser(context.getString(R.string.photo_deleted));
-                  eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
                })
                .onFail(this::handleError));
       }
    }
 
+   public void onCheckboxPressed(boolean setAsCover) {
+      if (bucketItem == null || !setAsCover) return;
+      if (bucketItem.getCoverPhoto().equals(photo)) return;
 
-   public void onCheckboxPressed(boolean status) {
-      if (bucketItem != null) {
-         if (status && !bucketItem.getCoverPhoto().equals(photo)) {
-            view.showCoverProgress();
+      view.showCoverProgress();
 
-            view.bind(bucketInteractor.updatePipe()
-                  .createObservable(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
-                        .id(bucketItem.getUid())
-                        .status(bucketItem.getStatus())
-                        .type(bucketItem.getType())
-                        .coverId(photo.getFSId())
-                        .build()))
-                  .observeOn(AndroidSchedulers.mainThread()))
-                  .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(itemAction -> view.hideCoverProgress())
-                        .onFail((itemAction, throwable) -> {
-                           view.hideCoverProgress();
-                           handleError(itemAction, throwable);
-                        }));
-         }
-      }
+      view.bind(bucketInteractor.updatePipe()
+            .createObservable(new UpdateBucketItemCommand(ImmutableBucketCoverBody.builder()
+                  .id(bucketItem.getUid())
+                  .status(bucketItem.getStatus())
+                  .type(bucketItem.getType())
+                  .coverId(photo.getFSId())
+                  .build()))
+            .observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(itemAction -> view.hideCoverProgress())
+                  .onFail((itemAction, throwable) -> {
+                     view.hideCoverProgress();
+                     handleError(itemAction, throwable);
+                  }));
    }
 
    private void bindChanges(View view) {
       view.bind(bucketInteractor.updatePipe()
             .observeSuccess()
-            .map(UpdateItemHttpAction::getResponse)
+            .map(UpdateBucketItemCommand::getResult)
             .observeOn(AndroidSchedulers.mainThread())).subscribe(item -> {
          if (item != null && item.getCoverPhoto() != null) {
             view.showCheckbox(item.getCoverPhoto().equals(photo));
@@ -107,7 +104,7 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
    }
 
    public interface View extends SocialFullScreenPresenter.View {
-      void showCheckbox(boolean show);
+      void showCheckbox(boolean currentCover);
 
       void showCoverProgress();
 

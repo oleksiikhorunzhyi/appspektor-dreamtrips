@@ -1,45 +1,39 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
 import java.util.List;
 
@@ -47,21 +41,23 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
-public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
+public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T>
+      implements FeedActionHandlerPresenter {
 
-   @Inject FeedEntityManager entityManager;
+   private static final int PAGE = 1;
+   private static final int PER_PAGE = 2;
+
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
-   @Inject LocaleHelper localeHelper;
-   @Inject FlagsInteractor flagsInteractor;
-
-   private UidItemDelegate uidItemDelegate;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FriendsInteractor friendsInteractor;
+   @Inject PostsInteractor postsInteractor;
+   @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    @State FeedEntity feedEntity;
-   @State String draftComment;
+   @State String draftCommentText;
 
    private int page = 1;
    private int commentsCount = 0;
@@ -72,36 +68,39 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    @Override
-   public void onInjected() {
-      super.onInjected();
-      entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
-   }
-
-   @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
-      view.setDraftComment(draftComment);
+      view.setDraftComment(draftCommentText);
       view.setLikePanel(feedEntity);
 
       if (isNeedCheckCommentsWhenStart()) checkCommentsAndLikesToLoad();
 
+      subscribeToCommentDeletion();
+      subscribeToCommentCreation();
+      subscribeToCommentChanges();
       subscribeToCommentsLoading();
       subscribeToCommentTranslation();
    }
 
+   private void subscribeToCommentsLoading() {
+      view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
+                  .onFail(this::handleError));
+   }
+
    private void subscribeToCommentTranslation() {
-      view.bindUntilDropView(translationFeedInteractor.translateCommentPipe()
+      translationFeedInteractor.translateCommentPipe()
             .observe()
-            .compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateCommentCommand>().onSuccess(translateCommentCommand -> {
-               updateEntityComments(translateCommentCommand.getResult());
-               view.updateComment(translateCommentCommand.getResult());
-            }).onFail((translateCommentCommand, throwable) -> {
-               view.notifyDataSetChanged();
-               view.informUser(translateCommentCommand.getErrorMessage());
-            }));
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateCommentCommand>()
+                  .onSuccess(translateCommentCommand -> {
+                     updateEntityComments(translateCommentCommand.getResult());
+                     view.updateComment(translateCommentCommand.getResult());
+                  }).onFail((translateCommentCommand, throwable) -> {
+                     view.notifyDataSetChanged();
+                     handleError(translateCommentCommand, throwable);
+                  }));
    }
 
    protected void checkCommentsAndLikesToLoad() {
@@ -109,7 +108,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       //
       loadComments();
       loadInitiated = true;
-      loadLikes();
+      loadFirstLikers();
    }
 
    protected boolean isNeedCheckCommentsWhenStart() {
@@ -119,13 +118,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private void loadComments() {
       view.setLoading(true);
       commentsInteractor.commentsPipe().send(new GetCommentsCommand(feedEntity.getUid(), page));
-   }
-
-   private void subscribeToCommentsLoading() {
-      view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
-                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
-                  .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
    }
 
    private void onCommentsLoaded(List<Comment> comments) {
@@ -145,24 +137,52 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       }
    }
 
-   private void loadLikes() {
-      doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 2), this::onLikersLoaded);
+   private void loadFirstLikers() {
+      friendsInteractor.getLikersPipe()
+            .createObservable(new GetLikersCommand(feedEntity.getUid(), PAGE, PER_PAGE))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetLikersCommand>()
+                  .onSuccess(likersCommand -> onLikersLoaded(likersCommand.getResult()))
+                  .onFail(this::handleError));
    }
 
-   public void setDraftComment(String comment) {
-      this.draftComment = comment;
+   public void setDraftCommentText(String commentText) {
+      this.draftCommentText = commentText;
    }
 
-   public void post() {
-      entityManager.createComment(feedEntity, draftComment);
+   @Override
+   public void onLikeItem(FeedItem feedItem) {}
+
+   @Override
+   public void onDownloadImage(String url) {}
+
+   @Override
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {}
+
+   @Override
+   public void onShowOriginal(FeedEntity translatableItem) {}
+
+   @Override
+   public void onCommentItem(FeedItem feedItem) {
+      view.openInput();
    }
 
-   public void loadFlags(Flaggable flaggableView) {
-      uidItemDelegate.loadFlags(flaggableView, this::handleError);
+   @Override
+   public void onLoadFlags(Flaggable flaggableView) {
+      feedActionHandlerDelegate.onLoadFlags(flaggableView, this::handleError);
    }
 
-   public void flagItem(String uid, int reasonId, String reason) {
-      uidItemDelegate.flagItem(new FlagData(uid, reasonId, reason), view);
+   @Override
+   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
+      flag(feedItem.getItem().getUid(), flagReasonId, reason);
+   }
+
+   public void onFlagComment(String uid, int flagReasonId, String reason) {
+      flag(uid, flagReasonId, reason);
+   }
+
+   private void flag(String id, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(id, flagReasonId, reason, view, this::handleError);
    }
 
    public void editComment(Comment comment) {
@@ -170,89 +190,69 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
    }
 
-   public void deleteComment(Comment comment) {
-      entityManager.deleteComment(feedEntity, comment);
-   }
-
    public void translateComment(Comment comment) {
       translationFeedInteractor.translateCommentPipe()
-            .send(TranslateUidItemCommand.forComment(comment, localeHelper.getDefaultLocaleFormatted()));
+            .send(new TranslateUidItemCommand.TranslateCommentCommand(comment, LocaleHelper.getDefaultLocaleFormatted()));
    }
 
-   public void onEvent(FeedEntityManager.CommentEvent event) {
-      switch (event.getType()) {
-         case ADDED:
-            if (event.getSpiceException() == null) {
-               view.addComment(event.getComment());
-               sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
-            } else {
-               view.onPostError();
-               handleError(event.getSpiceException());
-            }
-            break;
-         case REMOVED:
-            view.removeComment(event.getComment());
-            sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
-            break;
-         case EDITED:
-            view.updateComment(event.getComment());
-            break;
-      }
-      eventBus.post(new FeedEntityCommentedEvent(feedEntity));
+   public void deleteComment(Comment comment) {
+      commentsInteractor.deleteCommentPipe().send(new DeleteCommentCommand(feedEntity, comment));
+   }
+
+   private void subscribeToCommentDeletion() {
+      commentsInteractor.deleteCommentPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeleteCommentCommand>()
+                  .onSuccess(this::commentDeleted)
+                  .onFail(this::handleError));
+   }
+
+   private void commentDeleted(DeleteCommentCommand deleteCommentCommand) {
+      view.removeComment(deleteCommentCommand.getResult());
+      sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
+      eventBus.post(new FeedEntityCommentedEvent(deleteCommentCommand.getFeedEntity()));
+   }
+
+   public void createComment() {
+      commentsInteractor.createCommentPipe().send(new CreateCommentCommand(feedEntity, draftCommentText));
+   }
+
+   private void subscribeToCommentCreation() {
+      commentsInteractor.createCommentPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CreateCommentCommand>()
+                  .onSuccess(this::commentCreated)
+                  .onFail(this::comentCreationError));
+   }
+
+   private void commentCreated(CreateCommentCommand createCommentCommand) {
+      view.addComment(createCommentCommand.getResult());
+      sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
+      eventBus.post(new FeedEntityCommentedEvent(createCommentCommand.getFeedEntity()));
+   }
+
+   private void comentCreationError(CreateCommentCommand createCommentCommand, Throwable e) {
+      view.onPostError();
+      handleError(createCommentCommand, e);
+   }
+
+   private void subscribeToCommentChanges() {
+      commentsInteractor.editCommentPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<EditCommentCommand>()
+                  .onSuccess(this::commentEdited));
+   }
+
+   private void commentEdited(EditCommentCommand commentCommand) {
+      view.updateComment(commentCommand.getResult());
+      eventBus.post(new FeedEntityCommentedEvent(commentCommand.getFeedEntity()));
    }
 
    public void onEvent(LoadMoreEvent event) {
       loadComments();
-   }
-
-   public void onEvent(EditBucketEvent event) {
-      if (!view.isVisibleOnScreen()) return;
-      //
-      BucketBundle bundle = new BucketBundle();
-      bundle.setType(event.type());
-      bundle.setBucketItem(event.bucketItem());
-
-      view.showEdit(bundle);
-   }
-
-   public void onEvent(DeletePostEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
-   }
-
-   public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePhotoCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
-   }
-
-   public void onEvent(DeleteBucketEvent event) {
-      if (view.isVisibleOnScreen()) {
-         BucketItem bucketItemToDelete = event.getEntity();
-
-         view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteItemHttpAction(bucketItemToDelete.getUid()))
-               .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
-                     .onFail((deleteItemAction, throwable) -> {
-                        view.setLoading(false); //TODO: review, after leave from robospice completely
-                        handleError(deleteItemAction, throwable);
-                     }));
-      }
-   }
-
-   public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
-   }
-
-   public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
-   }
-
-   protected void itemDeleted(FeedEntity model) {
-      eventBus.post(new FeedEntityDeletedEvent(model));
-      //
-      back();
    }
 
    protected void back() {
@@ -296,7 +296,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
    }
 
-   public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
+   public interface View extends RxView, FlagDelegate.View, ApiErrorView {
 
       void addComments(List<Comment> commentList);
 
@@ -307,6 +307,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       void updateComment(Comment comment);
 
       void setDraftComment(String comment);
+
+      void openInput();
 
       void setLoading(boolean loading);
 
@@ -319,8 +321,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       void onPostError();
 
       void showViewMore();
-
-      void showEdit(BucketBundle bucketBundle);
 
       void setLikePanel(FeedEntity entity);
 

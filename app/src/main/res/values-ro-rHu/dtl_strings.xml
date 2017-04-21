@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Instrumente locale DT</string>
    <string name="dtl_details_share_title">Voi câștiga puncte Dreamtrips în %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false"> Ați câștigat %1$s DreamTrips Points în %2$s </string>
-   <string name="dtl_wait_for_receipt">Așteptați... Se încarcă nota de plată</string>
-   <string name="dtl_wait_for_earn">Așteptați... Se colectează punctele</string>
+   <string name="dtl_wait_for_receipt">Așteptați… Se încarcă nota de plată</string>
+   <string name="dtl_wait_for_earn">Așteptați… Se colectează punctele</string>
    <string name="dtl_wait_for_offers">Se caută oferte în apropiere.</string>
    <string name="dtl_wait_for_dinings">Se caută comercianți în apropiere.</string>
    <string name="dtl_estimator_explanation">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii</string>

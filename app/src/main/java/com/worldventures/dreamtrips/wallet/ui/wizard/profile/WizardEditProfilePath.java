@@ -4,22 +4,19 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 @Layout(R.layout.screen_wallet_wizard_personal_info)
 public class WizardEditProfilePath extends StyledPath {
 
-   private final String smartCardId;
+   public final SmartCard smartCard;
 
-   public WizardEditProfilePath(String smartCardId) {
-      this.smartCardId = smartCardId;
+   public WizardEditProfilePath(SmartCard smartCard) {
+      this.smartCard = smartCard;
    }
 
    @Override
    public MasterDetailPath getMaster() {
       return this;
-   }
-
-   public String getSmartCardId() {
-      return smartCardId;
    }
 }

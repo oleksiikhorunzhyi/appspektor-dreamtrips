@@ -88,11 +88,13 @@ public class DrawableUtil {
          List<Pair<String, String>> customParams = new ArrayList<>();
          customParams.add(new Pair<>(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL)));
 
-         ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath(), customParams);
+         try {
+            ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath(), customParams);
+         } catch (IOException e) {
+            Timber.e(e, "Failed to copy exif");
+         }
 
          return new Pair<>(newFile.getAbsolutePath(), new Size(bitmap.getWidth(), bitmap.getHeight()));
-      } catch (IOException e) {
-         return new Pair<>(fileImage, new Size(0, 0));
       } catch (Exception e) {
          return new Pair<>(fileImage, new Size(0, 0));
       } finally {
@@ -132,10 +134,12 @@ public class DrawableUtil {
       }
    }
 
-   public void removeCacheImages() {
+   public void removeCacheImages(List<String> filteredPathes) {
       File[] cachedFiles = getImagesCacheDir().listFiles();
       for (File cachedFile : cachedFiles) {
-         cachedFile.delete();
+         if (!filteredPathes.contains(cachedFile.getAbsolutePath())) {
+            cachedFile.delete();
+         }
       }
    }
 
@@ -143,12 +147,5 @@ public class DrawableUtil {
       File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
       cacheDir.mkdir();
       return cacheDir;
-   }
-
-   public static boolean isFileImage(File file) {
-      BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inJustDecodeBounds = true;
-      BitmapFactory.decodeFile(file.getPath(), options);
-      return options.outWidth != -1 && options.outHeight != -1;
    }
 }

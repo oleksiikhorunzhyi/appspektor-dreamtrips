@@ -7,26 +7,32 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate;
+import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
+import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.command.VersionCheckCommand;
 
 import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import timber.log.Timber;
 
 public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presenter<VT> {
 
    @Inject protected Activity activity;
    @Inject protected LocaleSwitcher localeSwitcher;
-   @Inject protected LocaleHelper localeHelper;
+
    @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
+   @Inject VersionUpdateDelegate versionUpdateDelegate;
+   @Inject VersionCheckInteractor versionCheckInteractor;
 
    @State boolean isTermsShown;
 
@@ -48,6 +54,23 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
       super.onResume();
       //Some third-party libraries can change the locale.
       setupUserLocale();
+      subscribeToAppVersionUpdates();
+   }
+
+   private void subscribeToAppVersionUpdates() {
+      versionCheckInteractor.versionCheckPipe().observeWithReplay()
+            .compose(bindUntilPauseIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<VersionCheckCommand>()
+                  .onProgress((command, integer) -> processUpdateRequirement(command.getUpdateRequirement()))
+                  .onSuccess(command -> processUpdateRequirement(command.getUpdateRequirement()))
+                  .onFail((versionCheckAction, throwable) ->
+                        Timber.w(throwable, "Could not check latest app version")));
+   }
+
+   private void processUpdateRequirement(UpdateRequirement updateRequirement) {
+      if (!activity.isFinishing()) {
+         versionUpdateDelegate.processUpdateRequirement(updateRequirement);
+      }
    }
 
    public void logout() {
@@ -76,7 +99,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    protected void setupUserLocale() {
-      localeSwitcher.applyLocale(localeHelper.getDefaultLocale());
+      localeSwitcher.applyLocaleFromSession();
    }
 
    private void subscribeToUserUpdate() {

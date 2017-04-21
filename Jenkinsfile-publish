@@ -20,7 +20,7 @@ utils.runBuild('android', getNotifier(utils)) {
                   [$class: 'CleanBeforeCheckout'],
                   [$class : 'CloneOption',
                    shallow: true,
-                   depth  : 20,
+                   depth  : 100,
                    noTags : true,
                    timeout: 5]
             ]
@@ -33,25 +33,29 @@ utils.runBuild('android', getNotifier(utils)) {
          utils.scripts.bash("chmod +rx ${SIGNING_PROPS}")
          utils.scripts.bash("cp -f ${SIGNING_KEY} signing")
          utils.scripts.bash("cp -f ${SIGNING_PROPS} signing")
-         utils.scripts.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType}"
+         utils.scripts.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType} -Pqa_automation_mode=${buildParams.qa_automation_mode}"
       }
    }
    stage('publish') {
-      def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
-      echo releaseNotes
-      def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
-      step([$class   : 'HockeyappRecorder', applications:
-            [[apiToken          : params.hockeyApiToken,
-              filePath          : apkPath,
-              downloadAllowed   : true,
-              mandatory         : false,
-              notifyTeam        : true,
-              teams             : buildParams.hockeyAppTeams.join(','),
-              releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
-              uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
-             ]],
-            debugMode: false, failGracefully: true
-      ])
+     if (Boolean.valueOf(env.INTERNAL_ONLY)) {
+        archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
+      } else {
+        def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
+        echo releaseNotes
+        def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+        step([$class   : 'HockeyappRecorder', applications:
+              [[apiToken          : params.hockeyApiToken,
+                filePath          : apkPath,
+                downloadAllowed   : true,
+                mandatory         : false,
+                notifyTeam        : true,
+                teams             : buildParams.hockeyAppTeams.join(','),
+                releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
+                uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
+               ]],
+              debugMode: false, failGracefully: true
+        ])
+      }
    }
    if (isPullRequest()) stage('notify') {
       def links = hockeyInstallationLinks(currentBuild.rawBuild.getActions(hockeyapp.HockeyappBuildAction.class))
@@ -67,12 +71,13 @@ node('android') {
 @NonCPS
 def Map generateParams(boolean isPullRequest) {
    def params = [
-         streamFlavor  : "Stable",
-         serverFlavor  : "Stage",
-         apkBuildType  : "Debug",
-         hockeyApiToken: "c190d98f211e4ed689ce441d0de9ef1d",
-         hockeyAppId   : "",
-         hockeyAppTeams: []
+         streamFlavor       : "Stable",
+         serverFlavor       : "Stage",
+         apkBuildType       : "Debug",
+         hockeyApiToken     : "c190d98f211e4ed689ce441d0de9ef1d",
+         hockeyAppId        : "",
+         hockeyAppTeams     : [],
+         qa_automation_mode : false
    ]
 
    def devTeam = "40021"
@@ -80,6 +85,7 @@ def Map generateParams(boolean isPullRequest) {
 
    params.branch = (isPullRequest ? env.gitlabSourceBranch : env.GIT_BRANCH).replace("origin/", "")
    params.comment = (isPullRequest ? env.gitlabTriggerPhrase : env.COMMENT) ?: ""
+   params.qa_automation_mode = params.comment.contains("-qa_automation_mode")
 
    switch (params.branch) {
       case ~/^(develop)|(common\/.+)/:

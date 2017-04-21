@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.wallet.analytics;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 
@@ -18,24 +19,35 @@ public class WalletAnalyticsCommand extends Command<Void> implements InjectableA
    @Inject AnalyticsInteractor analyticsInteractor;
 
    private final WalletAnalyticsAction walletAnalyticsAction;
+   private SmartCard smartCard = null;
 
    public WalletAnalyticsCommand(WalletAnalyticsAction walletAnalyticsAction) {
       this.walletAnalyticsAction = walletAnalyticsAction;
    }
 
+   public WalletAnalyticsCommand(SmartCard smartCard, WalletAnalyticsAction walletAnalyticsAction) {
+      this.smartCard = smartCard;
+      this.walletAnalyticsAction = walletAnalyticsAction;
+   }
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .take(1)
-            .map(Command::getResult)
-            .subscribe(smartCard -> {
-               walletAnalyticsAction.setSmartCardAction(smartCard);
-               analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
-               callback.onSuccess(null);
-            }, e -> {
-               analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
-               callback.onFail(e);
-            });
+      if (smartCard == null) {
+         smartCardInteractor.activeSmartCardPipe()
+               .createObservableResult(new ActiveSmartCardCommand())
+               .map(Command::getResult)
+               .subscribe(smartCard -> {
+                  walletAnalyticsAction.setSmartCardAction(smartCard);
+                  analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
+                  callback.onSuccess(null);
+               }, e -> {
+                  analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
+                  callback.onFail(e);
+               });
+      } else {
+         walletAnalyticsAction.setSmartCardAction(smartCard);
+         analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
+         callback.onSuccess(null);
+      }
    }
 }

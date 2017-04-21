@@ -1,34 +1,29 @@
 package com.worldventures.dreamtrips.core.repository;
 
-import android.support.annotation.Nullable;
-
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,10 +44,11 @@ public interface SnappyRepository {
    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
    String IMAGE = "IMAGE";
+   String LAST_USED_INSPIRE_ME_RANDOM_SEED = "LAST_USED_INSPIRE_ME_RANDOM_SEED";
    String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
-   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
-   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
+   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
+   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
    String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
    String LAST_SYNC_APP_VERSION = "LAST_SYNC_APP_VERSION";
    String FILTER_CIRCLE = "FILTER_CIRCLE";
@@ -63,14 +59,15 @@ public interface SnappyRepository {
    String PINS = "PINS";
    String TRIPS_DETAILS = "TRIPS_DETAILS";
 
-   String DTL_MERCHANTS = "DTL_MERCHANTS";
-   String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
    String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
    String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
-   String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
-   String DTL_AMENITIES = "DTL_AMENITIES";
+
    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+   String DOCUMENTS = "DOCUMENTS";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+
+   String UPDATE_REQUIREMENT = "UPDATE_REQUIREMENT";
+   String UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP = "UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP";
 
    String NOTIFICATIONS = "notifications";
    String UNDEFINED_FEED_ITEM = "undefined";
@@ -79,10 +76,8 @@ public interface SnappyRepository {
    String TRIP_FEED_ITEM = "trip";
    String BUCKET_FEED_ITEM = "bucket";
 
-   String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
-   String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
    String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
@@ -120,9 +115,21 @@ public interface SnappyRepository {
 
    long getLastSuggestedPhotosSyncTime();
 
+   void saveAppUpdateRequirement(UpdateRequirement updateRequirement);
+
+   UpdateRequirement getAppUpdateRequirement();
+
+   void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp);
+
+   long getAppUpdateOptionalDialogConfirmedTimestamp();
+
    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
 
    List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
+
+   void saveLastUsedInspireMeRandomSeed(double randomSeed);
+
+   double getLastUsedInspireMeRandomSeed();
 
    void saveLastSelectedVideoLocale(VideoLocale videoLocale);
 
@@ -137,6 +144,10 @@ public interface SnappyRepository {
    int getBadgeNotificationsCount();
 
    void saveCountFromHeader(String headerKey, int count);
+
+   void saveNotificationsCount(int count);
+
+   void saveFriendRequestsCount(int count);
 
    int getExclusiveNotificationsCount();
 
@@ -170,34 +181,11 @@ public interface SnappyRepository {
 
    void setFeedbackTypes(List<FeedbackType> types);
 
-   void saveDtlLocation(DtlLocation dtlLocation);
+   List<Document> getDocuments();
 
-   void cleanDtlLocation();
-
-   @Nullable
-   DtlLocation getDtlLocation();
-
-   void saveDtlMerhants(List<DtlMerchant> merchants);
-
-   List<DtlMerchant> getDtlMerchants();
-
-   void saveAmenities(Collection<DtlMerchantAttribute> amenities);
-
-   List<DtlMerchantAttribute> getAmenities();
-
-   void clearMerchantData();
-
-   void saveLastMapCameraPosition(Location location);
-
-   Location getLastMapCameraPosition();
+   void setDocuments(List<Document> documents);
 
    void cleanLastMapCameraPosition();
-
-   void saveLastSelectedOffersOnlyToogle(boolean state);
-
-   Boolean getLastSelectedOffersOnlyToggle();
-
-   void cleanLastSelectedOffersOnlyToggle();
 
    DtlTransaction getDtlTransaction(String id);
 
@@ -235,6 +223,8 @@ public interface SnappyRepository {
 
    void saveTripsDetails(List<TripModel> trips);
 
+   boolean hasTripsDetailsForUids(List<String> uids);
+
    List<TripModel> getTripsDetailsForUids(List<String> uids);
 
    TripModel getTripDetail(String uid);
@@ -243,11 +233,7 @@ public interface SnappyRepository {
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
 
-   void saveWalletCardsList(List<Card> items);
-
-   List<Card> readWalletCardsList();
-
-   void deleteWalletCardList();
+   void deleteWalletDefaultCardId();
 
    void saveWalletDefaultCardId(String id);
 
@@ -261,17 +247,9 @@ public interface SnappyRepository {
 
    void saveSmartCard(SmartCard smartCard);
 
-   SmartCard getSmartCard(String smartCardId);
+   SmartCard getSmartCard();
 
-   void deleteSmartCard(String smartCardId);
-
-   List<SmartCard> getSmartCards();
-
-   String getActiveSmartCardId();
-
-   void setActiveSmartCardId(String scid);
-
-   void deleteActiveSmartCardId();
+   void deleteSmartCard();
 
    void saveWalletTermsAndConditions(TermsAndConditions data);
 
@@ -281,9 +259,9 @@ public interface SnappyRepository {
 
    void saveSmartCardDetails(SmartCardDetails details);
 
-   SmartCardDetails getSmartCardDetails(String smartCardId);
+   SmartCardDetails getSmartCardDetails();
 
-   void deleteSmartCardDetails(String smartCardId);
+   void deleteSmartCardDetails();
 
    void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 

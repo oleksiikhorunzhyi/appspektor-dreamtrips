@@ -26,14 +26,15 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -52,14 +53,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Inject FeatureManager featureManager;
    @Inject LocationDelegate locationDelegate;
-   @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
-   @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
-   //
-   protected DtlMerchant merchant;
-   protected List<Integer> preExpandOffers;
+   @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
+   @Inject PresentationInteractor presentationInteractor;
 
-   public DtlDetailsPresenterImpl(Context context, Injector injector, DtlMerchant merchant, List<Integer> preExpandOffers) {
+   private final Merchant merchant;
+   private final List<String> preExpandOffers;
+
+   public DtlDetailsPresenterImpl(Context context, Injector injector, Merchant merchant, List<String> preExpandOffers) {
       super(context);
       injector.inject(this);
       this.merchant = merchant;
@@ -69,10 +70,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      //
+
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant)));
-      //
+            .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
       preExpandOffers();
       tryHideSuggestMerchantButton();
@@ -85,7 +85,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
-      state.setOffers(getView().getExpandedOffers());
+      state.setOffersIds(getView().getExpandedOffersIds());
       state.setHoursViewExpanded(getView().isHoursViewExpanded());
       super.onSaveInstanceState(bundle);
    }
@@ -100,9 +100,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    public void onVisibilityChanged(int visibility) {
       super.onVisibilityChanged(visibility);
       if (visibility == View.VISIBLE) {
-         getView().setMap(merchant);
+         getView().setupMap();
       }
-      if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
+      if (visibility == View.VISIBLE && merchant.asMerchantAttributes().hasOffers()) {
          processTransaction();
       }
    }
@@ -119,9 +119,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    protected void preExpandOffers() {
-      boolean isRestore = getViewState().getOffers() != null;
-      final List<Integer> offers = isRestore ? getViewState().getOffers() : this.preExpandOffers;
-      //
+      boolean isRestore = getViewState().getOffersIds() != null;
+      final List<String> offers = isRestore ? getViewState().getOffersIds() : this.preExpandOffers;
+
       getView().expandOffers(offers);
    }
 
@@ -133,7 +133,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    private void tryHideSuggestMerchantButton() {
       boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-      if (merchant.hasNoOffers()) {
+      if (!merchant.asMerchantAttributes().hasOffers()) {
          getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
       } else processTransaction();
    }
@@ -211,36 +211,41 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    private void onLocationObtained(Location location) {
       getView().enableCheckinButton();
-      //
+
       DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
             .lat(location.getLatitude())
             .lng(location.getLongitude())
             .build();
       transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
-      //
+
       getView().setTransaction(dtlTransaction);
-      //
+
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant, location)));
+            .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
    }
 
    @Override
    public void onEstimationClick() {
-      getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant.getId()));
+      getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant));
    }
 
    @Override
    public void onMerchantClick() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
-      getView().openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
+            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant.asMerchantAttributes())));
+      getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
    }
 
    @Override
-   public void onOfferClick(DtlOffer offer) {
-      DtlMerchantMedia imageUrl = Queryable.from(offer.getImages()).firstOrDefault();
+   public void onOfferClick(Offer offer) {
+      MerchantMedia imageUrl = Queryable.from(offer.images()).firstOrDefault();
       if (imageUrl == null) return;
       Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
+   }
+
+   @Override
+   public void onBackPressed() {
+      presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
    }
 
    public void onShareClick() {
@@ -250,13 +255,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void trackSharing(@ShareType String type) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideMerchantShareEvent(merchant, type)));
+            .send(DtlAnalyticsCommand.create(
+                  ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
    @Override
    public void trackPointEstimator() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant)));
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
    }
 
    @Override

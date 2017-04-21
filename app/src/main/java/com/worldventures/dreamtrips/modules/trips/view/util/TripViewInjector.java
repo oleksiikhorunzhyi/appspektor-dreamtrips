@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.trips.view.util;
 
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -18,9 +17,9 @@ public class TripViewInjector {
    @InjectView(R.id.textViewPlace) TextView textViewPlace;
    @InjectView(R.id.textViewPrice) TextView textViewPrice;
    @Optional @InjectView(R.id.textViewDate) TextView textViewDate;
-   @InjectView(R.id.sold_out) ImageView soldOut;
-   @InjectView(R.id.textViewPoints) TextView textViewPoints;
-   @InjectView(R.id.pointsCountLayout) FrameLayout pointsCountLayout;
+   @Optional @InjectView(R.id.textViewPoints) TextView textViewPoints;
+   @InjectView(R.id.sold_out) View soldOut;
+   @Optional @InjectView(R.id.pointsCountLayout) FrameLayout pointsCountLayout;
    @InjectView(R.id.textViewFeatured) TextView textViewFeatured;
 
    public TripViewInjector(View rootView) {
@@ -28,13 +27,15 @@ public class TripViewInjector {
    }
 
    public void initTripData(TripModel tripModel) {
-      if (tripModel.getRewardsLimit() != 0) {
-         textViewPoints.setText(String.valueOf(tripModel.getRewardsLimit()));
-         pointsCountLayout.setVisibility(View.VISIBLE);
-         textViewPoints.setVisibility(View.VISIBLE);
-      } else {
-         textViewPoints.setVisibility(View.GONE);
-         pointsCountLayout.setVisibility(View.GONE);
+      if (textViewPoints != null) {
+         if (tripModel.getRewardsLimit() != 0) {
+            textViewPoints.setText(String.valueOf(tripModel.getRewardsLimit()));
+            pointsCountLayout.setVisibility(View.VISIBLE);
+            textViewPoints.setVisibility(View.VISIBLE);
+         } else {
+            textViewPoints.setVisibility(View.GONE);
+            pointsCountLayout.setVisibility(View.GONE);
+         }
       }
 
       textViewFeatured.setVisibility(tripModel.isFeatured() ? View.VISIBLE : View.GONE);
@@ -43,9 +44,15 @@ public class TripViewInjector {
       soldOut.setVisibility(tripModel.isSoldOut() ? View.VISIBLE : View.GONE);
 
       textViewPlace.setText(tripModel.getLocation().getName());
-      textViewPrice.setText(tripModel.getPrice().toString());
+
+      if (tripModel.getPrice().getAmount() != 0) {
+         textViewPrice.setText(tripModel.getPrice().toString());
+      } else {
+         textViewPrice.setText("");
+      }
+
       if (textViewDate != null) {
-         textViewDate.setText(tripModel.isHasMultipleDates() ? String.format(textViewDate.getResources()
+         textViewDate.setText(tripModel.hasMultipleDates() ? String.format(textViewDate.getResources()
                      .getString(R.string.multiple_dates),
                tripModel.getAvailabilityDates().getStartDateString()) : tripModel.getAvailabilityDates().toString());
       }

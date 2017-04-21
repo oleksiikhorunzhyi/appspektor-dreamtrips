@@ -8,16 +8,16 @@ import java.util.List;
 public class MediaAttachment implements Parcelable {
 
    public final List<PhotoGalleryModel> chosenImages;
-   public final int type;
+   public final Source source;
    public final int requestId;
 
-   public MediaAttachment(List<PhotoGalleryModel> chosenImages, int type) {
-      this(chosenImages, type, -1);
+   public MediaAttachment(List<PhotoGalleryModel> chosenImages, Source source) {
+      this(chosenImages, source, -1);
    }
 
-   public MediaAttachment(List<PhotoGalleryModel> chosenImages, int type, int requestId) {
+   public MediaAttachment(List<PhotoGalleryModel> chosenImages, Source source, int requestId) {
       this.chosenImages = chosenImages;
-      this.type = type;
+      this.source = source;
       this.requestId = requestId;
    }
 
@@ -29,13 +29,13 @@ public class MediaAttachment implements Parcelable {
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeTypedList(chosenImages);
-      dest.writeInt(this.type);
+      dest.writeInt(this.source.ordinal());
       dest.writeInt(this.requestId);
    }
 
    protected MediaAttachment(Parcel in) {
       this.chosenImages = in.createTypedArrayList(PhotoGalleryModel.CREATOR);
-      this.type = in.readInt();
+      this.source = Source.values()[in.readInt()];
       this.requestId = in.readInt();
    }
 
@@ -50,4 +50,8 @@ public class MediaAttachment implements Parcelable {
          return new MediaAttachment[size];
       }
    };
+
+   public enum Source {
+      CAMERA, GALLERY, FACEBOOK, UNKNOWN
+   }
 }

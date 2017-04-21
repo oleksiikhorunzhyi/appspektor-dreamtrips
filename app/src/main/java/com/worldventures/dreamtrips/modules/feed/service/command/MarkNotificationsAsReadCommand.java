@@ -22,9 +22,9 @@ public class MarkNotificationsAsReadCommand extends Command implements Injectabl
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
-   private List<FeedItem<FeedEntity>> notifications;
+   private List<FeedItem> notifications;
 
-   public MarkNotificationsAsReadCommand(List<FeedItem<FeedEntity>> notifications) {
+   public MarkNotificationsAsReadCommand(List<FeedItem> notifications) {
       this.notifications = notifications;
    }
 

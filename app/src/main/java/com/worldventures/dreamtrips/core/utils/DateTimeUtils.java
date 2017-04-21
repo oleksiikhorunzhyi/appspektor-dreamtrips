@@ -57,14 +57,16 @@ public class DateTimeUtils {
    }
 
    public static DateFormat getDefaultISOFormat() {
-      return new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale.getDefault());
+      return new SimpleDateFormat(DEFAULT_ISO_FORMAT, LocaleHelper.getDefaultLocale());
    }
 
    public static DateFormat[] getISO1DateFormats() {
-      return new DateFormat[]{new SimpleDateFormat(ISO_FORMAT_WITH_TIMEZONE, Locale.getDefault()), new SimpleDateFormat(DEFAULT_ISO_FORMAT, Locale
-            .getDefault()), new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale
-            .getDefault()), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault()), new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSS'Z'", Locale
-            .getDefault()),};
+      return new DateFormat[]{new SimpleDateFormat(ISO_FORMAT_WITH_TIMEZONE, LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat(DEFAULT_ISO_FORMAT, LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSS'Z'", LocaleHelper.getDefaultLocale()),};
    }
 
    public static String convertDateToString(Date date, DateFormat format) {
@@ -76,7 +78,7 @@ public class DateTimeUtils {
    }
 
    public static String convertDateToString(Date date, String format) {
-      SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+      SimpleDateFormat sdf = new SimpleDateFormat(format, LocaleHelper.getDefaultLocale());
       if (date != null) {
          return sdf.format(date);
       } else {
@@ -89,7 +91,7 @@ public class DateTimeUtils {
    }
 
    public static String convertDateToString(int year, int month, int day, String dateFormat) {
-      SimpleDateFormat sim = new SimpleDateFormat(dateFormat, Locale.getDefault());
+      SimpleDateFormat sim = new SimpleDateFormat(dateFormat, LocaleHelper.getDefaultLocale());
 
       Calendar calendar = Calendar.getInstance();
       calendar.clear();
@@ -116,7 +118,7 @@ public class DateTimeUtils {
    }
 
    public static String convertTimeToString(int h, int m, String timeFormat) {
-      SimpleDateFormat sim = new SimpleDateFormat(timeFormat, Locale.getDefault());
+      SimpleDateFormat sim = new SimpleDateFormat(timeFormat, LocaleHelper.getDefaultLocale());
       Calendar calendar = Calendar.getInstance();
       calendar.clear();
       calendar.set(Calendar.HOUR, h);
@@ -145,7 +147,7 @@ public class DateTimeUtils {
    }
 
    public static String convertSecondsToString(int seconds) {
-      SimpleDateFormat formatter = new SimpleDateFormat("mm:ss", Locale.getDefault());
+      SimpleDateFormat formatter = new SimpleDateFormat("mm:ss", LocaleHelper.getDefaultLocale());
       return formatter.format(new Date(seconds * 1000L));
    }
 
@@ -159,7 +161,7 @@ public class DateTimeUtils {
 
    public static Date dateFromString(String date, String dateFormat) {
       if (date != null) {
-         DateFormat result = new SimpleDateFormat(dateFormat, Locale.getDefault());
+         DateFormat result = new SimpleDateFormat(dateFormat, LocaleHelper.getDefaultLocale());
          try {
             return result.parse(date);
          } catch (ParseException e) {
@@ -303,7 +305,7 @@ public class DateTimeUtils {
    }
 
    public static String concatOperationDays(Resources res, List<OperationDay> operationDays) {
-      return concatOperationDays(res, operationDays, Locale.getDefault());
+      return concatOperationDays(res, operationDays, LocaleHelper.getDefaultLocale());
    }
 
    public static String concatOperationDays(Resources res, List<OperationDay> operationDays, Locale locale) {
@@ -311,7 +313,7 @@ public class DateTimeUtils {
       //
       List<OperationDay> days = Queryable.from(operationDays)
             .filter(OperationDay::isHaveOperationHours)
-            .filter(operationDay -> operationDay.getDayOfWeek() != null)
+            .filter(operationDay -> operationDay.dayOfWeek() != null)
             .toList();
       //
       if (days.isEmpty()) return "";
@@ -319,7 +321,7 @@ public class DateTimeUtils {
       if (days.size() == Calendar.DAY_OF_WEEK) return res.getString(R.string.everyday);
       //
       String delimiter = days.size() == 2 ? " & " : " "; // TODO need translations??
-      List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.getDayOfWeek()
+      List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.dayOfWeek()
             .getDay(), Calendar.SHORT, locale)).toList();
       return android.text.TextUtils.join(delimiter, names);
    }

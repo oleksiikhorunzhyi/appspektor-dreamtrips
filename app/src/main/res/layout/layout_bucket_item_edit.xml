@@ -123,7 +123,7 @@
             android:orientation="vertical"
             >
 
-         <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+         <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView
                android:id="@+id/lv_items"
                android:layout_width="match_parent"
                android:layout_height="match_parent"

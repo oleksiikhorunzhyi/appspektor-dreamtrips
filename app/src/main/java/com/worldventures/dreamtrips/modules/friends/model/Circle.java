@@ -10,9 +10,12 @@ public class Circle implements Serializable, Comparable<Circle> {
       return all;
    }
 
-   String id;
-   String name;
-   boolean predefined;
+   private String id;
+   private String name;
+   private boolean predefined;
+
+   public Circle() {
+   }
 
    public String getId() {
       return id;
@@ -24,6 +27,18 @@ public class Circle implements Serializable, Comparable<Circle> {
 
    public boolean isPredefined() {
       return predefined;
+   }
+
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void setPredefined(boolean predefined) {
+      this.predefined = predefined;
    }
 
    @Override

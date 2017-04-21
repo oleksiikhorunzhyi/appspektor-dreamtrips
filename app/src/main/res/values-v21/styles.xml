@@ -3,10 +3,6 @@
 
    <style name="AppTheme" parent="android:Theme.Material.Light"></style>
 
-   <style name="commonListItemStyle">
-      <item name="android:translationZ">2dp</item>
-   </style>
-
    <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
       <item name="android:colorButtonNormal">@color/selector_verify_button_color</item>
    </style>
@@ -26,4 +22,9 @@
       <item name="android:thumbOffset">2dp</item>
       <item name="android:thumbTint">@android:color/white</item>
    </style>
+
+   <style name="RobotoMediumTextView" parent="TextAppearance.AppCompat">
+      <item name="android:fontFamily">sans-serif</item>
+   </style>
+
 </resources>

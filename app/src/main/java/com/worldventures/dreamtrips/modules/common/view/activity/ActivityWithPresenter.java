@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.Session;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
-import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 
 import javax.inject.Inject;
@@ -89,11 +88,8 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    }
 
    @Override
-   public void alert(String s) {
-      runOnUiThread(() -> {
-         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-         builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
-      });
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
+
    }
 
    @Override
@@ -127,6 +123,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    protected void onPause() {
       isPaused = true;
       lifecycleSubject.onNext(ActivityEvent.PAUSE);
+      getPresentationModel().onPause();
       super.onPause();
    }
 
@@ -149,8 +146,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      if (Session.getActiveSession() != null && requestCode == Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE)
-         Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
    }
 
    @Override
@@ -172,5 +167,13 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
       return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+   }
+
+   protected <T> Observable.Transformer<T, T> bindView() {
+      return input -> input.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+   }
+
+   protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {
+      return input -> input.compose(new IoToMainComposer<>()).compose(bindView());
    }
 }

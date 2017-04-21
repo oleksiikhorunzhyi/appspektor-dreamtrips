@@ -114,11 +114,6 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
    }
 
    @Override
-   public void flagSentSuccess() {
-      informUser(R.string.flag_sent_success_msg);
-   }
-
-   @Override
    public void onAcceptRequest() {
       getPresenter().acceptClicked();
    }

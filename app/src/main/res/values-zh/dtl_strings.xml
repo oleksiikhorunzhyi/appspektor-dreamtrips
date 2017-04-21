@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">DT Local 工具</string>
    <string name="dtl_details_share_title">我将赚取%1$sDreamTrips点数</string>
    <string name="dtl_details_share_title_earned" formatted="false">我在%2$s赚取了%1$sDreamTrips点数</string>
-   <string name="dtl_wait_for_receipt">稍候...上传收据</string>
-   <string name="dtl_wait_for_earn">稍候...赚取点数</string>
+   <string name="dtl_wait_for_receipt">稍候…上传收据</string>
+   <string name="dtl_wait_for_earn">稍候…赚取点数</string>
    <string name="dtl_wait_for_offers">搜索附近的优惠。</string>
    <string name="dtl_wait_for_dinings">搜索附近的商家。</string>
    <string name="dtl_estimator_explanation">点数计算是根据在商家最低消费以及一周的哪一天</string>
@@ -92,8 +92,6 @@
    <string name="merchants_list_empty_text">即将推出新新地点</string>
    <string name="merchants_list_empty_text_additional">- 或 -</string>
    <string name="merchant_working_hours_caption">小时</string>
-   <string name="filter_amenities_error_caption">此次无法加载设施</string>
-   <string name="merchants_no_results">找不到结果\n尝试调整您的筛选条件或输入一个新地点。</string>
    <string name="merchants_no_results_offers_only">对不起，您所在区域暂无优惠报价提供。\n请关闭优惠报价来查看您附近的餐厅。</string>
    <string name="dtl_try_again">请重试</string>
    <string name="dtl_load_more">加载更多</string>

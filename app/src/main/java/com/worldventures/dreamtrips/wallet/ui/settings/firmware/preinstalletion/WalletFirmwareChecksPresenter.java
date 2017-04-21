@@ -4,37 +4,39 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateChecksVisitAction;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallAction;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallLaterAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 
-import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import timber.log.Timber;
 
 public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwareChecksPresenter.Screen, Parcelable> {
 
    @Inject WalletBluetoothService bluetoothService;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject SCFirmwareFacade firmwareFacade;
    @Inject Navigator navigator;
 
-   private final String firmwareFilePath;
-   private final FirmwareInfo firmwareInfo;
-
-   WalletFirmwareChecksPresenter(Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
+   WalletFirmwareChecksPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.firmwareFilePath = firmwareFilePath;
-      this.firmwareInfo = firmwareInfo;
    }
 
    @Override
@@ -43,34 +45,51 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       observeChecks();
    }
 
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                        .send(new WalletAnalyticsCommand(new UpdateChecksVisitAction(firmwareUpdateData.smartCardId()))),
+                  throwable -> Timber.e(throwable, ""));
+   }
+
    private void observeChecks() {
       firmwareInteractor.preInstallationCheckPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bind(command.getResult()));
+            .subscribe(command -> bind(command.getResult()), throwable -> {
+            });
 
-      Observable.concat(
-            smartCardInteractor.smartCardModifierPipe()
-                  .observeSuccessWithReplay().map(command -> (Void) null),
-            bluetoothService.observeEnablesState().map(value -> (Void) null)
-      )
+      Observable.merge(
+            bluetoothService.observeEnablesState(),
+            firmwareInteractor.connectActionPipe().observeSuccess(),
+            smartCardInteractor.cardInChargerEventPipe().observeSuccess()
+      ).debounce(500, TimeUnit.MILLISECONDS)
             .compose(bindView())
             .subscribe(aVoid -> firmwareInteractor
-                  .preInstallationCheckPipe().send(new PreInstallationCheckCommand()));
+                  .preInstallationCheckPipe()
+                  .send(new PreInstallationCheckCommand()), throwable -> Timber.e(throwable, ""));
+      firmwareInteractor
+            .preInstallationCheckPipe().send(new PreInstallationCheckCommand());
    }
 
    void installLater() {
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(new UpdateInstallLaterAction(firmwareUpdateData.smartCardId()))));
       goBack();
    }
 
    void install() {
-      navigator.go(new WalletInstallFirmwarePath(
-            ImmutableFirmwareUpdateData.builder()
-                  .firmwareInfo(firmwareInfo)
-                  .firmwareFile(new File(firmwareFilePath))
-                  .updateAvailable(true)
-                  .build())
-      );
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(new UpdateInstallAction(firmwareUpdateData.smartCardId()))));
+      navigator.go(new WalletInstallFirmwarePath());
    }
 
    void goBack() {
@@ -82,15 +101,19 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       boolean bluetoothEnabled = checks.bluetoothIsEnabled();
       boolean connected = checks.smartCardIsConnected();
       boolean charged = checks.smartCardIsCharged();
+      boolean cardInCharger = checks.connectToCharger();
+      boolean cardInChargerRequired = checks.connectCardToChargerRequired();
       //noinspection all
       view.connectionStatusVisible(bluetoothEnabled); // secont item
       view.chargedStatusVisible(bluetoothEnabled && connected); // third item
+      view.cardIsInChargerCheckVisible(bluetoothEnabled && connected && charged && cardInChargerRequired);
 
       view.bluetoothEnabled(bluetoothEnabled);
       view.cardConnected(connected);
       view.cardCharged(charged);
+      view.cardIsInCharger(cardInCharger);
 
-      view.installButtonEnabled(bluetoothEnabled && connected && charged);
+      view.installButtonEnabled(bluetoothEnabled && connected && charged && (!cardInChargerRequired || cardInCharger));
    }
 
    public interface Screen extends WalletScreen {
@@ -106,5 +129,9 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       void chargedStatusVisible(boolean isVisible);
 
       void installButtonEnabled(boolean enabled);
+
+      void cardIsInCharger(boolean enabled);
+
+      void cardIsInChargerCheckVisible(boolean isVisible);
    }
 }

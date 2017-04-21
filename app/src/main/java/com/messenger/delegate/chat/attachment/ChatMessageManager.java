@@ -19,8 +19,6 @@ import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,13 +65,15 @@ public class ChatMessageManager {
    }
 
    public void retrySendMessage(String conversationId, DataMessage failedMessage) {
-      Observable.combineLatest(attachmentDAO.getAttachmentByMessageId(failedMessage.getId())
-            .take(1), conversationsDAO.getConversation(conversationId)
-            .take(1), messengerConnector.getAuthToServerStatus().take(1), ImmutableTriple::new)
-            .subscribe(dataTriple -> retrySendMessage(dataTriple.middle, failedMessage, dataTriple.left, dataTriple.right));
+      Observable.combineLatest(
+            attachmentDAO.getAttachmentByMessageId(failedMessage.getId()).take(1),
+            conversationsDAO.getConversation(conversationId).take(1),
+            messengerConnector.getAuthToServerStatus().take(1), RetrySendMessageModel::new)
+            .subscribe(dataTriple -> retrySendMessage(dataTriple.dataConversation, failedMessage,
+                  dataTriple.dataAttachment, dataTriple.connectionStatus));
    }
 
-   public void retrySendMessage(DataConversation dataConversation, DataMessage failedMessage, DataAttachment dataAttachment, ConnectionStatus authStatus) {
+   private void retrySendMessage(DataConversation dataConversation, DataMessage failedMessage, DataAttachment dataAttachment, ConnectionStatus authStatus) {
       // todo move this logic to janet command
       if (authStatus != ConnectionStatus.CONNECTED || ConversationHelper.isAbandoned(dataConversation)) {
          messageDAO.updateStatus(failedMessage.getId(), MessageStatus.ERROR, ChatDateUtils.getErrorMessageDate());
@@ -104,4 +104,15 @@ public class ChatMessageManager {
       locationAttachmentDelegate.retry(conversationId, dataMessage, dataAttachment);
    }
 
+   private static class RetrySendMessageModel {
+      DataAttachment dataAttachment;
+      DataConversation dataConversation;
+      ConnectionStatus connectionStatus;
+
+      RetrySendMessageModel(DataAttachment dataAttachment, DataConversation dataConversation, ConnectionStatus connectionStatus) {
+         this.dataAttachment = dataAttachment;
+         this.dataConversation = dataConversation;
+         this.connectionStatus = connectionStatus;
+      }
+   }
 }

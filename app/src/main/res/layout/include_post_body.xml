@@ -21,22 +21,16 @@
          android:id="@+id/translate_view"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_marginLeft="@dimen/spacing_normal"
-         android:layout_marginRight="@dimen/spacing_normal"
-         android:layout_marginBottom="@dimen/spacing_small"
+         style="@style/TranslateView"
          />
 
    <TextView
          android:id="@+id/translate"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginBottom="@dimen/spacing_small"
-         android:layout_marginLeft="@dimen/spacing_normal"
-         android:background="@drawable/background_translate_button"
-         android:padding="@dimen/spacing_tiny"
-         android:text="@string/translate"
          android:textColor="@android:color/black"
-         android:visibility="visible"
+         android:text="@string/translate"
+         style="@style/TranslateButton"
          />
 
    <FrameLayout

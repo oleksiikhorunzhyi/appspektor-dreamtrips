@@ -1,27 +1,37 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.api.smart_card.bank_info.model.BankInfo;
+import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import io.techery.janet.smartcard.model.Record;
+import io.techery.mappery.MapperyContext;
 
-public class BankInfoConverter implements Converter<BankInfo, RecordIssuerInfo> {
+class BankInfoConverter implements Converter<BankInfo, RecordIssuerInfo> {
 
    @Override
-   public RecordIssuerInfo from(BankInfo in) {
-      String cardType = in.cardType() == null ? null : in.cardType().toUpperCase();
-      String brand = in.brand() == null ? null : in.brand().toUpperCase();
-      return ImmutableRecordIssuerInfo.builder()
-            .bankName(in.bank())
-            .cardType(BankCard.CardType.valueOf(cardType))
-            .financialService(Record.FinancialService.valueOf(brand))
-            .build();
+   public Class<BankInfo> sourceClass() {
+      return BankInfo.class;
    }
 
    @Override
-   public BankInfo to(RecordIssuerInfo in) {
-      throw new UnsupportedOperationException("Not supported. Implement it if you CAN");
+   public Class<RecordIssuerInfo> targetClass() {
+      return RecordIssuerInfo.class;
+   }
+
+   @Override
+   public RecordIssuerInfo convert(MapperyContext mapperyContext, BankInfo bankInfo) {
+      final String cardType = bankInfo.cardType() == null ? null : bankInfo.cardType().toUpperCase();
+      final String brand = bankInfo.brand() == null ? null : bankInfo.brand().toUpperCase();
+      final String bankName = bankInfo.bank() == null ? "" : bankInfo.bank();
+
+      return ImmutableRecordIssuerInfo.builder()
+            .bankName(bankName)
+            .cardType(BankCard.CardType.valueOf(cardType))
+            .financialService(mapperyContext.convert(Record.FinancialService.valueOf(brand), FinancialService.class))
+            .build();
    }
 }

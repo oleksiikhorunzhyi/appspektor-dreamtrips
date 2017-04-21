@@ -46,9 +46,8 @@
          android:focusableInTouchMode="true"
          >
 
-      <!-- Add extra FrameLayout for the connection overlay -->
       <FrameLayout
-            android:id="@+id/chat_content_view"
+            android:id="@id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >

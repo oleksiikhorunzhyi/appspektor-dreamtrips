@@ -11,19 +11,24 @@ public abstract class SmartCard {
 
    public abstract CardStatus cardStatus();
 
-   public abstract String deviceName();
+   @Value.Default
+   public String deviceAddress() {
+      return "";
+   }
 
-   public abstract String deviceAddress();
+   @Value.Default
+   public SmartCardUser user() {
+      //todo: migration-hack in the past
+      return ImmutableSmartCardUser.builder().firstName("").build();
+   }
 
    @Value.Default
    public String sdkVersion() {
       return "";
    }
 
-   @Value.Default
-   public String firmWareVersion() {
-      return "";
-   }
+   @Nullable
+   public abstract SmartCardFirmware firmwareVersion();
 
    @Value.Default
    public String serialNumber() {
@@ -36,11 +41,6 @@ public abstract class SmartCard {
    }
 
    @Value.Default
-   public String cardName() {
-      return "";
-   }
-
-   @Value.Default
    public boolean stealthMode() {
       return false;
    }
@@ -49,9 +49,6 @@ public abstract class SmartCard {
    public boolean lock() {
       return false;
    }
-
-   @Nullable
-   public abstract String userPhoto();
 
    @Value.Default
    public int batteryLevel() {
@@ -67,6 +64,9 @@ public abstract class SmartCard {
    public long clearFlyeDelay() {
       return 0; //never
    }
+
+   @Nullable
+   public abstract String deviceId();
 
    public enum CardStatus {
       ACTIVE, INACTIVE, DRAFT

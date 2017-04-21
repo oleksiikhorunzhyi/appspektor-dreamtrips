@@ -3,25 +3,22 @@ package com.worldventures.dreamtrips.modules.feed.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.techery.janet.ActionState;
-
-import static io.techery.janet.ActionState.Status;
-
 public class PhotoCreationItem implements Parcelable {
 
    long id;
+   @NotNull String fileUri;
    @NotNull String filePath;
    @NotNull String originUrl = "";
    @NotNull String location;
-   @NotNull Status status;
    @NotNull ArrayList<PhotoTag> basePhotoTags = new ArrayList<>();
    @NotNull ArrayList<PhotoTag> cachedAddedPhotoTags = new ArrayList<>();
    @NotNull ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
@@ -35,15 +32,28 @@ public class PhotoCreationItem implements Parcelable {
    private int width;
    private int height;
 
+   //analytics related
+   private MediaAttachment.Source source;
+   private Location locationFromExif;
+
    public PhotoCreationItem() {
    }
 
-   public String getFilePath() {
-      return filePath;
+   public String getFileUri() {
+      return fileUri;
+   }
+
+   public void setFileUri(String fileUri) {
+      this.fileUri = fileUri;
    }
 
    public void setFilePath(String filePath) {
       this.filePath = filePath;
+   }
+
+   @NotNull
+   public String getFilePath() {
+      return filePath;
    }
 
    @NotNull
@@ -61,10 +71,6 @@ public class PhotoCreationItem implements Parcelable {
 
    public void setLocation(String location) {
       this.location = location;
-   }
-
-   public ArrayList<PhotoTag> getBasePhotoTags() {
-      return basePhotoTags;
    }
 
    public void setBasePhotoTags(ArrayList<PhotoTag> basePhotoTags) {
@@ -91,11 +97,6 @@ public class PhotoCreationItem implements Parcelable {
 
    public void setId(long id) {
       this.id = id;
-   }
-
-   @NotNull
-   public Status getStatus() {
-      return status;
    }
 
    public List<PhotoTag> getCombinedTags() {
@@ -136,6 +137,22 @@ public class PhotoCreationItem implements Parcelable {
       this.canDelete = canDelete;
    }
 
+   public Location getLocationFromExif() {
+      return locationFromExif;
+   }
+
+   public void setLocationFromExif(Location locationFromExif) {
+      this.locationFromExif = locationFromExif;
+   }
+
+   public MediaAttachment.Source getSource() {
+      return source;
+   }
+
+   public void setSource(MediaAttachment.Source source) {
+      this.source = source;
+   }
+
    @Override
    public int describeContents() {
       return 0;
@@ -145,30 +162,34 @@ public class PhotoCreationItem implements Parcelable {
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeLong(this.id);
       dest.writeString(this.filePath);
+      dest.writeString(this.fileUri);
       dest.writeString(this.originUrl);
       dest.writeString(this.location);
-      dest.writeInt(this.status == null ? -1 : this.status.ordinal());
       dest.writeTypedList(basePhotoTags);
       dest.writeTypedList(cachedAddedPhotoTags);
       dest.writeTypedList(cachedRemovedPhotoTags);
       dest.writeString(this.mediaAttachmentType);
       dest.writeTypedList(suggestions);
       dest.writeString(title);
+      dest.writeParcelable(locationFromExif, flags);
+      dest.writeInt(source != null ? source.ordinal() : MediaAttachment.Source.UNKNOWN.ordinal());
    }
 
    protected PhotoCreationItem(Parcel in) {
       this.id = in.readLong();
       this.filePath = in.readString();
+      this.fileUri = in.readString();
       this.originUrl = in.readString();
       this.location = in.readString();
       int tmpStatus = in.readInt();
-      this.status = tmpStatus == -1 ? null : ActionState.Status.values()[tmpStatus];
       this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.mediaAttachmentType = in.readString();
       this.suggestions = in.createTypedArrayList(PhotoTag.CREATOR);
       this.title = in.readString();
+      this.location = in.readParcelable(Location.class.getClassLoader());
+      this.source = MediaAttachment.Source.values()[in.readInt()];
    }
 
    public static final Creator<PhotoCreationItem> CREATOR = new Creator<PhotoCreationItem>() {
@@ -182,25 +203,6 @@ public class PhotoCreationItem implements Parcelable {
          return new PhotoCreationItem[size];
       }
    };
-
-   public void setStatus(@NotNull Status status) {
-      this.status = status;
-   }
-
-   public void setMediaAttachmentType(String mediaAttachmentType) {
-      this.mediaAttachmentType = mediaAttachmentType;
-   }
-
-   public UploadTask toUploadTask() {
-      UploadTask uploadTask = new UploadTask();
-      uploadTask.setId(getId());
-      uploadTask.setFilePath(getFilePath());
-      uploadTask.setLocationName(getLocation());
-      uploadTask.setOriginUrl(getOriginUrl());
-      uploadTask.setType(mediaAttachmentType);
-      uploadTask.setTitle(title);
-      return uploadTask;
-   }
 
    public void setWidth(int width) {
       this.width = width;

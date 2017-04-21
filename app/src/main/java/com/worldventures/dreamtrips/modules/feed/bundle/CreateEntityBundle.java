@@ -9,17 +9,24 @@ public class CreateEntityBundle implements Parcelable {
 
    private MediaAttachment mediaAttachment;
    private boolean showPickerImmediately;
+   private Origin origin; // origin is needed for analytics
 
-   public CreateEntityBundle(boolean showPickerImmediately) {
+   public CreateEntityBundle(boolean showPickerImmediately, Origin origin) {
       this.showPickerImmediately = showPickerImmediately;
+      this.origin = origin;
    }
 
-   public CreateEntityBundle(MediaAttachment mediaAttachment) {
+   public CreateEntityBundle(MediaAttachment mediaAttachment, Origin origin) {
       this.mediaAttachment = mediaAttachment;
+      this.origin = origin;
    }
 
    public MediaAttachment getMediaAttachment() {
       return mediaAttachment;
+   }
+
+   public Origin getOrigin() {
+      return origin;
    }
 
    public boolean isShowPickerImmediately() {
@@ -57,4 +64,8 @@ public class CreateEntityBundle implements Parcelable {
          return new CreateEntityBundle[size];
       }
    };
+
+   public enum Origin {
+      FEED, PROFILE_TRIP_IMAGES, MY_TRIP_IMAGES, MEMBER_TRIP_IMAGES
+   }
 }

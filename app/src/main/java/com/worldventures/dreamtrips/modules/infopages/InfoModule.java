@@ -4,12 +4,26 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.OtaPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.TermsTabPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.infopages.view.cell.DocumentCell;
+import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.DocumentListFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
@@ -25,17 +39,44 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {OtaFragment.class, AuthorizedStaticInfoFragment.class, AuthorizedStaticInfoPresenter.class, PresentationVideosPresenter.class, StaticInfoFragment.class, StaticInfoFragment.BookItFragment.class, StaticInfoFragment.BundleUrlFragment.class, StaticInfoFragment.TermsOfServiceFragment.class, StaticInfoFragment.PrivacyPolicyFragment.class, StaticInfoFragment.CookiePolicyFragment.class, StaticInfoFragment.FAQFragment.class, StaticInfoFragment.EnrollRepFragment.class, StaticInfoFragment.EnrollUpgradeFragment.class,
-
-            VideoCell.class, MediaHeaderLightCell.class, MediaHeaderCell.class,
-
-            ThreeSixtyVideosFragment.class, ThreeSixtyVideosPresenter.class,
-
-            HelpVideosFragment.class, HelpVideosPresenter.class,
-
-            HelpFragment.class, TermsTabFragment.class, WebViewFragmentPresenter.class,
-
-            SendFeedbackFragment.class, SendFeedbackPresenter.class},
+      injects = {OtaFragment.class,
+            AuthorizedStaticInfoFragment.class,
+            AuthorizedStaticInfoPresenter.class,
+            PresentationVideosPresenter.class,
+            StaticInfoFragment.class,
+            StaticInfoFragment.BookItFragment.class,
+            StaticInfoFragment.BundleUrlFragment.class,
+            StaticInfoFragment.TermsOfServiceFragment.class,
+            StaticInfoFragment.PrivacyPolicyFragment.class,
+            StaticInfoFragment.CookiePolicyFragment.class,
+            StaticInfoFragment.FAQFragment.class,
+            EnrollRepFragment.class,
+            StaticInfoFragment.EnrollUpgradeFragment.class,
+            DocumentFragment.class,
+            VideoCell.class,
+            MediaHeaderLightCell.class,
+            MediaHeaderCell.class,
+            ThreeSixtyVideosFragment.class,
+            ThreeSixtyVideosPresenter.class,
+            HelpVideosFragment.class,
+            HelpVideosPresenter.class,
+            HelpFragment.class,
+            HelpTabPresenter.class,
+            TermsTabFragment.class,
+            TermsTabPresenter.class,
+            WebViewFragmentPresenter.class,
+            SendFeedbackFragment.class,
+            SendFeedbackPresenter.class,
+            AttachmentImagesHorizontalView.class,
+            FeedbackImageAttachmentFullscreenPresenter.class,
+            FeedbackImageAttachmentsPresenter.class,
+            FeedbackImageAttachmentFullscreenFragment.class,
+            FeedbackImageAttachmentsFragment.class,
+            DocumentListFragment.class,
+            DocumentListPresenter.class,
+            DocumentPresenter.class,
+            OtaPresenter.class,
+            DocumentCell.class},
       complete = false,
       library = true)
 public class InfoModule {

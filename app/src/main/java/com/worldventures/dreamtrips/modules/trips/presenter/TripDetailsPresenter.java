@@ -74,7 +74,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
                   }).onFail((command, e) -> {
                      if (command.getCacheData() == null || command.getCacheData().getContent() == null)
                         view.setContent(null);
-                     view.informUser(command.getErrorMessage());
+                        handleError(command, e);
                   }));
    }
 
@@ -99,7 +99,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    }
 
    public void actionBookIt() {
-      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
+      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), trip.getName());
       //
       String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
       view.openBookIt(url);

@@ -93,9 +93,22 @@
    <string name="merchants_list_empty_text">Places coming soon</string>
    <string name="merchants_list_empty_text_additional">- or -</string>
    <string name="merchant_working_hours_caption">Hours</string>
+   <string name="filter_amenities_error_caption">Amenities could not be loaded at this time</string>
+   <string name="merchants_no_results">No results found \n Try adjusting your filters or enter a new location.</string>
+   <string name="merchants_no_results_offers_only">Sorry, no offers are available in your area yet</string>
+   <string name="dtl_try_again">Try again</string>
+   <string name="dtl_load_more">Load More</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Loading error</string>
+   <string name="dtl_load_merchant_error_caption">Results could not be loaded at this time.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Food &amp; Drinks</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filters</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_food">Food</string>
+   <string name="filter_merchant_entertainment">Entertainment</string>
+   <string name="filter_merchant_spa">Spas</string>
 </resources>

@@ -1,25 +1,22 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import android.support.annotation.StringRes;
-
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
-import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetUsersCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,18 +32,24 @@ import rx.android.schedulers.AndroidSchedulers;
 public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View> extends Presenter<T> {
 
    protected List<User> users = new ArrayList<>();
-   private int previousTotal = 0;
-   private boolean loading = true;
+   private boolean loading;
+   private boolean finishedLoadingAllData;
    private int nextPage = 1;
-   private boolean loadUsersRequestLocked;
 
    @Inject StartChatDelegate startChatDelegate;
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject ProfileInteractor profileInteractor;
 
    @Override
    public void takeView(T view) {
       super.takeView(view);
+      subscribeToChangingCircles();
+      subscribeToRemovedFriends();
+      if (isNeedPreload()) reload();
+   }
+
+   private void subscribeToRemovedFriends() {
       friendsInteractor.removeFriendPipe()
             .observeSuccess()
             .compose(bindView())
@@ -54,12 +57,11 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             .subscribe(action -> {
                userStateChanged(action.getResult());
             });
-      if (isNeedPreload()) reload();
    }
 
-   protected Observable<ActionState<CirclesCommand>> getCirclesObservable() {
+   protected Observable<ActionState<GetCirclesCommand>> getCirclesObservable() {
       return circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView());
    }
@@ -73,9 +75,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.hideBlockingProgress();
    }
 
-   protected void onCirclesError(@StringRes String messageId) {
+   protected void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    protected boolean isNeedPreload() {
@@ -83,62 +85,57 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    }
 
    public void reload() {
-      loadUsersRequestLocked = true;
-      nextPage = 1;
-      resetLazyLoadFields();
+      resetPaginationFields();
       view.startLoading();
-      doRequest(getUserListQuery(nextPage), this::onUsersLoaded);
+      loadUsers(nextPage, this::onUsersLoaded);
    }
 
-   protected void onUsersLoaded(ArrayList<User> freshUsers) {
-      loadUsersRequestLocked = false;
-      nextPage++;
+   protected void onUsersLoaded(List<User> freshUsers) {
       users.clear();
-      users.addAll(freshUsers);
-      view.finishLoading();
-      view.refreshUsers(users);
+      processNewUsers(freshUsers);
    }
 
-   protected void onUsersAdded(ArrayList<User> freshUsers) {
-      loadUsersRequestLocked = false;
-      nextPage++;
+   protected void onUsersAdded(List<User> freshUsers) {
+      processNewUsers(freshUsers);
+   }
+
+   private void processNewUsers(List<User> freshUsers) {
+      // server signals about end of pagination with empty page, NOT with items < page size
+      finishedLoadingAllData = freshUsers == null || freshUsers.isEmpty();
       users.addAll(freshUsers);
       view.refreshUsers(users);
       view.finishLoading();
+      loading = false;
+      if (!finishedLoadingAllData) nextPage++;
    }
 
-   @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
-      if (view != null) view.finishLoading();
-      loadUsersRequestLocked = false;
+   protected void onError(GetUsersCommand getUsersCommand, Throwable throwable) {
+      handleError(getUsersCommand, throwable);
+      nextPage--;
+      view.finishLoading();
       loading = false;
    }
 
-   protected abstract Query<ArrayList<User>> getUserListQuery(int page);
+   protected abstract void loadUsers(int page, rx.functions.Action1<List<User>> onSuccessAction);
 
    public void scrolled(int totalItemCount, int lastVisible) {
-      if (totalItemCount > previousTotal) {
-         loading = false;
-         previousTotal = totalItemCount;
-      }
-      if (!loading && !loadUsersRequestLocked && lastVisible >= totalItemCount - 1) {
+      if (!finishedLoadingAllData && !loading && lastVisible >= totalItemCount - 1) {
          view.startLoading();
          loading = true;
-         loadUsersRequestLocked = true;
-         doRequest(getUserListQuery(nextPage), this::onUsersAdded);
+         loadUsers(nextPage, this::onUsersAdded);
       }
    }
 
-   private void resetLazyLoadFields() {
-      previousTotal = 0;
+   private void resetPaginationFields() {
+      nextPage = 1;
+      finishedLoadingAllData = false;
       loading = false;
    }
 
    protected void acceptRequest(User user) {
-      getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+      getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(user, circlesCommand.getResult()))
-            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+            .onFail(this::onCirclesError));
    }
 
    private void onCirclesSuccessAcceptRequest(User user, List<Circle> circles) {
@@ -154,14 +151,14 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                            user.setRelationship(User.Relationship.FRIEND);
                            userActionSucceed(user);
                         })
-                        .onFail((action, e) -> onError(action)))
+                        .onFail(this::onError))
       );
    }
 
    protected void addFriend(User user) {
-      getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+      getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(user, circlesCommand.getResult()))
-            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+            .onFail(this::onCirclesError));
    }
 
    private void onCirclesSuccessAddUserRequest(User user, List<Circle> circles) {
@@ -180,21 +177,29 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             .getContext(), conversation.getId()));
    }
 
-   public void onEvent(FriendGroupRelationChangedEvent event) {
-      for (User friend : users) {
-         if (friend.getId() == event.getFriend().getId()) {
-            switch (event.getState()) {
-               case REMOVED:
-                  friend.getCircles().remove(event.getCircle());
-                  break;
-               case ADDED:
-                  friend.getCircles().add(event.getCircle());
-                  break;
-            }
-            view.refreshUsers(users);
-            break;
-         }
-      }
+   private void subscribeToChangingCircles() {
+      profileInteractor.addFriendToCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               for (User friend : users) {
+                  if (friend.getId() == command.getUserId()) {
+                     friend.getCircles().add(command.getCircle());
+                     break;
+                  }
+               }
+               view.refreshUsers(users);
+            });
+      profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               for (User friend : users) {
+                  if (friend.getId() == command.getUserId()) {
+                     friend.getCircles().remove(command.getCircle());
+                     break;
+                  }
+               }
+               view.refreshUsers(users);
+            });
    }
 
    private void userActionSucceed(User user) {
@@ -218,7 +223,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                      user.setRelationship(User.Relationship.NONE);
                      userActionSucceed(user);
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    private void addFriend(User user, Circle circle) {
@@ -233,16 +238,16 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                      user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                      userStateChanged(user);
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    protected int getPerPageCount() {
       return 100;
    }
 
-   private void onError(CommandWithError commandWithError) {
+   private void onError(CommandWithError commandWithError, Throwable throwable) {
       view.finishLoading();
-      view.informUser(commandWithError.getErrorMessage());
+      handleError(commandWithError, throwable);
    }
 
    public void userClicked(User user) {

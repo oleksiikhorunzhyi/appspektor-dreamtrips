@@ -31,6 +31,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
+
    protected BaseDelegateAdapter<Object> adapter;
 
    private RecyclerViewStateDelegate stateDelegate;
@@ -159,6 +160,11 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    @Override
    public void onCancelCachingVideo(CachedEntity entity) {
       getPresenter().cancelCachingVideo(entity);
+   }
+
+   @Override
+   public void onPlayVideoClicked(Video entity) {
+      getPresenter().onPlayVideo(entity);
    }
 
    @Override

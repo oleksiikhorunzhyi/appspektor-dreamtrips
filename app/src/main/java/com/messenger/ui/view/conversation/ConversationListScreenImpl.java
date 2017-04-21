@@ -48,8 +48,7 @@ import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTyp
 
 public class ConversationListScreenImpl extends MessengerPathLayout<ConversationListScreen, ConversationListScreenPresenter, StyledPath> implements ConversationListScreen, SwipeButtonsListener {
 
-   @InjectView(R.id.conversation_list_content_view) ViewGroup contentView;
-
+   @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.conversation_list_loading_view) View loadingView;
    @InjectView(R.id.conversation_list_error_view) View errorView;
 
@@ -221,11 +220,6 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
          }
          swipeableAdapterManager.closeAllItems();
       }).show();
-   }
-
-   @Override
-   protected ViewGroup getContentView() {
-      return contentView;
    }
 
    private void prepareToolbarMenu(Menu menu) {

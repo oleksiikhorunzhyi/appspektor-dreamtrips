@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
@@ -18,34 +18,20 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
-
-   private static final String DUMMY_DEVICE_NAME = "DUMMY_DEVICE_NAME"; // deviceName is not used inside SDK
-
-   private SmartCardDetails smartCardDetails;
-   private SmartCard smartCard;
-
-   private String smartCardId;
-
-   public CreateAndConnectToCardCommand(SmartCardDetails smartCardDetails) {
-      this.smartCardDetails = smartCardDetails;
-      this.smartCardId = String.valueOf(smartCardDetails.smartCardId());
-   }
+   @Inject WizardMemoryStorage wizardMemoryStorage;
+   @Inject SystemPropertiesProvider propertiesProvider;
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      Observable.just(createSmartCard())
-            .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
-                  .createObservableResult(new ConnectSmartCardCommand(smartCard, true, true))
-            )
-            .doOnNext(command -> this.smartCard = command.getResult())
-            .subscribe(connectCommand -> {
+      janet.createPipe(ConnectSmartCardCommand.class)
+            .createObservableResult(new ConnectSmartCardCommand(createSmartCard(), true, true))
+            .map(ConnectSmartCardCommand::getResult)
+            .subscribe(smartCard -> {
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
                   callback.onSuccess(smartCard);
                } else {
@@ -56,21 +42,15 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    private SmartCard createSmartCard() {
       return ImmutableSmartCard.builder()
-            .deviceName(DUMMY_DEVICE_NAME)
-            .serialNumber(smartCardDetails.serialNumber())
-            .deviceAddress(smartCardDetails.bleAddress())
-            .smartCardId(smartCardId)
+            .smartCardId(String.valueOf(Long.valueOf(wizardMemoryStorage.getBarcode()))) //remove zeros from start
             .cardStatus(SmartCard.CardStatus.DRAFT)
+            .deviceId(propertiesProvider.deviceId())
             .build();
-   }
-
-   public String getSmartCardId() {
-      return smartCardId;
    }
 
    @Override
    public SmartCard getCacheData() {
-      return smartCard;
+      return getResult();
    }
 
    @Override

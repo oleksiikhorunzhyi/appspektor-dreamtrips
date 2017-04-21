@@ -7,17 +7,17 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class TrainingVideosFragment extends PresentationVideosFragment<TrainingVideosPresenter> implements TrainingVideosPresenter.View {
+public class TrainingVideosFragment<T extends TrainingVideosPresenter> extends PresentationVideosFragment<T> implements TrainingVideosPresenter.View {
 
-   FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
+   private FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
    private VideoHeaderDelegate videoHeaderDelegate = new VideoHeaderDelegate() {
       @Override
@@ -26,9 +26,7 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
       }
 
       @Override
-      public void onCellClicked(MediaHeader model) {
-
-      }
+      public void onCellClicked(MediaHeader model) { }
    };
 
    @Override
@@ -38,12 +36,12 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
    }
 
    @Override
-   protected TrainingVideosPresenter createPresenter(Bundle savedInstanceState) {
-      return new TrainingVideosPresenter();
+   protected T createPresenter(Bundle savedInstanceState) {
+      return (T) new TrainingVideosPresenter();
    }
 
    @Override
-   public void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue) {
+   public void setLocales(List<VideoLocale> locales, VideoLocale defaultValue) {
       dialog.setData(locales);
    }
 

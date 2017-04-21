@@ -8,6 +8,7 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
@@ -21,12 +22,13 @@ import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
-import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MediaPickerPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
@@ -46,6 +48,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFrag
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
@@ -77,10 +80,10 @@ import dagger.Provides;
             ActivityPresenter.class,
             LaunchActivityPresenter.class,
             MainActivityPresenter.class,
+            PlayerPresenter.class,
             Presenter.class, SharePresenter.class,
             TermsConditionsDialogPresenter.class,
             TermsConditionsDialog.class,
-
             LaunchActivity.class,
             MainActivity.class,
             PlayerActivity.class,
@@ -99,16 +102,14 @@ import dagger.Provides;
             MessageDialogFragment.class,
             PhotoPickerLayout.class,
             WalletActivity.class,
-
             DialogFragmentNavigator.NavigationDialogFragment.class,
             BaseImageFragment.class,
             BaseImagePresenter.class,
             BaseDialogFragmentWithPresenter.class,
-            //
             ToolbarPresenter.class,
-            //
             MediaPickerFragment.class,
-            MediaPickerPresenter.class
+            MediaPickerPresenter.class,
+            StatefulPhotoCell.class
       },
       complete = false,
       library = true)
@@ -182,5 +183,4 @@ public class CommonModule {
    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
       return new PhotoPickerLayoutDelegate(backStackDelegate);
    }
-
 }

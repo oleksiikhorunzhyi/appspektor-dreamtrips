@@ -2,10 +2,11 @@ package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.api.action.LoginAction;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -20,17 +21,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
 public class LoginCommand extends CommandWithError<UserSession> implements InjectableAction {
 
-   @Inject Janet janet;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject MapperyContext mapperyContext;
    @Inject AuthInteractor authInteractor;
    @Inject SnappyRepository db;
    @Inject Observable<Device> deviceSource;
@@ -64,9 +68,10 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
       }
       Device device = deviceSource.toBlocking().first();
 
-      janet.createPipe(LoginAction.class, Schedulers.io())
-            .createObservableResult(new LoginAction(userName, userPassword, device))
-            .map(LoginAction::getLoginResponse)
+      janet.createPipe(LoginHttpAction.class, Schedulers.io())
+            .createObservableResult(new LoginHttpAction(userName, userPassword, device))
+            .map(LoginHttpAction::response)
+            .map(response -> mapperyContext.convert(response, Session.class))
             .doOnNext(this::saveSettings)
             .map(session -> SessionUtil.createUserSession(session, userName, userPassword))
             .doOnNext(this::saveSession)

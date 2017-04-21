@@ -2,18 +2,26 @@ package com.worldventures.dreamtrips.modules.video.model;
 
 import android.text.TextUtils;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Video {
-   public static final String FEATURED = "Featured";
+   private static final String FEATURED = "Featured";
 
-   @SerializedName("image_url") private String imageUrl;
-   @SerializedName("video_url") private String mp4Url;
+   private String imageUrl;
+   private String videoUrl;
    private String name;
    private String category;
    private String duration;
+   private String language;
 
    private transient CachedEntity entity;
+
+   public Video(String imageUrl, String videoUrl, String name, String category, String duration, String language) {
+      this.imageUrl = imageUrl;
+      this.videoUrl = videoUrl;
+      this.name = name;
+      this.category = category;
+      this.duration = duration;
+      this.language = language;
+   }
 
    public Video() {
    }
@@ -30,12 +38,12 @@ public class Video {
       return imageUrl;
    }
 
-   public String getMp4Url() {
-      return mp4Url;
+   public String getVideoUrl() {
+      return videoUrl;
    }
 
    public String getUid() {
-      return mp4Url;
+      return videoUrl;
    }
 
    public String getVideoName() {
@@ -46,9 +54,13 @@ public class Video {
       return duration;
    }
 
+   public String getLanguage() {
+      return language;
+   }
+
    public CachedEntity getCacheEntity() {
       if (entity == null) {
-         entity = new CachedEntity(this.getMp4Url(), this.getUid(), this.getVideoName());
+         entity = new CachedEntity(this.getVideoUrl(), this.getUid(), this.getVideoName());
       }
       return entity;
    }

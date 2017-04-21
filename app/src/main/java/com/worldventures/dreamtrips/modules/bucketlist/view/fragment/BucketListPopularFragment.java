@@ -28,12 +28,15 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCe
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
 @MenuResource(R.menu.menu_bucket_popular)
-public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPresenter> implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener, BucketPopularCellDelegate {
+public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPresenter>
+      implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener,
+      BucketPopularCellDelegate, SelectablePagerFragment {
 
    @InjectView(R.id.recyclerViewBuckets) protected EmptyRecyclerView recyclerView;
 
@@ -67,7 +70,6 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
       stateDelegate.saveStateIfNeeded(outState);
    }
 
-
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
@@ -92,6 +94,11 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
       super.onDestroyView();
    }
 
+   @Override
+   public void onSelectedFromPager() {
+      getPresenter().onSelected();
+   }
+   
    private RecyclerView.LayoutManager getLayoutManager() {
       if (isTabletLandscape()) {
          return new GridLayoutManager(getActivity(), 3);
@@ -169,11 +176,11 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
 
    @Override
    public void addClicked(PopularBucketItem popularBucketItem, int position) {
-      getPresenter().onAdd(popularBucketItem, position);
+      getPresenter().onAdd(popularBucketItem);
    }
 
    @Override
    public void doneClicked(PopularBucketItem popularBucketItem, int position) {
-      getPresenter().onDone(popularBucketItem, position);
+      getPresenter().onDone(popularBucketItem);
    }
 }

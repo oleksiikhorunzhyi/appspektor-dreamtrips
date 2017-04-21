@@ -37,10 +37,6 @@
       <item name="android:textSize">15sp</item>
    </style>
 
-   <style name="menu_labels_style">
-      <item name="android:textColor">@color/white</item>
-   </style>
-
    <style name="myRecyclerViewStyle">
       <item name="android:clipChildren">false</item>
       <item name="android:clipToPadding">false</item>
@@ -139,6 +135,13 @@
       <item name="android:shadowRadius">2</item>
    </style>
 
+   <style name="Theme.DreamTripsTheme.WhiteButton" parent="Base.Widget.AppCompat.Button">
+      <item name="colorButtonNormal">@android:color/white</item>
+      <item name="colorControlHighlight">@color/white_semi_transparent</item>
+      <item name="android:textColorPrimary">@android:color/black</item>
+      <item name="android:fontFamily">sans-serif</item>
+   </style>
+
    <style name="Theme.DreamTripsTheme.TripButton" parent="Base.Widget.AppCompat.Button">
       <item name="colorButtonNormal">@color/tripButtonColor</item>
       <item name="colorControlHighlight">@color/tripButtonColorPressed</item>
@@ -157,13 +160,6 @@
       <item name="requestFocusOnValidationFail">true</item>
    </style>
 
-   <style name="SpinnerToolbarTitle">
-      <item name="android:textColor">@android:color/white</item>
-      <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
-      <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
-      <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
-   </style>
-
    <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
       <item name="android:textSize">@dimen/font_small</item>
       <item name="android:textColorPrimary">@android:color/white</item>
@@ -176,7 +172,6 @@
 
    <style name="DtlToolbarInput">
       <item name="android:inputType">textCapWords</item>
-      <item name="android:imeOptions">actionDone</item>
       <item name="android:selectAllOnFocus">true</item>
       <item name="android:singleLine">true</item>
       <item name="android:textSize">@dimen/dtlt_input_text_size</item>
@@ -219,6 +214,10 @@
       <item name="colorAccent">@color/theme_main_darker</item>
       <item name="colorControlActivated">@color/theme_main_darker</item>
       <item name="android:textColorSecondary">@color/theme_main_darker</item>
+   </style>
+
+   <style name="RobotoMediumTextView" parent="TextAppearance.AppCompat">
+      <item name="android:fontFamily">sans-serif</item>
    </style>
 
    <!--messenger-->
@@ -429,7 +428,6 @@
 
    <!--end messenger-->
 
-   <!--in app notifications-->
    <style name="BaseInAppNotificationUiElementsContainer">
       <item name="android:layout_height">wrap_content</item>
    </style>
@@ -497,5 +495,23 @@
       <item name="android:layout_marginTop">@dimen/chat_settings_action_button_top_margin</item>
       <item name="android:textSize">@dimen/chat_settings_action_buttons_text_size</item>
    </style>
-   <!--end in app notifications-->
+
+   <style name="UploadStatusTextView">
+      <item name="android:textColor">@color/uploading_cell_status_label_uploading</item>
+      <item name="android:textSize">@dimen/uploading_cell_status_label_text_size</item>
+   </style>
+
+   <style name="TranslateView">
+      <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
+      <item name="android:layout_marginRight">@dimen/spacing_normal</item>
+      <item name="android:layout_marginBottom">@dimen/spacing_small</item>
+   </style>
+
+   <style name="TranslateButton">
+      <item name="android:layout_marginBottom">@dimen/spacing_small</item>
+      <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
+      <item name="android:background">@drawable/background_translate_button</item>
+      <item name="android:padding">@dimen/spacing_tiny</item>
+   </style>
+
 </resources>

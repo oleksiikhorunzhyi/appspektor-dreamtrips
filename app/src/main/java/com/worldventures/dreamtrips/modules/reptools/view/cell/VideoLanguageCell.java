@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 
 import butterknife.InjectView;
 

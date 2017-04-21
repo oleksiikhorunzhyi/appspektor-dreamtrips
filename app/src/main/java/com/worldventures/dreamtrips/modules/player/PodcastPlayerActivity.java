@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 @Layout(R.layout.activity_podcast_player)
 public class PodcastPlayerActivity extends BaseActivity {
@@ -23,7 +22,6 @@ public class PodcastPlayerActivity extends BaseActivity {
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setVolumeControlStream(AudioManager.STREAM_MUSIC);
-      Timber.d("Podcasts -- PodcastPlayerActivity -- onCreate()");
    }
 
    @Override
@@ -40,13 +38,11 @@ public class PodcastPlayerActivity extends BaseActivity {
    @Override
    protected void onNewIntent(Intent intent) {
       super.onNewIntent(intent);
-      Timber.d("Podcasts -- PodcastPlayerActivity -- onNewIntent()");
    }
 
    @Override
    protected void onDestroy() {
       super.onDestroy();
-      Timber.d("Podcasts -- PodcastPlayerActivity -- onDestroy()");
    }
 
    @Override

@@ -1,15 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.content.res.Resources;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -22,7 +24,13 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    @InjectView(R.id.categories) TextView categories;
    @InjectView(R.id.distance) TextView distance;
 
+   @Inject SnappyRepository db;
+
    protected Resources resources;
+
+   public MerchantInfoInflater(Injector injector) {
+      injector.inject(this);
+   }
 
    @Override
    public void setView(View rootView) {
@@ -31,31 +39,25 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    }
 
    @Override
-   protected void onMerchantApply() {
+   protected void onMerchantAttributesApply() {
       setInfo();
    }
 
    private void setInfo() {
-      pricing.setRating(merchant.getBudget());
-      //
-      boolean hasDistance = merchant.getDistance() != 0.0d;
-      boolean hasOperationDays = merchant.hasPoints() && merchant.getOperationDays() != null && !merchant.getOperationDays()
-            .isEmpty();
-      boolean hasCategories = !TextUtils.isEmpty(DtlMerchantHelper.getCategories(merchant));
+      pricing.setRating(merchantAttributes.budget());
 
-      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.getDistance(), resources
-            .getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
-      CharSequence categoriesText = hasCategories ? DtlMerchantHelper.getCategories(merchant) : "";
+      CharSequence distanceText = merchantAttributes.provideFormattedDistance(resources,
+            FilterHelper.provideDistanceFromSettings(db));
+      CharSequence categoriesText = merchantAttributes.provideFormattedCategories();
 
       ViewUtils.setTextOrHideView(distance, distanceText);
       ViewUtils.setTextOrHideView(categories, categoriesText);
 
-      if (hasOperationDays) {
-         Observable.fromCallable(() -> DtlMerchantHelper.getOperationalTime(rootView.getContext(), merchant))
+      if (merchantAttributes.hasOperationDays()) {
+         Observable.fromCallable(() -> merchantAttributes.provideFormattedOperationalTime(rootView.getContext(), true))
                .compose(RxLifecycle.bindView(rootView))
                .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(operationalTime, View.GONE);
 
    }
-
 }

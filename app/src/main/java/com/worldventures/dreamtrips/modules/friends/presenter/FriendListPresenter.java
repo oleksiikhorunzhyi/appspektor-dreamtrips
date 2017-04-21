@@ -1,31 +1,24 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.request.Query;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class FriendListPresenter extends BaseUserListPresenter<FriendListPresenter.View> {
 
    @State Circle selectedCircle;
    @State String query;
    @State int position = 0;
-
-   @Inject SnappyRepository snappyRepository;
 
    @Override
    public void onInjected() {
@@ -44,9 +37,9 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    }
 
    public void onFilterClicked() {
-      getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+      getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesFilterSuccess(circlesCommand.getResult()))
-            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+            .onFail(this::onCirclesError));
    }
 
    private void onCirclesFilterSuccess(List<Circle> circles) {
@@ -81,14 +74,13 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
-      if (view != null) view.finishLoading();
-   }
-
-   @Override
-   protected Query<ArrayList<User>> getUserListQuery(int page) {
-      return new GetFriendsQuery(selectedCircle, query, page, getPerPageCount());
+   protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
+      friendsInteractor.getFriendsPipe()
+            .createObservable(new GetFriendsCommand(selectedCircle, query, page, getPerPageCount()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
+                  .onSuccess(getFriendsCommand -> onSuccessAction.call(getFriendsCommand.getResult()))
+                  .onFail(this::onError));
    }
 
    public interface View extends BaseUserListPresenter.View {

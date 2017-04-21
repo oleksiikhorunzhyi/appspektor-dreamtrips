@@ -5,14 +5,14 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import rx.Observable;
+import java.util.List;
 
 public interface DtlMapScreen extends DtlScreen {
 
@@ -28,37 +28,39 @@ public interface DtlMapScreen extends DtlScreen {
 
    void addLocationMarker(LatLng location);
 
-   void addPin(String id, LatLng latLng, DtlMerchantType type);
+   void showItems(List<ThinMerchant> merchant);
 
    void clearMap();
 
-   void prepareInfoWindow(int height);
+   void prepareInfoWindow(LatLng location, int height);
 
-   void centerIn(Location location);
+   void centerIn(LatLng location);
 
-   void renderPins();
+   void connectToggleUpdate();
 
-   void toggleDiningFilterSwitch(boolean enabled);
+   void toggleOffersOnly(boolean enabled);
 
    void cameraPositionChange(CameraPosition cameraPosition);
 
    void markerClick(Marker marker);
 
-   void showButtonLoadMerchants(boolean show);
+   void showButtonRedoMerchants(boolean show);
 
    void zoom(float zoom);
+
+   void zoomBounds(LatLngBounds bounds);
+
+   void showLoadMoreButton(boolean isShow);
 
    void tryHideMyLocationButton(boolean hide);
 
    void animateTo(LatLng coordinates, int offset);
 
-   Observable<Boolean> getToggleObservable();
+   void showPinInfo(ThinMerchant merchant);
 
-   void showPinInfo(DtlMerchant merchant);
-
-   void openFilter();
-
-   boolean isToolbarCollapsed();
+   void showError(String error);
 
    void setFilterButtonState(boolean enabled);
+
+   void updateMerchantType(List<String> type);
 }

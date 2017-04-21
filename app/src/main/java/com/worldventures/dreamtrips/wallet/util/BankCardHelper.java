@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.DrawableRes;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -12,37 +11,31 @@ import android.text.style.StyleSpan;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.techery.janet.smartcard.model.Record;
 
 import static java.lang.String.format;
 
-@Singleton
 public class BankCardHelper {
 
    private final Context context;
 
-   @Inject
    public BankCardHelper(@ForApplication Context appContext) {
       this.context = appContext;
    }
 
-   public static String obtainLastCardDigits(long cardNumber) {
-      String number = Long.toString(cardNumber);
-      // TODO: 9/6/16 or throw exception
-      if (number.length() <= 4) return number;
-      return number.substring(number.length() - 4);
+   public static String obtainLastCardDigits(String cardNumber) {
+      if (cardNumber.length() <= 4) return cardNumber;
+      return cardNumber.substring(cardNumber.length() - 4);
    }
 
    public static long obtainIin(String swipedCardPan) {
       return Long.parseLong(swipedCardPan.substring(0, 6));
    }
 
-   public static int obtainRequiredCvvLength(long cardNumber) {
+   public static int obtainRequiredCvvLength(String cardNumber) {
       return isAmexBank(cardNumber) ? 4 : 3;
    }
 
@@ -50,13 +43,12 @@ public class BankCardHelper {
       If card number begins with 34 or 37 and is 15 digits in length
       then it is an American express and should have 4 digits of cvv.
     */
-   public static boolean isAmexBank(long cardNumber) {
-      String number = String.valueOf(cardNumber);
-      boolean amexPrefix = number.startsWith("34") || number.startsWith("37");
-      return number.length() == 15 && amexPrefix;
+   public static boolean isAmexBank(String cardNumber) {
+      boolean amexPrefix = cardNumber.startsWith("34") || cardNumber.startsWith("37");
+      return cardNumber.length() == 15 && amexPrefix;
    }
 
-   public String obtainFinancialServiceType(Record.FinancialService financialService) {
+   public String obtainFinancialServiceType(FinancialService financialService) {
       switch (financialService) {
          case VISA:
             return context.getString(R.string.wallet_card_financial_service_visa);
@@ -66,30 +58,9 @@ public class BankCardHelper {
             return context.getString(R.string.wallet_card_financial_service_discover);
          case AMEX:
             return context.getString(R.string.wallet_card_financial_service_amex);
-         case SAMPLE: {
-            return context.getString(R.string.wallet_card_financial_service_sample);
+         case GENERIC: {
+            return "";
          }
-         default:
-            throw new IllegalStateException("Incorrect Financial Service");
-      }
-   }
-
-   @DrawableRes
-   public int obtainFinancialServiceImageRes(Record.FinancialService financialService) {
-      if (financialService == null) {
-         return 0;
-      }
-      switch (financialService) {
-         case VISA:
-            return R.drawable.wallet_finansial_service_visa;
-         case MASTERCARD:
-            return R.drawable.wallet_finansial_service_mastercard;
-         case DISCOVER:
-            return R.drawable.wallet_finansial_service_discover;
-         case AMEX:
-            return R.drawable.wallet_finansial_service_amex;
-         case SAMPLE:
-            return 0;
          default:
             throw new IllegalStateException("Incorrect Financial Service");
       }
@@ -100,6 +71,13 @@ public class BankCardHelper {
             .financialService()), obtainLastCardDigits(bankCard.number()));
    }
 
+   public String bankNameWithCardNumber(BankCard bankCard) {
+      String bankName = bankCard.issuerInfo().bankName();
+      bankName = (bankName == null) ? "" : bankName;
+      return format("%s •••• %s", bankName, obtainLastCardDigits(bankCard.number()));
+   }
+
+   // utils
    public String obtainCardType(BankCard.CardType cardType) {
       if (cardType == null) {
          return null;
@@ -114,14 +92,28 @@ public class BankCardHelper {
       }
    }
 
-   public String bankNameWithCardNumber(BankCard bankCard) {
-      String bankName = bankCard.issuerInfo().bankName();
-      bankName = (bankName == null) ? "" : bankName;
-      return format("%s •••• %s", bankName, obtainLastCardDigits(bankCard.number()));
+   public CharSequence obtainFullCardNumber(String number) {
+      return "•••• •••• •••• " + obtainLastCardDigits(number);
    }
 
+   public CharSequence obtainShortCardNumber(String number) {
+      SpannableString lastDigits = new SpannableString(obtainLastCardDigits(number));
+      lastDigits.setSpan(new RelativeSizeSpan(.6f), 0, lastDigits.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      return new SpannableStringBuilder()
+            .append("••••")
+            .append(lastDigits);
+   }
+
+   public CharSequence toBoldSpannable(CharSequence text) {
+      if (TextUtils.isEmpty(text)) return "";
+      SpannableString boldSpannable = new SpannableString(text);
+      boldSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, boldSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      return boldSpannable;
+   }
+
+   @SuppressWarnings("unused")
    public CharSequence formattedBankNameWithCardNumber(BankCard bankCard) {
-      SpannableString bankName = formattedBankName(bankCard);
+      CharSequence bankName = toBoldSpannable(bankCard.issuerInfo().bankName());
 
       SpannableString cardNumber = new SpannableString(format(" •••• %s", obtainLastCardDigits(bankCard.number())));
       cardNumber.setSpan(new RelativeSizeSpan(0.8f), 0, cardNumber.length(), 0);
@@ -133,10 +125,24 @@ public class BankCardHelper {
             .append(cardNumber);
    }
 
-   public SpannableString formattedBankName(BankCard bankCard) {
-      if (TextUtils.isEmpty(bankCard.issuerInfo().bankName())) return null;
-      SpannableString bankName = new SpannableString(bankCard.issuerInfo().bankName());
-      bankName.setSpan(new StyleSpan(Typeface.BOLD), 0, bankName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-      return bankName;
+   @SuppressWarnings("unused")
+   public int obtainFinancialServiceImageRes(Record.FinancialService financialService) {
+      if (financialService == null) {
+         return 0;
+      }
+      switch (financialService) {
+         case VISA:
+            return R.drawable.wallet_finansial_service_visa;
+         case MASTERCARD:
+            return R.drawable.wallet_finansial_service_mastercard;
+         case DISCOVER:
+            return R.drawable.wallet_finansial_service_discover;
+         case AMEX:
+            return R.drawable.wallet_finansial_service_amex;
+         case GENERIC:
+            return 0;
+         default:
+            throw new IllegalStateException("Incorrect Financial Service");
+      }
    }
 }

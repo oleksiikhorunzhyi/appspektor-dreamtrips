@@ -39,8 +39,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -52,6 +50,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAu
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
@@ -63,7 +62,8 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFragment<T> implements BucketListPresenter.View {
+public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFragment<T>
+      implements BucketListPresenter.View, SelectablePagerFragment {
 
    public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
    public static final int MIN_SYMBOL_COUNT = 3;
@@ -72,7 +72,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
    @Optional @InjectView(R.id.textViewEmptyAdd) protected TextView textViewEmptyAdd;
    @InjectView(R.id.progressBar) protected ProgressBar progressBar;
-   //
+
    @Optional @InjectView(R.id.detail_container) protected View detailsContainer;
 
    private DraggableArrayListAdapter<BucketItem> adapter;
@@ -141,17 +141,40 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       });
       dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity()
             .getTheme()));
-      adapter = new BucketItemAdapter(getActivity(), this);
 
-      if (isSwipeEnabled()) adapter.registerCell(BucketItem.class, BucketItemCell.class);
-      else adapter.registerCell(BucketItem.class, BucketItemStaticCell.class);
+      initAdapter();
 
-      adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
       wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
       recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
       if (isDragEnabled()) dragDropManager.attachRecyclerView(recyclerView);
       // set state delegate
       stateDelegate.setRecyclerView(recyclerView);
+   }
+
+   @Override
+   public void onSelectedFromPager() {
+      getPresenter().onSelected();
+   }
+
+   private void initAdapter() {
+      adapter = new BucketItemAdapter(getActivity(), this);
+      if (isSwipeEnabled()) {
+         adapter.registerCell(BucketItem.class, BucketItemCell.class);
+      } else {
+         adapter.registerCell(BucketItem.class, BucketItemStaticCell.class);
+      }
+      adapter.registerDelegate(BucketItem.class, new BucketItemCell.Delegate() {
+         @Override
+         public void onDoneClicked(BucketItem bucketItem, int position) {
+            getPresenter().itemDoneClicked(bucketItem);
+         }
+
+         @Override
+         public void onCellClicked(BucketItem model) {
+            getPresenter().itemClicked(model);
+         }
+      });
+      adapter.setMoveListener((from, to) -> getPresenter().itemMoved(from, to));
    }
 
    protected boolean isDragEnabled() {
@@ -211,7 +234,6 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
             v.setText(null);
             getPresenter().addToBucketList(s);
             SoftInputUtil.showSoftInputMethod(quickInputEditText);
-            eventBus.post(new BucketAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD));
          }
          return false;
       });
@@ -237,10 +259,6 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       });
    }
 
-   public void onEvent(BucketItemClickedEvent event) {
-      if (isVisibleOnScreen()) getPresenter().itemClicked(event.getBucketItem());
-   }
-
    @Optional
    @OnClick(R.id.buttonNew)
    void onAdd() {
@@ -257,11 +275,11 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_filter:
-            eventBus.post(new BucketAnalyticEvent(TrackingHelper.ATTRIBUTE_FILTER));
+            getPresenter().trackAnalyticsActionBucket(TrackingHelper.ATTRIBUTE_FILTER);
             actionFilter();
             break;
          case R.id.action_popular:
-            eventBus.post(new BucketAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD_FROM_POPULAR));
+            getPresenter().trackAnalyticsActionBucket(TrackingHelper.ATTRIBUTE_ADD_FROM_POPULAR);
             getPresenter().popularClicked();
             break;
       }

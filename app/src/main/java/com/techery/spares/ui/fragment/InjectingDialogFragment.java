@@ -1,37 +1,32 @@
 package com.techery.spares.ui.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.activity.InjectingActivity;
-
-import javax.inject.Inject;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 
 import dagger.ObjectGraph;
-import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public abstract class InjectingDialogFragment extends DialogFragment implements ConfigurableFragment, Injector {
-   private ObjectGraph objectGraph;
 
-   @Inject @Global protected EventBus eventBus;
+   private final PublishSubject<FragmentEvent> lifecycleSubject = PublishSubject.create();
 
-   /**
-    * This class is designed to use custom view for dialog inflated from layout.
-    * To vary this behavior when simple dialog is required set this to false in descendant.
-    */
    protected boolean injectCustomLayout = true;
 
    @Override
-   public void onAttach(Activity activity) {
-      super.onAttach(activity);
-      objectGraph = getInitialObjectGraph();
-      objectGraph.inject(this);
+   public void onAttach(Context context) {
+      super.onAttach(context);
+      inject(this);
    }
 
    @Override
@@ -43,39 +38,27 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
       }
    }
 
-   public void afterCreateView(View rootView) {
-
+   @Override
+   public void inject(Object target) {
+      getObjectGraph().inject(target);
    }
 
    @Override
-   public void onResume() {
-      super.onResume();
-      this.eventBus.registerSticky(this);
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
-      this.eventBus.unregister(this);
-   }
-
-   protected ObjectGraph getInitialObjectGraph() {
+   public ObjectGraph getObjectGraph() {
       return ((InjectingActivity) getActivity()).getObjectGraph();
    }
 
    @Override
-   public void inject(Object target) {
-      this.objectGraph.inject(target);
+   @CallSuper
+   public void onDestroyView() {
+      lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
+      super.onDestroyView();
    }
 
-
-   @Override
-   public ObjectGraph getObjectGraph() {
-      return this.objectGraph;
+   public final <T> Observable.Transformer<T, T> bindToLifecycle() {
+      return RxLifecycle.bindFragment(lifecycleSubject);
    }
 
-   public void onEvent(InjectingFragment.Events.ReloadEvent reloadEvent) {
-
+   public void afterCreateView(View rootView) {
    }
-
 }

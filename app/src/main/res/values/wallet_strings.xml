@@ -5,6 +5,8 @@
    <string name="wallet_done_label">Done</string>
    <string name="wallet_continue_label">Continue</string>
    <string name="wallet_got_it_label">Got it!</string>
+   <string name="wallet_error_label">Error</string>
+   <string name="wallet_retry_label">Retry</string>
 
    <string name="wallet">flye smart card</string>
    <string name="wallet_dashboard_title">My flye smart card</string>
@@ -31,12 +33,14 @@
    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
    <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
    <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
-   <string name="wallet_edit_profile_name_format_detail">You should enter your first name and last name (middle name is optional)\nEvery part can contain from 2 to 21 letters</string>
+   <string name="wallet_edit_profile_first_name_format_detail">First name should be from 3 to 21 letters</string>
+   <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 3 to 21 letters</string>
+   <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>
-   <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel\nwith 4 tap motions.</string>
+   <string name="wallet_wizard_setup_pin_header">Create your PIN using any 4-gesture combination of left-button tap, right-button tap, left-to-right swipe, or right-to-left swipe.</string>
    <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the smart card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
@@ -44,16 +48,22 @@
 
    <!--pin is set-->
    <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
-   <string name="wallet_wizard_pin_is_set_suggestion">You can now begin loading credit and debit cards</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">Your Smart Card is now secure. Next we need to update this\ninformation on your Smart Card.</string>
+
+   <!--finish-->
+   <string name="wallet_wizard_finish_title">Finishing Set Up</string>
+   <string name="wallet_wizard_setup_complete_label">Set up is almost complete. </string>
+   <string name="wallet_wizard_finish_label">When finished you will be able to add credit and debit cards.</string>
 
    <!--splash-->
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
    <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
    <string name="wallet_wizard_splash_review_btn">User Agreement</string>
+   <string name="wallet_wizard_splash_accept_user_agreement">Please accept the user agreement.</string>
 
-   <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
-   <string name="wallet_wizard_scan_start_btn">Scan Card</string>
-   <string name="wallet_wizard_scan_title">Scan flye smart card</string>
+   <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your smart card.</string>
+   <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
+   <string name="wallet_wizard_scan_title">Scan Smart Card</string>
    <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
    <string name="wallet_wizard_scan_barcode_header">Position the flye™ smart card barcode in the viewfinder box.</string>
@@ -67,51 +77,98 @@
 
    <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode</string>
-   <string name="wallet_wizard_manual_input_title">flye smart card Number</string>
+   <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
    <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 
    <!--details-->
    <string name="wallet_card_details_label_billing_address">Billing Address</string>
+   <string name="wallet_card_details_label_card_nickname">Card Nickname</string>
    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
-   <string name="wallet_card_details_button_delete_card">Delete Card</string>
+   <string name="wallet_card_details_button_delete_card">Delete this card</string>
    <string name="wallet_card_details_progress_delete">Deleting %s…</string>
    <string name="wallet_card_details_delete_card_dialog_title">Delete payment card</string>
    <string name="wallet_card_details_delete_card_dialog_content">Are you sure?</string>
+   <string name="wallet_card_details_button_pay_with_this">Pay with this card</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
-   <string name="wallet_card_settings_device_section_header">You can change these settings to save battery and optimize flye™ smart card performance.</string>
-   <string name="wallet_card_settings_stealth_mode">Keep My Identity Private</string>
-   <string name="wallet_card_settings_lock">Lock Card</string>
-   <string name="wallet_card_settings_firmware_update">flye smart card Update</string>
-   <string name="wallet_card_settings_reset_pin">Reset Pin</string>
-   <string name="wallet_card_settings_factory_reset">Factory Reset flye smart card</string>
-   <string name="wallet_card_settings_disable_default_payment_card">Disable Default Payment Card After</string>
-   <string name="wallet_card_settings_auto_delete_cards">Auto Clear flye smart card After</string>
-   <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
+   <string name="wallet_card_settings_flye_sc">flye smart card</string>
+   <string name="wallet_card_settings_version">Version %s</string>
+   <string name="wallet_card_settings_battery_level">Battery level: %d%%</string>
+   <string name="wallet_card_settings_last_sync">Last synced %s</string>
+   <string name="wallet_card_settings_sc_profile">smart card Profile</string>
+   <string name="wallet_card_settings_general">General</string>
+   <string name="wallet_card_settings_about">About</string>
+   <string name="wallet_card_settings_offline_mode">Offline mode</string>
+   <string name="wallet_card_settings_low_battery_alert">Low battery alert</string>
+   <string name="wallet_card_settings_locate_sc">Locate smart card (Coming Soon)</string>
+   <string name="wallet_card_settings_view_location_connected">View location of the last time it was connected</string>
+   <string name="wallet_card_settings_security">Security</string>
+   <string name="wallet_card_settings_lock_card">Lock card</string>
+   <string name="wallet_card_settings_requires_pin_entry_to_unlock">Requires PIN entry to unlock</string>
+   <string name="wallet_card_settings_disable_default_payment_after">Disable Default Payment After</string>
+   <string name="wallet_card_settings_reset_pin">Reset PIN</string>
+   <string name="wallet_card_settings_auto_clear_sc_after">Auto Clear smart card After</string>
+   <string name="wallet_card_settings_keep_my_identity_private">Keep My Identity Private</string>
    <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
+   <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
+   <string name="wallet_card_settings_do_not_notify_merchants">Do not notify merchants of my arrival</string>
+   <string name="wallet_card_settings_alert">Alert</string>
+   <string name="wallet_card_settings_notifies_connectivity_lost">Notifies you when connectivity is lost</string>
+   <string name="wallet_card_settings_updates">Updates</string>
+   <string name="wallet_card_settings_flye_sc_update">flye smart card Update</string>
+   <string name="wallet_card_settings_updates_to_sc_software">Updates to smart card software</string>
+   <string name="wallet_card_settings_setup">Setup</string>
+   <string name="wallet_card_settings_set_up_new_sc">Set up new smart card</string>
+   <string name="wallet_card_settings_factory_reset_sc">Factory Reset smart card</string>
+   <string name="wallet_card_settings_return_sc_factory_settings">Return your smart card to it\'s factory settings</string>
+   <string name="wallet_card_settings_restart_sc">Restart smart card</string>
+   <string name="wallet_card_settings_restart">Restart</string>
    <string name="wallet_card_settings_unlock_error">Unlock is not supported</string>
+   <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
+   <string name="wallet_card_settings_unpair_sc">Unpair smart card</string>
+   <string name="wallet_card_settings_loads_cards_without_inet">Loads cards to device without internet</string>
+
+   <!--profile settings-->
+   <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
+   <string name="wallet_card_settings_profile_firstname_hint">First name</string>
+   <string name="wallet_card_settings_profile_middle_hint">Middle name (optional)</string>
+   <string name="wallet_card_settings_profile_lastname_hint">Last name</string>
+   <string name="wallet_card_settings_profile_warning">Make sure your name is similar to what\'s on your payment cards.</string>
+   <string name="wallet_card_settings_profile_dialog_changes_title">Some changes were made. Are you sure you want go back without saving them</string>
+   <string name="wallet_card_settings_profile_dialog_changes_positive">Back</string>
+   <string name="wallet_card_settings_profile_dialog_changes_negative">Cancel</string>
+   <string name="wallet_card_settings_profile_dialog_error_smartcard_header">Cannot connect to smartcard</string>
+   <string name="wallet_card_settings_profile_dialog_error_server_content">We\'re sorry there was an error communicating with the server. Please try again later.</string>
+   <string name="wallet_card_settings_profile_dialog_error_network_unavailable">You don\'t have internet connection. Check it and try again.</string>
+   <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
+
 
    <!--card list-->
    <string name="wallet_card_list_title">My flye smart card</string>
    <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
    <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your flye\u2122 smart card</string>
-   <string name="wallet_wizard_full_card_list_error_message">You’ve reached the 10 card maximum. Please delete one or more cards to proceed.</string>
-   <string name="wallet_wizard_empty_card_list_add_card_coming_soon">Add payment cards – coming soon</string>
+   <string name="wallet_wizard_full_card_list_error_message">You\'ve reached the 10 card maximum. Please delete one or more cards to proceed.</string>
+   <string name="wallet_wizard_empty_card_list_add_card_coming_soon">Add payment cards</string>
    <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
    <string name="wallet_wizard_no_connection_to_card_title">flye card not linked</string>
    <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
    <string name="wallet_wizard_card_list_add_card_coming_soon_title">Coming Soon</string>
    <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
+   <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your flye smart card.</string>
+   <string name="wallet_wizard_card_list_card_synchronization_dialog_text">Payment cards synchronization</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
-   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname (optional)</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname</string> <!--todo: remove after detail screen was updated-->
+   <string name="wallet_add_card_details_hint_card_name_length">(11 characters)</string>
    <string name="wallet_add_card_details_hint_address1">Address 1</string>
-   <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string>
+   <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string> <!--todo: remove after detail screen was updated-->
+   <string name="wallet_add_card_details_hint_address2_label">Address 2</string>
+   <string name="wallet_add_card_details_hint_optional">(optional)</string>
    <string name="wallet_add_card_details_hint_city">City</string>
    <string name="wallet_add_card_details_hint_state">State</string>
    <string name="wallet_add_card_details_hint_zip">Zip</string>
@@ -121,18 +178,26 @@
    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
    <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
+   <string name="wallet_view_card_details_hint_nickname_card">i.e. \"Pacific Bank Card\"</string>
+   <string name="wallet_tap_confirm_try_again">Did not save to smart card.\nTap Confirm to try again.</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>
    <string name="wallet_card_financial_service_visa">Visa</string>
    <string name="wallet_card_financial_service_discover">Discover</string>
    <string name="wallet_card_financial_service_amex">Amex</string>
-   <string name="wallet_card_financial_service_sample">Sample</string>
 
    <string name="wallet_card_list_records_connected">%d cards loaded</string>
    <string name="wallet_card_list_record_connected">%d card loaded</string>
    <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
    <string name="wallet_dashboard_flye_firmware_update">flye smart card Update</string>
+   <string name="wallet_dashboard_update_dialog_title">Smart Card Update Available</string>
+   <string name="wallet_dashboard_update_dialog_content">In order to get the best smart card experience please update your smart card with the latest software</string>
+   <string name="wallet_dashboard_update_dialog_btn_text_negative">Not now</string>
+   <string name="wallet_dashboard_update_dialog_btn_text_positive">Update</string>
+   <string name="wallet_dashboard_factory_reset_dialog_content">In order to enable the latest features on your smart card it will need to be factory reset. This will only take a few minutes. After the update you will need to set up your smart card again.</string>
+   <string name="wallet_dashboard_factory_reset_dialog_btn_text_negative">Cancel</string>
+   <string name="wallet_dashboard_factory_reset_dialog_btn_text_positive">Continue</string>
 
    <!--charging-->
    <string name="wallet_charging_swiping_screen_title">Add Payment Card</string>
@@ -144,6 +209,7 @@
    <string name="wallet_terms_and_conditions_try_again">Try Again</string>
    <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
    <string name="wallet_terms_and_conditions_accept_failed">Failed to accept user agreement</string>
+   <string name="wallet_add_card_swipe_success">Successfully swipe. Loading&#8230;</string>
 
    <!--set up smart card-->
    <string name="wallet_wizard_welcome_title">flye smart card</string>
@@ -151,7 +217,7 @@
    <string name="wallet_wizard_welcome_platinum_user">Take your platinum membership to new heights with flye\u2122.</string>
    <string name="wallet_wizard_welcome_gold_user">Take your gold membership to new heights with flye\u2122.</string>
    <string name="wallet_wizard_welcome_simple_user">Take your membership to new heights with flye\u2122.</string>
-   <string name="wallet_wizard_welcome_button_text">Set Up</string>
+   <string name="wallet_wizard_welcome_button_text">Get Started</string>
 
    <string name="wallet_record_type_credit">Credit</string>
    <string name="wallet_record_type_debit">Debit</string>
@@ -170,18 +236,14 @@
    <string name="wallet_settings_disable_default_card_1_month">1 month</string>
    <string name="wallet_settings_disable_default_card_never">Never</string>
 
-   <!--disable default card-->
+   <!--auto-clear default card-->
    <string name="wallet_settings_clear_flye_card_title">Auto Clear flye smart card After</string>
    <string name="wallet_settings_clear_flye_card_description">Set a timer to erase all content on your flye smart card after a period  of inactivity.</string>
-   <string name="wallet_settings_clear_flye_card_2_hours">2 hours</string>
-   <string name="wallet_settings_clear_flye_card_4_hours">4 hours</string>
-   <string name="wallet_settings_clear_flye_card_6_hours">6 hours</string>
-   <string name="wallet_settings_clear_flye_card_8_hours">8 hours</string>
-   <string name="wallet_settings_clear_flye_card_12_hours">12 hours</string>
-   <string name="wallet_settings_clear_flye_card_24_hours">24 hours</string>
-   <string name="wallet_settings_clear_flye_card_48_hours">48 hours</string>
-   <string name="wallet_settings_clear_flye_card_1_week">1 week</string>
-   <string name="wallet_settings_clear_flye_card_1_month">1 month</string>
+   <string name="wallet_settings_clear_flye_card_1_day">1 day</string>
+   <string name="wallet_settings_clear_flye_card_2_days">2 days</string>
+   <string name="wallet_settings_clear_flye_card_3_days">3 days</string>
+   <string name="wallet_settings_clear_flye_card_4_days">4 days</string>
+   <string name="wallet_settings_clear_flye_card_5_days">5 days</string>
    <string name="wallet_settings_clear_flye_card_never">Never</string>
 
    <!--firmware-->
@@ -202,12 +264,17 @@
    <string name="wallet_firmware_space_alert_cancel_action">Cancel</string>
    <string name="wallet_firmware_space_alert_settings_action">Settings</string>
 
+   <!-- About -->
+   <string name="wallet_about_label_name">Name</string>
+   <string name="wallet_about_label_qty_card_available">Cards Available</string>
+   <string name="wallet_about_label_atmel_card_fw">Atmel Card Firmware</string>
+   <string name="wallet_about_label_bootloader_fw">Bootloader Firmware</string>
+   <string name="wallet_about_label_atmel_charger_fw">Atmel Charger Firmware</string>
+
    <!--factory reset-->
    <string name="wallet_factory_reset_title">Factory Reset flye smart card</string>
    <string name="wallet_factory_reset_enter_pin_text">Enter your PIN on the flye\u2122 smart card to factory reset.</string>
    <string name="wallet_factory_reset_card_reset_text">Your flye\u2122 smart card has been factory reset.</string>
-   <string name="wallet_confirm_factory_reset_message">This will erase all smart card related content in the app as well as the flye\u2122 smart card and return all smart card settings to factory default.</string>
-   <string name="wallet_factory_reset">Factory Reset</string>
 
    <!--firmware download-->
    <string name="wallet_firmware_download_header">flye smart card Update</string>
@@ -217,7 +284,7 @@
    <!-- firmware install-->
    <string name="wallet_firmware_install_header">flye smart card Update</string>
    <string name="wallet_firmware_install_text">Installing Update</string>
-   <string name="wallet_firmware_install_sub_text">Do not turn off flye smart card</string>
+   <string name="wallet_firmware_install_sub_text" formatted="false">Step %d of %d</string>
    <string name="wallet_firmware_install_error_alert_title">Installation Error</string>
    <string name="wallet_firmware_install_error_alert_content">Update failed to complete installation. Would you like to retry?</string>
    <string name="wallet_firmware_install_error_alert_content_customer_support">For assistance please contact Customer Support at</string>
@@ -243,11 +310,12 @@
    <string name="wallet_card_not_paired">Card is not paired with device</string>
 
    <!--pre installation check-->
-   <string name="wallet_firmware_pre_installation_title">flye smart card Update</string>
+   <string name="wallet_firmware_pre_installation_title">flye SmartCard Update</string>
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the flye smart card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the flye smart card</string>
    <string name="wallet_firmware_pre_installation_charging">Make sure your flye smart card is 50% charged</string>
+   <string name="wallet_firmware_pre_installation_insert_smart_card_to_charger">Insert Smart Card into the charger</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>
 
@@ -258,15 +326,35 @@
    <string name="wallet_smartcard_connection_error">Could not connect to the smart card.\nPlease ensure that the smart card is turned on and unlocked.</string>
 
    <!-- Power On -->
-   <string name="wallet_wizard_power_on_title">flye smart card</string>
-   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by swiping twice on the chip from the bottom to the top.</string>
+   <string name="wallet_wizard_power_on_title">Power On Smart Card</string>
+   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by pressing and holding on the bottom right corner of the chip.</string>
 
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>
    <string name="wallet_puck_connection_comment">Make sure your flye smart card is connected to the charger.</string>
+   <string name="wallet_image_uploadery_error">Failed to upload image</string>
 
    <!--supported device screen-->
    <string name="wallet_supported_device_chapter">Support for your device is coming soon.</string>
    <string name="wallet_supported_device_info">We are currently adding devices weekly and will email you when your device is supported.\n\nIf you have any further questions please contact Customer Support (855) 999-3593.</string>
    <string name="wallet_supported_device_list_title">Supported Devices</string>
+   <string name="wallet_about_label_smart_card_id">smart card ID</string>
+   <string name="wallet_about_label_qty_pay_cards">Cards Stored</string>
+   <string name="wallet_about_label_dt_app">DreamTrips App</string>
+   <string name="wallet_about_label_nordic_fw">Nordic Card Firmware</string>
+
+   <!-- Pair Key & Connect SC-->
+   <string name="wallet_wizard_pair_key_instruction">Check the front of your smart card and proceed to next step.</string>
+   <string name="wallet_wizard_check_from_of_card">Check Front of Smart Card</string>
+   <string name="wallet_wizard_assigning_msg">Assigning your smart card to this device in our system.</string>
+
+   <!-- Connection Error screen -->
+   <string name="wallet_connection_error_message_label">Cannot Connect to Smart Card</string>
+   <string name="wallet_connection_error_message">Make sure your smart card is on and\nBluetooth is enabled on your phone.</string>
+   <string name="wallet_connection_error_message_unlock_card">Power on your smart card by sliding your thumb\ntwice across the gold chip on your smart card.</string>
+   <string name="wallet_receive_data_error">Card did not load.\nTry swiping again.</string>
+   <string name="wallet_card_settings_cant_connected">Cannot connect to smart card</string>
+   <string name="wallet_card_settings_message_cant_connected">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
+   <string name="wallet_smart_card_enable_instruction">Press and hold chip on smart card to power on.</string>
+
 </resources>

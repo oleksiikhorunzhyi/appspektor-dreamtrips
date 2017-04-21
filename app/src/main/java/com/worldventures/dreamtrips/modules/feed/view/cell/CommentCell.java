@@ -55,7 +55,6 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
    @InjectView(R.id.translation_dot_separator) View translationDotSeparator;
 
    @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject LocaleHelper localeHelper;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
@@ -69,12 +68,14 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
 
    @Override
    protected void syncUIStateWithModel() {
+      if (!appSessionHolder.get().isPresent()) return;
+
       commentCellHelper.set(getModelObject(), injectorProvider.get());
       User owner = getModelObject().getOwner();
 
       boolean ownComment = owner.getId() == appSessionHolder.get().get().getUser().getId();
-      boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguageFrom());
-      boolean ownLanguage = localeHelper.isOwnLanguage(getModelObject().getLanguageFrom());
+      boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguage());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, getModelObject().getLanguage());
       boolean alreadyTranslated = getModelObject().isTranslated();
 
       if (ownComment) {
@@ -91,7 +92,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
             hideTranslationButton();
          }
          if (alreadyTranslated) {
-            viewWithTranslation.showTranslation(getModelObject().getTranslation(), getModelObject().getLanguageFrom());
+            viewWithTranslation.showTranslation(getModelObject().getTranslation(), getModelObject().getLanguage());
          } else {
             viewWithTranslation.hide();
          }

@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.video.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
-import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
-import com.worldventures.dreamtrips.modules.video.model.Category;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
+import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.List;
 public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<ThreeSixtyVideosPresenter.View> {
 
    @Override
-   protected MemberVideosRequest getMemberVideosRequest() {
-      return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
+   protected GetMemberVideosCommand getMemberVideosRequest() {
+      return GetMemberVideosCommand.forThreeSixtyVideos();
    }
 
    @Override
@@ -24,7 +24,7 @@ public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<Three
    }
 
    @Override
-   protected void addCategories(List<Category> categories) {
+   protected void addCategories(List<VideoCategory> categories) {
       currentItems = new ArrayList<>();
 
       List<Video> recentVideos = new ArrayList<>();
@@ -41,6 +41,10 @@ public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<Three
       currentItems.addAll(recentVideos);
 
       view.setItems(currentItems);
+   }
+
+   public void onSelected() {
+      analyticsInteractor.analyticsActionPipe().send(TripImagesTabViewAnalyticsEvent.for360Video());
    }
 
    public interface View extends PresentationVideosPresenter.View {}

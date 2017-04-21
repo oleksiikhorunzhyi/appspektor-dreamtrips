@@ -6,15 +6,21 @@ import android.os.Parcelable;
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
+
 public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements ViewStateMvpPresenter<V, S> {
 
-   @Inject SmartCardInteractor smartCardInteractor;
+   @SuppressWarnings("WeakerAccess")
+   @Inject SmartCardInteractor interactor;
 
    private Context context;
    private Injector injector;
@@ -32,17 +38,15 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
    }
 
    private void observeSmartCardModifierPipe() {
-      smartCardInteractor.smartCardModifierPipe()
+      interactor.activeSmartCardPipe()
             .observeSuccessWithReplay()
-            .filter(command -> command.getResult() != null)
-            .map(command -> command.getResult().connectionStatus())
-            .startWith(smartCardInteractor.activeSmartCardPipe()
-                  .createObservableResult(new GetActiveSmartCardCommand())
-                  .onErrorReturn(throwable -> null).filter(it -> it != null)
-                  .map(it -> it.getResult().connectionStatus())
-            )
+            .throttleLast(1, TimeUnit.SECONDS)
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
+            .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::showConnectionStatus);
+      interactor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
    }
 
    public Context getContext() {

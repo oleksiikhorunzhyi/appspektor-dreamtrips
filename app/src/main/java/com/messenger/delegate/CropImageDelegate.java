@@ -1,17 +1,16 @@
 package com.messenger.delegate;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CroppingUtils;
-import com.octo.android.robospice.request.simple.BigBinaryRequest;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
@@ -19,8 +18,10 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Notification;
 import rx.Observable;
+import rx.Subscription;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -32,27 +33,25 @@ public class CropImageDelegate {
    private static final String TEMP_PHOTO_DIR = "cropped_images";
 
    private WeakReference<Activity> activity;
+   private DownloadFileInteractor downloadFileInteractor;
    private Context context;
-   private Handler handler = new Handler();
+   private WeakHandler handler = new WeakHandler();
 
-   private DreamSpiceManager dreamSpiceManager;
+   private Subscription subscription;
 
    private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
    private int ratioX = RATIO_X_DEFAULT;
    private int ratioY = RATIO_Y_DEFAULT;
 
-   public CropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
-      this.dreamSpiceManager = dreamSpiceManager;
+   public CropImageDelegate(Activity activity, DownloadFileInteractor downloadFileInteractor) {
+      this.downloadFileInteractor = downloadFileInteractor;
       init(activity);
    }
 
    private void init(Activity activity) {
       this.activity = new WeakReference<>(activity);
       context = activity.getApplicationContext();
-      if (!dreamSpiceManager.isStarted()) {
-         dreamSpiceManager.start(context);
-      }
    }
 
    public void cropImage(String filePath) {
@@ -64,7 +63,6 @@ public class CropImageDelegate {
       } else {
          executeCrop(filePath);
       }
-
    }
 
    public Observable<Notification<File>> getCroppedImagesStream() {
@@ -83,13 +81,19 @@ public class CropImageDelegate {
 
    private void cacheFacebookImage(String url, Action<String> action) {
       String filePath = CachedEntity.getFilePath(context, truncateUrlParams(url));
-      BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
-
-      dreamSpiceManager.execute(bigBinaryRequest, inputStream -> action.action(filePath), e -> reportError(e, "Could not copy avatar file from Facebook"));
+      subscription = downloadFileInteractor.getDownloadFileCommandPipe()
+            .createObservable(new DownloadFileCommand(new File(filePath), url))
+            .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
+                  .onSuccess(downloadFileCommand -> action.action(filePath))
+                  .onFail((downloadFileCommand, throwable) -> reportError(throwable, "Could not copy avatar file from Facebook")));
    }
 
    private String truncateUrlParams(@NonNull String url) {
       return url.split("\\?")[0];
+   }
+
+   public void destroy() {
+      if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

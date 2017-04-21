@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="web_title">Web</string>
-   <string name="new_photo">Web</string>
-   <string name="detailed_trip">Perjalanan Terperinci</string>
    <string name="membership">Keahlian</string>
    <string name="trip_images">Imej Perjalanan</string>
    <string name="bucket_list">Senarai Baldi</string>
    <string name="my_profile">Profil Saya</string>
-   <string name="terms">Syarat</string>
    <string name="terms_of_service">Syarat Perkhidmatan</string>
-   <string name="faq">SOALAN SERING DITANYA</string>
    <string name="privacy">Polisi Privasi</string>
    <string name="cookie">Polisi Cookie</string>
-   <string name="action_settings">Tetapan</string>
    <string name="action_quick_input">Tambah Cepat</string>
    <string name="action_popular_string">Tambah Daripada Popular</string>
    <string name="action_done">Selesai</string>
    <string name="action_cancel">Batalkan</string>
-   <string name="action_enroll">Mendaftar</string>
    <string name="action_filter">Penapis</string>
    <string name="action_map">Peta</string>
    <string name="action_like">Suka</string>
-   <string name="title_activity_login">AktivitiLogmasuk</string>
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menu Terbuka</string>
    <string name="drawer_close">Menu Tertutup</string>
@@ -33,16 +25,12 @@
    <string name="member_images">Imej Ahli</string>
    <string name="my_images">Imej Saya</string>
    <string name="you_should_be_here">Anda Seharusnya Berada Di Sini</string>
-   <string name="title_activity_full_screen_photo">DreamTrips</string>
-   <string name="skip_login">Langkau Log masuk</string>
    <string name="duration">%1$d Malam</string>
    <string name="smth_went_wrong">Sesuatu yang tidak kena = (</string>
    <string name="inspire_me">Berikan inspirasi kepada saya</string>
    <string name="three_sixty">Pengalaman 360</string>
    <string name="book_it">Tempah sekarang!</string>
    <string name="reload_trip_details">Muat Semula Butir-butir Perjalanan</string>
-   <string name="title_book_it">Tempah sekarang!</string>
-   <string name="title_enroll_it">Mendaftar</string>
    <string name="user_id_hint">ID Ahli WV</string>
    <string name="user_password_hint">Kata Laluan Ahli WV</string>
    <string name="type_your_reason">Taip sebab anda</string>
@@ -59,24 +47,13 @@
    <string name="trip_details">Butir-butir Perjalanan</string>
    <string name="trip_featured">PERJALANAN DITONJOLKAN</string>
    <string name="profile_from_hint">Dari</string>
-   <string name="profile_location_hint">Tinggal Di</string>
    <string name="profile_enroll_hint">Tarikh Pendaftaran</string>
    <string name="profile_birth_hint">Tarilh Lahir</string>
    <string name="profile_user_id_hint">ID Pengguna</string>
    <string name="bucket_locations">Lokasi</string>
    <string name="bucket_activities">Aktiviti</string>
    <string name="bucket_restaurants">JAMUAN SELERA</string>
-   <string name="photo_what">Apa</string>
-   <string name="photo_what_hint">Tulis huraian ringkas untuk gambar anda</string>
-   <string name="photo_where">Tempat</string>
-   <string name="photo_where_hint">Tetapkan Lokasi</string>
-   <string name="photo_when">Bila</string>
-   <string name="photo_when_date_hint">Tarikh</string>
-   <string name="photo_when_time_hint">Masa</string>
-   <string name="photo_tags">Teg</string>
-   <string name="photo_tags_hint">Tambah koma dipisahkan oleh teg di sini</string>
    <string name="photo_deleted">Gambar telah Dihapuskan</string>
-   <string name="photo_flagged">Gambar telah Ditandakan</string>
    <string name="delete_photo_title">Hapus Gambar</string>
    <string name="delete_photo_text">Adakah anda pasti anda mahu menghapuskan gambar ini?</string>
    <string name="delete_photo_positiove">Hapus</string>
@@ -89,17 +66,11 @@
    <string name="flag_description_positive">Terima</string>
    <string name="flag_description_negative">Batal</string>
    <string name="log_in">Log masuk</string>
-   <string name="error_log_in">Id logmasuk dan/atau kata laluan anda tidak betul - sila gunakan ID Ahli WorldVentures dan Kata Laluan anda untuk melog masuk</string>
-   <string name="error_image_not_loaded">Imej belum dimuat</string>
-   <string name="error_while_loading">Ralat semasa memuat imej</string>
-   <string name="fab_select_album">Pilih Album</string>
-   <string name="fab_select_photo">Pilih Gambar</string>
+   <string name="facebook_error_loading_albums">Tidak dapat memuatkan album</string>
+   <string name="facebook_error_loading_photos">Tidak dapat memuatkan foto</string>
+   <string name="facebook_login_error">Tidak dapat melog masuk ke Facebook</string>
    <string name="fab_posted">Berjaya dicatatkan ke Facebook</string>
-   <string-array name="photo_dialog_items">
-      <item>Ambil Gambar</item>
-      <item>Pilih Gambar</item>
-      <item>Pilih dari Facebook</item>
-   </string-array>
+   <string name="facebook_posting_error">Tidak dapat mengepos ke Facebook</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -109,25 +80,18 @@
       <item>Twitter</item>
       <item>Simpan ke Galeri</item>
    </string-array>
-   <string name="buffering">Penimbalan…</string>
-   <string name="profile_select_avatar_header">Pilih Avatar</string>
-   <string name="profile_select_cover_header">Pilih Kulit</string>
    <string name="error_internal_server">Ralat Pelayan Dalaman</string>
    <string name="username_empty">Nama pengguna kosong</string>
    <string name="username_not_valid">Nama pengguna tidak sah</string>
    <string name="password_empty">Kata laluan adalah kosong</string>
    <string name="password_not_valid">Kata laluan tidak sah</string>
-   <string name="bucket_list_my_title">Tambah item kepada Senarai Timba</string>
    <string name="bucket_list_location_popular">Senarai Baldi Popular</string>
-   <string name="bucket_list_activity_popular">Aktiviti Senarai Timba Popular</string>
-   <string name="bucket_list_dinning_popular">Makan Malam &amp; Hiburan Senarai Timba Popular</string>
    <string name="bucket_list_edit_header">Sunting Item Senarai Timba</string>
    <string name="bucket_list_add">Tambah %1$s kepada senarai timba anda</string>
    <string name="bucket_list_create_message">Pada masa ini ada tidak mempunyai itemSenarai Baldi. Anda boleh pilih daripada itemSenarai Baldi popular atau cipta matlamatanda sendiri</string>
    <string name="bucket_list_choose">Pilih Daripada Item Popular</string>
    <string name="bucket_list_create_new">Cipta Senarai Saya Sendiri</string>
    <string name="bucket_list_action_create_error">Tidak dapat menambah item Senarai Perkara Yang Ingin Lakukan </string>
-   <string name="bucket_list_action_update_error">Tidak dapat mengemas kini item Senarai Perkara Yang Ingin Lakukan </string>
    <string name="bucket_list_action_change_order_error">Tidak dapat mengubah pesanan item Senarai Perkara Yang Ingin Lakukan </string>
    <string name="bucket_list_action_delete_error">Tidak dapat menghapuskan item Senarai Perkara Yang Ingin Lakukan </string>
    <string name="bucket_hint_title">Tajuk:</string>
@@ -135,55 +99,36 @@
    <string name="bucket_hint_description_text">Taip huraian anda di sini</string>
    <string name="bucket_hint_time">Masa</string>
    <string name="bucket_hint_time_text">Bilakah anda ingin mencapai matlamat ini?</string>
-   <string name="bucket_hint_location">Lokasi</string>
-   <string name="bucket_hint_location_text">Adakah terdapat lokasi khusus untuk matlamat ini?</string>
    <string name="bucket_hint_people">Orang</string>
    <string name="bucket_hint_people_text">Tambah orang yang anda mahu mencapai matlamat ini</string>
    <string name="bucket_hint_tags">Teg</string>
    <string name="bucket_hint_tags_text">Tambah teg yang menerangkan item senarai baldi anda</string>
-   <string name="bucket_item_edit_done">Item timba telah disimpan!</string>
-   <string name="bucket_item_edit_error">Ralat ditemui semasa menyimpan item</string>
-   <string name="bucket_item_photos">Tambah gambar</string>
    <string name="category">Kategori</string>
    <string name="bucket_added">%1$s ditambah kepada senarai timba anda</string>
    <string name="trip_liked">%1$s ditambah kepada Kegemaran anda</string>
    <string name="trip_unliked">%1$s dikeluarkan daripada Kegemaran anda</string>
    <string name="congrats">Tahniah!</string>
-   <string name="bucket_delete_undo">Item telah dihapuskan</string>
-   <string name="undo">BUAT SEMULA</string>
-   <string name="location">lokasi</string>
-   <string name="activity">aktiviti</string>
-   <string name="dinning">Jamuan Selera</string>
    <string name="show_all">TUNJUKKAN SEMUA</string>
    <string name="show_completed">TUNJUKKAN YANG TELAH LENGKAP</string>
    <string name="show_to_do">TUNJUKKAN UNTUK DILAKUKAN</string>
    <string name="rep_tools">Peralatan Wakil</string>
    <string name="success_stories">Cerita Kejayaan</string>
-   <string name="to_do">Untuk Dibuat</string>
-   <string name="completed">Selesai</string>
    <string name="action_share">Berkongsi</string>
    <string name="recent_header">Pengalaman 360 Baru Ditambah</string>
    <string name="recently_added">Baru Ditambah</string>
    <string name="featured_header">Menonjolkan Pengalaman 360</string>
-   <string name="title_activity_success_story_details">AktivitiButiranCeritaKejayaan</string>
-   <string name="hello_world">Helo dunia!</string>
    <string name="ss_has_been_added_to_favorites">Cerita kejayaan telah ditambah ke kegemaran</string>
    <string name="ss_has_been_removed_from_favorites">Cerita kejayaan telah dikeluarkan dari kegemaran</string>
    <string name="ss_filter_show_favorites">Tunjuk Kegemaran</string>
    <string name="other_travel">Tempah Perjalanan</string>
    <string name="training_videos">Video Latihan</string>
-   <string name="error_while_sync">Sesuatu yang tidak kena</string>
-   <string name="can_not_like_photo">Tidak boleh suka gambar</string>
    <string name="like">%1$d suka</string>
    <string name="likes">%1$d Suka</string>
    <string name="comment_single">%1$d komen</string>
    <string name="comments">%1$d Komen</string>
-   <string name="wrong_image">Imej yang salah</string>
-   <string name="could_not_load">Tidak dapat muat </string>
    <string name="someday">Suatu hari</string>
    <string name="who">Siapa: </string>
    <string name="tags">Teg: </string>
-   <string name="my_pictures">Gambar saya</string>
    <string name="today">Hari ini</string>
    <string name="rep_enrollment">Pendaftaran Wakil</string>
    <string name="no_connection">Tiada Sambungan Internet. </string>
@@ -205,16 +150,12 @@
       <item>Tahun depan</item>
       <item>Suatu hari</item>
    </string-array>
-   <string name="choose_fb">Pilih dari Facebook</string>
-   <string name="choose_camera">Ambil Gambar</string>
    <string name="choose_gallery">Pilih Gambar</string>
    <string name="uploading_photo">Muat naik gambar</string>
    <string name="bucket_photo_cover">Tetapkan sebagai kulit</string>
    <string name="bucket_photo_delete">Hapus</string>
    <string name="add_pictures">Tambah gambar</string>
-   <string name="select_photo">Pilih gambar</string>
    <string name="bucket_photo_dialog">Gambar timba</string>
-   <string name="download_in_progress">Muat turun sedang dijalankan</string>
    <string name="delete_cached_video_title">Video</string>
    <string name="delete_cached_video_text">Adakah anda pasti anda mahu menghapuskan video daripada cache setempat? </string>
    <string name="fail">Kegagalan</string>
@@ -234,7 +175,6 @@
    <string name="action_send">Hantar</string>
    <string name="action_preview">Pratonton</string>
    <string name="title_edit_template">Sunting templat</string>
-   <string name="title_activity_invite">Jemput</string>
    <string name="invitation_continue">Teruskan</string>
    <string name="invitation_select_contacts">Pilih kenalan</string>
    <string name="invitation_select_template">Pilih templat jemputan</string>
@@ -243,69 +183,47 @@
    <string name="invitation_to">Kepada:</string>
    <string name="invitation_subject">Subjek:</string>
 
-   <string name="invite_add_last_name">Nama Akhir</string>
-   <string name="preview_template">Pratoton templat</string>
    <string name="selected">%1$d dipilih</string>
-   <string name="error_personal_message_is_empty">Mesej peribadi tidak seharusnya kosong</string>
    <string name="email_is_not_valid">E-mel tidak sah</string>
    <string name="invitation_deselect_all">Nyahpilih Semua</string>
    <string name="invitation_text_template" formatted="false"><![CDATA[ Hai%1$s, %2$s <br/>Baca ini <a href=\"%3$s\">di sini</a>.]]></string>
-   <string name="terms_and_conditions"><![CDATA[Sila baca dan terima <a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">Terma & Syarat</a>]]></string>
    <string name="invite_add_photo">Tambah Gambar</string>
    <string name="invite_select_first">Pilih kenalan dahulu</string>
    <string name="filters_show_favorite">TUNJUKKAN PERJALANAN KEGEMARAN</string>
    <string name="filter_recently_added">BARU DITAMBAH</string>
    <string name="bucketlist_share" formatted="false">Di Senarai Baldi saya:%1$s</string>
-   <string name="choose_multiselect">Pilih Gambar</string>
    <string name="last_sent">Dihantar Terakhir</string>
    <string name="search_trips">Cari Perjalanan</string>
    <string name="search">Berhampiran saya</string>
 
-   <string name="profile_update_info">Kemas Kini Maklumat</string>
    <string name="profile_zero_trip_images">Imej Perjalanan</string>
    <string name="profile_zero_bucket_list">Item Senarai Baldi</string>
    <string name="profile_trip_images">%1$d Imej Perjalanan</string>
    <string name="profile_bucket_list">%1$dItem Senarai Baldi</string>
-   <string name="profile_post">HANTAR</string>
    <string name="profile_friends">Rakan</string>
-   <string name="profile_messages">Mesej</string>
-   <string name="profile_more">Lebih lagi</string>
    <string name="profile_platinum">Ahli Platinum</string>
    <string name="profile_golden">Ahli Gold</string>
    <string name="profile_dt_points">&lt;b&gt;%1$s&lt;/b&gt;Mata DT</string>
    <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt; Rovia Bucks</string>
-   <string name="bucket_delete_dialog">Adakah anda pasti anda mahu hapuskan item senarai timba ini?</string>
 
    <string name="action_add_to_bucket">Tambah kepada senarai Timba</string>
-   <string name="profile_dream_trips">%1$d Dream Trips</string>
    <string name="profile_add_friend">Tambah Kawan</string>
    <string name="profile_friend_request" formatted="false">%1$s telah hantar anda permintaan kawan</string>
-   <string name="profile_accept">Sahkan</string>
-   <string name="profile_reject">Hapus permintaan</string>
-   <string name="title_activity_friends">Rakan</string>
-   <string name="profile_request">Permintaan</string>
    <string name="profile_respond">Membalas</string>
    <string name="profile_waiting">Menunggu</string>
    <string name="social_my_friends">RAKAN SAYA</string>
    <string name="social_requests">Permintaan</string>
    <string name="social_add_friend_yes">Ya</string>
    <string name="social_add_friend_no">Tidak</string>
-   <string name="social_add_friend_title">Tambah Kawan</string>
-   <string name="social_add_friend_content" formatted="false">Tambah %1$s sebagai kawan anda?</string>
    <string name="social_postfix_mutual_friends_one">%1$d kawan bersama</string>
    <string name="social_postfix_mutual_friends">%1$d kawan bersama</string>
    <string name="social_user_wrapper_cell_actions">Tindakan</string>
    <string name="social_remove_friend_title">Tidak Berkawan Lagi</string>
-   <string name="action_social_show_all">Tunjuk semua</string>
    <string name="friend_search_placeholder">Carian nama, kumpulan</string>
-   <string name="bucket_photo_upload_error">Tidak dapat muat naik gambar</string>
-   <string name="training_video_hint">Pilih bahasa</string>
    <string name="friend_reject">Tolak</string>
    <string name="friend_accept">Terima</string>
    <string name="friend_hide">Sembunyi</string>
    <string name="friend_cancel">Batal</string>
-   <string name="request_incoming">Datang masuk</string>
-   <string name="request_outgoing">Keluar</string>
    <string name="friend_global_search">Cari semua ahli</string>
    <string name="friend_add_to">Tambah kepada:</string>
    <string name="bucket_current_cover">Kulit semasa</string>
@@ -328,14 +246,11 @@
    <string name="comment_add_hint">Tambah komen</string>
    <string name="comment_post_btn_title">HANTAR</string>
    <string name="comment_view_more">Lihat lebih komen</string>
-   <string name="comment_edit">Sunting komen</string>
    <string name="save">Simpan</string>
    <string name="comment_delete">Hapuskan komen</string>
    <string name="comment_delete_caption">Adakah anda pasti anda mahu hapuskan komen ini?</string>
    <string name="comment_delete_confirm">Ya, hapuskannya!</string>
    <string name="post_visibility_public">Awam</string>
-   <string name="post_hint">Apa yang anda sedang lakukan?</string>
-   <string name="photo_hint">Tulis sesuatu mengenai gambar…</string>
    <string name="post">HANTAR</string>
 
    /////////Date time relative strings
@@ -345,19 +260,13 @@
    <string name="minutes_ago">%1$d minit lalu</string>
    <string name="months_ago">%1$d beberapa bulan yang lalu</string>
    <string name="weeks_ago">%1$d minggu lalu</string>
-   <string name="seconds_ago">%1$d saat lalu</string>
    <string name="minute_ago">Seminit lalu</string>
    <string name="hour_ago">Sejam lalu</string>
    <string name="last_month">Bulan lalu</string>
    <string name="last_week">Minggu lalu</string>
    <string name="last_year">Tahun lalu</string>
    <string name="yesterday">Kelmarin</string>
-   <string name="year_ago">1 tahun lalu</string>
-   <string name="month_ago">1 bulan lalu</string>
-   <string name="week_ago">1 minggu lalu</string>
-   <string name="day_ago">1 hari lalu</string>
 
-   <string name="social_remove_and_block_friend_title">Tidak menjadi kawan lagi dan halang</string>
    <string name="social_friend_preference_title">Sunting keutamaan kawan</string>
    <string name="friend_pref_create_new_list">Cipta senarai baru</string>
    <string name="friend_pref_lists_title">Senarai</string>
@@ -367,13 +276,10 @@
    <string name="social_unfriend_confiramation_cancel">Tidak</string>
    <string name="feed_title">Suapan Aktiviti</string>
    <string name="post_cancel_message">Adakah anda pasti anda mahu membuang perubahan? </string>
-   <string name="pictures">Gambar</string>
    <string name="bucket_list_foreign_message">Pada masa ini pengguna ini tidak mempunyai item Senarai Timba. </string>
 
    <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
    <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
-   <string name="configuration_acitve_button">Cuba lagi</string>
-   <string name="configuration_failed">Memuat konfigurasi gagal</string>
    <string name="email_app_choose_dialog_title">Pilih Aplikasi</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; suka ini</string>
@@ -382,7 +288,6 @@
    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;%1$s dan%2$d lain&lt;/b&gt; suka ini</string>
 
    <string name="users_who_liked_title">Orang suka</string>
-   <string name="users_who_liked_empty">Tiada siapa yang suka item ini</string>
    <string name="notifications_title">Pemberitahuan</string>
    <string name="accept_request">telah menerima permintaan anda</string>
    <string name="reject_request">telah menolak permintaan anda</string>
@@ -390,17 +295,14 @@
    <string name="send_request">hantar anda permintaan kawan</string>
 
    <string name="post_delete">Hapus catatan</string>
-   <string name="post_edit">Sunting catatan</string>
    <string name="post_delete_caption">Adakah anda pasti anda mahu hapuskan catatan ini?</string>
    <string name="post_delete_confirm">Ya, hapuskannya!</string>
 
    <string name="photo_delete">Hapus gambar</string>
-   <string name="photo_edit">Sunting gambar</string>
    <string name="photo_delete_caption">Adakah anda pasti anda mahu menghapuskan gambar ini?</string>
    <string name="photo_edit_error">Tidak dapat sunting gambar</string>
 
    <string name="bucket_delete">Hapus item timba</string>
-   <string name="bucket_edit">Sunting item timba</string>
    <string name="bucket_delete_caption">Adakah anda pasti anda mahu hapuskan item timba ini?</string>
 
    <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; dan &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
@@ -443,7 +345,6 @@
    <string name="feed_share_post">Berkongsi Catatan</string>
    <string name="feed_share_photos">Berkongsi Gambar</string>
    <string name="feed_view_profile_btn">Lihat Profil</string>
-   <string name="feed_close_friends">Rakan Rapat</string>
    <string name="start_searching">Taip untuk mula mencari</string>
 
    <string name="people_liked_one">%1$s menyukai</string>
@@ -463,7 +364,6 @@
    <string name="no_friends">Anda masih belum ada kawan dalam senarai ini</string>
    <string name="feed_add_friends">Tambah kawan</string>
    <string name="all_friends">Semua kawan</string>
-   <string name="trip_view_and_book"><![CDATA[Lihat & Tempah Sekarang]]></string>
    <string name="accept_all">Terima semua</string>
    <string name="request_count_desc">Anda mempunyai %1$d permintaan Kawan baru</string>
 
@@ -481,7 +381,6 @@
 
    <string name="tag_photo">tandakan anda di</string>
 
-   <string name="user_already_exists">%1$s sudah ada</string>
    <string name="photo_tag_title">Ketik di mana-mana sahaja untuk menanda orang</string>
    <string name="profile_friend_formatter">%1$d Rakan</string>
    <string name="profile_friends_formatter">%1$d Rakan</string>
@@ -526,18 +425,10 @@
    <string name="error_fail_to_load_success_stories">Gagal memuatkan kisah kejayaan</string>
    <string name="error_fail_to_like_success_story">Gagal untuk suka dengan kisah kejayaan</string>
    <string name="error_fail_to_unlike_success_story">Gagal menyahsuka kisah kejayaan</string>
-   <string name="error_fail_to_load_settings">Gagal memuatkan tetapan</string>
    <string name="error_fail_to_update_settings">Gagal mengemas kini tetapan</string>
-   <string name="error_fail_to_load_bl">Gagal memuatkan Senarai Baldi</string>
-   <string name="error_fail_to_delete_bl">Gagal memadamkan Item Senarai Baldi</string>
-   <string name="error_fail_to_create_bl">Gagal mencipta Item Senarai Baldi</string>
-   <string name="error_fail_to_edit_bl">Gagal mengedit Item Senarai Baldi</string>
    <string name="error_fail_to_load_categories">Gagal memuatkan kategori</string>
    <string name="error_fail_to_load_suggestions">Gagal memuatkan cadangan</string>
    <string name="error_fail_to_load_popular_bl">Gagal memuatkan Item Senarai Baldi popular</string>
-   <string name="error_fail_to_add_bl_item">Gagal menambah item</string>
-   <string name="error_fail_to_upload_bl_photo">Gagal memuat naik foto</string>
-   <string name="error_fail_to_delete_bl_photo">Gagal memadam foto</string>
    <string name="error_fail_to_load_circles">Gagal memuatkan bulatan</string>
    <string name="error_fail_to_load_feed">Gagal memuatkan suapan</string>
    <string name="error_fail_to_load_item_details">Gagal memuatkan butiran item</string>
@@ -550,7 +441,6 @@
    <string name="error_fail_to_edit_comment">Gagal mengedit komen</string>
    <string name="error_fail_to_load_flag_reason">Gagal memuatkan alasan bendera</string>
    <string name="error_fail_to_flag_item">Gagal membenderakan item</string>
-   <string name="error_fail_to_accept_friend_requests">Gagal menerima permohonan rakan</string>
    <string name="error_fail_to_accept_friend_request">Gagal menerima permohonan rakan</string>
    <string name="error_fail_to_reject_friend_request">Gagal menolak permohonan rakan</string>
    <string name="error_fail_to_hide_friend_request">Gagal menyembunyikan permohonan rakan</string>
@@ -565,29 +455,18 @@
    <string name="error_failed_to_load_mutual_friends">Gagal memuatkan rakan bersama</string>
    <string name="error_failed_to_load_notifications">Gagal memuatkan pemberitahuan</string>
    <string name="error_failed_to_accept_terms_and_conditions">Gagal menerima terma dan syarat</string>
-   <string name="error_failed_to_load_my_images">Gagal memuatkan imej saya</string>
    <string name="error_failed_to_load_member_images">Gagal memuatkan imej ahli</string>
-   <string name="error_failed_to_load_ysbh_images">Gagal memuatkan imej anda patut berada di sini</string>
    <string name="error_failed_to_load_inspire_images">Gagal memuatkan imej inspirasi saya</string>
-   <string name="error_failed_to_create_image">Gagal mencipta imej</string>
-   <string name="error_failed_to_edit_image">Gagal mengedit imej</string>
    <string name="error_failed_to_delete_image">Gagal memadam imej</string>
    <string name="string_failed_to_load_trips">Gagal memuatkan perjalanan</string>
    <string name="error_failed_to_load_activities">Gagal memuatkan aktiviti</string>
    <string name="error_failed_to_load_users">Gagal memuatkan pengguna</string>
-   <string name="error_failed_to_load_feedback_reasons">Gagal memuatkan alasan maklum balas</string>
-   <string name="error_fail_to_tag_people">"Gagal untuk tag orang"</string>
    <string name="error_fail_to_delete_tag">Gagal memadam tag</string>
    <string name="error_fail_to_load_feedback_reasons">Gagal memuatkan alasan maklum balas</string>
    <string name="error_fail_to_send_feedback">Gagal menghantar maklum balas</string>
-   <string name="error_fail_to_upload_image">Gagal memuat naik imej</string>
    <string name="error_fail_to_load_timeline">Gagal memuatkan garis masa</string>
-   <string name="error_fail_to_download_video">Gagal memuat turun video</string>
    <string name="error_fail_to_get_invitations">Gagal mendapatkan jemputan</string>
-   <string name="error_fail_to_create_invitation">Gagal mencipta jemputan</string>
-   <string name="error_fail_to_send_invitation">Gagal menghantar jemputan</string>
    <string name="error_fail_to_invitation_templates">Gagal mendapatkan templat jemputan</string>
-   <string name="error_fail_to_fill_template">Gagal mengisi templat</string>
    <string name="error_fail_to_get_preview_for_template">Gagal mendapatkan pratonton untuk templat</string>
    <string name="error_fail_to_locales">Gagal mendapatkan tempat peristiwa</string>
    <string name="error_fail_to_login">Gagal untuk log masuk</string>
@@ -615,8 +494,6 @@
    <string name="uploading_post_cancel_upload_message">Batal muat naik?</string>
    <string name="uploading_post_cancel_upload_positive_button">Ya</string>
    <string name="uploading_post_cancel_upload_negative_button">Tidak</string>
-
-   <string name="say_something">Ucapkan sesuatu kepada dunia</string>
 
    <string name="update">Kemas kini</string>
    <string name="add_location">Tambah lokasi</string>
@@ -654,11 +531,16 @@
    <string name="cancel_cached_podcast_title">Fail media digital</string>
    <string name="cancel_cached_podcast_text">Adakah anda pasti anda mahu batal muat turun fail?</string>
    <string name="audio_app_not_found_exception">Aplikasi untuk memainkan audio tidak didapati</string>
-   <string name="complete_action_with">Lengkapkan tindakan dengan</string>
    <string name="error_fail_to_load_podcast">Gagal untuk memuatkan fail media digital</string>
    <string name="podcasts_button_resume">Sambung semula</string>
    <string name="podcasts_button_pause">Berhenti seketika</string>
    <string name="podcasts_button_stop">Berhenti</string>
+
+   <string name="app_update_alert_title">Pengemaskinian Tersedia</string>
+   <string name="app_update_alert_neutral_button">Bukan sekarang</string>
+   <string name="app_update_alert_pos_button">Kemas kini</string>
+   <string name="app_update_alert_optional_update_message">Pengemaskinian perisian tersedia untuk aplikasi DreamTrips. Untuk pengalaman yang dipertingkatkan kemas kini sebelum %1$s</string>
+   <string name="app_update_alert_force_update_message">Pengemaskinian perisian tersedia untuk aplikasi DreamTrips. Pengemaskinian ini hanya memerlukan beberapa minit untuk dipasang.</string>
 
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Kata sesuatu, tambah #hashtags</string>
@@ -695,4 +577,7 @@
 
    <string name="documents">Dokumen</string>
    <string name="documents_empty_text">Dokumen tidak dapat dimuatkan pada masa ini.</string>
+
+   <string name="show_original">Tunjukkan yang asal</string>
+   <string name="error_fail_to_translate_bucket_item">Tidak dapat menterjemahkan item baldi</string>
 </resources>

@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentableBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
-import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
@@ -36,6 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
+import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
@@ -75,7 +75,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
       public void onTextChanged(CharSequence s, int start, int before, int count) {
          super.onTextChanged(s, start, before, count);
          String text = s.toString().trim();
-         getPresenter().setDraftComment(text);
+         getPresenter().setDraftCommentText(text);
          post.setEnabled(text.length() > 0);
       }
    };
@@ -127,12 +127,12 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
          @Override
          public void onFlagClicked(Flaggable flaggableView) {
-            getPresenter().loadFlags(flaggableView);
+            getPresenter().onLoadFlags(flaggableView);
          }
 
          @Override
          public void onFlagChosen(Comment comment, int flagReasonId, String reason) {
-            getPresenter().flagItem(comment.getUid(), flagReasonId, reason);
+            getPresenter().onFlagComment(comment.getUid(), flagReasonId, reason);
          }
 
          @Override
@@ -262,33 +262,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    }
 
    @Override
-   public void showEdit(BucketBundle bucketBundle) {
-      @IdRes int containerId = R.id.container_details_floating;
-      bucketBundle.setLock(true);
-      try {
-         bucketBundle.setOwnerId(getArgs().getFeedEntity().getOwner().getId());
-      } catch (Exception e) {
-         Timber.e(e, "");
-      }
-      if (isTabletLandscape()) {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
-               .backStackEnabled(true)
-               .containerId(containerId)
-               .fragmentManager(getActivity().getSupportFragmentManager())
-               .data(bucketBundle)
-               .build());
-         showContainer(containerId);
-      } else {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
-      }
-   }
-
-   private void showContainer(@IdRes int containerId) {
-      View container = ButterKnife.findById(getActivity(), containerId);
-      if (container != null) container.setVisibility(View.VISIBLE);
-   }
-
-   @Override
    public void hideViewMore() {
       loadMore.setVisible(false);
       adapter.notifyItemChanged(getLoadMorePosition());
@@ -296,7 +269,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @OnClick(R.id.post)
    void onPost() {
-      getPresenter().post();
+      getPresenter().createComment();
       post.setEnabled(false);
       input.setFocusable(false);
    }
@@ -317,7 +290,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
       adapter.notifyDataSetChanged();
    }
 
-   public void onEvent(CommentIconClickedEvent event) {
+   @Override
+   public void openInput() {
       if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
    }
 

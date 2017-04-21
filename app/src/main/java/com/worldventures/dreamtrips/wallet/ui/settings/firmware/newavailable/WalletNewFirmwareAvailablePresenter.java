@@ -2,41 +2,43 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.InsufficientStorageAction;
+import com.worldventures.dreamtrips.wallet.analytics.ViewSdkUpdateAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPath;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
-import rx.functions.Action1;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkStorageAvailability;
-import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletNewFirmwareAvailablePresenter.Screen, Parcelable> {
 
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject SCFirmwareFacade firmwareFacade;
 
    @Inject Navigator navigator;
    @Inject ActivityRouter activityRouter;
    @Inject TemporaryStorage temporaryStorage;
-
-   private FirmwareInfo firmwareInfo;
 
    public WalletNewFirmwareAvailablePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -45,36 +47,34 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      observeLatestAvailableFirmware();
-      observeSmartCard();
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(firmwareUpdateData -> {
+               bindDataToView(firmwareUpdateData);
+               sendAnalyticAction(firmwareUpdateData);
+            }, throwable -> Timber.e(throwable, ""));
    }
 
-   private void observeSmartCard() {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<GetActiveSmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onNext(new Action1<GetActiveSmartCardCommand>() {
-                     @Override
-                     public void call(GetActiveSmartCardCommand command) {
-                        WalletNewFirmwareAvailablePresenter.this.getView()
-                              .currentFirmwareInfo(command.getResult().sdkVersion());
-                     }
-                  })
-                  .onFail(ErrorHandler.create(getContext()))
-                  .wrap());
+   private void bindDataToView(FirmwareUpdateData firmwareUpdateData) {
+      getView().currentFirmwareInfo(firmwareUpdateData.currentFirmwareVersion());
+
+      final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
+      getView().availableFirmwareInfo(firmwareInfo);
+      if (!firmwareInfo.isCompatible()) {
+         getView().requiredLatestDtAppVersion();
+      }
    }
 
-   private void observeLatestAvailableFirmware() {
-      firmwareInteractor.firmwareInfoPipe().observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(command -> {
-               firmwareInfo = command.getResult().firmwareInfo();
-               getView().availableFirmwareInfo(firmwareInfo);
-               if (!firmwareInfo.isCompatible()) {
-                  getView().requiredLatestDtAppVersion();
-               }
-            });
+   private void sendAnalyticAction(FirmwareUpdateData firmwareUpdateData) {
+      final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(
+            new WalletAnalyticsCommand(
+                  new ViewSdkUpdateAction(
+                        firmwareUpdateData.smartCardId(),
+                        firmwareInfo.firmwareVersion(),
+                        firmwareUpdateData.currentFirmwareVersion().nordicAppVersion(),
+                        !firmwareInfo.isCompatible())
+            ));
    }
 
    void goBack() {
@@ -90,17 +90,27 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadButtonClicked() {
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(firmwareUpdateData -> checkStoreAndNavigateToDownLoadScreen(firmwareUpdateData),
+                  throwable -> Timber.e(throwable, ""));
+
+   }
+
+   private void checkStoreAndNavigateToDownLoadScreen(FirmwareUpdateData firmwareUpdateData) {
       try {
-         checkStorageAvailability(getContext(), firmwareInfo.fileSize());
-         File file = getAppropriateFirmwareFile(getContext());
-         downloadFile(file.getAbsolutePath());
+         checkStorageAvailability(getContext(), firmwareUpdateData.firmwareInfo().fileSize());
+         goDownloadFile();
       } catch (WalletFilesUtils.NotEnoughSpaceException e) {
          getView().insufficientSpace(e.getMissingByteSpace());
+
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(new InsufficientStorageAction(firmwareUpdateData.smartCardId())));
       }
    }
 
-   void downloadFile(String filePath) {
-      navigator.go(new WalletPuckConnectionPath(firmwareInfo, filePath));
+   private void goDownloadFile() {
+      navigator.go(new WalletPuckConnectionPath());
    }
 
    public interface Screen extends WalletScreen {
@@ -109,9 +119,8 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
       void availableFirmwareInfo(FirmwareInfo firmwareInfo);
 
-      void currentFirmwareInfo(String version);
+      void currentFirmwareInfo(@Nullable SmartCardFirmware version);
 
       void insufficientSpace(long missingByteSpace);
-
    }
 }

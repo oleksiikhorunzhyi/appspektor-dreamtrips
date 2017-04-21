@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
@@ -27,10 +29,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
@@ -39,40 +43,43 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelp
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
-import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
+import com.worldventures.dreamtrips.modules.map.renderer.ClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import de.greenrobot.event.EventBus;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.path.Path;
 import flow.path.PathContext;
-import icepick.State;
-import rx.Observable;
 
 public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath> implements DtlMapScreen {
 
-   protected static final int CAMERA_DURATION = 1000;
+   private static final int CAMERA_DURATION = 1000;
+   private static final float CAMERA_PADDING = 50f;
 
    public static final String MAP_TAG = "MAP_TAG";
 
    @InjectView(R.id.mapTouchView) View mapTouchView;
    @InjectView(R.id.infoContainer) FrameLayout infoContainer;
    @InjectView(R.id.noGoogleContainer) FrameLayout noGoogleContainer;
+   @InjectView(R.id.redoMerchants) View redoMerchants;
+   @InjectView(R.id.loadMoreMerchants) View loadMoreMerchants;
+
+   @InjectView(R.id.btn_filter_merchant_food) View filterFood;
+   @InjectView(R.id.btn_filter_merchant_entertainment) View filterEntertainment;
+   @InjectView(R.id.btn_filter_merchant_spa) View filterSpa;
+
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
-   @InjectView(R.id.redo_merchants) View loadMerchantsRoot;
-   //
-   LatLng selectedLocation;
-   @State String lastQuery;
-   //
+
    private ClusterManager<DtlClusterItem> clusterManager;
    private Marker locationPin;
    private GoogleMap googleMap;
+   private int markerHeight;
+   private SweetAlertDialog errorDialog;
 
    public DtlMapScreenImpl(Context context) {
       super(context);
@@ -91,10 +98,12 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    protected void onPostAttachToWindowView() {
       checkMapAvailable();
       initToolbar();
+      prepareMarkerSize();
    }
 
    @Override
    protected void onDetachedFromWindow() {
+      hideErrorIfNeed();
       destroyMap();
       super.onDetachedFromWindow();
    }
@@ -105,9 +114,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
-      RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
-            .skip(1)
-            .debounce(250L, TimeUnit.MILLISECONDS)
+      RxDtlToolbar.merchantSearchApplied(dtlToolbar)
             .filter(s -> !dtlToolbar.isCollapsed())
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::applySearch);
@@ -126,10 +133,33 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void setFilterButtonState(boolean enabled) {
+   public void setFilterButtonState(boolean isDefault) {
       if (dtlToolbar == null) return;
-      dtlToolbar.setFilterEnabled(enabled);
+      dtlToolbar.setFilterEnabled(!isDefault);
    }
+
+    @Override
+    public void updateMerchantType(List<String> type) {
+        int idResource = 0;
+
+       if (type != null ) {
+          if (type.size() > 1) {
+             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
+                filterFood.setSelected(true);
+                idResource = R.string.dtlt_search_hint;
+             }
+          } else {
+             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
+                filterEntertainment.setSelected(true);
+                idResource = R.string.filter_merchant_entertainment;
+             } else if (type.get(0).equals(FilterData.SPAS)) {
+                filterSpa.setSelected(true);
+                idResource = R.string.filter_merchant_spa;
+             }
+          }
+       }
+       updateFiltersView(idResource);
+    }
 
    private void checkMapAvailable() {
       if (MapsInitializer.initialize(getActivity()) != ConnectionResult.SUCCESS) {
@@ -141,18 +171,17 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void prepareMap() {
       releaseMapFragment();
-      //
+
       MapFragment mapFragment = MapFragment.newInstance();
       getActivity().getFragmentManager()
             .beginTransaction()
             .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
             .commit();
-      //
+
       mapFragment.getMapAsync(map -> {
          googleMap = map;
          googleMap.clear();
          googleMap.setMyLocationEnabled(true);
-         //
          MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
          onMapLoaded();
       });
@@ -174,37 +203,48 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private void releaseMapFragment() {
       android.app.Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(MAP_TAG);
       if (fragment == null) return;
-      //
+
       getActivity().getFragmentManager().beginTransaction().remove(fragment).commit();
    }
 
-   @Override
-   public Observable<Boolean> getToggleObservable() {
-      if (dtlToolbar == null) return Observable.empty();
-      return RxDtlToolbar.diningFilterChanges(dtlToolbar).compose(RxLifecycle.bindView(this));
+   @OnClick(R.id.loadMoreMerchants)
+   public void onLoadMoreClick() {
+      getPresenter().onLoadMoreClicked();
    }
 
-   @OnClick(R.id.redo_merchants_button)
-   public void onMechantsRedoClick() {
+   @OnClick(R.id.redoMerchants)
+   public void onRedoMerchantsClick() {
       getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_food)
+   public void onFilterFoodClick() {
+      if (!filterFood.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
+      }
+   }
+
+   @OnClick(R.id.btn_filter_merchant_entertainment)
+   public void onFilterEntertainmentClick() {
+      if (!filterEntertainment.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
+      }
+   }
+
+   @OnClick(R.id.btn_filter_merchant_spa)
+   public void onFilterSpaClick() {
+      if (!filterSpa.isSelected()) {
+         MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
+         loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
+      }
    }
 
    @Override
    public void showProgress(boolean show) {
-      int textResId = show ? R.string.loading : R.string.dtl_load_merchants_here_button_caption;
-      int visibility = show ? View.VISIBLE : View.GONE;
-      //
-      Button loadMerchantsBtn = ButterKnife.<Button>findById(loadMerchantsRoot, R.id.redo_merchants_button);
-      ButterKnife.findById(loadMerchantsRoot, R.id.redo_merchants_progress).setVisibility(visibility);
-      //
-      loadMerchantsBtn.setText(textResId);
-      loadMerchantsBtn.setEnabled(!show);
-   }
-
-   @Override
-   public boolean isToolbarCollapsed() {
-      if (dtlToolbar == null) return true;
-      return dtlToolbar.isCollapsed();
+      if (show) showBlockingProgress();
+      else hideBlockingProgress();
    }
 
    @Override
@@ -215,43 +255,45 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void addPin(String id, LatLng latLng, DtlMerchantType type) {
-      clusterManager.addItem(new DtlClusterItem(id, latLng, type));
+   public void showItems(List<ThinMerchant> merchants) {
+      clearMap();
+
+      clusterManager.addItems(Queryable.from(merchants).map(DtlClusterItem::new).toList());
+      clusterManager.cluster();
    }
 
    @Override
    public void clearMap() {
       clusterManager.clearItems();
+      googleMap.clear();
    }
 
    @Override
-   public void prepareInfoWindow(int height) {
-      int ownHeight;
-      if (dtlToolbar == null) {
-         ownHeight = getHeight();
-      } else {
-         ownHeight = getHeight() - dtlToolbar.getBottom();
-      }
-      int centerY = ownHeight / 2;
-      int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
-      int offset = resultY - centerY;
-      animateTo(selectedLocation, offset);
+   public void prepareInfoWindow(@Nullable LatLng location, int height) {
+      if (location == null) return;
+      int center = (dtlToolbar == null ? getHeight() / 2 : (getHeight() - dtlToolbar.getBottom()) / 2) - height;
+      int offset = markerHeight - center;
+      animateTo(location, offset);
    }
 
    @Override
-   public void centerIn(Location location) {
-      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.asLatLng(), MapViewUtils.DEFAULT_ZOOM));
+   public void centerIn(LatLng location) {
+      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, MapViewUtils.DEFAULT_ZOOM));
    }
 
    @Override
-   public void renderPins() {
-      clusterManager.cluster();
+   public void connectToggleUpdate() {
+      if(dtlToolbar == null) return;
+
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(getPresenter()::offersOnlySwitched);
    }
 
    @Override
-   public void toggleDiningFilterSwitch(boolean enabled) {
+   public void toggleOffersOnly(boolean enabled) {
       if (dtlToolbar == null) return;
-      dtlToolbar.toggleDiningFilterSwitch(enabled);
+      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override
@@ -262,7 +304,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void cameraPositionChange(CameraPosition cameraPosition) {
       clusterManager.onCameraChange(cameraPosition);
-      selectedLocation = cameraPosition.target;
    }
 
    @Override
@@ -271,10 +312,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void showPinInfo(DtlMerchant merchant) {
+   public void showPinInfo(ThinMerchant merchant) {
       infoContainer.removeAllViews();
-      PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant), Path
-            .contextFactory());
+      PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant),
+            Path.contextFactory());
       DtlMapInfoScreenImpl infoView = (DtlMapInfoScreenImpl) LayoutInflater.from(getContext())
             .cloneInContext(newContext)
             .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
@@ -283,18 +324,37 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void openFilter() {
-      ((FlowActivity) getActivity()).openRightDrawer();
+   public void showError(String error) {
+      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+         getPresenter().retryLoadMerchant();
+      });
+      errorDialog.show();
+   }
+
+   private void hideErrorIfNeed() {
+      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
    }
 
    @Override
-   public void showButtonLoadMerchants(boolean show) {
-      loadMerchantsRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+   public void showButtonRedoMerchants(boolean isShow) {
+      ViewUtils.setViewVisibility(redoMerchants, isShow ? View.VISIBLE : View.GONE);
+   }
+
+   @Override
+   public void showLoadMoreButton(boolean isShow) {
+      ViewUtils.setViewVisibility(loadMoreMerchants, (isShow ? View.VISIBLE : View.GONE));
    }
 
    @Override
    public void zoom(float zoom) {
       googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+   }
+
+   @Override
+   public void zoomBounds(LatLngBounds bounds) {
+      getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, (int) ViewUtils.pxFromDp(getContext(), CAMERA_PADDING)));
    }
 
    @Override
@@ -323,7 +383,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), CAMERA_DURATION, new GoogleMap.CancelableCallback() {
          @Override
          public void onFinish() {
-            onMarkerFocused();
+            getPresenter().onMarkerFocused();
          }
 
          @Override
@@ -332,33 +392,63 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       });
    }
 
+   private void prepareMarkerSize() {
+      ImageView marker = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.pin_map, null);
+      marker.setImageResource(R.drawable.offer_pin_icon);
+      ClusterRenderer.measureIcon(marker);
+      this.markerHeight = marker.getMeasuredHeight();
+   }
+
    private void onMapLoaded() {
       clusterManager = new ClusterManager<>(getContext(), googleMap);
-      clusterManager.setRenderer(new DtClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
-      //
+      clusterManager.setRenderer(new ClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
+
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
-         selectedLocation = dtlClusterItem.getPosition();
-         getPresenter().onMarkerClick(dtlClusterItem.getId());
+         getPresenter().onMarkerClicked(dtlClusterItem.getMerchant());
          return true;
       });
-      //
+
       clusterManager.setOnClusterClickListener(cluster -> {
          if (googleMap.getCameraPosition().zoom >= 17.0f) {
-            getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getId());
+            getPresenter().onMarkerClicked(Queryable.from(cluster.getItems()).first().getMerchant());
          } else {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
          }
          return true;
       });
-      //
+
       getPresenter().onMapLoaded();
    }
 
    private void hideInfoIfShown() {
-      infoContainer.removeAllViews();
+      if (infoContainer.getChildCount() > 0) {
+         infoContainer.removeAllViews();
+         getPresenter().onMarkerPopupDismiss();
+      }
    }
 
-   protected void onMarkerFocused() {
-      EventBus.getDefault().post(new DtlShowMapInfoEvent());
+   private void updateFiltersView(int stringResource) {
+
+      ViewUtils.setCompatDrawable(filterFood, MerchantTypeUtil.filterMapDrawable(filterFood));
+
+      ViewUtils.setCompatDrawable(filterEntertainment, MerchantTypeUtil.filterMapDrawable(filterEntertainment));
+
+      ViewUtils.setCompatDrawable(filterSpa, MerchantTypeUtil.filterMapDrawable(filterSpa));
+
+      ViewUtils.setTextColor((Button) filterFood, MerchantTypeUtil.filterMerchantColor(filterFood));
+
+      ViewUtils.setTextColor((Button) filterEntertainment, MerchantTypeUtil.filterMerchantColor(filterEntertainment));
+
+      ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
+
+      if (stringResource != 0 && dtlToolbar != null) {
+         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
+      }
+   }
+
+   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+      getPresenter().onLoadMerchantsType(merchantType);
+      updateFiltersView(stringResource);
+      getPresenter().loadAmenities(merchantType);
    }
 }

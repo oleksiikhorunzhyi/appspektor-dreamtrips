@@ -12,33 +12,41 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
+import com.worldventures.dreamtrips.modules.feed.view.util.ActionPanelViewShareHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
+public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
 
-   @Inject FeedActionPanelViewActionHandler feedActionHandler;
    @Inject Presenter.TabletAnalytic tabletAnalytic;
    @Inject SessionHolder<UserSession> sessionHolder;
    @Inject protected FragmentManager fragmentManager;
+   @Inject protected Router router;
 
    @InjectView(R.id.actionView) FeedActionPanelView actionView;
    @InjectView(R.id.likers_panel) TextView likersPanel;
 
    private LikersPanelHelper likersPanelHelper;
    private NavigationWrapper navigationWrapper;
+   private ActionPanelViewShareHandler feedActionHandler;
    private boolean syncUIStateWithModelWasCalled;
 
    public BaseFeedCell(View view) {
@@ -56,11 +64,21 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellD
    protected void syncUIStateWithModel() {
       syncUIStateWithModelWasCalled = true;
       //
-      actionView.setState(getModelObject(), isForeignItem(getModelObject()));
+      actionView.setState(getModelObject(), isMineItem(getModelObject()));
+      actionView.setOnLikeIconClickListener(feedItem -> cellDelegate.onLikeItem(getModelObject()));
+      actionView.setOnLikersClickListener(feedItem -> {
+         navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem()
+               .getUid(), feedItem.getItem().getLikesCount()));
+      });
+      actionView.setOnCommentIconClickListener(feedItem -> cellDelegate.onCommentItem(getModelObject()));
       actionView.setOnMoreClickListener(feedItem -> onMore());
       actionView.setOnDeleteClickListener(feedItem -> onDelete());
       actionView.setOnEditClickListener(feedItem -> onEdit());
-      feedActionHandler.init(actionView, navigationWrapper);
+      actionView.setOnFlagClickListener(feedItem -> cellDelegate.onLoadFlags(actionView));
+      actionView.setOnFlagDialogClickListener((feedItem, flagReasonId, reason)
+            -> cellDelegate.onFlagChosen(feedItem, flagReasonId, reason));
+      feedActionHandler = new ActionPanelViewShareHandler(router);
+      feedActionHandler.init(actionView, cellDelegate::onDownloadImage);
       //
       if (likersPanel != null) {
          likersPanelHelper.setup(likersPanel, getModelObject().getItem());
@@ -70,11 +88,13 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellD
       }
    }
 
-   private boolean isForeignItem(FeedItem feedItem) {
+   private boolean isMineItem(FeedItem feedItem) {
       Optional<UserSession> userSessionOptional = sessionHolder.get();
-      return feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent() || userSessionOptional.get()
-            .getUser()
-            .getId() == (feedItem.getItem().getOwner().getId());
+      if (feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent()) return false;
+
+      int accountId = userSessionOptional.get().getUser().getId();
+      int ownerId = feedItem.getItem().getOwner().getId();
+      return accountId == ownerId;
    }
 
    @Override
@@ -108,5 +128,34 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellD
 
    protected void onMore() {
 
+   }
+
+   public interface FeedCellDelegate<ITEM> extends CellDelegate<ITEM> {
+
+      void onLikeItem(ITEM item);
+
+      void onCommentItem(ITEM item);
+
+      void onDownloadImage(String url);
+
+      void onLoadFlags(Flaggable flaggableView);
+
+      void onFlagChosen(FeedItem feedItem, int flagReasonId, String reason);
+
+      void onEditTextualPost(TextualPost textualPost);
+
+      void onDeleteTextualPost(TextualPost textualPost);
+
+      void onTranslateItem(FeedEntity translatableItem);
+
+      void onShowOriginal(FeedEntity translatableItem);
+
+      void onEditPhoto(Photo photo);
+
+      void onDeletePhoto(Photo photo);
+
+      void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType type);
+
+      void onDeleteBucketItem(BucketItem bucketItem);
    }
 }

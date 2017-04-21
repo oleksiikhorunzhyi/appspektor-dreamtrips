@@ -18,7 +18,7 @@ public class CardDetailsOptionsAction extends BaseCardDetailsWithDefaultAction {
    }
 
    public static CardDetailsOptionsAction forBankCard(BankCard bankCard, boolean isDefault) {
-      CardDetailsOptionsAction action = new CardDetailsOptionsAction(bankCard.title());
+      CardDetailsOptionsAction action = new CardDetailsOptionsAction(bankCard.nickName());
       action.fillPaycardInfo(bankCard, isDefault);
       return action;
    }

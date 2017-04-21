@@ -1,24 +1,20 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import android.os.Handler;
-import android.os.SystemClock;
-import android.support.annotation.StringRes;
-
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.profile.api.AddFriendToGroupCommand;
-import com.worldventures.dreamtrips.modules.profile.api.DeleteFriendFromGroupCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 import com.worldventures.dreamtrips.modules.profile.model.FriendGroupRelation;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.profile.service.command.AddFriendToCircleCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.RemoveFriendFromCircleCommand;
+import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.State;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,9 +25,9 @@ import rx.android.schedulers.AndroidSchedulers;
 public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPresenter.View> {
 
    @Inject CirclesInteractor circlesInteractor;
+   @Inject ProfileInteractor profileInteractor;
 
-   Handler handler = new Handler();
-   User friend;
+   private User friend;
 
    public FriendPreferencesPresenter(UserBundle userBundle) {
       friend = userBundle.getUser();
@@ -45,7 +41,7 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
    }
 
    private void updateCircles() {
-      circlesInteractor.pipe().send(new CirclesCommand());
+      circlesInteractor.pipe().send(new GetCirclesCommand());
    }
 
    private void subscribeCircles() {
@@ -53,9 +49,9 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
             .observe()
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
    }
 
    private void onCirclesStart() {
@@ -63,38 +59,29 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
    }
 
    private void onCirclesSuccess(List<Circle> resultCircles) {
-      List<FriendGroupRelation> friendGroupRelations = Queryable.from(resultCircles).map(element -> {
-         return new FriendGroupRelation(element, friend);
-      }).toList();
-      view.addItems(friendGroupRelations);
+      view.addItems(Queryable.from(resultCircles).map(circle -> {
+         return new FriendGroupRelation(circle, friend);
+      }).toList());
       view.hideBlockingProgress();
    }
 
-   private void onCirclesError(@StringRes String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
-   public void onEvent(FriendGroupRelationChangedEvent event) {
-      handler.removeCallbacksAndMessages(event.getCircle().getId());
-      handler.postAtTime(() -> {
-         List<String> userIds = new ArrayList<>();
-         userIds.add(String.valueOf(friend.getId()));
-         String groupId = event.getCircle().getId();
-         DreamSpiceManager.SuccessListener<Void> callback = aVoid -> {
+   public void onRelationshipChanged(Circle circle, State state) {
+      switch (state) {
+         case ADDED:
+            profileInteractor.addFriendToCirclesPipe().send(new AddFriendToCircleCommand(circle, friend));
+            friend.getCircles().add(circle);
+            break;
+         case REMOVED:
+            profileInteractor.removeFriendFromCirclesPipe().send(new RemoveFriendFromCircleCommand(circle, friend));
+            friend.getCircles().remove(circle);
+            break;
+      }
 
-         };
-         switch (event.getState()) {
-            case ADDED:
-               doRequest(new AddFriendToGroupCommand(groupId, userIds), callback);
-               friend.getCircles().add(event.getCircle());
-               break;
-            case REMOVED:
-               doRequest(new DeleteFriendFromGroupCommand(groupId, userIds), callback);
-               friend.getCircles().remove(event.getCircle());
-               break;
-         }
-      }, event.getCircle().getId(), SystemClock.uptimeMillis() + 300);
    }
 
    public interface View extends Presenter.View, BlockingProgressView {

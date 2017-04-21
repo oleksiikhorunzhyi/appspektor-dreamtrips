@@ -1,117 +1,167 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 
-import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageDeleteAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageEditAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageFlagAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageLikedAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+
 public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
 
-   @Inject FeedEntityManager entityManager;
+   @Inject Router router;
+   @Inject FragmentManager fm;
+   @Inject FlagsInteractor flagsInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FeedInteractor feedInteractor;
+   @Inject TranslationFeedInteractor translationFeedInteractor;
 
-   private UidItemDelegate uidItemDelegate;
+   private FlagDelegate flagDelegate;
 
    public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
       super(photo, type);
    }
 
-   @Inject Router router;
-   @Inject FragmentManager fm;
-   @Inject FlagsInteractor flagsInteractor;
-
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
+      setupTranslationState();
+      subscribeToTranslation();
+      subscribeToLikesChanges();
       loadEntity();
    }
 
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
-   public void loadEntity() {
-      doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
-         FeedEntity feedEntity = feedEntityHolder.getItem();
-         if (photo.getUser() != null) {
-            photo.syncLikeState(feedEntity);
-            photo.setCommentsCount(feedEntity.getCommentsCount());
-            photo.setComments(feedEntity.getComments());
-            photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
-         } else {
-            photo = (Photo) feedEntity;
-            view.showContentWrapper();
-         }
-         setupActualViewState();
-      });
+   private void setupTranslationState() {
+      boolean ownPost = photo.getOwner() != null &&
+            photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean emptyPostText = TextUtils.isEmpty(photo.getFSDescription());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
+      boolean emptyPostLanguage = TextUtils.isEmpty(photo.getLanguage());
+      if (ownPost || emptyPostText || ownLanguage || emptyPostLanguage) {
+         view.hideTranslationButton();
+      } else {
+         view.showTranslationButton();
+      }
+   }
+
+   private void loadEntity() {
+      feedInteractor.getFeedEntityPipe()
+            .createObservable(new GetFeedEntityCommand(photo.getUid(), FeedEntityHolder.Type.PHOTO))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFeedEntityCommand>()
+                  .onSuccess(getFeedEntityCommand -> {
+                     Photo photoFeedEntity = (Photo) getFeedEntityCommand.getResult();
+                     if (photo.getUser() != null) {
+                        photo.syncLikeState(photoFeedEntity);
+                        photo.setCommentsCount(photoFeedEntity.getCommentsCount());
+                        photo.setComments(photoFeedEntity.getComments());
+                        photo.setPhotoTags(photoFeedEntity.getPhotoTags());
+                        photo.setPhotoTagsCount(photoFeedEntity.getPhotoTagsCount());
+                     } else {
+                        photo = photoFeedEntity;
+                        view.showContentWrapper();
+                     }
+                     setupActualViewState();
+                     setupTranslationState();
+                  })
+                  .onFail(this::handleError));
    }
 
    @Override
    public void onDeleteAction() {
-      doRequest(new DeletePhotoCommand(photo.getFSId()), (jsonObject) -> {
-         view.informUser(context.getString(R.string.photo_deleted));
-         eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
-         eventBus.postSticky(new FeedEntityDeletedEvent(photo));
-      });
+      tripImagesInteractor.deletePhotoPipe()
+            .createObservable(new DeletePhotoCommand(photo))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
+                  .onSuccess(deletePhotoCommand -> {
+                     view.informUser(context.getString(R.string.photo_deleted));
+                     view.back();
+                  })
+                  .onFail(this::handleError));
    }
 
    public void deleteTag(PhotoTag tag) {
       List<Integer> userIds = new ArrayList<>();
       userIds.add(tag.getUser().getId());
-      doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
-         photo.getPhotoTags().remove(tag);
-         photo.setPhotoTagsCount(photo.getPhotoTags().size());
-      });
+
+      tripImagesInteractor.deletePhotoTagsPipe()
+            .createObservable(new DeletePhotoTagsCommand(photo.getFSId(), userIds))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePhotoTagsCommand>()
+                  .onSuccess(deletePhotoTagsCommand -> {
+                     photo.getPhotoTags().remove(tag);
+                     photo.setPhotoTagsCount(photo.getPhotoTags().size());
+                  })
+                  .onFail(this::handleError));
    }
 
    @Override
    public void sendFlagAction(int flagReasonId, String reason) {
-      uidItemDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view);
+      flagDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view, this::handleError);
    }
 
    @Override
    public void onLikeAction() {
-      if (!photo.isLiked()) {
-         entityManager.like(photo);
-      } else {
-         entityManager.unlike(photo);
-      }
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .send(new ChangeFeedEntityLikedStatusCommand(photo));
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      photo.syncLikeState(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(this::itemLiked)
+                  .onFail(this::handleError));
+   }
+
+   private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
+      photo.syncLikeState(command.getResult());
       view.setContent(photo);
-      TrackingHelper.like(type, String.valueOf(photo.getFSId()), getAccountUserId());
+
+      if (command.getResult().isLiked()) {
+         analyticsInteractor.analyticsActionPipe().send(new TripImageLikedAnalyticsEvent(photo.getFSId()));
+      }
    }
 
    @Override
@@ -127,16 +177,24 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Override
    public void onEdit() {
-      if (view != null) view.openEdit(new EditPhotoBundle(photo));
+      if (view != null) {
+         analyticsInteractor.analyticsActionPipe().send(new TripImageEditAnalyticsEvent(photo.getFSId()));
+         view.openEdit(new EditPhotoBundle(photo));
+      }
    }
 
    @Override
    public void onFlagAction(Flaggable flaggable) {
+      analyticsInteractor.analyticsActionPipe().send(new TripImageFlagAnalyticsEvent(photo.getFSId()));
       view.showProgress();
-      uidItemDelegate.loadFlags(flaggable, (command, throwable) -> {
+      flagDelegate.loadFlags(flaggable, (command, throwable) -> {
          view.hideProgress();
          handleError(command, throwable);
       });
+   }
+
+   public void onDelete() {
+      analyticsInteractor.analyticsActionPipe().send(new TripImageDeleteAnalyticsEvent(photo.getFSId()));
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -161,7 +219,34 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       return photo;
    }
 
-   public interface View extends SocialFullScreenPresenter.View, UidItemDelegate.View {
+   public void onTranslateClicked() {
+      translationFeedInteractor.translatePhotoPipe().send(new TranslatePhotoCommand(photo));
+   }
+
+   private void subscribeToTranslation() {
+      translationFeedInteractor.translatePhotoPipe()
+            .observe()
+            .filter(commandState -> commandState.action.getPhoto().equals(photo))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<TranslatePhotoCommand>()
+                  .onStart(command -> view.showTranslationInProgress())
+                  .onSuccess(command -> view.showTranslation(command.getResult(), command.getPhoto().getLanguage()))
+                  .onFail(this::photoTranslationError));
+   }
+
+   private void photoTranslationError(TranslatePhotoCommand action, Throwable e) {
+      handleError(action, e);
+      view.showTranslationButton();
+   }
+
+   public interface View extends SocialFullScreenPresenter.View, FlagDelegate.View {
+      void showTranslationButton();
+
+      void hideTranslationButton();
+
+      void showTranslation(String translation, String languageFrom);
+
+      void showTranslationInProgress();
 
       void showProgress();
 
@@ -170,5 +255,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       void showContentWrapper();
 
       void openEdit(EditPhotoBundle bundle);
+
+      void back();
    }
 }

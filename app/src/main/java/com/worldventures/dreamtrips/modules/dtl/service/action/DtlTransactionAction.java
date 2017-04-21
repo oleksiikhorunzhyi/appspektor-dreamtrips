@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 
@@ -29,24 +29,24 @@ public class DtlTransactionAction extends Command<DtlTransaction> implements Cac
    private DtlTransaction transaction;
 
 
-   private DtlTransactionAction(DtlMerchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc) {
-      this.id = merchant.getId();
+   private DtlTransactionAction(Merchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc) {
+      this.id = merchant.id();
       this.updateFunc = updateFunc;
    }
 
-   public static DtlTransactionAction get(DtlMerchant merchant) {
+   public static DtlTransactionAction get(Merchant merchant) {
       return new DtlTransactionAction(merchant, null);
    }
 
-   public static DtlTransactionAction update(DtlMerchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc) {
+   public static DtlTransactionAction update(Merchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc) {
       return new DtlTransactionAction(merchant, updateFunc);
    }
 
-   public static DtlTransactionAction save(DtlMerchant merchant, DtlTransaction transaction) {
+   public static DtlTransactionAction save(Merchant merchant, DtlTransaction transaction) {
       return update(merchant, old -> transaction);
    }
 
-   public static DtlTransactionAction clean(DtlMerchant merchant) {
+   public static DtlTransactionAction clean(Merchant merchant) {
       return update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
             .withUploadTask(null)
             .withBillTotal(0d)
@@ -57,7 +57,7 @@ public class DtlTransactionAction extends Command<DtlTransaction> implements Cac
             .withPoints(0d));
    }
 
-   public static DtlTransactionAction delete(DtlMerchant merchant) {
+   public static DtlTransactionAction delete(Merchant merchant) {
       return update(merchant, transaction -> null);
    }
 

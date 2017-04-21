@@ -13,6 +13,7 @@ import java.util.List;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TextualPost extends BaseFeedEntity {
 
+   private static final String DESCRIPTION_KEY = "description";
    private String description;
 
    private List<FeedEntityHolder> attachments = new ArrayList<>();
@@ -41,6 +42,10 @@ public class TextualPost extends BaseFeedEntity {
       return hashtags;
    }
 
+   public void setHashtags(List<Hashtag> hashtags) {
+      this.hashtags = hashtags;
+   }
+
    @NotNull
    public Location getLocation() {
       return location != null ? location : new Location();
@@ -53,5 +58,10 @@ public class TextualPost extends BaseFeedEntity {
    @Override
    public String place() {
       return location != null ? location.getName() : "";
+   }
+
+   @Override
+   public String getOriginalText() {
+      return description;
    }
 }

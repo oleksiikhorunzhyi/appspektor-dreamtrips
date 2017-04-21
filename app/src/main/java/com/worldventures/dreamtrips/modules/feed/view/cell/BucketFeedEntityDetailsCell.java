@@ -6,8 +6,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 
 @Layout(R.layout.adapter_item_entity_details)
@@ -23,16 +21,15 @@ public class BucketFeedEntityDetailsCell extends FeedEntityDetailsCell<BucketFee
    }
 
    @Override
-   protected void onDelete() {
-      super.onDelete();
-      getEventBus().post(new DeleteBucketEvent(getModelObject().getItem()));
+   protected void onEdit() {
+      super.onEdit();
+      BucketItem bucketItem = getModelObject().getItem();
+      cellDelegate.onEditBucketItem(bucketItem, BucketUtility.typeFromItem(bucketItem));
    }
 
    @Override
-   protected void onEdit() {
-      super.onEdit();
-
-      BucketItem bucketItem = getModelObject().getItem();
-      getEventBus().post(new EditBucketEvent(bucketItem, BucketUtility.typeFromItem(bucketItem)));
+   protected void onDelete() {
+      super.onDelete();
+      cellDelegate.onDeleteBucketItem(getModelObject().getItem());
    }
 }

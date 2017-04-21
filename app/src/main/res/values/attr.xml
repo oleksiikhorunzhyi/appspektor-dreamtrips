@@ -114,5 +114,15 @@
       <attr name="pinBackgroundDrawable" format="reference" />
       <attr name="pinBackgroundIsSquare" format="boolean" />
    </declare-styleable>
+   <declare-styleable name="BankCardWidget">
+      <attr name="cardDrawable" format="enum">
+         <enum name="blue" value="0"/>
+         <enum name="grey" value="1"/>
+         <enum name="darkblue" value="2"/>
+      </attr>
+   </declare-styleable>
 
+   <declare-styleable name="TranslateView">
+      <attr name="translatedTextColor" format="reference"/>
+   </declare-styleable>
 </resources>

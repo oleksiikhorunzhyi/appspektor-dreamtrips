@@ -1,26 +1,31 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.service.api.GetAccountTimelineHttpAction;
+import com.worldventures.dreamtrips.api.feed.GetTimelineHttpAction;
+import com.worldventures.dreamtrips.api.feed.ImmutableGetTimelineHttpAction;
 
 import java.util.Date;
 
 import io.techery.janet.command.annotations.CommandAction;
 
-public class GetAccountTimelineCommand extends BaseGetFeedCommand<GetAccountTimelineHttpAction> {
+public class GetAccountTimelineCommand extends BaseGetFeedCommand<GetTimelineHttpAction> {
 
    public GetAccountTimelineCommand(Date before) {
       super(before);
    }
 
    @Override
-   protected Class<GetAccountTimelineHttpAction> provideHttpActionClass() {
-      return GetAccountTimelineHttpAction.class;
+   protected Class<GetTimelineHttpAction> provideHttpActionClass() {
+      return GetTimelineHttpAction.class;
    }
 
    @Override
-   protected GetAccountTimelineHttpAction provideRequest() {
-      return new GetAccountTimelineHttpAction(TIMELINE_LIMIT, before);
+   protected GetTimelineHttpAction provideRequest() {
+      GetTimelineHttpAction.Params params = ImmutableGetTimelineHttpAction.Params.builder()
+            .pageSize(TIMELINE_LIMIT)
+            .before(before)
+            .build();
+      return new GetTimelineHttpAction(params);
    }
 
    @Override

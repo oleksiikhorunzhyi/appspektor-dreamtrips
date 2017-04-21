@@ -24,7 +24,7 @@ public class InviteTemplateCell extends AbstractDelegateCell<InviteTemplate, Cel
 
    @Override
    protected void syncUIStateWithModel() {
-      imageViewPhoto.setImageURI(Uri.parse(getModelObject().getCoverImage().getUrl()));
+      imageViewPhoto.setImageURI(Uri.parse(getModelObject().getCoverUrl()));
    }
 
    @OnClick(R.id.btn_select)

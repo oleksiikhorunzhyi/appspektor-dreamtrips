@@ -1,22 +1,21 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.hashtags.GetHashtagsSuggestsAction;
+import com.worldventures.dreamtrips.api.hashtags.model.ImmutableHashtagsSuggestsParams;
+import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
-import com.worldventures.dreamtrips.modules.feed.service.api.HashtagSuggestionHttpAction;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.schedulers.Schedulers;
 
 @CommandAction
-public class HashtagSuggestionCommand extends Command<List<HashtagSuggestion>> implements InjectableAction {
+public class HashtagSuggestionCommand extends MappableApiActionCommand<GetHashtagsSuggestsAction, List<HashtagSuggestion>, HashtagSuggestion> {
 
-   @Inject Janet janet;
+   private static final int PAGE = 1;
+   private static final int PER_PAGE = 10;
+
    private String fullQueryText;
    private String query;
 
@@ -25,11 +24,33 @@ public class HashtagSuggestionCommand extends Command<List<HashtagSuggestion>> i
       this.query = query;
    }
 
-   public void run(Command.CommandCallback<List<HashtagSuggestion>> callback) {
-      janet.createPipe(HashtagSuggestionHttpAction.class, Schedulers.io())
-            .createObservableResult(new HashtagSuggestionHttpAction(query))
-            .map(HashtagSuggestionHttpAction::hashtagSuggestions)
-            .subscribe(callback::onSuccess, callback::onFail);
+   @Override
+   protected Class<HashtagSuggestion> getMappingTargetClass() {
+      return HashtagSuggestion.class;
+   }
+
+   @Override
+   protected Object mapHttpActionResult(GetHashtagsSuggestsAction httpAction) {
+      return httpAction.response();
+   }
+
+   @Override
+   protected GetHashtagsSuggestsAction getHttpAction() {
+      return new GetHashtagsSuggestsAction(ImmutableHashtagsSuggestsParams.builder()
+            .query(query)
+            .page(PAGE)
+            .perPage(PER_PAGE)
+            .build());
+   }
+
+   @Override
+   protected Class<GetHashtagsSuggestsAction> getHttpActionClass() {
+      return GetHashtagsSuggestsAction.class;
+   }
+
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_something_went_wrong;
    }
 
    public String getFullQueryText() {

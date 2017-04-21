@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout android:id="@+id/bank_card"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="@dimen/wallet_card_height"
       android:layout_gravity="center_horizontal"
-      android:background="@drawable/creditcard_blue"
       android:paddingBottom="@dimen/spacing_large"
       android:paddingLeft="@dimen/spacing_normal"
       android:paddingRight="@dimen/spacing_normal"
       android:paddingTop="@dimen/spacing_medium"
       >
 
+   <TextView
+         android:id="@+id/tv_card_number"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/tv_expire_date"
+         android:layout_marginBottom="@dimen/spacing_small"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:importantForAccessibility="no"
+         android:textColor="@android:color/white"
+         android:textSize="@dimen/font_large"
+         tools:text="•••• •••• •••• 1234"
+         />
+
    <RelativeLayout
-         android:id="@+id/bankInfoContainer"
          android:layout_width="wrap_content"
          android:layout_height="@dimen/wallet_bank_card_default_bank_info_container_height"
-         android:layout_marginBottom="@dimen/spacing_small"
+         android:layout_alignParentStart="true"
+         android:layout_alignParentTop="true"
          android:gravity="center_vertical"
+         tools:ignore="RelativeOverlap"
          >
 
+      <ImageView
+            android:id="@+id/wallet_sample_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
+            android:layout_marginEnd="-16dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/wallet_sample_holder"
+            tools:ignore="ContentDescription"
+            />
+
       <TextView
-            android:id="@+id/defaultCardLabel"
+            android:id="@+id/tv_default_card_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wallet_wizard_default_card_label"
@@ -31,33 +55,22 @@
             />
 
       <TextView
-            android:id="@+id/bankLabel"
+            android:id="@+id/tv_card_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/defaultCardLabel"
+            android:layout_below="@+id/tv_default_card_label"
             android:importantForAccessibility="no"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            tools:text="@string/wallet_bank_name_text_holder"
-            />
-
-      <ImageView
-            android:id="@+id/typeIcon"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:importantForAccessibility="no"
-            android:textColor="@android:color/white"
-            tools:src="@drawable/wallet_finansial_service_mastercard"
+            android:textSize="@dimen/font_large"
+            tools:text="Card Name"
             />
 
       <TextView
-            android:id="@+id/cardType"
+            android:id="@+id/tv_card_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/typeIcon"
-            android:layout_below="@+id/typeIcon"
-            android:layout_marginRight="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
             android:importantForAccessibility="no"
             android:textAllCaps="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -65,21 +78,25 @@
             tools:text="Credit"
             />
 
+      <TextView
+            android:id="@+id/tv_short_card_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            tools:text="••••1234"
+            android:layout_alignBottom="@+id/tv_card_name"
+            android:layout_toEndOf="@+id/tv_card_name"
+            android:layout_marginStart="14dp"
+            />
+
    </RelativeLayout>
 
-   <ImageView
-         android:id="@+id/wallet_sample_holder"
-         android:layout_alignParentRight="true"
-         android:src="@drawable/wallet_sample_holder"
-         android:layout_width="200dp"
-         android:layout_height="90dp"
-         />
-
    <TextView
-         android:id="@+id/cardTitle"
+         android:id="@+id/tv_owner_name"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_above="@+id/cardNumber"
+         android:layout_above="@+id/tv_card_number"
+         android:layout_alignParentStart="true"
          android:importantForAccessibility="no"
          android:textColor="@android:color/white"
          android:textSize="@dimen/font_normal"
@@ -87,42 +104,16 @@
          />
 
    <TextView
-         android:id="@+id/cardNumber"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_above="@+id/expireDate"
-         android:layout_marginBottom="@dimen/spacing_small"
-         android:layout_marginTop="@dimen/spacing_small"
-         android:importantForAccessibility="no"
-         android:textColor="@android:color/white"
-         android:textSize="@dimen/font_large"
-         tools:text="**** **** **** 1234"
-         />
-
-   <TextView
-         android:id="@+id/good_thru_label"
+         android:id="@+id/tv_expire_date"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignParentBottom="true"
          android:layout_alignParentStart="true"
-         android:layout_alignParentTop="false"
-         android:layout_marginBottom="2dp"
-         android:text="@string/wallet_bank_card_good_thru"
-         android:textColor="@android:color/white"
-         android:textSize="9sp"
-         />
-
-   <TextView
-         android:id="@+id/expireDate"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         android:layout_marginStart="8dp"
-         android:layout_toEndOf="@+id/good_thru_label"
+         android:layout_marginStart="6dp"
          android:importantForAccessibility="no"
          android:textColor="@android:color/white"
          android:textSize="@dimen/font_normal"
-         tools:text="09/18"
+         tools:text="good thru 09/18"
          />
 </RelativeLayout>
 

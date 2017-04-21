@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.support.annotation.StringRes;
-
 import com.innahema.collections.query.functions.Action1;
-import com.messenger.delegate.FlagsInteractor;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
@@ -11,26 +8,25 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
-import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.command.UserTimelineStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.delegate.UserTimelineStorageDelegate;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
-import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -39,6 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -50,11 +47,11 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Inject NotificationFeedInteractor notificationFeedInteractor;
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
-   @Inject FlagsInteractor flagsInteractor;
+   @Inject ProfileInteractor profileInteractor;
+   @Inject UserTimelineStorageDelegate userTimelineStorageDelegate;
 
    private int notificationId;
    private boolean acceptFriend;
-   private UidItemDelegate uidItemDelegate;
 
    public UserPresenter(UserBundle userBundle) {
       super(userBundle.getUser());
@@ -68,15 +65,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    public void onInjected() {
       super.onInjected();
       notificationDelegate.cancel(user.getId());
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
+      subscribeToStorage();
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
+      subscribeToChangingCircles();
    }
 
    @Override
@@ -89,6 +86,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
          acceptClicked();
          acceptFriend = false;
       }
+   }
+
+   private void subscribeToStorage() {
+      userTimelineStorageDelegate.setUserId(user.getId());
+      userTimelineStorageDelegate.startUpdatingStorage()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<UserTimelineStorageCommand>()
+               .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+               .onFail(this::handleError));
    }
 
    private void subscribeRefreshFeeds() {
@@ -117,10 +123,14 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    protected void loadProfile() {
       view.startLoading();
-      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded, spiceException -> {
-         view.finishLoading();
-         super.handleError(spiceException);
-      });
+      profileInteractor.publicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPublicProfileCommand>()
+            .onSuccess(command -> this.onProfileLoaded(command.getResult()))
+            .onFail((getPublicProfileCommand, throwable) -> {
+               view.finishLoading();
+               handleError(getPublicProfileCommand, throwable);
+            }));
    }
 
    public void onStartChatClicked() {
@@ -159,7 +169,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.unfriend();
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    private void addFriend() {
@@ -178,7 +188,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      view.finishLoading();
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    public void acceptClicked() {
@@ -197,7 +207,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.setRelationship(User.Relationship.FRIEND);
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    public void rejectClicked() {
@@ -216,26 +226,31 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.setRelationship(User.Relationship.REJECTED);
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
-   private void onError(CommandWithError commandWithError) {
+   private void onError(CommandWithError commandWithError, Throwable throwable) {
       view.finishLoading();
-      view.informUser(commandWithError.getErrorMessage());
+      handleError(commandWithError, throwable);
    }
 
-   public void onEvent(FriendGroupRelationChangedEvent event) {
-      if (user.getId() == event.getFriend().getId()) {
-         switch (event.getState()) {
-            case REMOVED:
-               user.getCircles().remove(event.getCircle());
-               break;
-            case ADDED:
-               user.getCircles().add(event.getCircle());
-               break;
-         }
-         view.notifyUserChanged();
-      }
+   private void subscribeToChangingCircles() {
+      profileInteractor.addFriendToCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               if (user.getId() == command.getUserId()) {
+                  user.getCircles().add(command.getCircle());
+                  view.notifyUserChanged();
+               }
+            });
+      profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               if (user.getId() == command.getUserId()) {
+                  user.getCircles().remove(command.getCircle());
+                  view.notifyUserChanged();
+               }
+            });
    }
 
    @Override
@@ -245,16 +260,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
-   }
-
-   public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
-   }
-
-   public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
+      view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, user.getId()));
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -263,13 +269,16 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    private void showAddFriendDialog(Action1<Circle> actionCircle) {
       circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail((getCirclesCommand, throwable) -> {
+                     view.hideBlockingProgress();
+                     handleError(getCirclesCommand, throwable);
+                  }));
    }
 
    private void onCirclesStart() {
@@ -281,12 +290,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       view.hideBlockingProgress();
    }
 
-   private void onCirclesError(@StringRes String messageId) {
-      view.hideBlockingProgress();
-      view.informUser(messageId);
-   }
-
-   public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView, ApiErrorView {
+   public interface View extends ProfilePresenter.View, BlockingProgressView, ApiErrorView {
 
       void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
 

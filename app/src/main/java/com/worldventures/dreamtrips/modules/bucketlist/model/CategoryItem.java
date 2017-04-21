@@ -9,7 +9,11 @@ public class CategoryItem extends BaseEntity {
    private String name;
 
    public CategoryItem() {
-      super();
+   }
+
+   public CategoryItem(int id, String name) {
+      setId(id);
+      this.name = name;
    }
 
    public String getName() {

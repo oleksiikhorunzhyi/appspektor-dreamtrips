@@ -1,170 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- messenger-->
-    <string name="error_something_went_wrong">Sesuatu yang tidak kena</string>
-    <string name="error_no_connection">Anda terputus sambungan</string>
-    <string name="messenger">Aplikasi Pesanan</string>
-    <string name="chat">Sembang</string>
+   <!-- messenger-->
+   <string name="error_something_went_wrong">Sesuatu yang tidak kena</string>
+   <string name="error_no_connection">Anda terputus sambungan</string>
+   <string name="messenger">Aplikasi Pesanan</string>
+   <string name="chat">Sembang</string>
 
-    <!---->
-    <!--Conversation List -->
-    <!---->
-    <string name="conversation_list_title">Perbualan</string>
+   <!---->
+   <!--Conversation List -->
+   <!---->
 
-    <string name="conversation_list_spinner_item_all_chats">Semua Bualan</string>
-    <string name="conversation_list_spinner_item_group_chats">Kumpulan Sembang</string>
+   <string name="conversation_list_spinner_item_all_chats">Semua Bualan</string>
+   <string name="conversation_list_spinner_item_group_chats">Kumpulan Sembang</string>
 
-    <string name="conversation_list_search_hint">Cari perbualan ...</string>
-    <string name="conversation_list_search_edittext_hint">Cari kumpulan dan orang</string>
-    <string name="conversation_list_item_last_message_text_format_you">Anda: %1$s</string>
-    <string name="conversation_list_item_last_message_image_format_you">Anda telah menghantar foto</string>
-    <string name="conversation_list_item_last_message_image">Menghantar foto</string>
-    <string name="conversation_list_item_last_message_location_format_you">Anda telah menghantar lokasi</string>
-    <string name="conversation_list_item_last_message_location">lokasi yang dihantar</string>
-    <string name="conversation_list_last_message_date_format_yesterday">Kelmarin</string>
-    <string name="conversation_list_abandoned">Tutup</string>
-    <string name="conversation_list_swipe_button_delete">Hapus</string>
-    <string name="conversation_list_delete_dialog_message">Adakah anda pasti anda mahu hapuskan perbualan ini?</string>
-    <string name="conversation_list_delete_dialog_pos_button">Hapus</string>
-    <string name="conversation_list_swipe_button_more">Lebih lagi</string>
-    <string-array name="conversation_list_more_actions">
-        <item>Tandakan sebagai belum dibaca</item>
-        <item>Tutup pemberitahuan</item>
-        <item>Batal</item>
-    </string-array>
+   <string name="conversation_list_search_hint">Cari perbualan …</string>
+   <string name="conversation_list_item_last_message_text_format_you">Anda: %1$s</string>
+   <string name="conversation_list_item_last_message_image_format_you">Anda telah menghantar foto</string>
+   <string name="conversation_list_item_last_message_image">Menghantar foto</string>
+   <string name="conversation_list_item_last_message_location_format_you">Anda telah menghantar lokasi</string>
+   <string name="conversation_list_item_last_message_location">lokasi yang dihantar</string>
+   <string name="conversation_list_last_message_date_format_yesterday">Kelmarin</string>
+   <string name="conversation_list_abandoned">Tutup</string>
+   <string name="conversation_list_swipe_button_delete">Hapus</string>
+   <string name="conversation_list_delete_dialog_message">Adakah anda pasti anda mahu hapuskan perbualan ini?</string>
+   <string name="conversation_list_delete_dialog_pos_button">Hapus</string>
+   <string name="conversation_list_swipe_button_more">Lebih lagi</string>
+   <string-array name="conversation_list_more_actions">
+      <item>Tandakan sebagai belum dibaca</item>
+      <item>Tutup pemberitahuan</item>
+      <item>Batal</item>
+   </string-array>
 
 
-    <!---->
-    <!--New chat-->
-    <!---->
-    <string name="new_chat_title">Bualan Baru</string>
-    <string name="new_chat_toast_no_users_selected_error">Sila pilih beberapa orang pengguna terlebih dahulu</string>
-    <string name="new_multi_user_chat_not_supported">Mencipta perbualan berkumpulan tidak disokong</string>
-    <string name="new_chat_error_loading_contacts">Tidak dapat memuatkan kenalan</string>
-    <string name="new_chat_new_conversation_title_hint">Tetapkan nama perbualan</string>
-    <string name="new_chat_chosen_contacts_header_empty">"Tambah: "</string>
-    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Tambah</string>
-    <string name="new_chat_list_item_section_close_friends">RAKAN RAPAT</string>
-    <string name="menu_done">Selesai</string>
+   <!---->
+   <!--New chat-->
+   <!---->
+   <string name="new_chat_title">Bualan Baru</string>
+   <string name="new_chat_toast_no_users_selected_error">Sila pilih beberapa orang pengguna terlebih dahulu</string>
+   <string name="new_chat_error_loading_contacts">Tidak dapat memuatkan kenalan</string>
+   <string name="new_chat_new_conversation_title_hint">Tetapkan nama perbualan</string>
+   <string name="new_chat_chosen_contacts_header_empty">"Tambah: "</string>
+   <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Tambah</string>
+   <string name="menu_done">Selesai</string>
 
-    <!---->
-    <!--Chat -->
-    <!---->
-    <string name="chat_subtitle_format_single_chat_online">dalam talian</string>
-    <string name="chat_subtitle_format_single_chat_offline">luar talian</string>
-    <string name="chat_subtitle_format_group_chat_format">%1$d ahli, %2$d dalam talian</string>
-    <string name="chat_subtitle_format_group_chat_format_closed">%1$d ahli</string>
-    <string name="chat_subtitle_format_group_chat_offline">Tiada pengguna di atas talian</string>
-    <string name="chat_message_edittext_hint">Pesanan anda</string>
-    <string name="chat_message_send_button_text">Hantar</string>
-    <string name="chat_message_sending_disabled">Anda tidak boleh menghantar mesej kerana anda bukan peserta lagi</string>
-    <string name="chat_error_loading">Tidak dapat memuatkan sejarah perbualan </string>
-    <string name="chat_unread_messages_textview_format">Anda mempunyai %1$d pesanan belum dibaca</string>
-    <string name="chat_more_typing_users_hint_format">dan %1$d lebih lagi</string>
-    <string name="chat_list_date_entry_today">Hari ini</string>
-    <string name="chat_list_date_entry_yesterday">Kelmarin</string>
-    <string name="chat_contextual_copy_message">Salin</string>
-    <string name="chat_contextual_translate_message">Terjemahkan</string>
-    <string name="chat_contextual_revert_translate_message">Tunjukkan yang asal</string>
-    <string name="chat_contextual_start_chat_format">Mesej %1$s</string>
-    <string name="chat_contextual_flag">Bendera</string>
-    <string name="chat_share_dialog_location">Kongsi lokasi</string>
-    <string name="chat_share_dialog_image">Kongsi imej</string>
-    <string name="chat_share_dialog_cancel">Batalkan</string>
-    <string name="chat_could_not_share_location">Lokasi tidak dapat dikongsi</string>
-    <string name="chat_error_marker_not_delivered">Tidak Dihantar</string>
-    <string name="chat_retry_send_message_dialog_resend_message">Hantar semula mesej?</string>
-    <string name="chat_retry_send_message_dialog_resend">HANTAR SEMULA</string>
-    <string name="chat_retry_send_message_dialog_cancel">Batal</string>
-    <string name="chat_reload_chat_history_reload">Muat semula</string>
-    <string name="chat_reload_chat_history_info_text">Sejarah sembang anda dipadamkan. Anda boleh mendapatkannya balik dengan mengetik “Muat Semula”</string>
+   <!---->
+   <!--Chat -->
+   <!---->
+   <string name="chat_subtitle_format_single_chat_online">dalam talian</string>
+   <string name="chat_subtitle_format_single_chat_offline">luar talian</string>
+   <string name="chat_subtitle_format_group_chat_format">%1$d ahli, %2$d dalam talian</string>
+   <string name="chat_subtitle_format_group_chat_format_closed">%1$d ahli</string>
+   <string name="chat_message_edittext_hint">Pesanan anda</string>
+   <string name="chat_message_send_button_text">Hantar</string>
+   <string name="chat_message_sending_disabled">Anda tidak boleh menghantar mesej kerana anda bukan peserta lagi</string>
+   <string name="chat_error_loading">Tidak dapat memuatkan sejarah perbualan </string>
+   <string name="chat_unread_messages_textview_format">Anda mempunyai %1$d pesanan belum dibaca</string>
+   <string name="chat_more_typing_users_hint_format">dan %1$d lebih lagi</string>
+   <string name="chat_list_date_entry_today">Hari ini</string>
+   <string name="chat_list_date_entry_yesterday">Kelmarin</string>
+   <string name="chat_contextual_copy_message">Salin</string>
+   <string name="chat_contextual_translate_message">Terjemahkan</string>
+   <string name="chat_contextual_revert_translate_message">Tunjukkan yang asal</string>
+   <string name="chat_contextual_start_chat_format">Mesej %1$s</string>
+   <string name="chat_contextual_flag">Bendera</string>
+   <string name="chat_share_dialog_location">Kongsi lokasi</string>
+   <string name="chat_share_dialog_image">Kongsi imej</string>
+   <string name="chat_share_dialog_cancel">Batalkan</string>
+   <string name="chat_could_not_share_location">Lokasi tidak dapat dikongsi</string>
+   <string name="chat_error_marker_not_delivered">Tidak Dihantar</string>
+   <string name="chat_retry_send_message_dialog_resend_message">Hantar semula mesej?</string>
+   <string name="chat_retry_send_message_dialog_resend">HANTAR SEMULA</string>
+   <string name="chat_retry_send_message_dialog_cancel">Batal</string>
+   <string name="chat_reload_chat_history_reload">Muat semula</string>
+   <string name="chat_reload_chat_history_info_text">Sejarah sembang anda dipadamkan. Anda boleh mendapatkannya balik dengan mengetik “Muat Semula”</string>
 
-    <!-- system messages-->
-    <string name="system_message_you">Anda</string>
-    <string name="system_message_admin" formatted="false">%1$s(Pentadbir)</string>
-    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;ditambah&lt;/b&gt; %2$s</string>
-    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;ditambah&lt;/b&gt;</string>
-    <string name="system_message_you_are_added" formatted="false">Anda &lt;b&gt;ditambah&lt;/b&gt;</string>
-    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;dikeluarkan&lt;/b&gt; %2$s daripada sembang</string>
-    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;dikeluarkan&lt;/b&gt;</string>
-    <string name="system_message_you_are_removed" formatted="false">Anda &lt;b&gt;telah dikeluarkan&lt;/b&gt;</string>
-    <string name="system_message_you_left_the_chat" formatted="false">Anda &lt;b&gt;telah meninggalkan&lt;/b&gt; sembang</string>
-    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;yang tinggal&lt;b&gt;</string>
+   <!-- system messages-->
+   <string name="system_message_you">Anda</string>
+   <string name="system_message_admin" formatted="false">%1$s(Pentadbir)</string>
+   <string name="system_message_added" formatted="false">%1$s &lt;b&gt;ditambah&lt;/b&gt; %2$s</string>
+   <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;ditambah&lt;/b&gt;</string>
+   <string name="system_message_you_are_added" formatted="false">Anda &lt;b&gt;ditambah&lt;/b&gt;</string>
+   <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;dikeluarkan&lt;/b&gt; %2$s daripada sembang</string>
+   <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;dikeluarkan&lt;/b&gt;</string>
+   <string name="system_message_you_are_removed" formatted="false">Anda &lt;b&gt;telah dikeluarkan&lt;/b&gt;</string>
+   <string name="system_message_you_left_the_chat" formatted="false">Anda &lt;b&gt;telah meninggalkan&lt;/b&gt; sembang</string>
+   <string name="system_message_left" formatted="false">%1$s &lt;b&gt;yang tinggal&lt;b&gt;</string>
 
-    <!-- flagging related -->
-    <string name="chat_flag_dialog_progress_loading_flags">Sedang memuat…</string>
-    <string name="chat_flag_dialog_reason_title">Bendera</string>
-    <string name="chat_flag_dialog_reason_hint">Taip sebab anda</string>
-    <string name="chat_flag_dialog_reason_positive_button">Terima</string>
-    <string name="chat_flag_dialog_reason_negative_button">Batal</string>
-    <string name="chat_flag_dialog_confirmation_title">Sahkan</string>
-    <string name="chat_flag_dialog_confirmation_message_format">Kakitangan WorldVentures akan dimaklumkan untuk membaca pesanan ini untuk %1$s. Adakah anda mahu meneruskan?</string>
-    <string name="chat_flag_dialog_confirmation_positive_button">Hantar</string>
-    <string name="chat_flag_dialog_confirmation_negative_button">Batal</string>
-    <string name="chat_flag_dialog_flagging_progress">Membenderakan...</string>
-    <string name="chat_flag_failed">Gagal untuk membenderakan pesanan </string>
+   <!-- flagging related -->
+   <string name="chat_flag_dialog_progress_loading_flags">Sedang memuat…</string>
+   <string name="chat_flag_dialog_reason_title">Bendera</string>
+   <string name="chat_flag_dialog_reason_positive_button">Terima</string>
+   <string name="chat_flag_dialog_reason_negative_button">Batal</string>
+   <string name="chat_flag_dialog_confirmation_title">Sahkan</string>
+   <string name="chat_flag_dialog_confirmation_message_format">Kakitangan WorldVentures akan dimaklumkan untuk membaca pesanan ini untuk %1$s. Adakah anda mahu meneruskan?</string>
+   <string name="chat_flag_dialog_confirmation_positive_button">Hantar</string>
+   <string name="chat_flag_dialog_confirmation_negative_button">Batal</string>
+   <string name="chat_flag_dialog_flagging_progress">Membenderakan…</string>
+   <string name="chat_flag_failed">Gagal untuk membenderakan pesanan </string>
 
-    <!---->
-    <!--Chat Settings -->
-    <!---->
-    <string name="chat_settings_single_chat">Tetapan sembang</string>
-    <string name="chat_settings_group_chat">Tetapan Perbualan Berkumpulan</string>
-    <string name="chat_settings_error_loading">Tidak dapat memuatkan tetapan perbualan</string>
-    <string name="chat_settings_single_chat_online">dalam talian</string>
-    <string name="chat_settings_single_chat_offline">luar talian</string>
-    <string name="chat_settings_row_notifications">Pemberitahuan</string>
-    <string name="chat_settings_row_shared_content">Kandungan Berkongsi</string>
-    <string name="chat_settings_row_members_format">Ahli (%1$d)</string>
-    <string name="chat_settings_row_assign_new_admin"> Lantik pentadbir baharu </string>
-    <string name="chat_settings_row_clear_chat">Padam sembang</string>
-    <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
-    <string name="chat_settings_row_delete_chat">Hapus Sembang</string>
-    <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %1$s</string>
-    <string name="chat_settings_menu_settings">Tetapan</string>
-    <string name="chat_settings_menu_edit_chat_name"> Edit nama perbualan </string>
-    <string name="chat_settings_menu_edit_change_chat_image">Tukar imej sembang</string>
-    <string name="chat_settings_menu_edit_remove_chat_image">Keluarkan imej sembang</string>
-    <string name="chat_settings_clear_chat_confirmation_text">Sembang akan dipadamkan daripada semua peranti anda. Anda boleh muat semula kemudian. Adakah anda mahu meneruskan?</string>
-    <string name="chat_settings_clear_chat_ok">OK</string>
-    <string name="chat_settings_clear_chat_cancel">Batal</string>
-    <string name="chat_settings_leave_group_chat">Adakah anda pasti anda mahu berhenti dari sembang ini</string>
-    <string name="chat_settings_leave_group_chat_format">Adakah anda pasti anda mahu berhenti dari sembang %1$s </string>
-    <string name="chat_settings_error_change_subject">Anda tidak boleh menukar subjek tanpa sambungan rangkaian</string>
-    <string name="chat_settings_error_changing_avatar_subject">Anda tidak boleh mengubah avatar perbualan tanpa sambungan rangkaian</string>
-    <!---->
-    <!--Add new members -->
-    <!---->
-    <string name="chat_add_new_members_title">Tambahkan ahli baharu</string>
-    <!---->
-    <!--Edit chat members -->
-    <!---->
-    <string name="edit_chat_members_title">Ahli (%1$d)</string>
-    <string name="edit_chat_members_search_hint">Cari ahli… </string>
-    <string name="edit_chat_members_row_button_delete">Hapus</string>
-    <string name="edit_chat_dialog_confirm_user_deletion_message">Adakah anda ingin memadamkan pengguna ini daripada perbualan?</string>
-    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Hapus</string>
-    <string name="edit_chat_members_admin_section">Pentadbir</string>
-    <string name="edit_chat_members_host_section">Sokongan Dalam Destinasi</string>
-    <!--Messenger notifications-->
-    <string name="push_unsupported_message">Kemas kini kepada versi terkini DreamTrips App untuk melihat lampiran</string>
-    <!---->
-    <!---->
-    <!--Messenger misc -->
-    <!---->
-    <string name="subject">Subjek:</string>
-    <string name="change_subject">Masukkan nama perbualan</string>
-    <string name="sent_photo">Menghantar foto</string>
-    <string name="sent_location">lokasi yang dihantar</string>
-    <string name="unread_conversation">Perbualan</string>
+   <!---->
+   <!--Chat Settings -->
+   <!---->
+   <string name="chat_settings_single_chat">Tetapan sembang</string>
+   <string name="chat_settings_group_chat">Tetapan Perbualan Berkumpulan</string>
+   <string name="chat_settings_error_loading">Tidak dapat memuatkan tetapan perbualan</string>
+   <string name="chat_settings_single_chat_online">dalam talian</string>
+   <string name="chat_settings_single_chat_offline">luar talian</string>
+   <string name="chat_settings_row_notifications">Pemberitahuan</string>
+   <string name="chat_settings_row_members_format">Ahli (%1$d)</string>
+   <string name="chat_settings_row_clear_chat">Padam sembang</string>
+   <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
+   <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %1$s</string>
+   <string name="chat_settings_menu_settings">Tetapan</string>
+   <string name="chat_settings_menu_edit_chat_name"> Edit nama perbualan </string>
+   <string name="chat_settings_menu_edit_change_chat_image">Tukar imej sembang</string>
+   <string name="chat_settings_menu_edit_remove_chat_image">Keluarkan imej sembang</string>
+   <string name="chat_settings_clear_chat_confirmation_text">Sembang akan dipadamkan daripada semua peranti anda. Anda boleh muat semula kemudian. Adakah anda mahu meneruskan?</string>
+   <string name="chat_settings_clear_chat_ok">OK</string>
+   <string name="chat_settings_clear_chat_cancel">Batal</string>
+   <string name="chat_settings_leave_group_chat">Adakah anda pasti anda mahu berhenti dari sembang ini</string>
+   <string name="chat_settings_leave_group_chat_format">Adakah anda pasti anda mahu berhenti dari sembang %1$s </string>
+   <string name="chat_settings_error_change_subject">Anda tidak boleh menukar subjek tanpa sambungan rangkaian</string>
+   <string name="chat_settings_error_changing_avatar_subject">Anda tidak boleh mengubah avatar perbualan tanpa sambungan rangkaian</string>
+   <!---->
+   <!--Add new members -->
+   <!---->
+   <string name="chat_add_new_members_title">Tambahkan ahli baharu</string>
+   <!---->
+   <!--Edit chat members -->
+   <!---->
+   <string name="edit_chat_members_title">Ahli (%1$d)</string>
+   <string name="edit_chat_members_search_hint">Cari ahli… </string>
+   <string name="edit_chat_members_row_button_delete">Hapus</string>
+   <string name="edit_chat_dialog_confirm_user_deletion_message">Adakah anda ingin memadamkan pengguna ini daripada perbualan?</string>
+   <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Hapus</string>
+   <string name="edit_chat_members_admin_section">Pentadbir</string>
+   <string name="edit_chat_members_host_section">Sokongan Dalam Destinasi</string>
+   <!--Messenger notifications-->
+   <string name="push_unsupported_message">Kemas kini kepada versi terkini DreamTrips App untuk melihat lampiran</string>
+   <!---->
+   <!---->
+   <!--Messenger misc -->
+   <!---->
+   <string name="subject">Subjek:</string>
+   <string name="change_subject">Masukkan nama perbualan</string>
+   <string name="sent_photo">Menghantar foto</string>
+   <string name="sent_location">lokasi yang dihantar</string>
+   <string name="unread_conversation">Perbualan</string>
 
-    <string name="disconnected_overlay_disconnected_message">Sambungan terputus</string>
-    <string name="disconnected_overlay_connecting_message">Menyambung…</string>
+   <string name="connection_overlay_disconnected_message">Sambungan terputus</string>
+   <string name="connection_overlay_connecting_message">Menyambung…</string>
 
-    <string name="warning_no_internet_connection">Tidak terdapat sambungan internet </string>
+   <string name="warning_no_internet_connection">Tidak terdapat sambungan internet </string>
 
-    <string name="chat_update_proposition"><![CDATA[Kemas kini kepada versi terkini DreamTrips App untuk melihat lampiran <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">di sini</a>]]></string>
+   <string name="chat_update_proposition"><![CDATA[Kemas kini kepada versi terkini DreamTrips App untuk melihat lampiran <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">di sini</a>]]></string>
 
-    <string name="translate_from">Diterjemahkan</string>
-    <string name="translate_error">Ralat penterjemahan</string>
-    <!-- messenger ends-->
+   <string name="translate_from">Diterjemahkan</string>
+   <string name="translate_error">Ralat penterjemahan</string>
+   <!-- messenger ends-->
 </resources>

@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 
-public interface DtlMerchantCellDelegate extends CellDelegate<DtlMerchant> {
+public interface DtlMerchantCellDelegate extends CellDelegate<ImmutableThinMerchant> {
 
    void onExpandedToggle(int position);
 
-   void onOfferClick(DtlMerchant dtlMerchant, DtlOffer dtlOffer);
+   void onOfferClick(ThinMerchant merchant, Offer offer);
 }

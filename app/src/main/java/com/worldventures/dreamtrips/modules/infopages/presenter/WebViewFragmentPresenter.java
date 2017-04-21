@@ -5,10 +5,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
-   private final String url;
+   protected String url;
    private boolean inErrorState;
 
    public WebViewFragmentPresenter(String url) {
@@ -27,6 +28,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
       if (inErrorState) load();
    }
 
+   public void noInternetConnection() {
+      connectionStatePublishSubject.onNext(ConnectionState.DISCONNECTED);
+   }
+
    protected void load() {
       view.load(url);
    }
@@ -37,6 +42,13 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
    public void onReload() {
       reload();
+   }
+
+   public void pageLoaded(String url) {
+      // TODO Check if view is still attached.
+      // To improve this and remove check we need to refactor our StaticInfoFragment,
+      // saving its state and detecting if page was already loaded
+      if (view != null) view.hideLoadingProgress();
    }
 
    public void setInErrorState(boolean inErrorState) {
@@ -83,5 +95,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
       void setRefreshing(boolean refreshing);
 
       void showError(int code);
+
+      void hideLoadingProgress();
    }
 }

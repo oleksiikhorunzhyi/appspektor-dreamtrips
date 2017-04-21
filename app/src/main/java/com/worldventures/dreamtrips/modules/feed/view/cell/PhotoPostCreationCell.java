@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -17,6 +16,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
@@ -25,13 +25,15 @@ import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import io.techery.janet.ActionState;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -51,11 +53,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
-   private int cellWidth;
-
    public PhotoPostCreationCell(View view) {
       super(view);
-      itemView.post(() -> cellWidth = (itemView.getWidth()));
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
          @Override
          public void onViewAttachedToWindow(View v) {
@@ -83,54 +82,46 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
    @Override
    protected void syncUIStateWithModel() {
-      if (cellWidth > 0) {
-         photoContainer.getLayoutParams().width = cellWidth;
-         photoContainer.getLayoutParams().height = calculateHeight();
-         photoContainer.requestLayout();
-         photoContainer.post(() -> {
-            itemView.setVisibility(View.VISIBLE);
-            photoTagHolder.removeAllViews();
-            if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) {
-               showTagViewGroup();
-            }
-            invalidateAddTagBtn();
-         });
-
-         PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
-               .getFilePath() == null ? getModelObject().getOriginUrl() : getModelObject().getFilePath()), attachedPhoto
-               .getController());
-
-         attachedPhoto.setController(draweeController);
-         photoTitle.setText(getModelObject().getTitle());
-         boolean titleChangesEnabled = getModelObject().isCanEdit();
-         photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
-         photoTitle.setEnabled(titleChangesEnabled);
-         invalidateAddTagBtn();
-         invalidateDeleteBtn();
-
+      if (itemView.getWidth() > 0) {
+         updateUi();
       } else {
          itemView.setVisibility(View.INVISIBLE);
-         itemView.post(this::syncUIStateWithModel);
+         ViewUtils.runTaskAfterMeasure(itemView, () -> {
+            updateUi();
+         });
       }
+   }
 
-      switch (getModelObject().getStatus()) {
-         case START:
-            showProgress();
-            break;
-         case PROGRESS:
-            break;
-         case SUCCESS:
-            hideProgress();
-            break;
-         case FAIL:
-            showError();
-            break;
-      }
+   private void updateUi() {
+      photoContainer.getLayoutParams().width = itemView.getWidth();
+      photoContainer.getLayoutParams().height = calculateHeight();
+      photoContainer.requestLayout();
+      photoContainer.post(() -> {
+         itemView.setVisibility(View.VISIBLE);
+         photoTagHolder.removeAllViews();
+         if (getModelObject().isCanEdit()) {
+            showTagViewGroup();
+         }
+         invalidateAddTagBtn();
+      });
+
+      PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
+            .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
+            .getController());
+
+      attachedPhoto.setController(draweeController);
+      photoTitle.setText(getModelObject().getTitle());
+      boolean titleChangesEnabled = getModelObject().isCanEdit();
+      photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
+      photoTitle.setEnabled(titleChangesEnabled);
+      invalidateAddTagBtn();
+      invalidateDeleteBtn();
    }
 
    private int calculateHeight() {
       int width = getModelObject().getWidth();
       int height = getModelObject().getHeight();
+      int cellWidth = itemView.getWidth();
       //in case of server response width = 0, height = 0;
       if (width == 0 || height == 0) {
          width = cellWidth;
@@ -148,47 +139,29 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          getModelObject().getCachedAddedPhotoTags().add(photoTag);
          invalidateTags();
       });
+
       photoTagHolderManager.setTagDeletedListener(photoTag -> {
          boolean removed = getModelObject().getCachedAddedPhotoTags().remove(photoTag);
          if (!removed) getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         addTagSuggestions(photoTagHolderManager);
          invalidateTags();
       });
       photoTagHolderManager.show(attachedPhoto);
-      List<PhotoTag> photoTags = Queryable.from(getModelObject().getSuggestions())
-            .filter((p) -> !PhotoTag.isIntersectedWithPhotoTags(getModelObject().getCombinedTags(), p))
-            .toList();
-      photoTagHolderManager.addSuggestionTagView(photoTags, (tag) -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
+
+      addTagSuggestions(photoTagHolderManager);
       photoTagHolderManager.addExistsTagViews(getModelObject().getCombinedTags());
    }
 
-   private void showProgress() {
-      shadow.setVisibility(View.VISIBLE);
-      fabProgress.setVisibility(View.VISIBLE);
-      fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-      fabProgress.setIndeterminate(true);
-      fabProgress.showProgress(true);
-      int color = itemView.getResources().getColor(R.color.bucket_blue);
-      circleView.setColor(color);
-   }
-
-   private void hideProgress() {
-      fabProgress.setVisibility(View.GONE);
-      shadow.setVisibility(View.GONE);
-   }
-
-   private void showError() {
-      fabProgress.setVisibility(View.VISIBLE);
-      fabProgress.showProgress(false);
-      fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-      int color = itemView.getResources().getColor(R.color.bucket_red);
-      circleView.setColor(color);
-   }
-
-   @OnClick(R.id.fab_progress)
-   void onProgress() {
-      if (getModelObject().getStatus().equals(ActionState.Status.FAIL)) {
-         cellDelegate.onProgressClicked(getModelObject());
-      }
+   private void addTagSuggestions(PhotoTagHolderManager photoTagHolderManager) {
+      Set<PhotoTag> currentTags = new HashSet<>();
+      currentTags.addAll(getModelObject().getCombinedTags());
+      currentTags.addAll(getModelObject().getCachedAddedPhotoTags());
+      currentTags.removeAll(getModelObject().getCachedRemovedPhotoTags());
+      List<PhotoTag> notIntersectingSuggestions =
+            PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
+                  new ArrayList<>(currentTags));
+      photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
+            tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
    }
 
    @OnClick(R.id.tag_btn)
@@ -214,7 +187,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    }
 
    private void invalidateAddTagBtn() {
-      tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) ? View.VISIBLE : View.GONE);
+      tagButton.setVisibility(getModelObject().isCanEdit() ? View.VISIBLE : View.GONE);
       //
       if (getModelObject().getCombinedTags().isEmpty()) {
          tagButton.setText(R.string.tag_people);

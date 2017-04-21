@@ -5,11 +5,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketCoverBody;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -27,15 +26,13 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
-   @Inject protected SnappyRepository db;
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View<T>, T> extends Presenter<V> {
 
+   @Inject protected SnappyRepository db;
    @Inject protected BucketInteractor bucketInteractor;
 
    @State BucketItem.BucketType type;
-
    @State int ownerId;
-
    @State BucketItem bucketItem;
 
    public BucketDetailsBasePresenter(BucketBundle bundle) {
@@ -52,8 +49,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    protected void syncUI() {
       if (bucketItem != null) {
-         view.setTitle(bucketItem.getName());
-         view.setDescription(bucketItem.getDescription());
+         view.setBucketItem(bucketItem);
          view.setStatus(bucketItem.isDone());
          view.setPeople(bucketItem.getFriends());
          view.setTags(bucketItem.getBucketTags());
@@ -105,13 +101,13 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     */
    public void openFullScreen(int position) {
       if (isTabTrulyVisible()) {
-         eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid()));
+         TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid());
          openFullScreen(bucketItem.getPhotos().get(position));
       }
    }
 
    public void openFullScreen(BucketPhoto selectedPhoto) {
-      if ((bucketItem.getPhotos().contains(selectedPhoto))) {
+      if ((bucketItem.getPhotos().contains(selectedPhoto)) && bucketItem.getOwner() != null) {
          ArrayList<IFullScreenObject> photos = new ArrayList<>();
          if (bucketItem.getCoverPhoto() != null) {
             Queryable.from(bucketItem.getPhotos()).forEachR(photo -> photo.setIsCover(photo.getFSId()
@@ -133,15 +129,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    public void saveCover(BucketPhoto photo) {
       view.bind(bucketInteractor.updatePipe()
-            .createObservable(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
+            .createObservable(new UpdateBucketItemCommand(ImmutableBucketCoverBody.builder()
                   .id(bucketItem.getUid())
                   .status(bucketItem.getStatus())
                   .type(bucketItem.getType())
                   .coverId(photo.getFSId())
                   .build()))
             .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(action -> {
-               bucketItem = action.getResponse();
+            .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(action -> {
+               bucketItem = action.getResult();
                syncUI();
             }).onFail(this::handleError));
    }
@@ -151,10 +147,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
       super.dropView();
    }
 
-   public interface View extends RxView {
-      void setTitle(String title);
-
-      void setDescription(String description);
+   public interface View<T> extends RxView {
+      void setBucketItem(BucketItem bucketItem);
 
       void setTime(String time);
 
@@ -168,6 +162,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
       void openFullscreen(FullScreenImagesBundle data);
 
-      void setImages(List photos);
+      void setImages(List<T> photos);
    }
 }

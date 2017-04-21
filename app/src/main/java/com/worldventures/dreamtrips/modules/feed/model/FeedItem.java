@@ -18,22 +18,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
+public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder {
 
-   @SerializedName("notification_id") protected int notificationId;
+   protected int notificationId;
    protected FeedItem.Type type = Type.UNDEFINED;
    protected FeedItem.Action action;
    protected T item;
    protected Links links;
-   @SerializedName("posted_at") protected Date createdAt;
+   protected Date createdAt;
    protected Date readAt;
-
-   protected transient String translation;
-   protected transient boolean translated;
 
    private MetaData metaData;
 
    public static FeedItem create(FeedEntity item, User owner) {
+      FeedItem feedItem = create(item);
+      item.setComments(new ArrayList<>());
+      feedItem.action = Action.ADD;
+      feedItem.item = item;
+      feedItem.createdAt = Calendar.getInstance().getTime();
+      feedItem.links = Links.forUser(owner);
+      return feedItem;
+   }
+
+   public static FeedItem create(FeedEntity item) {
       Type type;
       FeedItem feedItem;
       if (item instanceof TextualPost) {
@@ -52,13 +59,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
          feedItem = new UndefinedFeedItem();
          type = Type.UNDEFINED;
       }
-
-      item.setComments(new ArrayList<>());
-      feedItem.action = Action.ADD;
-      feedItem.type = type;
-      feedItem.item = item;
-      feedItem.createdAt = Calendar.getInstance().getTime();
-      feedItem.links = Links.forUser(owner);
+      feedItem.setType(type);
       return feedItem;
    }
 
@@ -88,6 +89,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       return action;
    }
 
+   public void setAction(Action action) {
+      this.action = action;
+   }
+
    @Override
    public T getItem() {
       return item;
@@ -101,6 +106,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       return links;
    }
 
+   public void setLinks(Links links) {
+      this.links = links;
+   }
+
    public Date getCreatedAt() {
       return createdAt;
    }
@@ -111,6 +120,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    public Date getReadAt() {
       return readAt;
+   }
+
+   public void setReadAt(Date readAt) {
+      this.readAt = readAt;
    }
 
    public MetaData getMetaData() {
@@ -296,39 +309,6 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    public String previewImage(Resources resources) {
       return "";
    }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Translation
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public String getOriginalText() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public String getTranslation() {
-      return translation;
-   }
-
-   @Override
-   public void setTranslation(String translation) {
-      this.translation = translation;
-   }
-
-   @Override
-   public boolean isTranslated() {
-      return translated;
-   }
-
-   @Override
-   public void setTranslated(boolean translated) {
-      this.translated = translated;
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Inner
-   ///////////////////////////////////////////////////////////////////////////
 
    public enum Action {
       @SerializedName("share")

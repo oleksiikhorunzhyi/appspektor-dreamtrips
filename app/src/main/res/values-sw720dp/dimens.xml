@@ -4,10 +4,8 @@
    <dimen name="photo_thumb_size">300dp</dimen>
 
    <dimen name="feed_item_height">300dp</dimen>
-   <dimen name="tablet_details_spacing">100dp</dimen>
 
    <dimen name="map_trip_info_size">550dp</dimen>
-   <dimen name="map_trip_image_size">300dp</dimen>
 
    ///////Post sizes
    <dimen name="post_spacing_horizontal">64dp</dimen>

@@ -5,14 +5,37 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 
+import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-public abstract class BankCard implements Card {
+@Gson.TypeAdapters
+public abstract class BankCard extends Card {
 
    @Value.Default
-   public String title() {
+   public String cardNameHolder() {
+      return "";
+   }
+
+   @Value.Default
+   public String cardHolderFirstName() {
+      return "";
+   }
+
+   @Value.Default
+   public String cardHolderMiddleName() {
+      return "";
+   }
+
+   @Value.Default
+   public String cardHolderLastName() {
+      return "";
+   }
+
+
+   @Value.Default
+   public String nickName() { // TODO: 12/6/16 remove to cardName
       return "";
    }
 
@@ -27,8 +50,8 @@ public abstract class BankCard implements Card {
    }
 
    @Value.Default
-   public int cvv() {
-      return 0;
+   public String cvv() {
+      return "";
    }
 
    @Nullable

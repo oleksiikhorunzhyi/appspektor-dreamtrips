@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.worldventures.dreamtrips.core.repository.SnappyModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.facebook.FacebookAppModule;
 import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
@@ -11,13 +14,16 @@ import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
+import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
+import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,9 +34,14 @@ import dagger.Provides;
             // base injection and helpers/drivers
             InjectingApplicationModule.class,
             //
-            DebugModule.class, InitializerModule.class, HolderModule.class, PersistenceModule.class, ManagerModule.class,
+            DebugModule.class,
+            InitializerModule.class,
+            HolderModule.class,
+            SnappyModule.class,
+            ManagerModule.class,
             //
-            ApiModule.class, AmazonModule.class,
+            ApiModule.class,
+            AmazonModule.class,
             //
             UiBindingModule.class,
             //
@@ -46,13 +57,16 @@ import dagger.Provides;
             //
             LocaleModule.class, AppVersionNameModule.class,
             //
-            MessengerModule.class, FlagsModule.class,
+            MessengerModule.class, FlagsModule.class, DtlModule.class,
             //
-            JanetModule.class, AnalyticsModule.class, SessionProcessingModule.class,
+            JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //
             SecurityModule.class, DeviceModule.class,
+            BackgroundUploadingModule.class,
+            FacebookAppModule.class,
+            VersionCheckModule.class
       },
       library = true,
       complete = false,

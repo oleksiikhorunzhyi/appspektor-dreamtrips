@@ -4,12 +4,13 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
@@ -25,7 +26,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.ActionState;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -39,25 +39,31 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    @Inject PostLocationPickerCallback postLocationPickerCallback;
    @Inject HashtagInteractor hashtagInteractor;
    @Inject CreatePostBodyInteractor createPostBodyInteractor;
-   private Subscription editTagsSubscription;
-   private Subscription locationPickerSubscription;
-   private Subscription postDescriptionSubscription;
+   @Inject PhotoPickerDelegate photoPickerDelegate;
+
+   protected boolean photoPickerVisible;
 
    @Override
    public void takeView(V view) {
       super.takeView(view);
       updateUi();
-      //
-      editTagsSubscription = editPhotoTagsCallback.toObservable().subscribe(bundle -> {
-         onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags);
-      }, error -> {
-         Timber.e(error, "");
-      });
+      editPhotoTagsCallback.toObservable()
+            .compose(bindView())
+            .subscribe(bundle -> onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags),
+                  error -> Timber.e(error, ""));
+      postLocationPickerCallback.toObservable()
+            .compose(bindView())
+            .subscribe(this::updateLocation, error -> Timber.e(error, ""));
+      photoPickerDelegate.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
+         @Override
+         public void onClosed() {
+            photoPickerVisible = false;
+         }
 
-      locationPickerSubscription = postLocationPickerCallback.toObservable().subscribe((loc) -> {
-         updateLocation(loc);
-      }, error -> {
-         Timber.e(error, "");
+         @Override
+         public void onOpened() {
+            photoPickerVisible = true;
+         }
       });
    }
 
@@ -66,10 +72,10 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       super.onResume();
       // we must have this subscription in onResume as during rotation
       // view of the old fragment is dropped after view for new one was created
-      postDescriptionSubscription = createPostBodyInteractor.getPostDescriptionPipe()
+      createPostBodyInteractor.getPostDescriptionPipe()
             .observeSuccessWithReplay()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
+            .compose(bindUntilPause())
             .subscribe(action -> {
                cachedText = action.getResult();
                if (view != null) {
@@ -82,24 +88,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
             });
    }
 
-   @Override
-   public void onPause() {
-      super.onPause();
-      if (postDescriptionSubscription != null && !postDescriptionSubscription.isUnsubscribed()) {
-         postDescriptionSubscription.unsubscribe();
-      }
-   }
-
-   @Override
-   public void dropView() {
-      super.dropView();
-      //
-      if (editTagsSubscription != null && !editTagsSubscription.isUnsubscribed()) editTagsSubscription.unsubscribe();
-
-      if (locationPickerSubscription != null && !locationPickerSubscription.isUnsubscribed())
-         locationPickerSubscription.unsubscribe();
-   }
-
    protected void updateUi() {
       view.setName(getAccount().getFullName());
       view.setAvatar(getAccount());
@@ -107,28 +95,20 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    }
 
    public void cancelClicked() {
-      if (view != null) {
-         if (isChanged()) {
-            view.showCancelationDialog();
-         } else {
-            view.cancel();
-         }
-      }
+      if (isChanged()) view.showCancelationDialog();
+      else view.cancel();
    }
 
    protected abstract boolean isChanged();
 
    public void invalidateDynamicViews() {
-      if (isChanged()) {
-         view.enableButton();
-      } else {
-         view.disableButton();
-      }
+      if (isChanged()) view.enableButton();
+      else view.disableButton();
    }
 
    public abstract void post();
 
-   public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
+   private void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
       PhotoCreationItem item = Queryable.from(cachedCreationItems)
             .firstOrDefault(element -> element.getId() == requestId);
       //
@@ -149,8 +129,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.onPostError();
       view.enableButton();
    }
@@ -160,18 +140,14 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       return location;
    }
 
-   protected void updateLocation(Location location) {
+   void updateLocation(Location location) {
       this.location = location;
       invalidateDynamicViews();
       view.updateLocationButtonState();
    }
 
-   protected boolean isCachedTextEmpty() {
+   boolean isCachedTextEmpty() {
       return TextUtils.isEmpty(cachedText);
-   }
-
-   protected void processPostSuccess(FeedEntity feedEntity) {
-      closeView();
    }
 
    protected PhotoCreationItem createItemFromPhoto(Photo photo) {
@@ -180,7 +156,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       photoCreationItem.setOriginUrl(photo.getImagePath());
       photoCreationItem.setHeight(photo.getHeight());
       photoCreationItem.setWidth(photo.getWidth());
-      photoCreationItem.setStatus(ActionState.Status.SUCCESS);
       photoCreationItem.setLocation(photo.getLocation().getName());
       photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
       photoCreationItem.setCanDelete(true);
@@ -188,7 +163,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       return photoCreationItem;
    }
 
-   private void closeView() {
+   protected void closeView() {
       view.cancel();
       view = null;
    }

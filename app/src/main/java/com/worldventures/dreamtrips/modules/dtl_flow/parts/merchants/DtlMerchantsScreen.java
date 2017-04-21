@@ -3,12 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 import java.util.List;
-
-import rx.Observable;
 
 public interface DtlMerchantsScreen extends DtlScreen {
 
@@ -16,23 +14,54 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-   void setItems(List<DtlMerchant> dtlMerchants);
+   void setRefreshedItems(List<ThinMerchant> merchants);
 
-   void showProgress();
+   void connectToggleUpdate();
 
-   void hideProgress();
+   void toggleOffersOnly(boolean enabled);
 
-   void toggleSelection(DtlMerchant DtlMerchant);
+   void setFilterButtonState(boolean isDefault);
 
-   void toggleDiningFilterSwitch(boolean enabled);
+   void showEmpty(boolean isShow);
 
-   boolean isToolbarCollapsed();
+   void showNoMerchantsCaption(boolean isFilterDefault, boolean isOffersOnly);
 
-   void setFilterButtonState(boolean enabled);
+   void clearMerchants();
 
-   void showEmptyMerchantView(boolean show);
+   void applyViewState(DtlMerchantsState state);
+
+   void showLoadMerchantError(String error);
 
    DtlMerchantsPath getPath();
 
-   Observable<Boolean> getToggleObservable();
+   DtlMerchantsState provideViewState();
+
+   void toggleSelection(ThinMerchant merchant);
+
+   void clearSelection();
+
+   void onRefreshSuccess();
+
+   void onRefreshProgress();
+
+   void onRefreshError(String error);
+
+   void onLoadNextSuccess();
+
+   void onLoadNextProgress();
+
+   void onLoadNextError();
+
+   void onClickEntertainment();
+
+   void onClickSpa();
+
+   void onClickFood();
+
+   void updateMerchantType(List<String> type);
+
+   int getMerchantType();
+
+   void loadMerchantsAndAmenities(List<String> merchantType , int stringResource);
+
 }

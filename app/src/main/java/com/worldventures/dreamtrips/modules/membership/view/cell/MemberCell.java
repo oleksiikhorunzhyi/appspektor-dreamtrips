@@ -12,9 +12,8 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-
-import java.util.Locale;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -34,7 +33,7 @@ public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member
 
    public MemberCell(View view) {
       super(view);
-      country = Locale.getDefault().getCountry();
+      country = LocaleHelper.getDefaultLocale().getCountry();
    }
 
    @Override
@@ -49,9 +48,9 @@ public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member
       }
       tvSubtitle.setText(subtitle);
       ivPhone.setVisibility(View.GONE);
-      if (getModelObject().getHistory() != null) {
+      if (getModelObject().getSentInvite() != null) {
          llResend.setVisibility(View.VISIBLE);
-         tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getHistory()
+         tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getSentInvite()
                .getDate(), DateTimeUtils.MEMBER_FORMAT));
       } else {
          tvDate.setText("");

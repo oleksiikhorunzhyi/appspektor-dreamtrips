@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Εργαλεία DT Local</string>
    <string name="dtl_details_share_title">Θα κερδίσω πόντους Dreamtrips σε %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">Έχω κερδίσει %1$s DreamTrips Πόντους σε %2$s</string>
-   <string name="dtl_wait_for_receipt">Περιμένετε... Γίνεται αποστολή της απόδειξης</string>
-   <string name="dtl_wait_for_earn">Περιμένετε ... Κερδίζετε πόντους</string>
+   <string name="dtl_wait_for_receipt">Περιμένετε… Γίνεται αποστολή της απόδειξης</string>
+   <string name="dtl_wait_for_earn">Περιμένετε … Κερδίζετε πόντους</string>
    <string name="dtl_wait_for_offers">Αναζήτηση κοντινών προσφορών.</string>
    <string name="dtl_wait_for_dinings">Αναζήτηση κοντινών εμπορικών καταστημάτων.</string>
    <string name="dtl_estimator_explanation">Οι πόντοι υπολογίζονται βάσει ενός ελάχιστου ποσού που έχει δαπανηθεί στον έμπορο και της ημέρας της εβδομάδας</string>

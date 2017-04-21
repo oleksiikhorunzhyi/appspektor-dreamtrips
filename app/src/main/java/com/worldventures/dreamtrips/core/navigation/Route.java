@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -34,10 +33,10 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedHashtagFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
@@ -47,9 +46,15 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.DocumentListFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -76,7 +81,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountIma
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MembersImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -115,12 +120,11 @@ public enum Route {
    TRIP_TAB_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
    TRIP_LIST_IMAGES(TripImagesListFragment.class, R.string.trip_images),
    ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
-   USER_IMAGES(MemberImagesListFragment.class),
-   BASE_IMAGES(BaseImageFragment.class),
-
+   MEMBERS_IMAGES(MembersImagesListFragment.class),
+  
    MEMBERSHIP(MembershipFragment.class),
    TRAINING_VIDEOS(TrainingVideosFragment.class),
-   ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class, R.string.enroll_member),
+   ENROLL_MEMBER(EnrollMemberFragment.class, R.string.enroll_member),
    ENROLL_MERCHANT(StaticInfoFragment.EnrollMerchantFragment.class, R.string.suggest_merchant_title),
    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
    INVITE(InviteFragment.class),
@@ -134,6 +138,8 @@ public enum Route {
    REP_TOOLS(RepToolsFragment.class),
    FAQ(StaticInfoFragment.FAQFragment.class),
    HELP(HelpFragment.class),
+   DOCUMENT_LIST(DocumentListFragment.class),
+   DOCUMENT(DocumentFragment.class),
    HELP_VIDEOS(HelpVideosFragment.class),
    TERMS(TermsTabFragment.class),
    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),
@@ -159,7 +165,9 @@ public enum Route {
    SHARE(ShareFragment.class, R.string.action_share),
    USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
    FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
-   FEED_HASHTAG(FeedHashtagFragment.class, R.string.empty),
+   FEED_HASHTAG(HashtagFeedFragment.class, R.string.empty),
+   FEEDBACK_IMAGE_ATTACHMENTS(FeedbackImageAttachmentsFragment.class, R.string.empty),
+   FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT(FeedbackImageAttachmentFullscreenFragment.class, R.string.empty),
 
    FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
    FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),
@@ -179,7 +187,7 @@ public enum Route {
 
    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
-   ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
+   ENROLL_REP(EnrollRepFragment.class),
    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
    SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 

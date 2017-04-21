@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -203,7 +202,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @OnClick(R.id.post_button)
    void onPost() {
-      postButton.setEnabled(false);
+      disableButton();
       getPresenter().post();
    }
 
@@ -228,7 +227,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       getPresenter().cancelClicked();
    }
 
-   @OnClick(R.id.space)
+   @OnClick(R.id.content_layout)
    void onSpaceClicked() {
       if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
    }
@@ -270,7 +269,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
       SoftInputUtil.hideSoftInputMethod(getView());
 
-      PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFilePath());
+      PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFileUri());
       EditPhotoTagsBundle bundle = new EditPhotoTagsBundle();
       bundle.setPhoto(photoEntity);
       bundle.setActiveSuggestion(activeSuggestion);
@@ -283,11 +282,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             .containerId(R.id.additional_page_container)
             .data(bundle)
             .build());
-   }
-
-   @Override
-   public void onProgressClicked(PhotoCreationItem uploadTask) {
-      // nothing to do
    }
 
    @Override

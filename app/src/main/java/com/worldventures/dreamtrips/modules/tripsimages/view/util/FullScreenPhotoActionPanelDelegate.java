@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.util;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.StringRes;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
@@ -29,7 +30,7 @@ public class FullScreenPhotoActionPanelDelegate {
    @InjectView(R.id.iv_image) ScaleImageView ivImage;
    @InjectView(R.id.ll_global_content_wrapper) protected LinearLayout llContentWrapper;
    @InjectView(R.id.ll_more_info) protected LinearLayout llMoreInfo;
-   @InjectView(R.id.tv_title) protected TextView tvTitle;
+   @InjectView(R.id.tv_title) protected TextView tvUsername;
    @InjectView(R.id.tv_description) protected TextView tvDescription;
    @InjectView(R.id.tv_see_more) protected TextView tvSeeMore;
    @InjectView(R.id.tv_location) protected TextView tvLocation;
@@ -73,7 +74,7 @@ public class FullScreenPhotoActionPanelDelegate {
    }
 
    public void setContent(Photo photo) {
-      setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
+      setUsername(photo.getUser().getUsernameWithCompany(context));
       setCommentCount(photo.getFSCommentCount());
       setDescription(photo.getFSDescription());
       setLikeCount(photo.getFSLikeCount());
@@ -116,10 +117,10 @@ public class FullScreenPhotoActionPanelDelegate {
       }
    }
 
-
    public void setCommentCount(int count) {
       if (count > 0) {
-         tvCommentsCount.setText(context.getString(R.string.comments, count));
+         @StringRes int commentFormat = count == 1 ? R.string.comment_single : R.string.comments;
+         tvCommentsCount.setText(context.getString(commentFormat, count));
          tvCommentsCount.setVisibility(View.VISIBLE);
       } else {
          tvCommentsCount.setVisibility(View.GONE);
@@ -128,7 +129,8 @@ public class FullScreenPhotoActionPanelDelegate {
 
    public void setLikeCount(int count) {
       if (count > 0) {
-         tvLikesCount.setText(context.getString(R.string.likes, count));
+         @StringRes int likesFormat = count == 1 ? R.string.like : R.string.likes;
+         tvLikesCount.setText(context.getString(likesFormat, count));
          tvLikesCount.setVisibility(View.VISIBLE);
       } else {
          tvLikesCount.setVisibility(View.GONE);
@@ -166,8 +168,8 @@ public class FullScreenPhotoActionPanelDelegate {
       tvSeeMore.setVisibility(View.VISIBLE);
    }
 
-   public void setTitleSpanned(Spanned titleSpanned) {
-      tvTitle.setText(titleSpanned);
+   public void setUsername(Spanned titleSpanned) {
+      tvUsername.setText(titleSpanned);
    }
 
    public void setLiked(boolean isLiked) {

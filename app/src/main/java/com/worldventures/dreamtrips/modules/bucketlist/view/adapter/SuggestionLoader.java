@@ -1,43 +1,41 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.adapter;
 
-import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.api.bucketlist.GetBucketListSuggestionsHttpAction;
+import com.worldventures.dreamtrips.api.bucketlist.model.BucketListSuggestion;
+import com.worldventures.dreamtrips.api.bucketlist.model.BucketType;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 
-import java.util.Collections;
 import java.util.List;
+
+import io.techery.janet.Janet;
 
 public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
-   protected DreamTripsApi api;
-   private BucketItem.BucketType type;
-   private LoginInteractor loginInteractor;
+   private Janet apiJanet;
 
-   public SuggestionLoader(BucketItem.BucketType type, DreamTripsApi api, LoginInteractor loginInteractor) {
+   private BucketItem.BucketType type;
+
+   public SuggestionLoader(BucketItem.BucketType type, Janet apiJanet) {
       this.type = type;
-      this.api = api;
-      this.loginInteractor = loginInteractor;
+      this.apiJanet = apiJanet;
    }
 
    @Override
    protected List<Suggestion> request(String query) {
-      if (type == BucketItem.BucketType.LOCATION) {
-         return api.getLocationSuggestions(query);
-      } else if (type == BucketItem.BucketType.ACTIVITY) {
-         return api.getActivitySuggestions(query);
-      } else if (type == BucketItem.BucketType.DINING) {
-         return api.getDiningSuggestions(query);
-      }
-      return Collections.emptyList();
+      return Queryable.from(getApiSuggestions(query))
+            .map(apiSuggestion -> new Suggestion(apiSuggestion.name()))
+            .toList();
    }
 
-   @Override
-   public final void handleError(Exception e) {
-      if (AuthRetryPolicy.isLoginError(e)) {
-         loginInteractor.loginActionPipe().send(new LoginCommand());
-      }
+   private List<BucketListSuggestion> getApiSuggestions(String query) {
+      return apiJanet.createPipe(GetBucketListSuggestionsHttpAction.class)
+            .createObservableResult(new GetBucketListSuggestionsHttpAction(getBucketType(), query))
+            .toBlocking().first().response();
+   }
+
+   private BucketType getBucketType() {
+      return BucketType.valueOf(type.toString().toUpperCase());
    }
 }

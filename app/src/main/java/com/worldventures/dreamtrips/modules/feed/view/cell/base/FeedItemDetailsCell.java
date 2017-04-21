@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
 import android.support.v7.widget.CardView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -13,11 +12,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
@@ -29,13 +28,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
-public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDelegate<I>> extends BaseFeedCell<I, D> {
+public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeedCell.FeedCellDelegate<I>> extends BaseFeedCell<I, D> {
 
    FeedItemCommonDataHelper feedItemCommonDataHelper;
 
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity protected Provider<Injector> injectorProvider;
+   @Inject FeedViewInjector feedViewInjector;
 
    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
 
@@ -49,17 +50,15 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDele
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
+      if (!sessionHolder.get().isPresent()) {
+         Timber.e("Something went wrong! Session is absent, but feed item is trying to render");
+         return;
+      }
       feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get()
             .get()
             .getUser()
             .getId(), injectorProvider.get());
-      if (ViewUtils.isTablet(itemView.getContext())) {
-         cardViewWrapper.setCardElevation(4);
-         int m = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
-         ((ViewGroup.MarginLayoutParams) cardViewWrapper.getLayoutParams()).setMargins(m, m, m, m);
-      } else {
-         cardViewWrapper.setCardElevation(0);
-      }
+      feedViewInjector.initCardViewWrapper(cardViewWrapper);
    }
 
    public final void openItemDetails() {

@@ -1,43 +1,42 @@
 package com.techery.spares.session;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
-import de.greenrobot.event.EventBus;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class SessionHolder<S> extends ComplexObjectStorage<S> {
+import javax.inject.Inject;
+
+// generic here is for backward compatibility - to excape changing usage thoughout project
+// TODO :: 11.11.16 remove unused generic and it's usage
+public class SessionHolder<S> extends ComplexObjectStorage<UserSession> {
+
+   private final String[] supportedLanguageCodes = new String[] {"en-us", "el-cy", "el-gr", "es-us", "hu-hu", "ms-my",
+         "ro-hu", "sv-se", "zh", "zh-cn", "zh-hk", "zh-tw"};
+   private final List<Locale> supportedLocales;
+
+   @Inject public SessionHolder(SimpleKeyValueStorage keyValueStorage) {
+      super(keyValueStorage, "SESSION_KEY", UserSession.class);
+      supportedLocales = new ArrayList<>(Queryable.from(supportedLanguageCodes)
+            .map(LocaleHelper::buildFromLanguageCode).toList());
+   }
+
+   @Override
+   public void put(UserSession userSession) {
+      final Locale localeFromSession = LocaleHelper.buildFromLanguageCode(userSession.getLocale());
+      if (Queryable.from(supportedLocales).firstOrDefault(locale ->
+            LocaleHelper.compareLocales(localeFromSession, locale)) == null) {
+         userSession.setLocale(Locale.US.getLanguage() + "-" + Locale.US.getCountry());
+      }
+      super.put(userSession);
+   }
 
    public interface Events {
-      class SessionChanged {
-
-      }
-
-      class SessionCreated<SESSION_CLASS> extends SessionChanged {
-         private final SESSION_CLASS session;
-
-         public SessionCreated(SESSION_CLASS session) {
-            this.session = session;
-         }
-
-         public SESSION_CLASS getSession() {
-            return session;
-         }
-      }
-
-      class SessionDestroyed extends SessionChanged {
-
-      }
-   }
-
-   private final EventBus eventBus;
-
-   public SessionHolder(SimpleKeyValueStorage keyValueStorage, Class<S> cls, EventBus bus) {
-      super(keyValueStorage, "SESSION_KEY", cls);
-      this.eventBus = bus;
-   }
-
-   public void put(S session) {
-      super.put(session);
-      this.eventBus.post(new Events.SessionCreated<>(session));
+      class SessionDestroyed {}
    }
 }

@@ -5,25 +5,23 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -34,7 +32,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.util.FullScreenPhot
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -45,22 +42,23 @@ import icepick.Icepick;
 public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo>
       implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
 
-   FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
+   private FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
-   //For resolving Fresco onFinalImageSet callback double launch (here onImageGlobalLayout() method)
-
-   @InjectView(R.id.flag) protected FlagView flag;
-   @InjectView(R.id.taggable_holder) protected PhotoTagHolder photoTagHolder;
-   @InjectView(R.id.tag) protected ImageView tag;
+   @InjectView(R.id.taggable_holder) PhotoTagHolder photoTagHolder;
+   @InjectView(R.id.flag) FlagView flag;
+   @InjectView(R.id.tag) ImageView tag;
+   @InjectView(R.id.translate) TextView translateButton;
+   @InjectView(R.id.translate_view) TranslateView viewWithTranslation;
 
    private PhotoTagHolderManager photoTagHolderManager;
    @Inject SnappyRepository db;
-   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity Injector injector;
+   @Inject Router router;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injectorProvider.get());
+      viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injector);
       viewDelegate.setContentVisibilityListener(this);
    }
 
@@ -86,7 +84,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
       super.onStart();
       //it is ok sync and send message to sync
       syncContentWrapperViewGroupWithGlobalState();
-      eventBus.post(new SocialViewPagerStateChangedEvent());
+      syncState();
    }
 
    @Override
@@ -146,7 +144,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
    @OnClick(R.id.iv_like)
    public void actionLike() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_LIKE_IMAGE));
       getPresenter().onLikeAction();
    }
 
@@ -157,8 +154,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
             .onDelete(this::deletePhoto)
             .onEdit(() -> {
                if (isVisibleOnScreen()) {
-                  eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto()
-                        .getFSId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
                   getPresenter().onEdit();
                }
             })
@@ -173,7 +168,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
    @OnClick(R.id.flag)
    public void actionFlag() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_FLAG_IMAGE));
       getPresenter().onFlagAction(this);
    }
 
@@ -181,7 +175,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    public void onTag() {
       SocialViewPagerState state = getState();
       saveViewState(state.isContentWrapperVisible(), !photoTagHolder.isShown());
-      eventBus.post(new SocialViewPagerStateChangedEvent());
+      syncState();
    }
 
    protected void hideTagViewGroup() {
@@ -197,7 +191,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    }
 
    private void deletePhoto() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_DELETE_IMAGE));
+      getPresenter().onDelete();
       Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE).setTitleText(getResources().getString(R.string.photo_delete))
             .setContentText(getResources().getString(R.string.photo_delete_caption))
             .setConfirmText(getResources().getString(R.string.post_delete_confirm))
@@ -223,10 +217,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    public void onVisibilityChange() {
       SocialViewPagerState state = getState();
       saveViewState(!state.isContentWrapperVisible(), state.isTagHolderVisible());
-      eventBus.post(new SocialViewPagerStateChangedEvent());
+      syncState();
    }
 
-   public void onEvent(SocialViewPagerStateChangedEvent event) {
+   public void syncState() {
       if (isResumed()) {
          syncTagViewGroupWithGlobalState();
          syncContentWrapperViewGroupWithGlobalState();
@@ -284,13 +278,37 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
       informUser(R.string.flag_sent_success_msg);
    }
 
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
+   @OnClick(R.id.translate)
+   void onTranlsate() {
+      getPresenter().onTranslateClicked();
    }
 
    @Override
-   public void onApiCallFailed() {
+   public void showTranslation(String translation, String language) {
+      viewWithTranslation.showTranslation(translation, language);
+      translateButton.setVisibility(View.GONE);
+   }
 
+   @Override
+   public void showTranslationInProgress() {
+      viewWithTranslation.showProgress();
+      translateButton.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void showTranslationButton() {
+      viewWithTranslation.hide();
+      translateButton.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideTranslationButton() {
+      viewWithTranslation.hide();
+      translateButton.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void back() {
+      router.back();
    }
 }

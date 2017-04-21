@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
@@ -12,11 +13,11 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
+import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-
-import org.apache.commons.io.FileUtils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -45,6 +46,7 @@ public class WalletNewFirmwareScreen
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
@@ -89,8 +91,8 @@ public class WalletNewFirmwareScreen
    }
 
    @Override
-   public void currentFirmwareInfo(String version) {
-      currentVersion.setText(getResources().getString(R.string.wallet_settings_version_current, version));
+   public void currentFirmwareInfo(@Nullable SmartCardFirmware version) {
+      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.nordicAppVersion()));
    }
 
    @Override

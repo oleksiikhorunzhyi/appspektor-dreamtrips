@@ -16,7 +16,7 @@
    <dimen name="wallet_details_screen_address_space_between_lines">5dp</dimen>
    <dimen name="wallet_details_screen_billing_address_text_size">12sp</dimen>
    <dimen name="wallet_details_screen_edit_address_button_text_size">16sp</dimen>
-   <dimen name="wallet_details_screen_delete_card_button_text_size">20sp</dimen>
+   <dimen name="wallet_details_screen_card_interact_button_text_size">20sp</dimen>
 
    <dimen name="wallet_gray_edit_text_text_size">18sp</dimen>
    <dimen name="wallet_gray_text_view_text_size">14sp</dimen>
@@ -32,9 +32,14 @@
    <dimen name="wallet_wizard_bar_code_view_top">170dp</dimen>
    <dimen name="wallet_wizard_bar_code_view_right">18dp</dimen>
    <dimen name="wallet_wizard_bar_code_view_bottom">150dp</dimen>
+   <dimen name="wallet_wizard_agreement_margin_start_end">60dp</dimen>
+   <dimen name="wallet_wizard_agreement_margin_top">30dp</dimen>
+   <dimen name="wallet_wizard_agreement_margin_bottom">23dp</dimen>
 
    <dimen name="wallet_common_item_padding">16dp</dimen>
    <dimen name="wallet_common_item_icon_size">24dp</dimen>
 
    <dimen name="wallet_smartcard_connection_label_height">40dp</dimen>
+   <dimen name="wallet_content_divider_header_height">48dp</dimen>
+   <dimen name="wallet_content_divider_height">52dp</dimen>
 </resources>

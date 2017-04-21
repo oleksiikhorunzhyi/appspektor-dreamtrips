@@ -15,22 +15,24 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.fragment.FragmentUtil;
+import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.view.util.TranslateBucketItemViewInjector;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -38,22 +40,21 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
 public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends RxBaseFragmentWithArgs<T, BucketBundle> implements BucketItemDetailsPresenter.View {
 
-   @InjectView(R.id.textViewName) TextView textViewName;
    @InjectView(R.id.textViewFriends) TextView textViewFriends;
    @InjectView(R.id.textViewTags) TextView textViewTags;
-   @InjectView(R.id.textViewDescription) TextView textViewDescription;
    @InjectView(R.id.textViewCategory) TextView textViewCategory;
    @InjectView(R.id.textViewDate) TextView textViewDate;
    @InjectView(R.id.textViewPlace) TextView textViewPlace;
@@ -73,9 +74,13 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    @InjectView(R.id.contentView) ViewGroup contentView;
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
 
-   @Inject @ForActivity Provider<Injector> injector;
+   @Inject ImagePresenterClickEventDelegate imagePresenterClickEventDelegate;
+   @Inject SessionHolder<UserSession> sessionHolder;
 
    private int checkedPosition;
+   private boolean viewPagerIndicatorInitialized;
+   private TranslateBucketItemViewInjector translateBucketItemViewInjector;
+
    private ViewPager.SimpleOnPageChangeListener onPageSelectedListener = new ViewPager.SimpleOnPageChangeListener() {
       @Override
       public void onPageSelected(int position) {
@@ -83,11 +88,32 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       }
    };
 
+   private BaseStatePagerAdapter adapter;
+   private List<BucketPhoto> photos = new ArrayList<>();
+
    @Override
    public void afterCreateView(View view) {
       super.afterCreateView(view);
       setForeignIntentAction();
+      translateBucketItemViewInjector = new TranslateBucketItemViewInjector(view, getContext(), sessionHolder);
       viewPagerBucketGallery.addOnPageChangeListener(onPageSelectedListener);
+      subscribeToBucketImagesClicks();
+      adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+         @Override
+         public void setArgs(int position, Fragment fragment) {
+            BucketPhoto photo = photos.get(position);
+            ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+         }
+
+         @Override
+         public int getItemPosition(Object object) {
+            // force current page to be recreated each time we call notifyDatasetChanged()
+            // TODO: 3/21/17 Implement descendant of BaseStatePagerAdapter to track positions of the fragments
+            // and return actual position if item still exists in the adapter
+            return POSITION_NONE;
+         }
+      };
+      viewPagerBucketGallery.setAdapter(adapter);
    }
 
    @Override
@@ -111,6 +137,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       }
    }
 
+   @OnClick(R.id.translate)
+   void onTranslateClicked() {
+      translateBucketItemViewInjector.translatePressed();
+      getPresenter().onTranslateClicked();
+   }
+
    @Override
    public void onDestroyView() {
       viewPagerBucketGallery.removeOnPageChangeListener(onPageSelectedListener);
@@ -124,13 +156,9 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    }
 
    @Override
-   public void setTitle(String title) {
-      textViewName.setText(title);
-   }
-
-   @Override
-   public void setDescription(String description) {
-      setText(textViewDescription, description);
+   public void setBucketItem(BucketItem bucketItem) {
+      //refactor-plan move here logic from other setters to keep code cleaner
+      translateBucketItemViewInjector.processTranslation(bucketItem);
    }
 
    @Override
@@ -256,26 +284,29 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    }
 
    @Override
-   public void setImages(List photos) {
-      BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
-         @Override
-         public void setArgs(int position, Fragment fragment) {
-            if (photos.get(position) instanceof BucketPhoto) {
-               BucketPhoto photo = (BucketPhoto) photos.get(position);
-               ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
-            }
-         }
-      };
-      viewPagerBucketGallery.setAdapter(adapter);
+   public void setImages(List<BucketPhoto> newPhotos) {
+      this.photos.clear();
+      this.photos.addAll(newPhotos);
+      adapter.clear();
       Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
-      adapter.notifyDataSetChanged();
-      circleIndicator.setViewPager(viewPagerBucketGallery);
-      circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
+
+      // initialize once, initializing with empty list in view pager causes crash
+      if (!photos.isEmpty() && !viewPagerIndicatorInitialized) {
+         circleIndicator.setViewPager(viewPagerBucketGallery);
+         viewPagerIndicatorInitialized = true;
+         adapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
+      }
+
       viewPagerBucketGallery.setCurrentItem(checkedPosition);
+      adapter.notifyDataSetChanged();
    }
 
-
-   public void onEvent(ImageClickedEvent event) {
-      if (ViewUtils.isPartVisibleOnScreen(this)) getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+   private void subscribeToBucketImagesClicks() {
+      imagePresenterClickEventDelegate.getObservable().compose(bindUntilDropViewComposer())
+            .subscribe(imagePathHolder -> {
+               if (ViewUtils.isPartVisibleOnScreen(this)) {
+                  getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+               }
+            });
    }
 }

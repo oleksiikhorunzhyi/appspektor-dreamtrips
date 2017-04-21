@@ -14,6 +14,10 @@ public class BucketBundle implements Parcelable {
    protected boolean lock;
    protected boolean slave;
 
+   public BucketBundle(BucketItem bucketItem, BucketItem.BucketType type) {
+      this.bucketItem = bucketItem;
+      this.type = type;
+   }
 
    public void setType(BucketItem.BucketType type) {
       this.type = type;

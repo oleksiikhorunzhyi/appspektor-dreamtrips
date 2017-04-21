@@ -2,7 +2,7 @@ package com.messenger.delegate.command.avatar;
 
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
@@ -21,16 +21,16 @@ public class UploadChatAvatarCommand extends Command<String> implements Injectab
       this.imagePath = imagePath;
    }
 
-   @Inject UploaderyManager uploaderyManager;
+   @Inject UploaderyInteractor uploaderyInteractor;
 
    @Override
    protected void run(CommandCallback<String> callback) {
-      uploaderyManager.getUploadImagePipe()
+      uploaderyInteractor.uploadImageActionPipe()
             .createObservable(new SimpleUploaderyCommand(imagePath))
             .doOnNext(state -> handleUploadingState(state, callback))
             .compose(new ActionStateToActionTransformer<>())
             .map(command -> ((SimpleUploaderyCommand) command))
-            .map(simpleCommand -> simpleCommand.getResult().getPhotoUploadResponse().getLocation())
+            .map(simpleCommand -> simpleCommand.getResult().response().uploaderyPhoto().location())
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

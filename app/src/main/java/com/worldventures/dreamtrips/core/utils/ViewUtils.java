@@ -6,12 +6,18 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -154,6 +160,15 @@ public class ViewUtils {
          return false;
       }
       return true;
+   }
+
+   public static void setCompatDrawable(View view, @DrawableRes int resId) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) view.setBackgroundResource(resId);
+      else view.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), resId));
+   }
+
+   public static void setTextColor(@NonNull Button view, @ColorRes int color) {
+      view.setTextColor(ContextCompat.getColor(view.getContext(), color));
    }
 
    public static void setTextOrHideView(TextView textView, CharSequence text) {

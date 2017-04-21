@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 
-@AnalyticsEvent(action = "wallet:SmartCard Update:Step 4:Installing Update:Fail",
+@AnalyticsEvent(action = "wallet:settings:general:SmartCard Update:Step 4:Installing Update:Fail",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class RetryInstallUpdateAction extends FirmwareAnalyticsAction {
 

@@ -69,6 +69,11 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
+   Converter provideCustomerSupportConverter() {
+      return new CustomerSupportContactConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
    Converter provideWalletLocationToSmartCardLocationConverter() {
       return new WalletLocationToSmartCardLocationConverter();
    }

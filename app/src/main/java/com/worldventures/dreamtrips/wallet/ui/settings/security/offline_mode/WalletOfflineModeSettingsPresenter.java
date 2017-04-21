@@ -17,9 +17,8 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOf
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -88,7 +87,7 @@ public class WalletOfflineModeSettingsPresenter extends WalletPresenter<WalletOf
 
       smartCardInteractor.switchOfflineModePipe()
             .observe()
-            .throttleLast(1, TimeUnit.SECONDS)
+            .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onProgress(command -> waitingForNetwork = false)

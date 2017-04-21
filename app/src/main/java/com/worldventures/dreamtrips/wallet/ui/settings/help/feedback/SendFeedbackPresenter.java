@@ -18,9 +18,11 @@ import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -40,7 +42,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
 
    @Inject Activity activity;
    @Inject Navigator navigator;
-   @Inject FeedbackInteractor feedbackInteractor;
+   @Inject SettingsHelpInteractor settingsHelpInteractor;
    @Inject Router router;
 
    private final FeedbackAttachmentsManager attachmentsManager;
@@ -88,11 +90,11 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
             });
 
-      feedbackInteractor.attachmentsRemovedPipe()
+      settingsHelpInteractor.attachmentsRemovedPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
-            .doOnNext(result -> feedbackInteractor.attachmentsRemovedPipe().clearReplays())
+            .doOnNext(result -> settingsHelpInteractor.attachmentsRemovedPipe().clearReplays())
             .subscribe(removedAttachments -> Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                if (removedAttachments.contains(holder.entity())) {
                   attachmentsManager.remove(holder);
@@ -100,7 +102,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
                }
             }));
 
-      feedbackInteractor.uploadAttachmentPipe()
+      settingsHelpInteractor.uploadAttachmentPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationUploadAttachments())
@@ -142,11 +144,13 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
       navigator.goBack();
    }
 
-   void sendFeedback(String text) {
+   void sendFeedback(SendFeedbackPath.FeedbackType feedbackType, String text) {
       getView().changeActionSendMenuItemEnabled(false);
 
-      feedbackInteractor.sendFeedbackPipe()
-            .createObservable(new SendFeedbackCommand(text, getImagesAttachments()))
+      settingsHelpInteractor.walletFeedbackPipe()
+            .createObservable(feedbackType == SendFeedbackPath.FeedbackType.SmartCardFeedback ?
+                  new SmartCardFeedbackCommand(text, getImagesAttachments()) :
+                  new CustomerSupportFeedbackCommand(text, getImagesAttachments()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSendFeedback())
                   .onSuccess(command -> handleSuccessSentFeedback())
@@ -179,7 +183,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
 
    private void uploadImageAttachment(Uri path) {
       FeedbackImageAttachment attachment = new FeedbackImageAttachment(path.toString());
-      feedbackInteractor.uploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
+      settingsHelpInteractor.uploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
    }
 
    void onRemoveAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
@@ -228,6 +232,6 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
 
       OperationView<UploadFeedbackAttachmentCommand> provideOperationUploadAttachments();
 
-      OperationView<SendFeedbackCommand> provideOperationSendFeedback();
+      OperationView<SendWalletFeedbackCommand> provideOperationSendFeedback();
    }
 }

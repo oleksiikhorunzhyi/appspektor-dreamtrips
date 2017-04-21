@@ -149,12 +149,12 @@ public final class SmartCardInteractor {
 
       connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
 
+      pinStatusEventPipe = sessionActionPipeCreator.createPipe(PinStatusEvent.class);
       checkPinStatusActionPipe = sessionActionPipeCreator.createPipe(CheckPinStatusAction.class, Schedulers.io());
       setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
       setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
 
       getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
-      pinStatusEventPipe = sessionActionPipeCreator.createPipe(PinStatusEvent.class);
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -312,4 +312,5 @@ public final class SmartCardInteractor {
    public ReadActionPipe<PinStatusEvent> pinStatusEventPipe() {
       return pinStatusEventPipe;
    }
+
 }

@@ -56,6 +56,9 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
@@ -96,6 +99,9 @@ import dagger.Module;
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,
             FetchTermsAndConditionsCommand.class,
+            GetCustomerSupportContactCommand.class,
+            SmartCardFeedbackCommand.class,
+            CustomerSupportFeedbackCommand.class,
             CreateRecordCommand.class,
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,

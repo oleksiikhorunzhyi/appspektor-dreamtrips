@@ -65,6 +65,6 @@ public class WalletHelpSettingsScreen extends WalletLinearLayout<WalletHelpSetti
 
    @OnClick(R.id.item_customer_support)
    void onClickCustomerSupport() {
-
+      getPresenter().openCustomerSupportScreen();
    }
 }

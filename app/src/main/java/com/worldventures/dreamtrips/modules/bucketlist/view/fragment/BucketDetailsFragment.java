@@ -297,8 +297,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
          adapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
       }
 
-      viewPagerBucketGallery.setCurrentItem(checkedPosition);
       adapter.notifyDataSetChanged();
+      viewPagerBucketGallery.setCurrentItem(checkedPosition);
    }
 
    private void subscribeToBucketImagesClicks() {

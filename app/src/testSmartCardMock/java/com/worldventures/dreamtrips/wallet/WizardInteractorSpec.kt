@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet
 
 import android.content.Context
 import android.test.mock.MockContext
-import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
@@ -38,15 +37,15 @@ import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import io.techery.janet.smartcard.model.Record
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
-import org.powermock.api.mockito.PowerMockito
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.functions.Func1
 import rx.observers.TestSubscriber
 
 class WizardInteractorSpec : BaseSpec({
    describe("SmartCard SDK actions") {
-      beforeEach {
-         staticMockTextUtils()
-
+      beforeEachTest {
          mockDb = createMockDb()
          cardStorage = mock()
          mappery = createMappery()
@@ -110,16 +109,6 @@ class WizardInteractorSpec : BaseSpec({
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
-      }
-
-      fun staticMockTextUtils() {
-         PowerMockito.`mockStatic`(TextUtils::class.java)
-         PowerMockito.`doAnswer`({ invocation ->
-            val arg1: String = invocation.getArgumentAt(0, String::class.java)
-            val arg2: String = invocation.getArgumentAt(1, String::class.java)
-            arg1 == arg2
-         }).`when`(TextUtils::class.java)
-         TextUtils.`equals`(anyString(), anyString())
       }
 
       fun createInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))

@@ -7,10 +7,13 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.command
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.UpdateCompoundOperationsCommand
 import io.techery.janet.ActionState
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class RestoreCompoundOperationsSpec : BaseUploadingInteractorSpec({
-   describe("Restore compound operations command") {
+   xdescribe("Restore compound operations command") {
       initJanet(queryCompoundOperationsNotEmptyContract())
 
       val testSubscribeRestore = TestSubscriber<ActionState<RestoreCompoundOperationsCommand>>()

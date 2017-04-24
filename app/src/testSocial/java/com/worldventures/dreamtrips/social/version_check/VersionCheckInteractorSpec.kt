@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.version_check
 
 import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
@@ -17,7 +18,8 @@ import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
-import org.mockito.internal.verification.VerificationModeFactory
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import kotlin.test.assertEquals
 
@@ -26,7 +28,7 @@ class VersionCheckInteractorSpec : BaseSpec({
    describe("Get feedback command") {
       setup(makeCorrectConfigHttpService())
 
-      context ("should get correct update requirement") {
+      it("should get correct update requirement") {
          val testSub = TestSubscriber<ActionState<VersionCheckCommand>>()
          versionCheckInteractor.versionCheckPipe().createObservable(VersionCheckCommand()).subscribe(testSub)
          assertActionSuccess(testSub) {
@@ -35,8 +37,8 @@ class VersionCheckInteractorSpec : BaseSpec({
          }
       }
 
-      context("should restore update requirement from DB") {
-         verify(mockDb, VerificationModeFactory.calls(2))
+      it("should restore update requirement from DB") {
+         verify(mockDb, times(1)).appUpdateRequirement
       }
    }
 

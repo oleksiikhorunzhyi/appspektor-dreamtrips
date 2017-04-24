@@ -509,7 +509,7 @@ dependencies {
    compile 'com.jakewharton:butterknife:6.1.0'
    compile 'com.jakewharton.timber:timber:4.0.1'
    compile 'com.innahema:collections-query:0.2.9'
-   compile 'net.danlew:android.joda:2.9.0'
+   compile 'net.danlew:android.joda:2.9.4'
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'

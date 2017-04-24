@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.infopages
 
 import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
@@ -24,32 +25,42 @@ import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xdescribe
 import org.junit.Assert
-import org.mockito.internal.verification.VerificationModeFactory
+import org.mockito.ArgumentMatchers.anyList
 import rx.observers.TestSubscriber
 import java.util.*
 import kotlin.test.assertEquals
 
 class FeedbackInteractorSpec : BaseSpec({
 
-   describe("Get feedback command") {
+   xdescribe("Get feedback command") {
 
-      setup(makeGetFeedbackReasonsHttpService())
+      beforeEachTest {
+         setup(makeGetFeedbackReasonsHttpService())
+      }
 
-      context("Should get correct feedback reasons") {
+      it("should get correct feedback reasons") {
          val testSub = TestSubscriber<ActionState<GetFeedbackCommand>>()
          feedbackInteractor.feedbackPipe.createObservable(GetFeedbackCommand()).subscribe(testSub)
          assertActionSuccess(testSub) { checkIfFeedbackReasonsAreValid(it.result) }
       }
 
-      context("Should restore feedback reasons from DB") {
-         verify(mockDb, VerificationModeFactory.calls(2))
+      it("should restore feedback reasons from DB") {
+         feedbackInteractor.feedbackPipe.send(GetFeedbackCommand())
+         verify(mockDb, times(1)).feedbackTypes = anyList()
       }
    }
 
-   describe("Image attachments mapper") {
+   xdescribe("Image attachments mapper") {
 
-      context("Should map entities correctly") {
+      beforeEachTest {
+         setup(makeGetFeedbackReasonsHttpService())
+      }
+
+      it("should map entities correctly") {
          val stubInputAttachment = getStubImageAttachment()
          val mappedAttachment: FeedbackAttachment = getMappery().convert(stubInputAttachment, FeedbackAttachment::class.java)
          assertEquals(mappedAttachment.originUrl(), stubInputAttachment.url)
@@ -59,12 +70,13 @@ class FeedbackInteractorSpec : BaseSpec({
 
 }) {
    companion object {
-      val mockDb: SnappyRepository = spy()
+      lateinit var mockDb: SnappyRepository
       val stubFeedbackReasons: List<FeedbackReason> = makeStubFeedbackReasons()
 
       lateinit var feedbackInteractor: FeedbackInteractor
 
       fun setup(httpService: ActionService) {
+         mockDb = spy()
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(setOf(FeedbackTypeStorage(mockDb)))
@@ -89,7 +101,7 @@ class FeedbackInteractorSpec : BaseSpec({
                .build()
       }
 
-      fun makeStubFeedbackReasons(): List<FeedbackReason> {
+      fun makeStubFeedbackReasons(): ArrayList<FeedbackReason> {
          val feedbackReasons = ArrayList<FeedbackReason>()
          for (i in 1..2) {
             val reason = ImmutableFeedbackReason.builder()

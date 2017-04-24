@@ -17,14 +17,18 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import rx.observers.TestSubscriber
 
 class DocumentsInteractorSpec : BaseSpec({
    describe("Test get documents action") {
-      setup()
 
       context("Refresh documents") {
-         on("Documents cache is empty") {
+
+         context("Documents cache is empty") {
             val testSubscriber = TestSubscriber<ActionState<GetDocumentsCommand>>()
 
             whenever(documentsMemoryStorage.get(any())).thenReturn(null)
@@ -34,11 +38,12 @@ class DocumentsInteractorSpec : BaseSpec({
                   .createObservable(GetDocumentsCommand(true))
                   .subscribe(testSubscriber)
 
-            it("Items should contain new items") {
+            it("should contain new items") {
                AssertUtil.assertActionSuccess(testSubscriber) { it.items().containsAll(documents) }
             }
          }
-         on("Documents cache is not empty") {
+
+         context("Documents cache is not empty") {
             val testSubscriber = TestSubscriber<ActionState<GetDocumentsCommand>>()
 
             whenever(documentsMemoryStorage.get(any())).thenReturn(storedDocuments)
@@ -56,20 +61,18 @@ class DocumentsInteractorSpec : BaseSpec({
       }
 
       context("Load more documents") {
-         on("Documents cache is not empty") {
-            val testSubscriber = TestSubscriber<ActionState<GetDocumentsCommand>>()
+         val testSubscriber = TestSubscriber<ActionState<GetDocumentsCommand>>()
 
-            whenever(documentsMemoryStorage.get(any())).thenReturn(storedDocuments)
+         whenever(documentsMemoryStorage.get(any())).thenReturn(storedDocuments)
 
-            documentsInteractor.documentsActionPipe
-                  .createObservable(GetDocumentsCommand())
-                  .subscribe(testSubscriber)
+         documentsInteractor.documentsActionPipe
+               .createObservable(GetDocumentsCommand())
+               .subscribe(testSubscriber)
 
-            it("Items should contain new items and storedItems") {
-               AssertUtil.assertActionSuccess(testSubscriber) {
-                  it.items().containsAll(documents) &&
-                        it.items().containsAll(storedDocuments)
-               }
+         it("Items should contain new items and storedItems") {
+            AssertUtil.assertActionSuccess(testSubscriber) {
+               it.items().containsAll(documents) &&
+                     it.items().containsAll(storedDocuments)
             }
          }
       }
@@ -91,9 +94,9 @@ class DocumentsInteractorSpec : BaseSpec({
       val mappery: MapperyContext = mock()
       val snappyDb: SnappyRepository = mock()
 
-      lateinit var documentsInteractor: DocumentsInteractor
+      val documentsInteractor: DocumentsInteractor
 
-      fun setup() {
+      init {
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(setOf(storage))

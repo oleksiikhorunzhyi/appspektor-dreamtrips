@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.version_check
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider
@@ -10,16 +11,16 @@ import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdate
 import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateUiDelegate
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.mockito.Mockito.*
 
 class VersionUpdateDelegateSpec : BaseSpec ({
 
    describe("Version update delegate") {
 
-      setupForSuite()
-
-      beforeEach {
-         setupForTest();
+      beforeEachTest {
+         setupForTest()
       }
 
       it ("should show optional update dialog") {
@@ -60,12 +61,12 @@ class VersionUpdateDelegateSpec : BaseSpec ({
       val mockDb: SnappyRepository = spy()
       val versionComparator = VersionComparator()
       lateinit var versionUpdateUiDelegate: VersionUpdateUiDelegate
-      val appInfoProvider = mock<AppInfoProvider>()
+      val appInfoProvider: AppInfoProvider = mock()
 
       lateinit var versionUpdateDelegate: VersionUpdateDelegate
 
-      fun setupForSuite() {
-         `when`(appInfoProvider.appVersion).thenReturn(CURRENT_VERSION)
+      init {
+         whenever(appInfoProvider.appVersion).thenReturn(CURRENT_VERSION)
       }
 
       fun setupForTest() {

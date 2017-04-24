@@ -1,22 +1,23 @@
 package com.worldventures.dreamtrips.social.membership
 
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.podcasts.model.ImmutablePodcast
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper
-import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
 import com.worldventures.dreamtrips.modules.membership.model.Podcast
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
+import com.worldventures.dreamtrips.modules.video.model.CachedEntity
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert
-import org.mockito.internal.verification.VerificationModeFactory
 import rx.observers.TestSubscriber
 import java.util.*
 import kotlin.test.assertEquals
@@ -24,26 +25,31 @@ import kotlin.test.assertEquals
 class PodcastsInteractorSpec : BaseSpec({
 
    describe("Test getting podcasts action") {
-      setup()
 
-      context("Check podcasts from API") {
+      beforeEachTest { setup() }
+
+      it("Check podcasts from API") {
          val subscriber = loadPodcastsWithRefresh()
          assertActionSuccess(subscriber) { checkIfPodcastsAreValid(it.result)}
       }
 
-      context("Verify cached entity restored") {
-         verify(mockDb, VerificationModeFactory.calls(2))
+      it("Verify cached entity restored") {
+         val subscriber = loadPodcastsWithRefresh()
+         verify(mockDb, times(2)).getDownloadMediaEntity(anyString())
       }
    }
 }) {
    companion object BaseCompanion {
-      val mockDb: SnappyRepository = spy()
+      lateinit var mockDb: SnappyRepository
 
       lateinit var stubPodcasts: List<com.worldventures.dreamtrips.api.podcasts.model.Podcast>
 
       lateinit var podcastsInteractor: PodcastsInteractor
 
       fun setup() {
+         mockDb = spy()
+         val cachedEntity = mock<CachedEntity>()
+         whenever(mockDb.getDownloadMediaEntity(anyString())).thenReturn(cachedEntity)
          stubPodcasts = makeStubPodcasts()
 
          val daggerCommandActionService = CommandActionService()

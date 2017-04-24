@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.util;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder;
 
 import com.techery.spares.adapter.HeaderItem;
 

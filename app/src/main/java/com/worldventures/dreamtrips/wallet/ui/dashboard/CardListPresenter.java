@@ -4,9 +4,10 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
+import android.view.View;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -36,14 +37,14 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
-import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
 import java.util.List;
@@ -76,10 +77,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
+   private List<Record> records;
 
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
-      cardListStackConverter = new CardListStackConverter(context.getString(R.string.wallet_payment_cards_title));
+      cardListStackConverter = new CardListStackConverter(context);
    }
 
    @Override
@@ -114,7 +116,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
-               .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
+                  .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
             );
       //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
@@ -210,8 +212,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             );
    }
 
-   void cardClicked(Record record) {
-      navigator.go(new CardDetailsPath(record));
+   /**
+    * Create transition animation model which contains coordinates of\
+    * transition view, its overlap rate and background
+    *
+    * @param view           transition view itself
+    * @param overlap        overlap rate (used in ItemDecorator {@see OverlapDecoration}
+    * @param cardBackGround true for blue background, false for dark blue
+    * @return {@see TransitionModel}
+    */
+   public TransitionModel getCardPosition(View view, int overlap, boolean cardBackGround) {
+      int[] position = new int[2];
+      view.getLocationOnScreen(position);
+      return new TransitionModel(position[0], position[1], view.getWidth(), view.getHeight(), overlap, cardBackGround);
+   }
+
+   void cardClicked(String recId, TransitionModel transitionModel) {
+      if (this.records != null && !this.records.isEmpty()) {
+         Record record = Queryable.from(this.records).first(card -> card.id() != null && card.id().equals(recId));
+         navigator.go(new CardDetailsPath(record, transitionModel));
+      }
    }
 
    void navigationClick() {
@@ -280,9 +300,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
-      List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedRecords, defaultRecordId);
-      getView().setCardsCount(WalletRecordUtil.stacksToItemsCount(cards));
-      getView().showRecordsInfo(cards);
+      this.records = loadedRecords;
+      getView().setCardsCount(null != loadedRecords ? loadedRecords.size() : 0);
+      List<BaseViewModel> cardModels = cardListStackConverter.mapToViewModel(loadedRecords, defaultRecordId);
+
+      getView().showRecordsInfo(cardModels);
    }
 
    public void navigateToFirmwareUpdate() {
@@ -319,7 +341,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       int ERROR_DIALOG_NO_INTERNET_CONNECTION = 2;
       int ERROR_DIALOG_NO_SMARTCARD_CONNECTION = 3;
 
-      void showRecordsInfo(List<CardStackViewModel> result);
+      void showRecordsInfo(List<BaseViewModel> result);
 
       void setDefaultSmartCard();
 

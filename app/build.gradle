@@ -170,6 +170,10 @@ android {
       manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
    }
 
+   dataBinding{
+      enabled = true
+   }
+
    testOptions {
       unitTests.returnDefaultValues = true
    }

@@ -21,7 +21,7 @@ public class SimpleDialogProgressView<T> extends DialogProgressView<T> {
    }
 
    public SimpleDialogProgressView(Context context, int resIdMessage, boolean cancelable, DialogInterface.OnCancelListener cancelListener) {
-      this(context, context.getString(resIdMessage), cancelable, null);
+      this(context, context.getString(resIdMessage), cancelable, cancelListener);
    }
 
    public SimpleDialogProgressView(Context context, CharSequence content, boolean cancelable, DialogInterface.OnCancelListener cancelListener) {

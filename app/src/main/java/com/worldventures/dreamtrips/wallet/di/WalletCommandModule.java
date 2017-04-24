@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDa
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
@@ -125,7 +124,6 @@ import dagger.Module;
             ReAssignCardCommand.class,
             SyncRecordOnNewDeviceCommand.class,
             SwitchOfflineModeCommand.class,
-            GetPinEnabledCommand.class,
             SetPinEnabledCommand.class
       },
       complete = false, library = true)

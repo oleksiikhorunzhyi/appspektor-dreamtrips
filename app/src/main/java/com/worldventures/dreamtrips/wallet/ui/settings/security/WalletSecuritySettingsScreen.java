@@ -145,6 +145,16 @@ public class WalletSecuritySettingsScreen extends WalletLinearLayout<WalletSecur
    }
 
    @Override
+   public void setLockToggleEnable(boolean enable) {
+      lockSwitcher.setEnabled(enable);
+   }
+
+   @Override
+   public boolean isLockToggleChecked() {
+      return lockSwitcher.isChecked();
+   }
+
+   @Override
    public void disableDefaultPaymentValue(long minutes) {
       disableDefaultPaymentCardAfterLabel.setText(disableDefaultCardItemProvider.provideTextByValue(minutes));
    }

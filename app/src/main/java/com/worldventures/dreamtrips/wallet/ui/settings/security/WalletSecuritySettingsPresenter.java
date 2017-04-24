@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
@@ -38,6 +37,8 @@ import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
+import io.techery.janet.smartcard.event.PinStatusEvent;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -60,7 +61,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
       observeStealthModeController(view);
       observeLockController(view);
-      smartCardInteractor.getPinEnabledCommandActionPipe().send(new GetPinEnabledCommand());
+      smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
    }
 
    private void observeSmartCardChanges() {
@@ -93,9 +94,9 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
                   .wrap());
 
       Observable.merge(
-            smartCardInteractor.getPinEnabledCommandActionPipe()
+            smartCardInteractor.pinStatusEventPipe()
                   .observeSuccessWithReplay()
-                  .map(Command::getResult),
+                  .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED),
             smartCardInteractor.setPinEnabledCommandActionPipe()
                   .observeSuccessWithReplay()
                   .map(Command::getResult))
@@ -128,6 +129,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
    private void applyPinStatus(boolean isEnabled) {
       //noinspection ConstantConditions
+      getView().setLockToggleEnable(isEnabled);
       getView().setAddRemovePinState(isEnabled);
    }
 
@@ -237,6 +239,10 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
       void stealthModeStatus(boolean isEnabled);
 
       void lockStatus(boolean lock);
+
+      void setLockToggleEnable(boolean enable);
+
+      boolean isLockToggleChecked();
 
       void disableDefaultPaymentValue(long minutes);
 

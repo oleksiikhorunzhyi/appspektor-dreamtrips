@@ -12,13 +12,17 @@ import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
 
 import javax.inject.Inject;
 
+import io.techery.janet.CancelException;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.lock.LockDeviceAction;
@@ -44,8 +48,14 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
       observeUnassignSmartCard();
    }
 
+   @Override
+   public void detachView(boolean retainInstance) {
+      cancelUnassign();
+      super.detachView(retainInstance);
+   }
+
    private void observeUnassignSmartCard() {
-      factoryResetInteractor.factoryResetCommandActionPipe()
+      factoryResetInteractor.resetSmartCardCommandActionPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
@@ -56,7 +66,11 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
 
                      navigator.single(new UnassignSuccessPath());
                   })
-                  .onFail((factoryResetCommand, throwable) -> getView().showErrorEnterPinDialog())
+                  .onFail((factoryResetCommand, throwable) -> {
+                     if (!(throwable instanceof CancelException)) {
+                        getView().showErrorEnterPinDialog();
+                     }
+                  })
                   .create());
 
       factoryReset();
@@ -77,16 +91,15 @@ public class EnterPinUnassignPresenter extends WalletPresenter<EnterPinUnassignP
    void cancelUnassign() {
       factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
       factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
-      goBack();
    }
 
-   private void goBack() {
+   void goBack() {
       navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {
 
-      OperationView<FactoryResetCommand> provideOperationView();
+      OperationView<ResetSmartCardCommand> provideOperationView();
 
       void showErrorEnterPinDialog();
    }

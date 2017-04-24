@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.RestartSmartCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.WalletSettingsGeneralAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -23,9 +24,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPath;
 
 import javax.inject.Inject;
 
@@ -51,6 +52,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      trackScreen();
 
       observeSmartCardUserChanges();
       observeFirmwareUpdates();
@@ -156,6 +158,11 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> action.call(command.getResult().connectionStatus()))
             );
+   }
+
+   private void trackScreen() {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new WalletSettingsGeneralAction()));
    }
 
    private void trackSmartCardRestart() {

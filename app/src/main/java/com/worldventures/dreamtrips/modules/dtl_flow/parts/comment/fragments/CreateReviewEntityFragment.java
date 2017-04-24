@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.view.fragment;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,12 +12,13 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
+public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragment<CreateEntityPresenter, CreateEntityBundle>
       implements CreateEntityPresenter.View {
 
    @State boolean pickerDisabled;
@@ -45,7 +46,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
 
    @Override
    protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
-      return new CreateEntityPresenter(getArgs().getOrigin());
+      return new CreateEntityPresenter(CreateEntityBundle.Origin.FEED);
    }
 
    @Override

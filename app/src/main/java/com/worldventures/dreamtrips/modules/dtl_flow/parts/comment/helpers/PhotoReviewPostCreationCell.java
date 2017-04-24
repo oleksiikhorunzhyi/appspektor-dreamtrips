@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.view.cell;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers;
 
 import android.net.Uri;
 import android.text.TextUtils;
@@ -38,7 +38,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_post)
-public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
+public class PhotoReviewPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
 
    @Inject @ForActivity Injector injector;
    @Inject SessionHolder<UserSession> userSessionHolder;
@@ -53,7 +53,12 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
-   public PhotoPostCreationCell(View view) {
+   private void hideInfo(){
+      photoTitle.setVisibility(View.GONE);
+      tagButton.setVisibility(View.GONE);
+   }
+
+   public PhotoReviewPostCreationCell(View view) {
       super(view);
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
          @Override
@@ -104,9 +109,11 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          }
          invalidateAddTagBtn();
       });
+
       PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
             .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
             .getController());
+
       attachedPhoto.setController(draweeController);
       photoTitle.setText(getModelObject().getTitle());
       boolean titleChangesEnabled = getModelObject().isCanEdit();
@@ -114,6 +121,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       photoTitle.setEnabled(titleChangesEnabled);
       invalidateAddTagBtn();
       invalidateDeleteBtn();
+      hideInfo();
    }
 
    private int calculateHeight() {
@@ -185,7 +193,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    }
 
    private void invalidateAddTagBtn() {
-      tagButton.setVisibility(getModelObject().isCanEdit() ? View.VISIBLE : View.GONE);
+      /*tagButton.setVisibility(getModelObject().isCanEdit() ? View.VISIBLE : View.GONE);
       //
       if (getModelObject().getCombinedTags().isEmpty()) {
          tagButton.setText(R.string.tag_people);
@@ -193,7 +201,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       } else {
          tagButton.setText(R.string.empty);
          tagButton.setSelected(true);
-      }
+      }*/
    }
 
    private void invalidateDeleteBtn() {

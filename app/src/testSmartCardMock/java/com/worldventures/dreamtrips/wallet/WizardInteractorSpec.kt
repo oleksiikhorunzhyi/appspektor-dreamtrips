@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet
 
 import android.content.Context
 import android.test.mock.MockContext
-import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
@@ -12,7 +11,6 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
@@ -23,7 +21,6 @@ import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.dreamtrips.wallet.model.TestSmartCard
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
 import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
 import com.worldventures.dreamtrips.wallet.model.TestUpdateCardUserData
@@ -46,16 +43,16 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
-import org.powermock.api.mockito.PowerMockito
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
 class WizardInteractorSpec : BaseSpec({
 
    describe("SmartCard SDK actions") {
-
-      beforeEach {
-         staticMockTextUtils()
+      beforeEachTest {
 
          mockDb = createMockDb()
          recordsStorage = mock()
@@ -63,20 +60,16 @@ class WizardInteractorSpec : BaseSpec({
          janet = createJanet()
          wizardInteractor = createWizardInteractor(janet)
          smartCardInteractor = createSmartCardInteractor(janet)
-
          propertiesProvider = createPropertiesProvider()
 
          janet.connectToSmartCardSdk()
-
          mockedDebitCard = mock()
       }
 
       context("SmartCard wizard flow") {
-
-         beforeEach {
+         beforeEachTest {
             lostCardStorage = mock()
          }
-
          it("should be to save of SmartCard") {
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
@@ -133,7 +126,6 @@ class WizardInteractorSpec : BaseSpec({
          }
       }
    }
-
 }) {
    private companion object {
 
@@ -150,28 +142,10 @@ class WizardInteractorSpec : BaseSpec({
 
       lateinit var propertiesProvider: SystemPropertiesProvider
       lateinit var lostCardStorage: LostCardRepository
-
       lateinit var mockedDebitCard: Record
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsDiskStorage(recordsStorage))
-      }
-
-      fun staticMockTextUtils() {
-         PowerMockito.`mockStatic`(TextUtils::class.java)
-
-         PowerMockito.`doAnswer`({ invocation ->
-            val arg1: String = invocation.getArgumentAt(0, String::class.java)
-            val arg2: String = invocation.getArgumentAt(1, String::class.java)
-            arg1 == arg2
-         }).`when`(TextUtils::class.java)
-         TextUtils.`equals`(anyString(), anyString())
-
-         PowerMockito.`doAnswer`({ invocation ->
-            val arg1: String? = invocation.getArgumentAt(0, String::class.java)
-            arg1 == null || arg1.isEmpty()
-         }).`when`(TextUtils::class.java)
-         TextUtils.`isEmpty`(anyString())
       }
 
       fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
@@ -243,11 +217,6 @@ class WizardInteractorSpec : BaseSpec({
 
       fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
          storageSet.forEach { bindStorage(it.actionClass, it) }
-         return this
-      }
-
-      fun CacheResultWrapper.bindMultiplyStorageSet(storageSet: Set<MultipleActionStorage<*>>): CacheResultWrapper {
-         storageSet.flatMap { it.actionClasses.map { actionClass -> actionClass to it } }.forEach { bindStorage(it.first, it.second) }
          return this
       }
 

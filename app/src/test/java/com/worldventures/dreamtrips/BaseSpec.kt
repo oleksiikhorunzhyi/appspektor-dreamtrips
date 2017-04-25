@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips
 
-import android.location.Location
-import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
@@ -15,19 +13,14 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import io.techery.janet.ActionService
-import org.jetbrains.spek.api.DescribeBody
 import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.junit.JUnitSpekRunner
+import org.jetbrains.spek.api.dsl.SpecBody
+import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
-import org.powermock.modules.junit4.PowerMockRunnerDelegate
 
-@RunWith(PowerMockRunner::class)
-@PowerMockRunnerDelegate(JUnitSpekRunner::class)
-@PrepareForTest(Location::class, TextUtils::class)
-abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
+@RunWith(JUnitPlatform::class)
+abstract class BaseSpec(spekBody: SpecBody.() -> Unit) : Spek(spekBody) {
    companion object {
       init {
          RxJavaSchedulerInitializer.init()

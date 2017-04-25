@@ -13,12 +13,15 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.mock.device.DeviceStorage
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.Observable
 
 class FirmwareInteractorSpec : BaseSpec({
 
    describe("Firmware update actions") {
-      beforeEach {
+      beforeEachTest {
          janet = createJanet()
          bluetoothService = createBluetoothService()
          janet.connectToSmartCardSdk()

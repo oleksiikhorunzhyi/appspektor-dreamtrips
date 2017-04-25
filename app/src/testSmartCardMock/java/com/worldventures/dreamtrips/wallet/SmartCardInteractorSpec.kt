@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet
 
 import android.content.Context
 import android.test.mock.MockContext
-import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.session.NxtSessionHolder
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
@@ -11,7 +10,6 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
@@ -54,16 +52,16 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert
-import org.powermock.api.mockito.PowerMockito
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
 class SmartCardInteractorSpec : BaseSpec({
    describe("SmartCard SDK actions") {
-      beforeEach {
-         staticMockTextUtils()
-
+      beforeEachTest {
          mockDb = createMockDb()
          cardStorage = TestRecordsStorage(offlineModeEnabled = true)
          mappery = createMappery()
@@ -312,8 +310,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
       context("Fetch default address") {
          val addressInfo = TestAddressInfo()
-
-         beforeEach {
+         beforeEachTest {
             whenever(mockDb.readDefaultAddress()).thenReturn(addressInfo)
          }
 
@@ -322,7 +319,6 @@ class SmartCardInteractorSpec : BaseSpec({
          }
       }
    }
-
 }) {
    private companion object {
       lateinit var mockDb: SnappyRepository
@@ -342,28 +338,11 @@ class SmartCardInteractorSpec : BaseSpec({
          setOf(DefaultRecordIdStorage(cardStorage), SmartCardActionStorage(mockDb))
       }
 
-      fun staticMockTextUtils() {
-         PowerMockito.`mockStatic`(TextUtils::class.java)
-
-         PowerMockito.`doAnswer`({ invocation ->
-            val arg1: String = invocation.getArgumentAt(0, String::class.java)
-            val arg2: String = invocation.getArgumentAt(1, String::class.java)
-            arg1 == arg2
-         }).`when`(TextUtils::class.java)
-         TextUtils.`equals`(anyString(), anyString())
-
-         PowerMockito.`doAnswer`({ invocation ->
-            val arg1: String? = invocation.getArgumentAt(0, String::class.java)
-            arg1 == null || arg1.isEmpty()
-         }).`when`(TextUtils::class.java)
-         TextUtils.`isEmpty`(anyString())
-      }
-
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
 
-      fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate()})
+      fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createNxtInteractor(janet: Janet) = NxtInteractor(janet)
 
@@ -478,11 +457,6 @@ class SmartCardInteractorSpec : BaseSpec({
          return this
       }
 
-      fun CacheResultWrapper.bindMultiplyStorageSet(storageSet: Set<MultipleActionStorage<*>>): CacheResultWrapper {
-         storageSet.flatMap { it.actionClasses.map { actionClass -> actionClass to it } }.forEach { bindStorage(it.first, it.second) }
-         return this
-      }
-
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1)))
                .toBlocking()
@@ -491,4 +465,3 @@ class SmartCardInteractorSpec : BaseSpec({
 
    }
 }
-

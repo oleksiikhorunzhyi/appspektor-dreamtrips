@@ -28,23 +28,28 @@ import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
-import org.jetbrains.spek.api.DescribeBody
+import org.jetbrains.spek.api.dsl.SpecBody
 import java.util.*
 
-abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
+abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSpec(speckBody) {
    companion object BaseCompanion {
       val MOCK_USER_ID = 1
 
-      val mockMemoryStorage: BucketMemoryStorage = spy()
-      val mockDb: SnappyRepository = spy()
-
-      val mockSessionHolder: SessionHolder<UserSession> = mock()
-      val userSession: UserSession = mock()
-      val staticPageProvider: StaticPageProvider = mock()
-
+      lateinit var mockMemoryStorage: BucketMemoryStorage
+      lateinit var mockDb: SnappyRepository
+      lateinit var mockSessionHolder: SessionHolder<UserSession>
+      lateinit var userSession: UserSession
+      lateinit var staticPageProvider: StaticPageProvider
       lateinit var bucketInteractor: BucketInteractor
 
       fun setup(storageSet: () -> Set<ActionStorage<*>>, httpService: () -> MockHttpActionService) {
+         mockMemoryStorage = spy()
+         mockDb = spy()
+
+         mockSessionHolder = mock()
+         userSession = mock()
+         staticPageProvider = mock()
+
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(storageSet())

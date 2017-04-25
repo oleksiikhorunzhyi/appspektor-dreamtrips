@@ -29,13 +29,16 @@ import io.techery.janet.Janet
 import io.techery.janet.SmartCardActionService
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
 class FactoryResetInteractorSpec : BaseSpec({
 
    describe("Factory Reset Actions") {
-      beforeEach {
+      beforeEachTest {
          mockDb = createMockDb()
          lostCardRepository = createLostCardRepository()
          cardStorage = mock()
@@ -49,7 +52,7 @@ class FactoryResetInteractorSpec : BaseSpec({
 
       context("Factory reset of SmartCard") {
 
-         beforeEach {
+         beforeEachTest {
             // mock active SmartCard
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)

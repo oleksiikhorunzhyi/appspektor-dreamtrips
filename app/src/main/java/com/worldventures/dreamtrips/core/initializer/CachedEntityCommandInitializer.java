@@ -2,8 +2,9 @@ package com.worldventures.dreamtrips.core.initializer;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
 
 public class CachedEntityCommandInitializer implements AppInitializer {
 
@@ -15,6 +16,9 @@ public class CachedEntityCommandInitializer implements AppInitializer {
 
    @Override
    public void initialize(Injector injector) {
-      interactor.getResetCachedEntitiesInProgressPipe().send(new ResetCachedEntitiesInProgressCommand());
+      interactor.getMigrateFromCachedEntityPipe()
+            .createObservableResult(new MigrateFromCachedEntity())
+            .subscribe(command -> interactor.getResetCachedModelsInProgressPipe()
+                  .send(new ResetCachedModelsInProgressCommand()));
    }
 }

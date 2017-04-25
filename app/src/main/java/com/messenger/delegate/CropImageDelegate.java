@@ -11,7 +11,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CroppingUtils;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
@@ -80,7 +80,7 @@ public class CropImageDelegate {
    }
 
    private void cacheFacebookImage(String url, Action<String> action) {
-      String filePath = CachedEntity.getFilePath(context, truncateUrlParams(url));
+      String filePath = CachedModel.getFilePath(context, truncateUrlParams(url));
       subscription = downloadFileInteractor.getDownloadFileCommandPipe()
             .createObservable(new DownloadFileCommand(new File(filePath), url))
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()

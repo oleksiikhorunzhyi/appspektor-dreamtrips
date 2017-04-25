@@ -26,6 +26,7 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    @InjectView(R.id.progress) ProgressBar progressBar;
 
    private Injector injector;
+   private ProgressListener progressListener;
 
    public PodcastPlayerScreenImpl(Context context) {
       super(context);
@@ -60,6 +61,8 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
       mediaController.setEnabled(true);
       mediaController.setDuration(duration);
       mediaController.setProgress(currentPosition, bufferPercentage);
+
+      if (progressBar != null) progressListener.onProgress(duration, currentPosition, bufferPercentage);
    }
 
    @Override
@@ -79,6 +82,10 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    public void setPreparing() {
       mediaController.setEnabled(false);
       progressBar.setVisibility(VISIBLE);
+   }
+
+   public void setProgressListener(ProgressListener progressListener) {
+      this.progressListener = progressListener;
    }
 
    @Override
@@ -119,4 +126,9 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    public void hideBlockingProgress() {
       //
    }
+
+   public interface ProgressListener {
+      void onProgress(int duration, int currentPosition, int bufferPercentage);
+   }
+
 }

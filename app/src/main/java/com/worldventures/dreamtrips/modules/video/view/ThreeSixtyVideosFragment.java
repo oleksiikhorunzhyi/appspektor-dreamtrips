@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
 
@@ -127,7 +127,7 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    }
 
    @Override
-   public void notifyItemChanged(CachedEntity videoEntity) {
+   public void notifyItemChanged(CachedModel videoEntity) {
       if (adapterFeatured != null) {
          adapterFeatured.notifyDataSetChanged();
       }
@@ -140,13 +140,13 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    }
 
    @Override
-   public void onDeleteAction(CachedEntity cacheEntity) {
+   public void onDeleteAction(CachedModel cacheEntity) {
       showDialog(R.string.delete_cached_video_title, R.string.delete_cached_video_text, R.string.delete_photo_positiove, R.string.delete_photo_negative, () -> getPresenter()
             .onDeleteAction(cacheEntity));
    }
 
    @Override
-   public void onCancelCaching(CachedEntity cacheEntity) {
+   public void onCancelCaching(CachedModel cacheEntity) {
       showDialog(R.string.cancel_cached_video_title, R.string.cancel_cached_video_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative, () -> getPresenter()
             .onCancelAction(cacheEntity));
    }
@@ -169,17 +169,17 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    }
 
    @Override
-   public void onDownloadVideo(CachedEntity entity) {
+   public void onDownloadVideo(CachedModel entity) {
       getPresenter().downloadVideo(entity);
    }
 
    @Override
-   public void onDeleteVideo(CachedEntity entity) {
+   public void onDeleteVideo(CachedModel entity) {
       getPresenter().deleteCachedVideo(entity);
    }
 
    @Override
-   public void onCancelCachingVideo(CachedEntity entity) {
+   public void onCancelCachingVideo(CachedModel entity) {
       getPresenter().cancelCachingVideo(entity);
    }
 

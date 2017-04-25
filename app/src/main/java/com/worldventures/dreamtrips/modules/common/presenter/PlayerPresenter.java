@@ -3,17 +3,16 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.util.Pair;
 
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.service.VideoInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import rx.Observable;
 
 public class PlayerPresenter extends VideoPlayerPresenter<PlayerPresenter.View> {
 
-   @Inject VideoInteractor videoInteractor;
+   @Inject ProgressAnalyticInteractor progressAnalyticInteractor;
 
    private final Class launchComponent;
    private final String language;
@@ -36,10 +35,10 @@ public class PlayerPresenter extends VideoPlayerPresenter<PlayerPresenter.View> 
    private void listenVideoProgress() {
       view.videoProgress()
             .compose(bindView())
-            .flatMap(progressPair -> videoInteractor.sendAnalyticsIfNeedActionPipe()
-                  .createObservableResult(new SendAnalyticsIfNeedAction(launchComponent, language, videoName,
+            .flatMap(progressPair -> progressAnalyticInteractor.sendProgressAnalyticsIfNeedActionPipe()
+                  .createObservableResult(new SendVideoAnalyticsIfNeedAction(launchComponent, language, videoName,
                         expectedAnalyticStep, progressPair.first, progressPair.second)))
-            .map(Command::getResult)
+            .map(action -> (Integer) action.getResult())
             .subscribe(nextAnalyticStep -> expectedAnalyticStep = nextAnalyticStep);
    }
 

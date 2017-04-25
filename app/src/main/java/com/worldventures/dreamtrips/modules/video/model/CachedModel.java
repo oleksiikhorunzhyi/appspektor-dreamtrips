@@ -16,13 +16,10 @@ import java.io.Serializable;
  * which is wrong because download can be already initiated but progress is still zero
  * as connection hasn't established yet.
  * 2. This class should store link to actual cache file location as it's initiated each time with a new download
- *
- * In order to do this we should :
- * 1. Refactor related commands and presenters
- * 2. Migrate it from using default Kryo's FieldSerializer which does not support adding new fields to entities.
- */
-@Deprecated
-public class CachedEntity implements Serializable {
+ **/
+
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class CachedModel implements Serializable {
 
    protected static final long serialVersionUID = 12332;
    protected String url;
@@ -31,14 +28,15 @@ public class CachedEntity implements Serializable {
    protected String uuid;
    protected int downloadId;
    protected String name;
+   protected Class entityClass;
 
-   public CachedEntity(String url, String id, String name) {
+   public CachedModel(String url, String id, String name) {
       this.url = url;
       uuid = id;
       this.name = name;
    }
 
-   public CachedEntity() {
+   public CachedModel() {
    }
 
    public boolean isFailed() {
@@ -97,6 +95,14 @@ public class CachedEntity implements Serializable {
 
    public static String getFileName(String url) {
       return url.substring(url.lastIndexOf("/") + 1);
+   }
+
+   public Class getEntityClass() {
+      return entityClass == null? Object.class : entityClass;
+   }
+
+   public void setEntityClass(Class entityClass) {
+      this.entityClass = entityClass;
    }
 
    @Override

@@ -21,9 +21,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.dreamtrips.wallet.model.TestSmartCardDetails
-import com.worldventures.dreamtrips.wallet.model.TestTermsAndConditions
-import com.worldventures.dreamtrips.wallet.model.TestUpdateCardUserData
+import com.worldventures.dreamtrips.wallet.model.*
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor
@@ -55,6 +53,8 @@ class WizardInteractorSpec : BaseSpec({
       beforeEachTest {
 
          mockDb = createMockDb()
+         whenever(mockDb.smartCardUser).thenReturn(TestSmartCardUser())
+         whenever(mockDb.smartCard).thenReturn(TestSmartCard("1"))
          recordsStorage = mock()
          mappery = createMappery()
          janet = createJanet()
@@ -112,7 +112,7 @@ class WizardInteractorSpec : BaseSpec({
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(1)).saveDefaultAddress(any())
+            verify(mockDb, times(1)).saveDefaultAddress(null) // todo
          }
 
          it("disassociates SmartCard") {
@@ -122,7 +122,7 @@ class WizardInteractorSpec : BaseSpec({
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(lostCardStorage, times(1))
+            verify(lostCardStorage, times(1)).clear()
          }
       }
    }

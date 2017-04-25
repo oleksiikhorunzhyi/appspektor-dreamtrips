@@ -416,6 +416,7 @@ def roboelectricVersion = '3.1.2'
 def powerMockVersion = '1.7.0RC4'
 dependencies {
    compile fileTree(dir: 'libs', include: ['*.jar'])
+   apt 'com.android.databinding:compiler:2.3.1'
    // Di
    compile 'com.squareup.dagger:dagger:1.2.2'
    apt 'com.squareup.dagger:dagger-compiler:1.2.2'

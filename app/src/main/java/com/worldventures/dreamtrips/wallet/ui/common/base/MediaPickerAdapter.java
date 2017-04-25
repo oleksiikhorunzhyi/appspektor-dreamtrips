@@ -83,8 +83,7 @@ public class MediaPickerAdapter implements MediaPickerService {
    public Observable<String> observePicker() {
       return messengerMediaPickerDelegate.getImagePathsStream()
             .startWith(Observable.fromCallable(callablePaddingPathOnce))
-            .filter(path -> path != null)
-            .distinct();
+            .filter(path -> path != null);
    }
 
    @Override

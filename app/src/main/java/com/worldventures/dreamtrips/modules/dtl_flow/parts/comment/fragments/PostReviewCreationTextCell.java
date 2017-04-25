@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_review_item_post_text)
-public class PostReviewCreationTextCell extends AbstractDelegateCell<PostDescription, PostReviewCreationTextCell.Delegate> {
+public class PostReviewCreationTextCell extends AbstractDelegateCell<PostReviewDescription, PostReviewCreationTextCell.Delegate> {
 
    @InjectView(R.id.post) TextView post;
 
@@ -32,7 +32,7 @@ public class PostReviewCreationTextCell extends AbstractDelegateCell<PostDescrip
       post.setOnFocusChangeListener(null);
    }
 
-   public interface Delegate extends CellDelegate<PostDescription> {
+   public interface Delegate extends CellDelegate<PostReviewDescription> {
 
    }
 }

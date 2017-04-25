@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewCreationItem;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewPostCreationDelegate;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 
@@ -38,7 +40,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_post)
-public class PhotoReviewPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
+public class PhotoReviewPostCreationCell extends AbstractDelegateCell<PhotoReviewCreationItem, PhotoReviewPostCreationDelegate> {
 
    @Inject @ForActivity Injector injector;
    @Inject SessionHolder<UserSession> userSessionHolder;

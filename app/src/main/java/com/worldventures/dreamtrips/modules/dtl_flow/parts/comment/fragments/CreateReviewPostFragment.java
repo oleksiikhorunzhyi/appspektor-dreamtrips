@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.Create
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
 import javax.inject.Inject;
 
@@ -92,8 +93,6 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-
-      getPresenter().post();
 
       Bundle args = getArguments();
       bundle = args.getParcelable("data");
@@ -493,7 +492,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    public String getIpAddress() {
-      return "10.20.20.122";
+      return NetworkUtils.getIpAddress(true);
    }
 
    private void onMerchantsLoaded(AddReviewAction action) {

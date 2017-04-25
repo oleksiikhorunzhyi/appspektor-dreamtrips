@@ -26,13 +26,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
-import com.worldventures.dreamtrips.modules.feed.bundle.DescriptionBundle;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
-import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 
@@ -48,7 +41,7 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
-public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
+public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P> implements ActionReviewEntityPresenter.View, PhotoReviewPostCreationDelegate {
 
    @Inject BackStackDelegate backStackDelegate;
    @Inject @ForActivity Provider<Injector> injectorProvider;
@@ -62,7 +55,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresente
 
    BaseDelegateAdapter adapter;
    SweetAlertDialog dialog;
-   PostDescription description = new PostDescription();
+   PostReviewDescription description = new PostReviewDescription();
 
    @Override
    public void afterCreateView(View rootView) {
@@ -70,20 +63,20 @@ public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresente
       postButton.setText(getPostButtonText());
       //
       adapter = new BaseDelegateAdapter(getContext(), this);
-      adapter.registerCell(PhotoCreationItem.class, PhotoReviewPostCreationCell.class);//Tag
-      adapter.registerCell(PostDescription.class, PostReviewCreationTextCell.class);//hashtag
-      adapter.registerDelegate(PostDescription.class, new PostReviewCreationTextCell.Delegate() {//desc photo
+      adapter.registerCell(PhotoReviewCreationItem.class, PhotoReviewPostCreationCell.class);//Tag
+      adapter.registerCell(PostReviewDescription.class, PostReviewCreationTextCell.class);//hashtag
+      adapter.registerDelegate(PostReviewDescription.class, new PostReviewCreationTextCell.Delegate() {//desc photo
          @Override
-         public void onCellClicked(PostDescription model) {
+         public void onCellClicked(PostReviewDescription model) {
             router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
-                  .data(new DescriptionBundle(model.getDescription()))
+                  .data(new DescriptionReviewBundle(model.getDescription()))
                   .build());
          }
       });
-      adapter.registerDelegate(PhotoCreationItem.class, this);
+      adapter.registerDelegate(PhotoReviewCreationItem.class, this);
       LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
       photosList.setLayoutManager(layout);
-      photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
+      photosList.addItemDecoration(new PhotoReviewPostCreationItemDecorator());
       photosList.setAdapter(adapter);
    }
 
@@ -112,13 +105,13 @@ public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresente
    }
 
    @Override
-   public void attachPhotos(List<PhotoCreationItem> images) {
+   public void attachPhotos(List<PhotoReviewCreationItem> images) {
       adapter.addItems(images);
       adapter.notifyDataSetChanged();
    }
 
    @Override
-   public void attachPhoto(PhotoCreationItem image) {
+   public void attachPhoto(PhotoReviewCreationItem image) {
       adapter.addItem(image);
       adapter.notifyDataSetChanged();
    }
@@ -243,7 +236,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresente
    }
 
    @Override
-   public void updateItem(PhotoCreationItem item) {
+   public void updateItem(PhotoReviewCreationItem item) {
       adapter.notifyItemChanged(adapter.getItems().indexOf(item));
    }
 
@@ -252,21 +245,21 @@ public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresente
    //////////////////////////////////////////
 
    @Override
-   public void onCellClicked(PhotoCreationItem model) {
+   public void onCellClicked(PhotoReviewCreationItem model) {
       // nothing to do
    }
 
    @Override
-   public void onTagIconClicked(PhotoCreationItem item) {
+   public void onTagIconClicked(PhotoReviewCreationItem item) {
       openTagEditScreen(item, null);
    }
 
    @Override
-   public void onSuggestionClicked(PhotoCreationItem item, PhotoTag suggestion) {
+   public void onSuggestionClicked(PhotoReviewCreationItem item, PhotoTag suggestion) {
       openTagEditScreen(item, suggestion);
    }
 
-   protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
+   protected void openTagEditScreen(PhotoReviewCreationItem item, PhotoTag activeSuggestion) {
       SoftInputUtil.hideSoftInputMethod(getView());
 
       PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFileUri());
@@ -285,7 +278,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionEntityPresente
    }
 
    @Override
-   public void onRemoveClicked(PhotoCreationItem uploadTask) {
+   public void onRemoveClicked(PhotoReviewCreationItem uploadTask) {
 
    }
 

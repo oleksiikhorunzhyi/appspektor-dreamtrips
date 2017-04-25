@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
@@ -20,6 +21,7 @@ import rx.schedulers.Schedulers;
 public class TripImagesInteractor {
 
    private final ActionPipe<CreatePhotoCreationItemCommand> createPhotoCreationItemPipe;
+   private final ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe;
    private final ActionPipe<FetchLocationFromExifCommand> fetchLocationFromExifPipe;
    private final ActionPipe<GetInspireMePhotosCommand> inspireMePhotosActionPipe;
    private final ActionPipe<GetMembersPhotosCommand> membersPhotosActionPipe;
@@ -34,6 +36,7 @@ public class TripImagesInteractor {
 
    public TripImagesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       createPhotoCreationItemPipe = sessionActionPipeCreator.createPipe(CreatePhotoCreationItemCommand.class, Schedulers.io());
+      createReviewPhotoCreationItemPipe = sessionActionPipeCreator.createPipe(CreateReviewPhotoCreationItemCommand.class, Schedulers.io());
       fetchLocationFromExifPipe = sessionActionPipeCreator.createPipe(FetchLocationFromExifCommand.class, Schedulers.io());
       inspireMePhotosActionPipe = sessionActionPipeCreator.createPipe(GetInspireMePhotosCommand.class, Schedulers.io());
       membersPhotosActionPipe = sessionActionPipeCreator.createPipe(GetMembersPhotosCommand.class, Schedulers.io());
@@ -49,6 +52,10 @@ public class TripImagesInteractor {
 
    public ActionPipe<CreatePhotoCreationItemCommand> createPhotoCreationItemPipe() {
       return createPhotoCreationItemPipe;
+   }
+
+   public ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe() {
+      return createReviewPhotoCreationItemPipe;
    }
 
    public ActionPipe<FetchLocationFromExifCommand> fetchLocationFromExifPipe() {

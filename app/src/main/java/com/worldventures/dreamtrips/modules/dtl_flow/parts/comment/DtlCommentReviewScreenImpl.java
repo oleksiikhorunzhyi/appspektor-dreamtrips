@@ -23,9 +23,6 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
-import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -59,8 +56,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     TextView mTvPost;
     @InjectView(R.id.container_details_floating)
     FrameLayout mFlContainerReview;
-
-    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     private CreateReviewPostFragment fragment;
 

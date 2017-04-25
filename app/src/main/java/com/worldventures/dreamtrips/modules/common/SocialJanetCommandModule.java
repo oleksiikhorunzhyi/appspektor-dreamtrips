@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCom
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
@@ -180,6 +181,7 @@ import dagger.Module;
       GetFeedbackCommand.class,
       UploadFeedbackAttachmentCommand.class,
       CreatePhotoCreationItemCommand.class,
+      CreateReviewPhotoCreationItemCommand.class,
       GetMemberVideosCommand.class,
       GetVideoLocalesCommand.class,
       GetInspireMePhotosCommand.class,

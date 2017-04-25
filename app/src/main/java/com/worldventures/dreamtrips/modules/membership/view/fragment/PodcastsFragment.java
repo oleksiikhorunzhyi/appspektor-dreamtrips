@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.membership.view.cell.PodcastCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.delegate.PodcastCellDelegate;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 import java.util.List;
 
@@ -127,18 +127,18 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
    }
 
    @Override
-   public void notifyItemChanged(CachedEntity videoEntity) {
+   public void notifyItemChanged(CachedModel videoEntity) {
       adapter.notifyDataSetChanged();
    }
 
    @Override
-   public void onDeleteAction(CachedEntity cacheEntity) {
+   public void onDeleteAction(CachedModel cacheEntity) {
       showDialog(R.string.delete_cached_podcast_title, R.string.delete_cached_podcast_text, R.string.delete_photo_positiove, R.string.delete_photo_negative, (dialog, which) -> getPresenter()
             .onDeleteAction(cacheEntity));
    }
 
    @Override
-   public void onCancelCaching(CachedEntity cacheEntity) {
+   public void onCancelCaching(CachedModel cacheEntity) {
       showDialog(R.string.cancel_cached_podcast_title, R.string.cancel_cached_podcast_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative, (dialog, which) -> getPresenter()
             .onCancelAction(cacheEntity));
    }
@@ -148,17 +148,17 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
    }
 
    @Override
-   public void onDownloadPodcast(CachedEntity entity) {
+   public void onDownloadPodcast(CachedModel entity) {
       getPresenter().downloadPodcast(entity);
    }
 
    @Override
-   public void onDeletePodcast(CachedEntity entity) {
+   public void onDeletePodcast(CachedModel entity) {
       getPresenter().deleteCachedPodcast(entity);
    }
 
    @Override
-   public void onCancelCachingPodcast(CachedEntity entity) {
+   public void onCancelCachingPodcast(CachedModel entity) {
       getPresenter().cancelCachingPodcast(entity);
    }
 

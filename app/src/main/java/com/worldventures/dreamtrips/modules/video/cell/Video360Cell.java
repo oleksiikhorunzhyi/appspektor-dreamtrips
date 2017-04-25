@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import javax.inject.Inject;
@@ -63,10 +63,10 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
    @OnClick(R.id.iv_bg)
    public void onItemClick() {
       Video video = getModelObject();
-      CachedEntity cacheEntity = getModelObject().getCacheEntity();
+      CachedModel cacheEntity = getModelObject().getCacheEntity();
       String url = getModelObject().getVideoUrl();
       if (cacheEntity.isCached(context)) {
-         url = CachedEntity.getFilePath(context, getModelObject().getVideoUrl());
+         url = CachedModel.getFilePath(context, getModelObject().getVideoUrl());
       }
       activityRouter.open360Activity(url, video.getVideoName());
       //

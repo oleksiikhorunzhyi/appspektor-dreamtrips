@@ -65,7 +65,6 @@ public class TrackingHelper {
    public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "profile_photo_upload_finish";
 
    public static final String ACTION_MEMBERSHIP_VIDEOS = "membership:videos";
-   public static final String ACTION_MEMBERSHIP_PODCASTS = "membership:podcasts";
    public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play";
    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
    public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
@@ -280,11 +279,6 @@ public class TrackingHelper {
 
    public static void likeSS(String memberId, int id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_LIKE, String.valueOf(id));
-   }
-
-   public static void podcasts(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
    }
 
    public static void inviteShareContacts(String memberId) {

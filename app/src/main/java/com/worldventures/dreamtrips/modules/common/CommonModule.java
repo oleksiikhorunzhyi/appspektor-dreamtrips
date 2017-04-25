@@ -57,6 +57,7 @@ import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
+import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
@@ -97,6 +98,7 @@ import dagger.Provides;
             PresentationVideosPresenter.class,
             MessengerActivity.class,
             PodcastPlayerActivity.class,
+            PodcastPlayerPresenter.class,
             DtlActivity.class,
             ComponentActivity.class,
             ConfigChangesAwareComponentActivity.class,

@@ -1,34 +1,41 @@
 package com.worldventures.dreamtrips.modules.common.delegate;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
+import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
+import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
+import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
 public class CachedEntityInteractor {
 
-   private ActionPipe<DownloadCachedEntityCommand> downloadCachedEntityPipe;
-   private ActionPipe<DeleteCachedEntityCommand> deleteCachedEntityPipe;
-   private ActionPipe<ResetCachedEntitiesInProgressCommand> resetCachedEntitiesInProgressPipe;
+   private ActionPipe<MigrateFromCachedEntity> migrateFromCachedEntityPipe;
+   private ActionPipe<DownloadCachedModelCommand> downloadCachedModelPipe;
+   private ActionPipe<DeleteCachedModelCommand> deleteCachedModelPipe;
+   private ActionPipe<ResetCachedModelsInProgressCommand> resetCachedModelsInProgressPipe;
 
    public CachedEntityInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      this.downloadCachedEntityPipe = sessionActionPipeCreator.createPipe(DownloadCachedEntityCommand.class, Schedulers.io());
-      this.deleteCachedEntityPipe = sessionActionPipeCreator.createPipe(DeleteCachedEntityCommand.class, Schedulers.io());
-      this.resetCachedEntitiesInProgressPipe = sessionActionPipeCreator.createPipe(ResetCachedEntitiesInProgressCommand.class, Schedulers.io());
+      this.migrateFromCachedEntityPipe = sessionActionPipeCreator.createPipe(MigrateFromCachedEntity.class, Schedulers.io());
+      this.downloadCachedModelPipe = sessionActionPipeCreator.createPipe(DownloadCachedModelCommand.class, Schedulers.io());
+      this.deleteCachedModelPipe = sessionActionPipeCreator.createPipe(DeleteCachedModelCommand.class, Schedulers.io());
+      this.resetCachedModelsInProgressPipe = sessionActionPipeCreator.createPipe(ResetCachedModelsInProgressCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<DownloadCachedEntityCommand> getDownloadCachedEntityPipe() {
-      return downloadCachedEntityPipe;
+   public ActionPipe<DownloadCachedModelCommand> getDownloadCachedModelPipe() {
+      return downloadCachedModelPipe;
    }
 
-   public ActionPipe<DeleteCachedEntityCommand> getDeleteCachedEntityPipe() {
-      return deleteCachedEntityPipe;
+   public ActionPipe<DeleteCachedModelCommand> getDeleteCachedModelPipe() {
+      return deleteCachedModelPipe;
    }
 
-   public ActionPipe<ResetCachedEntitiesInProgressCommand> getResetCachedEntitiesInProgressPipe() {
-      return resetCachedEntitiesInProgressPipe;
+   public ActionPipe<ResetCachedModelsInProgressCommand> getResetCachedModelsInProgressPipe() {
+      return resetCachedModelsInProgressPipe;
+   }
+
+   public ActionPipe<MigrateFromCachedEntity> getMigrateFromCachedEntityPipe() {
+      return migrateFromCachedEntityPipe;
    }
 }

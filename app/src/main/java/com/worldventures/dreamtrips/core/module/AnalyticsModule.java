@@ -7,6 +7,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalAnalyticEventHandler;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.wallet.util.AnalyticsInteractorProxy;
@@ -35,6 +37,12 @@ public class AnalyticsModule {
    @Provides
    AnalyticsInteractor provideAnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new AnalyticsInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   GlobalAnalyticEventHandler provideGlobalAnalyticEventHandler(AnalyticsInteractor analyticsInteractor, CachedEntityInteractor interactor) {
+      return new GlobalAnalyticEventHandler(analyticsInteractor, interactor);
    }
 
    @Provides

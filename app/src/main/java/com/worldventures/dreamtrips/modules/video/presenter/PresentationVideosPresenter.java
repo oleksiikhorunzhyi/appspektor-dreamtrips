@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
@@ -85,29 +85,29 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
    private void attachCacheToVideos(List<VideoCategory> categories) {
       Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
-         CachedEntity e = db.getDownloadMediaEntity(video.getUid());
+         CachedModel e = db.getDownloadMediaModel(video.getUid());
          video.setCacheEntity(e);
       }));
    }
 
    private void subscribeToCachingStatusUpdates() {
-      Observable.merge(cachedEntityInteractor.getDownloadCachedEntityPipe().observe(),
-            cachedEntityInteractor.getDeleteCachedEntityPipe().observe())
+      Observable.merge(cachedEntityInteractor.getDownloadCachedModelPipe().observe(),
+            cachedEntityInteractor.getDeleteCachedModelPipe().observe())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .map(actionState -> actionState.action.getCachedEntity())
+            .map(actionState -> actionState.action.getCachedModel())
             .subscribe(this::processCachingState);
    }
 
-   private void processCachingState(CachedEntity cachedEntity) {
+   private void processCachingState(CachedModel cachedModel) {
       List<Video> videos = Queryable.from(currentItems).filter(cat -> (cat instanceof Video))
             .cast(Video.class).toList();
       Queryable.from(videos).notNulls()
             .filter(video -> video.getCacheEntity().getUuid()
-                  .equals(cachedEntity.getUuid()))
+                  .equals(cachedModel.getUuid()))
             .forEachR(video -> {
-               video.setCacheEntity(cachedEntity);
-               view.notifyItemChanged(cachedEntity);
+               video.setCacheEntity(cachedModel);
+               view.notifyItemChanged(cachedModel);
             });
    }
 
@@ -127,23 +127,23 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
       TrackingHelper.actionMembershipVideo(action, name);
    }
 
-   public void downloadVideo(CachedEntity entity) {
+   public void downloadVideo(CachedModel entity) {
       cachedEntityDelegate.startCaching(entity, getPathForCache(entity));
    }
 
-   public void deleteCachedVideo(CachedEntity entity) {
+   public void deleteCachedVideo(CachedModel entity) {
       view.onDeleteAction(entity);
    }
 
-   public void onDeleteAction(CachedEntity entity) {
+   public void onDeleteAction(CachedModel entity) {
       cachedEntityDelegate.deleteCache(entity, getPathForCache(entity));
    }
 
-   public void cancelCachingVideo(CachedEntity entity) {
+   public void cancelCachingVideo(CachedModel entity) {
       view.onCancelCaching(entity);
    }
 
-   public void onCancelAction(CachedEntity entity) {
+   public void onCancelAction(CachedModel entity) {
       cachedEntityDelegate.cancelCaching(entity, getPathForCache(entity));
       TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, entity
             .getName());
@@ -151,10 +151,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
    public void onPlayVideo(Video video) {
       Context context = activityRouter.getContext();
-      CachedEntity videoEntity = video.getCacheEntity();
+      CachedModel videoEntity = video.getCacheEntity();
       Uri parse = Uri.parse(video.getVideoUrl());
       if (videoEntity.isCached(activityRouter.getContext())) {
-         parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
+         parse = Uri.parse(CachedModel.getFilePath(context, videoEntity.getUrl()));
       }
 
       activityRouter.openPlayerActivity(parse, video.getVideoName(), obtainVideoLanguage(video), getClass());
@@ -164,8 +164,8 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
       return !TextUtils.isEmpty(video.getLanguage())? video.getLanguage() : "null";
    }
 
-   private String getPathForCache(CachedEntity entity) {
-      return CachedEntity.getFilePath(context, entity.getUrl());
+   private String getPathForCache(CachedModel entity) {
+      return CachedModel.getFilePath(context, entity.getUrl());
    }
 
    public void track() {
@@ -183,10 +183,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
       void setItems(List<Object> videos);
 
-      void notifyItemChanged(CachedEntity entity);
+      void notifyItemChanged(CachedModel entity);
 
-      void onDeleteAction(CachedEntity entity);
+      void onDeleteAction(CachedModel entity);
 
-      void onCancelCaching(CachedEntity entity);
+      void onCancelCaching(CachedModel entity);
    }
 }

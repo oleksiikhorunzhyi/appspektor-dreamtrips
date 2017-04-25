@@ -56,8 +56,8 @@ import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteracto
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.VideoInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
@@ -326,8 +326,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   VideoInteractor provideVideoInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new VideoInteractor(sessionActionPipeCreator);
+   ProgressAnalyticInteractor provideVideoInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ProgressAnalyticInteractor(sessionActionPipeCreator);
    }
 
    @Provides

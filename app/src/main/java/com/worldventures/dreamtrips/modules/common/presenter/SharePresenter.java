@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 import java.io.File;
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
          if (TextUtils.isEmpty(imageUrl)) {
             view.shareTwitterDialog(null, shareLink, text);
          } else {
-            File file = new File(CachedEntity.getExternalFilePath(context, imageUrl));
+            File file = new File(CachedModel.getExternalFilePath(context, imageUrl));
             if (file.exists()) {
                Uri parse = Uri.fromFile(file);
                view.shareTwitterDialog(parse, shareLink, text);
@@ -109,7 +109,7 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
    }
 
    private void downloadFile(String url, final String shareLink, final String text) {
-      File cacheFile = new File(CachedEntity.getExternalFilePath(context, url));
+      File cacheFile = new File(CachedModel.getExternalFilePath(context, url));
       downloadFileInteractor.getDownloadFileCommandPipe()
             .createObservable(new DownloadFileCommand(cacheFile, url))
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()

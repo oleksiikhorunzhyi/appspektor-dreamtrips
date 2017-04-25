@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 
@@ -106,19 +106,19 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    }
 
    @Override
-   public void onDeleteAction(CachedEntity cacheEntity) {
+   public void onDeleteAction(CachedModel cacheEntity) {
       showDialog(R.string.delete_cached_video_title, R.string.delete_cached_video_text, R.string.delete_photo_positiove, R.string.delete_photo_negative, () -> getPresenter()
             .onDeleteAction(cacheEntity));
    }
 
    @Override
-   public void onCancelCaching(CachedEntity cacheEntity) {
+   public void onCancelCaching(CachedModel cacheEntity) {
       showDialog(R.string.cancel_cached_video_title, R.string.cancel_cached_video_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative, () -> getPresenter()
             .onCancelAction(cacheEntity));
    }
 
    @Override
-   public void notifyItemChanged(CachedEntity videoEntity) {
+   public void notifyItemChanged(CachedModel videoEntity) {
       adapter.notifyDataSetChanged();
    }
 
@@ -148,17 +148,17 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    }
 
    @Override
-   public void onDownloadVideo(CachedEntity entity) {
+   public void onDownloadVideo(CachedModel entity) {
       getPresenter().downloadVideo(entity);
    }
 
    @Override
-   public void onDeleteVideo(CachedEntity entity) {
+   public void onDeleteVideo(CachedModel entity) {
       getPresenter().deleteCachedVideo(entity);
    }
 
    @Override
-   public void onCancelCachingVideo(CachedEntity entity) {
+   public void onCancelCachingVideo(CachedModel entity) {
       getPresenter().cancelCachingVideo(entity);
    }
 

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.membership.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 import java.util.Date;
 
@@ -19,7 +19,7 @@ public class Podcast {
    private String fileUrl;
    private String speaker;
 
-   private transient CachedEntity entity;
+   private transient CachedModel entity;
 
    public Podcast() {
    }
@@ -100,14 +100,15 @@ public class Podcast {
       return speaker;
    }
 
-   public CachedEntity getCacheEntity() {
+   public CachedModel getCacheEntity() {
       if (entity == null) {
-         entity = new CachedEntity(getFileUrl(), getUid(), getTitle());
+         entity = new CachedModel(getFileUrl(), getUid(), getTitle());
+         entity.setEntityClass(Podcast.class);
       }
       return entity;
    }
 
-   public void setCacheEntity(CachedEntity entity) {
+   public void setCacheEntity(CachedModel entity) {
       this.entity = entity;
    }
 

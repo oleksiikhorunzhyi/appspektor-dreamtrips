@@ -6,7 +6,7 @@ import android.os.Environment;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.membership.view.cell.delegate.PodcastCellDelegate;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 public class ProgressVideoCellHelper {
 
@@ -14,7 +14,7 @@ public class ProgressVideoCellHelper {
 
    private final PinProgressButton pinProgressButton;
 
-   private CachedEntity cacheEntity;
+   private CachedModel cacheEntity;
 
    public ProgressVideoCellHelper(PinProgressButton pinProgressButton) {
       this.pinProgressButton = pinProgressButton;
@@ -47,7 +47,7 @@ public class ProgressVideoCellHelper {
       }
    }
 
-   public void setModelObject(CachedEntity cacheEntity) {
+   public void setModelObject(CachedModel cacheEntity) {
       this.cacheEntity = cacheEntity;
    }
 

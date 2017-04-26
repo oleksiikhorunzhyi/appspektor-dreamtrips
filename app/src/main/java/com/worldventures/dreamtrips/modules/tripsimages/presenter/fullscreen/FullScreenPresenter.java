@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesIntera
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageShareAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -62,7 +64,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
    public void onShareAction() {
       if (!isConnected()) {
-         reportNoConnectionWithOfflineErrorPipe();
+         reportNoConnectionWithOfflineErrorPipe(new IOException());
          return;
       }
 

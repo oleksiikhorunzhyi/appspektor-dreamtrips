@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.navdrawer;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -34,7 +33,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
    private NavigationDrawerPresenter navigationDrawerPresenter;
 
    private NavigationDrawerAdapter adapter;
-
+   //
    private ComponentDescription currentComponent;
 
    public NavigationDrawerViewImpl(Context context) {
@@ -59,19 +58,9 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void init(Context context) {
       ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_navigation_drawer, this, true));
+      //
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       setVersion();
-      setupViews();
-   }
-
-   public void setupViews() {
-      if (ViewUtils.isLandscapeOrientation(getContext())) {
-         recyclerView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_tablet_menu));
-         version.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
-      } else {
-         recyclerView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-         version.setTextColor(ContextCompat.getColor(getContext(), R.color.black_overlay));
-      }
    }
 
    @Override

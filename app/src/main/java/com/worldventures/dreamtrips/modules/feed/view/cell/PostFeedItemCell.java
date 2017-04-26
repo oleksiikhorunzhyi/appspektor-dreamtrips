@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,15 +47,20 @@ import butterknife.Optional;
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>> {
 
    @InjectView(R.id.post) HashtagTextView post;
+   @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
    @InjectView(R.id.translate_view) TranslateView viewWithTranslation;
    @InjectView(R.id.translate) View translateButton;
    @Optional @InjectView(R.id.collage) CollageView collageView;
    @Optional @InjectView(R.id.tag) ImageView tag;
 
+   @Inject FragmentManager fragmentManager;
    @Inject SessionHolder<UserSession> appSessionHolder;
+
+   private int width;
 
    public PostFeedItemCell(View view) {
       super(view);
+      itemView.post(() -> width = cardViewWrapper.getWidth());
    }
 
    @Override
@@ -124,6 +130,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    protected void processAttachments(List<FeedEntityHolder> attachments) {
       if (collageView == null) return;
+      //
       if (attachments != null && !attachments.isEmpty()) {
          collageView.setItemClickListener(new CollageView.ItemClickListener() {
             @Override
@@ -136,8 +143,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
                openFeedItemDetails();
             }
          });
-
-         collageView.setItems(attachmentsToCollageItems(attachments), itemView.getWidth());
+         collageView.setItems(attachmentsToCollageItems(attachments), width);
       } else {
          collageView.clear();
       }
@@ -189,7 +195,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    private void openHashtagFeeds(@NotNull String hashtag) {
       router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
             .data(new HashtagFeedBundle(hashtag))
-            .manualComponentActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
    }

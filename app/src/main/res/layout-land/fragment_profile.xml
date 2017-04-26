@@ -40,7 +40,6 @@
                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                android:textColor="@android:color/white"
                android:textSize="22sp"
-               android:visibility="gone"
                />
 
          <TextView
@@ -50,7 +49,6 @@
                android:layout_gravity="center"
                android:drawablePadding="@dimen/spacing_small"
                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-               android:visibility="gone"
                />
       </LinearLayout>
    </android.support.v7.widget.Toolbar>

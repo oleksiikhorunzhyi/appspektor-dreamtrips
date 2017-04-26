@@ -79,12 +79,6 @@ public class BucketListModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideBucketListComponent() {
-      return new ComponentDescription.Builder()
-            .key(BUCKETLIST)
-            .navMenuTitle(R.string.bucket_list)
-            .toolbarTitle(R.string.bucket_list)
-            .icon(R.drawable.ic_bucket_lists)
-            .fragmentClass(BucketTabsFragment.class)
-            .build();
+      return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
    }
 }

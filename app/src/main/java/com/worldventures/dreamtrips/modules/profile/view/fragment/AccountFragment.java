@@ -14,11 +14,11 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
-import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
@@ -126,10 +126,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
-   protected void initToolbar() {
-      if (getActivity() instanceof FeedActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
+   protected void initialToolbar() {
+      if (getActivity() instanceof MainActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
          profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-         profileToolbar.setNavigationOnClickListener(view -> ((FeedActivity) getActivity()).openLeftDrawer());
+         profileToolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
       } else {
          profileToolbar.setNavigationIcon(R.drawable.back_icon);
          profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());

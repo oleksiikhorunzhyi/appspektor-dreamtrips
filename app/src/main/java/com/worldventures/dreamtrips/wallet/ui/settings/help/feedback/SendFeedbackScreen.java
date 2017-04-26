@@ -35,6 +35,8 @@ import rx.subjects.BehaviorSubject;
 
 public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter.Screen, SendFeedbackPresenter, SendFeedbackPath> implements SendFeedbackPresenter.Screen {
 
+   public static final int MAX_PHOTOS_ATTACHMENT = 5;
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @InjectView(R.id.et_feedback_message) EditText etFeedbackMessage;
@@ -170,7 +172,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
 
    @Override
    public void pickPhoto() {
-      mediaPickerService.pickPhoto();
+      mediaPickerService.pickPhotos(MAX_PHOTOS_ATTACHMENT - feedbackAttachments.getItemCount());
    }
 
    @Override

@@ -27,7 +27,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter.PICKER_MAX_IMAGES;
+import static com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackScreen.MAX_PHOTOS_ATTACHMENT;
 
 public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter.Screen, Parcelable> {
 
@@ -77,7 +77,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
             .compose(bindView())
             .subscribe(holder -> {
                int attachmentsCount = attachmentsManager.getAttachments().size();
-               getView().changeAddPhotosButtonEnabled(attachmentsCount < PICKER_MAX_IMAGES);
+               getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
             });
 
       feedbackInteractor.attachmentsRemovedPipe()

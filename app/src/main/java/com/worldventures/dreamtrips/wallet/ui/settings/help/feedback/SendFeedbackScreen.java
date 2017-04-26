@@ -75,6 +75,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      supportConnectionStatusLabel(false);
 
       //noinspection WrongConstant
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);

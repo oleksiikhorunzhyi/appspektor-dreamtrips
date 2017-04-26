@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTranslatedText
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment
@@ -18,13 +17,20 @@ import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 
 class TranslationFeedInteractorSpec : BaseSpec({
    describe("Translate posts and comments actions") {
-      setup({ setOf(TranslationDiscStorage(mockDb)) }) { mockHttpService() }
 
-      context("Translate comment when disc storage is empty") {
+      beforeEachTest {
+         setup {
+            mockHttpService()
+         }
+      }
+
+      it("Translate comment when disc storage is empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn("")
 
          comment.message = "originalText"
@@ -36,7 +42,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          }
       }
 
-      context("Translate comment when disc storage is not empty") {
+      it("Translate comment when disc storage is not empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn(translationFromDisc)
 
          comment.message = "originalText"
@@ -48,7 +54,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          }
       }
 
-      context("Translate post when disc storage is empty") {
+      it("Translate post when disc storage is empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn("")
 
          textualPost.description = "originalText"
@@ -60,7 +66,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          }
       }
 
-      context("Translate post when disc storage is not empty") {
+      it("Translate post when disc storage is not empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn(translationFromDisc)
 
          textualPost.description = "originalText"
@@ -74,7 +80,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
    }
 }) {
    companion object BaseCompanion {
-      val mockDb: SnappyRepository = spy()
+      lateinit var mockDb: SnappyRepository
 
       val languageTo = "en-US"
       val translationFromNetwork = "translationFromNetwork"
@@ -85,10 +91,12 @@ class TranslationFeedInteractorSpec : BaseSpec({
       lateinit var translateFeedInteractor: TranslationFeedInteractor
       lateinit var translationInteractor: TranslationInteractor
 
-      fun setup(storageSet: () -> Set<ActionStorage<*>>, httpService: () -> MockHttpActionService) {
+      fun setup(httpService: () -> MockHttpActionService) {
+         mockDb = spy()
+
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
-               .bindStorageSet(storageSet())
+               .bindStorageSet(setOf(TranslationDiscStorage(mockDb)))
                .wrapDagger()
          val janet = Janet.Builder()
                .addService(daggerCommandActionService)

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
@@ -21,23 +22,23 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
-import org.jetbrains.spek.api.DescribeBody
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.mockito.Mockito
-import org.powermock.api.mockito.PowerMockito.`when`
 import rx.schedulers.Schedulers
 import java.util.*
 
-abstract class BaseUploadingInteractorSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec(spekBody) {
+abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : BaseSpec(spekBody) {
    companion object {
-      val mockCreatedPost: TextualPost = mock()
+      lateinit var mockCreatedPost: TextualPost
       val listOfMockPhotos: ArrayList<Photo> = arrayListOf(mockPhoto(), mockPhoto())
 
       lateinit var backgroundUploadingInteractor: BackgroundUploadingInteractor
       lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
 
       fun initJanet(mockContracts: List<Contract> = successContract()) {
+         mockCreatedPost = mock()
          val mockPhotoItems = listOf(mockItem(listOfMockPhotos[0]), mockItem(listOfMockPhotos[1]));
-         Mockito.`when`(mockCreatedPost.attachments).thenAnswer { mockPhotoItems }
+         whenever(mockCreatedPost.attachments).thenAnswer { mockPhotoItems }
 
          val daggerCommandActionService = CommandActionService().wrapDagger()
 
@@ -63,14 +64,14 @@ abstract class BaseUploadingInteractorSpec(spekBody: DescribeBody.() -> Unit) : 
 
       fun mockPhoto(): Photo {
          val photo: Photo = mock()
-         `when`(photo.location).thenReturn(Location())
+         whenever(photo.location).thenReturn(Location())
          return photo
       }
 
       fun mockItem(photo: Photo): PhotoFeedItem {
          val feedItem: PhotoFeedItem = mock()
-         `when`(feedItem.item).thenReturn(photo)
-         `when`(feedItem.type).thenReturn(FeedEntityHolder.Type.PHOTO)
+         whenever(feedItem.item).thenReturn(photo)
+         whenever(feedItem.type).thenReturn(FeedEntityHolder.Type.PHOTO)
          return feedItem
       }
    }

@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.social.background_uploading
 
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 
 class UploadTimeEstimatorTest : BaseSpec({
    describe("Test upload time estimation") {
@@ -19,11 +21,9 @@ class UploadTimeEstimatorTest : BaseSpec({
          uploadTimeEstimator.onUploadingStarted(uploadingTimeStart)
 
          val remainingTime = uploadTimeEstimator.estimate(6, uploadingTimeEndForFirstIteration)
-
          val averageSpeedCondition = uploadTimeEstimator.averageUploadSpeed <= 150 + AVERAGE_SPEED_MEASUREMENT_RESERVE
                && uploadTimeEstimator.averageUploadSpeed >= 150 - AVERAGE_SPEED_MEASUREMENT_RESERVE
          val remainingTimeCondition = remainingTime == 66467000L
-
          assert(averageSpeedCondition && remainingTimeCondition)
       }
 

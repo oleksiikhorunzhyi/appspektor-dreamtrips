@@ -5,13 +5,16 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundO
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PauseCompoundOperationCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand
 import io.techery.janet.ActionState
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 
 class PauseCompoundOperationSpec : BaseUploadingInteractorSpec({
    describe("Pause compound operation command") {
       initJanet(compoundOperationsNotEmptyContract())
 
-      on("Pausing compound operation") {
+      context("Pausing compound operation") {
          val testSubscriberStartNext = TestSubscriber<ActionState<StartNextCompoundOperationCommand>>()
          val testSubscriberPause = TestSubscriber<ActionState<PauseCompoundOperationCommand>>()
 

@@ -5,8 +5,6 @@ import com.snappydb.SnappydbException;
 
 import java.util.Collection;
 
-import timber.log.Timber;
-
 public class SnappyStorageManager {
 
    private final DiskStorage diskStorage;

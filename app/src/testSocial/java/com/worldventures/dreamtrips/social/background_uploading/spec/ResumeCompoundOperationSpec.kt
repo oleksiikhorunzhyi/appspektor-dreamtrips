@@ -5,13 +5,17 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundO
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ResumeCompoundOperationCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand
 import io.techery.janet.ActionState
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class ResumeCompoundOperationSpec : BaseUploadingInteractorSpec({
-   describe("Resume compound operation command") {
+   xdescribe("Resume compound operation command") {
       initJanet(compoundOperationsNotEmptyContract())
 
-      on("Resuming compound operation") {
+      context("Resuming compound operation") {
          val testSubscriberStartNext = TestSubscriber<ActionState<StartNextCompoundOperationCommand>>()
          val testSubscriberResume = TestSubscriber<ActionState<ResumeCompoundOperationCommand>>()
 

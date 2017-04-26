@@ -6,6 +6,9 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.snappydb.DB
 import com.worldventures.dreamtrips.BaseSpec
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 
 class SnappyStorageManagerSpec : BaseSpec({
 

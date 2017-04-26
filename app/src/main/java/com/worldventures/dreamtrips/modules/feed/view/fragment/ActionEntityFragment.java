@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -7,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -55,6 +59,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
    @Inject BackStackDelegate backStackDelegate;
+   @Inject ConfigurationInteractor configurationInteractor;
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
    @InjectView(R.id.avatar) protected SmartAvatarView avatar;
@@ -63,6 +68,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    @InjectView(R.id.image) protected ImageView image;
    @InjectView(R.id.location) protected ImageView locationBtn;
    @InjectView(R.id.photos) protected RecyclerView photosList;
+   @InjectView(R.id.post_container) ViewGroup postContainer;
 
    protected BaseDelegateAdapter adapter;
    protected SweetAlertDialog dialog;
@@ -89,6 +95,22 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       photosList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
       photosList.setAdapter(adapter);
+
+      configurationInteractor.configurationActionPipe()
+            .observe()
+            .compose(bindUntilDropViewComposer())
+            .map(state -> state.action.getResult())
+            .subscribe(this::updateContainerOnOrientationChange);
+   }
+
+   private void updateContainerOnOrientationChange(Configuration configuration) {
+      Resources res = postContainer.getContext().getResources();
+      ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) postContainer.getLayoutParams();
+      params.bottomMargin = res.getDimensionPixelSize(R.dimen.post_spacing_vertical_bottom);
+      int marginLeftRight = res.getDimensionPixelSize(R.dimen.post_spacing_horizontal);
+      params.leftMargin = marginLeftRight;
+      params.rightMargin = marginLeftRight;
+      params.topMargin = res.getDimensionPixelSize(R.dimen.post_spacing_vertical_top);
    }
 
    @Override

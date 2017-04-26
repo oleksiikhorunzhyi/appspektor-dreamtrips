@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoPro
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProviderImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
@@ -394,5 +395,11 @@ public class ManagerModule {
    @Singleton
    UploadingFileManager provideUploadingFileManager(Context context) {
       return new UploadingFileManager(context.getFilesDir());
+   }
+
+   @Provides
+   @Singleton
+   ConfigurationInteractor provideConfigurationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ConfigurationInteractor(sessionActionPipeCreator);
    }
 }

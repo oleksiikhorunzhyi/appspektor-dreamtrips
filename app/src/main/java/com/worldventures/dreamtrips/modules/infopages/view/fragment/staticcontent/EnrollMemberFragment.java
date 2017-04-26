@@ -31,7 +31,7 @@ public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle
    }
 
    @Override
-   protected void track() {
+   protected void trackViewFromViewPagerIfNeeded() {
       getPresenter().track(Route.ENROLL_MEMBER);
    }
 }

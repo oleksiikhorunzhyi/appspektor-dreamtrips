@@ -6,5 +6,5 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "Help:Documents",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class ViewDocumentsTabAnalyticAction extends BaseAnalyticsAction {
+public class ViewHelpDocumentsTabAnalyticAction extends BaseAnalyticsAction {
 }

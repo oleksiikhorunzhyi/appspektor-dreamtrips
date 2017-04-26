@@ -54,7 +54,7 @@ public class WalletHelpSettingsScreen extends WalletLinearLayout<WalletHelpSetti
 
    @OnClick(R.id.item_documents)
    void onClickDocuments() {
-
+      presenter.openDocuments();
    }
 
    @OnClick(R.id.item_videos)

@@ -21,7 +21,8 @@ public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPrese
       return GetMemberVideosCommand.forHelpVideos(videoLanguage);
    }
 
-   public void onSelectedFromPager() {
+   @Override
+   public void track() {
       if (videoLanguage != null) {
          sendViewAnalytics();
          analyticSent = true;

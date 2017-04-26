@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.infopages.service.storage;
 
-import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedDiskStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedDiskStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 
 import java.util.List;
 
-import rx.functions.Action1;
-import rx.functions.Func0;
+import rx.functions.Action2;
+import rx.functions.Func1;
 
-public class DocumentsDiskStorage extends PaginatedDiskStorage<Document> {
+public class DocumentsDiskStorage extends KeyValuePaginatedDiskStorage<Document> {
 
    private SnappyRepository db;
 
@@ -18,12 +18,12 @@ public class DocumentsDiskStorage extends PaginatedDiskStorage<Document> {
    }
 
    @Override
-   public Func0<List<Document>> getRestoreAction() {
-      return db::getDocuments;
+   public Action2<String, List<Document>> getSaveAction() {
+      return db::setDocuments;
    }
 
    @Override
-   public Action1<List<Document>> getSaveAction() {
-      return db::setDocuments;
+   public Func1<String, List<Document>> getRestoreFunc() {
+      return db::getDocuments;
    }
 }

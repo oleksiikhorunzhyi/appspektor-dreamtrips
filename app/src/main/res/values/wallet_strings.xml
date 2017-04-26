@@ -497,6 +497,9 @@
    <string name="wallet_wizard_upload_profile_message">This could take a few minutes…</string>
    <string name="wallet_error_uploading_retry">Connection error. Can\'t upload User Data. Please retry.</string>
 
+   <!-- Help section -->
+   <string name="wallet_email_app_choose_dialog_title">Choose Application</string>
+
    <!-- Send Feedback screen -->
    <string name="wallet_settings_help_feedback_title_screen">Send Feedback</string>
    <string name="wallet_settings_help_feedback_user_approve_info">We\'re working hard to make the Smart Card better.\nPlease help us to improve.</string>

@@ -75,7 +75,6 @@ android {
          'VERSION_CHECK_API_URL': '"http://qafortius-ucservices.wvhservices.com/"',
          'NXT_API'              : '"https://demo.nxt-security.com/api/services/evtservice/v2"',
          'SMART_CARD_SDK_CLIENT': '"nxtid"'
-
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
@@ -438,7 +437,7 @@ dependencies {
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    compile 'org.objenesis:objenesis:2.5'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.23-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.30-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.squareup.okhttp:okhttp:2.7.5'

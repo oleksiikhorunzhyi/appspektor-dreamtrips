@@ -96,10 +96,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    private void refresh() {
+      filteredItems.clear();
       if (bucketItems.isEmpty()) {
-         filteredItems.clear();
+         view.hideDetailContainer();
       } else {
-         filteredItems.clear();
          if (showToDO) {
             Collection<BucketItem> toDo = Queryable.from(bucketItems)
                   .filter((bucketItem) -> !bucketItem.isDone())

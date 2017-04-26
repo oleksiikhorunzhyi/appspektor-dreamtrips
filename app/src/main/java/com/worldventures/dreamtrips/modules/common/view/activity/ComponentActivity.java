@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -11,8 +12,13 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
+import butterknife.InjectView;
+import butterknife.Optional;
+
 @Layout(R.layout.activity_component)
 public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
+
+   @Optional @InjectView(R.id.container_details_floating) protected FrameLayout detailsFloatingContainer;
 
    Bundle extras;
 

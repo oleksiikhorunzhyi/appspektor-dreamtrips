@@ -59,14 +59,7 @@ public class MessengerActivityModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMessengerComponent() {
-      return new ComponentDescription.Builder()
-            .key(MESSENGER)
-            .navMenuTitle(R.string.messenger)
-            .toolbarTitle(R.string.messenger)
-            .icon(R.drawable.ic_messenger)
-            .skipGeneralToolbar(true)
-            .shouldFinishMainActivity(true)
-            .build();
+      return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger, true, null);
    }
 
    @Provides

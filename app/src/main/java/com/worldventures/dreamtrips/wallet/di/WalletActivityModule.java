@@ -37,23 +37,23 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.po
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPresenter;
@@ -148,14 +148,14 @@ public class WalletActivityModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideWalletComponent() {
-      return new ComponentDescription.Builder()
-            .key(WALLET)
-            .navMenuTitle(R.string.wallet)
-            .toolbarTitle(R.string.wallet)
-            .icon(R.drawable.ic_wallet)
-            .skipGeneralToolbar(true)
-            .shouldFinishMainActivity(true)
-            .build();
+      return new ComponentDescription(
+            WALLET,
+            R.string.wallet,
+            R.string.wallet,
+            R.drawable.ic_wallet,
+            true,
+            null
+      );
    }
 
    @Singleton

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
@@ -13,6 +14,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageShareAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -92,6 +95,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
    }
 
    public void onCouldNotLoadImage(Throwable e) {
+      // Avoid showing offline error when there is connection.
+      // This can happen if server is not responding for instance.
+      if (Utils.isConnected(context) && e instanceof IOException) {
+         e = new Exception("Could not load image");
+      }
       handleError(e);
    }
 

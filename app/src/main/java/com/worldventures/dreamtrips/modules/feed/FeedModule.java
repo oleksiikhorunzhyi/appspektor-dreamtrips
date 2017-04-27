@@ -13,6 +13,13 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Backgro
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewCreationTextCell;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -60,7 +67,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragm
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.DescriptionCreatorFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
@@ -131,18 +137,22 @@ import de.greenrobot.event.EventBus;
             DtGalleryFragment.class,
             GalleryPresenter.class,
             ActionEntityFragment.class,
+            ActionReviewEntityFragment.class,
             ActionEntityPresenter.class,
             CreateTripImageFragment.class,
             CreateFeedPostFragment.class,
             CreateReviewPostFragment.class,
             CreateEntityFragment.class,
+            CreateReviewEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,
             LocationPresenter.class,
             SuggestedPhotosCell.class,
             SuggestionPhotoCell.class,
             PhotoPostCreationCell.class,
+            PhotoReviewPostCreationCell.class,
             PostCreationTextCell.class,
+            PostReviewCreationTextCell.class,
             SubPhotoAttachmentCell.class,
             PostFeedItemDetailsCell.class,
             EditPostFragment.class,
@@ -153,7 +163,9 @@ import de.greenrobot.event.EventBus;
             DescriptionCreatorPresenter.class,
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
-            UploadingPhotoPostsSectionCell.class
+            UploadingPhotoPostsSectionCell.class,
+            CreateReviewEntityPresenter.class,
+            PostReviewDescription.class,
       },
       complete = false,
       library = true)

@@ -113,7 +113,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
       super.onDetachedFromWindow();
    }
 
-   private void onBackPressed() {
+   public void onBackPressed() {
       if (null != fragment){
          if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
             showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));

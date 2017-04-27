@@ -35,10 +35,6 @@ public class HelpDocumentScreen extends WalletLinearLayout<HelpDocumentPresenter
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public HelpDocumentPresenter createPresenter() {

@@ -89,10 +89,4 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
 }

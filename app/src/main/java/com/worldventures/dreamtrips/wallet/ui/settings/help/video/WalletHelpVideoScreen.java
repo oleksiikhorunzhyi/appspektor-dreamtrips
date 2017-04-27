@@ -54,10 +54,6 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public WalletHelpVideoPresenter createPresenter() {

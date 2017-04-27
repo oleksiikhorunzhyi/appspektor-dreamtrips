@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.modules.infopages.view.cell.DocumentCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 
@@ -50,11 +49,6 @@ public class WalletHelpDocumentsScreen extends WalletLinearLayout<WalletHelpDocu
 
    public WalletHelpDocumentsScreen(Context context, AttributeSet attributeSet) {
       super(context, attributeSet);
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 
    @NonNull

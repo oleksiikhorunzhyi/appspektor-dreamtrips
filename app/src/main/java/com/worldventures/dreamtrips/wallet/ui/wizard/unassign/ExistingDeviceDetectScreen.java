@@ -53,12 +53,7 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
    public OperationScreen provideOperationDelegate() {
       return null;
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
+   
    @OnClick(R.id.button_unpair)
    public void onClickUnpair() {
       presenter.repair();

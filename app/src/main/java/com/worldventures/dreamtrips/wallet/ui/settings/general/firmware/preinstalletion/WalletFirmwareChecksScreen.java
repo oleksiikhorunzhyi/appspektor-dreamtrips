@@ -100,11 +100,6 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
 
    @Override
    public void cardIsInChargerCheckVisible(boolean isVisible) {
-      checkWidgetCharger.setVisibility(isVisible? VISIBLE : GONE);
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
+      checkWidgetCharger.setVisibility(isVisible ? VISIBLE : GONE);
    }
 }

@@ -62,10 +62,6 @@ public class WalletOfflineModeSettingsScreen extends WalletLinearLayout<WalletOf
    }
 
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public OperationScreen provideOperationDelegate() {

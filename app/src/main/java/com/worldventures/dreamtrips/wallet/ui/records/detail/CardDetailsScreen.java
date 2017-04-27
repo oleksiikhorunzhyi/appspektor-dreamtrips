@@ -227,11 +227,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void showSCNonConnectionDialog() {
       new MaterialDialog.Builder(getContext())
             .title(R.string.wallet_card_settings_cant_connected)

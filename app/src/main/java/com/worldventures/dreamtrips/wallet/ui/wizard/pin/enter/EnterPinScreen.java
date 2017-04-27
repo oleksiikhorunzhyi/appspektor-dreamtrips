@@ -91,11 +91,6 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    protected void onDetachedFromWindow() {
       if(infoLockGesturesDialog != null) infoLockGesturesDialog.dismiss();
       super.onDetachedFromWindow();

@@ -108,11 +108,6 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void setPreviewPhoto(String photoUrl) {
       profilePhoto.setImageURI(photoUrl);
    }

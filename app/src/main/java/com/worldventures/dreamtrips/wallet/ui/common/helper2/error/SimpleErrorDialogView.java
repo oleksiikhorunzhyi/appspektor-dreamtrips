@@ -27,7 +27,9 @@ public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
       return new MaterialDialog.Builder(context)
             .content(contentResId)
             .positiveText(R.string.ok)
-            .onPositive((dialog, which) -> defaultAction.call(t))
+            .onPositive((dialog, which) -> {
+               if (defaultAction != null) defaultAction.call(t);
+            })
             .build();
    }
 }

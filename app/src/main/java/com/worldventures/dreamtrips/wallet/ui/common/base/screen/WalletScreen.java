@@ -9,4 +9,6 @@ public interface WalletScreen extends MvpView {
    OperationScreen provideOperationDelegate();
 
    void showConnectionStatus(ConnectionStatus connectionStatus);
+
+   void showHttpConnectionStatus(boolean connected);
 }

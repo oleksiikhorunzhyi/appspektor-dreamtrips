@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.base;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,10 @@ import flow.path.Path;
 public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T> {
 
    private Injector injector;
-   private View connectionHeader;
-   private boolean visibleConnectionLabel = true;
+   private View connectionSmartCardHeader;
+   private View connectionHttpHeader;
+   private boolean visibleConnectionSmartCardLabel = true;
+   private boolean visibleHttpConnectionLabel = false;
 
    public WalletLinearLayout(Context context) {
       this(context, null);
@@ -45,27 +48,42 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
       super.onFinishInflate();
       ButterKnife.inject(this);
 
-
-      connectionHeader = LayoutInflater.from(getContext())
+      connectionSmartCardHeader = LayoutInflater.from(getContext())
             .inflate(R.layout.wallet_smartcard_connection_plank, this, false);
+
+      connectionHttpHeader = LayoutInflater.from(getContext())
+            .inflate(R.layout.wallet_http_connection_plank, this, false);
    }
 
    public void showConnectionStatus(ConnectionStatus connectionStatus) {
-      if (!visibleConnectionLabel) return;
+      if (!visibleConnectionSmartCardLabel) return;
 
-      switch (connectionStatus) {
-         case CONNECTED:
-            removeView(connectionHeader);
-            break;
-         case DISCONNECTED:
-            if (indexOfChild(connectionHeader) < 0) {
-               addView(connectionHeader, hasToolbar() ? 1 : 0);
-            }
-            break;
+      viewLabelController(connectionSmartCardHeader, connectionStatus.isConnected());
+   }
+
+   private void viewLabelController(View view, boolean connected) {
+      if (connected) {
+         removeView(view);
+      } else {
+         if (indexOfChild(view) < 0) {
+            addView(view, findCorrectIndex());
+         }
       }
    }
 
-   protected abstract boolean hasToolbar();
+   public void showHttpConnectionStatus(boolean connected) {
+      if (!visibleHttpConnectionLabel || visibleConnectionSmartCardLabel) return;
+
+      viewLabelController(connectionHttpHeader, connected);
+   }
+
+   private int findCorrectIndex() {
+      if (getChildCount() > 0 && getChildAt(0) instanceof Toolbar) {
+         return 1;
+      } else {
+         return 0;
+      }
+   }
 
    @Deprecated
    @Override
@@ -95,6 +113,10 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
    }
 
    protected void supportConnectionStatusLabel(boolean showLabel) {
-      visibleConnectionLabel = showLabel;
+      visibleConnectionSmartCardLabel = showLabel;
+   }
+
+   protected void supportHttpConnectionStatusLabel(boolean showLabel) {
+      visibleHttpConnectionLabel = showLabel;
    }
 }

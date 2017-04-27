@@ -46,9 +46,4 @@ public class WalletPinIsSetScreen extends WalletLinearLayout<WalletPinIsSetPrese
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

@@ -56,11 +56,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @NonNull
    @Override
    public SendFeedbackPresenter createPresenter() {
@@ -78,6 +73,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       supportConnectionStatusLabel(false);
+      supportHttpConnectionStatusLabel(true);
 
       //noinspection WrongConstant
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);

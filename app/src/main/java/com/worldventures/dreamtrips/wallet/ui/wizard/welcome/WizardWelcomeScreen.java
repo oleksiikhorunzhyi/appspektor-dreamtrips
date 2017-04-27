@@ -100,9 +100,4 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
    public OperationScreen provideOperationDelegate() {
       return null;
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

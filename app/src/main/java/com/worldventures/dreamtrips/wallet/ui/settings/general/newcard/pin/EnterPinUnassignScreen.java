@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -40,11 +39,6 @@ public class EnterPinUnassignScreen extends WalletLinearLayout<EnterPinUnassignP
    @Override
    public OperationScreen provideOperationDelegate() {
       return null;
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 
    @Override

@@ -79,12 +79,7 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
    public Observable<CharSequence> scidInput() {
       return RxTextView.textChanges(scidNumberInput);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
+   
    @Override
    public OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus() {
       return new ComposableOperationView<>(

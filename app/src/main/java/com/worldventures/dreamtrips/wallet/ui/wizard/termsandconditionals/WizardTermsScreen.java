@@ -127,7 +127,7 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
       return new ComposableOperationView<>(new ViewProgressView<>(pb), null, this);
    }
 
-   private void buildErrorDialog(MaterialDialog.SingleButtonCallback retryAction){
+   private void buildErrorDialog(MaterialDialog.SingleButtonCallback retryAction) {
       errorDialog = new MaterialDialog.Builder(getContext()).title(R.string.wallet_error_label)
             .content(R.string.wallet_terms_and_conditions_load_failed)
             .positiveText(R.string.wallet_retry_label)
@@ -146,11 +146,6 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void showError(Object o, Throwable throwable) {
       failedToLoadTerms();
    }
@@ -162,6 +157,6 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
 
    @Override
    public void hideError() {
-      if(errorDialog != null) errorDialog.dismiss();
+      if (errorDialog != null) errorDialog.dismiss();
    }
 }

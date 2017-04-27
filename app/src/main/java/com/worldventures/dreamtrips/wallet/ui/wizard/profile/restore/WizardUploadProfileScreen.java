@@ -33,10 +33,6 @@ public class WizardUploadProfileScreen extends WalletLinearLayout<WizardUploadPr
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    protected void onFinishInflate() {

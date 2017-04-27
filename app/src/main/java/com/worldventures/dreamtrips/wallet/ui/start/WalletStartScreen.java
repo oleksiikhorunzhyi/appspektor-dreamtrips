@@ -35,11 +35,6 @@ public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPre
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return false;
-   }
-
-   @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);

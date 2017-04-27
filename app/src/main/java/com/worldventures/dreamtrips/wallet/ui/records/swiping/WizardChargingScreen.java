@@ -72,11 +72,6 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void checkConnection(ConnectionStatus connectionStatus) {
       if (!connectionStatus.isConnected()) presenter.showConnectionErrorScreen();
    }

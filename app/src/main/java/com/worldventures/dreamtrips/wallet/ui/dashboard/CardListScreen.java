@@ -349,11 +349,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void showSCNonConnectionDialog() {
       if (scNonConnectionDialog == null) {
          scNonConnectionDialog = new MaterialDialog.Builder(getContext())

@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -18,12 +17,9 @@ import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
@@ -34,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -69,30 +64,6 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
          view.disableImagePicker();
          view.disableButton();
       }
-      postsInteractor.createPostCompoundOperationPipe()
-            .observeSuccess()
-            .map(Command::getResult)
-            .compose(bindViewToMainComposer())
-            .subscribe(postCompoundOperationModel -> {
-               if (postCompoundOperationModel.body().attachments().size() > 0) {
-                  closeView();
-                  backgroundUploadingInteractor.scheduleOperationPipe()
-                        .send(new ScheduleCompoundOperationCommand(postCompoundOperationModel));
-               } else {
-                  createTextualPost(postCompoundOperationModel);
-               }
-            });
-      postsInteractor.createPostPipe()
-            .observe()
-            .filter(state -> state.action.getId() == postInProgressId)
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<CreatePostCommand>()
-                  .onFail(this::handleError)
-                  .onSuccess(command -> {
-                     eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
-                     analyticsInteractor.analyticsActionPipe().send(SharePostAction.createPostAction(command.getResult()));
-                     closeView();
-                  }));
       mediaPickerImagesProcessedEventDelegate.getReplayObservable()
             .compose(bindViewToMainComposer())
             .subscribe(mediaPickerProcessingImages -> {

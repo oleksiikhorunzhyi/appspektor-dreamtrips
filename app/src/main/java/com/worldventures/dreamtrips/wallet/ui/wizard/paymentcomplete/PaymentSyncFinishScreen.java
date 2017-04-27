@@ -26,11 +26,6 @@ public class PaymentSyncFinishScreen extends WalletLinearLayout<PaymentSyncFinis
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       if(isInEditMode()) return;

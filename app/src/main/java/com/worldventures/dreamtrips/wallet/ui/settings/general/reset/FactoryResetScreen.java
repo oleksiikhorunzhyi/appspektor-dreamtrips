@@ -54,9 +54,4 @@ public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter
    public void onClickCancel() {
       presenter.goBack();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

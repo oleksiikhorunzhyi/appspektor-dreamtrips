@@ -8,13 +8,16 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HeaderProvider {
 
    private SessionHolder<UserSession> appSessionHolder;
-   private  AppVersionNameBuilder appVersionNameBuilder;
+   private AppVersionNameBuilder appVersionNameBuilder;
 
    public HeaderProvider(SessionHolder<UserSession> appSessionHolder,
          AppVersionNameBuilder appVersionNameBuilder) {
@@ -49,12 +52,13 @@ public class HeaderProvider {
    }
 
    public Map<String, String> getStandardWebViewHeaders() {
-      Map<String, String> headers = new HashMap<>();
-      HeaderProvider.Header appPlatformHeader = getAppPlatformHeader();
-      headers.put(appPlatformHeader.getName(), appPlatformHeader.getValue());
-      HeaderProvider.Header appVersionHeader = getAppVersionHeader();
-      headers.put(appVersionHeader.getName(), appVersionHeader.getValue());
-      return headers;
+      List<Header> headers = new ArrayList<>(Arrays.asList(new Header[]{
+            getAppPlatformHeader(), getAppVersionHeader(), getAcceptLanguageHeader()}));
+      Map<String, String> headersMap = new HashMap<>();
+      for (Header header : headers) {
+         headersMap.put(header.getName(), header.getValue());
+      }
+      return headersMap;
    }
 
    public static class Header {

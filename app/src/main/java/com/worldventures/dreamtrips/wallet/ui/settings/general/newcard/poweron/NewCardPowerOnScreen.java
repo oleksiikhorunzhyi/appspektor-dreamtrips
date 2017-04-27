@@ -37,11 +37,6 @@ public class NewCardPowerOnScreen extends WalletLinearLayout<NewCardPowerOnPrese
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @NonNull
    @Override
    public NewCardPowerOnPresenter createPresenter() {

@@ -46,12 +46,12 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.DocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpDocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
@@ -136,15 +136,11 @@ public enum Route {
    ACCOUNT_PROFILE(AccountFragment.class),
    FOREIGN_PROFILE(UserFragment.class),
    REP_TOOLS(RepToolsFragment.class),
-   FAQ(StaticInfoFragment.FAQFragment.class),
    HELP(HelpFragment.class),
-   DOCUMENT_LIST(DocumentListFragment.class),
+   HELP_DOCUMENTS_LIST(HelpDocumentListFragment.class),
    DOCUMENT(DocumentFragment.class),
    HELP_VIDEOS(HelpVideosFragment.class),
-   TERMS(TermsTabFragment.class),
-   TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),
-   PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
-   COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
+   LEGAL_TERMS(LegalTermsFragment.class),
    PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
    COMMENTS(CommentableFragment.class, R.string.comments_title),
    EDIT_COMMENT(EditCommentFragment.class, R.string.empty),

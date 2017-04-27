@@ -58,11 +58,6 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
       return null;
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @OnClick(R.id.have_card_button)
    public void onClickHaveCard() {
       presenter.navigateToPowerOn();

@@ -45,10 +45,6 @@ public class ForcePairKeyScreen extends WalletLinearLayout<ForcePairKeyPresenter
       return new DialogOperationScreen(this);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public void showError(@StringRes int messageId) {

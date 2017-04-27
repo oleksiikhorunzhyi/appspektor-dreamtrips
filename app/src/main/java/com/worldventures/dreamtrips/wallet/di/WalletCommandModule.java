@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.di;
 
+import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
@@ -124,7 +125,8 @@ import dagger.Module;
             ReAssignCardCommand.class,
             SyncRecordOnNewDeviceCommand.class,
             SwitchOfflineModeCommand.class,
-            SetPinEnabledCommand.class
+            SetPinEnabledCommand.class,
+            GetDocumentsCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

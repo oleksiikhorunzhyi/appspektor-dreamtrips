@@ -7,14 +7,12 @@ import com.worldventures.dreamtrips.api.member_videos.model.ImmutableVideoLangua
 import com.worldventures.dreamtrips.api.member_videos.model.VideoLanguage;
 import com.worldventures.dreamtrips.api.member_videos.model.VideoType;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -71,8 +69,16 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
    }
 
    public static GetMemberVideosCommand forHelpVideos(com.worldventures.dreamtrips.modules.video.model.VideoLanguage videoLanguage) {
-      if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DTAPPHELP);
-      return new GetMemberVideosCommand(VideoType.DTAPPHELP, ImmutableVideoLanguage.builder()
+      if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DT_APP_HELP_GENERAL);
+      return new GetMemberVideosCommand(VideoType.DT_APP_HELP_GENERAL, ImmutableVideoLanguage.builder()
+            .title(videoLanguage.getTitle())
+            .localeName(videoLanguage.getLocaleName())
+            .build());
+   }
+
+   public static GetMemberVideosCommand forHelpSmartCardVideos(com.worldventures.dreamtrips.modules.video.model.VideoLanguage videoLanguage) {
+      if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DTAPPHELPSMARTCARD);
+      return new GetMemberVideosCommand(VideoType.DTAPPHELPSMARTCARD, ImmutableVideoLanguage.builder()
             .title(videoLanguage.getTitle())
             .localeName(videoLanguage.getLocaleName())
             .build());

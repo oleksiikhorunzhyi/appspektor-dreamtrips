@@ -42,7 +42,6 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-
       featureManager.with(Feature.WALLET_PROVISIONING,
             this::onWalletAvailable,
             () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)

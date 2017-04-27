@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -29,8 +28,8 @@ import butterknife.InjectView;
 import static com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
 
 @Layout(R.layout.fragment_documents)
-public class DocumentListFragment extends BaseFragment<DocumentListPresenter> implements CellDelegate<Document>,
-      DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SelectablePagerFragment {
+public abstract class DocumentListFragment<P extends DocumentListPresenter> extends BaseFragment<P> implements CellDelegate<Document>,
+      DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
    @InjectView(R.id.emptyView) TextView emptyView;
 
@@ -73,15 +72,9 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    }
 
    @Override
-   protected DocumentListPresenter createPresenter(Bundle savedInstanceState) {
-      return new DocumentListPresenter();
-   }
-
-   @Override
    public void onCellClicked(Document document) {
       router.moveTo(Route.DOCUMENT, NavigationConfigBuilder.forActivity()
-            .data(new DocumentBundle(document.getUrl(), document.getName()))
-            .build());
+            .data(new DocumentBundle(document, getPresenter().getAnalyticsActionForOpenedItem(document))).build());
    }
 
    @Override
@@ -107,11 +100,6 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    @Override
    public void updateLoadingStatus(boolean noMoreElements) {
       statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreElements);
-   }
-
-   @Override
-   public void onSelectedFromPager() {
-      getPresenter().onSelectedFromPager();
    }
 
    @Override

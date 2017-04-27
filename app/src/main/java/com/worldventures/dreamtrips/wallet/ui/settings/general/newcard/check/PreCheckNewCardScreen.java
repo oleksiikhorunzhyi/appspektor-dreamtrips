@@ -33,11 +33,6 @@ public class PreCheckNewCardScreen extends WalletLinearLayout<PreCheckNewCardPre
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @NonNull
    @Override
    public PreCheckNewCardPresenter createPresenter() {

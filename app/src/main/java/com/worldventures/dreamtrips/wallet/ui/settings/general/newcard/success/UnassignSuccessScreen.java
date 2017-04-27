@@ -25,11 +25,6 @@ public class UnassignSuccessScreen extends WalletLinearLayout<UnassignSuccessPre
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    protected void onFinishInflate() {
       supportConnectionStatusLabel(false);
       super.onFinishInflate();

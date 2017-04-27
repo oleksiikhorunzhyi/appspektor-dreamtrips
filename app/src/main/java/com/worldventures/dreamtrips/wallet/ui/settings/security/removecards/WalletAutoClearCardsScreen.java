@@ -86,10 +86,6 @@ public class WalletAutoClearCardsScreen extends WalletLinearLayout<WalletAutoCle
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public void setItems(List<SettingsRadioModel> items) {

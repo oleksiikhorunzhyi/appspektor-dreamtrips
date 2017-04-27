@@ -81,10 +81,6 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
       mainAnimation.start();
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public void setButtonAction(OnClickListener onClickListener) {

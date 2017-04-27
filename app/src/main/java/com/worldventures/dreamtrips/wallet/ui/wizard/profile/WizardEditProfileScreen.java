@@ -171,9 +171,4 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
             .build()
             .show();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

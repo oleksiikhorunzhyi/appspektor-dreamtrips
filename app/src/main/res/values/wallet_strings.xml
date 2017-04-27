@@ -10,6 +10,7 @@
    <string name="wallet_retry_label">Retry</string>
    <string name="wallet_label_yes">Yes</string>
    <string name="wallet_label_no">No</string>
+   <string name="wallet_label_delete">Delete</string>
 
    <string name="wallet">flye\u2122 smart card</string>
    <string name="wallet_dashboard_title">flye\u2122 smart card</string>
@@ -496,5 +497,36 @@
    <string name="wallet_wizard_upload_profile_header">Upload User Card Data</string>
    <string name="wallet_wizard_upload_profile_message">This could take a few minutes…</string>
    <string name="wallet_error_uploading_retry">Connection error. Can\'t upload User Data. Please retry.</string>
+
+   <!-- Help section -->
+   <string name="wallet_email_app_choose_dialog_title">Choose Application</string>
+
+   <!-- Send Feedback screen -->
+   <string name="wallet_settings_help_feedback_title_screen">Send Feedback</string>
+   <string name="wallet_settings_help_feedback_user_approve_info">We\'re working hard to make the Smart Card better.\nPlease help us to improve.</string>
+   <string name="wallet_settings_help_feedback_enter_comment_hint">Please, type your message here.</string>
+   <string name="wallet_settings_help_feedback_action_add_photos_title">Add Photos</string>
+   <string name="wallet_settings_help_feedback_action_send_title">Send</string>
+   <string name="wallet_settings_help_feedback_attachment_failed_item_retry">Retry</string>
+   <string name="wallet_settings_help_feedback_attachment_failed_item_remove">Remove</string>
+   <string name="wallet_settings_help_feedback_action_delete_attachment">Are you want to delete attachment?</string>
+   <string name="wallet_settings_help_feedback_progress_send">Sending feedback&#8230;</string>
+   <string name="wallet_settings_help_feedback_has_been_sent">Your feedback is sent. Thank you!</string>
+   <string name="wallet_settings_help_feedback_sending_fail">Could not send feedback.</string>
+   <string name="wallet_settings_help_feedback_progress_add_attachments">Uploading attachment&#8230;</string>
+   <string name="wallet_settings_help_feedback_adding_attachments_fail">Attachment was not be added.</string>
+   <string-array name="wallet_settings_help_feedback_failed_uploading_attachment">
+      <item>@string/wallet_settings_help_feedback_attachment_failed_item_retry</item>
+      <item>@string/wallet_settings_help_feedback_attachment_failed_item_remove</item>
+   </string-array>
+
+   <!-- Help Video screen -->
+   <string name="wallet_settings_help_video_title_screen">Videos</string>
+   <string name="wallet_settings_help_video_training_no_video">Videos coming soon</string>
+   <string name="wallet_settings_help_video_action_title">Languages</string>
+   <string name="wallet_settings_help_video_loading">Load videos…</string>
+   <string name="wallet_settings_help_video_locales_loading">Load locales…</string>
+   <string name="wallet_settings_help_video_cancel_cached_video_text">Are you sure you want to cancel file download?</string>
+   <string name="wallet_settings_help_video_delete_cached_video_text">Are you sure you want delete video from local cache?</string>
 
 </resources>

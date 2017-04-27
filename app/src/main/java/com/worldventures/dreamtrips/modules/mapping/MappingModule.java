@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfil
 import com.worldventures.dreamtrips.modules.friends.model.converter.FriendСandidateToUserConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
+import com.worldventures.dreamtrips.modules.infopages.model.converter.DocumentTypeReverseConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.AccountToUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -564,5 +565,11 @@ public class MappingModule {
    @Singleton
    Converter provideDocumentsConverter() {
       return new DocumentsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideDocumentsTypeReverseConverter() {
+      return new DocumentTypeReverseConverter();
    }
 }

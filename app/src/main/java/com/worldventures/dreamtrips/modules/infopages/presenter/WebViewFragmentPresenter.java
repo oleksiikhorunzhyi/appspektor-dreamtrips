@@ -61,19 +61,6 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
    public void track(Route route) {
       switch (route) {
-         case TERMS_OF_SERVICE:
-            TrackingHelper.service(getAccountUserId());
-            break;
-         case FAQ:
-            TrackingHelper.actionFaq();
-            TrackingHelper.faq(getAccountUserId());
-            break;
-         case COOKIE_POLICY:
-            TrackingHelper.cookie(getAccountUserId());
-            break;
-         case PRIVACY_POLICY:
-            TrackingHelper.privacy(getAccountUserId());
-            break;
          case OTA:
             TrackingHelper.ota(getAccountUserId());
             break;

@@ -97,11 +97,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       presenter.choosePhoto();
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @NonNull
    @Override
    public WalletSettingsProfilePresenter createPresenter() {

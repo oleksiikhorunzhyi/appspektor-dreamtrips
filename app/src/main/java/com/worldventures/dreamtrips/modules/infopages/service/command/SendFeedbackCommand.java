@@ -3,14 +3,15 @@ package com.worldventures.dreamtrips.modules.infopages.service.command;
 import android.os.Build;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.feedback.SendFeedbackHttpAction;
 import com.worldventures.dreamtrips.api.feedback.model.Feedback;
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableSmartCardMetadata;
+import com.worldventures.dreamtrips.api.smart_card.feedback.SendFeedbackSmartCardHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -22,14 +23,15 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.util.SmartCardSDK;
 import io.techery.mappery.MapperyContext;
+import rx.Observable;
 
 @CommandAction
 public class SendFeedbackCommand extends CommandWithError implements InjectableAction {
@@ -40,7 +42,7 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
    @Inject SnappyRepository snappyRepository;
    @Inject MapperyContext mappery;
 
-   private int reasonId;
+   private int reasonId = 0;
    private String description;
    private List<FeedbackImageAttachment> imageAttachments;
 
@@ -50,11 +52,22 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
       this.imageAttachments = imageAttachments;
    }
 
+   public SendFeedbackCommand(String description, List<FeedbackImageAttachment> imageAttachments) {
+      this.description = description;
+      this.imageAttachments = imageAttachments;
+   }
+
    @Override
    protected void run(CommandCallback callback) throws Throwable {
-      janet.createPipe(SendFeedbackHttpAction.class)
-            .createObservableResult(new SendFeedbackHttpAction(provideFeedbackBody()))
-            .subscribe(action -> callback.onSuccess(null), callback::onFail);
+      Observable<? extends AuthorizedHttpAction> observable;
+      if (reasonId > 0) {
+         observable = janet.createPipe(SendFeedbackHttpAction.class)
+               .createObservableResult(new SendFeedbackHttpAction(provideFeedbackBody()));
+      } else {
+         observable = janet.createPipe(SendFeedbackSmartCardHttpAction.class)
+               .createObservableResult(new SendFeedbackSmartCardHttpAction(provideFeedbackBody()));
+      }
+      observable.subscribe(action -> callback.onSuccess(null), callback::onFail);
    }
 
    private Feedback provideFeedbackBody() {
@@ -84,7 +97,7 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
    }
 
    private Feedback.Metadata provideMetadata() {
-      String osVersion = String.format("android-%d", Build.VERSION.SDK_INT);
+      String osVersion = String.format(Locale.US, "android-%d", Build.VERSION.SDK_INT);
       String appVersion = appVersionNameBuilder.getSemanticVersionName();
       String deviceModel = String.format("%s:%s", Build.MANUFACTURER, Build.MODEL);
       Feedback.DeviceType deviceType = deviceInfoProvider.isTablet()

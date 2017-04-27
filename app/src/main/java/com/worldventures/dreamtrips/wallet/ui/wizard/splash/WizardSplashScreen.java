@@ -109,9 +109,4 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
 
       mainAnimation.start();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

@@ -37,6 +37,7 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> onBackClick());
       setupMenuItem();
       headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
@@ -87,11 +88,6 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
    public OperationScreen provideOperationDelegate() {
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
       return dialogOperationScreen;
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 
    @Override

@@ -119,9 +119,4 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
             .append("\n")
             .append(supportPhoneNumber);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

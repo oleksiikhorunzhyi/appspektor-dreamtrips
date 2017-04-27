@@ -41,11 +41,6 @@ public class SyncRecordsScreen extends WalletLinearLayout<SyncRecordsPresenter.S
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return false;
-   }
-
-   @Override
    protected void onFinishInflate() {
       supportConnectionStatusLabel(false);
       super.onFinishInflate();

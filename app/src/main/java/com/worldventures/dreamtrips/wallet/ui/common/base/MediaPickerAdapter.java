@@ -69,6 +69,12 @@ public class MediaPickerAdapter implements MediaPickerService {
    }
 
    @Override
+   public void pickPhotos(int limit) {
+      paddingPath = null;
+      messengerMediaPickerDelegate.showMultiPhotoPicker(limit);
+   }
+
+   @Override
    public void crop(String filePath) {
       paddingPath = null;
       cropImageDelegate.cropImage(filePath);

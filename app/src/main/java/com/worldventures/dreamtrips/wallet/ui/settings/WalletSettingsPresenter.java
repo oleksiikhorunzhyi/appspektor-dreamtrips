@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -32,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import timber.log.Timber;
 
 public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
@@ -69,18 +65,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       navigator.go(new WalletSecuritySettingsPath());
    }
 
-   // TODO: 4/13/17 Remove it with Wallet Help Settings classes if feature won't be in development soon
    void openHelpScreen() {
       navigator.go(new WalletHelpSettingsPath());
-   }
-
-   void dialPhoneNumber(String phoneNumber) {
-      Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
-      try {
-         getContext().startActivity(intent);
-      } catch (ActivityNotFoundException e) {
-         Timber.e(e, "");
-      }
    }
 
    private void trackScreen() {

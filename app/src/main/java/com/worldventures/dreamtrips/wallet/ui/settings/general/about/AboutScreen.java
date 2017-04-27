@@ -62,11 +62,6 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void onProvidePayCardInfo(final int cardStored, final int cardAvailable) {
       tvQtyCardStored.setText(String.valueOf(cardStored));
       tvQtyCardAvailable.setText(String.valueOf(cardAvailable));

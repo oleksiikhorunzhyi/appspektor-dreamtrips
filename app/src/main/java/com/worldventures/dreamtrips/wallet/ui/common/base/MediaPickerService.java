@@ -13,6 +13,8 @@ public interface MediaPickerService {
 
    void pickPhoto();
 
+   void pickPhotos(int limit);
+
    void crop(String filePath);
 
    void hidePicker();

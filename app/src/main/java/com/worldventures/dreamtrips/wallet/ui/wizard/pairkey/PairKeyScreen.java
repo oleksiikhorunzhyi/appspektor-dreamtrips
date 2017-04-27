@@ -50,11 +50,6 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    @Override
    public OperationScreen provideOperationDelegate() {return null;}
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @OnClick(R.id.button_next)
    public void onConnectToSmartCard() {
       presenter.tryToPairAndConnectSmartCard();
@@ -69,7 +64,7 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
                         getContext(),
                         SmartCardConnectException.class,
                         R.string.wallet_smartcard_connection_error,
-                        (dialog, which) -> presenter.goBack())
+                        command -> presenter.goBack())
                   ).build());
    }
 

@@ -259,11 +259,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, setAsDefaultCard);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    private void setHintsAndLabels() {
       bindSpannableStringToTarget(cvvLabel, R.string.wallet_add_card_details_cvv_label, true, false);
       bindSpannableStringToTarget(etCardNickname, R.string.wallet_add_card_details_hint_nickname_card, true, true);

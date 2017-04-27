@@ -52,11 +52,6 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void setButtonAction(OnClickListener onClicklistener) {
       actionBtn.setOnClickListener(onClicklistener);
    }

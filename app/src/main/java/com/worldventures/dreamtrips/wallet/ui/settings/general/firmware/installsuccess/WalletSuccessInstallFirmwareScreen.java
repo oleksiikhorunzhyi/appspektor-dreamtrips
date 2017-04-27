@@ -99,9 +99,4 @@ public class WalletSuccessInstallFirmwareScreen
             .before(ofFloat(done, View.ALPHA, 1).setDuration(ANIM_DURATION_DONE_BTN));
       mainAnimation.start();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

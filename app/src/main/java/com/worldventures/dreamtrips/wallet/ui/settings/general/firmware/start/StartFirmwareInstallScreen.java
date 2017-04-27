@@ -39,12 +39,8 @@ public class StartFirmwareInstallScreen extends WalletLinearLayout<StartFirmware
    protected void onFinishInflate() {
       supportConnectionStatusLabel(false);
       super.onFinishInflate();
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 
    @Override

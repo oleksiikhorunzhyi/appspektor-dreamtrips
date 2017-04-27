@@ -181,10 +181,6 @@ public class WalletSecuritySettingsScreen extends WalletLinearLayout<WalletSecur
       return new DialogOperationScreen(this);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @Override
    public void showSCNonConnectionDialog() {

@@ -8,7 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.RestartSmartCardAction;
-import com.worldventures.dreamtrips.wallet.analytics.settings.WalletSettingsGeneralAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsGeneralAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -162,7 +162,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
 
    private void trackScreen() {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new WalletSettingsGeneralAction()));
+            .send(new WalletAnalyticsCommand(new SettingsGeneralAction()));
    }
 
    private void trackSmartCardRestart() {

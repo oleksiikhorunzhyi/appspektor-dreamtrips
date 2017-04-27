@@ -8,7 +8,7 @@ import android.util.Pair;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.settings.WalletSettingsAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
@@ -71,7 +71,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    private void trackScreen() {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new WalletSettingsAction()));
+            .send(new WalletAnalyticsCommand(new SettingsAction()));
    }
 
    private void observeSmartCardChanges() {

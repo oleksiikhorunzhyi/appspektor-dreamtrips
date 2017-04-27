@@ -16,50 +16,58 @@
          app:title="@string/wallet_settings_help_video_title_screen"
          />
 
-   <android.support.constraint.ConstraintLayout
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/refresh_layout"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          >
 
-      <TextView
-            android:id="@+id/tv_video_coming_soon"
-            android:layout_width="395dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="@string/wallet_settings_help_video_training_no_video"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_normal"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
-            />
+      <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-            android:id="@+id/rv_videos"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+         <TextView
+               android:id="@+id/tv_video_coming_soon"
+               android:layout_width="395dp"
+               android:layout_height="wrap_content"
+               android:layout_marginBottom="8dp"
+               android:layout_marginEnd="8dp"
+               android:layout_marginLeft="16dp"
+               android:layout_marginRight="16dp"
+               android:layout_marginStart="8dp"
+               android:layout_marginTop="8dp"
+               android:gravity="center"
+               android:text="@string/wallet_settings_help_video_training_no_video"
+               android:textColor="@android:color/black"
+               android:textSize="@dimen/font_normal"
+               android:visibility="gone"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintRight_toRightOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               tools:visibility="visible"
+               />
 
-   </android.support.constraint.ConstraintLayout>
+         <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+               android:id="@+id/rv_videos"
+               android:layout_width="0dp"
+               android:layout_height="0dp"
+               android:layout_marginBottom="0dp"
+               android:layout_marginLeft="16dp"
+               android:layout_marginRight="16dp"
+               android:layout_marginTop="16dp"
+               app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintRight_toRightOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               />
+
+      </android.support.constraint.ConstraintLayout>
+
+   </android.support.v4.widget.SwipeRefreshLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen>

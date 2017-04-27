@@ -5,20 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
-import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 
 import java.util.List;
 import java.util.Locale;
-
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class WalletHelpVideoDelegate {
 
@@ -41,6 +36,10 @@ public class WalletHelpVideoDelegate {
       //for retry when HttpError
       if (videoLocale == null && lastVideoLocale != null) videoLocale = lastVideoLocale;
 
+      return getDefaultLanguage(videoLocale);
+   }
+
+   private VideoLanguage getDefaultLanguage(VideoLocale videoLocale) {
       if (videoLocale != null) {
          final VideoLanguage videoLanguage = Queryable.from(videoLocale.getLanguages())
                .firstOrDefault(language -> language.getLocaleName()
@@ -108,5 +107,9 @@ public class WalletHelpVideoDelegate {
 
    void setCurrentSelectedVideoLocale(VideoLocale videoLocale) {
       this.lastVideoLocale = videoLocale;
+   }
+
+   public VideoLanguage getDefaultLanguageFromLastLocales() {
+      return getDefaultLanguage(lastVideoLocale);
    }
 }

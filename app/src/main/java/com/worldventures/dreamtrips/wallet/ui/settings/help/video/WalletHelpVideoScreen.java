@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
 
 import android.content.Context;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.MenuItem;
@@ -41,6 +42,7 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.tv_video_coming_soon) TextView tvVideosEmpty;
    @InjectView(R.id.rv_videos) EmptyRecyclerView rvVideos;
+   @InjectView(R.id.refresh_layout) SwipeRefreshLayout refreshLayout;
 
    private BaseDelegateAdapter<Video> adapter;
    private VideoLocaleAdapter localeAdapter;
@@ -75,8 +77,13 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
    protected void onPostAttachToWindowView() {
       super.onPostAttachToWindowView();
       rvVideos.setEmptyView(tvVideosEmpty);
+      initRefreshLayout();
       initAdapter();
       initToolbar();
+   }
+
+   private void initRefreshLayout() {
+      refreshLayout.setOnRefreshListener(() -> getPresenter().refreshVideos());
    }
 
    private void initToolbar() {
@@ -226,5 +233,10 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
    @Override
    public void setSelectedLocale(int index) {
       if(videoLocales != null) videoLocales.setSelection(index);
+   }
+
+   @Override
+   public void showRefreshing(boolean show) {
+      refreshLayout.setRefreshing(show);
    }
 }

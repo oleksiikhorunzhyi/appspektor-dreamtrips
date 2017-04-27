@@ -53,8 +53,14 @@ public class WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoPre
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<UpdateStatusCachedEntityCommand>()
-                  .onSuccess(command -> getView().provideVideos(command.getResult().get(0).getVideos()))
+                  .onSuccess(command -> handleUpdatedStatusCachedEntities(command.getResult()))
+                  .onFail((command, throwable) -> getView().showRefreshing(false))
             );
+   }
+
+   private void handleUpdatedStatusCachedEntities(List<VideoCategory> categories) {
+      getView().provideVideos(categories.get(0).getVideos());
+      getView().showRefreshing(false);
    }
 
    void fetchVideoLocales() {
@@ -76,7 +82,9 @@ public class WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoPre
             .createObservable(GetMemberVideosCommand.forHelpSmartCardVideos(videoLanguage))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationLoadVideos())
+                  .onStart(command -> getView().showRefreshing(true))
                   .onSuccess(command -> onVideoLoaded(command.getResult()))
+                  .onFail((command, throwable) -> getView().showRefreshing(false))
                   .create());
    }
 
@@ -135,11 +143,16 @@ public class WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoPre
       }
    }
 
+   void refreshVideos() {
+      fetchSmartCardVideos(helpVideoDelegate.getDefaultLanguageFromLastLocales());
+   }
+
    void onSelectLastLocale() {
       getView().setSelectedLocale(helpVideoDelegate.getLastSelectedLocaleIndex());
    }
 
    public interface Screen extends HelpScreen {
 
+      void showRefreshing(boolean show);
    }
 }

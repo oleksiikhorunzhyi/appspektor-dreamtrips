@@ -13,13 +13,13 @@ public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
    private Action1<T> defaultAction;
 
    public SimpleErrorDialogView(Context context, int contentResId) {
-      super(context);
-      this.contentResId = contentResId;
+      this(context, contentResId, c -> {});
    }
 
    public SimpleErrorDialogView(Context context, int messageResId, Action1<T> defaultAction) {
-      this(context, messageResId);
+      super(context);
       this.defaultAction = defaultAction;
+      this.contentResId = messageResId;
    }
 
    @Override

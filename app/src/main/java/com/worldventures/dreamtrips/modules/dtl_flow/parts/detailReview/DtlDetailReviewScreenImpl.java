@@ -85,7 +85,6 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view ->
                 getActivity().onBackPressed());
-              //getPresenter().validateComingFrom());
         toolbar.setTitle(getPath().getMerchant());
 
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);

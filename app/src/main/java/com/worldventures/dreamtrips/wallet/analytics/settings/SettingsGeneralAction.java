@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
-@AnalyticsEvent(action = "wallet:settings",
+@AnalyticsEvent(action = "wallet:settings:general",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class WalletSettingsAction extends WalletAnalyticsAction {
+public class SettingsGeneralAction extends WalletAnalyticsAction {
 }

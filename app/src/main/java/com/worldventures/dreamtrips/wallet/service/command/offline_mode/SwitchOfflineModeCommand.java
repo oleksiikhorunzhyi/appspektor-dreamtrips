@@ -19,7 +19,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class SwitchOfflineModeCommand extends Command<Void> implements InjectableAction {
+public class SwitchOfflineModeCommand extends Command<Boolean> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NxtInteractor nxtInteractor;
@@ -27,7 +27,7 @@ public class SwitchOfflineModeCommand extends Command<Void> implements Injectabl
    @Inject RecordsStorage recordsStorage;
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<Boolean> callback) throws Throwable {
       boolean offlineModeEnabled = recordsStorage.readOfflineModeState();
 
       List<Record> storedRecords = recordsStorage.readRecords();
@@ -38,13 +38,13 @@ public class SwitchOfflineModeCommand extends Command<Void> implements Injectabl
                .flatMap(records -> offlineModeEnabled ? tokenizeRecords(records) : detokenizeRecords(records))
                .doOnNext(processedRecords -> recordsStorage.saveRecords(processedRecords))
                .flatMap(processedRecords -> smartCardInteractor.offlineModeStatusPipe()
-                     .createObservableResult(OfflineModeStatusCommand.save(!offlineModeEnabled))
-                     .map(command -> (Void) null))
+                     .createObservableResult(OfflineModeStatusCommand.save(!offlineModeEnabled)))
+               .map(Command::getResult)
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
          smartCardInteractor.offlineModeStatusPipe()
                .createObservableResult(OfflineModeStatusCommand.save(!offlineModeEnabled))
-               .map(command -> (Void) null)
+               .map(Command::getResult)
                .subscribe(callback::onSuccess, callback::onFail);
       }
    }

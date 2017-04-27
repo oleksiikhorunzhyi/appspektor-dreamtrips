@@ -1,0 +1,21 @@
+package com.worldventures.dreamtrips.wallet.analytics.settings;
+
+import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@AnalyticsEvent(action = "wallet:settings:general:offline mode:enable",
+                trackers = AdobeTracker.TRACKER_KEY)
+public class SettingsOfflineModeStateChangeAction extends WalletAnalyticsAction {
+
+   @AttributeMap final Map<String, String> attributeMap = new HashMap<>();
+
+   public SettingsOfflineModeStateChangeAction(boolean offlineModeState) {
+      attributeMap.put(offlineModeState ? "offlinemodeenabled" : "offlinemodedisabled", String.valueOf(1));
+   }
+
+}

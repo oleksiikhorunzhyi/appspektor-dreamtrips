@@ -536,4 +536,6 @@
       <item name="actionMenuTextColor">@color/reviewTextColor</item>
       <item name="android:colorBackground">@color/reviewBackground</item>
    </style>
+   <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
+   </style>
 </resources>

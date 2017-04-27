@@ -53,6 +53,7 @@
             android:hint="@string/wallet_settings_help_feedback_enter_comment_hint"
             android:inputType="textCapSentences|textMultiLine"
             android:minLines="6"
+            android:maxLines="6"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:textAppearance="@style/WalletTheme.TextAppearanceMedium"

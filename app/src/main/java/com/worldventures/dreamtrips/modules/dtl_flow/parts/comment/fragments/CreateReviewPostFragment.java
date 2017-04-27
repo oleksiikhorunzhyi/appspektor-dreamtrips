@@ -52,7 +52,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
 @Layout(R.layout.layout_review_post)
-public class CreateReviewPostFragment extends CreateEntityFragment implements DtlCommentReviewScreen {
+public class CreateReviewPostFragment extends CreateEntityFragment implements DtlFragmentReviewScreen {
 
    @InjectView(R.id.rbRating) RatingBar mRatingBar;
    @InjectView(R.id.etCommentReview) EditText mComment;
@@ -74,6 +74,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
    private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
    private Merchant merchant;
+   private boolean mAvailableToPost = true;
 
    private SweetAlertDialog errorDialog;
 
@@ -363,11 +364,13 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
    public void enableInputs() {
       enableButtons(true);
+      enablePost();
    }
 
    @Override
    public void disableInputs() {
       enableButtons(false);
+      disablePost();
    }
 
    @Override
@@ -564,15 +567,32 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void onPostClick() {
-      if (isInternetConnection()){
-         if (validateComment()) {
-            disableInputs();
-            onRefreshProgress();
-            sendPostReview();
+      if (isAvailableToPost()){
+         if (isInternetConnection()){
+            if (validateComment()) {
+               disableInputs();
+               onRefreshProgress();
+               sendPostReview();
+            }
+         } else {
+            showNoInternetMessage();
          }
-      } else {
-         showNoInternetMessage();
       }
+   }
+
+   @Override
+   public boolean isAvailableToPost() {
+      return mAvailableToPost;
+   }
+
+   @Override
+   public void disablePost() {
+      mAvailableToPost = false;
+   }
+
+   @Override
+   public void enablePost() {
+      mAvailableToPost = true;
    }
 
    public String getDescription() {

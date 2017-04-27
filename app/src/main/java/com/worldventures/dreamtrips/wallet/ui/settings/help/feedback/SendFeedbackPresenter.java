@@ -8,7 +8,13 @@ import android.view.WindowManager;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
@@ -34,6 +40,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    @Inject Activity activity;
    @Inject Navigator navigator;
    @Inject FeedbackInteractor feedbackInteractor;
+   @Inject Router router;
 
    private final FeedbackAttachmentsManager attachmentsManager;
 
@@ -180,6 +187,15 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    private void removeAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
       attachmentsManager.remove(holder);
       getView().removeAttachment(holder);
+   }
+
+   void openFullScreenPhoto(EntityStateHolder<FeedbackImageAttachment> holder) {
+      NavigationConfig config = NavigationConfigBuilder.forActivity()
+            .data(new FeedbackImageAttachmentsBundle(attachmentsManager.getAttachments().indexOf(holder),
+                  getImagesAttachments()))
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .build();
+      router.moveTo(Route.FEEDBACK_IMAGE_ATTACHMENTS, config);
    }
 
    public interface Screen extends WalletScreen {

@@ -111,6 +111,8 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       EntityStateHolder.State state = holder.state();
       switch (state) {
          case DONE:
+            getPresenter().openFullScreenPhoto(holder);
+            break;
          case PROGRESS:
             showAttachmentActionDialog(holder);
             break;

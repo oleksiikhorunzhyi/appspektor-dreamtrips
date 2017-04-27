@@ -190,8 +190,8 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
 
    @Override
    public void showRetryUploadingUiForAttachment(EntityStateHolder<FeedbackImageAttachment> attachmentHolder) {
-      MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext());
-      builder.items(R.array.wallet_settings_help_feedback_failed_uploading_attachment)
+      new MaterialDialog.Builder(getContext())
+            .items(R.array.wallet_settings_help_feedback_failed_uploading_attachment)
             .itemsCallback((dialog, v, which, text) -> {
                switch (which) {
                   case 0:
@@ -231,7 +231,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    public OperationView<UploadFeedbackAttachmentCommand> provideOperationUploadAttachments() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_feedback_progress_add_attachments, false),
-            new SimpleErrorDialogView<UploadFeedbackAttachmentCommand>(getContext(), R.string.wallet_settings_help_feedback_adding_attachments_fail, command -> getPresenter().onRetryUploadingAttachment(command.getEntityStateHolder()))
+            new SimpleErrorDialogView<UploadFeedbackAttachmentCommand>(getContext(), R.string.wallet_settings_help_feedback_adding_attachments_fail)
       );
    }
 

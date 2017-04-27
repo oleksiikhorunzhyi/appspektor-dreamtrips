@@ -103,6 +103,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationUploadAttachments())
+                  .onStart(this::updateImageAttachment)
                   .onProgress(this::updateImageAttachment)
                   .onSuccess(this::updateImageAttachment)
                   .onFail((failedCommand, throwable) -> updateImageAttachment(failedCommand))
@@ -176,7 +177,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    }
 
    private void uploadImageAttachment(String path) {
-      FeedbackImageAttachment attachment = new FeedbackImageAttachment(path);
+      FeedbackImageAttachment attachment = new FeedbackImageAttachment("file://" + path);
       feedbackInteractor.uploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
    }
 

@@ -29,14 +29,13 @@ import java.util.*
 
 abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : BaseSpec(spekBody) {
    companion object {
-      lateinit var mockCreatedPost: TextualPost
+      var mockCreatedPost: TextualPost = mock()
       val listOfMockPhotos: ArrayList<Photo> = arrayListOf(mockPhoto(), mockPhoto())
 
       lateinit var backgroundUploadingInteractor: BackgroundUploadingInteractor
       lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
 
       fun initJanet(mockContracts: List<Contract> = successContract()) {
-         mockCreatedPost = mock()
          val mockPhotoItems = listOf(mockItem(listOfMockPhotos[0]), mockItem(listOfMockPhotos[1]));
          whenever(mockCreatedPost.attachments).thenAnswer { mockPhotoItems }
 

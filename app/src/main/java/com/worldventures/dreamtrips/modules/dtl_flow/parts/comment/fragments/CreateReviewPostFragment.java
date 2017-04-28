@@ -562,6 +562,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public void onPostClick() {
+
       if (isInternetConnection()){
          if (validateComment()) {
             disableInputs();

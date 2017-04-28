@@ -56,9 +56,15 @@ public class JanetModule {
    public static final String JANET_WALLET = "JANET_WALLET";
 
    @Singleton
+   @Provides
+   DreamTripsCommandServiceWrapper provideCommandService(@ForApplication Context context) {
+      return new DreamTripsCommandServiceWrapper(context);
+   }
+
+   @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionService provideCommandService(@ForApplication Context context) {
-      return new DreamTripsCommandService(context);
+   ActionService provideCommandService(DreamTripsCommandServiceWrapper serviceWrapper) {
+      return serviceWrapper;
    }
 
    @Singleton

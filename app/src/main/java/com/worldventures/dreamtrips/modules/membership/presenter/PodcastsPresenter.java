@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor;
 import com.worldventures.dreamtrips.modules.player.service.ViewPodcastAnalyticsAction;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject CachedModelHelper cachedModelHelper;
 
    private boolean loading;
    private boolean hasMore;
@@ -137,14 +139,14 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    }
 
    private String getPathForPodcastCache(CachedModel entity) {
-      return CachedModel.getFileForStorage(Environment.DIRECTORY_PODCASTS, entity.getUrl());
+      return cachedModelHelper.getFileForStorage(Environment.DIRECTORY_PODCASTS, entity.getUrl());
    }
 
    public void play(Podcast podcast) {
       try {
          CachedModel entity = podcast.getCacheEntity();
-         if (entity.isCached(Environment.DIRECTORY_PODCASTS)) {
-            String path = CachedModel.getFileForStorage(Environment.DIRECTORY_PODCASTS, podcast.getFileUrl());
+         if (cachedModelHelper.isCachedPodcast(entity)) {
+            String path = cachedModelHelper.getFileForStorage(Environment.DIRECTORY_PODCASTS, podcast.getFileUrl());
             activityRouter.openPodcastPlayer(path, podcast.getTitle());
          } else {
             String url = podcast.getFileUrl();

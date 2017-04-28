@@ -4,33 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public class CreateEntityBundle implements Parcelable {
 
    private MediaAttachment mediaAttachment;
    private boolean showPickerImmediately;
    private Origin origin; // origin is needed for analytics
-   private int minCharactersAllow;
-   private int maxCharactersAllow;
-   private String merchantId;
-   private boolean isFromAddReview;
-   private Merchant mMerchant;
 
    public CreateEntityBundle(boolean showPickerImmediately, Origin origin) {
       this.showPickerImmediately = showPickerImmediately;
       this.origin = origin;
-   }
-
-   public CreateEntityBundle(boolean showPickerImmediately, Origin origin, int minChar, int maxChar, String merchantId, boolean isFromAddReview,
-                           Merchant merchant) {
-      this.showPickerImmediately = showPickerImmediately;
-      this.origin = origin;
-      this.minCharactersAllow = minChar;
-      this.maxCharactersAllow = maxChar;
-      this.merchantId = merchantId;
-      this.isFromAddReview = isFromAddReview;
-      this.mMerchant = merchant;
    }
 
    public CreateEntityBundle(MediaAttachment mediaAttachment, Origin origin) {
@@ -46,36 +29,12 @@ public class CreateEntityBundle implements Parcelable {
       return origin;
    }
 
-   public int getMaxCharactersAllow() {
-      return maxCharactersAllow;
-   }
-
-   public String getMerchantId() {
-      return merchantId;
-   }
-
-   public boolean isFromAddReview() {
-      return isFromAddReview;
-   }
-
    public boolean isShowPickerImmediately() {
       return showPickerImmediately;
    }
 
-   public Merchant getmMerchant() {
-      return mMerchant;
-   }
-
    public void setShowPickerImmediately(boolean showPickerImmediately) {
       this.showPickerImmediately = showPickerImmediately;
-   }
-
-   public int getMinCharactersAllow() {
-      return minCharactersAllow;
-   }
-
-   public enum Origin {
-      FEED, PROFILE_TRIP_IMAGES, MY_TRIP_IMAGES, MEMBER_TRIP_IMAGES
    }
 
    @Override
@@ -85,31 +44,26 @@ public class CreateEntityBundle implements Parcelable {
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeParcelable(this.mediaAttachment, flags);
       dest.writeByte(this.showPickerImmediately ? (byte) 1 : (byte) 0);
-      dest.writeInt(this.origin == null ? -1 : this.origin.ordinal());
-      dest.writeInt(this.minCharactersAllow);
-      dest.writeInt(this.maxCharactersAllow);
-      dest.writeString(this.merchantId);
-      dest.writeByte(this.isFromAddReview ? (byte) 1 : (byte) 0);
-      dest.writeSerializable(this.mMerchant);
    }
 
    protected CreateEntityBundle(Parcel in) {
       this.mediaAttachment = in.readParcelable(MediaAttachment.class.getClassLoader());
       this.showPickerImmediately = in.readByte() != 0;
-      int tmpOrigin = in.readInt();
-      this.origin = tmpOrigin == -1 ? null : Origin.values()[tmpOrigin];
-      this.minCharactersAllow = in.readInt();
-      this.maxCharactersAllow = in.readInt();
-      this.merchantId = in.readString();
-      this.isFromAddReview = in.readByte() != 0;
-      this.mMerchant = (Merchant) in.readSerializable();
    }
 
    public static final Creator<CreateEntityBundle> CREATOR = new Creator<CreateEntityBundle>() {
       @Override
-      public CreateEntityBundle createFromParcel(Parcel source) {return new CreateEntityBundle(source);}
+      public CreateEntityBundle createFromParcel(Parcel source) {
+         return new CreateEntityBundle(source);
+      }
 
       @Override
-      public CreateEntityBundle[] newArray(int size) {return new CreateEntityBundle[size];}
+      public CreateEntityBundle[] newArray(int size) {
+         return new CreateEntityBundle[size];
+      }
    };
+
+   public enum Origin {
+      FEED, PROFILE_TRIP_IMAGES, MY_TRIP_IMAGES, MEMBER_TRIP_IMAGES
+   }
 }

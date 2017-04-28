@@ -538,4 +538,6 @@
       <item name="android:padding">@dimen/spacing_tiny</item>
    </style>
 
+   <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
+   </style>
 </resources>

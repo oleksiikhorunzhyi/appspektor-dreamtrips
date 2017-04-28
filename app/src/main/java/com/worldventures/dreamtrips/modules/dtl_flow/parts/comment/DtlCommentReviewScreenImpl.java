@@ -21,11 +21,8 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
-import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -60,8 +57,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @InjectView(R.id.container_details_floating)
     FrameLayout mFlContainerReview;
 
-    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-
     private CreateReviewPostFragment fragment;
 
     private SweetAlertDialog errorDialog;
@@ -93,7 +88,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
        mFlContainerReview.setVisibility(View.VISIBLE);
 
        Bundle bundle = new Bundle();
-       bundle.putParcelable("data", new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED,
+       bundle.putParcelable("data", new CreateReviewEntityBundle(true, CreateReviewEntityBundle.Origin.FEED,
              getPresenter().minimumCharactersAllowed(),
              getPresenter().maximumCharactersAllowed(),
              getPath().getMerchant().id(),
@@ -113,7 +108,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
       super.onDetachedFromWindow();
    }
 
-   private void onBackPressed() {
+   public void onBackPressed() {
       if (null != fragment){
          if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
             showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));

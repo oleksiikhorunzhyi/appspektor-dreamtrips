@@ -136,8 +136,11 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       }
 
       public AddReviewHttpActionBuilder addFiles(List<BasePhotoPickerModel> imagesList) {
-         for (BasePhotoPickerModel photo : imagesList) {
-            files.add(new File(photo.getAbsolutePath()));
+
+         if(imagesList != null){
+            for (BasePhotoPickerModel photo : imagesList) {
+               files.add(new File(photo.getAbsolutePath()));
+            }
          }
          return this;
       }
@@ -164,6 +167,9 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
             action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
                   this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
                   .get(1), files.get(2), files.get(3), files.get(4));
+         } else {
+            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
+                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress);
          }
          return action;
       }

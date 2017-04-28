@@ -67,7 +67,6 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public void navigateToDetail(String message) {
         Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-        //historyBuilder.pop();
         historyBuilder.push(path);
         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
     }
@@ -76,16 +75,8 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public void navigateToListReview(String message) {
         Path path = new DtlReviewsPath(merchant, message);
         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-        //historyBuilder.pop();
         historyBuilder.push(path);
         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-        /*
-        Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, message);
-        History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-        historyBuilder.pop();
-        historyBuilder.pop();
-        historyBuilder.push(path);
-        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);*/
     }
 
     @Override
@@ -121,37 +112,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public void sendAddReview(String description, Integer rating, boolean verified) {
         this.user = appSessionHolder.get().get().getUser();
         Log.i("post", "count" + mCount++);
-        /*ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
-        addReviewActionActionPipe
-                .observe()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<AddReviewAction>()
-                        .onSuccess(this::onMerchantsLoaded)
-                        .onProgress(this::onMerchantsLoading)
-                        .onFail(this::onMerchantsLoadingError));
-        addReviewActionActionPipe.send(AddReviewAction.create(
-              ImmutableRequestReviewParams.builder()
-                                            .brandId(BRAND_ID)
-                                            .productId(merchant.id())
-                                            .build(), ImmutableReviewParams.builder()
-                                                                            .userEmail(user.getEmail())
-                                                                            .userNickName(user.getFullName())
-                                                                            .reviewText(description)
-                                                                            .rating(String.valueOf(rating))
-                                                                            .verified(getView().isVerified())
-                                                                            .userId(String.valueOf(user.getId()))
-                                                                            .deviceFingerprint(getView().getFingerprintId())
-                                                                            .authorIpAddress(getIpAddress()),
-                                                      user.getEmail(),
-                                                      .userNickName(user.getFullName())
-                                                      .reviewText(description)
-                                                      .rating(String.valueOf(rating))
-                                                      .verified(getView().isVerified())
-                                                      .userId(String.valueOf(user.getId()))
-                                                      .deviceFingerprint(getView().getFingerprintId())
-                                                      .authorIpAddress(getIpAddress()),
 
-                                            .build()));*/
     }
 
     @Override

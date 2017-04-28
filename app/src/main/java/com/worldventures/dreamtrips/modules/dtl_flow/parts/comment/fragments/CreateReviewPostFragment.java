@@ -32,11 +32,11 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
 import javax.inject.Inject;
 
@@ -52,7 +52,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
 @Layout(R.layout.layout_review_post)
-public class CreateReviewPostFragment extends CreateEntityFragment implements DtlCommentReviewScreen {
+public class CreateReviewPostFragment extends CreateReviewEntityFragment implements DtlCommentReviewScreen {
 
    @InjectView(R.id.rbRating) RatingBar mRatingBar;
    @InjectView(R.id.etCommentReview) EditText mComment;
@@ -77,7 +77,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    private SweetAlertDialog errorDialog;
 
-   private CreateEntityBundle bundle;
+   private CreateReviewEntityBundle bundle;
 
    public CreateReviewPostFragment() {
    }
@@ -93,8 +93,6 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-
-      getPresenter().post();
 
       Bundle args = getArguments();
       bundle = args.getParcelable("data");
@@ -494,7 +492,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
    }
 
    public String getIpAddress() {
-      return "10.20.20.122";
+      return NetworkUtils.getIpAddress(true);
    }
 
    private void onMerchantsLoaded(AddReviewAction action) {
@@ -564,6 +562,7 @@ public class CreateReviewPostFragment extends CreateEntityFragment implements Dt
 
    @Override
    public void onPostClick() {
+
       if (isInternetConnection()){
          if (validateComment()) {
             disableInputs();

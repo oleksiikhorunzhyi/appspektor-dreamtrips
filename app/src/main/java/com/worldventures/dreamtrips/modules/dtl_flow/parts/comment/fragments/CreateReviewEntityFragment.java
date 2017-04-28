@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.view.fragment;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,16 +9,15 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
-      implements CreateEntityPresenter.View {
+public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragment<CreateReviewEntityPresenter, CreateReviewEntityBundle>
+      implements CreateReviewEntityPresenter.View {
 
    @State boolean pickerDisabled;
    @State boolean imageFromArgsAlreadyAttached;
@@ -44,8 +43,8 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    }
 
    @Override
-   protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
-      return new CreateEntityPresenter(getArgs().getOrigin());
+   protected CreateReviewEntityPresenter createPresenter(Bundle savedInstanceState) {
+      return new CreateReviewEntityPresenter(CreateEntityBundle.Origin.FEED);
    }
 
    @Override
@@ -60,7 +59,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    }
 
    @Override
-   public void onRemoveClicked(PhotoCreationItem uploadTask) {
+   public void onRemoveClicked(PhotoReviewCreationItem uploadTask) {
       super.onRemoveClicked(uploadTask);
       boolean removed = getPresenter().removeImage(uploadTask);
       if (removed) {

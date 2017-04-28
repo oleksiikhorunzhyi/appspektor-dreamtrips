@@ -51,8 +51,16 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
    }
 
    public static List<BasePhotoPickerModel> getSelectedImagesList(){
-      return Queryable.from(selectedPhotosList).filter(BasePhotoPickerModel::isChecked).sort((lhs, rhs) -> lhs.getPickedTime() > rhs
-            .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0).toList();
+
+      try {
+         return Queryable.from(selectedPhotosList)
+               .filter(BasePhotoPickerModel::isChecked)
+               .sort((lhs, rhs) -> lhs.getPickedTime() > rhs
+                     .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0)
+               .toList();
+      } catch(Exception ex) {
+         return null;
+      }
    }
 
    public void setLimit(int pickLimit) {

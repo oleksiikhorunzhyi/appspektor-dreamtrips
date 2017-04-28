@@ -137,20 +137,12 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       @Override
       public void onClosed() {
          presenter.setupInputMode();
-         etFeedbackMessage.setOnFocusChangeListener(null);
          photoPickerVisibilityObservable.onNext(false);
       }
 
       @Override
       public void onOpened() {
          clearMessageFocus();
-         etFeedbackMessage.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-               photoPickerVisibilityObservable.take(1).subscribe(photopickerVisible -> {
-                  if (photopickerVisible) mediaPickerService.hidePicker();
-               });
-            }
-         });
          photoPickerVisibilityObservable.onNext(true);
       }
    };

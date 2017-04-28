@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -170,9 +171,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       void pickPhoto();
 
-      void cropPhoto(String photoPath);
+      void cropPhoto(Uri photoPath);
 
-      Observable<String> observePickPhoto();
+      Observable<Uri> observePickPhoto();
 
       Observable<String> observeCropper();
 

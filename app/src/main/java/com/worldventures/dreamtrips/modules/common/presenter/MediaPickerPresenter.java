@@ -83,7 +83,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                   error -> Timber.e(error, ""),
                   () -> {
                      mediaPickerImagesProcessedEventDelegate.post(false);
-                     view.back();
+                     if (view != null) view.back();
                   });
    }
 

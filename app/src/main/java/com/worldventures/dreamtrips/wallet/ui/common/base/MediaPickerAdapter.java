@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.messenger.delegate.CropImageDelegate;
@@ -86,10 +87,14 @@ public class MediaPickerAdapter implements MediaPickerService {
    }
 
    @Override
-   public Observable<String> observePicker() {
+   public Observable<Uri> observePicker() {
       return messengerMediaPickerDelegate.getImagePathsStream()
             .startWith(Observable.fromCallable(callablePaddingPathOnce))
-            .filter(path -> path != null);
+            .filter(path -> path != null)
+            .flatMap(path -> {
+               if (!path.contains("://")) path = "file://" + path;
+               return Observable.just(Uri.parse(path));
+            });
    }
 
    @Override

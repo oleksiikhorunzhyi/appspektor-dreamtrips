@@ -37,4 +37,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
    void loadAmenities(List<String> merchantType);
 
    void sendToRatingReview(ThinMerchant merchant);
+
+   void setMerchantType(List<String> merchantType);
 }

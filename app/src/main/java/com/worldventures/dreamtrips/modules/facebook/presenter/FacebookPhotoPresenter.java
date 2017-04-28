@@ -1,48 +1,48 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.model.GraphObject;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
-import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
+import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
+import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
+import com.worldventures.dreamtrips.modules.facebook.service.command.GetPhotosCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.facebook.HttpMethod.GET;
+import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPresenter.View> {
 
-   Request requestForPagedResults;
+   private String albumId;
 
-   String albumId;
+   private int previousTotal;
+   private boolean loading;
 
-   int previousTotal;
-   boolean loading;
-
-   Request.Callback callback = response -> {
-      requestForPagedResults = response.getRequestForPagedResults(Response.PagingDirection.NEXT);
-      if (view != null) handleResponse(response);
-   };
-
-   private void handleResponse(Response response) {
-      List<GraphObject> graphObjects = FacebookUtils.typedListFromResponse(response, GraphObject.class);
-      List<BasePhotoPickerModel> tempList = new ArrayList<>();
-      for (GraphObject graphObject : graphObjects) {
-         FacebookPhoto photo = FacebookPhoto.create(graphObject);
-         tempList.add(photo);
-      }
-      //
-      photos.addAll(tempList);
-      view.addItems(tempList);
-   }
+   @Inject FacebookHelper facebookHelper;
+   @Inject FacebookInteractor facebookInteractor;
 
    public FacebookPhotoPresenter(String albumId) {
       super();
       this.albumId = albumId;
+   }
+
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      facebookInteractor.photosPipe().observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPhotosCommand>()
+                  .onSuccess(getPhotosCommand -> {
+                     List<FacebookPhoto> photosList = getPhotosCommand.getResult();
+                     photos.addAll(photosList);
+                     view.addItems(new ArrayList<>(photosList));
+                  })
+                  .onFail((getPhotosCommand, throwable) -> {
+                     view.back();
+                     handleError(getPhotosCommand, throwable);
+                  }));
    }
 
    public void scrolled(int totalItemCount, int lastVisible) {
@@ -57,16 +57,12 @@ public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPre
    }
 
    public void requestPhotos(boolean fromScroll) {
-      if (!fromScroll) {
-         String route = "/{album-id}/photos".replace("{album-id}", albumId);
-         new Request(Session.getActiveSession(), route, null, GET, callback).executeAsync();
-      } else {
-         if (requestForPagedResults != null) {
-            requestForPagedResults.setCallback(callback);
-            requestForPagedResults.executeAsync();
-         }
-      }
+      facebookInteractor.photosPipe().send(fromScroll ? GetPhotosCommand.loadMore(albumId)
+            : GetPhotosCommand.refresh(albumId));
    }
 
-   public interface View extends BasePickerPresenter.View {}
+   public interface View extends BasePickerPresenter.View {
+
+      void back();
+   }
 }

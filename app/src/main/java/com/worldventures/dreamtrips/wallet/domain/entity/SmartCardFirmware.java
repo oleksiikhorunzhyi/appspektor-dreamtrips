@@ -1,20 +1,42 @@
 package com.worldventures.dreamtrips.wallet.domain.entity;
 
 import org.immutables.value.Value;
+import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-public interface SmartCardFirmware {
+public abstract class SmartCardFirmware {
 
-   String firmwareVersion();
+   @Nullable
+   public abstract String firmwareBundleVersion();
 
-   String nrfBootloaderVersion();
+   @Value.Default
+   public String nordicAppVersion() {
+      return "";
+   }
 
-   String internalAtmelVersion();
+   @Value.Default
+   public String nrfBootloaderVersion() {
+      return "";
+   }
 
-   String internalAtmelBootloaderVersion();
+   @Value.Default
+   public String internalAtmelVersion() {
+      return "";
+   }
 
-   String externalAtmelVersion();
+   @Value.Default
+   public String internalAtmelBootloaderVersion() {
+      return "";
+   }
 
-   String externalAtmelBootloaderVersion();
+   @Value.Default
+   public String externalAtmelVersion() {
+      return "";
+   }
+
+   @Value.Default
+   public String externalAtmelBootloaderVersion() {
+      return "";
+   }
 
 }

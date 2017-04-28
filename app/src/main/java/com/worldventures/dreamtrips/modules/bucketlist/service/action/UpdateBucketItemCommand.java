@@ -1,20 +1,13 @@
 package com.worldventures.dreamtrips.modules.bucketlist.service.action;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.bucketlist.CreateBucketItemHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.UpdateBucketItemHttpAction;
-import com.worldventures.dreamtrips.api.bucketlist.model.BucketCreationBody;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketUpdateBody;
-import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.BucketBody;
 
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.http.annotations.Body;
-import io.techery.janet.http.annotations.HttpAction;
-import io.techery.janet.http.annotations.Path;
-import io.techery.janet.http.annotations.Response;
 
 @CommandAction
 public class UpdateBucketItemCommand extends MappableApiActionCommand<UpdateBucketItemHttpAction, BucketItem, BucketItem> {

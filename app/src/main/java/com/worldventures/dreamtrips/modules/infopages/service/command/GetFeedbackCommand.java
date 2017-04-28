@@ -24,7 +24,7 @@ import io.techery.mappery.MapperyContext;
 public class GetFeedbackCommand extends CommandWithError<List<FeedbackType>> implements InjectableAction,
       CachedAction<List<FeedbackType>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private List<FeedbackType> cachedItems;

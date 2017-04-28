@@ -14,8 +14,10 @@
          android:drawableEnd="@drawable/ic_wallet_pencil_gray"
          android:drawablePadding="2dp"
          android:hint="@string/wallet_add_card_details_hint_address1"
-         android:singleLine="true"
+         android:imeOptions="actionNext"
          android:importantForAccessibility="no"
+         android:inputType="textCapSentences"
+         android:maxLines="1"
          />
 
    <EditText
@@ -26,8 +28,10 @@
          android:drawableEnd="@drawable/ic_wallet_pencil_gray"
          android:drawablePadding="2dp"
          android:hint="@string/wallet_add_card_details_hint_address2"
-         android:singleLine="true"
+         android:imeOptions="actionNext"
          android:importantForAccessibility="no"
+         android:inputType="textCapSentences"
+         android:maxLines="1"
          />
 
    <LinearLayout
@@ -35,8 +39,8 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
-         android:orientation="horizontal"
          android:importantForAccessibility="no"
+         android:orientation="horizontal"
          >
 
       <EditText
@@ -47,9 +51,10 @@
             android:drawableEnd="@drawable/ic_wallet_pencil_gray"
             android:drawablePadding="2dp"
             android:hint="@string/wallet_add_card_details_hint_city"
-            android:inputType="textCapSentences"
-            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:importantForAccessibility="no"
+            android:inputType="textCapSentences"
+            android:maxLines="1"
             />
 
       <EditText
@@ -63,10 +68,11 @@
             android:drawablePadding="2dp"
             android:gravity="center_horizontal"
             android:hint="@string/wallet_add_card_details_hint_state"
+            android:imeOptions="actionNext"
+            android:importantForAccessibility="no"
             android:inputType="textCapCharacters"
             android:maxLength="2"
-            android:singleLine="true"
-            android:importantForAccessibility="no"
+            android:maxLines="1"
             />
 
       <EditText
@@ -78,10 +84,11 @@
             android:drawablePadding="2dp"
             android:gravity="center_horizontal"
             android:hint="@string/wallet_add_card_details_hint_zip"
+            android:imeOptions="actionDone"
+            android:importantForAccessibility="no"
             android:inputType="number"
             android:maxLength="5"
-            android:singleLine="true"
-            android:importantForAccessibility="no"
+            android:maxLines="1"
             />
 
    </LinearLayout>

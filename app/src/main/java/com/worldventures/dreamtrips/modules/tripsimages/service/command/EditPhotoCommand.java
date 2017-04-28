@@ -19,7 +19,7 @@ import rx.Observable;
 @CommandAction
 public class EditPhotoCommand extends Command<Photo> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private String uid;

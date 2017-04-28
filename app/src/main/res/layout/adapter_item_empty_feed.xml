@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout android:id="@+id/ll_empty_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingLeft="28dp"
+      android:paddingRight="28dp"
+      android:paddingTop="@dimen/spacing_normal"
+      android:paddingBottom="@dimen/spacing_normal"
+      >
+
+   <ImageView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/spacing_normal"
+         android:src="@drawable/empty_feed_placeholder"
+         />
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:alpha="0.54"
+         android:gravity="center"
+         android:text="@string/no_feed"
+         android:textColor="@color/black"
+         android:textSize="16sp"
+         />
+
+   <ImageView
+         android:id="@+id/arrow"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginTop="@dimen/spacing_normal"
+         android:src="@drawable/freedraw_arrow"
+         />
+
+   <TextView
+         android:id="@+id/tv_search_friends"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:paddingLeft="@dimen/spacing_small"
+         android:paddingRight="@dimen/spacing_small"
+         android:text="@string/search_friends"
+         android:textColor="@color/theme_main"
+         android:textSize="20sp"
+         android:textStyle="bold"
+         android:drawableLeft="@drawable/ic_search_friends"
+         android:drawablePadding="@dimen/spacing_small"
+         android:layout_marginTop="@dimen/spacing_normal"
+         />
+</LinearLayout>

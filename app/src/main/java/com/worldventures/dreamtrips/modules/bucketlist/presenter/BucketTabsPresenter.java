@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCatego
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,7 +96,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       return getAccount();
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView {
       void setTypes(List<BucketType> type);
 
       void setRecentBucketItemCountByType(BucketType type, int count);

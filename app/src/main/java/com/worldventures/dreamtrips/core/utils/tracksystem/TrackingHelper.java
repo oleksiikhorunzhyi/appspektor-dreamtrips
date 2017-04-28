@@ -70,7 +70,6 @@ public class TrackingHelper {
    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
    public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
 
-   public static final String ACTION_360 = "videos_360";
    public static final String ACTION_360_PLAY = "videos_360_play";
    public static final String ACTION_360_LOAD_START = "videos_360_download_start";
 
@@ -184,10 +183,6 @@ public class TrackingHelper {
       trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
    }
 
-   public static void bookIt(String id, String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_DREAMTRIPS, "book_it", id);
-   }
-
    public static void insprDetails(String memberId, String id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
    }
@@ -287,11 +282,6 @@ public class TrackingHelper {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_LIKE, String.valueOf(id));
    }
 
-   public static void inviteShare(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
-   }
-
    public static void podcasts(String memberId) {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
       trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
@@ -346,8 +336,6 @@ public class TrackingHelper {
    public static final String ACTION_ACTIVITY_FEED = "activity_feed";
    public static final String ACTION_FRIENDS_ACTIVITY = "friends_activity";
    public static final String ACTION_NOTIFICATIONS = "notifications";
-   public static final String ACTION_BOOK_TRAVEL = "book_travel";
-   public static final String ACTION_TRIP_IMAGES = "trip_images";
    public static final String ACTION_MEMBER_IMAGES = "member_images";
    public static final String ACTION_MY_IMAGES = "my_images";
    public static final String ACTION_YSHB_IMAGES = "yshb_images";
@@ -355,7 +343,6 @@ public class TrackingHelper {
    public static final String ACTION_360_VIDEOS = "360_videos";
    public static final String ACTION_MEMBERSHIP = "membership";
    public static final String ACTION_MEMBERSHIP_ENROLL = "membership:enroll-member";
-   public static final String ACTION_LOGOUT = "Logout";
    public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
    public static final String ACTION_TERMS_SERVICE = "terms_service";
    public static final String ACTION_TERMS_COOKIE = "terms-cookie";
@@ -363,7 +350,6 @@ public class TrackingHelper {
    public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
    public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
    public static final String ACTION_REP_TOOLS_INVITE_SHARE = "rep_tools:invite_share";
-   public static final String ACTION_FEEDBACK = "Send Feedback";
    public static final String ACTION_TERMS = "Terms and Conditions";
    public static final String ACTION_SETTINGS = "Settings";
    public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
@@ -384,30 +370,23 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_REJECT_FRIEND_REQUEST = "reject_friend_request";
    public static final String ATTRIBUTE_CANCEL_FRIEND_REQUEST = "cancel_friend_request";
    public static final String ATTRIBUTE_SEARCH = "search";
-   public static final String ATTRIBUTE_ADD = "add";
    public static final String ATTRIBUTE_FILTER = "filter";
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
    public static final String ATTRIBUTE_MAP = "map";
    public static final String ATTRIBUTE_ADD_TO_BUCKET_LIST = "add_to_bucket_list";
-   public static final String ATTRIBUTE_BOOK_IT = "book_it";
    public static final String ATTRIBUTE_LOAD_MORE = "load_more";
    public static final String ATTRIBUTE_UPLOAD_PHOTO = "upload_photo";
    public static final String ATTRIBUTE_SHARE = "share";
    public static final String ATTRIBUTE_DOWNLOAD = "download";
    public static final String ATTRIBUTE_MARK_AS_DONE = "mark_as_done";
-   public static final String ATTRIBUTE_REASON = "feedbackreason";
    public static final String ATTRIBUTE_TERMS = "optinoptout";
    public static final String ATTRIBUTE_COMPLETE = "complete";
    public static final String ATTRIBUTE_FAVORITE = "favorite";
-   public static final String ATTRIBUTE_DINING = "dining";
-   public static final String ATTRIBUTE_ACTIVITIES = "activities";
-   public static final String ATTRIBUTE_LOCATIONS = "locations";
    public static final String ATTRIBUTE_VIEW_PHOTO = "view_photo";
    public static final String ATTRIBUTE_SHOW_TRIPS = "show_trips";
    public static final String ATTRIBUTE_SHOW_BUCKETLIST = "show_bucketlist";
    public static final String ATTRIBUTE_NEW_POST = "new_post";
    public static final String ATTRIBUTE_SHOW_FRIENDS = "show_friends";
-   public static final String ATTRIBUTE_ADD_CONTACT = "add_contact";
    public static final String ATTRIBUTE_SHOW_ALL = "show_all";
    public static final String ATTRIBUTE_FACEBOOK = "facebook";
    public static final String ATTRIBUTE_TWITTER = "twitter";
@@ -416,7 +395,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
    public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
    public static final String ATTRIBUTE_TRIP_SEARCH = "tripsearch";
-   public static final String ATTRIBUTE_NUMBER_OF_UPLOADED_PHOTOS = "uploadamt";
 
    // ---------------- Messenger actions
    public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
@@ -585,16 +563,6 @@ public class TrackingHelper {
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
    }
 
-   public static void actionBookIt(String eventType, String tripId, String tripName) {
-      //apptentive, probabaly legacy code
-      bookIt(tripId, tripId);
-
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(eventType, 1);
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
    public static void actionFilterTrips(TripsFilterDataAnalyticsWrapper filterData) {
       Map data = new HashMap<>();
       data.put(ATTRIBUTE_FILTER, 1);
@@ -616,16 +584,6 @@ public class TrackingHelper {
 
    // ---------------- Book Travel
 
-   public static void actionBookTravelScreen(String eventType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_BOOK_TRAVEL, eventType);
-   }
-
-   // ---------------- Trip Images
-
-   public static void viewTripImagesScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_TRIP_IMAGES, ATTRIBUTE_LIST);
-   }
-
    public static void selectTripImagesTab(String tab) {
       sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);
    }
@@ -641,12 +599,6 @@ public class TrackingHelper {
       Map data = new HashMap<>();
       data.put(actionTab, "1");
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
-   }
-
-   public static void sendFeedback(int reason) {
-      Map data = new HashMap<>();
-      data.put(ATTRIBUTE_REASON, String.valueOf(reason));
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FEEDBACK, data);
    }
 
    public static void termsConditionsAction(boolean accepted) {
@@ -717,8 +669,7 @@ public class TrackingHelper {
       sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, buttonType);
    }
 
-   public static void logout() {
-      sendSimpleAttributetoAdobeTracker(ACTION_LOGOUT, null);
+   public static void clearHeaderData() {
       trackers.get(KEY_ADOBE_TRACKER).setHeaderData(null);
    }
 

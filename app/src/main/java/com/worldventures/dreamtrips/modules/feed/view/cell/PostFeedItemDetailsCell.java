@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -109,12 +108,6 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
          }
       });
       adapter.notifyDataSetChanged();
-   }
-
-   @Override
-   protected void onDelete() {
-      super.onDelete();
-      getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
    }
 
    @Override

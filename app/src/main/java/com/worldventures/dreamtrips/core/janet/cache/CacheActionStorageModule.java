@@ -12,15 +12,22 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
+import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookAlbumsStorage;
+import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookPhotosStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.AccountTimelineStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStorage;
+import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
+import com.worldventures.dreamtrips.modules.friends.storage.RequestsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage;
@@ -32,21 +39,18 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
+import com.worldventures.dreamtrips.wallet.di.WalletActionStorageModule;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(complete = false, library = true)
+@Module(includes = {
+      WalletActionStorageModule.class
+}, complete = false, library = true)
 public class CacheActionStorageModule {
 
    @Singleton
@@ -153,36 +157,6 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
-      return new WalletCardsDiskStorage(cardListStorage);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
-      return new DefaultBankCardStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
-      return new SmartCardStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideSmartCardDetailsStorage(SnappyRepository snappyRepository) {
-      return new SmartCardDetailsStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideTermsAndConditionsStorage(SnappyRepository snappyRepository) {
-      return new TermsAndConditionsStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
    MultipleActionStorage provideCompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
       return new CompoundOperationStorage(compoundOperationRepository);
    }
@@ -191,12 +165,6 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideFeedbackStorage(SnappyRepository db) {
       return new FeedbackTypeStorage(db);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideFirmwareStorage(SnappyRepository db) {
-      return new FirmwareStorage(db);
    }
 
    @Singleton
@@ -215,5 +183,53 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {
       return new DocumentsStorage(new PaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideRequestsStorage() {
+      return new RequestsStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFacebookAlbumsStorage() {
+      return new FacebookAlbumsStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFacebookPhotosStorage() {
+      return new FacebookPhotosStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFeedItemsStorage() {
+      return new FeedStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTimelineStorage() {
+      return new AccountTimelineStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideUserTimelineStorage() {
+      return new UserTimelineStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideHashtagFeedStorage() {
+      return new HashtagFeedStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripsFiltersStorage(SnappyRepository snappyRepository) {
+      return new TripsFiltersStorage(snappyRepository);
    }
 }

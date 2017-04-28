@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.viewpager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import com.techery.spares.adapter.ListAdapter;
 
@@ -14,6 +15,7 @@ import timber.log.Timber;
 public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapter implements ListAdapter<T> {
 
    protected List<T> fragmentItems = new ArrayList<>();
+   protected Fragment currentFragment;
 
    public BasePagerAdapter(FragmentManager fm) {
       super(fm);
@@ -55,6 +57,15 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
    public void setArgs(int position, Fragment fragment) {
    }
 
+   @Override
+   public void setPrimaryItem(ViewGroup container, int position, Object object) {
+      super.setPrimaryItem(container, position, object);
+      currentFragment = (Fragment) object;
+   }
+
+   public Fragment getCurrentFragment() {
+      return currentFragment;
+   }
 
    @Override
    public CharSequence getPageTitle(int position) {

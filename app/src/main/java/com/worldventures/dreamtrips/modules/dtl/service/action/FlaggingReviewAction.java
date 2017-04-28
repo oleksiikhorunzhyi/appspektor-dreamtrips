@@ -2,14 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.api.dtl.merchants.AddFlaggingReviewAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.SdkFlaggingReviewParams;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.FlaggingReviewParams;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FlaggingActionCreator;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -19,7 +16,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class FlaggingReviewAction extends Command<FlaggingReviewParams> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject FlaggingActionCreator reviewsActionCreator;
 

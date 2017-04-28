@@ -4,21 +4,24 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import butterknife.InjectView;
-import rx.functions.Action1;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserPresenter.Screen, WizardAssignUserPresenter, WizardAssignUserPath>
-      implements WizardAssignUserPresenter.Screen, OperationScreen<Void> {
+      implements WizardAssignUserPresenter.Screen {
 
    @InjectView(R.id.assign_progress) WalletProgressWidget assignProgress;
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -40,7 +43,7 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
    @NonNull
    @Override
    public WizardAssignUserPresenter createPresenter() {
-      return new WizardAssignUserPresenter(getContext(), getInjector(), getPath().smartCard);
+      return new WizardAssignUserPresenter(getContext(), getInjector());
    }
 
    @Override
@@ -51,39 +54,21 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return this;
-   }
-
-   @Override
-   public void showProgress(@Nullable String text) {
-      assignProgress.setVisibility(VISIBLE);
-      assignProgress.start();
-   }
-
-   @Override
-   public void hideProgress() {
-      assignProgress.stop();
-      assignProgress.setVisibility(GONE);
-   }
-
-   @Override
-   public void showError(String message, @Nullable Action1<Void> action) {
-      new MaterialDialog.Builder(getContext())
-            .content(message)
-            .positiveText(R.string.ok)
-            .dismissListener(dialog -> {
-               if (action != null) action.call(null);
-            })
-            .show();
-   }
-
-   @Override
-   public Context context() {
-      return getContext();
+      return null;
    }
 
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public OperationView<WizardCompleteCommand> provideOperationView() {
+      return new ComposableOperationView<>(new WalletProgressView<>(assignProgress),
+            ErrorViewFactory.<WizardCompleteCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                        command -> presenter.onWizardComplete(),
+                        command -> presenter.onWizardCancel()))
+                  .build());
    }
 }

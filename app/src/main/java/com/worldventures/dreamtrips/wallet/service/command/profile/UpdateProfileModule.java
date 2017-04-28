@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -28,9 +29,9 @@ public class UpdateProfileModule {
    @Provides
    @Singleton
    UpdateProfileManager updateProfileManager(
-         @Named(JanetModule.JANET_API_LIB) Janet janetApi,
-         @Named(JanetModule.JANET_WALLET) Janet janetWallet,
+         Janet janetApi,
+         SmartCardInteractor smartCardInteractor,
          UpdateDataHolder updateDataHolder) {
-      return new UpdateProfileManager(janetApi, janetWallet, updateDataHolder);
+      return new UpdateProfileManager(janetApi, smartCardInteractor, updateDataHolder);
    }
 }

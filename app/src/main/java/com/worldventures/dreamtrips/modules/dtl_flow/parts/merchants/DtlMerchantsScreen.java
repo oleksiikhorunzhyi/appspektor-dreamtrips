@@ -16,6 +16,10 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void setRefreshedItems(List<ThinMerchant> merchants);
 
+   void connectToggleUpdate();
+
+   void toggleOffersOnly(boolean enabled);
+
    void setFilterButtonState(boolean isDefault);
 
    void showEmpty(boolean isShow);
@@ -55,5 +59,9 @@ public interface DtlMerchantsScreen extends DtlScreen {
    void onClickFood();
 
    void updateMerchantType(List<String> type);
+
+   int getMerchantType();
+
+   void loadMerchantsAndAmenities(List<String> merchantType , int stringResource);
 
 }

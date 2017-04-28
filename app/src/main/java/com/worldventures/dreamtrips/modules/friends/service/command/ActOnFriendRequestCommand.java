@@ -4,12 +4,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.AnswerFriendRequestsHttpAction;
 import com.worldventures.dreamtrips.api.friends.model.FriendRequestParams;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -18,7 +16,7 @@ public abstract class ActOnFriendRequestCommand extends CommandWithError<User> i
 
    protected User user;
 
-   @Named(JanetModule.JANET_API_LIB) @Inject Janet janet;
+   @Inject Janet janet;
 
    public ActOnFriendRequestCommand(User user) {
       this.user = user;

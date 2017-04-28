@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -14,10 +13,9 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-
-import java.io.File;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -46,7 +44,7 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
    @NonNull
    @Override
    public WizardWelcomePresenter createPresenter() {
-      return new WizardWelcomePresenter(getContext(), getInjector(), getPath().smartCard);
+      return new WizardWelcomePresenter(getContext(), getInjector());
    }
 
    @Override
@@ -55,6 +53,7 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
       supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> getPresenter().backButtonClicked());
       content.setVisibility(INVISIBLE);
+      ImageUtils.applyGrayScaleColorFilter(userPhoto);
    }
 
    @Override
@@ -68,8 +67,8 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
    }
 
    @Override
-   public void userPhoto(File photo) {
-      userPhoto.setImageURI(Uri.fromFile(photo));
+   public void userPhoto(String photoUrl) {
+      userPhoto.setImageURI(photoUrl);
    }
 
    @Override

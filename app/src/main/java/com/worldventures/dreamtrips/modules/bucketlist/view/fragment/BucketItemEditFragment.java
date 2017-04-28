@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,12 +24,13 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -39,6 +41,7 @@ import java.util.List;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import icepick.State;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter.BUCKET_MEDIA_REQUEST_ID;
 
@@ -52,13 +55,14 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    @InjectView(R.id.editTextDescription) MaterialEditText editTextDescription;
    @InjectView(R.id.editTextPeople) EditText editTextPeople;
    @InjectView(R.id.editTextTags) EditText editTextTags;
-   @InjectView(R.id.editTextTime) AutoCompleteTextView autoCompleteTextViwDate;
+   @InjectView(R.id.editTextTime) AutoCompleteTextView dateTextView;
    @InjectView(R.id.checkBoxDone) CheckBox checkBox;
    @InjectView(R.id.spinnerCategory) Spinner spinnerCategory;
    @InjectView(R.id.lv_items) BucketHorizontalPhotosView bucketPhotosView;
    @InjectView(R.id.loading_view) ViewGroup loadingView;
 
-   private boolean categorySelected = false;
+   @State Integer categorySelectedPosition;
+   @State boolean isDoneCheckboxStatusWasChanged;
 
    @Override
    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -88,7 +92,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @OnClick(R.id.editTextTime)
    void onTimeClicked() {
-      autoCompleteTextViwDate.showDropDown();
+      dateTextView.showDropDown();
    }
 
    @Override
@@ -139,6 +143,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       if (imageViewDone != null) {
          setHasOptionsMenu(false);
       }
+      checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> isDoneCheckboxStatusWasChanged = true);
    }
 
    protected void setupPhotoCellCallbacks() {
@@ -172,7 +177,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setCategoryItems(List<CategoryItem> items) {
+   public void setCategoryItems(List<CategoryItem> items, CategoryItem selectedItem) {
       ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_item, items);
       adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
       spinnerCategory.setVisibility(android.view.View.VISIBLE);
@@ -180,7 +185,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       AdapterView.OnItemSelectedListener onItemSelectedListenerCategory = new AdapterView.OnItemSelectedListener() {
          @Override
          public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
-            categorySelected = true;
+            categorySelectedPosition = position;
          }
 
          @Override
@@ -189,15 +194,17 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
          }
       };
       spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
+      int categoryPosition = categorySelectedPosition == null ? items.indexOf(selectedItem) : categorySelectedPosition;
+      spinnerCategory.setSelection(categoryPosition);
    }
 
    private void initAutoCompleteDate() {
       String[] items = getResources().getStringArray(R.array.bucket_date_items);
       ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.item_dropdown, items);
-      autoCompleteTextViwDate.setAdapter(adapter);
-      autoCompleteTextViwDate.setOnItemClickListener((parent, view, position, id) -> {
+      dateTextView.setAdapter(adapter);
+      dateTextView.setOnItemClickListener((parent, view, position, id) -> {
          if (position == 0) {
-            autoCompleteTextViwDate.setText("");
+            dateTextView.setText("");
             openDatePicker();
          } else if (position == parent.getCount() - 1) {
             getPresenter().onDateClear();
@@ -217,7 +224,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public CategoryItem getSelectedItem() {
-      if (categorySelected) {
+      if (categorySelectedPosition != null) {
          return (CategoryItem) spinnerCategory.getSelectedItem();
       } else {
          return null;
@@ -225,13 +232,10 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setCategory(int selection) {
-      spinnerCategory.setSelection(selection);
-   }
-
-   @Override
    public void setTime(String time) {
-      autoCompleteTextViwDate.setText(time);
+      if (TextUtils.isEmpty(dateTextView.getText())) {
+         dateTextView.setText(time);
+      }
    }
 
    @Override
@@ -241,7 +245,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void setTags(String tags) {
-      editTextTags.setText(tags);
+      if (TextUtils.isEmpty(editTextTags.getText())) {
+         editTextTags.setText(tags);
+      }
    }
 
    @Override
@@ -251,7 +257,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void setPeople(String people) {
-      editTextPeople.setText(people);
+      if (TextUtils.isEmpty(editTextPeople.getText())) {
+         editTextPeople.setText(people);
+      }
    }
 
    @Override
@@ -260,18 +268,18 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setTitle(String title) {
-      editTextTitle.setText(title);
+   public void setBucketItem(BucketItem bucketItem) {
+      if (TextUtils.isEmpty(editTextTitle.getText())) {
+         editTextTitle.setText(bucketItem.getName());
+      }
+      if (TextUtils.isEmpty(editTextDescription.getText())) {
+         editTextDescription.setText(bucketItem.getDescription());
+      }
    }
 
    @Override
    public String getDescription() {
       return editTextDescription.getText().toString();
-   }
-
-   @Override
-   public void setDescription(String description) {
-      editTextDescription.setText(description);
    }
 
    @Override
@@ -323,7 +331,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setImages(List photos) {
+   public void setImages(List<EntityStateHolder<BucketPhoto>> photos) {
       bucketPhotosView.setImages(photos);
    }
 
@@ -334,7 +342,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void setStatus(boolean isCompleted) {
-      checkBox.setChecked(isCompleted);
+      if (!isDoneCheckboxStatusWasChanged) {
+         checkBox.setChecked(isCompleted);
+      }
    }
 
    @Override

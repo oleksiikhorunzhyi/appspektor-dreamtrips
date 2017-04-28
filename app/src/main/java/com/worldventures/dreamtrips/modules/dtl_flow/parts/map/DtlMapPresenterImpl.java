@@ -107,6 +107,14 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
+            .map(FilterData::isOffersOnly)
+            .doOnCompleted(getView()::connectToggleUpdate)
+            .subscribe(getView()::toggleOffersOnly);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
             .map(FilterData::getMerchantType)
             .subscribe(getView()::updateMerchantType);
       fullMerchantInteractor.fullMerchantPipe()
@@ -164,7 +172,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void onFailMerchantLoad(FullMerchantAction command, Throwable throwable) {
       actionParamsHolder = FullMerchantParamsHolder.fromAction(command);
 
-      getView().hideBlockingProgress();
       getView().showError(command.getErrorMessage());
    }
 

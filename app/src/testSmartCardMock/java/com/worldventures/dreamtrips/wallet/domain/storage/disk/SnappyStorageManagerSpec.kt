@@ -6,6 +6,8 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.snappydb.DB
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.repository.SnappyAction
+import org.mockito.Mockito
 
 class SnappyStorageManagerSpec : BaseSpec({
 
@@ -19,7 +21,7 @@ class SnappyStorageManagerSpec : BaseSpec({
          it("should be called migration for existing version") {
             val db: DB = mock()
             val storage: ModelStorage = mock()
-            val diskStorage: DiskStorage = TestDiskStorage(db)
+            val snappyStorage: SnappyStorage = TestSnappyStorage(db)
 
             val storedVersion = 0
             val newVersion = 1
@@ -30,11 +32,12 @@ class SnappyStorageManagerSpec : BaseSpec({
             whenever(db.exists(fieldKey)).thenReturn(true)
             whenever(db.getObject(fieldKey, Any::class.java)).thenReturn(objectFromDB)
 
+            whenever(storage.execute(Mockito.any(SnappyAction::class.java))).then { snappyStorage.execute(it.arguments[0] as SnappyAction) }
             whenever(storage.key).thenReturn(fieldKey)
             whenever(storage.version).thenReturn(newVersion)
             whenever(storage.migrate(db, storedVersion)).thenReturn(true)
 
-            SnappyStorageManager(diskStorage, setOf(storage)).init()
+            SnappyStorageManager(setOf(storage)).init()
 
             verify(storage, times(1)).migrate(db, storedVersion)
             verify(db, times(1)).put(versionKey, newVersion)
@@ -43,7 +46,7 @@ class SnappyStorageManagerSpec : BaseSpec({
          it("should not be called migration for existing version") {
             val db: DB = mock()
             val storage: ModelStorage = mock()
-            val diskStorage: DiskStorage = TestDiskStorage(db)
+            val snappyStorage: SnappyStorage = TestSnappyStorage(db)
 
             val storedVersion = 1
             val newVersion = 1
@@ -54,11 +57,12 @@ class SnappyStorageManagerSpec : BaseSpec({
             whenever(db.exists(fieldKey)).thenReturn(true)
             whenever(db.getObject(fieldKey, Any::class.java)).thenReturn(objectFromDB)
 
+            whenever(storage.execute(Mockito.any(SnappyAction::class.java))).then { snappyStorage.execute(it.arguments[0] as SnappyAction) }
             whenever(storage.key).thenReturn(fieldKey)
             whenever(storage.version).thenReturn(newVersion)
             whenever(storage.migrate(db, storedVersion)).thenReturn(true)
 
-            SnappyStorageManager(diskStorage, setOf(storage)).init()
+            SnappyStorageManager(setOf(storage)).init()
 
             verify(storage, times(0)).migrate(db, storedVersion)
             verify(db, times(0)).put(versionKey, newVersion)
@@ -67,7 +71,7 @@ class SnappyStorageManagerSpec : BaseSpec({
          it("should be called migration for not existing version") {
             val db: DB = mock()
             val storage: ModelStorage = mock()
-            val diskStorage: DiskStorage = TestDiskStorage(db)
+            val snappyStorage: SnappyStorage = TestSnappyStorage(db)
 
             val oldVersion = 0
             val newVersion = 1
@@ -77,11 +81,12 @@ class SnappyStorageManagerSpec : BaseSpec({
             whenever(db.exists(fieldKey)).thenReturn(true)
             whenever(db.getObject(fieldKey, Any::class.java)).thenReturn(objectFromDB)
 
+            whenever(storage.execute(Mockito.any(SnappyAction::class.java))).then { snappyStorage.execute(it.arguments[0] as SnappyAction) }
             whenever(storage.version).thenReturn(newVersion)
             whenever(storage.key).thenReturn(fieldKey)
             whenever(storage.migrate(db, oldVersion)).thenReturn(true)
 
-            SnappyStorageManager(diskStorage, setOf(storage)).init()
+            SnappyStorageManager(setOf(storage)).init()
 
             verify(storage, times(1)).migrate(db, oldVersion)
             verify(db, times(1)).put(versionKey, newVersion)

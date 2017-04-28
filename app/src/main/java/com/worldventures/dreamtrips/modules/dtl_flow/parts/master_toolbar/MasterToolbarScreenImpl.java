@@ -86,6 +86,16 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       RxDtlToolbar.filterButtonClicks(toolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
+      RxDtlToolbar.offersOnlyToggleChanges(toolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(getPresenter()::offersOnlySwitched);
+   }
+
+   @Override
+   public void connectToggleUpdate() {
+      RxDtlToolbar.offersOnlyToggleChanges(toolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -96,6 +106,11 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    @Override
    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
       toolbar.setSearchCaption(searchCaption);
+   }
+
+   @Override
+   public void toggleOffersOnly(boolean enabled) {
+      toolbar.toggleOffersOnly(enabled);
    }
 
    @Override

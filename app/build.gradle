@@ -40,14 +40,15 @@ configurations.all {
 }
 
 android {
-   compileSdkVersion 24
-   buildToolsVersion '25.0.0'
+   compileSdkVersion 25
+   buildToolsVersion "25.0.2"
 
+   def APPLICATION_PACKAGE_PROD = "com.worldventures.dreamtrips"
    // App version
    def versionMajor = 1
-   def versionMinor = 17
+   def versionMinor = 19
    def versionPatch = 0
-   def versionBuild = 5 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 1 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -74,22 +75,28 @@ android {
    def ALLOW_BUILD_LOG = true
    def BUILD_LOG_TAG = "BUILD_LOG"
    //
+   def qaAutomationModeEnabled = project.hasProperty("qa_automation_mode") ?
+         project.getProperties().get("qa_automation_mode") : false
+   //
    def CONFIG_MAP_DEFAULT = [
          'DreamTripsApi'        : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
          'S3Api'                : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
          'MESSENGER_API_URL'    : '"dtmsgapp-dev.worldventures.biz"',
          'NEWRELIC_API_KEY'     : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
          'UPLOADERY_API_URL'    : '"http://techery-dt-staging-uploadery.techery.io"',
+         'VERSION_CHECK_API_URL': '"http://qafortius-ucservices.wvhservices.com/"',
+         'NXT_API'              : '"https://demo.nxt-security.com/api/services/evtservice/v2"',
          'SMART_CARD_SDK_CLIENT': '"nxtid"'
+
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"https://dtapp-dev.worldventures.biz/"',
+         'DreamTripsApi'    : '"http://dtapp-qa.worldventures.biz/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL': '"http://techery-dt-preprod.techery.io/"',
+         'UPLOADERY_API_URL': '"http://dtapp-qa.worldventures.biz/uploadery"',
    ]
    def CONFIG_MAP_DTL = [
          'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',
@@ -106,6 +113,7 @@ android {
          'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
+         'NXT_API'          : '"https://api.nxt-security.com/api/services/evtservice/v2"'
    ]
    def CONFIG_MAP_SMARTCARD_MOCK = [
          'SMART_CARD_SDK_CLIENT': '"mock"'
@@ -124,7 +132,7 @@ android {
    ]
 
    defaultConfig {
-      applicationId "com.worldventures.dreamtrips"
+      applicationId = APPLICATION_PACKAGE_PROD
       //
       archivesBaseName = "DreamTrips"
       versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
@@ -135,6 +143,7 @@ android {
       //
       multiDexEnabled true
       //
+      buildConfigField 'String', 'APPLICATION_PACKAGE_PROD', "\"${APPLICATION_PACKAGE_PROD}\""
       buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
       buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
       buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
@@ -144,6 +153,7 @@ android {
       buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
       buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
       resValue "string", "facebook_app_id", "761062457321921"
+      resValue "string", "fb_login_protocol_scheme", "fb761062457321921"
       //
       buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
       buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
@@ -164,10 +174,12 @@ android {
       //
       buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
       buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
+      buildConfigField 'boolean', 'QA_AUTOMATION_MODE_ENABLED', "${qaAutomationModeEnabled}"
+      //
+      buildConfigField 'String', 'SURVEY_API_TOKEN', '"7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"'
       //
       manifestPlaceholders = [:]
       manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
-      manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
    }
 
    testOptions {
@@ -403,8 +415,8 @@ tasks.whenTaskAdded { task ->
    }
 }
 
-def googleLibrariesVersion = '24.2.0'
-def googlePlayServicesVersion = '9.2.1'
+def googleLibrariesVersion = '25.2.0'
+def googlePlayServicesVersion = '10.2.0'
 def leakCanaryVersion = '1.3.1'
 def roboelectricVersion = '3.1.2'
 
@@ -413,7 +425,7 @@ dependencies {
    // Di
    compile 'com.squareup.dagger:dagger:1.2.2'
    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-   apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
+   apt files('libs/apt/dagger-proguard-helper-processor-1.0.1-SNAPSHOT.jar')
    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
    compile 'javax.annotation:jsr250-api:1.0'
    // janet
@@ -423,7 +435,7 @@ dependencies {
    apt "com.github.techery.janet-http:service-compiler:1.0.11"
    compile "com.github.techery.janet-http:client-okhttp:1.0.11"
    compile "com.github.techery.janet-converters:gson:1.0.2"
-   compile 'com.squareup.okhttp:logging-interceptor:2.+'
+   compile 'com.squareup.okhttp:logging-interceptor:2.7.5'
    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
    // Data storage, flow
    compile 'de.greenrobot:eventbus:2.4.0'
@@ -450,8 +462,8 @@ dependencies {
    compile "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
    compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
    //
-   compile 'me.dm7.barcodescanner:zxing:1.8.3'
-   compile 'com.facebook.android:facebook-android-sdk:3.23.1'
+   compile 'me.dm7.barcodescanner:zxing:1.9'
+   compile 'com.facebook.android:facebook-android-sdk:4.18.0'
    compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
       transitive = true;
    }
@@ -459,23 +471,27 @@ dependencies {
       transitive = true;
    }
    compile 'com.newrelic.agent.android:android-agent:5.8.4'
-   compile 'com.apptentive:apptentive-android:2.0.1@aar'
+   compile 'com.apptentive:apptentive-android:3.4.0@aar'
    compile 'com.github.techery:job-executor:0.1.1'
    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-   compile 'io.reactivex:rxjava:1.1.6'
+   compile 'io.reactivex:rxjava:1.2.3'
    compile 'io.reactivex:rxandroid:1.1.0'
-   compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
+   compile('com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0') {
+      exclude group: 'com.android.support'
+   }
    compile 'com.trello:rxlifecycle:0.4.0'
    compile 'com.trello:rxlifecycle-components:0.4.0'
    compile 'io.reactivex:rxjava-debug:1.0.3'
    // Ui
    compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-   compile 'com.github.techery:sweet-alert-dialog:d82b5e4764'
+   compile('com.github.techery:sweet-alert-dialog:d82b5e4764') {
+      exclude group: 'com.android.support'
+   }
    compile "com.android.support:design:${googleLibrariesVersion}"
    compile 'com.github.traex.expandablelayout:library:1.3'
-   compile 'com.facebook.fresco:fresco:0.8.1'
-   compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.1'
+   compile 'com.facebook.fresco:fresco:1.1.0'
+   compile 'com.facebook.fresco:imagepipeline-okhttp:1.1.0'
    compile "com.android.support:appcompat-v7:${googleLibrariesVersion}"
    compile "com.android.support:cardview-v7:${googleLibrariesVersion}"
    compile "com.android.support:recyclerview-v7:${googleLibrariesVersion}"
@@ -483,25 +499,33 @@ dependencies {
    compile 'com.rengwuxian.materialedittext:library:2.1.4'
    compile 'com.getbase:floatingactionbutton:1.10.0'
    compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-   compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
-   compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
+   compile('com.github.afollestad.material-dialogs:core:0.8.6.2') {
+      exclude group: 'com.android.support'
+   }
+   compile('com.github.afollestad.material-dialogs:commons:0.8.6.2') {
+      exclude group: 'com.android.support'
+   }
    compile 'com.orhanobut:dialogplus:1.10@aar'
    compile 'com.github.techery:material-range-bar:db6fec9fdd'
    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
    compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
-   compile 'me.relex:circleindicator:1.1.5@aar'
+   compile 'me.relex:circleindicator:1.2.2@aar'
    compile 'com.ms-square:expandableTextView:0.1.4'
    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
-   compile 'mbanje.kurt:fabbutton:1.2.1'
-   compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
-   compile 'com.yalantis:ucrop:1.2.4'
+   compile('mbanje.kurt:fabbutton:1.2.1') {
+      exclude group: 'com.android.support'
+   }
+   compile('com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6') {
+      exclude group: 'com.android.support'
+   }
+   compile 'com.yalantis:ucrop:2.2.0'
    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
    compile 'com.github.techery:properratingbar:0.0.5'
    compile 'com.sothree.slidinguppanel:library:3.2.1'
    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-   compile ('com.github.techery:OperationActionSubscriber:0.0.2') {
+   compile('com.github.techery:OperationActionSubscriber:1.0.0') {
       exclude group: 'org.jetbrains', module: 'annotations-java5'
    }
    // Util
@@ -517,7 +541,9 @@ dependencies {
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
-   compile 'com.github.techery:mappery:8675fb6'
+   compile('com.github.techery:mappery:35aec77') {
+      exclude group: "org.jetbrains.kotlin"
+   }
    compile 'com.jaredrummler:android-device-names:1.1.2'
 
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
@@ -549,14 +575,8 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.14.1-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
-
-   // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.25-STAGE-SNAPSHOT', changing: true) {
-      exclude group: "joda-time"
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.20.4-SNAPSHOT', changing: true) {
+      exclude group: 'com.github.techery', module: 'mappery'
    }
 
    //FingerPrint Library
@@ -573,11 +593,11 @@ dependencies {
    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
    testCompile 'org.powermock:powermock-classloading-xstream:1.6.4'
    testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
-   testCompile 'org.jetbrains.spek:spek:1.0.9'
-   testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+   testCompile('org.jetbrains.spek:spek:1.0.9')
+   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-   testCompile 'io.reactivex:rxkotlin:0.55.0'
-   testCompile 'io.reactivex:rxjava:1.1.6'
+   testCompile('io.reactivex:rxkotlin:0.55.0')
+   testCompile 'io.reactivex:rxjava:1.2.3'
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {
       exclude group: 'org.mockito', module: 'mockito-core'
    }

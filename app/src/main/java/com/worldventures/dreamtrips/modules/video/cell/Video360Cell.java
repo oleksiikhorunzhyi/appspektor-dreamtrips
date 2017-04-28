@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
@@ -12,6 +13,8 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
@@ -44,7 +47,12 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
 
    @Override
    protected void syncUIStateWithModel() {
-      imageViewPreview.setImageURI(Uri.parse(getModelObject().getImageUrl()));
+      ViewUtils.runTaskAfterMeasure(itemView, () -> {
+         PipelineDraweeController controller = GraphicUtils
+               .provideFrescoResizingController(Uri.parse(getModelObject().getImageUrl()), imageViewPreview.getController(),
+                     imageViewPreview.getWidth() , imageViewPreview.getHeight());
+         imageViewPreview.setController(controller);
+      });
       this.textViewTitle.setText(getModelObject().getVideoName());
       this.textViewDuration.setText(getModelObject().getDuration());
 

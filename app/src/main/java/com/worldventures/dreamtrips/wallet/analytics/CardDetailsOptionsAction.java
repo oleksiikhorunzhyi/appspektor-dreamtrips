@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 @AnalyticsEvent(action = "wallet:Add a Card:Card Detail Options",
                 trackers = AdobeTracker.TRACKER_KEY)
@@ -17,9 +17,9 @@ public class CardDetailsOptionsAction extends BaseCardDetailsWithDefaultAction {
       this.nickname = nickname;
    }
 
-   public static CardDetailsOptionsAction forBankCard(BankCard bankCard, boolean isDefault) {
-      CardDetailsOptionsAction action = new CardDetailsOptionsAction(bankCard.nickName());
-      action.fillPaycardInfo(bankCard, isDefault);
+   public static CardDetailsOptionsAction forBankCard(Record record, boolean isDefault) {
+      CardDetailsOptionsAction action = new CardDetailsOptionsAction(record.nickName());
+      action.fillPaycardInfo(record, isDefault);
       return action;
    }
 }

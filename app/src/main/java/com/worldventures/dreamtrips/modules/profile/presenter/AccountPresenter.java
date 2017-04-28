@@ -13,8 +13,8 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
@@ -28,6 +28,8 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.command.AccountTimelineStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
@@ -46,6 +48,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User>
@@ -59,7 +62,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
    @Inject DownloadFileInteractor downloadFileInteractor;
-   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
@@ -67,6 +70,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
    @Inject SnappyRepository db;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
+   @Inject AccountTimelineStorageDelegate accountTimelineStorageDelegate;
 
    @State boolean shouldReload;
    @State int mediaRequestId;
@@ -85,6 +89,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       subscribeNotificationsBadgeUpdates();
       subscribeToAvatarUpdates();
       subscribeToBackgroundUpdates();
+      subscribeToStorage();
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
       connectToCroppedImageStream();
@@ -160,6 +165,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onSuccess(action -> refreshFeedSucceed(action.getResult())));
    }
 
+   private void subscribeToStorage() {
+      accountTimelineStorageDelegate.startUpdatingStorage()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<AccountTimelineStorageCommand>()
+                  .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+                  .onFail(this::handleError));
+   }
+
    private void subscribeLoadNextFeeds() {
       feedInteractor.getLoadNextAccountTimelinePipe()
             .observe()
@@ -170,14 +183,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void subscribeToBackgroundUploadingOperations() {
-      backgroundUploadingInteractor.compoundOperationsPipe()
+      compoundOperationsInteractor.compoundOperationsPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
                      postUploads = Queryable.from(compoundOperationsCommand.getResult())
                            .cast(PostCompoundOperationModel.class).toList();
-                     refreshFeedItemsInView();
+                     refreshFeedItems();
                   }));
    }
 
@@ -320,6 +333,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       String filePath = CachedEntity.getFilePath(context, url);
       downloadFileInteractor.getDownloadFileCommandPipe()
             .createObservable(new DownloadFileCommand(new File(filePath), url))
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
                   .onSuccess(downloadFileCommand -> action.action(filePath))
                   .onFail(this::handleError));
@@ -345,7 +359,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    @Override
-   protected void refreshFeedItemsInView() {
+   public void refreshFeedItems() {
       view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads));
    }
 

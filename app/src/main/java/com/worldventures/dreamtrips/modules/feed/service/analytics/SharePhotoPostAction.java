@@ -56,7 +56,7 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
          sharePostAction.locationAdded = textualPost.getLocation().getName();
       }
 
-      sharePostAction.uploadCount = String.valueOf(photos);
+      sharePostAction.uploadCount = String.valueOf(photos.size());
       sharePostAction.photoMethodCam = String.valueOf(Queryable.from(photos)
             .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.CAMERA));
       sharePostAction.photoMethodFb = String.valueOf(Queryable.from(photos)

@@ -47,6 +47,7 @@ import butterknife.InjectView;
 
 public class MerchantOffersInflater extends MerchantDataInflater {
 
+   @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
    @InjectView(R.id.merchant_details_description) TextView description;
    @InjectView(R.id.description_header) ViewGroup descriptionHeader;
    @InjectView(R.id.scrollView) NestedScrollView scrollViewRoot;
@@ -107,6 +108,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
 
    private void setType() {
       ViewUtils.setViewVisibility(earnWrapper, merchantAttributes.hasOffers()  ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(merchantWrapper, !merchantAttributes.hasOffers() ? View.VISIBLE : View.GONE);
       ViewUtils.setViewVisibility(perkDivider, !merchantAttributes.hasOffers() ? View.GONE : View.VISIBLE);
    }
 

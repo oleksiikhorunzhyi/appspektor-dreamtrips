@@ -29,7 +29,7 @@ import rx.Observable;
 @CommandAction
 public class UploadFeedbackAttachmentCommand extends CommandWithError implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject @ForApplication Context context;
    @Inject StaticPageProvider staticPageProvider;
 

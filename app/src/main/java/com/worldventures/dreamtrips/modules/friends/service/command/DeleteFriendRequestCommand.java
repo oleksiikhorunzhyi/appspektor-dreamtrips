@@ -19,7 +19,7 @@ public class DeleteFriendRequestCommand extends CommandWithError<User> implement
    private User user;
    private Action action;
 
-   @Named(JanetModule.JANET_API_LIB) @Inject Janet janet;
+   @Inject Janet janet;
 
    public DeleteFriendRequestCommand(User user, Action action) {
       this.user = user;

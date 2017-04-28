@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class SubscribeToPushNotificationsCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository snappyRepository;
    @Inject @ForApplication Context context;

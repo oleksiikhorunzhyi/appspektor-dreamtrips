@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.api.bucketlist.GetBucketListPopularActivitie
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListPopularDinningsHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListPopularLocationsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
@@ -14,7 +13,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -24,7 +22,7 @@ import rx.Observable;
 @CommandAction
 public class GetPopularBucketItemSuggestionsCommand extends CommandWithError<List<PopularBucketItem>> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private BucketItem.BucketType type;

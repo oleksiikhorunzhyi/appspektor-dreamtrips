@@ -5,6 +5,9 @@ import android.os.Parcelable;
 import android.view.View;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.wizard.PowerOnAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -27,6 +30,7 @@ public class WizardPowerOnPresenter extends WalletPresenter<WizardPowerOnPresent
    @Inject WizardInteractor wizardInteractor;
    @Inject WalletBluetoothService bluetoothService;
    @Inject WalletNetworkService networkService;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardPowerOnPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -35,6 +39,8 @@ public class WizardPowerOnPresenter extends WalletPresenter<WizardPowerOnPresent
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new PowerOnAction()));
+
       observeBluetoothAndNetwork();
       observeChecks();
    }

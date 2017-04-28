@@ -26,7 +26,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class GetFeedEntityCommand extends CommandWithError<FeedEntity> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private String uid;

@@ -1,80 +1,60 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.graphics.PointF;
-import android.text.TextUtils;
+import android.content.Context;
 import android.view.View;
-import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
-import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.modules.bucketlist.view.util.BucketItemViewInjector;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 
-import butterknife.InjectView;
+import javax.inject.Inject;
+
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
-public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem, CellDelegate<BucketFeedItem>> {
+public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem, BaseFeedCell.FeedCellDelegate<BucketFeedItem>> {
 
-   @InjectView(R.id.imageViewCover) SimpleDraweeView imageViewCover;
-   @InjectView(R.id.textViewName) TextView textViewName;
-   @InjectView(R.id.textViewCategory) TextView textViewCategory;
-   @InjectView(R.id.textViewDate) TextView textViewDate;
-   @InjectView(R.id.textViewPlace) TextView textViewPlace;
+   @Inject SessionHolder<UserSession> appSessionHolder;
+   @ForActivity @Inject Context context;
+
+   private BucketItemViewInjector bucketItemViewInjector;
 
    public BucketFeedItemDetailsCell(View view) {
       super(view);
    }
 
-   private void loadImage(String lowUrl, String url) {
-      DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-            .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
-            .setImageRequest(ImageRequest.fromUri(url))
-            .build();
-      imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
-      imageViewCover.setController(draweeController);
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      bucketItemViewInjector = new BucketItemViewInjector(itemView, context, appSessionHolder);
    }
 
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-
-      BucketItem bucketItem = getModelObject().getItem();
-      String small = BucketItemInfoUtil.getMediumResUrl(itemView.getContext(), bucketItem);
-      String big = BucketItemInfoUtil.getHighResUrl(itemView.getContext(), bucketItem);
-      loadImage(small, big);
-      textViewName.setText(bucketItem.getName());
-      if (TextUtils.isEmpty(bucketItem.getCategoryName())) {
-         textViewCategory.setVisibility(View.GONE);
-      } else {
-         textViewCategory.setVisibility(View.VISIBLE);
-         textViewCategory.setText(getCategory(bucketItem));
-      }
-      if (TextUtils.isEmpty(BucketItemInfoUtil.getPlace(bucketItem))) {
-         textViewPlace.setVisibility(View.GONE);
-      } else {
-         textViewPlace.setVisibility(View.VISIBLE);
-         textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
-      }
-      textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
+      bucketItemViewInjector.processBucketItem(getModelObject().getItem());
    }
 
-   private String getCategory(BucketItem bucketItem) {
-      return bucketItem.getCategoryName();
+   @OnClick(R.id.translate)
+   public void translate() {
+      if (getModelObject().getItem().isTranslated()) {
+         cellDelegate.onShowOriginal(getModelObject().getItem());
+      } else {
+         bucketItemViewInjector.translatePressed();
+         cellDelegate.onTranslateItem(getModelObject().getItem());
+      }
    }
 
    @Override
@@ -85,14 +65,14 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
    @Override
    protected void onDelete() {
       super.onDelete();
-      getEventBus().post(new DeleteBucketEvent(getModelObject().getItem()));
+      cellDelegate.onDeleteBucketItem(getModelObject().getItem());
    }
 
    @Override
    protected void onEdit() {
       super.onEdit();
       BucketItem bucketItem = getModelObject().getItem();
-      getEventBus().post(new EditBucketEvent(bucketItem, BucketUtility.typeFromItem(bucketItem)));
+      cellDelegate.onEditBucketItem(bucketItem, BucketUtility.typeFromItem(bucketItem));
    }
 
    @OnClick(R.id.bucket_main)

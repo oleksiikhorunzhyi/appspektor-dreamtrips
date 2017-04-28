@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector;
 
@@ -21,7 +22,7 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_trip_event)
-public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, CellDelegate<TripFeedItem>> {
+public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, BaseFeedCell.FeedCellDelegate<TripFeedItem>> {
 
    @Inject SessionHolder<UserSession> appSessionHolder;
 

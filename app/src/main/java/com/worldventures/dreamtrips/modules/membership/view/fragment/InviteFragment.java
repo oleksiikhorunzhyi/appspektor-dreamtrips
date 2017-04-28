@@ -21,7 +21,6 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -109,7 +108,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
       tvSearch.setOnQueryTextListener(this);
       tvSearch.clearFocus();
       tvSearch.setIconifiedByDefault(false);
-      tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
+      tvSearch.setOnClickListener(v -> getPresenter().onSearchStart());
 
       tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
          if (hasFocus) {
@@ -181,7 +180,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
 
    @OnClick(R.id.iv_add_contact)
    public void addContact() {
-      TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_ADD_CONTACT);
+      getPresenter().addContactRequired();
       new AddContactDialog(getActivity()).show(getPresenter()::addMember);
    }
 

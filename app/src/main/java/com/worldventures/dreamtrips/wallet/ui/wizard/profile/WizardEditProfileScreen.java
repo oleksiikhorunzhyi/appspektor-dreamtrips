@@ -1,24 +1,37 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.util.FirstNameException;
+import com.worldventures.dreamtrips.wallet.util.LastNameException;
+import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
+import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 
 import java.io.File;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
@@ -42,7 +55,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @NonNull
    @Override
    public WizardEditProfilePresenter createPresenter() {
-      return new WizardEditProfilePresenter(getContext(), getInjector(), getPath().smartCard);
+      return new WizardEditProfilePresenter(getContext(), getInjector());
    }
 
    @Override
@@ -54,6 +67,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
+      ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -88,6 +102,19 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
+   public OperationView<SetupUserDataCommand> provideOperationView() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_long_operation_hint, false),
+            ErrorViewFactory.<SetupUserDataCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen))
+                  .build()
+      );
+   }
+
+   @Override
    public void pickPhoto() {
       mediaPickerService.pickPhoto();
    }
@@ -113,8 +140,8 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void setPreviewPhoto(File photo) {
-      previewPhotoView.setImageURI(Uri.fromFile(photo));
+   public void setPreviewPhoto(String photoUrl) {
+      previewPhotoView.setImageURI(photoUrl);
    }
 
    @Override
@@ -130,6 +157,19 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    public String[] getUserName() {
       return new String[]{firstName.getText().toString().trim(), middleName.getText().toString().trim(),
             lastName.getText().toString().trim()};
+   }
+
+   @Override
+   public void showConfirmationDialog(String fullName) {
+      new MaterialDialog.Builder(getContext())
+            .content(Html.fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message, fullName)))
+            .contentGravity(GravityEnum.CENTER)
+            .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
+            .onPositive((dialog, which) -> presenter.onUserDataConfirmed())
+            .negativeText(R.string.wallet_edit_profile_confirmation_dialog_button_negative)
+            .onNegative((dialog, which) -> dialog.cancel())
+            .build()
+            .show();
    }
 
    @Override

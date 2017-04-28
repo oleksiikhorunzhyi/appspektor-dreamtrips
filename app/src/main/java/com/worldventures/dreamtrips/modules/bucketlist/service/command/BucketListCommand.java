@@ -8,7 +8,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemsForUserHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.ImmutableGetBucketItemsForUserHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -43,7 +41,7 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
    @Inject BucketInteractor bucketInteractor;
    @Inject SessionHolder<UserSession> sessionHolder;
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private Func2<BucketInteractor, List<BucketItem>, Observable<List<BucketItem>>> operationFunc;
@@ -94,8 +92,8 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
       Observable<List<BucketItem>> networkObservable = janet.createPipe(GetBucketItemsForUserHttpAction.class)
             .createObservableResult(
                   new GetBucketItemsForUserHttpAction(ImmutableGetBucketItemsForUserHttpAction
-                        .Params.of(userId)))
-            .map(action ->  mapperyContext.convert(action.response(), BucketItem.class));
+                        .Params.of(userId())))
+            .map(action -> mapperyContext.convert(action.response(), BucketItem.class));
 
       if (force) {
          networkObservable.subscribe(callback::onSuccess, callback::onFail);

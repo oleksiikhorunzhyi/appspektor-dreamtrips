@@ -2,14 +2,12 @@ package com.messenger.api;
 
 
 import com.worldventures.dreamtrips.api.messenger.GetShortProfileHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -20,7 +18,7 @@ import rx.Observable;
 @CommandAction
 public class GetShortProfilesCommand extends Command<List<User>> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    List<String> userNames;

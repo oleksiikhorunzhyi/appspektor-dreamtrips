@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwareScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -25,13 +25,12 @@
          />
 
    <TextView
+         android:id="@+id/install_step"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"
-         android:layout_marginTop="20dp"
          android:text="@string/wallet_firmware_install_sub_text"
          android:textAppearance="?android:attr/textAppearanceMedium"
-         android:textColor="@color/grey"
          />
 
    <FrameLayout
@@ -53,6 +52,7 @@
             android:id="@+id/progressStatusLabel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:layout_gravity="center"
             android:textSize="40sp"
             tools:text="33%"
@@ -69,4 +69,4 @@
          android:text="@string/wallet_long_operation_hint"
          />
 
-</com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwareScreen>
+</com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen>

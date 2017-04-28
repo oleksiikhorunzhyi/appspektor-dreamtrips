@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips.core.api.action;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 
 public abstract class BaseApiActionCommand<HttpAction extends com.worldventures.dreamtrips.api.api_common.BaseHttpAction, T, R>
       extends CommandWithError<T> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    @Override
    protected void run(CommandCallback<T> callback) throws Throwable {

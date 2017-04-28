@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -31,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAda
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.ScrollingManager;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionManager;
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -70,11 +70,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Inject MerchantsAdapterDelegate delegate;
 
    ScrollingManager scrollingManager;
-   SingleSelectionManager selectionManager;
+   ClearableSelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
    LayoutManagerScrollPersister scrollStatePersister = new LayoutManagerScrollPersister();
+
+   private int idResource = R.string.dtlt_search_hint;
+   public static List<String> merchantType = new ArrayList<>();
 
    @Override
    protected void onFinishInflate() {
@@ -104,7 +107,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       scrollingManager = new ScrollingManager();
       scrollingManager.setup(recyclerView);
 
-      selectionManager = new SingleSelectionManager(recyclerView);
+      selectionManager = new ClearableSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
@@ -195,6 +198,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterFood.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
+
+         setStatusMerchantType(FilterData.RESTAURANT);
       }
    }
 
@@ -204,6 +209,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterEntertainment.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
+
+         setStatusMerchantType(FilterData.ENTERTAINMENT);
       }
    }
 
@@ -213,12 +220,22 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterSpa.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
+
+         setStatusMerchantType(FilterData.SPAS);
       }
+   }
+
+   public static List<String> getFilterType(){
+      return merchantType;
+   }
+
+   private static void setStatusMerchantType(String type){
+      merchantType.clear();
+      merchantType = MerchantTypeUtil.getMerchantTypeList(type);
    }
 
     @Override
     public void updateMerchantType(List<String> type) {
-        int idResource = 0;
 
        if (type != null ) {
           if (type.size() > 1) {
@@ -238,6 +255,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
        }
        updateFiltersView(idResource);
     }
+
+   @Override
+   public int getMerchantType() {
+      return idResource;
+   }
 
    private void showhMerchantsError() {
       if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
@@ -290,6 +312,15 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
+   public void connectToggleUpdate() {
+      if(dtlToolbar == null) return;
+
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
+   }
+
+   @Override
    public void showEmpty(boolean isShow) {
       emptyView.setVisibility(isShow ? VISIBLE : GONE);
    }
@@ -330,6 +361,12 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onOfferClick(ThinMerchant merchant, Offer offer) {
       getPresenter().onOfferClick(merchant, offer);
+   }
+
+   @Override
+   public void toggleOffersOnly(boolean enabled) {
+      if (dtlToolbar == null) return;
+      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

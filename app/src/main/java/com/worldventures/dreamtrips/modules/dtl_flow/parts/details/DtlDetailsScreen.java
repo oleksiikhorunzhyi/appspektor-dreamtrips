@@ -26,6 +26,8 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void setTransaction(DtlTransaction dtlTransaction);
 
+   void setSuggestMerchantButtonAvailable(boolean available);
+
    void share(Merchant merchant);
 
    void locationResolutionRequired(Status status);

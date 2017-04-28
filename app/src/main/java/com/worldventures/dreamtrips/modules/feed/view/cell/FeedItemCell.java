@@ -8,7 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -32,7 +33,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.adapter_feed_item_cell)
-public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
+public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
 
    @InjectView(R.id.cell_container) ViewGroup cellContainer;
    @Inject @ForActivity Provider<Injector> injectorProvider;
@@ -50,7 +51,7 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
       if (feedItemDetailsCell == null) {
          feedItemDetailsCell = createCell(item);
          cellContainer.addView(feedItemDetailsCell.itemView);
-         feedItemDetailsCell.setEventBus(getEventBus());
+         feedItemDetailsCell.setCellDelegate(cellDelegate);
          injectorProvider.get().inject(feedItemDetailsCell);
          feedItemDetailsCell.afterInject();
          //

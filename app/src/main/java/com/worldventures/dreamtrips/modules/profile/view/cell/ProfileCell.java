@@ -302,12 +302,6 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
       friendRequest.setVisibility(View.GONE);
    }
 
-   @Override
-   public void clearResources() {
-      super.clearResources();
-      if (getEventBus().isRegistered(this)) getEventBus().unregister(this);
-   }
-
    private void setBadgeValue() {
       if (isAccount()) {
          int badgeCount = snapper.getFriendsRequestsCount();

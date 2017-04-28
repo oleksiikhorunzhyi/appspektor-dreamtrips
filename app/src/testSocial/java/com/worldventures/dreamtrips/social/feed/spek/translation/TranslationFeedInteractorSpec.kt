@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTransl
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor
@@ -40,7 +39,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
       context("Translate comment when disc storage is not empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn(translationFromDisc)
 
-         textualPost.description = "originalText"
+         comment.message = "originalText"
 
          val testSubscribe = translateComment(comment, languageTo)
 
@@ -52,10 +51,9 @@ class TranslationFeedInteractorSpec : BaseSpec({
       context("Translate post when disc storage is empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn("")
 
-         postFeedItem.item = textualPost
          textualPost.description = "originalText"
 
-         val testSubscribe = translatePost(postFeedItem, languageTo)
+         val testSubscribe = translatePost(textualPost, languageTo)
 
          assertActionSuccess(testSubscribe) {
             it.result.isTranslated && it.result.translation.equals(translationFromNetwork)
@@ -65,10 +63,9 @@ class TranslationFeedInteractorSpec : BaseSpec({
       context("Translate post when disc storage is not empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn(translationFromDisc)
 
-         postFeedItem.item = textualPost
          textualPost.description = "originalText"
 
-         val testSubscribe = translatePost(postFeedItem, languageTo)
+         val testSubscribe = translatePost(textualPost, languageTo)
 
          assertActionSuccess(testSubscribe) {
             it.result.isTranslated && it.result.translation.equals(translationFromDisc)
@@ -83,8 +80,6 @@ class TranslationFeedInteractorSpec : BaseSpec({
       val translationFromNetwork = "translationFromNetwork"
       val translationFromDisc = "translationFromDisc"
       val comment = Comment()
-
-      val postFeedItem = PostFeedItem()
       val textualPost = TextualPost()
 
       lateinit var translateFeedInteractor: TranslationFeedInteractor
@@ -113,16 +108,16 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscriber = TestSubscriber<ActionState<TranslateUidItemCommand.TranslateCommentCommand>>()
 
          translateFeedInteractor.translateCommentPipe().
-               createObservable(TranslateUidItemCommand.forComment(comment, languageTo))
+               createObservable(TranslateUidItemCommand.TranslateCommentCommand(comment, languageTo))
                .subscribe(testSubscriber)
          return testSubscriber
       }
 
-      fun translatePost(postFeedItem: PostFeedItem, languageTo: String): TestSubscriber<ActionState<TranslateUidItemCommand.TranslatePostCommand>> {
-         val testSubscriber = TestSubscriber<ActionState<TranslateUidItemCommand.TranslatePostCommand>>()
+      fun translatePost(textualPost: TextualPost, languageTo: String): TestSubscriber<ActionState<TranslateUidItemCommand.TranslateFeedEntityCommand>> {
+         val testSubscriber = TestSubscriber<ActionState<TranslateUidItemCommand.TranslateFeedEntityCommand>>()
 
-         translateFeedInteractor.translatePostPipe().
-               createObservable(TranslateUidItemCommand.forPost(postFeedItem, languageTo))
+         translateFeedInteractor.translateFeedEntityPipe().
+               createObservable(TranslateUidItemCommand.TranslateFeedEntityCommand(textualPost, languageTo))
                .subscribe(testSubscriber)
          return testSubscriber
       }

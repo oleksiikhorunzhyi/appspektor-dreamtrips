@@ -44,12 +44,12 @@ public class AttributesInteractor {
 
    public void requestAmenities(List<String> merchantType) {
       Observable.combineLatest(
-              provideFormattedLocationObservable(),
-              provideFilterDataObservable(),
-              new AttributesUpdateFunc())
-              .take(1)
-              .map(param -> AttributesAction.create(param, (merchantType != null && !merchantType.isEmpty()) ? merchantType : ImmutableFilterData.builder().build().getMerchantType()))
-              .subscribe(attributesPipe::send);
+            provideFormattedLocationObservable(),
+            provideFilterDataObservable(),
+            new AttributesUpdateFunc())
+            .take(1)
+            .map(param -> AttributesAction.create(param, (merchantType != null && !merchantType.isEmpty()) ? merchantType : ImmutableFilterData.builder().build().getMerchantType()))
+            .subscribe(attributesPipe::send);
    }
 
    private Observable<String> provideFormattedLocationObservable() {

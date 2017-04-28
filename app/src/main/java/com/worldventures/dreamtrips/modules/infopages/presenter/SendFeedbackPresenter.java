@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachm
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.modules.infopages.service.analytics.SendFeedbackAnalyticAction;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
@@ -39,6 +40,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SnappyRepository db;
    @Inject FeedbackInteractor feedbackInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Router router;
    private FeedbackAttachmentsManager attachmentsManager = new FeedbackAttachmentsManager();
 
@@ -91,7 +93,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    }
 
    public void sendFeedback(int feedbackType, String text) {
-      TrackingHelper.sendFeedback(feedbackType);
+      analyticsInteractor.analyticsActionPipe().send(new SendFeedbackAnalyticAction(feedbackType, getImageAttachments().size()));
       view.changeDoneButtonState(false);
 
       feedbackInteractor.sendFeedbackPipe()

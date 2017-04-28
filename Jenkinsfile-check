@@ -19,11 +19,16 @@ utils.runBuild('android', utils.notifiers.gitlab(this)) {
                   [$class: 'CleanBeforeCheckout'],
                   [$class : 'CloneOption',
                    shallow: true,
-                   depth  : 10,
+                   depth  : 1000,
                    noTags : true,
                    timeout: 30]
             ]
       ])
+   }
+   stage("danger") {
+    env.CHANGE_URL = "${env.gitlabSourceRepoHomepage}/merge_requests/${env.gitlabMergeRequestId}"
+    utils.scripts.bash("rvm install 2.3.1 && rvm use 2.3.1 && gem install bundler && bundle install")
+    utils.scripts.bash("bundle exec danger --danger_id=pr_linter --fail-on-errors=true")
    }
    stage('tests') {
       for (String task : buildParams.TEST_TASKS)

@@ -16,6 +16,10 @@ public interface MasterToolbarScreen extends DtlScreen {
 
    void updateToolbarSearchCaption(@Nullable String searchCaption);
 
+   void connectToggleUpdate();
+
+   void toggleOffersOnly(boolean enabled);
+
    void setFilterButtonState(boolean enabled);
 
    void locationResolutionRequired(Status status);

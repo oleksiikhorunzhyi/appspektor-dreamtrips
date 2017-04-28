@@ -14,28 +14,23 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
+public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder {
 
    protected int notificationId;
    protected FeedItem.Type type = Type.UNDEFINED;
    protected FeedItem.Action action;
    protected T item;
    protected Links links;
-   @SerializedName("posted_at") protected Date createdAt;
+   protected Date createdAt;
    protected Date readAt;
-
-   protected transient String translation;
-   protected transient boolean translated;
 
    private MetaData metaData;
 
    public static FeedItem create(FeedEntity item, User owner) {
       FeedItem feedItem = create(item);
-      item.setComments(new ArrayList<>());
       feedItem.action = Action.ADD;
       feedItem.item = item;
       feedItem.createdAt = Calendar.getInstance().getTime();
@@ -312,39 +307,6 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    public String previewImage(Resources resources) {
       return "";
    }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Translation
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public String getOriginalText() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public String getTranslation() {
-      return translation;
-   }
-
-   @Override
-   public void setTranslation(String translation) {
-      this.translation = translation;
-   }
-
-   @Override
-   public boolean isTranslated() {
-      return translated;
-   }
-
-   @Override
-   public void setTranslated(boolean translated) {
-      this.translated = translated;
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Inner
-   ///////////////////////////////////////////////////////////////////////////
 
    public enum Action {
       @SerializedName("share")

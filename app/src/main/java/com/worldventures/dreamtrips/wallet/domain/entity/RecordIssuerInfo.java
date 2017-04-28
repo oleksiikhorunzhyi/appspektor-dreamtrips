@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.wallet.domain.entity;
 
 
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
-
-import io.techery.janet.smartcard.model.Record;
 
 @Value.Immutable
 @Gson.TypeAdapters
@@ -17,14 +16,13 @@ public abstract class RecordIssuerInfo {
       return "";
    }
 
-   //TODO: financialService should be null
    @Value.Default
-   public Record.FinancialService financialService() {
-      return Record.FinancialService.MASTERCARD;
+   public FinancialService financialService() {
+      return FinancialService.GENERIC;
    }
 
    @Value.Default
-   public BankCard.CardType cardType() {
-      return BankCard.CardType.UNKNOWN;
+   public RecordType cardType() {
+      return RecordType.FINANCIAL;
    }
 }

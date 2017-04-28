@@ -12,6 +12,7 @@
    <color name="wallet_hint_color">#9a9a9a</color>
    <color name="wallet_number_edit_text_text_color_hint">#999999</color>
    <color name="wallet_number_edit_text_pin_line_color">#666666</color>
+   <color name="wallet_menu_item_pressed_background">#ececec</color>
 
    <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
       <item name="colorPrimary">@color/wallet_color_primary</item>
@@ -20,8 +21,10 @@
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
+      <item name="android:editTextStyle">@style/WalletTheme.EditTextStyle</item>
       <item name="android:buttonStyle">@style/WalletTheme.ButtonStyle</item>
-      <item name="buttonStyle">@style/WalletTheme.ButtonStyle</item> <!--for support V7 -->
+      <item name="editTextStyle">@style/WalletTheme.EditTextStyle</item> <!--for support V7 -->
+      <item name="buttonStyle">@style/WalletTheme.ButtonStyle</item>
       <item name="switchStyle">@style/WalletTheme.SwitchStyle</item>
 
       <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>
@@ -56,8 +59,15 @@
       <item name="android:textColor">@color/wallet_text_color_primary</item>
    </style>
 
+   <style name="WalletTheme.ErrorTextAppearance" parent="TextAppearance.AppCompat.Small">
+      <item name="android:textColor">@color/wallet_waring_red</item>
+   </style>
+
    <style name="WalletTheme.EditTextStyle" parent="Widget.AppCompat.EditText">
-      <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+      <item name="android:background">@drawable/wallet_background_edit_text</item>
+      <item name="android:paddingTop">@dimen/wallet_edit_text_spaces_top_bottom</item>
+      <item name="android:paddingBottom">@dimen/wallet_edit_text_spaces_top_bottom</item>
+      <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
       <item name="android:textColorHint">?android:attr/textColorHint</item>
       <item name="android:singleLine">true</item>
    </style>
@@ -70,12 +80,13 @@
    </style>
 
    <!--settings-->
+   <!--TODO REMOVE-->
    <style name="SettingsItemDividerStyle">
       <item name="android:layout_width">match_parent</item>
       <item name="android:layout_height">0.5dp</item>
       <item name="android:background">@color/wallet_color_divider</item>
    </style>
-
+   <!--TODO REMOVE-->
    <style name="SettingsItemSubTitleStyle">
       <item name="android:layout_width">wrap_content</item>
       <item name="android:layout_height">wrap_content</item>
@@ -85,11 +96,36 @@
       <item name="android:textStyle">bold</item>
    </style>
 
-   <style name="SettingsItemText">
+   <style name="SettingsMenuItem">
+      <item name="android:background">@drawable/background_wallet_settings_menu_item</item>
       <item name="android:layout_width">match_parent</item>
       <item name="android:layout_height">wrap_content</item>
+      <item name="android:gravity">center_vertical</item>
+      <item name="android:paddingTop">@dimen/wallet_settings_menu_item_vertical_spacing</item>
+      <item name="android:paddingBottom">@dimen/wallet_settings_menu_item_vertical_spacing</item>
+      <item name="android:paddingStart">@dimen/spacing_normal</item>
+      <item name="android:paddingEnd">@dimen/spacing_normal</item>
+   </style>
+
+   <style name="SettingsMenuItem.Text">
       <item name="android:textColor">@color/black</item>
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+   </style>
+
+   <style name="SettingsText">
+      <item name="android:layout_width">wrap_content</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:gravity">center_vertical</item>
+   </style>
+
+   <style name="SettingsText.Primary">
+      <item name="android:textColor">@color/color_selector_wallet_settings_item_primery</item>
+      <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+   </style>
+
+   <style name="SettingsText.Secondary">
+      <item name="android:textColor">@color/color_selector_wallet_settings_item_secondary</item>
+      <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
    </style>
 
    <style name="AboutItemText" parent="TextAppearance.AppCompat.Medium">
@@ -99,13 +135,6 @@
    <style name="AboutItemText.Value" parent="TextAppearance.AppCompat.Medium">
       <item name="android:textColor">@color/wallet_about_item_value</item>
       <item name="android:layout_height">match_parent</item>
-   </style>
-
-   <style name="SettingsItemSecondaryText">
-      <item name="android:layout_width">wrap_content</item>
-      <item name="android:layout_height">wrap_content</item>
-      <item name="android:textColor">?android:attr/textColorSecondary</item>
-      <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
    </style>
 
    <!--common-->
@@ -122,6 +151,8 @@
       <item name="navigationIcon">@drawable/back_icon</item>
       <item name="android:gravity">center_vertical</item>
       <item name="titleTextColor">@android:color/white</item>
+      <item name="actionMenuTextColor">@android:color/white</item>
+      <item name="android:actionMenuTextColor">@android:color/white</item>
       <item name="android:background">@color/wallet_color_primary</item>
    </style>
 

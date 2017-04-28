@@ -19,10 +19,10 @@ import android.widget.Button;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.ViewProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.ViewProgressView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -153,5 +153,15 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
    @Override
    public void showError(Object o, Throwable throwable) {
       failedToLoadTerms();
+   }
+
+   @Override
+   public boolean isErrorVisible() {
+      return errorDialog != null && errorDialog.isShowing();
+   }
+
+   @Override
+   public void hideError() {
+      if(errorDialog != null) errorDialog.dismiss();
    }
 }

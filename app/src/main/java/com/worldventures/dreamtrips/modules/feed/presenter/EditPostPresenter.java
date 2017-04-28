@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -69,10 +68,7 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
             .createObservable(new EditPostCommand(post.getUid(), createPostObject()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<EditPostCommand>()
-               .onSuccess(editPostCommand -> {
-                  eventBus.post(new FeedEntityChangedEvent(editPostCommand.getResult()));
-                  view.cancel();
-               })
+               .onSuccess(editPostCommand -> view.cancel())
                .onFail((editPostCommand, throwable) -> {
                   view.cancel();
                   handleError(editPostCommand, throwable);

@@ -294,8 +294,10 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                   .observe()
                   .subscribe(testListSubscriber)
 
+            val bucketItem = BucketItem()
+            bucketItem.uid = TEST_BUCKET_ITEM_UID;
             bucketInteractor.deleteItemPipe()
-                  .createObservable(DeleteBucketItemCommand(TEST_BUCKET_ITEM_UID))
+                  .createObservable(DeleteBucketItemCommand(bucketItem))
                   .subscribe(testSubscriber)
             assertActionSuccess(testSubscriber) {
                true

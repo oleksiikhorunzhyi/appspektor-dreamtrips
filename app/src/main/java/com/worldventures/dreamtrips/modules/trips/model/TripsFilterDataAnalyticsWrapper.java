@@ -68,7 +68,8 @@ public class TripsFilterDataAnalyticsWrapper {
    }
 
    public String getAcceptedRegionsAnalyticString() {
-      if (allRegions.size() > 0 && Queryable.from(allRegions).count(region -> !region.isChecked()) == 0) return ALL;
+      if (allRegions == null || allRegions.isEmpty()) return ALL;
+      if (Queryable.from(allRegions).count(region -> !region.isChecked()) == 0) return ALL;
       //
       return TextUtils.join(DEFAULT_FIELDS_DELIMITER, Queryable.from(allRegions)
             .filter(RegionModel::isChecked)
@@ -77,8 +78,8 @@ public class TripsFilterDataAnalyticsWrapper {
    }
 
    public String getAcceptedActivitiesAnalyticString() {
-      if (allParentActivities.size() > 0 && Queryable.from(allParentActivities)
-            .count(activity -> !activity.isChecked()) == 0) return ALL;
+      if (allParentActivities == null || allParentActivities.isEmpty()) return ALL;
+      if (Queryable.from(allParentActivities).count(activity -> !activity.isChecked()) == 0) return ALL;
       //
       return TextUtils.join(DEFAULT_FIELDS_DELIMITER, Queryable.from(allParentActivities)
             .filter(ActivityModel::isChecked)

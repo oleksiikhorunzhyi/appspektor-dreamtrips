@@ -1,40 +1,47 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
+import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
-import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
+import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
+import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
+import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
+import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
+import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import rx.Scheduler;
@@ -43,171 +50,179 @@ import rx.schedulers.Schedulers;
 
 public final class SmartCardInteractor {
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
-   private final ActionPipe<CardListCommand> cardsListPipe;
-   private final ActionPipe<UpdateBankCardCommand> updateBankCardPipe;
+   private final ActionPipe<SetSmartCardTimeCommand> setSmartCardTimePipe;
+   private final ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe;
    private final ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCardPipe;
-   private final ActionPipe<SyncCardsCommand> syncCardsPipe;
-   private final ActionPipe<AttachCardCommand> addRecordPipe;
-   private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
-   private final ActionPipe<AddBankCardCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
-   private final ActionPipe<SetLockStateCommand> setLockPipe;
-   private final ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
+   private final ActionPipe<SyncSmartCardCommand> smartCardSyncPipe;
+   private final ReadActionPipe<GetStealthModeAction> getStealthModePipe;
    private final ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe;
+   private final ActionPipe<SetLockStateCommand> setLockPipe;
+   private final ReadActionPipe<GetLockDeviceStatusAction> getLockPipe;
+   private final ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
    private final ActionPipe<ActiveSmartCardCommand> activeSmartCardActionPipe;
-   private final ActionPipe<DefaultCardIdCommand> defaultCardIdPipe;
-   private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
-   private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
-   private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
-   private final ActionPipe<DeleteRecordAction> deleteCardPipe;
-   private final ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe;
+   private final ActionPipe<DeviceStateCommand> deviceStatePipe;
+   private final ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe;
+   private final ActionPipe<SmartCardUserCommand> smartCardUserPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
+   private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
+   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataOnBackedCommandActionPipe;
+
+   private final ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe;
+   private final ActionPipe<OfflineModeStatusCommand> offlineModeStatusPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
-   private final ActionPipe<CreateBankCardCommand> recordIssuerInfoPipe;
 
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
+   private final ReadActionPipe<GetClearRecordsDelayAction> getAutoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
+   private final ReadActionPipe<GetDisableDefaultCardDelayAction> getDisableDefaultCardDelayPipe;
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
+   private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
+   private final ActionPipe<ConnectAction> connectionActionPipe;
 
-   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
-      this(janet, sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
+   private final ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe;
+   private final ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe;
+   private final ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe;
+   private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
+
+   private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
+
+   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
    }
 
-   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
+   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
       //synchronized pipes
-      cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, cacheSchedulerFactory.call());
-      syncCardsPipe = sessionActionPipeCreator.createPipe(SyncCardsCommand.class, cacheSchedulerFactory.call());
+      smartCardSyncPipe = sessionActionPipeCreator.createPipe(SyncSmartCardCommand.class, cacheSchedulerFactory.call());
       activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, cacheSchedulerFactory
             .call());
-      defaultCardIdPipe = sessionActionPipeCreator.createPipe(DefaultCardIdCommand.class, cacheSchedulerFactory.call());
-      fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, cacheSchedulerFactory
-            .call());
+      deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, cacheSchedulerFactory.call());
+      smartCardFirmwarePipe = sessionActionPipeCreator.createPipe(SmartCardFirmwareCommand.class, cacheSchedulerFactory.call());
+      smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, cacheSchedulerFactory.call());
       fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, cacheSchedulerFactory
             .call());
 
+      fetchFirmwareVersionPipe = sessionActionPipeCreator.createPipe(FetchFirmwareVersionCommand.class, Schedulers.io());
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
-      updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
+      setSmartCardTimePipe = sessionActionPipeCreator.createPipe(SetSmartCardTimeCommand.class, Schedulers.io());
+      restoreOfflineModeDefaultStatePipe = sessionActionPipeCreator.createPipe(RestoreOfflineModeDefaultStateCommand.class, Schedulers
+            .io());
       fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers
             .io());
       stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
-      addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
+      getStealthModePipe = sessionActionPipeCreator.createPipe(GetStealthModeAction.class); //read action pipe
 
       lockDeviceChangedEventPipe = sessionActionPipeCreator.createPipe(LockDeviceChangedEvent.class, Schedulers.io());
       setLockPipe = sessionActionPipeCreator.createPipe(SetLockStateCommand.class, Schedulers.io());
-      fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
+      getLockPipe = sessionActionPipeCreator.createPipe(GetLockDeviceStatusAction.class); //read action pipe
 
-      getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
-      saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(AddBankCardCommand.class, Schedulers.io());
-      setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
-            .io());
-      setPaymentCardActionActionPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
-      deleteCardPipe = sessionActionPipeCreator.createPipe(DeleteRecordAction.class, Schedulers.io());
-      updateCardDetailsPipe = sessionActionPipeCreator.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
+      fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
       restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
+      wipeSmartCardDataOnBackedCommandActionPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
+            .io());
 
+      switchOfflineModePipe = sessionActionPipeCreator.createPipe(SwitchOfflineModeCommand.class, Schedulers.io());
+      offlineModeStatusPipe = sessionActionPipeCreator.createPipe(OfflineModeStatusCommand.class, Schedulers.io());
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
       cardSwipedEventPipe = sessionActionPipeCreator.createPipe(CardSwipedEvent.class, Schedulers.io());
       startCardRecordingPipe = sessionActionPipeCreator.createPipe(StartCardRecordingAction.class, Schedulers.io());
       stopCardRecordingPipe = sessionActionPipeCreator.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
-      recordIssuerInfoPipe = sessionActionPipeCreator.createPipe(CreateBankCardCommand.class, Schedulers.io());
-
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
-      disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+      getAutoClearDelayPipe = sessionActionPipeCreator.createPipe(GetClearRecordsDelayAction.class); //read action pipe
 
+      disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+      getDisableDefaultCardDelayPipe = sessionActionPipeCreator.createPipe(GetDisableDefaultCardDelayAction.class); //read action pipe
+
+      cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
-      //
-      new SmartCardSyncManager(janet, this);// start sync when start use the wallet
+
+      connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
+
+      checkPinStatusActionPipe = sessionActionPipeCreator.createPipe(CheckPinStatusAction.class, Schedulers.io());
+      setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
+      getPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(GetPinEnabledCommand.class, Schedulers.io());
+      setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
+
+      getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
       return Schedulers.from(Executors.newSingleThreadExecutor());
    }
 
-   public ActionPipe<CardListCommand> cardsListPipe() {
-      return cardsListPipe;
-   }
-
    public ActionPipe<ActiveSmartCardCommand> activeSmartCardPipe() {
       return activeSmartCardActionPipe;
+   }
+
+   public ActionPipe<DeviceStateCommand> deviceStatePipe() {
+      return deviceStatePipe;
+   }
+
+   public ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe() {
+      return smartCardFirmwarePipe;
+   }
+
+   public ActionPipe<SmartCardUserCommand> smartCardUserPipe() {
+      return smartCardUserPipe;
    }
 
    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
       return connectionPipe;
    }
 
-   public ActionPipe<UpdateBankCardCommand> updateBankCardPipe() {
-      return updateBankCardPipe;
+   public ActionPipe<SetSmartCardTimeCommand> setSmartCardTimePipe() {
+      return setSmartCardTimePipe;
    }
 
-   public ActionPipe<SyncCardsCommand> cardSyncPipe() {
-      return syncCardsPipe;
+   public ActionPipe<RestoreOfflineModeDefaultStateCommand> restoreOfflineModeDefaultStatePipe() {
+      return restoreOfflineModeDefaultStatePipe;
    }
 
-   public ActionPipe<DefaultCardIdCommand> defaultCardIdPipe() {
-      return defaultCardIdPipe;
-   }
-
-   public ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe() {
-      return fetchDefaultCardCommandPipe;
-   }
-
-   public ActionPipe<DeleteRecordAction> deleteCardPipe() {
-      return deleteCardPipe;
-   }
-
-   public ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe() {
-      return updateCardDetailsPipe;
+   public ActionPipe<SyncSmartCardCommand> smartCardSyncPipe() {
+      return smartCardSyncPipe;
    }
 
    public ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCard() {
       return fetchAssociatedSmartCardPipe;
    }
 
-   public ActionPipe<AttachCardCommand> addRecordPipe() {
-      return addRecordPipe;
-   }
-
-   public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
-      return getDefaultAddressCommandPipe;
-   }
-
    public ActionPipe<SetStealthModeCommand> stealthModePipe() {
       return stealthModePipe;
+   }
+
+   public ReadActionPipe<GetStealthModeAction> getStealthModePipe() {
+      return getStealthModePipe;
    }
 
    public ActionPipe<SetLockStateCommand> lockPipe() {
       return setLockPipe;
    }
 
+   public ReadActionPipe<GetLockDeviceStatusAction> getLockPipe() {
+      return getLockPipe;
+   }
+
    public ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe() {
       return lockDeviceChangedEventPipe;
-   }
-
-   public ActionPipe<AddBankCardCommand> saveCardDetailsDataPipe() {
-      return saveCardDetailsDataCommandPipe;
-   }
-
-   public ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe() {
-      return setDefaultCardOnDeviceCommandPipe;
    }
 
    public ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe() {
       return fetchCardPropertiesPipe;
    }
 
-   public ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe() {
-      return setPaymentCardActionActionPipe;
+   public ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe() {
+      return fetchFirmwareVersionPipe;
    }
 
    public ReadActionPipe<CardChargedEvent> chargedEventPipe() {
@@ -226,11 +241,6 @@ public final class SmartCardInteractor {
       return stopCardRecordingPipe;
    }
 
-
-   public ActionPipe<CreateBankCardCommand> bankCardPipe() {
-      return recordIssuerInfoPipe;
-   }
-
    public ActionPipe<DisconnectAction> disconnectPipe() {
       return disconnectPipe;
    }
@@ -239,8 +249,28 @@ public final class SmartCardInteractor {
       return restartSmartCardCommandActionPipe;
    }
 
+   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataCommandActionPipe() {
+      return wipeSmartCardDataOnBackedCommandActionPipe;
+   }
+
+   public ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe() {
+      return switchOfflineModePipe;
+   }
+
+   public ActionPipe<OfflineModeStatusCommand> offlineModeStatusPipe() {
+      return offlineModeStatusPipe;
+   }
+
+   public ReadActionPipe<GetClearRecordsDelayAction> getAutoClearDelayPipe() {
+      return getAutoClearDelayPipe;
+   }
+
    public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {
       return autoClearDelayPipe;
+   }
+
+   public ReadActionPipe<GetDisableDefaultCardDelayAction> getDisableDefaultCardDelayPipe() {
+      return getDisableDefaultCardDelayPipe;
    }
 
    public ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardDelayPipe() {
@@ -253,6 +283,34 @@ public final class SmartCardInteractor {
 
    public ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe() {
       return fetchBatteryLevelPipe;
+   }
+
+   public ActionPipe<CardInChargerEvent> cardInChargerEventPipe() {
+      return cardInChargerEventPipe;
+   }
+
+   public ActionPipe<ConnectAction> connectionActionPipe() {
+      return connectionActionPipe;
+   }
+
+   public ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe() {
+      return checkPinStatusActionPipe;
+   }
+
+   public ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe() {
+      return setPinEnabledActionPipe;
+   }
+
+   public ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe() {
+      return getPinEnabledCommandActionPipe;
+   }
+
+   public ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe() {
+      return setPinEnabledCommandActionPipe;
+   }
+
+   public ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe() {
+      return getOnCardAnalyticsPipe;
    }
 
 }

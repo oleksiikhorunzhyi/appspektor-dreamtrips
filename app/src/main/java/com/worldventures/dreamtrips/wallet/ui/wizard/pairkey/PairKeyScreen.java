@@ -1,21 +1,28 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, PairKeyPresenter, PairKeyPath> implements PairKeyPresenter.Screen{
+public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, PairKeyPresenter, PairKeyPath> implements PairKeyPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -31,35 +38,55 @@ public class PairKeyScreen extends WalletLinearLayout<PairKeyPresenter.Screen, P
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
-      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 
    @NonNull
    @Override
    public PairKeyPresenter createPresenter() {
-      return new PairKeyPresenter(getContext(), getInjector(), getPath().getBarcode(), getPath().getBarcodeOrigin());
+      final PairKeyPath path = getPath();
+      return new PairKeyPresenter(getContext(), getInjector(), path.mode, path.barcode);
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
+   public OperationScreen provideOperationDelegate() {return null;}
 
    @Override
    protected boolean hasToolbar() {
       return true;
    }
 
-   @Override
-   public void showError(@StringRes int messageId) {
-      new MaterialDialog.Builder(getContext())
-            .content(messageId)
-            .positiveText(R.string.ok)
-            .show();
-   }
-
    @OnClick(R.id.button_next)
    public void onConnectToSmartCard() {
       presenter.tryToPairAndConnectSmartCard();
+   }
+
+   @Override
+   public OperationView<CreateAndConnectToCardCommand> provideOperationCreateAndConnect() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<CreateAndConnectToCardCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(
+                        getContext(),
+                        SmartCardConnectException.class,
+                        R.string.wallet_smartcard_connection_error,
+                        (dialog, which) -> presenter.goBack())
+                  ).build());
+   }
+
+   @Override
+   public void showBackButton() {
+      toolbar.setNavigationIcon(R.drawable.back_icon);
+      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+   }
+
+   @Override
+   public void hideBackButton() {
+      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      toolbar.setNavigationOnClickListener(null);
+   }
+
+   @Override
+   public View getView() {
+      return this;
    }
 }

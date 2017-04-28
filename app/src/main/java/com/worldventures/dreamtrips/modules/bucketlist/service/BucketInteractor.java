@@ -128,7 +128,7 @@ public final class BucketInteractor {
             .map(bucketItemBucketPhotoPair -> bucketItemBucketPhotoPair.first)).subscribe(bucketItem -> {
          bucketListActionPipe.send(BucketListCommand.updateItem(bucketItem));
       });
-      deleteItemPipe.observeSuccess().map(DeleteBucketItemCommand::getBucketItemUid).subscribe(bucketItemUid -> {
+      deleteItemPipe.observeSuccess().map(command -> command.getResult().getUid()).subscribe(bucketItemUid -> {
          bucketListActionPipe.send(BucketListCommand.deleteItem(bucketItemUid));
       });
       addBucketItemPhotoPipe.observe()

@@ -335,8 +335,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     }
 
     private void enableButtons(boolean status) {
-       mComment.setEnabled(status);
-       mRatingBar.setEnabled(status);
        toolbar.setEnabled(status);
        mTvPost.setEnabled(status);
     }

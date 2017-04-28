@@ -12,9 +12,11 @@ import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
@@ -22,7 +24,11 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,9 +38,8 @@ import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 public interface SnappyRepository {
 
    String CIRCLES = "circles";
-   String REGIONS = "regions_new";
+   String TRIP_FILTERS = "trip_filters";
    String CATEGORIES = "categories";
-   String ACTIVITIES = "activities_new";
    String BUCKET_LIST = "bucket_items";
    String SETTINGS_KEY = "settings";
    String TRANSLATION = "translation";
@@ -65,6 +70,9 @@ public interface SnappyRepository {
    String DOCUMENTS = "DOCUMENTS";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
+   String UPDATE_REQUIREMENT = "UPDATE_REQUIREMENT";
+   String UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP = "UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP";
+
    String NOTIFICATIONS = "notifications";
    String UNDEFINED_FEED_ITEM = "undefined";
    String PHOTO_FEED_ITEM = "photo";
@@ -73,14 +81,16 @@ public interface SnappyRepository {
    String BUCKET_FEED_ITEM = "bucket";
 
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
+   String WALLET_SMART_CARD_USER = "WALLET_SMART_CARD_USER";
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
-   String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
+   String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
-   String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
-
+   String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
+   String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
+   String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
 
    void clearAll();
 
@@ -111,6 +121,14 @@ public interface SnappyRepository {
    void saveLastSuggestedPhotosSyncTime(long time);
 
    long getLastSuggestedPhotosSyncTime();
+
+   void saveAppUpdateRequirement(UpdateRequirement updateRequirement);
+
+   UpdateRequirement getAppUpdateRequirement();
+
+   void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp);
+
+   long getAppUpdateOptionalDialogConfirmedTimestamp();
 
    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
 
@@ -204,6 +222,10 @@ public interface SnappyRepository {
 
    List<TripModel> getTrips();
 
+   void saveTripFilters(CachedTripFilters tripFilters);
+
+   CachedTripFilters getTripFilters();
+
    void savePins(List<Pin> pins);
 
    List<Pin> getPins();
@@ -222,12 +244,6 @@ public interface SnappyRepository {
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
 
-   void deleteWalletDefaultCardId();
-
-   void saveWalletDefaultCardId(String id);
-
-   String readWalletDefaultCardId();
-
    void saveDefaultAddress(AddressInfo addressInfo);
 
    AddressInfo readDefaultAddress();
@@ -236,17 +252,15 @@ public interface SnappyRepository {
 
    void saveSmartCard(SmartCard smartCard);
 
-   SmartCard getSmartCard(String smartCardId);
+   SmartCard getSmartCard();
 
-   void deleteSmartCard(String smartCardId);
+   void deleteSmartCard();
 
-   List<SmartCard> getSmartCards();
+   void saveSmartCardUser(SmartCardUser smartCardUser);
 
-   String getActiveSmartCardId();
+   SmartCardUser getSmartCardUser();
 
-   void setActiveSmartCardId(String scid);
-
-   void deleteActiveSmartCardId();
+   void deleteSmartCardUser();
 
    void saveWalletTermsAndConditions(TermsAndConditions data);
 
@@ -256,13 +270,33 @@ public interface SnappyRepository {
 
    void saveSmartCardDetails(SmartCardDetails details);
 
-   SmartCardDetails getSmartCardDetails(String smartCardId);
+   SmartCardDetails getSmartCardDetails();
 
-   void deleteSmartCardDetails(String smartCardId);
+   void deleteSmartCardDetails();
+
+   void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware);
+
+   SmartCardFirmware getSmartCardFirmware();
+
+   void deleteSmartCardFirmware();
 
    void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 
    FirmwareUpdateData getFirmwareUpdateData();
 
    void deleteFirmwareUpdateData();
+
+   void saveWalletLocations(List<WalletLocation> walletLocations);
+
+   List<WalletLocation> getWalletLocations();
+
+   void deleteWalletLocations();
+
+   void saveEnabledTracking(boolean enable);
+
+   boolean isEnableTracking();
+
+   void saveSyncRecordsStatus(SyncRecordsStatus data);
+
+   SyncRecordsStatus getSyncRecordsStatus();
 }

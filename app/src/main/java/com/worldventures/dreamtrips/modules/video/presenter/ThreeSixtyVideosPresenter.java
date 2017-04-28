@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.modules.video.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
-import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 
 import java.util.ArrayList;
@@ -40,6 +41,10 @@ public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<Three
       currentItems.addAll(recentVideos);
 
       view.setItems(currentItems);
+   }
+
+   public void onSelected() {
+      analyticsInteractor.analyticsActionPipe().send(TripImagesTabViewAnalyticsEvent.for360Video());
    }
 
    public interface View extends PresentationVideosPresenter.View {}

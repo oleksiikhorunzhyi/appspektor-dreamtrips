@@ -12,9 +12,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,15 +26,13 @@ public class BankCardWidget extends FrameLayout {
    @InjectView(R.id.tv_owner_name) TextView tvOwnerName;
    @InjectView(R.id.tv_card_number) TextView tvCardNumber;
    @InjectView(R.id.tv_expire_date) TextView tvExpireDate;
-   @InjectView(R.id.wallet_sample_holder) View sampleCardHolder;
    @InjectView(R.id.tv_default_card_label) TextView tvDefaultCardLabel;
    @InjectView(R.id.tv_short_card_number) TextView tvShortCardNumber;
 
    private View bankCardHolder;
 
-   private final BankCardHelper bankCardHelper;
+   private final WalletRecordUtil walletRecordUtil;
    private final SpannableString goodThru;
-   private final SpannableString cvvSpannable;
 
    private boolean showShortNumber;
    private int drawableResId;
@@ -59,11 +57,9 @@ public class BankCardWidget extends FrameLayout {
       } finally {
          a.recycle();
       }
-      bankCardHelper = new BankCardHelper(context);
+      walletRecordUtil = new WalletRecordUtil(context);
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
-      cvvSpannable = new SpannableString(getResources().getString(R.string.wallet_bank_card_cvv_label));
-      cvvSpannable.setSpan(new RelativeSizeSpan(.65f), 0, cvvSpannable.length(), 0);
    }
 
    @Override
@@ -81,18 +77,17 @@ public class BankCardWidget extends FrameLayout {
       tvShortCardNumber.setVisibility(show ? VISIBLE : GONE);
    }
 
-   public void setBankCard(BankCard card) {
+   public void setBankCard(Record card) {
       setCardName(card.nickName());
-      setOwnerName(card.cardNameHolder());
-      setCardNumber(card.number());
+      setOwnerName(WalletRecordUtil.fetchFullName(card));
+      setCardNumber(card.numberLastFourDigits());
       setExpireDate(card.expDate());
-      setCardType(card.issuerInfo().cardType());
-      setCardCategory(card.category());
+      setRecordType(card.recordType());
    }
 
    //   properties:
    public void setCardName(CharSequence cardName) {
-      tvCardName.setText(bankCardHelper.toBoldSpannable(cardName));
+      tvCardName.setText(walletRecordUtil.toBoldSpannable(cardName));
    }
 
    public void setOwnerName(CharSequence ownerName) {
@@ -115,23 +110,15 @@ public class BankCardWidget extends FrameLayout {
       );
    }
 
-   public void setCardNumber(String cardNumber) {
-      tvCardNumber.setText(bankCardHelper.obtainFullCardNumber(cardNumber));
+   public void setCardNumber(String numberLastFourDigits) {
+      tvCardNumber.setText(walletRecordUtil.obtainFullCardNumber(numberLastFourDigits));
       if (showShortNumber) {
-         tvShortCardNumber.setText(bankCardHelper.obtainShortCardNumber(cardNumber));
+         tvShortCardNumber.setText(walletRecordUtil.obtainShortCardNumber(numberLastFourDigits));
       }
    }
 
-   public void setCardCategory(Card.Category cardCategory) {
-      if (cardCategory == Card.Category.SAMPLE) {
-         sampleCardHolder.setVisibility(VISIBLE);
-      } else {
-         sampleCardHolder.setVisibility(GONE);
-      }
-   }
-
-   public void setCardType(BankCard.CardType cardType) {
-      tvCardType.setText(bankCardHelper.obtainCardType(cardType));
+   public void setRecordType(RecordType recordType) {
+      tvCardType.setText(walletRecordUtil.obtainRecordType(recordType));
    }
 
    public enum BankCardResource {

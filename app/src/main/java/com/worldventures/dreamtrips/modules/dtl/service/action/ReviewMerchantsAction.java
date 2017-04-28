@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.GetReviewsMerchantsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
@@ -11,22 +10,23 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
+
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 
 @CommandAction
 public class ReviewMerchantsAction extends CommandWithError<Reviews>
       implements CachedAction<Reviews>, InjectableAction, NewRelicTrackableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject ReviewsActionCreator reviewsActionCreator;
 

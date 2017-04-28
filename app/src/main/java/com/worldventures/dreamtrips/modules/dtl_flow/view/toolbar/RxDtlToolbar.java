@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CompoundButton;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import rx.Observable;
@@ -206,5 +208,23 @@ public class RxDtlToolbar {
       checkNotNull(dtlToolbar, "dtlToolbar == null");
       checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
       return RxView.focusChanges(dtlToolbar.getMerchantSearchView());
+   }
+
+   /**
+    * Create an observable of booleans representing the checked state of 'Show offers only'
+    * {@code view}.
+    * <p>
+    * <em>Warning:</em> The created observable keeps a strong reference to {@code view}. Unsubscribe
+    * to free this reference.
+    * <p>
+    * <em>Warning:</em> The created observable uses {@link CompoundButton#setOnCheckedChangeListener}
+    * to observe checked changes. Only one observable can be used for a view at a time.
+    */
+   @CheckResult
+   @NonNull
+   public static Observable<Boolean> offersOnlyToggleChanges(@NonNull DtlToolbar dtlToolbar) {
+      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
+      return RxCompoundButton.checkedChanges(dtlToolbar.getDiningFilterToggle()).skip(1);
    }
 }

@@ -17,7 +17,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import javax.inject.Singleton;
 
@@ -25,10 +24,9 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
 
-@Module(
-      complete = false,
-      library = true)
+@Module(complete = false, library = true)
 public class MessengerDelegateModule {
+
    @Provides
    ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {
       return new ChatFacadeManager(injector);

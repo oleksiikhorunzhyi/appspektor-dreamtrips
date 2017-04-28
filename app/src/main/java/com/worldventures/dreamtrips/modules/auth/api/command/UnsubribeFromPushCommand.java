@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.google.android.gms.iid.InstanceID;
 import com.worldventures.dreamtrips.api.push_notifications.UnsubscribeFromPushNotificationsHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -13,7 +12,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -24,7 +22,7 @@ import timber.log.Timber;
 @CommandAction
 public class UnsubribeFromPushCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject SnappyRepository snappyRepository;
    @Inject Context context;
 

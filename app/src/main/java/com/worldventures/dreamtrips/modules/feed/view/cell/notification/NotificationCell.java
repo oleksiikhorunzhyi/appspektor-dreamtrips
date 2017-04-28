@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
@@ -59,6 +60,8 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
    @Override
    protected void syncUIStateWithModel() {
+      if (!appSessionHolder.get().isPresent()) return;
+
       User firstUser = getModelObject().getLinks().getUsers().get(0);
       notificationAvatar.setImageURI(Uri.parse(firstUser.getAvatar().getThumb()));
       notificationAvatar.setup(firstUser, injectorProvider.get());
@@ -89,6 +92,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    }
 
    private void openByType(Type type, FeedItem.Action action) {
+      TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(), getModelObject().getType());
       switch (type) {
          case PHOTO:
             if (action == FeedItem.Action.TAG_PHOTO) {

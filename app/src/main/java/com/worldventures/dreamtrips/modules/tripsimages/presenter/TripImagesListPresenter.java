@@ -5,16 +5,21 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import java.util.ArrayList;
@@ -27,7 +32,9 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
 
-public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View, C extends TripImagesCommand<? extends IFullScreenObject>> extends Presenter<VT> {
+public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View,
+      C extends TripImagesCommand<? extends IFullScreenObject>> extends Presenter<VT>
+      implements FeedEntityHolder {
 
    public static final int PER_PAGE = 15;
    public final static int VISIBLE_TRESHOLD = 5;
@@ -35,6 +42,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    @Inject SnappyRepository db;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedInteractor feedInteractor;
+   @Inject PostsInteractor postsInteractor;
+   @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    protected TripImagesType type;
 
@@ -81,6 +90,10 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       return presenter;
    }
 
+   public void onSelectedFromPager() {
+      analyticsInteractor.analyticsActionPipe().send(TripImagesTabViewAnalyticsEvent.forTripImages(type));
+   }
+
    @Override
    public void takeView(VT view) {
       super.takeView(view);
@@ -89,9 +102,11 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       if (!view.isFullscreenView()) {
          reload(false);
       }
+      subscribeToNewItems();
       subscribeToPhotoDeletedEvents();
       subscribeToLikesChanges();
       subscribeToErrorUpdates();
+      feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
    }
 
    private void fillWithItems() {
@@ -105,7 +120,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)) {
+      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+            && totalItemCount % PER_PAGE == 0) {
          loadNext();
          loading = true;
       }
@@ -238,31 +254,51 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             .subscribe(command -> reportNoConnection());
    }
 
-   ////////////////////////////
-   /// Events
-   ////////////////////////////
-
-   public void onEvent(FeedEntityChangedEvent event) {
-      if (event.getFeedEntity() instanceof Photo) {
-         Photo temp = (Photo) event.getFeedEntity();
+   @Override
+   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
+      if (updatedFeedEntity instanceof Photo) {
+         Photo temp = (Photo) updatedFeedEntity;
          int index = photos.indexOf(temp);
 
          if (index != -1) {
             photos.set(index, temp);
             db.savePhotoEntityList(type, userId, photos);
+            view.setImages(photos);
          }
       }
    }
 
-   public void onEventMainThread(FeedItemAddedEvent event) {
-      if (event.getFeedItem().getItem() instanceof Photo) {
-         Photo photo = (Photo) event.getFeedItem().getItem();
+   @Override
+   public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
+      if (deletedFeedEntity instanceof Photo) {
+         Photo temp = (Photo) deletedFeedEntity;
+         int index = photos.indexOf(temp);
+
+         if (index != -1) {
+            photos.remove(index);
+            db.savePhotoEntityList(type, userId, photos);
+            view.setImages(photos);
+         }
+      }
+   }
+
+   private void subscribeToNewItems() {
+      postsInteractor.postCreatedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .map(PostCreatedCommand::getFeedItem)
+            .subscribe(this::onFeedItemAdded);
+   }
+
+   public void onFeedItemAdded(FeedItem feedItem) {
+      if (feedItem.getItem() instanceof Photo) {
+         Photo photo = (Photo) feedItem.getItem();
          photos.add(0, photo);
          db.savePhotoEntityList(type, userId, photos);
          view.add(0, photo);
-      } else if (event.getFeedItem().getItem() instanceof TextualPost && ((TextualPost) event.getFeedItem()
+      } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
             .getItem()).getAttachments().size() > 0) {
-         List<Photo> addedPhotos = Queryable.from(((TextualPost) event.getFeedItem().getItem()).getAttachments())
+         List<Photo> addedPhotos = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
                .map(holder -> (Photo) holder.getItem())
                .toList();
          Collections.reverse(addedPhotos);

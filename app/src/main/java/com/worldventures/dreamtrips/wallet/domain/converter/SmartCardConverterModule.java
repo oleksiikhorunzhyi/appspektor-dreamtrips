@@ -9,8 +9,8 @@ import dagger.Provides;
 public class SmartCardConverterModule {
 
    @Provides(type = Provides.Type.SET)
-   Converter provideBankCardToRecordConverter() {
-      return new BankCardToRecordConverter();
+   Converter provideWalletRecordToSmartCardRecordConverter() {
+      return new WalletRecordToSmartCardRecordConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -24,28 +24,18 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideSmartCardInfoToSmartCard() {
-      return new SmartCardInfoToSmartCard();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideSmartCardInfoToSmartCardDetail() {
       return new SmartCardInfoToSmartCardDetail();
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideRecordToBankCardConverter() {
-      return new RecordToBankCardConverter();
+   Converter provideSmartCardRecordToWalletRecordConverter() {
+      return new SmartCardRecordToWalletRecordConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    Converter provideProfileAddressToUserAddressConverter() {
       return new ProfileAddressToUserAddressConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   Converter provideFirmwareRepsonseToFirmwareConverter() {
-      return new FirmwareResponseToFirmwareDataConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -61,5 +51,70 @@ public class SmartCardConverterModule {
    @Provides(type = Provides.Type.SET)
    Converter provideSmartCardFirmwareConverter() {
       return new SmartCardFirmwareConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideFinancialServiceToRecordConverter() {
+      return new WalletFinancialServiceToSmartCardFinancialServiceConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideRecordToFinancialServiceConverter() {
+      return new SmartCardFinancialServiceToWalletFinancialServiceConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideNxtSessionConverter() {
+      return new NxtSessionConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletLocationToSmartCardLocationConverter() {
+      return new WalletLocationToSmartCardLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideAndroidAddressToWalletAddressConverter() {
+      return new AndroidAddressToWalletAddressConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletCoordinatesToSmartCardCoordinatesConverter() {
+      return new WalletCoordinatesToSmartCardCoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletLocationTypeToSmartCardLocationTypeConverter() {
+      return new WalletLocationTypeToSmartCardLocationTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardLocationToWalletLocationConverter() {
+      return new SmartCardLocationToWalletLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardCoordinatesToWalletCoordinatesConverter() {
+      return new SmartCardCoordinatesToWalletCoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardLocationTypeToWalletLocationTypeConverter() {
+      return new SmartCardLocationTypeToWalletLocationTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter providePlaceConverter() {
+      return new ApiPlaceToWalletPlaceConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardRecordTypeToWalletRecordTypeConverter() {
+      return new SmartCardRecordTypeToWalletRecordTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletRecordTypeToSmartCardRecordTypeConverter() {
+      return new WalletRecordTypeToSmartCardRecordTypeConverter();
    }
 }

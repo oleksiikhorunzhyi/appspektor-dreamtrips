@@ -129,6 +129,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .subscribe(getView()::updateToolbarSearchCaption);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::isOffersOnly)
+            .doOnCompleted(getView()::connectToggleUpdate)
+            .subscribe(getView()::toggleOffersOnly);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
             .map(FilterDataAction::getResult)
             .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())
@@ -174,7 +182,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       setItemsOrRedirect(action.merchants());
    }
 
-   private void onMerchantsLoading(MerchantsAction action, Integer progress) {
+   private void onMerchantsLoading(MerchantsAction action, Integer progress){
       if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }

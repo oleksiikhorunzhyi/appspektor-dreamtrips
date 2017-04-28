@@ -14,10 +14,12 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import rx.Observable;
@@ -34,6 +36,11 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
    protected void registerCells() {
       adapter.registerCell(BucketFeedItem.class, BucketFeedEntityDetailsCell.class);
       adapter.registerCell(TripFeedItem.class, FeedEntityDetailsCell.class);
+
+      FeedCellDelegate<FeedEntityDetailsPresenter, FeedItem> delegate = new FeedCellDelegate<>(getPresenter());
+      delegate.setOnEntityShownInCellAction(getPresenter()::onEntityShownInCell);
+      adapter.registerDelegate(BucketFeedItem.class, delegate);
+      adapter.registerDelegate(TripFeedItem.class, delegate);
    }
 
    @Override

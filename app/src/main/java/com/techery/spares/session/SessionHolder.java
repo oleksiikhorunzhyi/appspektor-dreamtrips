@@ -35,8 +35,4 @@ public class SessionHolder<S> extends ComplexObjectStorage<UserSession> {
       }
       super.put(userSession);
    }
-
-   public interface Events {
-      class SessionDestroyed {}
-   }
 }

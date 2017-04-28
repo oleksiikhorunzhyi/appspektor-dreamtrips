@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.app.Application;
 
+import com.worldventures.dreamtrips.core.janet.DreamTripsCommandServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -41,8 +42,9 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides
-   GlobalAnalyticEventHandler provideGlobalAnalyticEventHandler(AnalyticsInteractor analyticsInteractor, CachedEntityInteractor interactor) {
-      return new GlobalAnalyticEventHandler(analyticsInteractor, interactor);
+   GlobalAnalyticEventHandler provideGlobalAnalyticEventHandler(AnalyticsInteractor analyticsInteractor, CachedEntityInteractor interactor,
+         DreamTripsCommandServiceWrapper commandServiceWrapper) {
+      return new GlobalAnalyticEventHandler(analyticsInteractor, interactor, commandServiceWrapper);
    }
 
    @Provides

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardSuccessAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardSuccessGetStartedAction;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -35,7 +36,7 @@ public class UnassignSuccessPresenter extends WalletPresenter<UnassignSuccessPre
 
    void navigateToWizard() {
       sendAnalyticAction(new UnAssignCardSuccessGetStartedAction());
-      navigator.single(new WizardWelcomePath(), Flow.Direction.REPLACE);
+      navigator.single(new WizardWelcomePath(ProvisioningMode.SETUP_NEW_CARD), Flow.Direction.REPLACE);
    }
 
    public void goBack() {

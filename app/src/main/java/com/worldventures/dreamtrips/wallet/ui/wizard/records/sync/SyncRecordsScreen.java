@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.records;
+package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync;
 
 import android.content.Context;
 import android.graphics.Color;

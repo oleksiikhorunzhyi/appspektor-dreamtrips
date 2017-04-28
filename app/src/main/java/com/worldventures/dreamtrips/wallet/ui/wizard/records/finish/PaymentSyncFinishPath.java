@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete;
+package com.worldventures.dreamtrips.wallet.ui.wizard.records.finish;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

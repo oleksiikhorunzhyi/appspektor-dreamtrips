@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.command;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.modules.video.model.Status;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class ResetCachedModelsInProgressCommand extends Command implements Injec
    protected void run(CommandCallback callback) throws Throwable {
       List<CachedModel> entities = snappyDB.getDownloadMediaModels();
       for (CachedModel entity : entities) {
-         if (entity.inProgress()) {
-            entity.setIsFailed(true);
+         if (entity.getCacheStatus() == Status.IN_PROGRESS) {
+            entity.setProgress(Status.IN_PROGRESS);
             entity.setProgress(0);
          }
          snappyDB.saveDownloadMediaModel(entity);

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.video.presenter;
 
-import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
+   @Inject CachedModelHelper cachedModelHelper;
    @Inject protected SnappyRepository db;
    @Inject protected MemberVideosInteractor memberVideosInteractor;
 
@@ -150,11 +151,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    public void onPlayVideo(Video video) {
-      Context context = activityRouter.getContext();
       CachedModel videoEntity = video.getCacheEntity();
       Uri parse = Uri.parse(video.getVideoUrl());
-      if (videoEntity.isCached(activityRouter.getContext())) {
-         parse = Uri.parse(CachedModel.getFilePath(context, videoEntity.getUrl()));
+      if (cachedModelHelper.isCached(videoEntity)) {
+         parse = Uri.parse(cachedModelHelper.getFilePath(videoEntity.getUrl()));
       }
 
       activityRouter.openPlayerActivity(parse, video.getVideoName(), obtainVideoLanguage(video), getClass());
@@ -165,7 +165,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    private String getPathForCache(CachedModel entity) {
-      return CachedModel.getFilePath(context, entity.getUrl());
+      return cachedModelHelper.getFilePath(entity.getUrl());
    }
 
    public void track() {

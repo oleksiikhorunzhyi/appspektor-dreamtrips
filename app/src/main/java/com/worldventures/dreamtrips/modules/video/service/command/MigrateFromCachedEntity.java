@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
+import static com.worldventures.dreamtrips.modules.video.model.Status.*;
+
 @CommandAction
 public class MigrateFromCachedEntity extends Command<Void> implements InjectableAction {
 
@@ -34,7 +36,8 @@ public class MigrateFromCachedEntity extends Command<Void> implements Injectable
 
    private CachedModel convert(CachedEntity entity) {
       CachedModel cachedModel = new CachedModel(entity.getUrl(), entity.getUuid(), entity.getName());
-      cachedModel.setIsFailed(entity.isFailed());
+      @CacheStatus int status = entity.getProgress() == 100? SUCCESS : entity.isFailed()? FAILED : IN_PROGRESS;
+      cachedModel.setCacheStatus(status);
       cachedModel.setProgress(entity.getProgress());
       return cachedModel;
    }

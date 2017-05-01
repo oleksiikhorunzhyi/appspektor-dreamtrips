@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.modules.video.model.Status;
 
 import java.io.File;
 
@@ -47,20 +48,21 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
    }
 
    private void onStart(DownloadFileCommand command) {
-      cachedModel.setIsFailed(false);
+      cachedModel.setCacheStatus(Status.IN_PROGRESS);
       cachedModel.setProgress(PROGRESS_START_MIN);
       db.saveDownloadMediaModel(cachedModel);
    }
 
    private void onSuccess(CommandCallback<CachedModel> callback) {
       cachedModel.setProgress(100);
+      cachedModel.setCacheStatus(Status.SUCCESS);
       db.saveDownloadMediaModel(cachedModel);
       callback.onSuccess(cachedModel);
    }
 
    private void onFail(CommandCallback<CachedModel> callback, Throwable throwable) {
       cachedModel.setProgress(0);
-      cachedModel.setIsFailed(true);
+      cachedModel.setCacheStatus(Status.FAILED);
       db.saveDownloadMediaModel(cachedModel);
       callback.onFail(throwable);
    }

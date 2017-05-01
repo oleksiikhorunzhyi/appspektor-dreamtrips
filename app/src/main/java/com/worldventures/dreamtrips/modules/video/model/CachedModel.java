@@ -1,34 +1,21 @@
 package com.worldventures.dreamtrips.modules.video.model;
 
-import android.content.Context;
-import android.os.Environment;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
-import java.io.File;
 import java.io.Serializable;
-
-/**
- * Note of what needs to be improved in this class:
- *
- * 1. Store progress state in actual variable, currently NOT in progress state is determined by when progress is 0,
- * which is wrong because download can be already initiated but progress is still zero
- * as connection hasn't established yet.
- * 2. This class should store link to actual cache file location as it's initiated each time with a new download
- **/
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class CachedModel implements Serializable {
 
    protected static final long serialVersionUID = 12332;
    protected String url;
-   protected boolean failed;
    protected int progress;
    protected String uuid;
    protected int downloadId;
    protected String name;
    protected Class entityClass;
+   protected @Status.CacheStatus int cacheStatus;
 
    public CachedModel(String url, String id, String name) {
       this.url = url;
@@ -39,20 +26,13 @@ public class CachedModel implements Serializable {
    public CachedModel() {
    }
 
-   public boolean isFailed() {
-      return failed;
+   @Status.CacheStatus
+   public int getCacheStatus() {
+      return cacheStatus;
    }
 
-   public void setIsFailed(boolean isFailed) {
-      this.failed = isFailed;
-   }
-
-   public boolean isCached(Context context) {
-      return new File(getFilePath(context, getUrl())).exists() && getProgress() == 100;
-   }
-
-   public boolean isCached(String type) {
-      return new File(getFileForStorage(type, getUrl())).exists() && getProgress() == 100;
+   public void setCacheStatus(@Status.CacheStatus int cacheStatus) {
+      this.cacheStatus = cacheStatus;
    }
 
    public String getName() {
@@ -71,30 +51,8 @@ public class CachedModel implements Serializable {
       return url;
    }
 
-   public boolean inProgress() {
-      return !failed && progress > 0 && progress < 100;
-   }
-
-   public static String getFilePath(Context context, String url) {
-      return context.getFilesDir().getPath() + File.separator + getFileName(url);
-   }
-
-   public static String getExternalFilePath(Context context, String url) {
-      return context.getExternalCacheDir().getPath() + File.separator + getFileName(url);
-   }
-
-   public static String getFileForStorage(String type, String url) {
-      File podcastsPath = Environment.getExternalStoragePublicDirectory(type);
-      podcastsPath.mkdirs();
-      return podcastsPath + File.separator + getFileName(url);
-   }
-
    public String getUuid() {
       return uuid;
-   }
-
-   public static String getFileName(String url) {
-      return url.substring(url.lastIndexOf("/") + 1);
    }
 
    public Class getEntityClass() {
@@ -109,10 +67,11 @@ public class CachedModel implements Serializable {
    public String toString() {
       return "CachedEntity{" +
             "url='" + url + '\'' +
-            ", failed=" + failed +
+            ", failed=" + (cacheStatus == Status.FAILED) +
             ", create=" + progress +
             ", uuid='" + uuid + '\'' +
             ", downloadId=" + downloadId +
             '}';
    }
+
 }

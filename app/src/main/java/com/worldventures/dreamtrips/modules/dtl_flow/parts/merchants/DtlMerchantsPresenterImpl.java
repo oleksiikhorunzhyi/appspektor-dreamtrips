@@ -252,6 +252,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void setMerchantType(List<String> merchantType) {
+      filterDataInteractor.searchMerchantType(merchantType);
+   }
+
+   @Override
    public void mapClicked() {
       navigateToPath(new DtlMapPath(FlowUtil.currentMaster(getContext())));
    }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -120,12 +121,12 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void cropPhoto(String photoPath) {
-      mediaPickerService.crop(photoPath);
+   public void cropPhoto(Uri photoPath) {
+      mediaPickerService.crop(photoPath.toString());
    }
 
    @Override
-   public Observable<String> observePickPhoto() {
+   public Observable<Uri> observePickPhoto() {
       return mediaPickerService.observePicker();
    }
 

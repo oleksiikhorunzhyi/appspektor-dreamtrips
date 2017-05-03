@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.WindowManager;
@@ -155,7 +156,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    }
 
    private void handleSuccessSentFeedback() {
-      attachmentsManager.removeAll();
+      clearAttachments();
       goBack();
    }
 
@@ -173,11 +174,11 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
 
    void onRetryUploadingAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
       removeAttachment(holder);
-      uploadImageAttachment(holder.entity().getOriginalFilePath());
+      uploadImageAttachment(Uri.parse(holder.entity().getOriginalFilePath()));
    }
 
-   private void uploadImageAttachment(String path) {
-      FeedbackImageAttachment attachment = new FeedbackImageAttachment("file://" + path);
+   private void uploadImageAttachment(Uri path) {
+      FeedbackImageAttachment attachment = new FeedbackImageAttachment(path.toString());
       feedbackInteractor.uploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
    }
 
@@ -197,6 +198,10 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build();
       router.moveTo(Route.FEEDBACK_IMAGE_ATTACHMENTS, config);
+   }
+
+   void clearAttachments() {
+      attachmentsManager.removeAll();
    }
 
    public interface Screen extends WalletScreen {
@@ -219,7 +224,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
 
       void updateAttachment(EntityStateHolder<FeedbackImageAttachment> updatedHolder);
 
-      Observable<String> observePickPhoto();
+      Observable<Uri> observePickPhoto();
 
       OperationView<UploadFeedbackAttachmentCommand> provideOperationUploadAttachments();
 

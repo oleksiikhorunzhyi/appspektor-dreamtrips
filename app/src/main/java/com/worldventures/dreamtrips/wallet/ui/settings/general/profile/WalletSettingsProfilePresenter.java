@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -284,9 +285,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
       void hidePhotoPicker();
 
-      void cropPhoto(String photoPath);
+      void cropPhoto(Uri photoPath);
 
-      Observable<String> observePickPhoto();
+      Observable<Uri> observePickPhoto();
 
       Observable<String> observeCropper();
 

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -71,7 +72,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    protected void onFinishInflate() {
       super.onFinishInflate();
       if (isInEditMode()) return;
-      toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      toolbar.setNavigationOnClickListener(v -> onNavigationBack());
       supportConnectionStatusLabel(false);
       supportHttpConnectionStatusLabel(true);
 
@@ -81,6 +82,12 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       textMessageObserver = RxTextView.textChanges(etFeedbackMessage);
 
       initItemMenu();
+   }
+
+   private void onNavigationBack() {
+      getPresenter().goBack();
+      mediaPickerService.hidePicker();
+      getPresenter().clearAttachments();
    }
 
    @Override
@@ -215,7 +222,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    }
 
    @Override
-   public Observable<String> observePickPhoto() {
+   public Observable<Uri> observePickPhoto() {
       return mediaPickerService.observePicker();
    }
 

@@ -6,16 +6,25 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.repository.SnappyAction;
 import com.worldventures.dreamtrips.core.repository.SnappyResult;
 
-public interface ModelStorage {
+public abstract class ModelStorage {
 
-   boolean migrate(DB db, int oldVersion) throws SnappydbException;
+   private DiskStorage storage;
 
-   String getKey();
+   protected void bindStorage(DiskStorage storage) {
+      this.storage = storage;
+   }
 
-   int getVersion();
+   protected abstract boolean migrate(DB db, int oldVersion) throws SnappydbException;
 
-   void execute(SnappyAction action);
+   protected abstract String getKey();
 
-   <T> Optional<T> executeWithResult(SnappyResult<T> action);
+   protected abstract int getVersion();
 
+   protected void execute(SnappyAction action) {
+      storage.execute(action);
+   }
+
+   protected <T> Optional<T> executeWithResult(SnappyResult<T> action) {
+      return storage.executeWithResult(action);
+   }
 }

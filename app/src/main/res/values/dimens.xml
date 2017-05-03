@@ -4,7 +4,7 @@
    <dimen name="activity_horizontal_margin">16dp</dimen>
    <dimen name="activity_vertical_margin">16dp</dimen>
 
-   <dimen name="navigation_drawer_width">254dp</dimen>
+   <dimen name="navigation_drawer_width">248dp</dimen>
    <dimen name="navigation_drawer_width_filter">300dp</dimen>
    <dimen name="navigation_drawer_static_width">56dp</dimen>
    <dimen name="navigation_drawer_user_height">164dp</dimen>
@@ -28,7 +28,6 @@
    <!-- typical font sizes  -->
    <dimen name="font_extra_large">25sp</dimen>
    <dimen name="font_large">20sp</dimen>
-   <dimen name="font_extra_normal">18sp</dimen>
    <dimen name="font_normal">16sp</dimen>
    <dimen name="font_medium">14sp</dimen>
    <dimen name="font_small">12sp</dimen>

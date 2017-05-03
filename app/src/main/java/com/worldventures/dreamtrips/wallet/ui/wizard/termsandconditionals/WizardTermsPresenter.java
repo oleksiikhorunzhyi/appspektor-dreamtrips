@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.TermsAcceptedAction;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.TermsAction;
+import com.worldventures.dreamtrips.wallet.analytics.TermsAcceptedAction;
+import com.worldventures.dreamtrips.wallet.analytics.TermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;

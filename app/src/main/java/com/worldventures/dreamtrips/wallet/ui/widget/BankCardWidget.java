@@ -12,9 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
-import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,7 +30,7 @@ public class BankCardWidget extends FrameLayout {
 
    private View bankCardHolder;
 
-   private final WalletRecordUtil walletRecordUtil;
+   private final BankCardHelper bankCardHelper;
    private final SpannableString goodThru;
 
    private boolean showShortNumber;
@@ -57,7 +56,7 @@ public class BankCardWidget extends FrameLayout {
       } finally {
          a.recycle();
       }
-      walletRecordUtil = new WalletRecordUtil(context);
+      bankCardHelper = new BankCardHelper(context);
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
    }
@@ -77,17 +76,17 @@ public class BankCardWidget extends FrameLayout {
       tvShortCardNumber.setVisibility(show ? VISIBLE : GONE);
    }
 
-   public void setBankCard(Record card) {
+   public void setBankCard(BankCard card) {
       setCardName(card.nickName());
-      setOwnerName(WalletRecordUtil.fetchFullName(card));
-      setCardNumber(card.numberLastFourDigits());
+      setOwnerName(card.cardNameHolder());
+      setCardNumber(card.number());
       setExpireDate(card.expDate());
-      setRecordType(card.recordType());
+      setCardType(card.issuerInfo().cardType());
    }
 
    //   properties:
    public void setCardName(CharSequence cardName) {
-      tvCardName.setText(walletRecordUtil.toBoldSpannable(cardName));
+      tvCardName.setText(bankCardHelper.toBoldSpannable(cardName));
    }
 
    public void setOwnerName(CharSequence ownerName) {
@@ -110,15 +109,15 @@ public class BankCardWidget extends FrameLayout {
       );
    }
 
-   public void setCardNumber(String numberLastFourDigits) {
-      tvCardNumber.setText(walletRecordUtil.obtainFullCardNumber(numberLastFourDigits));
+   public void setCardNumber(String cardNumber) {
+      tvCardNumber.setText(bankCardHelper.obtainFullCardNumber(cardNumber));
       if (showShortNumber) {
-         tvShortCardNumber.setText(walletRecordUtil.obtainShortCardNumber(numberLastFourDigits));
+         tvShortCardNumber.setText(bankCardHelper.obtainShortCardNumber(cardNumber));
       }
    }
 
-   public void setRecordType(RecordType recordType) {
-      tvCardType.setText(walletRecordUtil.obtainRecordType(recordType));
+   public void setCardType(BankCard.CardType cardType) {
+      tvCardType.setText(bankCardHelper.obtainCardType(cardType));
    }
 
    public enum BankCardResource {

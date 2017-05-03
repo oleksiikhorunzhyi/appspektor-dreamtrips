@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.webkit.URLUtil;
@@ -19,7 +20,7 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.fromFile;
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.saveToFile;
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.scaleBitmap;
-import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.floydSteinbergDither;
+import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.toMonochromeBitmap;
 
 public class SmartCardAvatarHelper {
 
@@ -63,39 +64,46 @@ public class SmartCardAvatarHelper {
       }
    }
 
-   public int[][] toMonochrome(File imageFile) throws IOException {
-      return toMonochrome(imageFile, 0);
+   public File toMonochromeFile(File imageFile) throws IOException {
+      return toMonochromeFile(imageFile, 0);
    }
 
-   public int[][] toMonochrome(File imageFile, int imageSize) throws IOException {
+   public File toMonochromeFile(File imageFile, int imageSize) throws IOException {
       Bitmap bitmap = fromFile(imageFile.getAbsolutePath());
       if (imageSize > 0) {
          bitmap = scaleBitmap(bitmap, imageSize);
       }
-      return floydSteinbergDither(bitmap);
+      return saveToFile(context, toMonochromeBitmap(bitmap));
    }
 
-   public byte[] convertBytesForUpload(int[][] pixelMatrix) {
-      int height = pixelMatrix.length;
-      int width = pixelMatrix[0].length;
+   public byte[] convertBytesForUpload(File file) {
+      Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+      bitmap = scaleBitmap(bitmap, 256);
+      int height = bitmap.getHeight();
+      int width = bitmap.getWidth();
       byte[] bytes = new byte[(width * height)];
       byte[] raw = new byte[(width * height) / 8];
       int pixel;
-      for (int y = 0; y < height; y++) {
-         for (int x = 0; x < width; x++) {
-            pixel = pixelMatrix[x][y];
-            int byteIndex = y * width + x;
-            if (pixel < 128) {
-               bytes[byteIndex] = 0;
+      int k = 0;
+      int b, g, r;
+      for (int x = 0; x < height; x++) {
+         for (int y = 0; y < width; y++, k++) {
+            pixel = bitmap.getPixel(y, x);
+            r = Color.red(pixel);
+            g = Color.green(pixel);
+            b = Color.blue(pixel);
+            r = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+            if (r < 128) {
+               bytes[k] = 0;
             } else {
-               bytes[byteIndex] = 1;
+               bytes[k] = 1;
             }
          }
       }
       int length = 0;
       for (int i = 0; i < bytes.length; i = i + 8) {
          byte first = bytes[i];
-         for (int j = 0; j < 8; j++) {
+         for (int j = 0; j < 7; j++) {
             byte second = (byte) ((first << 1) | bytes[i + j]);
             first = second;
          }

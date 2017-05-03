@@ -1,21 +1,20 @@
 package com.worldventures.dreamtrips.wallet.ui.common.helper2.error;
 
+import android.app.Dialog;
 import android.content.Context;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import io.techery.janet.operationsubscriber.view.ErrorView;
 
 public abstract class DialogErrorView<T> implements ErrorView<T> {
 
    protected final Context context;
-   private MaterialDialog dialog;
+   private Dialog dialog;
 
    protected DialogErrorView(Context context) {
       this.context = context;
    }
 
-   protected abstract MaterialDialog createDialog(T t, Throwable throwable, Context context);
+   protected abstract Dialog createDialog(T t, Throwable throwable, Context context);
 
    @Override
    public final void showError(T t, Throwable throwable) {

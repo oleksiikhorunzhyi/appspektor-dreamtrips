@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.util;
 
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 
 import java.util.Locale;
 
@@ -9,8 +9,9 @@ import static android.text.TextUtils.isEmpty;
 
 public class AddressUtil {
 
-   public static String obtainAddressLabel(AddressInfo addressInfo) {
-      Locale locale = LocaleHelper.getDefaultLocale();
+   public static String obtainAddressLabel(AddressInfoWithLocale addressInfoWithLocale) {
+      AddressInfo addressInfo = addressInfoWithLocale.addressInfo();
+      Locale locale = addressInfoWithLocale.locale();
 
       String address = concatAddress1AndAddress2(addressInfo, locale);
       StringBuilder builder = new StringBuilder();

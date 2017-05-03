@@ -8,6 +8,10 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.widget.TextView;
 
+/**
+ * Created by Dmitry Reutov on 12/16/16.
+ */
+
 public class WalletCardNameUtil {
 
    public static void bindSpannableStringToTarget(TextView targetTextView, int bodyStringResId, int postfixStrinResId, boolean isRequired, boolean asHint) {

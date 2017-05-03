@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,19 +15,19 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static java.lang.Integer.valueOf;
 
 @CommandAction
-public class SetPaymentCardAction extends Command<Record> implements InjectableAction {
+public class SetPaymentCardAction extends Command<BankCard> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
 
-   private final Record record;
+   private final BankCard bankCard;
 
-   public SetPaymentCardAction(Record record) {this.record = record;}
+   public SetPaymentCardAction(BankCard bankCard) {this.bankCard = bankCard;}
 
    @Override
-   protected void run(CommandCallback<Record> callback) throws Throwable {
+   protected void run(CommandCallback<BankCard> callback) throws Throwable {
       janet.createPipe(SetActiveRecordAction.class)
-            .createObservableResult(new SetActiveRecordAction(valueOf(record.id()), true))
-            .map(action -> record)
+            .createObservableResult(new SetActiveRecordAction(valueOf(bankCard.id()), true))
+            .map(action -> bankCard)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 }

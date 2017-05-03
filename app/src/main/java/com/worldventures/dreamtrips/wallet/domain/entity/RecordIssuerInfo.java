@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.entity;
 
 
-import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
@@ -22,7 +21,7 @@ public abstract class RecordIssuerInfo {
    }
 
    @Value.Default
-   public RecordType cardType() {
-      return RecordType.FINANCIAL;
+   public BankCard.CardType cardType() {
+      return BankCard.CardType.UNKNOWN;
    }
 }

@@ -16,16 +16,13 @@
 
    <RelativeLayout
          style="@style/WalletTheme.ContentContainerStyle"
-         android:padding="0dp"
+         android:layout_marginBottom="30dp"
          >
 
       <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:layout_marginTop="@dimen/wallet_common_screen_padding"
             android:gravity="center"
             android:text="@string/wallet_charging_swiping_screen_instruction"
             android:textColor="@color/wallet_charging_swiping_screen_text_color"
@@ -41,39 +38,26 @@
 
       <FrameLayout
             android:id="@+id/smart_card"
-            android:layout_width="140dp"
-            android:layout_height="85dp"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="-50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="-35dp"
             android:layout_toEndOf="@+id/reader_base"
             >
 
          <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:scaleType="fitXY"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
                android:src="@drawable/flye_card_front_with_emv_charger"
                />
 
-         <com.facebook.drawee.view.SimpleDraweeView
-               android:id="@+id/user_photo"
-               android:layout_width="36dp"
-               android:layout_height="31dp"
-               android:layout_gravity="end"
-               android:layout_marginEnd="5dp"
-               android:layout_marginTop="26dp"
-               android:src="@drawable/ic_dt_launcher"
-               app:actualImageScaleType="focusCrop"
-               />
-
          <ImageView
-               android:layout_width="36dp"
-               android:layout_height="6dp"
-               android:layout_gravity="end"
-               android:layout_marginEnd="5dp"
-               android:layout_marginTop="21dp"
-               android:scaleType="fitXY"
-               app:srcCompat="@drawable/wallet_image_card_toolbar"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="right"
+               android:layout_marginEnd="20dp"
+               android:layout_marginTop="15dp"
+               android:src="@drawable/ic_flyecard_light"
                />
       </FrameLayout>
 
@@ -88,15 +72,23 @@
             android:src="@drawable/addcard_creditcard_back"
             />
 
+
       <ImageView
             android:id="@+id/reader_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/reader_base"
-            android:layout_alignTop="@+id/reader_base"
             android:layout_centerInParent="true"
-            android:padding="2dp"
             android:src="@drawable/reader_top"
+            />
+
+      <ImageView
+            android:id="@+id/reader_lights"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="-32dp"
+            android:layout_toEndOf="@+id/reader_top"
+            android:src="@drawable/reader_lights"
             />
 
       <TextView

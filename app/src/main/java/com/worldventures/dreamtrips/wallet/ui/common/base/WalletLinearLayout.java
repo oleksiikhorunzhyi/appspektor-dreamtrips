@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
+import android.widget.TextView;
 
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import butterknife.ButterKnife;
@@ -23,7 +23,7 @@ import flow.path.Path;
 public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T> {
 
    private Injector injector;
-   private View connectionHeader;
+   private TextView connectionLabel;
    private boolean visibleConnectionLabel = true;
 
    public WalletLinearLayout(Context context) {
@@ -45,21 +45,22 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
       super.onFinishInflate();
       ButterKnife.inject(this);
 
-
-      connectionHeader = LayoutInflater.from(getContext())
+      connectionLabel = (TextView) LayoutInflater.from(getContext())
             .inflate(R.layout.wallet_smartcard_connection_plank, this, false);
    }
 
-   public void showConnectionStatus(ConnectionStatus connectionStatus) {
+   public void showConnectionStatus(SmartCard.ConnectionStatus connectionStatus) {
       if (!visibleConnectionLabel) return;
 
       switch (connectionStatus) {
          case CONNECTED:
-            removeView(connectionHeader);
+            removeView(connectionLabel);
             break;
+         case ERROR:
          case DISCONNECTED:
-            if (indexOfChild(connectionHeader) < 0) {
-               addView(connectionHeader, hasToolbar() ? 1 : 0);
+            connectionLabel.setText(R.string.wallet_smart_card_enable_instruction);
+            if (indexOfChild(connectionLabel) < 0) {
+               addView(connectionLabel, hasToolbar() ? 1 : 0);
             }
             break;
       }

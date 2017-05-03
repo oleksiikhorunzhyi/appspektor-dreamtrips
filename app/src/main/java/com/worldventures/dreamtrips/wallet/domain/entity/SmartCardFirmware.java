@@ -4,39 +4,21 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-public abstract class SmartCardFirmware {
+public interface SmartCardFirmware {
 
    @Nullable
-   public abstract String firmwareBundleVersion();
+   String firmwareBundleVersion();
 
-   @Value.Default
-   public String nordicAppVersion() {
-      return "";
-   }
+   String nordicAppVersion();
 
-   @Value.Default
-   public String nrfBootloaderVersion() {
-      return "";
-   }
+   String nrfBootloaderVersion();
 
-   @Value.Default
-   public String internalAtmelVersion() {
-      return "";
-   }
+   String internalAtmelVersion();
 
-   @Value.Default
-   public String internalAtmelBootloaderVersion() {
-      return "";
-   }
+   String internalAtmelBootloaderVersion();
 
-   @Value.Default
-   public String externalAtmelVersion() {
-      return "";
-   }
+   String externalAtmelVersion();
 
-   @Value.Default
-   public String externalAtmelBootloaderVersion() {
-      return "";
-   }
+   String externalAtmelBootloaderVersion();
 
 }

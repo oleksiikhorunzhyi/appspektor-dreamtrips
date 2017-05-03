@@ -5,34 +5,40 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.BillingAddressSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.EditBillingAddressAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import javax.inject.Inject;
 
+import flow.Flow;
+
 public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddressPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject RecordInteractor recordInteractor;
 
-   private final Record record;
+   private final BankCard bankCard;
 
-   public EditBillingAddressPresenter(Context context, Injector injector, Record record) {
+   public EditBillingAddressPresenter(Context context, Injector injector, BankCard bankCard) {
       super(context, injector);
-      this.record = record;
+      this.bankCard = bankCard;
    }
 
    @Override
@@ -40,34 +46,37 @@ public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddr
       super.onAttachedToWindow();
       trackScreen();
       connectToUpdateCardDetailsPipe();
-      getView().address(record.addressInfo());
+      getView().address(ImmutableAddressInfoWithLocale.builder()
+            .addressInfo(bankCard.addressInfo())
+            .locale(LocaleHelper.getDefaultLocale())
+            .build());
    }
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
-            .send(new PaycardAnalyticsCommand(new EditBillingAddressAction(), record));
+            .send(new PaycardAnalyticsCommand(new EditBillingAddressAction(), bankCard));
    }
 
    private void connectToUpdateCardDetailsPipe() {
-      recordInteractor.updateRecordPipe()
+      smartCardInteractor.updateBankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<UpdateRecordCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<UpdateBankCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> addressChanged())
-                  .onFail(ErrorHandler.<UpdateRecordCommand>builder(getContext())
+                  .onFail(ErrorHandler.<UpdateBankCardCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
                         .build())
                   .wrap());
    }
 
    private void addressChanged() {
-      navigator.goBack();
+      navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       analyticsInteractor.paycardAnalyticsCommandPipe()
-            .send(new PaycardAnalyticsCommand(new BillingAddressSavedAction(), record));
+            .send(new PaycardAnalyticsCommand(new BillingAddressSavedAction(), bankCard));
    }
 
    void onCardAddressConfirmed(AddressInfo addressInfo) {
-      recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateAddress(record, addressInfo));
+      smartCardInteractor.updateBankCardPipe().send(UpdateBankCardCommand.updateAddress(bankCard, addressInfo));
    }
 
    public void goBack() {
@@ -76,7 +85,7 @@ public class EditBillingAddressPresenter extends WalletPresenter<EditBillingAddr
 
    public interface Screen extends WalletScreen {
 
-      void address(AddressInfo addressInfo);
+      void address(AddressInfoWithLocale defaultAddress);
    }
 
 }

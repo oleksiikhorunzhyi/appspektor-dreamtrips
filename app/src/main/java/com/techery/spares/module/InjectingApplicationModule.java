@@ -15,7 +15,7 @@ import dagger.Provides;
 @Module(
       includes = {
             // base helpers and drivers
-            EventBusModule.class, EventDelegateModule.class, AndroidServicesModule.class, SupportModule.class, StorageModule.class},
+            EventBusModule.class, EventDelegateModule.class, AndroidServicesModule.class, ConcurentModule.class, SupportModule.class, StorageModule.class},
       library = true,
       complete = false)
 public class InjectingApplicationModule {

@@ -4,13 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
 import butterknife.InjectView;
 
@@ -21,7 +21,7 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
    @InjectView(R.id.wallet_wizard_power_on_title) TextView walletWizardSplashTitle;
    @InjectView(R.id.wallet_wizard_power_on_btn) Button actionBtn;
 
-   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
+   @InjectView(R.id.card_container) View cardContainer;
 
    public WizardPowerOnScreen(Context context) {
       super(context);
@@ -39,11 +39,9 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
 
    @Override
    protected void onFinishInflate() {
-      supportConnectionStatusLabel(false);
       super.onFinishInflate();
-      if (isInEditMode()) return;
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
-      wizardVideoView.setVideoSource(R.raw.anim_power_on_sc);
    }
 
    @Override

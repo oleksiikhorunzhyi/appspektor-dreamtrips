@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.SupportDeviceAction;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -25,7 +22,6 @@ public class WalletProvisioningBlockedPresenter extends WalletPresenter<WalletPr
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WalletProvisioningBlockedPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -34,7 +30,6 @@ public class WalletProvisioningBlockedPresenter extends WalletPresenter<WalletPr
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new SupportDeviceAction()));
 
       observeSupportedDevices();
       askAllSupportedDevices();

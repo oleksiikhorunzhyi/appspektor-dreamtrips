@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.welcome;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -12,13 +11,16 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.WelcomeAction;
+import com.worldventures.dreamtrips.wallet.analytics.WelcomeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -59,10 +61,10 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
                .observe()
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                     .onSuccess(command -> getView().userPhoto(command.getResult().photoUrl()))
+                     .onSuccess(command -> getView().userPhoto(command.getResult().monochrome()))
                      .onFail((command, throwable) -> Timber.e("", throwable)));
 
-         smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromUrl(avatarPath));
+         smartCardUserDataInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(avatarPath));
       }
    }
 
@@ -86,7 +88,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
 
       void welcomeMessage(String message);
 
-      void userPhoto(String photoUrl);
+      void userPhoto(File file);
 
       void showAnimation();
    }

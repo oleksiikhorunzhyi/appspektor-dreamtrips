@@ -11,9 +11,9 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.BankCardViewModel;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.BankCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
 
 import javax.inject.Inject;
@@ -44,7 +44,7 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
    @Override
    public void afterInject() {
       super.afterInject();
-      BankCardCell.Delegate childCellDelegate = model -> cellDelegate.onCardClicked(model.record);
+      BankCardCell.Delegate childCellDelegate = model -> cellDelegate.onCardClicked(model.bankCard);
       adapter = new BaseDelegateAdapter(itemView.getContext(), injector);
       adapter.registerCell(BankCardViewModel.class, BankCardCell.class);
       adapter.registerDelegate(BankCardViewModel.class, childCellDelegate);
@@ -63,7 +63,7 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
    }
 
    public static abstract class Delegate implements CellDelegate<CardStackViewModel> {
-      public abstract void onCardClicked(Record record);
+      public abstract void onCardClicked(BankCard bankCard);
 
       @Override
       public void onCellClicked(CardStackViewModel model) { }

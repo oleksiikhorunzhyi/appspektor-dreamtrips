@@ -24,11 +24,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -81,16 +77,13 @@ public interface SnappyRepository {
    String BUCKET_FEED_ITEM = "bucket";
 
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
-   String WALLET_SMART_CARD_USER = "WALLET_SMART_CARD_USER";
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
-   String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
+   String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
-   String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
-   String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
-   String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
+
 
    void clearAll();
 
@@ -244,6 +237,12 @@ public interface SnappyRepository {
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
 
+   void deleteWalletDefaultCardId();
+
+   void saveWalletDefaultCardId(String id);
+
+   String readWalletDefaultCardId();
+
    void saveDefaultAddress(AddressInfo addressInfo);
 
    AddressInfo readDefaultAddress();
@@ -255,12 +254,6 @@ public interface SnappyRepository {
    SmartCard getSmartCard();
 
    void deleteSmartCard();
-
-   void saveSmartCardUser(SmartCardUser smartCardUser);
-
-   SmartCardUser getSmartCardUser();
-
-   void deleteSmartCardUser();
 
    void saveWalletTermsAndConditions(TermsAndConditions data);
 
@@ -274,29 +267,9 @@ public interface SnappyRepository {
 
    void deleteSmartCardDetails();
 
-   void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware);
-
-   SmartCardFirmware getSmartCardFirmware();
-
-   void deleteSmartCardFirmware();
-
    void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 
    FirmwareUpdateData getFirmwareUpdateData();
 
    void deleteFirmwareUpdateData();
-
-   void saveWalletLocations(List<WalletLocation> walletLocations);
-
-   List<WalletLocation> getWalletLocations();
-
-   void deleteWalletLocations();
-
-   void saveEnabledTracking(boolean enable);
-
-   boolean isEnableTracking();
-
-   void saveSyncRecordsStatus(SyncRecordsStatus data);
-
-   SyncRecordsStatus getSyncRecordsStatus();
 }

@@ -1,18 +1,16 @@
 package com.worldventures.dreamtrips.wallet.util;
 
-import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 
-import timber.log.Timber;
+import org.jetbrains.annotations.Nullable;
 
 public final class SCFirmwareUtils {
 
-   private static final int MIN_BATTERY_LEVEL = 50;
-   private final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
-   private final static int SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW = 1070;
+   public final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
 
-   private final static String UNKNOWN_VERSION = "0.0.0.0";
+   private final static String UNKNOW_VERSION = "0.0.0.0";
 
    private SCFirmwareUtils() {}
 
@@ -22,35 +20,24 @@ public final class SCFirmwareUtils {
 
    public static boolean isNewFirmwareAvailable(String currentVersion, String availableVersion) {
       return currentVersion.isEmpty() ||
-            (!UNKNOWN_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion));
+            (!UNKNOW_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion));
    }
 
-   public static boolean cardIsCharged(int batteryLevel) {
-      return batteryLevel >= MIN_BATTERY_LEVEL;
+   @Deprecated
+   public static boolean isNewFirmwareAvailableForCharger(String currentVersion, String availableVersion) {
+      return isNewFirmwareAvailable(currentVersion, availableVersion);
    }
 
-   public static boolean chargerRequired(@Nullable SmartCardFirmware firmware) {
-      if (firmware != null) {
-         int firmwareVersion = firmwareVersionStringToInt(firmware.nordicAppVersion());
-         return firmwareVersion == 0 || firmwareVersion == SUPPORTED_CHARGER_ACTION_VERSION_FW;
-      }
-      return false;
-   }
-
-   public static boolean supportOnCardAnalytics(@Nullable SmartCardFirmware firmware) {
-      return firmware != null && firmwareVersionStringToInt(firmware.nordicAppVersion()) >= SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW;
-   }
-
-   private static int firmwareVersionStringToInt(@Nullable String firmwareVersion) {
-      if (firmwareVersion != null) {
+   public static int firmwareStringToInt(String firmwareVersion) {
+      if (firmwareVersion != null && !firmwareVersion.contains("test")) {
          try {
             String parsed = firmwareVersion.replaceAll("\\.", "").intern();
             return Integer.parseInt(parsed);
          } catch (Exception e) {
-            Timber.e(e, "Cannot parse to Integer, Method: firmwareVersionStringToInt, value: %s", firmwareVersion);
+            Log.e("SCFirmwareUtils", "CAN`T parce to Int, Method: firmwareStringToInt, value: " + firmwareVersion);
+            return SUPPORTED_CHARGER_ACTION_VERSION_FW;
          }
-      }
-      return 0;
+      } else
+         return SUPPORTED_CHARGER_ACTION_VERSION_FW;
    }
-
 }

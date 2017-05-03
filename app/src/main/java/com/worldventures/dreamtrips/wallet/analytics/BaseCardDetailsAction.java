@@ -1,46 +1,33 @@
 package com.worldventures.dreamtrips.wallet.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 public abstract class BaseCardDetailsAction extends WalletAnalyticsAction {
 
-   @AttributeMap final Map<String, String> attributeMap = new HashMap<>();
+   @Attribute("paycardtype") String paycardType = "Unknown";
+   @Attribute("paycardissuer") String paycardIssuer = "Unknown";
+   @Attribute("cardtype") final String cardtype = "Payment";
 
-   public void fillRecordDetails(Record record) {
-      if (record.financialService() == null) return;
-
-      final String cardType = "Payment";
-      String paymentCardType, paymentCardIssuer;
-
-      switch (record.financialService()) {
+   public void fillPaycardInfo(BankCard bankCard) {
+      if (bankCard.issuerInfo().financialService() == null) return;
+      switch (bankCard.issuerInfo().financialService()) {
          case AMEX:
-            paymentCardIssuer = "American Express";
-            paymentCardType = "American Express";
+            paycardIssuer = "American Express";
+            paycardType = "American Express";
             break;
          case VISA:
-            paymentCardIssuer = record.bankName();
-            paymentCardType = "Visa";
+            paycardIssuer = bankCard.issuerInfo().bankName();
+            paycardType = "Visa";
             break;
          case MASTERCARD:
-            paymentCardIssuer = record.bankName();
-            paymentCardType = "MasterCard";
+            paycardIssuer = bankCard.issuerInfo().bankName();
+            paycardType = "MasterCard";
             break;
          case DISCOVER:
-            paymentCardIssuer = "Discover";
-            paymentCardType = "Discover";
-            break;
-         default:
-            paymentCardIssuer = "Unknown";
-            paymentCardType = "Unknown";
+            paycardIssuer = "Discover";
+            paycardType = "Discover";
             break;
       }
-
-      attributeMap.put("paycardtype", paymentCardType);
-      attributeMap.put("paycardissuer", paymentCardIssuer);
-      attributeMap.put("cardtype", cardType);
    }
 }

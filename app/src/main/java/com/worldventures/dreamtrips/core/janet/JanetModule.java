@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
 import java.net.CookieManager;
@@ -62,10 +61,7 @@ public class JanetModule {
    @Provides(type = Provides.Type.SET)
    ActionService provideHttpService(@ForApplication Injector injector, HttpClient httpClient) {
       return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient,
-            new GsonConverter(new GsonProvider()
-                  .provideBuilder()
-                  .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
-                  .create()));
+            new GsonConverter(new GsonProvider().provideGson()));
    }
 
    @Singleton
@@ -177,5 +173,4 @@ public class JanetModule {
    ActionService provideWalletCommandService() {
       return new CommandActionService();
    }
-
 }

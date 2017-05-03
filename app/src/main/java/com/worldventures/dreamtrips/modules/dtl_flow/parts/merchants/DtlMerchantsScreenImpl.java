@@ -460,7 +460,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       }
    }
 
-   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+   @Override
+   public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
       updateFiltersView(stringResource);
       getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);

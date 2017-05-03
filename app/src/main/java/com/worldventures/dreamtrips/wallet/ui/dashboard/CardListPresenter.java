@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
 
+import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
@@ -13,50 +15,40 @@ import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
-import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
-import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
+import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
-import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
+import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import flow.Flow;
 import io.techery.janet.Command;
-import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
-import io.techery.janet.operationsubscriber.OperationActionSubscriber;
-import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.exception.NotConnectedException;
+import io.techery.janet.smartcard.exception.WaitingResponseException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -68,108 +60,52 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject RecordInteractor recordInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject WalletNetworkService networkService;
+   @Inject SCFirmwareFacade firmwareFacade;
 
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
 
+   private int cardLoaded = 0;
+
+   private CardStackHeaderHolder cardStackHeaderHolder;
+
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
       cardListStackConverter = new CardListStackConverter(context.getString(R.string.wallet_payment_cards_title));
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      getView().setDefaultSmartCard();
       observeSmartCard();
-      observeConnectionStatus();
       observeChanges();
       observeFirmwareInfo();
 
-      observeSyncRecordsStatus();
-      fetchSyncRecordsStatus();
+      firmwareFacade.fetchFirmwareInfo();
 
-      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
-      recordInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());
+      smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
+      smartCardInteractor.defaultCardIdPipe().send(new DefaultCardIdCommand());
       trackScreen();
    }
 
-   private void fetchSyncRecordsStatus() {
-      recordInteractor.syncRecordStatusPipe().send(SyncRecordStatusCommand.fetch());
-   }
-
-   private void observeSyncRecordsStatus() {
-      recordInteractor.syncRecordStatusPipe()
-            .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(command -> handleSyncRecordStatus(command.getResult()));
-
-      //noinspection ConstantConditions
-      recordInteractor.syncRecordOnNewDevicePipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
-               .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
-            );
-      //noinspection ConstantConditions
-      recordInteractor.syncRecordOnNewDevicePipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideReSyncOperationView()).create());
-   }
-
-   private void handleSyncRecordStatus(SyncRecordsStatus status) {
-      if (status.isFailAfterProvision()) {
-         //noinspection ConstantConditions
-         getView().modeSyncPaymentsFab();
-      } else {
-         //noinspection ConstantConditions
-         getView().modeAddCard();
-      }
-   }
-
    private void observeSmartCard() {
-      smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
-            .map(Command::getResult)
-            .throttleLast(300, TimeUnit.MILLISECONDS)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e("", throwable));
-
-      smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
+      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::handleSmartCardUser, throwable -> Timber.e("", throwable));
+            .subscribe(this::setSmartCard, throwable -> {
+            });
 
-      smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
-      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
-   }
-
-   private void handleSmartCardStatus(SmartCardStatus cardStatus) {
-      final boolean connected = cardStatus.connectionStatus().isConnected();
-      getView().setSmartCardStatusAttrs(cardStatus.batteryLevel(), connected,
-            cardStatus.lock(), cardStatus.stealthMode());
-   }
-
-   private void handleSmartCardUser(SmartCardUser smartCardUser) {
-      final String photoFileUrl = smartCardUser.userPhoto() != null
-            ? smartCardUser.userPhoto().photoUrl()
-            : "";
-      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUrl);
-   }
-
-   private void observeConnectionStatus() {
-      smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
-            .map(command -> command.getResult().connectionStatus())
+      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(connectionStatus -> {
-               if (connectionStatus == ConnectionStatus.DFU) {
+               if (connectionStatus == SmartCard.ConnectionStatus.DFU) {
                   File firmwareFile = getAppropriateFirmwareFile(getContext());
                   if (firmwareFile.exists()) {
                      getView().showFirmwareUpdateError();
@@ -179,16 +115,18 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeFirmwareInfo() {
-      firmwareInteractor.firmwareInfoCachedPipe()
-            .observeSuccessWithReplay()
+      firmwareFacade.takeFirmwareInfo()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> firmwareLoaded(command.getResult()), throwable -> Timber.e(throwable, ""));
-
-      firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
+            .subscribe(this::firmwareLoaded);
    }
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
-      getView().setFirmwareUpdateAvailable(firmwareUpdateData.updateAvailable());
+      this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .firmware(firmwareUpdateData)
+            .build();
+      getView().notifySmartCardChanged(cardStackHeaderHolder);
+
       if (firmwareUpdateData.updateAvailable()) {
          if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
          getView().showFirmwareUpdateBtn();
@@ -198,7 +136,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void trackScreen() {
-      recordInteractor.cardsListPipe()
+      smartCardInteractor.cardsListPipe()
             .observeSuccessWithReplay()
             .take(1)
             .map(c -> c.getResult().size())
@@ -210,8 +148,17 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             );
    }
 
-   void cardClicked(Record record) {
-      navigator.go(new CardDetailsPath(record));
+   private void setSmartCard(SmartCard smartCard) {
+      this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .smartCard(smartCard)
+            .build();
+      getView().notifySmartCardChanged(cardStackHeaderHolder);
+   }
+
+   void cardClicked(BankCard bankCard) {
+//      was removed for 1.18 release
+//      navigator.go(new CardDetailsPath(bankCard));
    }
 
    void navigationClick() {
@@ -222,95 +169,109 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.go(new WalletSettingsPath());
    }
 
+   void navigateToInstallFirmware() {
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
+   }
+
    void navigateBack() {
       navigator.goBack();
    }
 
-   void addCardRequired(int cardLoadedCount) {
-      if (cardLoadedCount >= MAX_CARD_LIMIT) {
+   @SuppressWarnings("unused") // for 1.18
+   void addCardRequired() {
+
+      if (cardLoaded >= MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
          return;
       }
 
-      Observable.zip(
-            smartCardInteractor.offlineModeStatusPipe().createObservableResult(OfflineModeStatusCommand.fetch()),
-            smartCardInteractor.deviceStatePipe().createObservableResult(DeviceStateCommand.fetch()),
-            (offlineModeState, smartCardModifier) -> {
-               boolean needNetworkConnection = offlineModeState.getResult() || networkService.isAvailable();
-               boolean needSmartCardConnection = smartCardModifier.getResult().connectionStatus().isConnected();
-               return new Pair<>(needNetworkConnection, needSmartCardConnection);
-            })
+      Observable.combineLatest(
+            ReactiveNetwork.observeNetworkConnectivity(getContext()).take(1),
+            smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().take(1),
+            (connectivity, smartCardModifier) -> new Pair<>(connectivity.getState(), smartCardModifier.getResult()
+                  .connectionStatus()))
             .compose(bindViewIoToMainComposer())
             .subscribe(connectionStatusPair -> {
-               if (!connectionStatusPair.first) {
+               if (connectionStatusPair.first != NetworkInfo.State.CONNECTED) {
                   getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
-               } else if (!connectionStatusPair.second) {
+               } else if (!connectionStatusPair.second.isConnected()) {
                   getView().showSCNonConnectionDialog();
                } else {
                   trackAddCard();
                   navigator.go(new WizardChargingPath());
                }
-            }, e -> Timber.e(e, "Could not subscribe to network and SmartCard events"));
+            }, e -> Timber.e(e, "Could not subscribe to network and smartcard events"));
    }
 
    private void trackAddCard() {
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
    }
 
-   private void observeChanges() {
-      Observable.combineLatest(
-            recordInteractor.cardsListPipe()
-                  .observeWithReplay()
-                  .compose(new ActionPipeCacheWiper<>(recordInteractor.cardsListPipe()))
-                  .compose(new ActionStateToActionTransformer<>()),
-            recordInteractor.defaultRecordIdPipe()
-                  .observeWithReplay()
-                  .compose(new ActionPipeCacheWiper<>(recordInteractor.defaultRecordIdPipe()))
-                  .compose(new ActionStateToActionTransformer<>()),
-            (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> { /*ignore here*/ });
-
-      //noinspection ConstantConditions
-      smartCardInteractor.smartCardSyncPipe()
-            .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.smartCardSyncPipe()))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncSmartCard()).create());
-   }
-
-   private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
-      List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedRecords, defaultRecordId);
-      getView().setCardsCount(WalletRecordUtil.stacksToItemsCount(cards));
-      getView().showRecordsInfo(cards);
-   }
-
-   public void navigateToFirmwareUpdate() {
+   void installFirmwareClick() {
       navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
-   void confirmForceFirmwareUpdate() {
-      // TODO: 3/6/17 can be better
-      firmwareInteractor.firmwareInfoCachedPipe()
-            .createObservable(FirmwareInfoCachedCommand.fetch())
+   private void observeChanges() {
+      Observable.combineLatest(
+            smartCardInteractor.cardsListPipe()
+                  .observeWithReplay()
+                  .compose(new ActionPipeCacheWiper<>(smartCardInteractor.cardsListPipe()))
+                  .compose(new ActionStateToActionTransformer<>()),
+            smartCardInteractor.defaultCardIdPipe()
+                  .observeWithReplay()
+                  .compose(new ActionPipeCacheWiper<>(smartCardInteractor.defaultCardIdPipe()))
+                  .compose(new ActionStateToActionTransformer<>()),
+            (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
-                  .onSuccess(command -> {
-                     if (command.getResult().factoryResetRequired()) {
-                        getView().showFactoryResetConfirmationDialog();
-                     } else {
-                        navigateToFirmwareUpdate();
-                     }
+            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
+            } /*ignore here*/);
+
+      smartCardInteractor.cardSyncPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
+                  .onStart(syncCardsCommand -> getView().showCardSynchronizationDialog(true))
+                  .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
+                  .onFail(throwable -> {
+                     getView().showCardSynchronizationDialog(false);
+                     return null;
                   })
-            );
+                  .wrap());
+
+      smartCardInteractor.cardSyncPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.<SyncCardsCommand>builder(getContext())
+                        .ignore(NotConnectedException.class)
+                        .handle(WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected)
+                        .build())
+                  .wrap());
+
    }
 
-   void syncPayments() {
-      recordInteractor.syncRecordOnNewDevicePipe().send(new SyncRecordOnNewDeviceCommand());
+   private void cardsLoaded(List<Card> loadedCards, String defaultCardId) {
+      List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedCards, defaultCardId);
+      cardLoaded = CardUtils.stacksToItemsCount(cards);
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .cardCount(cardLoaded)
+            .build();
+
+      getView().notifySmartCardChanged(cardStackHeaderHolder);
+      getView().showRecordsInfo(cards);
    }
 
-   void goToFactoryReset() {
-      navigator.single(new FactoryResetPath());
+   public void navigateToForceUpdate() {
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
+   }
+
+   public void handleForceFirmwareUpdateConfirmation() {
+      if (cardStackHeaderHolder.firmware().factoryResetRequired()) {
+         getView().showFactoryResetConfirmationDialog();
+      } else {
+         navigateToForceUpdate();
+      }
    }
 
    public interface Screen extends WalletScreen {
@@ -321,15 +282,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showRecordsInfo(List<CardStackViewModel> result);
 
-      void setDefaultSmartCard();
-
-      void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
-
-      void setSmartCardUserAttrs(String fullname, String photoFileUrl);
-
-      void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
-
-      void setCardsCount(int count);
+      void notifySmartCardChanged(CardStackHeaderHolder smartCard);
 
       void showAddCardErrorDialog(@ErrorDialogType int errorDialogType);
 
@@ -343,19 +296,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showFactoryResetConfirmationDialog();
 
+      void showCardSynchronizationDialog(boolean visible);
+
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}
 
       void showSCNonConnectionDialog();
-
-      void modeAddCard();
-
-      void modeSyncPaymentsFab();
-
-      void showSyncFailedOptionsDialog();
-
-      OperationView<SyncSmartCardCommand> provideOperationSyncSmartCard();
-
-      OperationView<SyncRecordOnNewDeviceCommand> provideReSyncOperationView();
    }
 }

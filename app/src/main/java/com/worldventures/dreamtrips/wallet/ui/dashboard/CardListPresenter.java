@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -46,7 +47,9 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 
 import java.io.File;
@@ -76,21 +79,25 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject WalletNetworkService networkService;
-
+   @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
+   private final CheckPinDelegate checkPinDelegate;
    private List<Record> records;
 
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
       cardListStackConverter = new CardListStackConverter(context);
+      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
+            navigator, FactoryResetAction.GENERAL);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getView().setDefaultSmartCard();
+      checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
       observeConnectionStatus();
       observeChanges();
@@ -350,10 +357,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void goToFactoryReset() {
-      navigator.single(new FactoryResetPath());
+      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
    }
 
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen, FactoryResetView {
 
       int ERROR_DIALOG_FULL_SMARTCARD = 1;
       int ERROR_DIALOG_NO_INTERNET_CONNECTION = 2;

@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -43,6 +44,8 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStac
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CommonCardHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dialog.InstallFirmwareErrorDialog;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
 import java.util.ArrayList;
@@ -410,5 +413,23 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             new AnimatorProgressView<>(ObjectAnimator.ofFloat(fabButton, View.ROTATION.getName(), 0f, -360f)
                   .setDuration(650))
       );
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
+      return FactoryResetOperationView.create(getContext(),
+            factoryResetDelegate::factoryReset,
+            () -> {},
+            R.string.wallet_error_enter_pin_title,
+            R.string.wallet_error_enter_pin_msg,
+            R.string.retry,
+            R.string.cancel,
+            R.string.loading,
+            false);
    }
 }

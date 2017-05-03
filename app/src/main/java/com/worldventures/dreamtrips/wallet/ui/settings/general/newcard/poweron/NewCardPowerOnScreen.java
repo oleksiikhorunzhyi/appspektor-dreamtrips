@@ -5,15 +5,19 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
 import butterknife.InjectView;
@@ -98,5 +102,23 @@ public class NewCardPowerOnScreen extends WalletLinearLayout<NewCardPowerOnPrese
    protected void onDetachedFromWindow() {
       if (dontTurnOnCardDialog != null) dontTurnOnCardDialog.dismiss();
       super.onDetachedFromWindow();
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
+      return FactoryResetOperationView.create(getContext(),
+            factoryResetDelegate::factoryReset,
+            () -> {},
+            R.string.wallet_error_enter_pin_title,
+            R.string.wallet_error_enter_pin_msg,
+            R.string.retry,
+            R.string.cancel,
+            R.string.loading,
+            false);
    }
 }

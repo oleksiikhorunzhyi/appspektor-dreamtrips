@@ -6,9 +6,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
@@ -19,8 +17,6 @@ import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -33,8 +29,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @Module(
       includes = {
-            FirmwareModule.class,
-            LostCardModule.class
+            FirmwareModule.class
       },
       complete = false, library = true)
 public class WalletServiceModule {
@@ -72,26 +67,14 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new SmartCardInteractor(sessionActionPipeCreator);
-   }
-
-   @Singleton
-   @Provides
-   RecordInteractor provideRecordInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new RecordInteractor(sessionActionPipeCreator);
+   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) Janet janet, @Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new SmartCardInteractor(janet, sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
    FirmwareInteractor firmwareInteractor(@Named(JANET_WALLET) Janet janet) {
       return new FirmwareInteractor(janet);
-   }
-
-   @Singleton
-   @Provides
-   NxtInteractor nxtInteractor(@Named(JANET_WALLET) Janet janet) {
-      return new NxtInteractor(janet);
    }
 
    @Singleton
@@ -108,14 +91,7 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor,
-         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor) {
-      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor);
-   }
-
-   @Singleton
-   @Provides
-   SmartCardLocationInteractor locationInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new SmartCardLocationInteractor(sessionActionPipeCreator);
+   SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
+      return new SmartCardSyncManager(janet, smartCardInteractor);
    }
 }

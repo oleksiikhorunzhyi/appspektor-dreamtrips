@@ -13,7 +13,7 @@ import icepick.State;
 
 public class PickImageDelegate {
 
-   public static final String FOLDERNAME = "DreamTrips/temp";
+   public static final String FOLDERNAME = "dreamtrip_folder_temp_sd";
 
    private ActivityRouter activityRouter;
    private MediaInteractor mediaInteractor;

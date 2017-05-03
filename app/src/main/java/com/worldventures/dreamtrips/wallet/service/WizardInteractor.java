@@ -4,9 +4,8 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 
@@ -25,10 +24,9 @@ public final class WizardInteractor {
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
    private final ActionPipe<WizardCheckCommand> checksPipe;
-   private final ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe;
+   private final ActionPipe<AvailabilitySmartCardCommand> availabilitySmartCardCommandActionPipe;
 
    private final ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe;
-   private final ActionPipe<ReAssignCardCommand> reAssignCardPipe;
 
    private final ActionPipe<WizardCompleteCommand> completePipe;
 
@@ -43,8 +41,7 @@ public final class WizardInteractor {
 
       fetchAndStoreDefaultAddressInfoPipe = sessionActionPipeCreator.createPipe(FetchAndStoreDefaultAddressInfoCommand.class, Schedulers
             .io());
-      reAssignCardPipe = sessionActionPipeCreator.createPipe(ReAssignCardCommand.class, Schedulers.io());
-      getSmartCardStatusCommandActionPipe = sessionActionPipeCreator.createPipe(GetSmartCardStatusCommand.class, Schedulers
+      availabilitySmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(AvailabilitySmartCardCommand.class, Schedulers
             .io());
 
       completePipe = sessionActionPipeCreator.createPipe(WizardCompleteCommand.class, Schedulers.io());
@@ -70,10 +67,6 @@ public final class WizardInteractor {
       return activateSmartCardPipe;
    }
 
-   public ActionPipe<ReAssignCardCommand> reAssignCardPipe() {
-      return reAssignCardPipe;
-   }
-
    public ActionPipe<WizardCheckCommand> checksPipe() {
       return checksPipe;
    }
@@ -86,7 +79,7 @@ public final class WizardInteractor {
       return completePipe;
    }
 
-   public ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe() {
-      return getSmartCardStatusCommandActionPipe;
+   public ActionPipe<AvailabilitySmartCardCommand> availabilitySmartCardCommandActionPipe() {
+      return availabilitySmartCardCommandActionPipe;
    }
 }

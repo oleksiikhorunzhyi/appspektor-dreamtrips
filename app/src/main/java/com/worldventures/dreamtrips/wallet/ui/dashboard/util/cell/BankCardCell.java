@@ -23,7 +23,7 @@ public class BankCardCell extends AbstractDelegateCell<BankCardViewModel, BankCa
    @Override
    protected void syncUIStateWithModel() {
       bankCardWidget.setShowShortNumber(true);
-      bankCardWidget.setBankCard(getModelObject().record);
+      bankCardWidget.setBankCard(getModelObject().bankCard);
       bankCardWidget.setAsDefault(getModelObject().defaultCard);
       bankCardWidget.setBankCardHolder(getAdapterPosition() % 2 == 0 ? R.drawable.creditcard_blue : R.drawable.creditcard_darkblue);
       itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));

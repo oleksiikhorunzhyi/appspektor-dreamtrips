@@ -6,13 +6,16 @@ import android.os.Parcelable;
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import io.techery.janet.Command;
 
 public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements ViewStateMvpPresenter<V, S> {
 
@@ -35,14 +38,15 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
    }
 
    private void observeSmartCardModifierPipe() {
-      interactor.deviceStatePipe()
+      interactor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(command -> command.getResult().connectionStatus())
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::showConnectionStatus);
-      interactor.deviceStatePipe().send(DeviceStateCommand.fetch());
+      interactor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
    }
 
    public Context getContext() {

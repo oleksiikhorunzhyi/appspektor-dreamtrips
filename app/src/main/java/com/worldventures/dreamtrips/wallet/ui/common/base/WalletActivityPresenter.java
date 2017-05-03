@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 
 import javax.inject.Inject;
 
@@ -18,34 +17,34 @@ import timber.log.Timber;
 public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPresenter.View> {
 
    @Inject SmartCardInteractor interactor;
-   @Inject SmartCardSyncManager smartCardSyncManager; // it was init on this activity
+   @Inject SmartCardSyncManager smartCardSyncManager;
    @Inject WalletBluetoothService bluetoothService;
-   @Inject LocationTrackingManager trackingManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      trackingManager.track();
+      smartCardSyncManager.connect();
+
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .compose(bindView())
-            .filter(command -> command.getResult().cardStatus().isActive())
             .flatMap(command -> interactor.connectActionPipe()
-                  .createObservable(new ConnectSmartCardCommand(command.getResult().smartCardId(), false)))
-            .subscribe(connectAction -> Timber.i("Success connection to smart card"), throwable -> {
-            });
+                  .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
+            .subscribe(connectAction -> {
+               Timber.i("Success connection to smart card");
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    @Override
-   public void onStart() {
-      super.onStart();
+   public void takeView(View view) {
+      super.takeView(view);
       startBluetoothTracking();
    }
 
    private void startBluetoothTracking() {
       bluetoothService.observeEnablesState()
             .startWith(bluetoothService.isEnable())
-            .compose(bindUntilStop())
+            .compose(bindView())
             .distinctUntilChanged()
             .subscribe(this::onBluetoothStateChanged);
    }
@@ -58,7 +57,6 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
    public void dropView() {
       super.dropView();
       interactor.disconnectPipe().send(new DisconnectAction());
-      trackingManager.untrack();
    }
 
    public interface View extends ActivityPresenter.View {

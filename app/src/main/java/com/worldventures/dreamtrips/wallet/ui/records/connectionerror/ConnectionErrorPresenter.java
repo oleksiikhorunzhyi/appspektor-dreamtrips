@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -14,6 +15,8 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import io.techery.janet.Command;
 
 public class ConnectionErrorPresenter extends WalletPresenter<ConnectionErrorPresenter.Screen, Parcelable> {
 
@@ -31,10 +34,11 @@ public class ConnectionErrorPresenter extends WalletPresenter<ConnectionErrorPre
    }
 
    private void observeConnection() {
-      smartCardInteractor.deviceStatePipe()
+      smartCardInteractor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(command -> command.getResult().connectionStatus())
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(connectionStatus -> {

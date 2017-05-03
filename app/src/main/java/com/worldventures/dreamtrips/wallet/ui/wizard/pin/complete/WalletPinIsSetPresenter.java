@@ -5,9 +5,10 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.wizard.PinWasSetAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -17,27 +18,34 @@ import javax.inject.Inject;
 
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
-   @Inject Navigator navigator;
+   @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject Navigator navigator;
 
-   public WalletPinIsSetPresenter(Context context, Injector injector) {
+   private final SmartCard smartCard;
+
+   public WalletPinIsSetPresenter(Context context, Injector injector, SmartCard smartCard) {
       super(context, injector);
+      this.smartCard = smartCard;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PinWasSetAction()));
+            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.user().fullName())));
    }
 
    public void goBack() {
       navigator.goBack();
    }
 
-   void navigateToNextScreen() {
-      navigator.go(new WizardAssignUserPath());
+   public void activateSmartCard() {
+      navigateToNextScreen();
+   }
+
+   private void navigateToNextScreen() {
+      navigator.go(new WizardAssignUserPath(smartCard));
    }
 
    public interface Screen extends WalletScreen {

@@ -6,6 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
@@ -38,16 +39,11 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,19 +52,118 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
+import timber.log.Timber;
 
-class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyRepository {
+class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
 
-   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService) {
-      super(context, snappyCrypter, executorService);
+   private final Context context;
+   private final ExecutorService executorService;
+   private final SnappyCrypter snappyCrypter;
+
+   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter) {
+      this.context = context;
+      this.snappyCrypter = snappyCrypter;
+      this.executorService = Executors.newSingleThreadExecutor();
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Proxy helpers
+   ///////////////////////////////////////////////////////////////////////////
+
+   private void act(SnappyAction action) {
+      executorService.execute(() -> {
+         DB snappyDb = null;
+         try {
+            snappyDb = DBFactory.open(context);
+            action.call(snappyDb);
+         } catch (SnappydbException e) {
+            if (isNotFound(e)) Timber.v("Nothing found");
+            else Timber.w(e, "DB fails to act", e);
+         } finally {
+            try {
+               if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+            } catch (SnappydbException e) {
+               Timber.w(e, "DB fails to close");
+            }
+         }
+      });
+   }
+
+   private <T> Optional<T> actWithResult(SnappyResult<T> action) {
+      Future<T> future = executorService.submit(() -> {
+         DB snappyDb = null;
+         try {
+            snappyDb = DBFactory.open(context);
+            T result = action.call(snappyDb);
+            Timber.v("DB action result: %s", result);
+            return result;
+         } catch (SnappydbException e) {
+            if (isNotFound(e)) Timber.v("Nothing found");
+            else Timber.w(e, "DB fails to act with result", e);
+            return null;
+         } finally {
+            if (snappyDb != null) try {
+               snappyDb.close();
+            } catch (SnappydbException e) {
+               Timber.w(e, "DB fails to close");
+            }
+         }
+      });
+      try {
+         return Optional.fromNullable(future.get());
+      } catch (InterruptedException | ExecutionException e) {
+         Timber.w(e, "DB fails to act with result");
+         return Optional.absent();
+      }
+   }
+
+   private boolean isNotFound(SnappydbException e) {
+      return e.getMessage().contains("NotFound");
    }
 
    @Override
-   protected DB openDbInstance(Context context) throws SnappydbException {
-      return DBFactory.open(context);
+   public void clearAll() {
+      act(DB::destroy);
+   }
+
+   @Override
+   public Boolean isEmpty(String key) {
+      return actWithResult((db) -> {
+         String[] keys = db.findKeys(key);
+         return keys == null || keys.length == 0;
+      }).or(false);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // DiskStorage
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public <T> Optional<T> executeWithResult(SnappyResult<T> action) {
+      return actWithResult(action);
+   }
+
+   @Override
+   public void execute(SnappyAction action) {
+      act(action);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Public
+   ///////////////////////////////////////////////////////////////////////////
+
+   private void putEncrypted(String key, Object obj) {
+      act(db -> snappyCrypter.putEncrypted(db, key, obj));
+   }
+
+   private <T> T getEncrypted(String key, Class<T> clazz) {
+      return actWithResult(db -> snappyCrypter.getEncrypted(db, key, clazz)).orNull();
    }
 
    @Override
@@ -80,19 +175,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    public <T> List<T> readList(String key, Class<T> clazz) {
       return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
             .or(new ArrayList<>());
-   }
-
-   @Override
-   public Boolean isEmpty(String key) {
-      return actWithResult((db) -> {
-         String[] keys = db.findKeys(key);
-         return keys == null || keys.length == 0;
-      }).or(false);
-   }
-
-   @Override
-   public void clearAll() {
-      act(DB::destroy);
    }
 
    /**
@@ -123,7 +205,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    ///////////////////////////////////////////////////////////////////////////
    // BucketItems
    ///////////////////////////////////////////////////////////////////////////
-
    @Override
    public void saveBucketList(List<BucketItem> items, int userId) {
       putList(BUCKET_LIST + "_" + userId, items);
@@ -210,21 +291,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    @Override
-   public void saveSmartCardUser(SmartCardUser smartCardUser) {
-      putEncrypted(WALLET_SMART_CARD_USER, smartCardUser);
-   }
-
-   @Override
-   public SmartCardUser getSmartCardUser() {
-      return getEncrypted(WALLET_SMART_CARD_USER, ImmutableSmartCardUser.class);
-   }
-
-   @Override
-   public void deleteSmartCardUser() {
-      act(db -> db.del(WALLET_SMART_CARD_USER));
-   }
-
-   @Override
    public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
       putEncrypted(WALLET_DETAILS_SMART_CARD, smartCardDetails);
    }
@@ -239,19 +305,22 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
       act(db -> db.del(WALLET_DETAILS_SMART_CARD));
    }
 
+/////////
+
    @Override
-   public void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
-      putEncrypted(WALLET_SMART_CARD_FIRMWARE, smartCardFirmware);
+   public void deleteWalletDefaultCardId() {
+      act(db -> db.del(WALLET_DEFAULT_BANK_CARD));
    }
 
    @Override
-   public SmartCardFirmware getSmartCardFirmware() {
-      return getEncrypted(WALLET_SMART_CARD_FIRMWARE, ImmutableSmartCardFirmware.class);
+   public void saveWalletDefaultCardId(String defaultCardId) {
+      if (defaultCardId == null) return;
+      putEncrypted(WALLET_DEFAULT_BANK_CARD, defaultCardId);
    }
 
    @Override
-   public void deleteSmartCardFirmware() {
-      act(db -> db.del(WALLET_SMART_CARD_FIRMWARE));
+   public String readWalletDefaultCardId() {
+      return getEncrypted(WALLET_DEFAULT_BANK_CARD, String.class);
    }
 
    @Override
@@ -307,42 +376,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public SimpleDeviceStorage getWalletDeviceStorage() {
       return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
-   }
-
-   @Override
-   public void saveWalletLocations(List<WalletLocation> walletLocations) {
-      if (walletLocations == null) walletLocations = new ArrayList<>();
-      putList(WALLET_SMART_CARD_LOCATION, walletLocations);
-   }
-
-   @Override
-   public List<WalletLocation> getWalletLocations() {
-      return readList(WALLET_SMART_CARD_LOCATION, WalletLocation.class);
-   }
-
-   @Override
-   public void deleteWalletLocations() {
-      act(db -> db.del(WALLET_SMART_CARD_LOCATION));
-   }
-
-   @Override
-   public void saveEnabledTracking(boolean enable) {
-      act(db -> db.putBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING, enable));
-   }
-
-   @Override
-   public boolean isEnableTracking() {
-      return actWithResult(db -> db.getBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING)).or(false);
-   }
-
-   @Override
-   public void saveSyncRecordsStatus(SyncRecordsStatus data) {
-      act(db -> db.put(WALLET_SYNC_RECORD_STATUS, data));
-   }
-
-   @Override
-   public SyncRecordsStatus getSyncRecordsStatus() {
-      return actWithResult(db -> db.get(WALLET_SYNC_RECORD_STATUS, SyncRecordsStatus.class)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////

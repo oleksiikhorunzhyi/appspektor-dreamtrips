@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;
 
@@ -16,25 +16,25 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class PaycardAnalyticsCommand extends Command<Void> implements InjectableAction {
 
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject RecordInteractor recordInteractor;
 
    private final BaseCardDetailsWithDefaultAction cardDetailsWithDefaultAction;
-   private final Record record;
+   private final BankCard bankCard;
 
-   public PaycardAnalyticsCommand(BaseCardDetailsWithDefaultAction cardDetailsWithDefaultAction, Record record) {
+   public PaycardAnalyticsCommand(BaseCardDetailsWithDefaultAction cardDetailsWithDefaultAction, BankCard bankCard) {
       this.cardDetailsWithDefaultAction = cardDetailsWithDefaultAction;
-      this.record = record;
+      this.bankCard = bankCard;
    }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      recordInteractor.defaultRecordIdPipe()
+      smartCardInteractor.defaultCardIdPipe()
             .observeSuccessWithReplay()
             .take(1)
             .flatMap(command -> {
-               boolean isDefault = TextUtils.equals(record.id(), command.getResult());
-               cardDetailsWithDefaultAction.fillPaycardInfo(record, isDefault);
+               boolean isDefault = TextUtils.equals(bankCard.id(), command.getResult());
+               cardDetailsWithDefaultAction.fillPaycardInfo(bankCard, isDefault);
                return analyticsInteractor.walletAnalyticsCommandPipe()
                      .createObservableResult(new WalletAnalyticsCommand(cardDetailsWithDefaultAction));
             })

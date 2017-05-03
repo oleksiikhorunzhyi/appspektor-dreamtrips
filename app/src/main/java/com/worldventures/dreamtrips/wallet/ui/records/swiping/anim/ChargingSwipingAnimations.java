@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
-import android.view.animation.Animation;
 
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -20,12 +19,11 @@ public class ChargingSwipingAnimations {
 
    public final static int BANKCARD_ANIMATION_REPEAT_DEFAULT = 3;
 
-   private final static int SMARTCARD_TRANSLATION_DISTANCE_DP = 120;
-   private final static int SMARTCARD_TRANSLATION_DISTANCE_FINISH_DP = 100;
+   private final static int SMARTCARD_TRANSLATION_DISTANCE_DP = 100;
    private final static int SMARTCARD_ANIMATION_DURATION = 800;
 
    private final static int BANKCARD_TRANSLATION_DISTANCE__DP = 200;
-   private final static int BANKCARD_DELAY_BETWEEN_ANIMATIONS = 1200;
+   private final static int BANKCARD_DELAY_BETWEEN_ANIMATIONS = 2000;
    private final static int BANKCARD_ANIMATION_DURATION = 1600;
    private final static int BANKCARD_ANIMATION_DELAY = 1000;
 
@@ -34,7 +32,7 @@ public class ChargingSwipingAnimations {
          float distance = ViewUtils.pxFromDp(card.getContext(), SMARTCARD_TRANSLATION_DISTANCE_DP);
          AnimatorSet way = new AnimatorSet();
          ObjectAnimator translation = ObjectAnimator.ofFloat(card, View.X, distance + card.getLeft(), card
-               .getLeft() - SMARTCARD_TRANSLATION_DISTANCE_FINISH_DP)
+               .getLeft())
                .setDuration(SMARTCARD_ANIMATION_DURATION);
          ObjectAnimator alpha = ObjectAnimator.ofFloat(card, View.ALPHA, 0f, 1f)
                .setDuration(SMARTCARD_ANIMATION_DURATION / 2);
@@ -85,7 +83,7 @@ public class ChargingSwipingAnimations {
       public void onAnimationEnd(Animator animator) {
          animator.removeAllListeners();
          Observable.just(remainRepeat)
-               .filter(repeatCounter -> repeatCounter > 0 || repeatCounter < Animation.INFINITE)
+               .filter(repeatCounter -> repeatCounter > 0)
                .delay(BANKCARD_DELAY_BETWEEN_ANIMATIONS, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                .compose(RxLifecycle.bindView(animatedView))
                .subscribe(remainRepeat -> animateBankCard(animatedView, remainRepeat));

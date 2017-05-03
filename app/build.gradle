@@ -48,7 +48,7 @@ android {
    def versionMajor = 1
    def versionMinor = 19
    def versionPatch = 0
-   def versionBuild = 1 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 5 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -85,9 +85,7 @@ android {
          'NEWRELIC_API_KEY'     : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
          'UPLOADERY_API_URL'    : '"http://techery-dt-staging-uploadery.techery.io"',
          'VERSION_CHECK_API_URL': '"http://qafortius-ucservices.wvhservices.com/"',
-         'NXT_API'              : '"https://demo.nxt-security.com/api/services/evtservice/v2"',
          'SMART_CARD_SDK_CLIENT': '"nxtid"'
-
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
@@ -113,7 +111,6 @@ android {
          'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
-         'NXT_API'          : '"https://api.nxt-security.com/api/services/evtservice/v2"'
    ]
    def CONFIG_MAP_SMARTCARD_MOCK = [
          'SMART_CARD_SDK_CLIENT': '"mock"'
@@ -575,7 +572,7 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.20.4-SNAPSHOT', changing: true) {
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true) {
       exclude group: 'com.github.techery', module: 'mappery'
    }
 

@@ -8,7 +8,9 @@
    <color name="wallet_card_details_delete_card_button_color">#ea283b</color> <!--does not use like background, should be fixed -->
 
    <color name="wallet_card_list_empty_list_label_color">#8f8f8f</color>
-   <color name="wallet_add_card_button_color">#81c435</color>
+   <!--<color name="wallet_add_card_button_color">#81c435</color>-->
+   <color name="wallet_add_card_button_color">#8F8F8F</color>
+
 
    <color name="wallet_charging_swiping_screen_text_color">#222222</color>
 
@@ -19,10 +21,6 @@
 
    <color name="wallet_add_cards_inactive_color">#8F8F8F</color>
 
-   <color name="wallet_settings_menu_item_primary">#e6101010</color>
-   <color name="wallet_settings_menu_item_primary_disabled">#da515151</color>
-   <color name="wallet_settings_menu_item_secondary">#8c101010</color>
-   <color name="wallet_settings_menu_item_secondary_disabled">#85383838</color>
    <color name="wallet_settings_new_dt_version">#fa2d46</color>
    <color name="wallet_settings_version">#8e8e93</color>
    <color name="wallet_settings_sub_title">#e6005e92</color>
@@ -38,21 +36,7 @@
    <color name="wallet_support_device_list_title_color">#005e92</color>
 
    <color name="wallet_battery_low_level">#fa2d46</color>
-   <color name="wallet_color_divider">#1e000000</color>
+   <color name="wallet_color_divider">#C8C7CC</color>
    <color name="wallet_about_item_value">#8E8E93</color>
-
-   <color name="wallet_card_list_fail_sync_payments_color">#080808</color>
-   <color name="wallet_remove_payment_cards">#005e92</color>
-
-   <color name="wallet_new_card_have_not_card">#005e92</color>
-   <color name="wallet_new_card_power_on">#005e92</color>
-
-   <color name="wallet_delete_button_color">#e72a3c</color>
-   <color name="wallet_laser_line_color">#99dc1431</color>
-
-
-   <color name="wallet_edit_text_normal_state">#000</color>
-   <color name="wallet_edit_text_disabled_state">#8f8f8f</color>
-   <color name="wallet_edit_text_focused_state">#006699</color>
 
 </resources>

@@ -122,11 +122,6 @@
       </attr>
    </declare-styleable>
 
-   <declare-styleable name="DirectionInfoView">
-      <attr name="infoViewTitle" format="integer|string"/>
-      <attr name="infoViewImage" format="reference"/>
-   </declare-styleable>
-
    <declare-styleable name="TranslateView">
       <attr name="translatedTextColor" format="reference"/>
    </declare-styleable>

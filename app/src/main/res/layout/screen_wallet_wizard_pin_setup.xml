@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical"
       android:theme="@style/WalletTheme"
       >
 
@@ -18,7 +17,6 @@
    <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="@color/white"
          >
 
       <TextView
@@ -26,19 +24,23 @@
             style="@style/WalletTheme.HeaderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/wizard_video_view"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingTop="@dimen/spacing_normal"
+            android:textSize="@dimen/font_large"
             tools:text="@string/wallet_wizard_setup_pin_header"
             />
 
-      <com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView
-            android:id="@+id/wizard_video_view"
+      <ImageView
+            android:id="@+id/flye_card_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/hands_pin"
+            tools:ignore="ContentDescription"
             />
 
       <Button
@@ -50,4 +52,4 @@
             tools:text="@string/wallet_got_it_label"
             />
    </RelativeLayout>
-</com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen>
+</com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupScreen>

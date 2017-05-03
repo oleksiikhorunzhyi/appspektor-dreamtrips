@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util;
 
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 public class BankCardViewModel {
 
-   public final Record record;
+   public final BankCard bankCard;
    public final boolean defaultCard;
 
-   public BankCardViewModel(Record record, boolean defaultCard) {
-      this.record = record;
+   public BankCardViewModel(BankCard bankCard, boolean defaultCard) {
+      this.bankCard = bankCard;
       this.defaultCard = defaultCard;
    }
 

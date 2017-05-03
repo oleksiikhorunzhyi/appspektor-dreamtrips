@@ -5,7 +5,6 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical"
       android:theme="@style/WalletTheme"
       >
 
@@ -14,6 +13,20 @@
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
          app:title="@string/wallet_add_card_details_title"
+         />
+
+   <TextView
+         android:id="@+id/tvPostDataError"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:minHeight="48dp"
+         android:textAppearance="?android:textAppearanceMedium"
+         android:textColor="@color/wallet_waring_red"
+         android:textSize="@dimen/apptentive_text_small"
+         android:visibility="gone"
+         tools:text="@string/wallet_tap_confirm_try_again"
+         tools:visibility="visible"
          />
 
    <ScrollView
@@ -61,48 +74,27 @@
                app:pinRepeatedHint="#"
                />
 
-         <TextView
-               android:id="@+id/card_nickname_label"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-               android:text="@string/wallet_card_details_label_card_nickname"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               android:textColor="@color/wallet_card_details_address_text_color"
-               />
-
-         <android.support.design.widget.TextInputLayout
-               android:id="@+id/cardNameInputLayout"
+         <EditText
+               android:id="@+id/card_name"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:paddingTop="@dimen/spacing_small"
-               app:errorEnabled="true"
-               app:errorTextAppearance="@style/WalletTheme.ErrorTextAppearance"
-               app:hintEnabled="false"
-               >
-
-            <EditText
-                  android:id="@+id/card_name"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:drawableEnd="@drawable/ic_wallet_pencil_gray"
-                  android:hint="@string/wallet_view_card_details_hint_nickname_card"
-                  android:imeOptions="actionDone"
-                  android:inputType="textCapSentences"
-                  android:maxLength="@integer/wallet_card_name_length"
-                  android:singleLine="true"
-                  />
-
-         </android.support.design.widget.TextInputLayout>
+               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
+               android:imeOptions="actionNext"
+               android:inputType="textCapSentences"
+               android:maxLength="@integer/wallet_card_name_length"
+               android:maxLines="1"
+               tools:ignore="LabelFor"
+               />
 
          <include
                android:id="@+id/address_info"
                layout="@layout/include_wallet_address_info"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                />
 
-         <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
+         <android.support.v7.widget.SwitchCompat
                android:id="@+id/set_default_card_switcher"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"

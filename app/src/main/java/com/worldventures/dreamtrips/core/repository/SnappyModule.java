@@ -6,16 +6,13 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -24,13 +21,10 @@ import dagger.Provides;
 @Module(complete = false, library = true)
 public class SnappyModule {
 
-   public static final String SNAPPY_STORAGE_EXECUTOR_SERVICE = "SnappyStorageExecutorService";
-
    @Provides
    @Singleton
-   SnappyRepositoryImpl snappyRepositoryImpl(@ForApplication Context appContext, SnappyCrypter snappyCrypter,
-         @Named(SNAPPY_STORAGE_EXECUTOR_SERVICE) ExecutorService executorService) {
-      return new SnappyRepositoryImpl(appContext, snappyCrypter, executorService);
+   SnappyRepositoryImpl snappyRepositoryImpl(@ForApplication Context appContext, SnappyCrypter snappyCrypter) {
+      return new SnappyRepositoryImpl(appContext, snappyCrypter);
    }
 
    @Provides
@@ -41,7 +35,7 @@ public class SnappyModule {
 
    @Provides
    @Singleton
-   public SnappyStorage diskStorage(SnappyRepositoryImpl snappyRepository) {
+   public DiskStorage diskStorage(SnappyRepositoryImpl snappyRepository) {
       return snappyRepository;
    }
 
@@ -63,12 +57,4 @@ public class SnappyModule {
       kryo.setInstantiatorStrategy(strategy);
       return kryo;
    }
-
-   @Provides
-   @Singleton
-   @Named(SNAPPY_STORAGE_EXECUTOR_SERVICE)
-   public ExecutorService provideSnappyRepositoryExecutorService() {
-      return Executors.newSingleThreadExecutor();
-   }
-
 }

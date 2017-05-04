@@ -34,14 +34,14 @@
          android:textStyle="bold" />
 
    <RatingBar
-         style="?android:attr/ratingBarStyleSmall"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:isIndicator="true"
          android:numStars="5"
          android:rating="0"
          android:layout_marginTop="6dp"
-         android:theme="@style/rating_bar_style"
+         style="@style/SmallRatingBar"
+         android:theme="@style/SmallRatingBar"
          android:layout_alignLeft="@+id/tvUserName"
          android:layout_alignStart="@+id/tvUserName"
          android:layout_below="@+id/tvUserName"

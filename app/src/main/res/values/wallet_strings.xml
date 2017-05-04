@@ -420,7 +420,7 @@
 
    <!-- Offline Mode screen -->
    <string name="wallet_offline_mode_enable_label">Enable Offline Mode</string>
-   <string name="wallet_offline_mode_explain_message">Offline Mode allows you to add and swap cards between your app and Smart Card without being connected to the internet.</string>
+   <string name="wallet_offline_mode_explain_message">Offline Mode allows you to add cards to your Smart Card without internet connection.</string>
    <string name="wallet_offline_mode_please_note_message"><![CDATA[<b>Please note:</b>]]> Enabling Offline Mode could potentially make your cards less secure.</string>
    <string name="wallet_offline_mode_enable_message">Enabling Offline Mode could potentially make your payment cards less secure. Do you want to continue?</string>
    <string name="wallet_offline_mode_disable_message">By disabling Offline Mode you will be unable to manage payment cards without internet connection.</string>

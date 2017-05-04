@@ -204,7 +204,15 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public int getSizeComment() {
-      return mComment != null ? mComment.getText().toString().length() : -1;
+      if(mComment == null) throw new IllegalStateException("Comment must exist.");
+      String review = mComment.getText().toString();
+      int lineJumpOccurrences = 0;
+      for (int i = 0; i < review.length(); i++) {
+         if (review.charAt(i) == '\n') {
+            lineJumpOccurrences++;
+         }
+      }
+      return review.length() - lineJumpOccurrences;
    }
 
    @Override

@@ -38,6 +38,77 @@
                />
 
          <LinearLayout
+               android:id="@+id/rating_header"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/white"
+               android:orientation="horizontal"
+               android:padding="@dimen/spacing_normal"
+               android:layout_gravity="center_vertical"
+               android:visibility="gone"
+               >
+
+            <LinearLayout
+                  android:id="@+id/layout_rating_reviews_detail"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+
+               <RatingBar
+                     android:id="@+id/ratingBarReviews"
+                     style="@style/SmallRatingBar"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:isIndicator="true"
+                     android:numStars="5"
+                     android:rating="0"
+                     android:theme="@style/SmallRatingBar"
+                     />
+               <TextView
+                     android:id="@+id/text_view_rating"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/to_be_first_reviews"
+                     android:textColor="@android:color/black"
+                     android:textSize="@dimen/dtl_no_reviews_dimen_nine"
+                     android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <TextView
+                  android:id="@+id/view_points"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/font_small"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:background="@drawable/background_badge_points"
+                  android:drawableLeft="@drawable/ic_points_dtl"
+                  android:drawablePadding="5dp"
+                  android:text="@string/points"
+                  />
+
+            <TextView
+                  android:id="@+id/view_perks"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/font_small"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:background="@drawable/background_badge_perk"
+                  android:drawableLeft="@drawable/ic_perk_dtl"
+                  android:drawablePadding="5dp"
+                  android:text="@string/perks"
+                  />
+         </LinearLayout>
+
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/divider_list"
+               />
+
+         <LinearLayout
                android:id="@+id/merchant_details_earn_wrapper"
                style="@style/Widget.AppCompat.ButtonBar"
                android:layout_width="match_parent"
@@ -130,6 +201,21 @@
                 android:id="@+id/container_comments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
+            <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:visibility="gone"
+                  android:background="@color/white">
+
+               <include
+                     layout="@layout/rate_review_button"/>
+
+               <include layout="@layout/read_all_rating_review"
+                     android:visibility="invisible"/>
+
+            </LinearLayout>
 
             <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
                   android:id="@+id/disclaimer"

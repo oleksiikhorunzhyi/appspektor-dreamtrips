@@ -36,7 +36,7 @@ import timber.log.Timber;
 
 public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.View> extends ActionReviewEntityPresenter<V> {
 
-   private static final int MAX_PHOTOS_COUNT = 15;
+   private static final int MAX_PHOTOS_COUNT = 5;
 
    private CreateEntityBundle.Origin origin;
 

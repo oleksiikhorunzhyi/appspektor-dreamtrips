@@ -13,6 +13,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -52,7 +54,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject AnalyticsInteractor analyticsInteractor;
 
    private SmartCardUserPhoto preparedPhoto;
-   private int changeProfileFlag = 0;
+   private boolean profileDataIsChanged = false;
 
    public WalletSettingsProfilePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -67,13 +69,13 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Override
    public void applyViewState() {
       super.applyViewState();
-      changeProfileFlag = state.getChangeProfileFlag();
+      profileDataIsChanged = state.getChangeProfileFlag();
       preparedPhoto = state.getUserPhoto();
    }
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
-      state.setChangeProfileFlag(changeProfileFlag);
+      state.setChangeProfileFlag(profileDataIsChanged);
       state.setUserPhoto(preparedPhoto);
       super.onSaveInstanceState(bundle);
    }
@@ -94,6 +96,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .subscribe(it -> {
                view.setPreviewPhoto(it.userPhoto().photoUrl());
                view.setUserName(it.firstName(), it.middleName(), it.lastName());
+               if (it.phoneNumber() != null) view.setPhone(it.phoneNumber().code(), it.phoneNumber().number());
             }, throwable -> Timber.e(throwable, ""));
 
       trackScreen();
@@ -124,6 +127,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .middleName(view.getMiddleName())
             .lastName(view.getLastName())
             .photo(preparedPhoto)
+            .phone(ImmutableSmartCardUserPhone.of(view.getPhoneNumber(), view.getCountryCode()))
             .build();
    }
 
@@ -227,7 +231,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    private boolean isDataChanged() {
-      return changeProfileFlag != 0;
+      return profileDataIsChanged;
    }
 
    private void observeChanging() {
@@ -239,44 +243,44 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
             view.firstNameObservable(),
             view.middleNameObservable(),
+            view.codeObservable(),
+            view.phoneObservable(),
             smartCardUserDataInteractor.smartCardAvatarPipe()
                   .observeSuccess()
                   .map(Command::getResult)
                   .startWith(Observable.just(null)),
-            (user, firstName, middleName, newAvatar) -> {
-               handleFirstName(user.firstName(), firstName);
-               handleMiddleName(user.middleName(), middleName);
-               handleAvatar(user.userPhoto(), newAvatar);
-               return null;
-            })
+            (user, firstName, middleName, code, phone, newAvatar) -> handleFieldChanges(user, firstName, middleName, code, phone, newAvatar))
             .compose(bindView())
             .subscribe();
    }
 
-   private void handleFirstName(String firstName, String newFirstName) {
-      if (newFirstName.equals(firstName)) {
-         changeProfileFlag &= 0xFF_FF_FF_00;
-      } else {
-         changeProfileFlag |= 0x00_00_00_FF;
+   private Observable<Void> handleFieldChanges(SmartCardUser user, String firstName, String middleName, String code, String phone, SmartCardUserPhoto newAvatar) {
+      if (!user.firstName().equals(firstName)) {
+         profileDataIsChanged = true;
+         return null;
       }
-   }
-
-   private void handleMiddleName(String middleName, String newMiddleName) {
-      if (middleName.equals(newMiddleName)) {
-         changeProfileFlag &= 0xFF_FF_00_FF;
-      } else {
-         changeProfileFlag |= 0x00_00_FF_00;
+      if (!user.middleName().equals(middleName)) {
+         profileDataIsChanged = true;
+         return null;
       }
-   }
-
-   private void handleAvatar(SmartCardUserPhoto userPhoto, SmartCardUserPhoto newUserPhoto) {
-      if ((userPhoto == null && newUserPhoto != null) ||
-            (userPhoto != null && newUserPhoto != null && !newUserPhoto.original().equals(userPhoto.original()))) {
-         // new photo
-         changeProfileFlag |= 0xFF_00_00_00;
-      } else {
-         changeProfileFlag &= 0x00_FF_FF_FF;
+      if ((user.userPhoto() == null && newAvatar != null) ||
+            (user.userPhoto() != null && newAvatar != null && !newAvatar.original().equals(user.userPhoto().original()))) {
+         return null;
       }
+      if (user.phoneNumber() == null && !code.isEmpty() && !phone.isEmpty()) {
+         profileDataIsChanged = true;
+         return null;
+      }
+      if (user.phoneNumber() != null && !user.phoneNumber().code().equals(code)) {
+         profileDataIsChanged = true;
+         return null;
+      }
+      if (user.phoneNumber() != null && !user.phoneNumber().number().equals(phone)) {
+         profileDataIsChanged = true;
+         return null;
+      }
+      profileDataIsChanged = false;
+      return null;
    }
 
    public interface Screen extends WalletScreen {
@@ -295,6 +299,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
       void setUserName(String firstName, String middleName, String lastName);
 
+      void setPhone(String countryCode, String number);
+
       void showRevertChangesDialog();
 
       String getFirstName();
@@ -303,9 +309,17 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
       String getLastName();
 
+      String getCountryCode();
+
+      String getPhoneNumber();
+
       Observable<String> firstNameObservable();
 
       Observable<String> middleNameObservable();
+
+      Observable<String> codeObservable();
+
+      Observable<String> phoneObservable();
 
       void showError(Throwable throwable);
 

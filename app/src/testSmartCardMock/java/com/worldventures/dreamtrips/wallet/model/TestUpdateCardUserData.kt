@@ -4,6 +4,8 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 
 class TestUpdateCardUserData : UpdateCardUserData {
 
+   override fun phone() = TestCardUserPhone()
+
    override fun middleName() = "middleName"
 
    override fun nameToDisplay() = "nameToDisplay"

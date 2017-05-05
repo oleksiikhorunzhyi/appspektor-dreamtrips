@@ -63,7 +63,8 @@ class UpdateProfileManager {
             .from(user)
             .firstName(changedFields.firstName())
             .middleName(changedFields.middleName())
-            .lastName(changedFields.lastName());
+            .lastName(changedFields.lastName())
+            .phoneNumber(changedFields.phone());
 
       if (changedFields.photo() != null) {
          userBuilder.userPhoto(ImmutableSmartCardUserPhoto.builder()

@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.input.helper;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectPath;
 
@@ -71,7 +71,7 @@ public class InputBarcodeDelegate {
 
    private void cardIsUnassigned(String smartCardId) {
       sendAnalytics(smartCardId);
-      navigator.go(new PairKeyPath(ProvisioningMode.SETUP_CARD, smartCardId));
+      navigator.go(new PairKeyPath(ProvisioningMode.STANDARD, smartCardId));
    }
 
    private void sendAnalytics(String smartCardId) {

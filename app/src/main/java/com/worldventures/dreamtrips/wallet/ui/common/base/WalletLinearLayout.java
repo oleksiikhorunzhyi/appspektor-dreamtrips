@@ -11,17 +11,20 @@ import android.view.View;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import butterknife.ButterKnife;
 import flow.path.Path;
+import rx.Observable;
 
-public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T> {
+public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T>, RxLifecycleView {
 
    private Injector injector;
    private View connectionSmartCardHeader;
@@ -118,5 +121,10 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
 
    protected void supportHttpConnectionStatusLabel(boolean showLabel) {
       visibleHttpConnectionLabel = showLabel;
+   }
+
+   @Override
+   public <Type> Observable.Transformer<Type, Type> lifecycle() {
+      return RxLifecycle.bindView(this);
    }
 }

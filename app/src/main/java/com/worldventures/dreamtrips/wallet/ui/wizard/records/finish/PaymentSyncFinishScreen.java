@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete;
+package com.worldventures.dreamtrips.wallet.ui.wizard.records.finish;
 
 import android.content.Context;
 import android.graphics.Color;

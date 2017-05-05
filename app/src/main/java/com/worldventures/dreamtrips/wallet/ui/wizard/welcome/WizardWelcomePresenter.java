@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.welcome;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -14,7 +13,10 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.WelcomeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -31,14 +33,19 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
+   @Inject WizardInteractor wizardInteractor;
 
-   public WizardWelcomePresenter(Context context, Injector injector) {
+   private final ProvisioningMode provisioningMode;
+
+   public WizardWelcomePresenter(Context context, Injector injector, ProvisioningMode provisioningMode) {
       super(context, injector);
+      this.provisioningMode = provisioningMode;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      wizardInteractor.provisioningStatePipe().send(ProvisioningModeCommand.saveState(provisioningMode));
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new WelcomeAction()));
    }
 

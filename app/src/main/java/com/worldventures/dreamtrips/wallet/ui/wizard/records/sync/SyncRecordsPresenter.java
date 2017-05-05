@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.records;
+package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
 import javax.inject.Inject;
 

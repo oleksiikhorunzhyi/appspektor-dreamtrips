@@ -119,7 +119,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @OnClick(R.id.container_add_photos_and_videos)
    void onImage() {
-      showMediaPicker();
+      if(getPresenter().getRemainingPhotosCount()>0) {
+         showMediaPicker();
+      }
    }
 
    private void initEditTextListener() {

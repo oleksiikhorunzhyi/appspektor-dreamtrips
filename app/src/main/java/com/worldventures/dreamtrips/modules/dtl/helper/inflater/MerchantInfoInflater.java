@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -12,7 +13,10 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
+
 import javax.inject.Inject;
+
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
 import rx.Observable;
@@ -32,6 +36,8 @@ public class MerchantInfoInflater extends MerchantDataInflater {
 
    protected Resources resources;
 
+   private static final float DEFAULT_RATING_VALUE = 0;
+
    public MerchantInfoInflater(Injector injector) {
       injector.inject(this);
    }
@@ -46,7 +52,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    protected void onMerchantAttributesApply() {
       setInfo();
       setOffersSection();
-      seUptRating();
+      ValidateReviewUtil.setUpRating(rootView.getContext(), merchantAttributes.reviewSummary(), mRatingBar, textViewRating);
    }
 
    private void setInfo() {
@@ -71,8 +77,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
       if (!merchantAttributes.hasOffers()) {
          ViewUtils.setViewVisibility(this.perks, View.GONE);
          ViewUtils.setViewVisibility(this.points, View.GONE);
-      }
-      else {
+      } else {
          ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
          ViewUtils.setViewVisibility(this.points, View.VISIBLE);
          int perksNumber = merchantAttributes.offersCount(OfferType.PERK);
@@ -87,18 +92,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
-      if (perkVisibility == View.VISIBLE) this.perks.setText(rootView.getContext().getString(R.string.perks_formatted, perks));
-   }
-
-   private void seUptRating() {
-      ReviewSummary reviewSummary = merchantAttributes.reviewSummary();
-      if (reviewSummary != null) {
-         String stringTotal = reviewSummary.total();
-         if (mRatingBar != null && stringTotal != null && !stringTotal.isEmpty()
-                 && Integer.parseInt(reviewSummary.total()) > 0) {
-            mRatingBar.setRating(Float.parseFloat(reviewSummary.ratingAverage()));
-            textViewRating.setText(ViewUtils.getLabelReviews(rootView.getContext(), Integer.parseInt(reviewSummary.total())));
-         }
-      }
+      if (perkVisibility == View.VISIBLE) this.perks.setText(rootView.getContext()
+            .getString(R.string.perks_formatted, perks));
    }
 }

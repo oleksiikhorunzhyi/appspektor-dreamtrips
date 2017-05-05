@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
 
 import java.util.List;
 
@@ -66,6 +67,8 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private DistanceType distanceType;
    private boolean expanded;
 
+   private static final float DEFAULT_RATING_VALUE = 0;
+
    public DtlMerchantExpandableCell(View view) {
       super(view);
    }
@@ -86,7 +89,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       // TODO :: expandable implementation until release or at most latest - until next release
       // TODO :: please tear off my hands
       setExpandedArea();
-      setRatingAndPerk();
+      ValidateReviewUtil.setUpRating(itemView.getContext(), getModelObject().reviewSummary(), mRatingBar, textViewRating);
    }
 
    private void setSelection(View view) {
@@ -231,18 +234,6 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
          cellDelegate.userHasPendingReview();
       } else {
          cellDelegate.sendToRatingReview(getModelObject());
-      }
-   }
-
-   private void setRatingAndPerk() {
-      ReviewSummary reviewSummary = getModelObject().reviewSummary();
-      if (reviewSummary != null) {
-         String stringTotal = reviewSummary.total();
-         if (mRatingBar != null && stringTotal != null && !stringTotal.isEmpty()
-                 && Integer.parseInt(reviewSummary.total()) > 0) {
-            mRatingBar.setRating(Float.parseFloat(reviewSummary.ratingAverage()));
-            textViewRating.setText(ViewUtils.getLabelReviews(itemView.getContext(), Integer.parseInt(reviewSummary.total())));
-         }
       }
    }
 }

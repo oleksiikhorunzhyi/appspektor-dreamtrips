@@ -14,11 +14,11 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCar
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import timber.log.Timber;
 
 public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDetectPresenter.Screen, Parcelable> {
 
@@ -60,7 +59,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> bindSmartCardId(command.getResult().smartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
             );
    }
 
@@ -74,7 +72,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
                   .onSuccess(command -> handleConnectedResult(command.getResult().connectionStatus()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
@@ -99,7 +96,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().smartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
@@ -112,7 +108,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
                      sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
                      getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId());
                   })
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
@@ -128,7 +123,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
                      sendAnalyticAction(new ExistSmartCardDontHaveCardContinueAction());
                      navigator.single(new UnassignSuccessPath());
                   })
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, "unassignCardOnBackend()"))
                   .create());
    }
 

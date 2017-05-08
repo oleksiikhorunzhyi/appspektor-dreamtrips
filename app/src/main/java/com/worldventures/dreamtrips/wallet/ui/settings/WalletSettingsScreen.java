@@ -72,6 +72,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
          builder.append(getString(R.string.wallet_card_settings_version, version.nordicAppVersion())).append("\n");
       }
       builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n")
+      // TODO: 5/5/17 Implement this ffs
       //                  .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync))
       ;
 

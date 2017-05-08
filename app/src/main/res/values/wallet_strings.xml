@@ -11,6 +11,7 @@
    <string name="wallet_label_yes">Yes</string>
    <string name="wallet_label_no">No</string>
    <string name="wallet_label_delete">Delete</string>
+   <string name="wallet_label_we_are_sorry">We\'re Sorry</string>
 
    <string name="wallet">flye\u2122 smart card</string>
    <string name="wallet_dashboard_title">flye\u2122 smart card</string>
@@ -22,6 +23,7 @@
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
+   <string name="wallet_sc_operation_could_not_be_completed" formatted="false">This operation could not be completed\n(%s)</string>
 
    <!--card alias-->
    <string name="wallet_wizard_card_alias_subtitle">Name your Smart Card</string>
@@ -105,7 +107,6 @@
    <string name="wallet_card_details_progress_save">Apply changes&#8230;</string>
    <string name="wallet_card_details_title_action_save">Save</string>
    <string name="wallet_card_details_success_save">Card data is updated!</string>
-   <string name="wallet_card_details_error_default">Failed to update Card data.</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>

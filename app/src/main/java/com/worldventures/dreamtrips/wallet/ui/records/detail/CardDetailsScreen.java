@@ -27,8 +27,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
@@ -252,10 +251,8 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_card_details_progress_save, false),
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_card_details_success_save),
             ErrorViewFactory.<UpdateRecordCommand>builder()
-                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_card_details_error_default,
-                        command -> presenter.updateNickName(), command -> {
-                  }))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> presenter.updateNickName(), command -> {
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> getPresenter().updateNickName()))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> getPresenter().updateNickName(), command -> {
                   }))
                   .build()
       );
@@ -269,24 +266,30 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public OperationView<DeleteRecordCommand> provideOperationDeleteRecord() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<DeleteRecordCommand>(getContext(), R.string.loading, false),
-            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<DeleteRecordCommand>builder()
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> getPresenter().onDeleteCardClick()))
+                  .build()
       );
    }
 
    @Override
    public OperationView<SetDefaultCardOnDeviceCommand> provideOperationSetDefaultOnDevice() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<SetDefaultCardOnDeviceCommand>(getContext(), R.string.loading, false),
-            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<SetDefaultCardOnDeviceCommand>builder()
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
       );
    }
 
    @Override
    public OperationView<SetPaymentCardAction> provideOperationSetPaymentCardAction() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<SetPaymentCardAction>(getContext(), R.string.loading, false),
-            new SimpleErrorDialogView<>(getContext(), R.string.error_something_went_wrong)
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<SetPaymentCardAction>builder()
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> getPresenter().payThisCard()))
+                  .build()
       );
    }
 

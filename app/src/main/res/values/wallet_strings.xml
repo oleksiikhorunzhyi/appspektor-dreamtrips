@@ -162,12 +162,6 @@
    <string name="wallet_card_settings_customer_support">Customer Support</string>
    <string name="wallet_card_settings_contact_our_customer_support_team">Contact our customer support team</string>
 
-   <string name="wallet_card_settings_need_assistance">Need assistance?</string>
-   <string name="wallet_card_settings_us_customer_care">US Customer Care</string>
-   <string name="wallet_card_settings_us_customer_care_phone">(855) 999–3593</string>
-   <string name="wallet_card_settings_international_collect">International Collect</string>
-   <string name="wallet_card_settings_international_collect_phone">(469) 609–4830</string>
-
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
    <string name="wallet_card_settings_profile_firstname_hint">First name</string>
@@ -528,5 +522,12 @@
    <string name="wallet_settings_help_video_locales_loading">Load locales…</string>
    <string name="wallet_settings_help_video_cancel_cached_video_text">Are you sure you want to cancel file download?</string>
    <string name="wallet_settings_help_video_delete_cached_video_text">Are you sure you want delete video from local cache?</string>
+
+   <!--Customer Support-->
+   <string name="wallet_settings_help_customer_support_us_customer_care">US Customer Care</string>
+   <string name="wallet_settings_help_customer_support_international_collect">International Collect</string>
+   <string name="wallet_settings_help_customer_support_email_us">Email Us</string>
+   <string name="wallet_settings_help_customer_support_email_us_description">Have a question or concern?\nWe\'re here to help.</string>
+   <string name="wallet_settings_help_customer_support_email_us_hint">How can we assist you?</string>
 
 </resources>

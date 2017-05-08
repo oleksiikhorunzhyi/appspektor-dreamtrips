@@ -15,12 +15,13 @@ import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;
 
 import javax.inject.Named;
@@ -76,6 +77,12 @@ public class WalletServiceModule {
    @Provides
    SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
       return new SmartCardInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   SettingsHelpInteractor provideSettingsHelpInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new SettingsHelpInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

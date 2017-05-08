@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.Fac
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
@@ -103,6 +104,7 @@ import dagger.Provides;
             WalletHelpSettingsPresenter.class,
             WalletSettingsProfilePresenter.class,
             WalletOfflineModeSettingsPresenter.class,
+            WalletCustomerSupportSettingsPresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             EnterPinPresenter.class,

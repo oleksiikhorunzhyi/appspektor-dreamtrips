@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -15,9 +16,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -34,12 +35,14 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
+
 public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter.Screen, SendFeedbackPresenter, SendFeedbackPath> implements SendFeedbackPresenter.Screen {
 
    public static final int MAX_PHOTOS_ATTACHMENT = 5;
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
+   @InjectView(R.id.tv_description) TextView tvDescription;
    @InjectView(R.id.et_feedback_message) EditText etFeedbackMessage;
    @InjectView(R.id.feedback_add_photos) View addPhotosButton;
    @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView feedbackAttachments;
@@ -82,6 +85,16 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       textMessageObserver = RxTextView.textChanges(etFeedbackMessage);
 
       initItemMenu();
+      applyFeedbackType(getPath().getFeedbackType());
+   }
+
+   private void applyFeedbackType(SendFeedbackPath.FeedbackType feedbackType) {
+      boolean smartCardFeedback = feedbackType == SendFeedbackPath.FeedbackType.SmartCardFeedback;
+      toolbar.setTitle(smartCardFeedback ? R.string.wallet_card_settings_send_feedback : R.string.wallet_card_settings_customer_support);
+      tvDescription.setText(smartCardFeedback ? R.string.wallet_settings_help_feedback_user_approve_info :
+            R.string.wallet_settings_help_customer_support_email_us_description);
+      etFeedbackMessage.setHint(smartCardFeedback ? R.string.wallet_settings_help_feedback_enter_comment_hint :
+            R.string.wallet_settings_help_customer_support_email_us_hint);
    }
 
    private void onNavigationBack() {
@@ -93,6 +106,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
+      if (isInEditMode()) return;
       initAttachments();
       getPresenter().fetchAttachments();
    }
@@ -103,7 +117,7 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.action_send:
-               getPresenter().sendFeedback(etFeedbackMessage.getText().toString());
+               getPresenter().sendFeedback(getPath().getFeedbackType(), etFeedbackMessage.getText().toString());
          }
          return true;
       });
@@ -235,11 +249,11 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    }
 
    @Override
-   public OperationView<SendFeedbackCommand> provideOperationSendFeedback() {
+   public OperationView<SendWalletFeedbackCommand> provideOperationSendFeedback() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_feedback_progress_send, false),
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_settings_help_feedback_has_been_sent),
-            new SimpleErrorDialogView<SendFeedbackCommand>(getContext(), R.string.wallet_settings_help_feedback_sending_fail)
+            new SimpleErrorDialogView<SendWalletFeedbackCommand>(getContext(), R.string.wallet_settings_help_feedback_sending_fail)
       );
    }
 

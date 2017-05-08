@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -57,6 +58,8 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import flow.Flow;
+import flow.History;
+import flow.path.Path;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
@@ -302,7 +305,12 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (!merchant.reviews().total().isEmpty() && Integer.parseInt(merchant.reviews().total()) > 0) {
          Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
       } else {
-         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+         Path path = new DtlCommentReviewPath(merchant);
+         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+         historyBuilder.pop();
+         historyBuilder.pop();
+         historyBuilder.push(path);
+         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
       }
    }
 

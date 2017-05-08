@@ -546,7 +546,12 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
             if (merchant.reviews().total().equals("")){
                navigateToDetail(getContext().getString(R.string.snack_review_success));
             } else {
-               Flow.get(getContext()).set(new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success)));
+               Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+               History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+               historyBuilder.pop();
+               historyBuilder.pop();
+               historyBuilder.push(path);
+               Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
             }
          }
       });

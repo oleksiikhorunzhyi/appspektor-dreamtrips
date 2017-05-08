@@ -63,4 +63,6 @@ public interface DtlCommentReviewScreen extends DtlScreen {
     void validateCodeMessage(String message);
 
     void onPostClick();
+
+    void goBack();
 }

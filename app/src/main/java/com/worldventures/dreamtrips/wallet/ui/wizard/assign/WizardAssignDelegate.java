@@ -114,7 +114,6 @@ abstract class WizardAssignDelegate {
       private void finishSetupAndNavigateToDashboard() {
          restoreOfflineModeDefaultState();
          activateSmartCard();
-         sendAnalytic(new NewCardSetupCompleteAction());
 
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       }

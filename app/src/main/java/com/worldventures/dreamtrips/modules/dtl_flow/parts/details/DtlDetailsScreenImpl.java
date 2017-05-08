@@ -63,6 +63,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
 import timber.log.Timber;
 
 public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
@@ -107,7 +108,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       toolbar.setNavigationIcon(R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> {
          //getPresenter().onBackPressed();
-         getActivity().onBackPressed();
+         Flow.get(getContext()).goBack();
       });
 
       activityResultDelegate.addListener(this);

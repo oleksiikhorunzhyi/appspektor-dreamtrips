@@ -27,6 +27,7 @@ import java.text.ParseException;
 
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
 
 public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, DtlDetailReviewPresenter, DtlDetailReviewPath>
         implements DtlDetailReviewScreen {
@@ -84,7 +85,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         inflateToolbarMenu(toolbar);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view ->
-                getActivity().onBackPressed());
+                Flow.get(getContext()).goBack());
         toolbar.setTitle(getPath().getMerchant());
 
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);

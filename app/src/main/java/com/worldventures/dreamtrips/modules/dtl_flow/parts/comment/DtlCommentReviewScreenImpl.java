@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.Cre
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
 
 import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
@@ -109,12 +110,10 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
    }
 
    public void onBackPressed() {
-      if (null != fragment){
-         if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
-            showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
-         } else {
-            validateComingFrom("");
-         }
+      if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
+         showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
+      } else {
+         goBack();
       }
    }
 
@@ -227,7 +226,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
         errorDialog.setCancelText(getActivity().getString(R.string.apptentive_no));
         errorDialog.setConfirmClickListener(listener -> {
             listener.dismissWithAnimation();
-            validateComingFrom("");
+            goBack();
         });
         errorDialog.show();
     }
@@ -318,6 +317,11 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
    @Override
    public void onPostClick() {
 
+   }
+
+   @Override
+   public void goBack() {
+      Flow.get(getContext()).goBack();
    }
 
    public void enableInputs() {

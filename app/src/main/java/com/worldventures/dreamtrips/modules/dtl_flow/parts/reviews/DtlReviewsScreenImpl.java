@@ -55,7 +55,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> {
-            getActivity().onBackPressed();
+            Flow.get(getContext()).goBack();
         });
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         refreshLayout.setEnabled(true);

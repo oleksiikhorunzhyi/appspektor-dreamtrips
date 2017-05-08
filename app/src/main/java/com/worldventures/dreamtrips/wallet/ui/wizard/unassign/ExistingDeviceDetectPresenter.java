@@ -7,10 +7,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 
 import javax.inject.Inject;
@@ -71,7 +71,7 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
    }
 
    private void reAssignSuccess() {
-      navigator.single(new PairKeyPath(ProvisioningMode.NEW_DEVICE, smartCardId));
+      navigator.single(new PairKeyPath(ProvisioningMode.SETUP_NEW_DEVICE, smartCardId));
    }
 
    public interface Screen extends WalletScreen {

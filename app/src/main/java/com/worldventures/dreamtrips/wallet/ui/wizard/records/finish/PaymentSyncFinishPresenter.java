@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete;
+package com.worldventures.dreamtrips.wallet.ui.wizard.records.finish;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -11,7 +11,9 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupC
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -24,6 +26,7 @@ import flow.Flow;
 public class PaymentSyncFinishPresenter extends WalletPresenter<PaymentSyncFinishPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
+   @Inject WizardInteractor wizardInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
@@ -33,6 +36,7 @@ public class PaymentSyncFinishPresenter extends WalletPresenter<PaymentSyncFinis
 
    public void onDone() {
       activateSmartCard();
+      finishProvisioning();
       sendAnalytic(new NewCardSetupCompleteAction());
 
       navigator.single(new CardListPath(), Flow.Direction.REPLACE);
@@ -41,6 +45,10 @@ public class PaymentSyncFinishPresenter extends WalletPresenter<PaymentSyncFinis
    private void activateSmartCard() {
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand(sc ->
             ImmutableSmartCard.builder().from(sc).cardStatus(SmartCard.CardStatus.ACTIVE).build()));
+   }
+
+   private void finishProvisioning() {
+      wizardInteractor.provisioningStatePipe().send(ProvisioningModeCommand.clear());
    }
 
    private void sendAnalytic(WalletAnalyticsAction action) {

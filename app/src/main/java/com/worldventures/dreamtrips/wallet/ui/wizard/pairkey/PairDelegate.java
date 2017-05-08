@@ -4,12 +4,12 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPath;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -29,9 +29,9 @@ abstract class PairDelegate {
    public abstract void navigateOnNextScreen(PairView view);
 
    public static PairDelegate create(ProvisioningMode mode, Navigator navigator, SmartCardInteractor smartCardInteractor) {
-      if (mode == ProvisioningMode.NEW_DEVICE) {
+      if (mode == ProvisioningMode.SETUP_NEW_DEVICE) {
          return new NewDeviceDelegate(navigator, smartCardInteractor);
-      } else {
+      } else { // ProvisioningMode.STANDARD or ProvisioningMode.SETUP_NEW_CARD
          return new SetupDelegate(navigator, smartCardInteractor);
       }
    }

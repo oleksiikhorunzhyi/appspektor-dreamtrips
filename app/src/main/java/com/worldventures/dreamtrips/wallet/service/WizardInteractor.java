@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStat
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -31,6 +32,7 @@ public final class WizardInteractor {
    private final ActionPipe<ReAssignCardCommand> reAssignCardPipe;
 
    private final ActionPipe<WizardCompleteCommand> completePipe;
+   private final ActionPipe<ProvisioningModeCommand> provisioningStatePipe;
 
    public WizardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       createAndConnectPipe = sessionActionPipeCreator.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
@@ -48,6 +50,7 @@ public final class WizardInteractor {
             .io());
 
       completePipe = sessionActionPipeCreator.createPipe(WizardCompleteCommand.class, Schedulers.io());
+      provisioningStatePipe = sessionActionPipeCreator.createPipe(ProvisioningModeCommand.class, Schedulers.io());
    }
 
    public ActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
@@ -88,5 +91,9 @@ public final class WizardInteractor {
 
    public ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe() {
       return getSmartCardStatusCommandActionPipe;
+   }
+
+   public ActionPipe<ProvisioningModeCommand> provisioningStatePipe() {
+      return provisioningStatePipe;
    }
 }

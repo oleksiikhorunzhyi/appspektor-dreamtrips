@@ -7,19 +7,22 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PinWasSetAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPath;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject WizardInteractor wizardInteractor;
 
    public WalletPinIsSetPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -37,7 +40,11 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    void navigateToNextScreen() {
-      navigator.go(new WizardAssignUserPath());
+      wizardInteractor.provisioningStatePipe()
+            .createObservable(ProvisioningModeCommand.fetchState())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
+               .onSuccess(command -> navigator.go(new WizardAssignUserPath(command.getResult()))));
    }
 
    public interface Screen extends WalletScreen {

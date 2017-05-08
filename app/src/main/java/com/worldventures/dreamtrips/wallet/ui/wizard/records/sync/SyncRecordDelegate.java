@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.records;
+package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync;
 
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
@@ -7,7 +7,8 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreO
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPath;
 
 import flow.Flow;
 import io.techery.janet.ActionState;

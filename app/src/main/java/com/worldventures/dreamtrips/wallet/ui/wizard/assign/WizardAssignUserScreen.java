@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.finish;
+package com.worldventures.dreamtrips.wallet.ui.wizard.assign;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -43,7 +43,7 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
    @NonNull
    @Override
    public WizardAssignUserPresenter createPresenter() {
-      return new WizardAssignUserPresenter(getContext(), getInjector());
+      return new WizardAssignUserPresenter(getContext(), getInjector(), getPath().provisioningMode);
    }
 
    @Override

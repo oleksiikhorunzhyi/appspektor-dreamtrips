@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -35,7 +36,8 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @Module(
       includes = {
             FirmwareModule.class,
-            LostCardModule.class
+            LostCardModule.class,
+            ProvisioningModule.class,
       },
       complete = false, library = true)
 public class WalletServiceModule {

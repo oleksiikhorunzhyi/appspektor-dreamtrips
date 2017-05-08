@@ -239,7 +239,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public void showSnackbarMessage(String message) {
-      Snackbar.make(mContainer, message, Snackbar.LENGTH_SHORT).show();
+      Snackbar.make(mContainer, message, Snackbar.LENGTH_LONG).show();
    }
 
    @Override

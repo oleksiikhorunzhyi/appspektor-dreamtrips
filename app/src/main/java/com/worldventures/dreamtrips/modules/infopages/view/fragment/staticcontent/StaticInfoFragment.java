@@ -428,7 +428,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       if (getPresenter() != null) {
          getPresenter().setInErrorState(false);
       }
-      if (errorFragment != null) {
+      if (errorFragment != null && getActivity() != null) {
          getChildFragmentManager().beginTransaction().remove(errorFragment).commitAllowingStateLoss();
          errorFragment = null;
       }
@@ -478,7 +478,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    protected void lockOrientationIfNeeded() {
       lockHandler.postDelayed(() -> {
-         if (ViewUtils.isFullVisibleOnScreen(this)) {
+         if (ViewUtils.isFullVisibleOnScreen(this) && getActivity() != null) {
             lockHandler.postDelayed(() -> lockOrientation(getActivity()), 300L);
          } else {
             unlockOrientation(getActivity());

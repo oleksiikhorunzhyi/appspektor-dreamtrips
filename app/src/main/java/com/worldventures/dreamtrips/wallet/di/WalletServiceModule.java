@@ -4,14 +4,18 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -126,5 +130,12 @@ public class WalletServiceModule {
    @Provides
    SmartCardLocationInteractor locationInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
       return new SmartCardLocationInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   SmartCardAnalyticErrorHandler smartCardErrorAnalyticEventHandler(SmartCardErrorServiceWrapper errorServiceWrapper,
+         WalletAnalyticsServiceWrapper analyticsServiceWrapper, AnalyticsInteractor analyticsInteractor) {
+      return new SmartCardAnalyticErrorHandler(errorServiceWrapper, analyticsServiceWrapper, analyticsInteractor);
    }
 }

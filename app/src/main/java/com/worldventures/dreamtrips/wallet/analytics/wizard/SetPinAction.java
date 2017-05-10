@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
 @AnalyticsEvent(action = "wallet:setup:Step 6:Create your PIN",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class SetPinAction extends WalletAnalyticsAction {
 

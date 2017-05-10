@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumen
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.general.action.SmartCardCommunicationErrorAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.SendOnCardAnalyticsCommand;
@@ -112,6 +113,7 @@ import dagger.Module;
             PaycardAnalyticsCommand.class,
             TokenizationAnalyticsLocationCommand.class,
             SendOnCardAnalyticsCommand.class,
+            SmartCardCommunicationErrorAction.class,
             GetOnCardAnalyticsCommand.class,
             SetDisableDefaultCardDelayCommand.class,
             FetchAndStoreDefaultAddressInfoCommand.class,

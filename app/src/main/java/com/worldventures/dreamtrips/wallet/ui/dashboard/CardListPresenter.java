@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.firmware.action.RetryInstallUpdateAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
@@ -42,6 +44,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionMod
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
@@ -305,6 +308,21 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       List<BaseViewModel> cardModels = cardListStackConverter.mapToViewModel(loadedRecords, defaultRecordId);
 
       getView().showRecordsInfo(cardModels);
+   }
+
+   void retryFWU() {
+      sendRetryAnalyticAction(true);
+      navigator.go(new WalletInstallFirmwarePath());
+   }
+
+   void retryFWUCanceled() {
+      sendRetryAnalyticAction(false);
+      navigateBack();
+   }
+
+   private void sendRetryAnalyticAction(boolean retry) {
+      analyticsInteractor.walletFirmwareAnalyticsPipe()
+            .send(new WalletFirmwareAnalyticsCommand(new RetryInstallUpdateAction(retry)));
    }
 
    public void navigateToFirmwareUpdate() {

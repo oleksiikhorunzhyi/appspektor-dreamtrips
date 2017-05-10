@@ -217,8 +217,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public void showFirmwareUpdateError() {
       if (installFirmwareErrorDialog == null) {
          installFirmwareErrorDialog = new InstallFirmwareErrorDialog(getContext())
-               .setOnRetryction(() -> presenter.navigateToFirmwareUpdate())
-               .setOnCancelAction(() -> presenter.navigateBack());
+               .setOnRetryction(() -> presenter.retryFWU())
+               .setOnCancelAction(() -> presenter.retryFWUCanceled());
       }
       if (!installFirmwareErrorDialog.isShowing()) {
          if (forceUpdateDialog != null && forceUpdateDialog.isShowing()) {

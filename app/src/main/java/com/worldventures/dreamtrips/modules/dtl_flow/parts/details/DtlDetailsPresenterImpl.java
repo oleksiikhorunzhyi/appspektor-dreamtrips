@@ -307,8 +307,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       } else {
          Path path = new DtlCommentReviewPath(merchant);
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-         historyBuilder.pop();
-         historyBuilder.pop();
          historyBuilder.push(path);
          Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
       }

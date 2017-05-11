@@ -30,8 +30,6 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -48,6 +46,7 @@ import flow.History;
 import flow.path.Path;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 
@@ -439,25 +438,25 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    public void sendPostReview() {
       this.user = appSessionHolder.get().get().getUser();
       ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
-      addReviewActionActionPipe
-            .observe()
-            //.compose(bindViewIoToMainComposer())
+      addReviewActionActionPipe.createObservable(
+            AddReviewAction.create(
+                  ImmutableRequestReviewParams.builder()
+                        .brandId(BRAND_ID)
+                        .productId(getMerchantId())
+                        .build(),
+                  user.getEmail(),
+                  user.getFullName(),
+                  getDescription(),
+                  String.valueOf(getRatingBar()),
+                  isVerified(),
+                  String.valueOf(user.getId()),
+                  getFingerprintId(),
+                  getIpAddress()))
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<AddReviewAction>()
                   .onSuccess(this::onMerchantsLoaded)
                   .onProgress(this::onMerchantsLoading)
                   .onFail(this::onMerchantsLoadingError));
-      addReviewActionActionPipe.send(AddReviewAction.create(
-            ImmutableRequestReviewParams.builder()
-                                          .brandId(BRAND_ID)
-                                          .productId(getMerchantId())
-                                          .build(), user.getEmail(),
-                                                    user.getFullName(),
-                                                    getDescription(),
-                                                    String.valueOf(getRatingBar()),
-                                                    isVerified(),
-                                                    String.valueOf(user.getId()),
-                                                    getFingerprintId(),
-                                                    getIpAddress()));
    }
 
    @Override
@@ -519,7 +518,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       } else {
          this.user = appSessionHolder.get().get().getUser();
          try{
-            ReviewStorage.saveReviewsPosted(getContext(), String.valueOf(user.getId()), getMerchantId());
+            ReviewStorage.saveReviewsPosted(getActivity(), String.valueOf(user.getId()), getMerchantId());
          } catch (Exception e){
             e.printStackTrace();
          }
@@ -540,21 +539,17 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    private void handlePostNavigation(){
-      getActivity().runOnUiThread(new Runnable() {
-         @Override
-         public void run() {
-            if (merchant.reviews().total().equals("")){
-               navigateToDetail(getContext().getString(R.string.snack_review_success));
-            } else {
-               Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
-               History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-               historyBuilder.pop();
-               historyBuilder.pop();
-               historyBuilder.push(path);
-               Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-            }
+         if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")){
+            navigateToDetail(getContext().getString(R.string.snack_review_success));
+         } else {
+            Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.pop();
+            historyBuilder.pop();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
          }
-      });
+
    }
 
    @Override
@@ -645,9 +640,13 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    public void navigateToDetail(String message) {
-      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, "");
+      Path path = new DtlMerchantDetailsPath(Flow.get(getContext()).getHistory().top(), merchant, null, message);
       History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
       historyBuilder.pop();
+      //delete one more element if is present, if not it deletes the merchant list
+      if(Flow.get(getContext()).getHistory().size()>2){
+         historyBuilder.pop();
+      }
       historyBuilder.push(path);
       Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
    }

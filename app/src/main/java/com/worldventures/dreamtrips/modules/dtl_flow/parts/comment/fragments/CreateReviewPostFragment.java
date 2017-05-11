@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -35,6 +36,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -79,6 +83,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    private CreateReviewEntityBundle bundle;
 
+   public static ArrayList<BasePhotoPickerModel> selectedPhotosList;
+
    public CreateReviewPostFragment() {
    }
 
@@ -100,6 +106,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       initEditTextListener();
       initLengthText();
       setMaxLengthText(maximumCharactersAllowed());
+      selectedPhotosList = new ArrayList<>();
    }
 
    @Override
@@ -650,4 +657,13 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       historyBuilder.push(path);
       Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
    }
+
+   public static void setToSelectedImagesList(List<BasePhotoPickerModel> imagesList){
+      selectedPhotosList.addAll(imagesList);
+   }
+
+   public static ArrayList<BasePhotoPickerModel> getSelectedImagesList(){
+      return selectedPhotosList;
+   }
+
 }

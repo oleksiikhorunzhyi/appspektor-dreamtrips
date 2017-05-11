@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,6 @@ import icepick.State;
 public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> extends Presenter<T> {
 
    @State protected ArrayList<BasePhotoPickerModel> photos;
-   private static ArrayList<BasePhotoPickerModel> selectedPhotosList;
    private int pickLimit;
 
    public BasePickerPresenter() {
@@ -45,20 +45,19 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
    }
 
    public List<BasePhotoPickerModel> getSelectedPhotos() {
-      selectedPhotosList = photos;
-      return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).sort((lhs, rhs) -> lhs.getPickedTime() > rhs
-            .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0).toList();
-   }
-
-   public static List<BasePhotoPickerModel> getSelectedImagesList(){
 
       try {
-         return Queryable.from(selectedPhotosList)
+         List<BasePhotoPickerModel> tempSelectedImages = Queryable.from(photos)
                .filter(BasePhotoPickerModel::isChecked)
                .sort((lhs, rhs) -> lhs.getPickedTime() > rhs
                      .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0)
                .toList();
-      } catch(Exception ex) {
+
+         CreateReviewPostFragment.setToSelectedImagesList(tempSelectedImages);
+
+         return tempSelectedImages;
+
+      } catch (Exception ex) {
          return null;
       }
    }

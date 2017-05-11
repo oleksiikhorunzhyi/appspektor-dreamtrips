@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.CommentReview;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,7 +177,7 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    }
 
    private List<BasePhotoPickerModel> getSelectedImagesList() {
-      return BasePickerPresenter.getSelectedImagesList();
+      return CreateReviewPostFragment.getSelectedImagesList();
    }
 
 }

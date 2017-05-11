@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
-
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +30,7 @@ import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -45,20 +50,24 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferNoReviewFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
-
+import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
 import timber.log.Timber;
 
-public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath> implements DtlDetailsScreen, ActivityResultDelegate.ActivityResultListener {
+public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
+      implements DtlDetailsScreen, ActivityResultDelegate.ActivityResultListener {
 
    private final static float MERCHANT_MAP_ZOOM = 15f;
 
@@ -72,11 +81,20 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
    @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
    @InjectView(R.id.merchant_address) TextView merchantAddress;
+   @InjectView(R.id.tv_read_all_review) TextView mTvReadAllReviews;
+   @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
+   @InjectView(R.id.text_view_rating) TextView textViewRating;
+   @InjectView(R.id.view_points) TextView points;
+   @InjectView(R.id.view_perks) TextView perks;
+
+   @InjectView(R.id.container_comments) FrameLayout mContainerComments;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
    private MerchantInflater merchantInfoInflater;
    private Merchant merchant;
+
+   SweetAlertDialog errorDialog;
 
    @Override
    public DtlDetailsPresenter createPresenter() {
@@ -89,8 +107,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
       toolbar.setNavigationIcon(R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> {
-         getPresenter().onBackPressed();
-         getActivity().onBackPressed();
+         //getPresenter().onBackPressed();
+         Flow.get(getContext()).goBack();
       });
 
       activityResultDelegate.addListener(this);
@@ -103,6 +121,65 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantDataInflater.setView(this);
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
+      addNoCommentsAndReviews();
+   }
+
+   @Override
+   public void addNoCommentsAndReviews() {
+      FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+      transaction.replace(R.id.container_comments, OfferNoReviewFragment.newInstance(null));
+      transaction.commit();
+   }
+
+   @Override
+   public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
+      Bundle bundle = new Bundle();
+      bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
+      bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
+      bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
+      bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, merchant.displayName());
+      bundle.putBoolean(OfferWithReviewFragment.IS_FROM_LIST_REVIEW, false);
+
+      FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+      transaction.replace(R.id.container_comments, OfferWithReviewFragment.newInstance(bundle));
+      transaction.commit();
+   }
+
+   @Override
+   public void showButtonAllRateAndReview() {
+      mTvReadAllReviews.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideButtonAllRateAndReview() {
+      mTvReadAllReviews.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void setTextRateAndReviewButton(int size) {
+      mTvReadAllReviews.setText(String.format(getContext().getResources()
+            .getString(R.string.total_reviews_text), size));
+   }
+
+   @Override
+   public void userHasPendingReview() {
+      errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   @OnClick(R.id.tv_read_all_review)
+   public void onClickReadAllReviews() {
+      getPresenter().showAllReviews();
+   }
+
+   @OnClick(R.id.layout_rating_reviews_detail)
+   void onClickRatingsReview() {
+      getPresenter().onClickRatingsReview(merchant);
    }
 
    @Override
@@ -126,6 +203,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       setContacts();
       setLocation();
       setClicks();
+      setReviews();
+      setRatingAndPerk();
+      setOffersSection();
    }
 
    @Override
@@ -219,6 +299,22 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
             .subscribe(aVoid -> getPresenter().onEstimationClick());
    }
 
+   private void setReviews() {
+      getPresenter().addNewComments(merchant);
+   }
+
+   private void setRatingAndPerk() {
+      if (merchant.reviews() != null) {
+         String stringTotal = merchant.reviews().total();
+         if (mRatingBar != null && merchant.reviews() != null
+                 && stringTotal != null && !stringTotal.isEmpty()
+                 && Integer.parseInt(merchant.reviews().total()) > 0) {
+            mRatingBar.setRating(Float.parseFloat(merchant.reviews().ratingAverage()));
+            textViewRating.setText(ViewUtils.getLabelReviews(getContext(), Integer.parseInt(merchant.reviews().total())));
+         }
+      }
+   }
+
    @Override
    public void showEstimationDialog(PointsEstimationDialogBundle data) {
       getPresenter().trackPointEstimator();
@@ -283,6 +379,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantWrapper.setVisibility(available ? View.VISIBLE : View.GONE);
    }
 
+   @OnClick(R.id.btn_rate_and_review)
+   void onClickRateView() {
+      getPresenter().onClickRateView();
+   }
+
    @Override
    public void enableCheckinButton() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
@@ -327,6 +428,29 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return false;
    }
 
+   private void setOffersSection() {
+      if (!merchant.asMerchantAttributes().hasOffers()) {
+         ViewUtils.setViewVisibility(this.perks, View.GONE);
+         ViewUtils.setViewVisibility(this.points, View.GONE);
+      }
+      else {
+         ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
+         ViewUtils.setViewVisibility(this.points, View.VISIBLE);
+         int perksNumber = merchant.asMerchantAttributes().offersCount(OfferType.PERK);
+         setOfferBadges(perksNumber, merchant.asMerchantAttributes().offers().size() - perksNumber);
+      }
+   }
+
+   private void setOfferBadges(int perks, int points) {
+      int perkVisibility = perks > 0 ? View.VISIBLE : View.GONE;
+      int pointVisibility = points > 0 ? View.VISIBLE : View.GONE;
+
+      ViewUtils.setViewVisibility(this.perks, perkVisibility);
+      ViewUtils.setViewVisibility(this.points, pointVisibility);
+
+      if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Boilerplate stuff
    ///////////////////////////////////////////////////////////////////////////
@@ -337,5 +461,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    public DtlDetailsScreenImpl(Context context, AttributeSet attrs) {
       super(context, attrs);
+   }
+
+   @Override
+   public void showAllReviews() {
    }
 }

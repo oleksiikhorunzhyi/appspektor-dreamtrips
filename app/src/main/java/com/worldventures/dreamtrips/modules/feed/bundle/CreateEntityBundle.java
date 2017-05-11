@@ -38,14 +38,12 @@ public class CreateEntityBundle implements Parcelable {
    }
 
    @Override
-   public int describeContents() {
-      return 0;
-   }
+   public int describeContents() { return 0; }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeParcelable(this.mediaAttachment, flags);
-      dest.writeByte(showPickerImmediately ? (byte) 1 : (byte) 0);
+      dest.writeByte(this.showPickerImmediately ? (byte) 1 : (byte) 0);
    }
 
    protected CreateEntityBundle(Parcel in) {

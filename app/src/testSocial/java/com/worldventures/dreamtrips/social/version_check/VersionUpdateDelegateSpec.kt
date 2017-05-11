@@ -19,7 +19,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.mockito.Mockito.*
 
-class VersionUpdateDelegateSpec : BaseSpec ({
+class VersionUpdateDelegateSpec : BaseSpec({
 
    describe("Version update delegate") {
 
@@ -27,29 +27,29 @@ class VersionUpdateDelegateSpec : BaseSpec ({
          setupForTest()
       }
 
-      it ("should show optional update dialog") {
+      it("should show optional update dialog") {
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInFuture()))
          verify(versionUpdateUiDelegate, times(1)).showOptionalUpdateDialog(anyLong())
       }
 
-      it ("should show force update dialog") {
+      it("should show force update dialog") {
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, times(1)).showForceUpdateDialog()
       }
 
-      it ("should not show any dialogs when suggested version same as current") {
+      it("should not show any dialogs when suggested version same as current") {
          processRequirement(UpdateRequirement(CURRENT_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, never()).showForceUpdateDialog()
          verify(versionUpdateUiDelegate, never()).showOptionalUpdateDialog(anyLong())
       }
 
-      it ("should not show any dialogs when suggested version is older") {
+      it("should not show any dialogs when suggested version is older") {
          processRequirement(UpdateRequirement(OLDER_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, never()).showForceUpdateDialog()
          verify(versionUpdateUiDelegate, never()).showForceUpdateDialog()
       }
 
-      it ("should show dialog only once per session") {
+      it("should show dialog only once per session") {
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, times(1)).showForceUpdateDialog()
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInThePast()))

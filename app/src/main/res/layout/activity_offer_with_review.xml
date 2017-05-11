@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <include layout="@layout/merchant_review"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/dtl_item_reviews_margin_eight" />
+
+    <include layout="@layout/line_separator"/>
+
+    <include layout="@layout/rate_review_button"
+          android:visibility="gone"/>
+
+</LinearLayout>

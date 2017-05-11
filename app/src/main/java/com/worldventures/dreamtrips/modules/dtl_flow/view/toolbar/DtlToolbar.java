@@ -101,6 +101,7 @@ public class DtlToolbar extends LinearLayout {
 
    public void setFilterEnabled(boolean enabled) {
       filtersButton.setFilterEnabled(enabled);
+      SoftInputUtil.hideSoftInputMethod(merchantSearchInput);
    }
 
    public void toggleOffersOnly(boolean enabled) {

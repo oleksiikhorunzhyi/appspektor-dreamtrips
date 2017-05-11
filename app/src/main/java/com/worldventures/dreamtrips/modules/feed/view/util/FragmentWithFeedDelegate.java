@@ -12,9 +12,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
@@ -263,17 +265,9 @@ public class FragmentWithFeedDelegate {
             .build());
    }
 
-   public void hideAdditonalInfo(FragmentManager fragmentManager) {
-      router.moveTo(Route.FEED_LIST_ADDITIONAL_INFO, NavigationConfigBuilder.forRemoval()
-            .fragmentManager(fragmentManager)
-            .containerId(R.id.additional_info_container)
-            .build());
-   }
-
    public void openHashtagSearch() {
       router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
             .data(null)
-            .manualComponentActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
    }

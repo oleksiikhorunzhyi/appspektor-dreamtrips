@@ -66,7 +66,11 @@
    <string name="flag_description_positive">接受</string>
    <string name="flag_description_negative">取消</string>
    <string name="log_in">登錄</string>
+   <string name="facebook_error_loading_albums">無法加載相冊</string>
+   <string name="facebook_error_loading_photos">無法加載照片</string>
+   <string name="facebook_login_error">無法登錄至Facebook</string>
    <string name="fab_posted">成功發布至臉書</string>
+   <string name="facebook_posting_error">無法發佈至Facebook</string>
    <string-array name="share_dialog_items">
       <item>臉書</item>
       <item>推特</item>
@@ -535,6 +539,9 @@
    <string name="app_update_alert_title">更新可用</string>
    <string name="app_update_alert_neutral_button">不是現在</string>
    <string name="app_update_alert_pos_button">更新</string>
+   <string name="app_update_alert_optional_update_message">DreamTrips應用程序的軟件更新已準備就緒。為獲取更好的體驗，請在%1$s前更新。</string>
+   <string name="app_update_alert_force_update_message">DreamTrips應用程序的軟件更新已準備就緒。更新只需要幾分鐘的時間安裝。</string>
+
    <string name="min">分鐘</string>
    <string name="post_hint_with_hashtag">說些什麼，添加#標籤</string>
    <string name="add_text">添加文字</string>
@@ -572,5 +579,8 @@
    <string name="documents_empty_text">此次文件無法加載。</string>
 
    <string name="show_original">顯示最初的</string>
+   <string name="error_fail_to_translate_bucket_item">翻譯願望清單失敗</string>
+
    
+
 </resources>

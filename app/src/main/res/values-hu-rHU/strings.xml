@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Elfogadás</string>
    <string name="flag_description_negative">Mégse</string>
    <string name="log_in">Bejelentkezés</string>
+   <string name="facebook_error_loading_albums">albumok betöltése sikertelen</string>
+   <string name="facebook_error_loading_photos">fotók betöltése sikertelen </string>
+   <string name="facebook_login_error">Facebook belépés sikertelen</string>
    <string name="fab_posted">Sikeresen elküldve a Facebookra</string>
+   <string name="facebook_posting_error">Facebook poszt sikertelen</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -575,5 +579,8 @@
    <string name="documents_empty_text">Dokumentumokat nem lehet betölteni jelenleg.</string>
 
    <string name="show_original">Eredeti mutatása</string>
+   <string name="error_fail_to_translate_bucket_item">Bakancslista tétel fordítása sikertelen</string>
+
    
+
 </resources>

@@ -10,21 +10,14 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.command
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
-import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,7 +30,6 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
-   @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    private List<PostCompoundOperationModel> postUploads;
 
@@ -59,10 +51,6 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
                   view.openCreatePhoto(mediaAttachment, getRoutingOrigin());
             });
       subscribeToBackgroundUploadingOperations();
-      subscribeToLikesChanges();
-      subscribeToNewItems();
-      subscribeToPhotoDeletedEvents();
-      feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
    }
 
    private void subscribeToBackgroundUploadingOperations() {
@@ -91,70 +79,6 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
             return CreateEntityBundle.Origin.MY_TRIP_IMAGES;
          default:
             return CreateEntityBundle.Origin.MEMBER_TRIP_IMAGES;
-      }
-   }
-
-   private void subscribeToLikesChanges() {
-      feedInteractor.changeFeedEntityLikedStatusPipe()
-            .observe()
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(this::itemLiked)
-                  .onFail(this::handleError));
-   }
-
-   private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
-      for (Object o : photos) {
-         if (o instanceof Photo) {
-            Photo photo = (Photo) o;
-            if (command.getResult().getUid().equals(photo.getFSId())) {
-               photo.syncLikeState(command.getResult());
-               break;
-            }
-         }
-      }
-   }
-
-   private void subscribeToPhotoDeletedEvents() {
-      tripImagesInteractor.deletePhotoPipe()
-            .observeSuccessWithReplay()
-            .compose(bindViewToMainComposer())
-            .subscribe(deletePhotoCommand -> {
-               tripImagesInteractor.deletePhotoPipe().clearReplays();
-               for (int i = 0; i < photos.size(); i++) {
-                  IFullScreenObject o = photos.get(i);
-                  if (deletePhotoCommand.getResult().getUid().equals(o.getFSId())) {
-                     photos.remove(i);
-                     view.remove(i);
-                     db.savePhotoEntityList(type, userId, photos);
-                  }
-               }
-            });
-   }
-
-   private void subscribeToNewItems() {
-      postsInteractor.postCreatedPipe()
-            .observeSuccess()
-            .compose(bindViewToMainComposer())
-            .map(PostCreatedCommand::getFeedItem)
-            .subscribe(this::onFeedItemAdded);
-   }
-
-   public void onFeedItemAdded(FeedItem feedItem) {
-      if (feedItem.getItem() instanceof Photo) {
-         Photo photo = (Photo) feedItem.getItem();
-         photos.add(0, photo);
-         db.savePhotoEntityList(type, userId, photos);
-         view.add(0, photo);
-      } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
-            .getItem()).getAttachments().size() > 0) {
-         List<Photo> addedPhotos = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
-               .map(holder -> (Photo) holder.getItem())
-               .toList();
-         Collections.reverse(addedPhotos);
-         photos.addAll(0, addedPhotos);
-         db.savePhotoEntityList(type, userId, photos);
-         view.addAll(0, addedPhotos);
       }
    }
 

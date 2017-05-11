@@ -77,7 +77,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);
       checkCommentsAndLikesToLoad();
-      refreshFeedItems();
+      refreshFeedItem();
       view.showAdditionalInfo(feedEntity.getOwner());
    }
 
@@ -108,7 +108,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       if (updatedFeedEntity.equals(feedItem.getItem())) {
          feedItem.setItem(updatedFeedEntity);
          feedEntity = updatedFeedEntity;
-         refreshFeedItems();
+         refreshFeedItem();
       }
    }
 
@@ -119,7 +119,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       }
    }
 
-   public void refreshFeedItems() {
+   private void refreshFeedItem() {
       view.updateFeedItem(feedItem);
    }
 
@@ -133,8 +133,16 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(command -> this.feedEntity = command.getResult())
+                  .onSuccess(command -> onItemLiked(command.getResult()))
                   .onFail(this::handleError));
+   }
+
+   private void onItemLiked(FeedEntity updatedFeedEntity) {
+      if (updatedFeedEntity.equals(feedItem.getItem())) {
+         feedEntity.setLikesCount(updatedFeedEntity.getLikesCount());
+         feedEntity.setLiked(updatedFeedEntity.isLiked());
+         refreshFeedItem();
+      }
    }
 
    @Override

@@ -61,6 +61,24 @@ public class FilterDataInteractor implements Initializable {
             .subscribe(this::send);
    }
 
+   public void searchMerchantType(final List<String> merchantType) {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.builder()
+                  .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+                  .isOffersOnly(true)
+                  .merchantType(merchantType)
+                  .build())
+            .subscribe(this::send);
+   }
+
+   public void resetAmenities() {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(0)
+                  .withSelectedAmenities(Collections.emptyList()))
+            .subscribe(this::send);
+   }
+
    public void mergeAndApply(FilterData newFilterData) {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)

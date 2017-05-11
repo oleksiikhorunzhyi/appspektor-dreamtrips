@@ -70,8 +70,7 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
 
    @Override
    public void restartCamera() {
-      //// TODO: 2/3/17 update this lib to v1.8.4 and use `mScannerView.resumeCameraPreview`
-      scanner.startCamera();
+      scanner.resumeCameraPreview(this);
    }
 
    @Override

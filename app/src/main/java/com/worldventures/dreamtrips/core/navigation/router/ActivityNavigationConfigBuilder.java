@@ -33,11 +33,6 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
       return this;
    }
 
-   public ActivityNavigationConfigBuilder manualComponentActivity(boolean manualComponentActivity) {
-      navigationConfig.manualComponentActivity = manualComponentActivity;
-      return this;
-   }
-
    @Override
    protected void validateConfig() throws IllegalStateException {
       // so far activity navigation has no specific state to validate

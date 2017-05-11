@@ -54,37 +54,17 @@ public class TripsModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTripsComponent(SessionHolder<UserSession> sessionHolder) {
-      return new ComponentDescription.Builder()
-            .key(TRIPS)
-            .toolbarLogo(getLogo(sessionHolder))
-            .navMenuTitle(R.string.trips)
-            .icon(R.drawable.ic_dreamtrips)
-            .fragmentClass(TripListFragment.class)
-            .build();
+      return new ComponentDescription(TRIPS, 0, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMapTripsComponent(SessionHolder<UserSession> sessionHolder) {
-      return new ComponentDescription.Builder()
-            .key(MAP_TRIPS)
-            .toolbarLogo(getLogo(sessionHolder))
-            .navMenuTitle(R.string.trips)
-            .icon(R.drawable.ic_dreamtrips)
-            .ignored(true)
-            .skipGeneralToolbar(true)
-            .fragmentClass(TripMapFragment.class)
-            .build();
+      return new ComponentDescription(MAP_TRIPS, 0, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, true, true, TripMapFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideOTAComponent() {
-      return new ComponentDescription.Builder()
-            .key(OTA)
-            .toolbarTitle(R.string.other_travel)
-            .navMenuTitle(R.string.other_travel)
-            .icon(R.drawable.ic_other_travel)
-            .fragmentClass(OtaFragment.class)
-            .build();
+      return new ComponentDescription(OTA, R.string.other_travel, R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
    }
 
    private @DrawableRes

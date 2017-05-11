@@ -13,6 +13,7 @@ import icepick.State;
 public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> extends Presenter<T> {
 
    @State protected ArrayList<BasePhotoPickerModel> photos;
+   private static ArrayList<BasePhotoPickerModel> selectedPhotosList;
    private int pickLimit;
 
    public BasePickerPresenter() {
@@ -44,8 +45,22 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
    }
 
    public List<BasePhotoPickerModel> getSelectedPhotos() {
+      selectedPhotosList = photos;
       return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).sort((lhs, rhs) -> lhs.getPickedTime() > rhs
             .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0).toList();
+   }
+
+   public static List<BasePhotoPickerModel> getSelectedImagesList(){
+
+      try {
+         return Queryable.from(selectedPhotosList)
+               .filter(BasePhotoPickerModel::isChecked)
+               .sort((lhs, rhs) -> lhs.getPickedTime() > rhs
+                     .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0)
+               .toList();
+      } catch(Exception ex) {
+         return null;
+      }
    }
 
    public void setLimit(int pickLimit) {

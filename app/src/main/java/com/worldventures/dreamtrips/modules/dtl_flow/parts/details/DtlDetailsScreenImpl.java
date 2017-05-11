@@ -122,6 +122,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       addNoCommentsAndReviews();
+      showMessage();
    }
 
    @Override
@@ -242,6 +243,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public boolean isHoursViewExpanded() {
       return merchantHoursInflater != null && merchantHoursInflater.isViewExpanded();
+   }
+
+   private void showMessage() {
+      String message = getPath().getMessage();
+      if (message != null && message.length() > 0){
+         Snackbar.make(mContainerComments, message, Snackbar.LENGTH_LONG).show();
+      }
    }
 
    private void setContacts() {

@@ -103,12 +103,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
        toolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
-   @Override
-   protected void onDetachedFromWindow() {
-      fragment = null;
-      super.onDetachedFromWindow();
-   }
-
    public void onBackPressed() {
       if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
          showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));

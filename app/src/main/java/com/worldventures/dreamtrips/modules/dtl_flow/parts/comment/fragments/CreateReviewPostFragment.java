@@ -113,7 +113,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, 5))
+            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
             .build());
    }
 

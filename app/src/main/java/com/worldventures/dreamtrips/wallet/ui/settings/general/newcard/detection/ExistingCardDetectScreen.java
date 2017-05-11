@@ -13,12 +13,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -65,8 +68,11 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
    }
 
    @Override
-   public OperationView<ActiveSmartCardCommand> provideOperationView() {
-      return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, true));
+   public OperationView<ActiveSmartCardCommand> provideActiveSmartCardOperationView() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
+            ErrorViewFactory.<ActiveSmartCardCommand>builder().build()
+      );
    }
 
    @Override
@@ -129,5 +135,23 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
             .negativeText(R.string.cancel)
             .onPositive((dialog, which) -> presenter.unassignCardOnBackend())
             .show();
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
+      return FactoryResetOperationView.create(getContext(),
+            factoryResetDelegate::factoryReset,
+            () -> {},
+            R.string.wallet_error_enter_pin_title,
+            R.string.wallet_error_enter_pin_msg,
+            R.string.retry,
+            R.string.cancel,
+            R.string.loading,
+            false);
    }
 }

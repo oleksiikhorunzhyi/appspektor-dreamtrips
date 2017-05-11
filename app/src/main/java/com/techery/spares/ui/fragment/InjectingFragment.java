@@ -11,14 +11,9 @@ import android.view.ViewGroup;
 
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.activity.InjectingActivity;
 
-import javax.inject.Inject;
-
 import dagger.ObjectGraph;
-import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 public abstract class InjectingFragment extends Fragment implements ConfigurableFragment, Injector {
 
@@ -74,37 +69,4 @@ public abstract class InjectingFragment extends Fragment implements Configurable
    @Override
    public void afterCreateView(View rootView) {
    }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Event handling
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Inject @Global public EventBus eventBus;
-
-   public EventBus getEventBus() {
-      return eventBus;
-   }
-
-   @Override
-   public void onResume() {
-      super.onResume();
-      try {
-         this.eventBus.registerSticky(this, getEventBusPriority());
-      } catch (Exception e) {
-         Timber.v(e, "Can't register");
-      }
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
-      if (this.eventBus.isRegistered(this)) {
-         this.eventBus.unregister(this);
-      }
-   }
-
-   public int getEventBusPriority() {
-      return 0;
-   }
-
 }

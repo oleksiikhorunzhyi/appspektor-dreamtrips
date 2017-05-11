@@ -581,4 +581,8 @@
 
    <string name="show_original">Show original</string>
    <string name="error_fail_to_translate_bucket_item">Failed to translate bucket item</string>
+
+   <string name="n_friends_accepted">%d friends accepted</string>
+   <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
+
 </resources>

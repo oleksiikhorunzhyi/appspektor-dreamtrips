@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FullMerch
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.HttpActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.MerchantsActionCreator;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
 
 import javax.inject.Singleton;
 
@@ -37,5 +38,11 @@ public class DtlActionsModule {
    @Singleton
    HttpActionCreator provideFullMerchantActionCreator() {
       return new FullMerchantActionCreator();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   HttpActionCreator provideReviewsActionCreator() {
+      return new ReviewsActionCreator();
    }
 }

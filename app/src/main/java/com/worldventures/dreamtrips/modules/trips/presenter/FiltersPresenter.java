@@ -37,9 +37,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
    @Inject ResetFilterEventDelegate resetFilterEventDelegate;
    @Inject QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
 
-   @State ArrayList<RegionModel> regions = new ArrayList<>();
-   @State ArrayList<ActivityModel> parentActivities = new ArrayList<>();
-
    @State FilterModel filterModel;
    @State ThemeHeaderModel themeHeaderModel;
    @State RegionHeaderModel regionHeaderModel;
@@ -68,7 +65,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       super.takeView(view);
       subscribeToFiltersLoading();
       if (tripFilterData == null) {
-         tripFilterData = TripsFilterData.createDefault(db);
+         tripFilterData = new TripsFilterData();
       }
       loadFilters();
       observeResetFilters();
@@ -80,10 +77,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<TripsFilterDataCommand>().onSuccess(tripsFilterDataCommand -> {
                view.hideProgress();
-               parentActivities.clear();
-               parentActivities.addAll(getParentActivities(tripsFilterDataCommand.getResult().first));
-               regions.clear();
-               regions.addAll(tripsFilterDataCommand.getResult().second);
+               tripFilterData.setAllParentActivities(tripsFilterDataCommand.getParentActivities());
+               tripFilterData.setAllRegions(tripsFilterDataCommand.getRegions());
                fillData();
             }).onFail((tripsFilterDataCommand, throwable) -> {
                view.hideProgress();
@@ -103,43 +98,37 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
    }
 
    public void fillData() {
-      if (regions != null && parentActivities != null) {
-         List<Object> data = new ArrayList<>();
-         data.clear();
-         data.add(dateFilterItem);
-         data.add(filterModel);
-         data.add(soldOutModel);
-         data.add(favoriteModel);
-         data.add(recentlyAddedModel);
+      List<Object> data = new ArrayList<>();
+      data.clear();
+      data.add(dateFilterItem);
+      data.add(filterModel);
+      data.add(soldOutModel);
+      data.add(favoriteModel);
+      data.add(recentlyAddedModel);
 
-         data.add(regionHeaderModel);
-         if (!regionHeaderModel.isHide()) {
-            data.addAll(regions);
-         }
-
-         data.add(themeHeaderModel);
-
-         if (!themeHeaderModel.isHide()) {
-            data.addAll(parentActivities);
-         }
-
-         view.fillData(data);
+      data.add(regionHeaderModel);
+      if (!regionHeaderModel.isHide()) {
+         data.addAll(tripFilterData.getAllRegions());
       }
+
+      data.add(themeHeaderModel);
+
+      if (!themeHeaderModel.isHide()) {
+         data.addAll(tripFilterData.getAllParentActivities());
+      }
+
+      view.fillData(data);
    }
 
    public void setRegionsChecked(boolean isChecked) {
-      if (regions != null) {
-         for (RegionModel region : regions) {
-            region.setChecked(isChecked);
-         }
+      for (RegionModel region : tripFilterData.getAllRegions()) {
+         region.setChecked(isChecked);
       }
    }
 
    public void setThemesChecked(boolean isChecked) {
-      if (parentActivities != null) {
-         for (ActivityModel activity : parentActivities) {
-            activity.setChecked(isChecked);
-         }
+      for (ActivityModel activity : tripFilterData.getAllParentActivities()) {
+         activity.setChecked(isChecked);
       }
    }
 
@@ -160,13 +149,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       setThemesChecked(true);
       view.dataSetChanged();
       //
-      tripFilterData = TripsFilterData.createDefault(db);
+      tripFilterData = new TripsFilterData();
       tripFilterEventDelegate.post(tripFilterData);
       TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
-   }
-
-   private List<ActivityModel> getParentActivities(List<ActivityModel> activities) {
-      return Queryable.from(activities).filter(ActivityModel::isParent).toList();
    }
 
    public void onRangeBarDurationEvent(int minNights, int maxNights) {
@@ -203,39 +188,35 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
    public void onCheckBoxAllRegionsPressedEvent(boolean isChecked) {
       setRegionsChecked(isChecked);
-      tripFilterData.setAllRegions(regions);
       view.dataSetChanged();
    }
 
    public void onCheckBoxAllThemePressedEvent(boolean isChecked) {
       setThemesChecked(isChecked);
-      tripFilterData.setAllParentActivities(parentActivities);
       view.dataSetChanged();
    }
 
    public void onThemeSetChangedEvent() {
       boolean allIsChecked = true;
-      for (ActivityModel activity : parentActivities) {
+      for (ActivityModel activity : tripFilterData.getAllParentActivities()) {
          if (!activity.isChecked()) {
             allIsChecked = false;
             break;
          }
       }
       themeHeaderModel.setChecked(allIsChecked);
-      tripFilterData.setAllParentActivities(parentActivities);
       view.dataSetChanged();
    }
 
    public void onRegionSetChangedEvent() {
       boolean allIsChecked = true;
-      for (RegionModel region : regions) {
+      for (RegionModel region : tripFilterData.getAllRegions()) {
          if (!region.isChecked()) {
             allIsChecked = false;
             break;
          }
       }
       regionHeaderModel.setChecked(allIsChecked);
-      tripFilterData.setAllRegions(regions);
       view.dataSetChanged();
    }
 

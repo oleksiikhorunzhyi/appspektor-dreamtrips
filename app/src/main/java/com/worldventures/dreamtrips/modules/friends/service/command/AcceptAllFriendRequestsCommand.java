@@ -1,44 +1,32 @@
 package com.worldventures.dreamtrips.modules.friends.service.command;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.friends.AnswerFriendRequestsHttpAction;
-import com.worldventures.dreamtrips.api.friends.model.FriendRequestParams;
+import com.worldventures.dreamtrips.api.friends.AcceptAllFriendRequestsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.model.User;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.schedulers.Schedulers;
 
 @CommandAction
-public class AcceptAllFriendRequestsCommand extends CommandWithError<List<User>> implements InjectableAction {
+public class AcceptAllFriendRequestsCommand extends CommandWithError<Void> implements InjectableAction {
 
-   private List<User> users;
-   private String cirlceId;
+   private String circleId;
 
    @Inject Janet janet;
 
-   public AcceptAllFriendRequestsCommand(List<User> users, String cirlceId) {
-      this.users = users;
-      this.cirlceId = cirlceId;
+   public AcceptAllFriendRequestsCommand(String circleId) {
+      this.circleId = circleId;
    }
 
    @Override
-   protected void run(CommandCallback<List<User>> callback) throws Throwable {
-      janet.createPipe(AnswerFriendRequestsHttpAction.class)
-            .createObservableResult(new AnswerFriendRequestsHttpAction(getRequestBody()))
-            .subscribe(action -> {
-               callback.onSuccess(users);
-            }, callback::onFail);
-   }
-
-   private List<FriendRequestParams> getRequestBody() {
-      return Queryable.from(users).map(element -> FriendRequestParams.confirm(element.getId(), cirlceId)).toList();
+   protected void run(CommandCallback<Void> callback) {
+      janet.createPipe(AcceptAllFriendRequestsHttpAction.class, Schedulers.io())
+            .createObservableResult(new AcceptAllFriendRequestsHttpAction(circleId))
+            .subscribe(action -> callback.onSuccess(null), callback::onFail);
    }
 
    @Override

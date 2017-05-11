@@ -82,10 +82,10 @@ class DocumentsInteractorSpec : BaseSpec({
 
       val apiDocuments = emptyList<Document>()
 
-      val documents = listOf(Document(1, "Techery", "https://techery.io"),
-            Document(2, "Google", "https://google.com"))
-      val storedDocuments = listOf(Document(3, "Amazon", "https://amazon.com"),
-            Document(4, "HBO", "https://hbo.com"))
+      val documents = listOf(Document("Techery", "https://techery.io"),
+            Document("Google", "https://google.com"))
+      val storedDocuments = listOf(Document("Amazon", "https://amazon.com"),
+            Document("HBO", "https://hbo.com"))
 
       val documentsMemoryStorage: PaginatedMemoryStorage<Document> = mock()
       val documentsDiscStorage: DocumentsDiskStorage = mock()

@@ -16,8 +16,4 @@
    <dimen name="additional_info_items_margin">8dp</dimen>
    <dimen name="additional_info_description_size">16sp</dimen>
    <dimen name="filter_layout_margin_left">15dp</dimen>
-
-   <!--///////Additional info fragment empty view spacing-->
-   <!--<dimen name="dtlOfferCoverImageWidth">100dp</dimen>-->
-   <!--<dimen name="dtlOfferCoverImageHeight">75dp</dimen>-->
 </resources>

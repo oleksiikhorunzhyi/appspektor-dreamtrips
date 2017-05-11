@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.feed.view.util.ActionPanelViewShareHandler;
@@ -67,8 +66,8 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       actionView.setState(getModelObject(), isMineItem(getModelObject()));
       actionView.setOnLikeIconClickListener(feedItem -> cellDelegate.onLikeItem(getModelObject()));
       actionView.setOnLikersClickListener(feedItem -> {
-         navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem()
-               .getUid(), feedItem.getItem().getLikesCount()));
+         navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem(),
+               feedItem.getItem().getLikesCount()));
       });
       actionView.setOnCommentIconClickListener(feedItem -> cellDelegate.onCommentItem(getModelObject()));
       actionView.setOnMoreClickListener(feedItem -> onMore());
@@ -82,10 +81,11 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       //
       if (likersPanel != null) {
          likersPanelHelper.setup(likersPanel, getModelObject().getItem());
-         likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(getModelObject()
-               .getItem()
-               .getUid(), getModelObject().getItem().getLikesCount())));
+         likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
+               new UsersLikedEntityBundle(getModelObject().getItem(), getModelObject().getItem().getLikesCount())));
       }
+
+      cellDelegate.onEntityShownInCell(getModelObject());
    }
 
    private boolean isMineItem(FeedItem feedItem) {
@@ -131,6 +131,8 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
    }
 
    public interface FeedCellDelegate<ITEM> extends CellDelegate<ITEM> {
+
+      void onEntityShownInCell(ITEM item);
 
       void onLikeItem(ITEM item);
 

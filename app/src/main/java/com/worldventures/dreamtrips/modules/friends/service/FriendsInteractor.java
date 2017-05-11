@@ -41,11 +41,11 @@ public class FriendsInteractor {
       acceptAllPipe = sessionActionPipeCreator.createPipe(AcceptAllFriendRequestsCommand.class, Schedulers.io());
       addFriendPipe = sessionActionPipeCreator.createPipe(AddFriendCommand.class, Schedulers.io());
       removeFriendPipe = sessionActionPipeCreator.createPipe(RemoveFriendCommand.class, Schedulers.io());
-      getFriendsPipe = sessionActionPipeCreator.createPipe(GetFriendsCommand.class);
-      getLikersPipe = sessionActionPipeCreator.createPipe(GetLikersCommand.class);
-      getMutualFriendsPipe = sessionActionPipeCreator.createPipe(GetMutualFriendsCommand.class);
-      getSearchUsersPipe = sessionActionPipeCreator.createPipe(GetSearchUsersCommand.class);
-      getRequestsPipe = sessionActionPipeCreator.createPipe(GetRequestsCommand.class);
+      getFriendsPipe = sessionActionPipeCreator.createPipe(GetFriendsCommand.class, Schedulers.io());
+      getLikersPipe = sessionActionPipeCreator.createPipe(GetLikersCommand.class, Schedulers.io());
+      getMutualFriendsPipe = sessionActionPipeCreator.createPipe(GetMutualFriendsCommand.class, Schedulers.io());
+      getSearchUsersPipe = sessionActionPipeCreator.createPipe(GetSearchUsersCommand.class, Schedulers.io());
+      getRequestsPipe = sessionActionPipeCreator.createPipe(GetRequestsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<DeleteFriendRequestCommand> deleteRequestPipe() {

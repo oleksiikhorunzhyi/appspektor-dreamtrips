@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,7 +31,6 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    public static FeedItem create(FeedEntity item, User owner) {
       FeedItem feedItem = create(item);
-      item.setComments(new ArrayList<>());
       feedItem.action = Action.ADD;
       feedItem.item = item;
       feedItem.createdAt = Calendar.getInstance().getTime();

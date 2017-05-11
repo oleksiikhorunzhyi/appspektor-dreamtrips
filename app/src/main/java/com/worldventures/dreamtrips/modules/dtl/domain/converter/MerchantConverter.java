@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 
 import io.techery.mappery.MapperyContext;
 
@@ -53,6 +54,7 @@ public class MerchantConverter implements Converter<com.worldventures.dreamtrips
             .currencies(merchant.currencies() != null ? mapperyContext.convert(merchant.currencies(), Currency.class) : null)
             .categories(merchant.categories() != null ? mapperyContext.convert(merchant.categories(), ThinAttribute.class) : null)
             .amenities(merchant.categories() != null ? mapperyContext.convert(merchant.amenities(), ThinAttribute.class) : null)
+            .reviews(merchant.reviews() != null ? mapperyContext.convert(merchant.reviews(), Reviews.class) : null)
             .build();
    }
 }

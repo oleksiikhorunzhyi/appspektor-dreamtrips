@@ -92,8 +92,8 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
       Observable<List<BucketItem>> networkObservable = janet.createPipe(GetBucketItemsForUserHttpAction.class)
             .createObservableResult(
                   new GetBucketItemsForUserHttpAction(ImmutableGetBucketItemsForUserHttpAction
-                        .Params.of(userId)))
-            .map(action ->  mapperyContext.convert(action.response(), BucketItem.class));
+                        .Params.of(userId())))
+            .map(action -> mapperyContext.convert(action.response(), BucketItem.class));
 
       if (force) {
          networkObservable.subscribe(callback::onSuccess, callback::onFail);

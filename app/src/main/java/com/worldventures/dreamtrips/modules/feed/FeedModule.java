@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.feed;
 
 import android.content.Context;
 
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -13,6 +15,13 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewCreationTextCell;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -22,11 +31,11 @@ import com.worldventures.dreamtrips.modules.feed.presenter.EditPhotoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
@@ -34,17 +43,8 @@ import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHa
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.storage.delegate.FeedStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.storage.delegate.HashtagFeedStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.storage.delegate.UserTimelineStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.storage.interactor.AccountTimelineStorageInteractor;
-import com.worldventures.dreamtrips.modules.feed.storage.interactor.FeedStorageInteractor;
-import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedStorageInteractor;
-import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -80,10 +80,10 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
@@ -143,17 +143,22 @@ import dagger.Provides;
             DtGalleryFragment.class,
             GalleryPresenter.class,
             ActionEntityFragment.class,
+            ActionReviewEntityFragment.class,
             ActionEntityPresenter.class,
             CreateTripImageFragment.class,
             CreateFeedPostFragment.class,
+            CreateReviewPostFragment.class,
             CreateEntityFragment.class,
+            CreateReviewEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,
             LocationPresenter.class,
             SuggestedPhotosCell.class,
             SuggestionPhotoCell.class,
             PhotoPostCreationCell.class,
+            PhotoReviewPostCreationCell.class,
             PostCreationTextCell.class,
+            PostReviewCreationTextCell.class,
             SubPhotoAttachmentCell.class,
             PostFeedItemDetailsCell.class,
             EditPostFragment.class,
@@ -164,7 +169,9 @@ import dagger.Provides;
             DescriptionCreatorPresenter.class,
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
-            UploadingPhotoPostsSectionCell.class
+            UploadingPhotoPostsSectionCell.class,
+            CreateReviewEntityPresenter.class,
+            PostReviewDescription.class,
       },
       complete = false,
       library = true)
@@ -219,47 +226,7 @@ public class FeedModule {
 
    @Provides
    @Singleton
-   FeedEntityHolderDelegate provideFeedItemsUpdateDelegate(TripImagesInteractor tripImagesInteractor,
-         PostsInteractor postsInteractor, BucketInteractor bucketInteractor) {
-      return new FeedEntityHolderDelegate(tripImagesInteractor, postsInteractor, bucketInteractor);
-   }
-
-   @Provides
-   @Singleton
-   FeedStorageDelegate provideFeedStorageDelegate(
-         FeedStorageInteractor feedStorageInteractor, FeedInteractor feedInteractor,
-         PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor,
-         BucketInteractor bucketInteractor, SessionHolder<UserSession> sessionHolder) {
-      return new FeedStorageDelegate(feedStorageInteractor, feedInteractor, postsInteractor,
-            tripImagesInteractor, bucketInteractor, sessionHolder);
-   }
-
-   @Provides
-   @Singleton
-   AccountTimelineStorageDelegate provideAccountTimelineStorageDelegate(
-         AccountTimelineStorageInteractor accountTimelineStorageInteractor, FeedInteractor feedInteractor,
-         PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor,
-         BucketInteractor bucketInteractor, SessionHolder<UserSession> sessionHolder) {
-      return new AccountTimelineStorageDelegate(accountTimelineStorageInteractor,
-            feedInteractor, postsInteractor, tripImagesInteractor, bucketInteractor, sessionHolder);
-   }
-
-   @Provides
-   @Singleton
-   UserTimelineStorageDelegate provideUserTimelineStorageDelegate(
-         UserTimelineStorageInteractor userTimelineStorageInteractor, FeedInteractor feedInteractor,
-         PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor,
-         BucketInteractor bucketInteractor, SessionHolder<UserSession> sessionHolder) {
-      return new UserTimelineStorageDelegate(userTimelineStorageInteractor, feedInteractor, postsInteractor,
-            tripImagesInteractor, bucketInteractor, sessionHolder);
-   }
-
-   @Provides
-   @Singleton
-   HashtagFeedStorageDelegate provideHashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor,
-         HashtagInteractor hashtagInteractor, PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor,
-         BucketInteractor bucketInteractor, SessionHolder<UserSession> sessionHolder) {
-      return new HashtagFeedStorageDelegate(hashtagFeedStorageInteractor, hashtagInteractor, postsInteractor,
-            tripImagesInteractor, bucketInteractor, sessionHolder);
+   FeedEntityHolderDelegate provideFeedItemsUpdateDelegate(@ForApplication Injector injector) {
+      return new FeedEntityHolderDelegate(injector);
    }
 }

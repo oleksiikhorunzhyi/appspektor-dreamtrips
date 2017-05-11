@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStor
 import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
+import com.worldventures.dreamtrips.modules.friends.storage.RequestsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage;
@@ -38,6 +39,7 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
@@ -218,6 +220,12 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
+   ActionStorage provideRequestsStorage() {
+      return new RequestsStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
    ActionStorage provideFacebookAlbumsStorage() {
       return new FacebookAlbumsStorage();
    }
@@ -250,5 +258,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideHashtagFeedStorage() {
       return new HashtagFeedStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripsFiltersStorage(SnappyRepository snappyRepository) {
+      return new TripsFiltersStorage(snappyRepository);
    }
 }

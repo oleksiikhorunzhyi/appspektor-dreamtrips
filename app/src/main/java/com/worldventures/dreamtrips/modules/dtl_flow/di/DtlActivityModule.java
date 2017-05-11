@@ -30,6 +30,10 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragm
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;
@@ -48,6 +52,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenImpl;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -106,6 +112,12 @@ import dagger.Provides;
             ThinMerchantsAdapter.class,
             BaseExpandableAdapter.class,
             BaseExpandableDelegateAdapter.class,
+            DtlReviewsPresenterImpl.class,
+            DtlReviewsScreenImpl.class,
+            DtlCommentReviewScreenImpl.class,
+            DtlCommentReviewPresenterImpl.class,
+            DtlDetailReviewPresenterImpl.class,
+            DtlDetailReviewScreenImpl.class
       },
       complete = false, library = true)
 public class DtlActivityModule {

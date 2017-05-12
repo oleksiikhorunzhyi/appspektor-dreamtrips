@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
@@ -39,11 +40,14 @@ class ProcessSmartCardInfoDelegate {
    }
 
    private Observable<SmartCardUser> createSmartCardUser(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardUser user) {
-      final SmartCardUser scUser = ImmutableSmartCardUser.builder()
+      final ImmutableSmartCardUser.Builder userBuilder = ImmutableSmartCardUser.builder()
             .firstName(user.firstName() != null ? user.firstName() : "")
             .middleName(user.middleName() != null ? user.middleName() : "")
-            .lastName(user.lastName() != null ? user.lastName() : "")
-            .build();
+            .lastName(user.lastName() != null ? user.lastName() : "");
+
+      if (user.phone() != null) userBuilder.phoneNumber(mappery.convert(user.phone(), SmartCardUserPhone.class));
+
+      final SmartCardUser scUser = userBuilder.build();
 
       if (user.displayPhoto() != null) {
          final String photoUrl = user.displayPhoto();

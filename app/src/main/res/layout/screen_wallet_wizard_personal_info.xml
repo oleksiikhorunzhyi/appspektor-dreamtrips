@@ -83,51 +83,33 @@
 
             <EditText
                   android:id="@+id/first_name"
+                  style="@style/WalletTheme.ProfileField"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:drawableRight="@drawable/ic_wallet_pencil"
                   android:hint="@string/wallet_card_settings_profile_firstname_hint"
-                  android:imeOptions="actionNext"
-                  android:inputType="textPersonName|textCapWords"
-                  android:maxLength="@integer/wallet_settings_name_max_length"
-                  android:maxLines="1"
-                  android:textColor="#666666"
-                  android:textColorHint="@color/grey"
-                  android:textSize="@dimen/font_normal"
                   tools:text="Shirley"
                   />
 
             <EditText
                   android:id="@+id/middle_name"
+                  style="@style/WalletTheme.ProfileField"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:drawableRight="@drawable/ic_wallet_pencil"
                   android:hint="@string/wallet_card_settings_profile_middle_hint"
-                  android:imeOptions="actionNext"
-                  android:inputType="textPersonName|textCapWords"
-                  android:maxLength="@integer/wallet_settings_name_max_length"
-                  android:maxLines="1"
-                  android:textColor="#666666"
-                  android:textColorHint="@color/grey"
-                  android:textSize="@dimen/font_normal"
                   tools:text="Shirley Temple"
                   />
 
             <EditText
                   android:id="@+id/last_name"
+                  style="@style/WalletTheme.ProfileField"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:drawableRight="@drawable/ic_wallet_pencil"
                   android:hint="@string/wallet_card_settings_profile_lastname_hint"
-                  android:imeOptions="actionDone"
-                  android:inputType="textPersonName|textCapWords"
-                  android:maxLength="@integer/wallet_settings_name_max_length"
-                  android:maxLines="1"
-                  android:textColor="#666666"
-                  android:textColorHint="@color/grey"
-                  android:textSize="@dimen/font_normal"
                   tools:text="Temple"
                   />
+
+            <include layout="@layout/wallet_enter_user_phone" />
          </LinearLayout>
 
          <Button

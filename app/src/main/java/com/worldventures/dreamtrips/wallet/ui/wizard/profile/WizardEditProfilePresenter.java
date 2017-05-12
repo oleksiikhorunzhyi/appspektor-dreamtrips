@@ -18,12 +18,15 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
+import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -144,7 +147,17 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    void onUserDataConfirmed() {
       final String[] userNames = getView().getUserName();
       wizardInteractor.setupUserDataPipe()
-            .send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2], preparedPhoto));
+            .send(new SetupUserDataCommand(prepareData(userNames)));
+   }
+
+   private ChangedFields prepareData(String[] userNames) {
+      return ImmutableChangedFields.builder()
+            .firstName(userNames[0])
+            .middleName(userNames[1])
+            .lastName(userNames[2])
+            .photo(preparedPhoto)
+            .phone(ImmutableSmartCardUserPhone.of(getView().getPhoneNumber(), getView().getCountryCode()))
+            .build();
    }
 
    private boolean isUserDataValid(String[] userNames) {
@@ -183,8 +196,14 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       void setUserFullName(String firstName, String lastName);
 
+      void setPhone(String countryCode, String number);
+
       @NonNull
       String[] getUserName();
+
+      String getCountryCode();
+
+      String getPhoneNumber();
 
       void showConfirmationDialog(String fullName);
    }

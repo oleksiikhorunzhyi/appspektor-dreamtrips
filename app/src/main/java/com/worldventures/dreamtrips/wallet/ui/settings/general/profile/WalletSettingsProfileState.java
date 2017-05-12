@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.viewstate.WalletViewState;
 public class WalletSettingsProfileState extends WalletViewState<WalletSettingsProfilePresenter.Screen> {
 
    private SmartCardUserPhoto userPhoto;
-   private int changeProfileFlag = 0;
+   private boolean profileDataIsChanged = false;
 
    public WalletSettingsProfileState() {}
 
@@ -19,12 +19,12 @@ public class WalletSettingsProfileState extends WalletViewState<WalletSettingsPr
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeSerializable(this.userPhoto);
-      dest.writeInt(this.changeProfileFlag);
+      dest.writeInt(this.profileDataIsChanged ? 1 : 0);
    }
 
    private WalletSettingsProfileState(Parcel in) {
       this.userPhoto = (SmartCardUserPhoto) in.readSerializable();
-      this.changeProfileFlag = in.readInt();
+      this.profileDataIsChanged = in.readInt() == 1;
    }
 
    SmartCardUserPhoto getUserPhoto() {
@@ -35,12 +35,12 @@ public class WalletSettingsProfileState extends WalletViewState<WalletSettingsPr
       this.userPhoto = userPhoto;
    }
 
-   int getChangeProfileFlag() {
-      return changeProfileFlag;
+   boolean getChangeProfileFlag() {
+      return profileDataIsChanged;
    }
 
-   void setChangeProfileFlag(int changeProfileFlag) {
-      this.changeProfileFlag = changeProfileFlag;
+   void setChangeProfileFlag(boolean profileDataIsChanges) {
+      this.profileDataIsChanged = profileDataIsChanges;
    }
 
    public static final Creator<WalletSettingsProfileState> CREATOR = new Creator<WalletSettingsProfileState>() {

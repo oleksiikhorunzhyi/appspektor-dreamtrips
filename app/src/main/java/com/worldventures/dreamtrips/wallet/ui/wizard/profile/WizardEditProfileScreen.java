@@ -42,6 +42,8 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @InjectView(R.id.middle_name) EditText middleName;
    @InjectView(R.id.last_name) EditText lastName;
    @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
+   @InjectView(R.id.et_phone_number) EditText etPhoneNumber;
+   @InjectView(R.id.et_country_code) EditText etCountryCode;
 
    private MediaPickerService mediaPickerService;
 
@@ -153,11 +155,27 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       this.lastName.setSelection(lastName.length());
    }
 
+   @Override
+   public void setPhone(String countryCode, String number) {
+      etCountryCode.setText(countryCode);
+      etPhoneNumber.setText(number);
+   }
+
    @NonNull
    @Override
    public String[] getUserName() {
       return new String[]{firstName.getText().toString().trim(), middleName.getText().toString().trim(),
             lastName.getText().toString().trim()};
+   }
+
+   @Override
+   public String getCountryCode() {
+      return etCountryCode.getText().toString();
+   }
+
+   @Override
+   public String getPhoneNumber() {
+      return etPhoneNumber.getText().toString();
    }
 
    @Override

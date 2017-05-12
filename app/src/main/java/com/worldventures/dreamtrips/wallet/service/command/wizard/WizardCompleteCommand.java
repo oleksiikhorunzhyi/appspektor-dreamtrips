@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
+import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
@@ -9,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
@@ -21,6 +23,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -32,6 +35,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject SmartCardInteractor interactor;
    @Inject SnappyRepository snappyRepository;
+   @Inject MapperyContext mapperyContext;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -73,11 +77,15 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    }
 
    private UpdateCardUserData createRequestData(SmartCardUser smartCardUser) {
-      return ImmutableUpdateCardUserData.builder()
+      final SmartCardUserPhone smartCardUserPhone = smartCardUser.phoneNumber();
+      final ImmutableUpdateCardUserData.Builder userBuilder = ImmutableUpdateCardUserData.builder()
             .firstName(smartCardUser.firstName())
             .lastName(smartCardUser.lastName())
             .middleName(smartCardUser.middleName())
-            .photoUrl(smartCardUser.userPhoto().photoUrl().toString())
-            .build();
+            .photoUrl(smartCardUser.userPhoto().photoUrl().toString());
+      if (smartCardUserPhone != null) {
+         userBuilder.phone(mapperyContext.convert(smartCardUserPhone, CardUserPhone.class));
+      }
+      return userBuilder.build();
    }
 }

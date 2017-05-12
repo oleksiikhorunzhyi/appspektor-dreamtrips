@@ -5,6 +5,7 @@ import android.support.v4.util.Pair;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
@@ -32,6 +33,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.user.UpdateUserAction;
 import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -46,6 +48,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    @Inject WalletNetworkService networkService;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject UpdateProfileManager updateProfileManager;
+   @Inject MapperyContext mapperyContext;
 
    private final ChangedFields changedFields;
 
@@ -94,10 +97,14 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
       dataBuilder.firstName(changedFields.firstName());
       dataBuilder.middleName(changedFields.middleName());
       dataBuilder.lastName(changedFields.lastName());
+      if (changedFields.phone() != null) {
+         dataBuilder.phone(mapperyContext.convert(changedFields.phone(), CardUserPhone.class));
+      }
 
       if (!changedFields.firstName().equals(user.firstName())
             || !changedFields.middleName().equals(user.middleName())
-            || !changedFields.lastName().equals(user.lastName())) {
+            || !changedFields.lastName().equals(user.lastName())
+            || !changedFields.phone().equals(user.phoneNumber())) {
          needUpdate = true;
       }
 
@@ -109,6 +116,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                      .firstName(changedFields.firstName())
                      .middleName(changedFields.middleName())
                      .lastName(changedFields.lastName())
+                     .phoneNum(changedFields.phone().fullPhoneNumber())
                      .isUserAssigned(true)
                      .memberId(userSessionHolder.get().get().getUser().getId())
                      .barcodeId(Long.parseLong(scId))

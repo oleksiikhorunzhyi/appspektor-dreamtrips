@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedComm
 import com.worldventures.dreamtrips.modules.feed.storage.command.FeedItemsStorageBaseCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.FeedItemsStorageBaseInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -61,23 +62,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
    protected Observable<ListStorageOperation> getListStorageOperationObservable() {
       return Observable.merge(Arrays.asList(
             postsInteractor.postCreatedPipe().observeSuccess()
-                  .map(PostCreatedCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::addItemToBeginningOperation),
-
-            postsInteractor.getEditPostPipe().observeSuccess()
-                  .map(EditPostCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
-
-            postsInteractor.deletePostPipe().observeSuccess()
-                  .map(DeletePostCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::deleteItemOperation),
-
-            tripImagesInteractor.editPhotoWithTagsCommandActionPipe().observeSuccess()
-                  .map(EditPhotoWithTagsCommand::getResult)
-                  .map(this::createFeedItem)
+                  .map(PostCreatedCommand::getFeedItem)
                   .map(ListStorageOperationFactory::addItemToBeginningOperation),
 
             tripImagesInteractor.deletePhotoPipe().observeSuccess()
@@ -85,67 +70,72 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                   .map(this::createFeedItem)
                   .map(ListStorageOperationFactory::deleteItemOperation),
 
+            postsInteractor.deletePostPipe().observeSuccess()
+                  .map(DeletePostCommand::getResult)
+                  .map(this::createFeedItem)
+                  .map(ListStorageOperationFactory::deleteItemOperation),
+
+            postsInteractor.getEditPostPipe().observeSuccess()
+                  .map(EditPostCommand::getResult)
+                  .map(this::updateItemOperation),
+
+            tripImagesInteractor.editPhotoWithTagsCommandActionPipe().observeSuccess()
+                  .map(EditPhotoWithTagsCommand::getResult)
+                  .map(this::updateItemOperation),
+
             bucketInteractor.updatePipe().observeSuccess()
                   .map(UpdateBucketItemCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             bucketInteractor.addBucketItemPhotoPipe()
                   .observeSuccess()
                   .map(addBucketItemPhotoCommand -> addBucketItemPhotoCommand.getResult().first)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             bucketInteractor.deleteItemPhotoPipe().observeSuccess()
                   .map(DeleteItemPhotoCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             bucketInteractor.deleteItemPipe().observeSuccess()
                   .map(DeleteBucketItemCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::deleteItemOperation),
+                  .map(this::updateItemOperation),
 
             friendsInteractor.getLikersPipe().observeSuccess()
-                  .map(getLikersCommand -> getLikersCommand.getFeedEntity())
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(GetLikersCommand::getFeedEntity)
+                  .map(this::updateItemOperation),
 
             feedInteractor.changeFeedEntityLikedStatusPipe().observeSuccess()
                   .map(ChangeFeedEntityLikedStatusCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             feedInteractor.getFeedEntityPipe().observeSuccess()
                   .map(GetFeedEntityCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             tripsInteractor.detailsPipe().observeSuccess()
                   .map(GetTripDetailsCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             commentsInteractor.commentsPipe().observeSuccess()
                   .map(GetCommentsCommand::getFeedEntity)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             commentsInteractor.createCommentPipe().observeSuccess()
                   .map(CreateCommentCommand::getFeedEntity)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             commentsInteractor.editCommentPipe().observeSuccess()
                   .map(EditCommentCommand::getFeedEntity)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation),
+                  .map(this::updateItemOperation),
 
             commentsInteractor.deleteCommentPipe().observeSuccess()
                   .map(DeleteCommentCommand::getFeedEntity)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::updateItemOperation)
+                  .map(this::updateItemOperation)
       ));
+   }
+
+   protected ListStorageOperation updateItemOperation(FeedEntity feedEntity) {
+      return new UpdateFeedEntityStorageOperation(feedEntity);
    }
 
    private FeedItem createFeedItem(FeedEntity feedEntity) {

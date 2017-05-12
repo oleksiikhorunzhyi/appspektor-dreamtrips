@@ -16,7 +16,8 @@
          android:numStars="5"
          android:rating="0"
          android:stepSize="1"
-         android:theme="@style/rating_bar_style"
+         android:theme="@style/RatingBar"
+         style="@style/RatingBar"
          />
 
    <RelativeLayout

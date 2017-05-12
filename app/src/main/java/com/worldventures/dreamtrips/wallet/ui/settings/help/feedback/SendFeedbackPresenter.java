@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.WindowManager;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
+import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
@@ -31,7 +31,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
+import io.techery.janet.ActionState;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
@@ -45,23 +46,11 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    @Inject SettingsHelpInteractor settingsHelpInteractor;
    @Inject Router router;
 
-   private final FeedbackAttachmentsManager attachmentsManager;
+   private final CancelableFeedbackAttachmentsManager attachmentsManager;
 
    public SendFeedbackPresenter(Context context, Injector injector) {
       super(context, injector);
-      attachmentsManager = new FeedbackAttachmentsManager();
-   }
-
-   @Override
-   public void onSaveInstanceState(Bundle bundle) {
-      super.onSaveInstanceState(bundle);
-      attachmentsManager.saveInstanceState(bundle);
-   }
-
-   @Override
-   public void onRestoreInstanceState(Bundle instanceState) {
-      super.onRestoreInstanceState(instanceState);
-      attachmentsManager.restoreInstanceState(instanceState);
+      attachmentsManager = new CancelableFeedbackAttachmentsManager(settingsHelpInteractor.uploadAttachmentPipe());
    }
 
    @Override
@@ -91,10 +80,11 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
             });
 
       settingsHelpInteractor.attachmentsRemovedPipe()
-            .observeSuccessWithReplay()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(settingsHelpInteractor.attachmentsRemovedPipe()))
+            .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+            .map(actionState -> actionState.action.getResult())
             .compose(bindViewIoToMainComposer())
-            .map(Command::getResult)
-            .doOnNext(result -> settingsHelpInteractor.attachmentsRemovedPipe().clearReplays())
             .subscribe(removedAttachments -> Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                if (removedAttachments.contains(holder.entity())) {
                   attachmentsManager.remove(holder);
@@ -103,15 +93,20 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
             }));
 
       settingsHelpInteractor.uploadAttachmentPipe()
-            .observe()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(settingsHelpInteractor.uploadAttachmentPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationUploadAttachments())
+            .subscribe(new ActionStateSubscriber<UploadFeedbackAttachmentCommand>()
                   .onStart(this::updateImageAttachment)
-                  .onProgress(this::updateImageAttachment)
-                  .onSuccess(this::updateImageAttachment)
-                  .onFail((failedCommand, throwable) -> updateImageAttachment(failedCommand))
-                  .create()
+                  .onProgress((command, integer) -> updateImageAttachment(command))
+                  .onSuccess(this::onCommandFinished)
+                  .onFail((failedCommand, throwable) -> onCommandFinished(failedCommand))
             );
+   }
+
+   private void onCommandFinished(UploadFeedbackAttachmentCommand command) {
+      updateImageAttachment(command);
+      attachmentsManager.onCommandFinished(command);
    }
 
    private void updateImageAttachment(UploadFeedbackAttachmentCommand command) {
@@ -182,8 +177,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    }
 
    private void uploadImageAttachment(Uri path) {
-      FeedbackImageAttachment attachment = new FeedbackImageAttachment(path.toString());
-      settingsHelpInteractor.uploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
+      attachmentsManager.send(path.toString());
    }
 
    void onRemoveAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
@@ -208,6 +202,12 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
       attachmentsManager.removeAll();
    }
 
+   @Override
+   public void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      attachmentsManager.cancelAll();
+   }
+
    public interface Screen extends WalletScreen {
 
       void pickPhoto();
@@ -229,8 +229,6 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
       void updateAttachment(EntityStateHolder<FeedbackImageAttachment> updatedHolder);
 
       Observable<Uri> observePickPhoto();
-
-      OperationView<UploadFeedbackAttachmentCommand> provideOperationUploadAttachments();
 
       OperationView<SendWalletFeedbackCommand> provideOperationSendFeedback();
    }

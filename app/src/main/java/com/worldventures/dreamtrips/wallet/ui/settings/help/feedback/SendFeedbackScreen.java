@@ -241,14 +241,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    }
 
    @Override
-   public OperationView<UploadFeedbackAttachmentCommand> provideOperationUploadAttachments() {
-      return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_feedback_progress_add_attachments, false),
-            new SimpleErrorDialogView<UploadFeedbackAttachmentCommand>(getContext(), R.string.wallet_settings_help_feedback_adding_attachments_fail)
-      );
-   }
-
-   @Override
    public OperationView<SendWalletFeedbackCommand> provideOperationSendFeedback() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_feedback_progress_send, false),

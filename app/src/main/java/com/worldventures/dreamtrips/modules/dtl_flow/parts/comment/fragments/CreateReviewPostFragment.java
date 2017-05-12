@@ -517,7 +517,20 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    private void onMerchantsLoaded(AddReviewAction action) {
       if (action.getResult().errors() != null){
          try {
-            validateCodeMessage(action.getResult().errors().get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code());
+            if (action.getResult().errors().get(0).code().equals("DuplicateReview")) {
+               showHasPendingReview();
+               ReviewStorage.saveReviewsPosted(getActivity(), String.valueOf(user.getId()), getMerchantId());
+            } else {
+               validateCodeMessage(action.getResult()
+                     .errors()
+                     .get(0)
+                     .innerError()
+                     .get(0)
+                     .formErrors()
+                     .fieldErrors()
+                     .reviewText()
+                     .code());
+            }
          } catch (Exception e){
             showErrorUnknown();
             e.printStackTrace();
@@ -534,6 +547,19 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       }
       onRefreshSuccess();
       enableInputs();
+   }
+
+   public void showHasPendingReview() {
+      errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+         Flow.get(getContext()).goBack();
+      });
+      errorDialog.show();
    }
 
    private void onMerchantsLoading(AddReviewAction action, Integer progress) {

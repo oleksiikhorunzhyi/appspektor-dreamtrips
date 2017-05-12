@@ -20,24 +20,24 @@ public class MediaPickerAdapter implements MediaPickerService {
 
    private final MessengerMediaPickerDelegate messengerMediaPickerDelegate;
    private final CropImageDelegate cropImageDelegate;
-   private final Callable<String> callablePaddingPathOnce = new Callable<String>() {
+   private final Callable<String> callablePendingPathOnce = new Callable<String>() {
       @Override
       public String call() throws Exception {
          try {
-            return paddingPath;
+            return pendingPath;
          } finally {
-            paddingPath = null;
+            clearPendingPath();
          }
       }
    };
 
-   @State String paddingPath;
+   @State String pendingPath;
    private Subscription subscription;
 
    public MediaPickerAdapter(MessengerMediaPickerDelegate messengerMediaPickerDelegate, CropImageDelegate cropImageDelegate) {
       this.messengerMediaPickerDelegate = messengerMediaPickerDelegate;
       this.cropImageDelegate = cropImageDelegate;
-      subscription = messengerMediaPickerDelegate.getImagePathsStream().subscribe(path -> paddingPath = path);
+      subscription = messengerMediaPickerDelegate.getImagePathsStream().subscribe(path -> pendingPath = path);
    }
 
    @Override
@@ -65,19 +65,19 @@ public class MediaPickerAdapter implements MediaPickerService {
 
    @Override
    public void pickPhoto() {
-      paddingPath = null;
+      clearPendingPath();
       messengerMediaPickerDelegate.showPhotoPicker();
    }
 
    @Override
    public void pickPhotos(int limit) {
-      paddingPath = null;
+      clearPendingPath();
       messengerMediaPickerDelegate.showMultiPhotoPicker(limit);
    }
 
    @Override
    public void crop(String filePath) {
-      paddingPath = null;
+      clearPendingPath();
       cropImageDelegate.cropImage(filePath);
    }
 
@@ -89,12 +89,13 @@ public class MediaPickerAdapter implements MediaPickerService {
    @Override
    public Observable<Uri> observePicker() {
       return messengerMediaPickerDelegate.getImagePathsStream()
-            .startWith(Observable.fromCallable(callablePaddingPathOnce))
+            .startWith(Observable.fromCallable(callablePendingPathOnce))
             .filter(path -> path != null)
             .flatMap(path -> {
                if (!path.contains("://")) path = "file://" + path;
                return Observable.just(Uri.parse(path));
-            });
+            })
+            .doOnNext(path -> clearPendingPath());
    }
 
    @Override
@@ -102,6 +103,10 @@ public class MediaPickerAdapter implements MediaPickerService {
       return cropImageDelegate.getCroppedImagesStream()
             .filter(cropNotification -> cropNotification.getKind() == Notification.Kind.OnNext)
             .map(Notification::getValue);
+   }
+
+   private void clearPendingPath() {
+      this.pendingPath = null;
    }
 
 }

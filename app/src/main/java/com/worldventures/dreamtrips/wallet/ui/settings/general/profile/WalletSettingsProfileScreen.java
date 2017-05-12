@@ -237,7 +237,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      mediaPickerService.crop(photoPath.toString());
+      mediaPickerService.crop(photoPath);
    }
 
    @Override

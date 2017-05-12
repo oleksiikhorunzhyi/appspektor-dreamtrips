@@ -3,25 +3,18 @@ package com.messenger.delegate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CroppingUtils;
-import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-import com.worldventures.dreamtrips.util.Action;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Notification;
 import rx.Observable;
-import rx.Subscription;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -33,19 +26,12 @@ public class CropImageDelegate {
    private static final String TEMP_PHOTO_DIR = "cropped_images";
 
    private WeakReference<Activity> activity;
-   private DownloadFileInteractor downloadFileInteractor;
    private Context context;
    private WeakHandler handler = new WeakHandler();
 
-   private Subscription subscription;
-
    private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
-   private int ratioX = RATIO_X_DEFAULT;
-   private int ratioY = RATIO_Y_DEFAULT;
-
-   public CropImageDelegate(Activity activity, DownloadFileInteractor downloadFileInteractor) {
-      this.downloadFileInteractor = downloadFileInteractor;
+   public CropImageDelegate(Activity activity) {
       init(activity);
    }
 
@@ -54,46 +40,24 @@ public class CropImageDelegate {
       context = activity.getApplicationContext();
    }
 
+   @Deprecated
    public void cropImage(String filePath) {
+      cropImage(Uri.parse(filePath));
+   }
+
+   public void cropImage(Uri uri) {
       if (activity == null) {
          throw new IllegalStateException("You must call init() first");
       }
-      if (ValidationUtils.isUrl(filePath)) {
-         cacheFacebookImage(filePath, path -> startCropActivity(path, path));
-      } else {
-         executeCrop(filePath);
-      }
+      startCropActivity(uri, Uri.fromFile(getTempFile(uri)));
    }
 
    public Observable<Notification<File>> getCroppedImagesStream() {
       return croppedImagesStream;
    }
 
-   public void setAspectRatio(int ratioX, int ratioY) {
-      this.ratioX = ratioX;
-      this.ratioY = ratioY;
-   }
-
-   private void executeCrop(String originalFilePath) {
-      String temporaryFile = getTempFile(originalFilePath).getAbsolutePath();
-      startCropActivity(originalFilePath, temporaryFile);
-   }
-
-   private void cacheFacebookImage(String url, Action<String> action) {
-      String filePath = CachedEntity.getFilePath(context, truncateUrlParams(url));
-      subscription = downloadFileInteractor.getDownloadFileCommandPipe()
-            .createObservable(new DownloadFileCommand(new File(filePath), url))
-            .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
-                  .onSuccess(downloadFileCommand -> action.action(filePath))
-                  .onFail((downloadFileCommand, throwable) -> reportError(throwable, "Could not copy avatar file from Facebook")));
-   }
-
-   private String truncateUrlParams(@NonNull String url) {
-      return url.split("\\?")[0];
-   }
-
    public void destroy() {
-      if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
+      if (croppedImagesStream != null && !croppedImagesStream.hasCompleted()) croppedImagesStream.onCompleted();
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -116,10 +80,9 @@ public class CropImageDelegate {
       }
    }
 
-   private File getTempFile(String originalFilePath) {
-      File originalFile = new File(originalFilePath);
+   private File getTempFile(Uri originalUri) {
       File tempDir = new File(context.getCacheDir().getAbsolutePath() + File.separator + TEMP_PHOTO_DIR);
-      String fileName = String.valueOf(System.currentTimeMillis() + "_" + originalFile.getName());
+      String fileName = String.valueOf(System.currentTimeMillis() + "_" + originalUri.getLastPathSegment());
       File targetFile = new File(tempDir, fileName);
       if (!targetFile.getParentFile().exists()) {
          targetFile.getParentFile().mkdirs();
@@ -143,11 +106,11 @@ public class CropImageDelegate {
       croppedImagesStream.onNext(Notification.createOnError(exception));
    }
 
-   private void startCropActivity(String originalPath, String targetPath) {
+   private void startCropActivity(Uri originalUri, Uri targetUri) {
       if (activity.get() == null) {
          Timber.w("Cannot start cropping activity, starting activity is null");
          return;
       }
-      CroppingUtils.startCropping(activity.get(), originalPath, targetPath, ratioX, ratioY);
+      CroppingUtils.startCropping(activity.get(), originalUri, targetUri, RATIO_X_DEFAULT, RATIO_Y_DEFAULT);
    }
 }

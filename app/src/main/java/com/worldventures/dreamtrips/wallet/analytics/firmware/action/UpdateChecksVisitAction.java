@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
 @AnalyticsEvent(action = "wallet:settings:general:SmartCard Update:Ready Checklist",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class UpdateChecksVisitAction extends FirmwareAnalyticsAction {
 

@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
 @AnalyticsEvent(action = "wallet:settings:auto clear smartcard",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class AutoClearAction extends WalletAnalyticsAction {
 

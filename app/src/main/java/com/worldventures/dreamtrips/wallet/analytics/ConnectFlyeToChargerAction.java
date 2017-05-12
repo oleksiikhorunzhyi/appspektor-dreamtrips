@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
 @AnalyticsEvent(action = "wallet:Add a Card:Connect Flye Card to Charger",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class ConnectFlyeToChargerAction extends WalletAnalyticsAction {
 

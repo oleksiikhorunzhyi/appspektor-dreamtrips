@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
 @AnalyticsEvent(action = "wallet:settings:general:setup new smartcard:existing card detected:card not connected:power on smartcard",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class ExistSmartCardHaveCardAction extends WalletAnalyticsAction {
 

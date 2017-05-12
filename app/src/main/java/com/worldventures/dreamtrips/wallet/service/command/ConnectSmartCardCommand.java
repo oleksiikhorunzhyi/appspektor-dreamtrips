@@ -32,7 +32,7 @@ public class ConnectSmartCardCommand extends Command<Void> implements Injectable
    @Deprecated
    protected void run(CommandCallback<Void> callback) throws Throwable {
       janet.createPipe(ConnectAction.class)
-            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(smartCardId))))
+            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Long.parseLong(smartCardId))))
             .subscribe(value -> callback.onSuccess(null),
                   throwable -> {
                      Timber.e(throwable, "Error while connecting to smart card");

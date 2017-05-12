@@ -23,7 +23,6 @@ import rx.Observable;
 import rx.Subscription;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static rx.Observable.error;
 
 @CommandAction
 public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implements InjectableAction {
@@ -58,7 +57,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
 
    private Observable<ConnectionType> connectSmartCard(String scId) {
       return janet.createPipe(ConnectAction.class)
-            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId))))
+            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Long.parseLong(scId))))
             .map(connectAction -> connectAction.type)
             // hotfix for first Disconnect event from smart card
             .retry((count, throwable) -> count < 2);

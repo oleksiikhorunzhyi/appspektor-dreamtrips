@@ -122,7 +122,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      mediaPickerService.crop(photoPath.toString());
+      mediaPickerService.crop(photoPath);
    }
 
    @Override

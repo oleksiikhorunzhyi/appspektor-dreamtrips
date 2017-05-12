@@ -76,9 +76,8 @@ public class MediaPickerAdapter implements MediaPickerService {
    }
 
    @Override
-   public void crop(String filePath) {
-      clearPendingPath();
-      cropImageDelegate.cropImage(filePath);
+   public void crop(Uri uri) {
+      cropImageDelegate.cropImage(uri);
    }
 
    @Override
@@ -92,8 +91,17 @@ public class MediaPickerAdapter implements MediaPickerService {
             .startWith(Observable.fromCallable(callablePendingPathOnce))
             .filter(path -> path != null)
             .flatMap(path -> {
-               if (!path.contains("://")) path = "file://" + path;
-               return Observable.just(Uri.parse(path));
+               Uri uri = Uri.parse(path);
+               if (uri.getScheme() == null) {
+                  //check if is local file path
+                  final File localFile = new File(path);
+                  if (localFile.exists()) {
+                     uri = Uri.fromFile(localFile);
+                  } else {
+                     return Observable.error(new IllegalArgumentException("Cannot parse path into Uri : " + path));
+                  }
+               }
+               return Observable.just(uri);
             })
             .doOnNext(path -> clearPendingPath());
    }

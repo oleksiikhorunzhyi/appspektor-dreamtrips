@@ -507,7 +507,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public boolean isVerified() {
-      return false;
+      return bundle.isVerified();
    }
 
    public String getIpAddress() {

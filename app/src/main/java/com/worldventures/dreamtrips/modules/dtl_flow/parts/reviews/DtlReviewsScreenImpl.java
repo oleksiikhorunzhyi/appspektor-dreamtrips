@@ -12,16 +12,12 @@ import android.widget.FrameLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import java.util.ArrayList;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
-import flow.History;
-import flow.path.Path;
 
 import android.support.design.widget.Snackbar;
 

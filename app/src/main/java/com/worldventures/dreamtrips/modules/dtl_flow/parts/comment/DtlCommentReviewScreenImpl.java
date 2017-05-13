@@ -72,7 +72,7 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @Override
     public DtlCommentReviewsPresenter createPresenter() {
-        return new DtlCommentReviewPresenterImpl(getContext(), injector, getPath().getMerchant());
+        return new DtlCommentReviewPresenterImpl(getContext(), injector, getPath().getMerchant(), isVerified());
     }
 
     @Override
@@ -94,7 +94,8 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
              getPresenter().maximumCharactersAllowed(),
              getPath().getMerchant().id(),
              isFromListReview(),
-             getPath().getMerchant()));
+             getPath().getMerchant(),
+             isVerified()));
 
        fragment = CreateReviewPostFragment.newInstance(bundle);
        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

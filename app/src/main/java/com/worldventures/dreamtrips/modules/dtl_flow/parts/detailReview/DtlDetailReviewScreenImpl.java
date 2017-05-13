@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -133,7 +134,8 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     }
 
     private void initImageFromServer(@NonNull String urlImage) {
-        if (!urlImage.equalsIgnoreCase("null")) {
+        //TODO why urlImage.equalsIgnoreCase("null") ? Does urlImage have "null" as string value?
+        if (!TextUtils.isEmpty(urlImage) && !urlImage.equalsIgnoreCase("null")) {
             mIvAvatar.setImageURI(Uri.parse(urlImage));
         }
     }

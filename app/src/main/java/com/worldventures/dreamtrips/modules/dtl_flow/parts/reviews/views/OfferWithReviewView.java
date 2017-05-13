@@ -1,12 +1,14 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -19,9 +21,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.Recy
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
 import java.util.ArrayList;
+
 import flow.Flow;
 
-public class OfferWithReviewFragment extends Fragment {
+public class OfferWithReviewView extends LinearLayout {
 
    private RecyclerView recyclerAdapter;
    private RatingBar ratingBar2;
@@ -42,63 +45,59 @@ public class OfferWithReviewFragment extends Fragment {
    private String mMerchantName;
    private boolean mIsFromListReview = false;
 
-   public OfferWithReviewFragment() {
+   public OfferWithReviewView(Context context) {
+      this(context, null);
    }
 
-   public static OfferWithReviewFragment newInstance(Bundle arguments) {
-      OfferWithReviewFragment f = new OfferWithReviewFragment();
-      if (arguments != null) {
-         f.setArguments(arguments);
-      }
-      return f;
+   public OfferWithReviewView(Context context, @Nullable AttributeSet attrs) {
+      super(context, attrs);
+      init();
    }
 
-   @Override
-   public View onCreateView(LayoutInflater inflater, ViewGroup container,
-         Bundle savedInstanceState) {
-      final View v = inflater.inflate(R.layout.activity_offer_with_review, container, false);
+   private void init() {
+      mAdapter = new ReviewAdapter(getContext());
+   }
 
+   public void addBundle(Bundle bundle) {
+      mArrayInfo = new ArrayList<>();
+      mArrayInfo.addAll(bundle.<ReviewObject>getParcelableArrayList(ARRAY));
+      final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_offer_with_review, this, true);
       recyclerAdapter = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       ratingBar2 = (RatingBar) v.findViewById(R.id.ratingBar2);
       tvReview = (TextView) v.findViewById(R.id.tv_Review);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
       lineSeparator = v.findViewById(R.id.line_separator);
 
-      Bundle bundle = getArguments();
-      mArrayInfo = new ArrayList<>();
-      mArrayInfo.addAll(bundle.<ReviewObject>getParcelableArrayList(ARRAY));
       mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
       mCountReview = bundle.getInt(COUNT_REVIEW, 0);
       mMerchantName = bundle.getString(MERCHANT_NAME, "");
       mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
-      setRetainInstance(true);
 
       initRecycler();
       initAdapter();
       initListener();
+      setUpInfo();
+   }
 
-      return v;
+   public void showNoComments() {
+      LayoutInflater.from(getContext()).inflate(R.layout.offer_details_no_review, this, true);
    }
 
    private void initListener() {
-      recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerAdapter,
-              new RecyclerClickListener() {
-                 @Override
-                 public void onClick(View view, int position) {
-                    Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo.get(position).getReviewId(), mIsFromListReview));
-                 }
+      recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerAdapter,
+            new RecyclerClickListener() {
+               @Override
+               public void onClick(View view, int position) {
+                  Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo
+                        .get(position)
+                        .getReviewId(), mIsFromListReview));
+               }
 
-                 @Override
-                 public void onLongClick(View view, int position) {
+               @Override
+               public void onLongClick(View view, int position) {
 
-                 }
-              }));
-   }
-
-   @Override
-   public void onResume() {
-      super.onResume();
-      setUpInfo();
+               }
+            }));
    }
 
    private void setUpInfo() {
@@ -125,19 +124,13 @@ public class OfferWithReviewFragment extends Fragment {
    }
 
    private void initRecycler() {
-      recyclerAdapter.setLayoutManager(new LinearLayoutManager(getActivity()));
-      recyclerAdapter.addItemDecoration(new MarginDecoration(getActivity()));
+      recyclerAdapter.setLayoutManager(new LinearLayoutManager(getContext()));
+      recyclerAdapter.addItemDecoration(new MarginDecoration(getContext()));
       recyclerAdapter.setHasFixedSize(false);
    }
 
    private void initAdapter() {
-      mAdapter = new ReviewAdapter(getActivity());
       recyclerAdapter.setAdapter(mAdapter);
       mAdapter.addAll(mArrayInfo);
-   }
-
-   @Override
-   public void onDestroyView() {
-      super.onDestroyView();
    }
 }

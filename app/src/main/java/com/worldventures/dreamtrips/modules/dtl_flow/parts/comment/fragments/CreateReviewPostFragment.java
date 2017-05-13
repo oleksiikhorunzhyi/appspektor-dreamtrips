@@ -183,13 +183,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    public void handleStringReview(String stringReview) {
       this.stringReview = stringReview;
 
-      int lineJumpOccurrences = 0;
-      for (int i = 0; i < stringReview.length(); i++) {
-         if (stringReview.charAt(i) == '\n') {
-            lineJumpOccurrences++;
-         }
-      }
-      stringReviewLength = stringReview.length() - lineJumpOccurrences;
+      // Character \n should not be part of the counting at any place. (beginning, middle or end)
+      stringReviewLength = stringReview.replaceAll("\n", "").trim().length();
 
       setInputChars(stringReviewLength);
 
@@ -199,7 +194,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       } else {
          setBoldStyleText();
       }
-      setMaxLengthText(maximumCharactersAllowed() + lineJumpOccurrences);
+
       if (stringReviewLength >= maximumCharactersAllowed()){
          showErrorMaxMessage();
       }
@@ -220,7 +215,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
             lineJumpOccurrences++;
          }
       }
-      return review.length() - lineJumpOccurrences;
+      return review.trim().length() - lineJumpOccurrences;
    }
 
    @Override
@@ -637,7 +632,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    public String getDescription() {
-      return mComment.getText().toString();
+      return mComment.getText().toString().trim();
    }
 
    public String getMerchantId() {

@@ -16,6 +16,7 @@ public class CreateReviewEntityBundle implements Parcelable {
    private String merchantId;
    private boolean isFromAddReview;
    private Merchant mMerchant;
+   private boolean isVerified;
 
    public CreateReviewEntityBundle(boolean showPickerImmediately, Origin origin) {
       this.showPickerImmediately = showPickerImmediately;
@@ -23,7 +24,7 @@ public class CreateReviewEntityBundle implements Parcelable {
    }
 
    public CreateReviewEntityBundle(boolean showPickerImmediately, Origin origin, int minChar, int maxChar, String merchantId, boolean isFromAddReview,
-                           Merchant merchant) {
+                           Merchant merchant, boolean isVerified) {
       this.showPickerImmediately = showPickerImmediately;
       this.origin = origin;
       this.minCharactersAllow = minChar;
@@ -31,6 +32,7 @@ public class CreateReviewEntityBundle implements Parcelable {
       this.merchantId = merchantId;
       this.isFromAddReview = isFromAddReview;
       this.mMerchant = merchant;
+      this.isVerified = isVerified;
    }
 
    public CreateReviewEntityBundle(MediaAttachment mediaAttachment, Origin origin) {
@@ -56,6 +58,10 @@ public class CreateReviewEntityBundle implements Parcelable {
 
    public boolean isFromAddReview() {
       return isFromAddReview;
+   }
+
+   public boolean isVerified() {
+      return isVerified;
    }
 
    public boolean isShowPickerImmediately() {
@@ -91,6 +97,7 @@ public class CreateReviewEntityBundle implements Parcelable {
       dest.writeString(this.merchantId);
       dest.writeByte(this.isFromAddReview ? (byte) 1 : (byte) 0);
       dest.writeSerializable(this.mMerchant);
+      dest.writeByte(this.isVerified ? (byte) 1 : (byte) 0);
    }
 
    protected CreateReviewEntityBundle(Parcel in) {
@@ -103,6 +110,7 @@ public class CreateReviewEntityBundle implements Parcelable {
       this.merchantId = in.readString();
       this.isFromAddReview = in.readByte() != 0;
       this.mMerchant = (Merchant) in.readSerializable();
+      this.isVerified = in.readByte() != 0;
    }
 
    public static final Creator<CreateReviewEntityBundle> CREATOR = new Creator<CreateReviewEntityBundle>() {

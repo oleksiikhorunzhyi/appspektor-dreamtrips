@@ -47,11 +47,12 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
     private int mCount = 0;
 
-    public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant) {
+    public DtlCommentReviewPresenterImpl(Context context, Injector injector, Merchant merchant, boolean isVerified) {
         super(context);
         injector.inject(this);
         this.context = context;
         this.merchant = merchant;
+        this.isVerified = isVerified;
     }
 
     @Override
@@ -232,4 +233,6 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     public String getIpAddress() {
         return "10.20.20.122";
     }
+
+    private boolean isVerified;
 }

@@ -4,7 +4,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,21 +44,11 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
    }
 
    public List<BasePhotoPickerModel> getSelectedPhotos() {
-
-      try {
-         List<BasePhotoPickerModel> tempSelectedImages = Queryable.from(photos)
+      return Queryable.from(photos)
                .filter(BasePhotoPickerModel::isChecked)
                .sort((lhs, rhs) -> lhs.getPickedTime() > rhs
                      .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0)
                .toList();
-
-         CreateReviewPostFragment.setToSelectedImagesList(tempSelectedImages);
-
-         return tempSelectedImages;
-
-      } catch (Exception ex) {
-         return null;
-      }
    }
 
    public void setLimit(int pickLimit) {

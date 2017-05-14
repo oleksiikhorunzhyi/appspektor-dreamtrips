@@ -68,7 +68,7 @@ public class CreateReviewEntityBundle implements Parcelable {
       return showPickerImmediately;
    }
 
-   public Merchant getmMerchant() {
+   public Merchant getMerchant() {
       return mMerchant;
    }
 

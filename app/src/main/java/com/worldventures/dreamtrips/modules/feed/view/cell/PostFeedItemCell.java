@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_feed_post_event)
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>> {
@@ -56,11 +57,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Inject FragmentManager fragmentManager;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
-   private int width;
-
    public PostFeedItemCell(View view) {
       super(view);
-      itemView.post(() -> width = cardViewWrapper.getWidth());
    }
 
    @Override
@@ -143,7 +141,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
                openFeedItemDetails();
             }
          });
-         collageView.setItems(attachmentsToCollageItems(attachments), width);
+         collageView.setItems(attachmentsToCollageItems(attachments), cardViewWrapper.getWidth());
       } else {
          collageView.clear();
       }

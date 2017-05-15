@@ -186,7 +186,7 @@
    <string name="selected">Επιλέχθηκαν %1$d</string>
    <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
    <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το <a href=\"%3$s\">εδώ</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το εδώ.<br/> %3$s]]></string>
    <string name="invite_add_photo">Προσθήκη φωτογραφίας</string>
    <string name="invite_select_first">Επιλογή επαφών στην αρχή</string>
    <string name="filters_show_favorite">ΕΜΦΑΝΙΣΗ ΑΓΑΠΗΜΕΝΩΝ ΤΑΞΙΔΙΩΝ</string>

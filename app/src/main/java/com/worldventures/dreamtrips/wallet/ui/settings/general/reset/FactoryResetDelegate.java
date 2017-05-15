@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.Fac
 
 import flow.path.Path;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
-import io.techery.janet.smartcard.action.lock.LockDeviceAction;
 import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class FactoryResetDelegate {
@@ -83,7 +82,6 @@ public abstract class FactoryResetDelegate {
 
    public void cancelFactoryReset() {
       factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
-      factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
    }
 
    public void goBack() {

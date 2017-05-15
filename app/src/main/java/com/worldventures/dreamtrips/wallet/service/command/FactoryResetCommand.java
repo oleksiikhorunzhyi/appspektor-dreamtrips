@@ -7,28 +7,22 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.lock.LockDeviceAction;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
+import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
 import io.techery.janet.smartcard.event.PinStatusEvent.PinStatus;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class FactoryResetCommand extends Command<Void> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
-   @Inject @Named(JANET_WALLET) Janet walletJanet;
 
    private final PublishSubject<Void> resetCommandPublishSubject;
    private final ResetOptions factoryResetOptions;
@@ -86,8 +80,8 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
    }
 
    private Observable<Void> requestPinEnteringAndReset() {
-      return walletJanet.createPipe(LockDeviceAction.class, Schedulers.io())
-            .createObservableResult(new LockDeviceAction(true))
+      return smartCardInteractor.requestPinAuthActionPipe()
+            .createObservableResult(new RequestPinAuthAction())
             .flatMap(action -> observeAuthenticationAndReset());
    }
 

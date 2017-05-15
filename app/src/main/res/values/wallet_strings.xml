@@ -161,6 +161,8 @@
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_unpair_sc">Unpair Smart Card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>
+   <string name="wallet_card_settings_display_options">Display Options</string>
+   <string name="wallet_card_settings_customize_sc_display">Customize your Smart Card\'s display</string>
    <string name="wallet_settings_prepare_remove_pin">A PIN helps protect your payment cards from theft. Are you sure you want to disable PIN?</string>
 
    <string name="wallet_card_settings_documents">Documents</string>

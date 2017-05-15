@@ -107,6 +107,25 @@
 
          </RelativeLayout>
 
+         <!--Display Options-->
+         <LinearLayout
+               android:id="@+id/item_display_options"
+               style="@style/SettingsMenuItem"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_display_options"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:text="@string/wallet_card_settings_customize_sc_display"
+                  />
+
+         </LinearLayout>
+
          <!--Reset-->
          <LinearLayout
                android:id="@+id/item_factory_reset"

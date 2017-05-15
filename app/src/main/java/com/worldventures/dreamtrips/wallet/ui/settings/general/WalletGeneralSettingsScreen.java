@@ -79,6 +79,11 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
       presenter.openSoftwareUpdateScreen();
    }
 
+   @OnClick(R.id.item_display_options)
+   void onClickDisplayOptions() {
+      presenter.openDisplayOptionsScreen();
+   }
+
    @OnClick(R.id.item_factory_reset)
    void onClickReset() {
       presenter.onClickFactoryResetSmartCard();
@@ -187,7 +192,8 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {},
+            () -> {
+            },
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.retry,

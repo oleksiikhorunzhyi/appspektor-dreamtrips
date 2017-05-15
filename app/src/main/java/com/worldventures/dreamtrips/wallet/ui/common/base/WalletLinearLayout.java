@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
@@ -81,10 +82,26 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
    }
 
    private int findCorrectIndex() {
-      if (getChildCount() > 0 && getChildAt(0) instanceof Toolbar) {
+      if (getChildCount() > 0 && hasFirstViewIsToolbar(this)) {
          return 1;
       } else {
          return 0;
+      }
+   }
+
+   private boolean hasFirstViewIsToolbar(ViewGroup viewGroup) {
+      if (viewGroup.getChildAt(0) instanceof Toolbar) {
+         return true;
+      } else {
+         for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            if (child instanceof ViewGroup) {
+               return hasFirstViewIsToolbar((ViewGroup) child);
+            } else {
+               return false;
+            }
+         }
+         return false;
       }
    }
 

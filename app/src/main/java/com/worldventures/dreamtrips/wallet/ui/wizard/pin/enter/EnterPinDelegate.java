@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinSuccessAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetPinAction;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPath;
@@ -57,7 +56,7 @@ abstract class EnterPinDelegate {
 
       @Override
       public void pinEntered() {
-         navigator.withoutLast(new WalletSecuritySettingsPath());
+         navigator.withoutLast(new PinSetSuccessPath(Action.ADD));
       }
 
       @Override

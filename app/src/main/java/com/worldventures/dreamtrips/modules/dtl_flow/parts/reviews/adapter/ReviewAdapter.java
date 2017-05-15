@@ -42,6 +42,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       notifyItemRangeInserted(pos, mItems.size());
    }
 
+   public void clear() {
+      mItems.clear();
+      notifyDataSetChanged();
+   }
+
    @Override
    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
       holder.bind(position);

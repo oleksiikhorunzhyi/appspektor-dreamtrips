@@ -204,4 +204,8 @@
       <item name="android:textColorHint">@color/grey</item>
       <item name="android:textSize">@dimen/font_normal</item>
    </style>
+
+   <style name="WalletTheme.ProfileField.PhoneNumber" parent="WalletTheme.ProfileField">
+      <item name="android:inputType">number</item>
+   </style>
 </resources>

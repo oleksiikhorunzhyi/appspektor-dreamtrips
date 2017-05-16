@@ -8,7 +8,7 @@
       >
 
    <TextView
-         style="@style/WalletTheme.ProfileField"
+         style="@style/WalletTheme.ProfileField.PhoneNumber"
          android:layout_width="0dp"
          android:layout_height="match_parent"
          android:layout_weight="0.1"
@@ -16,34 +16,31 @@
          android:drawableRight="@null"
          android:gravity="center"
          android:hint="@string/wallet_card_settings_profile_country_code_hint"
-         android:inputType="phone"
          android:text="+"
          />
 
    <EditText
          android:id="@+id/et_country_code"
-         style="@style/WalletTheme.ProfileField"
+         style="@style/WalletTheme.ProfileField.PhoneNumber"
          android:layout_width="0dp"
          android:layout_height="match_parent"
          android:layout_marginRight="@dimen/spacing_small"
          android:layout_weight="0.2"
          android:drawableRight="@null"
          android:hint="@string/wallet_card_settings_profile_country_code_hint"
-         android:inputType="phone"
          android:maxLength="5"
          android:text="1"
          />
 
    <EditText
          android:id="@+id/et_phone_number"
-         style="@style/WalletTheme.ProfileField"
+         style="@style/WalletTheme.ProfileField.PhoneNumber"
          android:layout_width="0dp"
          android:layout_height="wrap_content"
          android:layout_marginLeft="@dimen/spacing_small"
          android:layout_weight="0.7"
          android:hint="@string/wallet_card_settings_profile_phone_hint"
          android:imeOptions="actionDone"
-         android:inputType="phone"
          android:maxLength="12"
          />
 

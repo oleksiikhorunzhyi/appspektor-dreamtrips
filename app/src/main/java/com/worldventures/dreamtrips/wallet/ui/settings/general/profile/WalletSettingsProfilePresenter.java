@@ -9,12 +9,14 @@ import android.view.WindowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -127,8 +129,16 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .middleName(view.getMiddleName())
             .lastName(view.getLastName())
             .photo(preparedPhoto)
-            .phone(ImmutableSmartCardUserPhone.of(view.getPhoneNumber(), view.getCountryCode()))
+            .phone(preparePhone(view))
             .build();
+   }
+
+   private SmartCardUserPhone preparePhone(Screen view) {
+      if (!ProjectTextUtils.isEmpty(view.getCountryCode()) && !ProjectTextUtils.isEmpty(view.getPhoneNumber())) {
+         return ImmutableSmartCardUserPhone.of(view.getPhoneNumber(), view.getCountryCode());
+      } else {
+         return null;
+      }
    }
 
    void handleBackAction() {

@@ -13,12 +13,14 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -156,8 +158,16 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .middleName(userNames[1])
             .lastName(userNames[2])
             .photo(preparedPhoto)
-            .phone(ImmutableSmartCardUserPhone.of(getView().getPhoneNumber(), getView().getCountryCode()))
+            .phone(preparePhone())
             .build();
+   }
+
+   private SmartCardUserPhone preparePhone() {
+      if (!ProjectTextUtils.isEmpty(getView().getCountryCode()) && !ProjectTextUtils.isEmpty(getView().getPhoneNumber())) {
+         return ImmutableSmartCardUserPhone.of(getView().getPhoneNumber(), getView().getCountryCode());
+      } else {
+         return null;
+      }
    }
 
    private boolean isUserDataValid(String[] userNames) {

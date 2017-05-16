@@ -43,7 +43,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -296,6 +295,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                   getView().hideButtonAllRateAndReview();
                }
             }
+         } else {
+            if (getView() != null) {
+               getView().addNoCommentsAndReviews();
+            }
          }
       }
    }
@@ -307,8 +310,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       } else {
          Path path = new DtlCommentReviewPath(merchant);
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-         historyBuilder.pop();
-         historyBuilder.pop();
          historyBuilder.push(path);
          Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
       }

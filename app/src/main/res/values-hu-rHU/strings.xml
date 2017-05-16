@@ -186,7 +186,7 @@
    <string name="selected">%1$d kiválasztva</string>
    <string name="email_is_not_valid">Az e-mail cím érvénytelen</string>
    <string name="invitation_deselect_all">Összes kijelölés törlése</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Üdv, %1$s! %2$s <br/>Nézze meg <a href=\"%3$s\">itt</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Üdv, %1$s! %2$s <br/>Nézze meg itt.<br/>%3$s]]></string>
    <string name="invite_add_photo">Fénykép hozzáadása</string>
    <string name="invite_select_first">Előbb válasszon kapcsolattartókat</string>
    <string name="filters_show_favorite">KEDVENC UTAK MEGJELENÍTÉSE</string>

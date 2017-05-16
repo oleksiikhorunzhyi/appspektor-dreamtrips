@@ -15,13 +15,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewCreationTextCell;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -143,22 +136,17 @@ import dagger.Provides;
             DtGalleryFragment.class,
             GalleryPresenter.class,
             ActionEntityFragment.class,
-            ActionReviewEntityFragment.class,
             ActionEntityPresenter.class,
             CreateTripImageFragment.class,
             CreateFeedPostFragment.class,
-            CreateReviewPostFragment.class,
             CreateEntityFragment.class,
-            CreateReviewEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,
             LocationPresenter.class,
             SuggestedPhotosCell.class,
             SuggestionPhotoCell.class,
             PhotoPostCreationCell.class,
-            PhotoReviewPostCreationCell.class,
             PostCreationTextCell.class,
-            PostReviewCreationTextCell.class,
             SubPhotoAttachmentCell.class,
             PostFeedItemDetailsCell.class,
             EditPostFragment.class,
@@ -169,9 +157,7 @@ import dagger.Provides;
             DescriptionCreatorPresenter.class,
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
-            UploadingPhotoPostsSectionCell.class,
-            CreateReviewEntityPresenter.class,
-            PostReviewDescription.class,
+            UploadingPhotoPostsSectionCell.class
       },
       complete = false,
       library = true)

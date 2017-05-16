@@ -3,9 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 import com.worldventures.dreamtrips.api.dtl.merchants.AddReviewHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.RequestReviewParams;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
-import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.CommentReview;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewCreationItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,15 +33,16 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    private final String userId;
    private final String deviceFingerprint;
    private final String authorIpAddress;
+   private final List<PhotoReviewCreationItem> selectedImagesList;
 
    public static AddReviewAction create(RequestReviewParams params, String userEmail, String userNickName, String reviewText,
-         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress) {
+         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
       return new AddReviewAction(params, userEmail, userNickName, reviewText,
-            rating, verified, userId, deviceFingerprint, authorIpAddress);
+            rating, verified, userId, deviceFingerprint, authorIpAddress, selectedImagesList);
    }
 
    public AddReviewAction(RequestReviewParams params, String userEmail, String userNickName, String reviewText,
-         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress) {
+         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
       this.actionParams = params;
       this.userEmail = userEmail;
       this.userNickName = userNickName;
@@ -52,13 +52,12 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       this.userId = userId;
       this.deviceFingerprint = deviceFingerprint;
       this.authorIpAddress = authorIpAddress;
+      this.selectedImagesList = selectedImagesList;
    }
 
    @Override
    protected void run(CommandCallback<CommentReview> callback) throws Throwable {
       callback.onProgress(0);
-
-      List<BasePhotoPickerModel> selectedImagesList = getSelectedImagesList();
 
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpActionBuilder().setActionParams(actionParams)
@@ -135,11 +134,11 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
          return this;
       }
 
-      public AddReviewHttpActionBuilder addFiles(List<BasePhotoPickerModel> imagesList) {
+      public AddReviewHttpActionBuilder addFiles(List<PhotoReviewCreationItem> imagesList) {
 
-         if(imagesList != null){
-            for (BasePhotoPickerModel photo : imagesList) {
-               files.add(new File(photo.getAbsolutePath()));
+         if (imagesList != null) {
+            for (PhotoReviewCreationItem photo : imagesList) {
+               files.add(new File(photo.getFilePath()));
             }
          }
          return this;
@@ -173,11 +172,5 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
          }
          return action;
       }
-
    }
-
-   private List<BasePhotoPickerModel> getSelectedImagesList() {
-      return BasePickerPresenter.getSelectedImagesList();
-   }
-
 }

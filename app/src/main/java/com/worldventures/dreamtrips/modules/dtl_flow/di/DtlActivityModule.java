@@ -32,6 +32,13 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucc
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewCreationTextCell;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
@@ -117,7 +124,14 @@ import dagger.Provides;
             DtlCommentReviewScreenImpl.class,
             DtlCommentReviewPresenterImpl.class,
             DtlDetailReviewPresenterImpl.class,
-            DtlDetailReviewScreenImpl.class
+            DtlDetailReviewScreenImpl.class,
+            CreateReviewEntityPresenter.class,
+            PostReviewDescription.class,
+            PhotoReviewPostCreationCell.class,
+            PostReviewCreationTextCell.class,
+            ActionReviewEntityFragment.class,
+            CreateReviewPostFragment.class,
+            CreateReviewEntityFragment.class
       },
       complete = false, library = true)
 public class DtlActivityModule {

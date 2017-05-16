@@ -16,7 +16,7 @@
          android:layout_height="match_parent"
          >
 
-   <FrameLayout
+   <com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView
          android:id="@+id/container_comments_detail"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

@@ -54,6 +54,10 @@
    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the Smart Card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
    <string name="wallet_wizard_setup_new_pin_success">New PIN is set!</string>
+   <string name="wallet_wizard_setup_pin_proposal_toolbar">PIN</string>
+   <string name="wallet_wizard_setup_pin_proposal_label">Creating a PIN helps secure your Smart Card if it is lost or stolen.</string>
+   <string name="wallet_wizard_setup_pin_proposal_dialog_content">Creating a PIN helps keep your payment cards secure if your Smart Card is lost or stolen. Are you sure you want to skip this step?</string>
+   <string name="wallet_wizard_setup_pin_proposal_skip">Skip</string>
 
    <!--pin is set-->
    <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
@@ -223,6 +227,13 @@
    <string name="wallet_tap_confirm_try_again">Did not save to Smart Card.\nTap Confirm to try again.</string>
    <string name="wallet_card_details_nickname_error">Please use letters, numbers, spaces or dashes</string>
    <string name="wallet_add_card_details_error_default">Failed to add Payment Card.</string>
+   <string name="wallet_add_card_details_pin_proposal_toolbar">Card Added</string>
+   <string name="wallet_add_card_details_pin_proposal_label">%1$s has been added to your Smart Card. Help secure it by creating a PIN.</string>
+   <string name="wallet_add_card_details_pin_proposal_remind_later">Remind me later</string>
+   <string name="wallet_add_card_details_pin_proposal_dont_show">Don\'t show again</string>
+   <string name="wallet_add_card_details_pin_proposal_cancel">Cancel</string>
+   <string name="wallet_add_card_details_pin_proposal_create_pin">Create PIN</string>
+   <string name="wallet_add_card_details_pin_proposal_no_thanks">No Thanks</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>

@@ -281,7 +281,7 @@
                android:background="@drawable/list_divider_with_right_padding"
                />
 
-         <FrameLayout
+         <com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView
              android:id="@+id/container_comments"
              android:layout_width="match_parent"
              android:layout_height="match_parent" />

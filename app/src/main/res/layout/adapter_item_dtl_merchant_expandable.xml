@@ -184,21 +184,10 @@
                android:layout_height="wrap_content"
                android:layout_centerVertical="true"
                android:layout_alignParentRight="true"
-               android:layout_marginRight="@dimen/spacing_normal"
+               android:layout_marginRight="@dimen/spacing_small"
                tools:src="@drawable/ic_arrow_down_grey"
                />
 
-         <TextView
-               android:id="@+id/perk_toggle_label"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_centerVertical="true"
-               android:layout_toLeftOf="@id/perk_toggle_view"
-               android:layout_marginRight="@dimen/spacing_normal"
-               android:text="@string/friend_hide"
-               android:visibility="gone"
-               tools:visibility="visible"
-               />
       </RelativeLayout>
 
       <LinearLayout

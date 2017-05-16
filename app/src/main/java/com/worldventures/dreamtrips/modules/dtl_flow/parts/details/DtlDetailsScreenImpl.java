@@ -7,16 +7,15 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,14 +49,16 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferNoReviewFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -86,8 +87,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.text_view_rating) TextView textViewRating;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
-
-   @InjectView(R.id.container_comments) FrameLayout mContainerComments;
+   @InjectView(R.id.container_comments) OfferWithReviewView mContainerComments;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -107,7 +107,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
       toolbar.setNavigationIcon(R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> {
-         //getPresenter().onBackPressed();
          Flow.get(getContext()).goBack();
       });
 
@@ -121,28 +120,23 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantDataInflater.setView(this);
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
-      addNoCommentsAndReviews();
+      showMessage();
    }
 
    @Override
    public void addNoCommentsAndReviews() {
-      FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-      transaction.replace(R.id.container_comments, OfferNoReviewFragment.newInstance(null));
-      transaction.commit();
+      mContainerComments.showNoComments();
    }
 
    @Override
    public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
       Bundle bundle = new Bundle();
-      bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
-      bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
-      bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
-      bundle.putString(OfferWithReviewFragment.MERCHANT_NAME, merchant.displayName());
-      bundle.putBoolean(OfferWithReviewFragment.IS_FROM_LIST_REVIEW, false);
-
-      FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-      transaction.replace(R.id.container_comments, OfferWithReviewFragment.newInstance(bundle));
-      transaction.commit();
+      bundle.putParcelableArrayList(OfferWithReviewView.ARRAY, listReviews);
+      bundle.putFloat(OfferWithReviewView.RATING_MERCHANT, ratingMerchant);
+      bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
+      bundle.putString(OfferWithReviewView.MERCHANT_NAME, merchant.displayName());
+      bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, false);
+      mContainerComments.addBundle(bundle);
    }
 
    @Override
@@ -244,6 +238,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return merchantHoursInflater != null && merchantHoursInflater.isViewExpanded();
    }
 
+   private void showMessage() {
+      String message = getPath().getMessage();
+      if (message != null && message.length() > 0) {
+         Snackbar.make(mContainerComments, message, Snackbar.LENGTH_LONG).show();
+      }
+   }
+
    private void setContacts() {
       Queryable.from(MerchantHelper.getContactsData(getContext(), merchant))
             .filter(contact -> contact.type != ImageTextItem.Type.ADDRESS)
@@ -307,10 +308,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (merchant.reviews() != null) {
          String stringTotal = merchant.reviews().total();
          if (mRatingBar != null && merchant.reviews() != null
-                 && stringTotal != null && !stringTotal.isEmpty()
-                 && Integer.parseInt(merchant.reviews().total()) > 0) {
+               && stringTotal != null && !stringTotal.isEmpty()
+               && Integer.parseInt(merchant.reviews().total()) > 0) {
             mRatingBar.setRating(Float.parseFloat(merchant.reviews().ratingAverage()));
-            textViewRating.setText(ViewUtils.getLabelReviews(getContext(), Integer.parseInt(merchant.reviews().total())));
+            textViewRating.setText(ViewUtils.getLabelReviews(getContext(), Integer.parseInt(merchant.reviews()
+                  .total())));
          }
       }
    }
@@ -432,8 +434,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (!merchant.asMerchantAttributes().hasOffers()) {
          ViewUtils.setViewVisibility(this.perks, View.GONE);
          ViewUtils.setViewVisibility(this.points, View.GONE);
-      }
-      else {
+      } else {
          ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
          ViewUtils.setViewVisibility(this.points, View.VISIBLE);
          int perksNumber = merchant.asMerchantAttributes().offersCount(OfferType.PERK);

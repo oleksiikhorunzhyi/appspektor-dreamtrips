@@ -4,7 +4,6 @@ import android.location.Location;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.dtl.merchants.AddRatingHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
@@ -55,22 +54,6 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    }
 
    public void done() {
-      //if (stars == 0) return;
-      transactionInteractor.transactionActionPipe()
-            .createObservableResult(DtlTransactionAction.get(merchant))
-            .map(DtlTransactionAction::getResult)
-            .flatMap(transaction -> transactionInteractor.rateActionPipe()
-                  .createObservableResult(new AddRatingHttpAction(merchant.id(), ImmutableRatingParams.builder()
-                        .rating(stars)
-                        .transactionId(transaction.getDtlTransactionResult().getId())
-                        .build())))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {
-               //view.sendToReview(merchant);
-            }, throwable -> {
-               //view.sendToReview(merchant);
-            });
-      //TODO: Not matter what happened is calls Review
       this.user = appSessionHolder.get().get().getUser();
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);

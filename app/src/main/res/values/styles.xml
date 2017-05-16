@@ -503,7 +503,7 @@
    <!--end in app notifications-->
    <!-- most recent review merchant -->
    <style name="RatingBar" parent="Theme.AppCompat">
-      <item name="colorControlNormal">@color/rating_normal</item>
+      <item name="colorControlNormal">@color/rating_color</item>
       <item name="colorControlActivated">@color/rating_color</item>
    </style>
 

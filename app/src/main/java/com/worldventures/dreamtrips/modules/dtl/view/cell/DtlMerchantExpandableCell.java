@@ -56,7 +56,6 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @InjectView(R.id.merchantDistance) TextView merchantDistance;
    @InjectView(R.id.offers_container) View offersContainer;
    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
-   @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
    @InjectView(R.id.text_view_rating) TextView textViewRating;
@@ -154,8 +153,6 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private void setToggleView() {
       int toggleDrawable = expanded ? R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey;
       perkToggleImage.setBackgroundResource(toggleDrawable);
-      //
-      ViewUtils.setViewVisibility(perkToggleText, expanded ? View.VISIBLE : View.GONE);
    }
 
    /**

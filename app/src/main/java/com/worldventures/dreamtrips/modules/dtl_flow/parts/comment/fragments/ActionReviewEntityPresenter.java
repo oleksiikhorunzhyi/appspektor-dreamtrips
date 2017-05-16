@@ -32,9 +32,7 @@ public abstract class ActionReviewEntityPresenter<V extends ActionReviewEntityPr
    @State Location location;
    @State ArrayList<PhotoReviewCreationItem> cachedCreationItems = new ArrayList<>();
 
-   @Inject EditPhotoTagsCallback editPhotoTagsCallback;
    @Inject PostLocationPickerCallback postLocationPickerCallback;
-   @Inject HashtagInteractor hashtagInteractor;
    @Inject CreatePostBodyInteractor createPostBodyInteractor;
    @Inject PhotoPickerDelegate photoPickerDelegate;
 
@@ -44,10 +42,6 @@ public abstract class ActionReviewEntityPresenter<V extends ActionReviewEntityPr
    public void takeView(V view) {
       super.takeView(view);
       updateUi();
-      editPhotoTagsCallback.toObservable()
-            .compose(bindView())
-            .subscribe(bundle -> onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags),
-                  error -> Timber.e(error, ""));
       postLocationPickerCallback.toObservable()
             .compose(bindView())
             .subscribe(this::updateLocation, error -> Timber.e(error, ""));
@@ -105,26 +99,6 @@ public abstract class ActionReviewEntityPresenter<V extends ActionReviewEntityPr
 
    public abstract void post();
 
-   private void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
-      PhotoReviewCreationItem item = Queryable.from(cachedCreationItems)
-            .firstOrDefault(element -> element.getId() == requestId);
-      //
-      if (item != null) {
-         item.getCachedAddedPhotoTags().removeAll(photoTags);
-         item.getCachedAddedPhotoTags().addAll(photoTags);
-         item.getCachedAddedPhotoTags().removeAll(removedTags);
-
-         item.getCachedRemovedPhotoTags().removeAll(removedTags);
-         item.getCachedRemovedPhotoTags().addAll(removedTags);
-         //if view ==null state will be updated on attach view.
-         if (view != null) {
-            view.updateItem(item);
-         }
-      }
-      //
-      invalidateDynamicViews();
-   }
-
    @Override
    public void handleError(Object action, Throwable error) {
       super.handleError(action, error);
@@ -147,26 +121,12 @@ public abstract class ActionReviewEntityPresenter<V extends ActionReviewEntityPr
       return TextUtils.isEmpty(cachedText);
    }
 
-   protected PhotoReviewCreationItem createItemFromPhoto(Photo photo) {
-      PhotoReviewCreationItem photoCreationItem = new PhotoReviewCreationItem();
-      photoCreationItem.setTitle(photo.getTitle());
-      photoCreationItem.setOriginUrl(photo.getImagePath());
-      photoCreationItem.setHeight(photo.getHeight());
-      photoCreationItem.setWidth(photo.getWidth());
-      photoCreationItem.setLocation(photo.getLocation().getName());
-      photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
-      photoCreationItem.setCanDelete(true);
-      photoCreationItem.setCanEdit(true);
-      return photoCreationItem;
-   }
-
-   protected void closeView() {
-      view.cancel();
-      view = null;
-   }
-
    public void onLocationClicked() {
       view.openLocation(getLocation());
+   }
+
+   public List<PhotoReviewCreationItem> getSelectedImagesList() {
+      return cachedCreationItems;
    }
 
    public interface View extends RxView {

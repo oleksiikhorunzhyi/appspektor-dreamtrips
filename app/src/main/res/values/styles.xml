@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
       <item name="spinBars">true</item>
@@ -544,5 +544,17 @@
    </style>
 
    <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
+   </style>
+
+   <style name="DtlRateButton" parent="Base.Widget.AppCompat.Button">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:text">@string/rate_and_reviews_text</item>
+      <item name="android:textColor">@android:color/white</item>
+      <item name="android:textSize">@dimen/dtl_all_reviews_text</item>
+      <item name="android:layout_height">@dimen/dtl_all_reviews_height</item>
+      <item name="android:layout_marginLeft">@dimen/dtl_all_reviews_margin</item>
+      <item name="android:layout_marginRight">@dimen/dtl_all_reviews_margin</item>
+      <item name="android:layout_marginTop">@dimen/dtl_all_reviews_margin</item>
+      <item name="android:elevation" tools:targetApi="lollipop">@dimen/dtl_all_reviews_elevation</item>
    </style>
 </resources>

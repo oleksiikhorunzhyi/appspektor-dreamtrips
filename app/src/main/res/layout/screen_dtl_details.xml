@@ -292,8 +292,10 @@
              android:orientation="vertical"
              android:background="@color/white">
 
-            <include
-                layout="@layout/rate_review_button"/>
+            <TextView
+                  android:id="@+id/btn_rate_and_review"
+                  style="@style/DtlRateButton"
+                  />
 
             <include layout="@layout/read_all_rating_review"
                 android:visibility="invisible"/>

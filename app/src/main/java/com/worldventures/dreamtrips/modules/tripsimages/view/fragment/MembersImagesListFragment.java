@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.support.v7.widget.GridLayoutManager;
+import android.view.View;
+import android.widget.Button;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -21,12 +24,16 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesP
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.Observable;
 
 @Layout(R.layout.fragment_account_images_list)
 public class MembersImagesListFragment<P extends MembersImagesBasePresenter> extends TripImagesListFragment<P> implements MembersImagesPresenter.View {
 
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
+
+   @InjectView(R.id.new_images_button) Button newImagesButton;
 
    @Override
    public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -105,5 +112,21 @@ public class MembersImagesListFragment<P extends MembersImagesBasePresenter> ext
    private boolean isCreatePhotoAlreadyAttached() {
       return Queryable.from(getActivity().getSupportFragmentManager().getFragments())
             .firstOrDefault(fragment -> fragment instanceof CreateTripImageFragment) != null;
+   }
+
+   @Override
+   public void showNewImagesButton(String newImagesCount) {
+      newImagesButton.setVisibility(View.VISIBLE);
+      newImagesButton.setText(getString(R.string.member_images_new_items, newImagesCount));
+   }
+
+   @Override
+   public void hideNewImagesButton() {
+      newImagesButton.setVisibility(View.GONE);
+   }
+
+   @OnClick(R.id.new_images_button)
+   public void onShowNewImagesClick() {
+      getPresenter().onShowNewImagesClick();
    }
 }

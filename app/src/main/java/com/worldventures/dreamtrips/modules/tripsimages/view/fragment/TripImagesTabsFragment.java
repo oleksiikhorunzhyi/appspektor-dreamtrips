@@ -42,7 +42,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                if (fragment instanceof TripImagesListFragment) {
                   TripImagesType type = TripImagesType.values()[position];
                   BaseFragmentWithArgs fragmentWithArgs = (BaseFragmentWithArgs) fragment;
-                  fragmentWithArgs.setArgs(new TripsImagesBundle(type, getPresenter().getAccount().getId()));
+                  boolean showTimestamps = fragment.getClass().equals(MembersImagesListFragment.class);
+                  fragmentWithArgs.setArgs(new TripsImagesBundle(type, getPresenter().getAccount().getId(), showTimestamps));
                }
             }
          };

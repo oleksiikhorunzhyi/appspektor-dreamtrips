@@ -18,11 +18,16 @@ public class AccountImagesPresenter extends MembersImagesBasePresenter<GetUserPh
 
    @Override
    protected GetUserPhotosCommand getReloadCommand() {
-      return new GetUserPhotosCommand(userId, 1, PER_PAGE);
+      return new GetUserPhotosCommand(userId, 1, getPageSize());
    }
 
    @Override
    protected GetUserPhotosCommand getLoadMoreCommand(int currentCount) {
-      return new GetUserPhotosCommand(userId, currentCount / PER_PAGE + 1, PER_PAGE);
+      return new GetUserPhotosCommand(userId, currentCount / getPageSize() + 1, getPageSize());
+   }
+
+   @Override
+   public void onShowNewImagesClick() {
+      // nothing to do here
    }
 }

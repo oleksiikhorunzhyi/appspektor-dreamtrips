@@ -58,6 +58,7 @@ import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberImagesRefresher;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
@@ -371,5 +372,11 @@ public class ManagerModule {
    InitializerInteractor provideInitializerInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          LoginInteractor loginInteractor) {
       return new InitializerInteractor(sessionActionPipeCreator, loginInteractor);
+   }
+
+   @Provides
+   @Singleton
+   MemberImagesRefresher provideMemberImagesRefresher(TripImagesInteractor tripImagesInteractor) {
+      return new MemberImagesRefresher(tripImagesInteractor);
    }
 }

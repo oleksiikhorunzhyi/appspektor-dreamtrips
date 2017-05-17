@@ -109,7 +109,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserP
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.PaginatedTripImagesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
@@ -198,7 +198,7 @@ import dagger.Module;
       GetMembersPhotosCommand.class,
       GetUserPhotosCommand.class,
       GetYSBHPhotosCommand.class,
-      TripImagesCommand.class,
+      PaginatedTripImagesCommand.class,
       DeletePhotoCommand.class,
       DeletePhotoTagsCommand.class,
       SocialJanetCommandModule.class,

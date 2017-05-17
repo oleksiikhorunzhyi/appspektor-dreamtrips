@@ -2,21 +2,18 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.inspirations.GetInspireMePhotosHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class GetInspireMePhotosCommand extends TripImagesCommand<Inspiration> {
+public class GetInspireMePhotosCommand extends PaginatedTripImagesCommand<Inspiration> {
 
    @Inject Janet janet;
    @Inject MapperyContext mappery;

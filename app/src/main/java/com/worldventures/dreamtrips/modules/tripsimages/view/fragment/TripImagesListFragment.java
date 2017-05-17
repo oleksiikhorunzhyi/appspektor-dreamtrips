@@ -33,10 +33,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoTimestampCell;
 
 import java.util.List;
 
 import butterknife.InjectView;
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle.NO_NOTIFICATION;
 
@@ -99,7 +101,11 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    protected void registerCellsAndDelegates() {
-      adapter.registerCell(Photo.class, PhotoCell.class);
+      if (getArgs().showTimestamps()) {
+         adapter.registerCell(Photo.class, PhotoTimestampCell.class);
+      } else {
+         adapter.registerCell(Photo.class, PhotoCell.class);
+      }
       adapter.registerCell(YSBHPhoto.class, PhotoCell.class);
       adapter.registerCell(Inspiration.class, PhotoCell.class);
 
@@ -135,7 +141,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
 
    @Override
    public void setSelection(int photoPosition) {
-      //nothing to do here
+      recyclerView.scrollToPosition(photoPosition);
    }
 
    @Override
@@ -229,6 +235,16 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
 
    @Override
    public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
+      //TODO temp solution will be removed after refactoring
+   }
+
+   @Override
+   public void showNewImagesButton(String newImagesCount) {
+      //TODO temp solution will be removed after refactoring
+   }
+
+   @Override
+   public void hideNewImagesButton() {
       //TODO temp solution will be removed after refactoring
    }
 }

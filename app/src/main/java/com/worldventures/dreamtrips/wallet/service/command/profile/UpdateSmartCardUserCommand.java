@@ -104,7 +104,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
       if (!changedFields.firstName().equals(user.firstName())
             || !changedFields.middleName().equals(user.middleName())
             || !changedFields.lastName().equals(user.lastName())
-            || !changedFields.phone().equals(user.phoneNumber())) {
+            || (changedFields.phone() == null && user.phoneNumber() != null)
+            || (changedFields.phone() != null && !changedFields.phone().equals(user.phoneNumber()))) {
          needUpdate = true;
       }
 
@@ -116,7 +117,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                      .firstName(changedFields.firstName())
                      .middleName(changedFields.middleName())
                      .lastName(changedFields.lastName())
-                     .phoneNum(changedFields.phone().fullPhoneNumber())
+                     .phoneNum(changedFields.phone() != null ? changedFields.phone().fullPhoneNumber() : null)
                      .isUserAssigned(true)
                      .memberId(userSessionHolder.get().get().getUser().getId())
                      .barcodeId(Long.parseLong(scId))

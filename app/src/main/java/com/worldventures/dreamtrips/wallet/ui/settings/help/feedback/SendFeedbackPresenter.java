@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
+import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
@@ -31,7 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.ActionState;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -44,13 +45,14 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    @Inject Activity activity;
    @Inject Navigator navigator;
    @Inject SettingsHelpInteractor settingsHelpInteractor;
+   @Inject FeedbackInteractor feedbackInteractor;
    @Inject Router router;
 
    private final CancelableFeedbackAttachmentsManager attachmentsManager;
 
    public SendFeedbackPresenter(Context context, Injector injector) {
       super(context, injector);
-      attachmentsManager = new CancelableFeedbackAttachmentsManager(settingsHelpInteractor.uploadAttachmentPipe());
+      attachmentsManager = new CancelableFeedbackAttachmentsManager(feedbackInteractor.uploadAttachmentPipe());
    }
 
    @Override
@@ -79,11 +81,10 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
             });
 
-      settingsHelpInteractor.attachmentsRemovedPipe()
-            .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(settingsHelpInteractor.attachmentsRemovedPipe()))
-            .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
-            .map(actionState -> actionState.action.getResult())
+      feedbackInteractor.attachmentsRemovedPipe()
+            .observeSuccessWithReplay()
+            .doOnNext(command -> feedbackInteractor.attachmentsRemovedPipe().clearReplays())
+            .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(removedAttachments -> Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                if (removedAttachments.contains(holder.entity())) {
@@ -92,9 +93,9 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
                }
             }));
 
-      settingsHelpInteractor.uploadAttachmentPipe()
+      feedbackInteractor.uploadAttachmentPipe()
             .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(settingsHelpInteractor.uploadAttachmentPipe()))
+            .compose(new ActionPipeCacheWiper<>(feedbackInteractor.uploadAttachmentPipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<UploadFeedbackAttachmentCommand>()
                   .onStart(this::updateImageAttachment)

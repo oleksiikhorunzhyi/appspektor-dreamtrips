@@ -74,7 +74,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject SessionHolder<UserSession> appSessionHolder;
 
    private final Merchant merchant;
-   private User user;
    private final List<String> preExpandOffers;
    private static final int MAX_SIZE_TO_SHOW_BUTTON = 2;
 
@@ -88,7 +87,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
@@ -305,19 +303,24 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickRatingsReview(Merchant merchant) {
-      if (!merchant.reviews().total().isEmpty() && Integer.parseInt(merchant.reviews().total()) > 0) {
-         Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      User user = appSessionHolder.get().get().getUser();
+      if (!ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
+         if (!merchant.reviews().total().isEmpty() && Integer.parseInt(merchant.reviews().total()) > 0) {
+            Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+         } else {
+            Path path = new DtlCommentReviewPath(merchant);
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.push(path);
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+         }
       } else {
-         Path path = new DtlCommentReviewPath(merchant);
-         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-         historyBuilder.push(path);
-         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+         getView().userHasPendingReview();
       }
    }
 
    @Override
    public void onClickRateView() {
-      this.user = appSessionHolder.get().get().getUser();
+      User user = appSessionHolder.get().get().getUser();
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {

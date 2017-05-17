@@ -45,7 +45,7 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
             .subscribe(command -> reportNoConnection());
    }
 
-   private List<FragmentItem> provideScreens() {
+   public List<FragmentItem> provideScreens() {
       List<FragmentItem> items = new ArrayList<>();
       items.add(new FragmentItem(Route.TRAINING_VIDEOS, context.getString(R.string.training_videos)));
       items.add(new FragmentItem(Route.ENROLL_REP, context.getString(R.string.rep_enrollment)));

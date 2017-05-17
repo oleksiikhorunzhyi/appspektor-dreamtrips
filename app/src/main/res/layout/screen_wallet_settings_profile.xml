@@ -73,6 +73,7 @@
                style="@style/WalletTheme.ProfileField"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:drawableEnd="@drawable/ic_wallet_pencil"
                android:hint="@string/wallet_card_settings_profile_firstname_hint"
                tools:text="Shirley"
                />
@@ -82,6 +83,8 @@
                style="@style/WalletTheme.ProfileField"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:drawableEnd="@drawable/ic_wallet_pencil"
+               android:hint="@string/wallet_card_settings_profile_middle_hint"
                tools:text="Shirley Temple"
                />
 

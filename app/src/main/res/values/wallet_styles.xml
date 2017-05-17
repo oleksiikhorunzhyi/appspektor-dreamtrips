@@ -195,7 +195,6 @@
    </style>
 
    <style name="WalletTheme.ProfileField">
-      <item name="android:drawableRight">@drawable/ic_wallet_pencil</item>
       <item name="android:imeOptions">actionNext</item>
       <item name="android:inputType">textPersonName|textCapWords</item>
       <item name="android:maxLength">@integer/wallet_settings_name_max_length</item>

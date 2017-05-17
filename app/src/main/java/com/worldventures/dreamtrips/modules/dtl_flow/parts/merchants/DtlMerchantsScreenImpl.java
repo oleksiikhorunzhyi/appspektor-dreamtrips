@@ -7,7 +7,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,7 +16,6 @@ import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
@@ -225,36 +223,35 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       }
    }
 
-   public static List<String> getFilterType(){
+   public static List<String> getFilterType() {
       return merchantType;
    }
 
-   private static void setStatusMerchantType(String type){
+   private static void setStatusMerchantType(String type) {
       merchantType.clear();
       merchantType = MerchantTypeUtil.getMerchantTypeList(type);
    }
 
-    @Override
-    public void updateMerchantType(List<String> type) {
-
-       if (type != null ) {
-          if (type.size() > 1) {
-             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
-                filterFood.setSelected(true);
-                idResource = R.string.dtlt_search_hint;
-             }
-          } else {
-             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
-                filterEntertainment.setSelected(true);
-                idResource = R.string.filter_merchant_entertainment;
-             } else if (type.get(0).equals(FilterData.SPAS)) {
-                filterSpa.setSelected(true);
-                idResource = R.string.filter_merchant_spa;
-             }
-          }
-       }
-       updateFiltersView(idResource);
-    }
+   @Override
+   public void updateMerchantType(List<String> type) {
+      if (type != null && type.size() > 0) {
+         if (type.size() == 1) {
+            if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
+               filterEntertainment.setSelected(true);
+               idResource = R.string.filter_merchant_entertainment;
+            } else if (type.get(0).equals(FilterData.SPAS)) {
+               filterSpa.setSelected(true);
+               idResource = R.string.filter_merchant_spa;
+            }
+         } else {
+            if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
+               filterFood.setSelected(true);
+               idResource = R.string.dtlt_search_hint;
+            }
+         }
+      }
+      updateFiltersView(idResource);
+   }
 
    @Override
    public int getMerchantType() {
@@ -275,7 +272,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void loadNextMerchantsError(boolean show) {
-      if(show) delegate.addItem(MerchantsErrorCell.INSTANCE);
+      if (show) delegate.addItem(MerchantsErrorCell.INSTANCE);
       else delegate.removeItem(MerchantsErrorCell.INSTANCE);
    }
 
@@ -313,7 +310,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void connectToggleUpdate() {
-      if(dtlToolbar == null) return;
+      if (dtlToolbar == null) return;
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
@@ -405,7 +402,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public DtlMerchantsState provideViewState() {
-      return new DtlMerchantsState(delegate.getExpandedMerchants(), recyclerView.getLayoutManager().onSaveInstanceState());
+      return new DtlMerchantsState(delegate.getExpandedMerchants(), recyclerView.getLayoutManager()
+            .onSaveInstanceState());
    }
 
    @Override

@@ -105,10 +105,12 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     }
 
    public void onBackPressed() {
-      if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
-         showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
-      } else {
-         goBack();
+      if (fragment.isAvailableToPost()){
+         if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
+            showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
+         } else {
+            goBack();
+         }
       }
    }
 

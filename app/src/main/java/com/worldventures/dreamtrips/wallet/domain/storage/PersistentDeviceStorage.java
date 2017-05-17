@@ -299,11 +299,12 @@ public class PersistentDeviceStorage implements DeviceStorage {
 
    @Override
    public void setHomeDisplayType(int type) {
-
+      memoryStorage.setHomeDisplayType(type);
+      persistStorage();
    }
 
    @Override
    public int getHomeDisplayType() {
-      return 0;
+      return memoryStorage.getHomeDisplayType();
    }
 }

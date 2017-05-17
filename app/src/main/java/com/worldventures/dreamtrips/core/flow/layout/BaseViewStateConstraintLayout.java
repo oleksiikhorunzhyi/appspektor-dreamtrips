@@ -5,18 +5,17 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 
-public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends ViewStateMvpPresenter<V, ?>> extends MvpLinearLayout<V, P> {
+public abstract class BaseViewStateConstraintLayout<V extends MvpView, P extends ViewStateMvpPresenter<V, ?>> extends MvpConstraintLayout<V, P> {
 
    private final ViewStateDelegate delegate;
 
-   public BaseViewStateLinearLayout(Context context) {
+   public BaseViewStateConstraintLayout(Context context) {
       this(context, null);
    }
 
-   public BaseViewStateLinearLayout(Context context, AttributeSet attrs) {
+   public BaseViewStateConstraintLayout(Context context, AttributeSet attrs) {
       super(context, attrs);
       delegate = new ViewStateDelegate(super::getPresenter);
    }

@@ -1,19 +1,16 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.support.annotation.StringRes;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
+import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateConstraintLayout;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
@@ -25,26 +22,22 @@ import butterknife.ButterKnife;
 import flow.path.Path;
 import rx.Observable;
 
-public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T>, RxLifecycleView {
+public abstract class WalletConstraintLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateConstraintLayout<V, P> implements InjectorHolder, PathView<T>, RxLifecycleView {
 
    private Injector injector;
+
    private View connectionSmartCardHeader;
    private View connectionHttpHeader;
+
    private boolean visibleConnectionSmartCardLabel = true;
    private boolean visibleHttpConnectionLabel = false;
 
-   public WalletLinearLayout(Context context) {
+   public WalletConstraintLayout(Context context) {
       this(context, null);
    }
 
-   public WalletLinearLayout(Context context, AttributeSet attrs) {
+   public WalletConstraintLayout(Context context, AttributeSet attrs) {
       super(context, attrs);
-      initContainer();
-   }
-
-   private void initContainer() {
-      setOrientation(VERTICAL);
-      setLayoutTransition(new LayoutTransition());
    }
 
    @Override
@@ -65,44 +58,14 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
       viewLabelController(connectionSmartCardHeader, connectionStatus.isConnected());
    }
 
-   private void viewLabelController(View view, boolean connected) {
-      if (connected) {
-         removeView(view);
-      } else {
-         if (indexOfChild(view) < 0) {
-            addView(view, findCorrectIndex());
-         }
-      }
-   }
-
    public void showHttpConnectionStatus(boolean connected) {
       if (!visibleHttpConnectionLabel || visibleConnectionSmartCardLabel) return;
 
       viewLabelController(connectionHttpHeader, connected);
    }
 
-   private int findCorrectIndex() {
-      if (getChildCount() > 0 && hasFirstViewIsToolbar(this)) {
-         return 1;
-      } else {
-         return 0;
-      }
-   }
-
-   private boolean hasFirstViewIsToolbar(ViewGroup viewGroup) {
-      if (viewGroup.getChildAt(0) instanceof Toolbar) {
-         return true;
-      } else {
-         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View child = viewGroup.getChildAt(i);
-            if (child instanceof ViewGroup) {
-               return hasFirstViewIsToolbar((ViewGroup) child);
-            } else {
-               return false;
-            }
-         }
-         return false;
-      }
+   private void viewLabelController(View view, boolean show) {
+      // TODO: 5/22/17 Come up with an idea on how to show these labels more nicely
    }
 
    @Deprecated

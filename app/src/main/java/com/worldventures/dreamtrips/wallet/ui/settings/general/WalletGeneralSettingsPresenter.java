@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPath;
@@ -97,7 +98,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    void openDisplayOptionsScreen() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            // TODO: 5/15/17 Navigate to the screen
+            navigator.go(new DisplayOptionsSettingsPath());
          } else {
             getView().showSCNonConnectionDialog();
          }

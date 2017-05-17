@@ -50,7 +50,7 @@ public class JanetHttpErrorHandlingUtils {
 
    public static Pair<BaseHttpAction, Throwable> obtainHttpException(Object action, Throwable exception) {
       if (action instanceof BaseHttpAction && exception instanceof HttpServiceException) {
-         return new Pair<>((BaseHttpAction)action, exception);
+         return new Pair<>((BaseHttpAction) action, exception);
       }
 
       if (exception instanceof JanetActionException) {
@@ -73,7 +73,7 @@ public class JanetHttpErrorHandlingUtils {
       if (!isHttpExceptionWithPath(exception)) return null;
 
       HttpException httpException = (HttpException) exception.getCause();
-      return httpException.getCause() != null? httpException.getCause().getMessage()
+      return httpException.getCause() != null ? httpException.getCause().getMessage()
             : ((HttpException) exception.getCause()).getResponse().getBody().toString();
    }
 
@@ -85,8 +85,9 @@ public class JanetHttpErrorHandlingUtils {
    }
 
    private static boolean isHttpExceptionWithPath(Throwable exception) {
-      return exception != null && exception.getCause() != null || (exception.getCause() instanceof HttpException)
-            || ((HttpException)exception.getCause()).getRequest() == null;
+      return exception != null && exception.getCause() != null
+            && (exception.getCause() instanceof HttpException)
+            && ((HttpException)exception.getCause()).getRequest() == null;
    }
 
 }

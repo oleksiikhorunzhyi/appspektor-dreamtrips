@@ -61,7 +61,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @InjectView(R.id.tv_max_chars) TextView mMaxChars;
    @InjectView(R.id.progress_loader) ProgressBar mProgressBar;
    @InjectView(R.id.post_container) RelativeLayout mContainer;
-   @InjectView(R.id.photos_review) RecyclerView mIvClose;
+   @InjectView(R.id.photos) RecyclerView mIvClose;
 
    @Inject MerchantsInteractor merchantInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;

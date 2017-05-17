@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -77,6 +78,8 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
 
     @Override
     protected void onPostAttachToWindowView() {
+       //FIXME: Is not the best solution to block the orientation due to a large request
+       OrientationUtil.lockOrientation(getActivity());
         inflateToolbarMenu(toolbar);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -103,6 +106,13 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
        transaction.commit();
        toolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      //FIXME: Is not the best solution to block the orientation due to a large request
+      OrientationUtil.unlockOrientation(getActivity());
+      super.onDetachedFromWindow();
+   }
 
    public void onBackPressed() {
       if (fragment.isAvailableToPost()){

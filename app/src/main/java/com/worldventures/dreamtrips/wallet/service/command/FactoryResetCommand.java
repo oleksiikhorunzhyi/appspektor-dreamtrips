@@ -41,9 +41,6 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
                         if (status == PinStatus.DISABLED) {
                            // skip
                            return Observable.just(null);
-                        } else if (status == PinStatus.NEED_AUTHENTICATION || status == PinStatus.USER_INTERFACING) {
-                           // observe authorize
-                           return observeAuthenticationAndReset();
                         } else {
                            // lock card and observe authorize
                            return requestPinEnteringAndReset();

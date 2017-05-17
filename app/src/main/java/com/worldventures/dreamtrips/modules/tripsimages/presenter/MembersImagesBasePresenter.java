@@ -4,34 +4,39 @@ import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CommandWithTripImages;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 
-public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? extends IFullScreenObject>>
+public abstract class MembersImagesBasePresenter<C extends CommandWithTripImages>
       extends TripImagesListPresenter<MembersImagesBasePresenter.View, C> implements UploadingListenerPresenter {
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
 
-   private List<PostCompoundOperationModel> postUploads;
+   protected List<PostCompoundOperationModel> postUploads;
 
    public MembersImagesBasePresenter() {
       this(TripImagesType.MEMBERS_IMAGES, 0);
@@ -112,9 +117,15 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
+   public abstract void onShowNewImagesClick();
+
    public interface View extends TripImagesListPresenter.View {
       void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin);
 
       void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList);
+
+      void showNewImagesButton(String newImagesCount);
+
+      void hideNewImagesButton();
    }
 }

@@ -3,12 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.ysbh.GetYSBHPhotosHttpAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class GetYSBHPhotosCommand extends TripImagesCommand<YSBHPhoto> {
+public class GetYSBHPhotosCommand extends PaginatedTripImagesCommand<YSBHPhoto> {
 
    public GetYSBHPhotosCommand(int page, int perPage) {
       super(page, perPage);

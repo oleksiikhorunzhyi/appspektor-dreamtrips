@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -36,6 +35,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.Observable;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
@@ -219,5 +219,15 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    public void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList) {
       //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
       setImages(images);
+   }
+
+   @Override
+   public void showNewImagesButton(String newImagesCount) {
+      //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
+   }
+
+   @Override
+   public void hideNewImagesButton() {
+      //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
    }
 }

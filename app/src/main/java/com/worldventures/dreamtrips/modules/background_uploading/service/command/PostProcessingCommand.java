@@ -10,13 +10,16 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompo
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePhotoPostAction;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -146,11 +149,29 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
 
    private void notifyCompoundCommandFinished(PostCompoundOperationModel postOperationModel) {
       Timber.d("[New Post Creation] Compound operation finished, %s", postOperationModel);
+      copyCreatedAtFromUploadedPhotos(postOperationModel);
       postsInteractor.postCreatedPipe().send(new PostCreatedCommand(postOperationModel.body().createdPost()));
       compoundOperationsInteractor.compoundOperationsPipe()
             .send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
       backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
       sendAnalytics();
+   }
+
+   /*
+    * After creating textual post createdAt is missing in photo attachments
+    * (there are complications to add createdAt in feed on server as well)
+    */
+   private void copyCreatedAtFromUploadedPhotos(PostCompoundOperationModel postOperationModel) {
+      for (Photo photo : postOperationModel.body().uploadedPhotos()) {
+         List<Photo> addedPhotos = Queryable.from((postOperationModel.body().createdPost()).getAttachments())
+               .map(holder -> (Photo) holder.getItem())
+               .toList();
+         for (Photo addedPhoto : addedPhotos) {
+            if (photo.equals(addedPhoto)) {
+               addedPhoto.setCreatedAt(photo.getCreatedAt());
+            }
+         }
+      }
    }
 
    private void sendAnalytics() {

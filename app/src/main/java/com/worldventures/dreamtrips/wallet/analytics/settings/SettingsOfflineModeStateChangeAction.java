@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import java.util.HashMap;
 import java.util.Map;
 
-@AnalyticsEvent(action = "wallet:settings:general:offline mode:${offlineModeState}",
+@AnalyticsEvent(action = "wallet:settings:security:offline mode:${offlineModeState}",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class SettingsOfflineModeStateChangeAction extends WalletAnalyticsAction {
 

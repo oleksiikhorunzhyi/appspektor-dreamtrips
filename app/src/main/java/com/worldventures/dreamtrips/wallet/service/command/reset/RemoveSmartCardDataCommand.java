@@ -37,6 +37,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
       snappyRepository.deleteSmartCardDetails();
       snappyRepository.deleteSmartCard();
       snappyRepository.deleteTermsAndConditions();
+      snappyRepository.deletePinOptionChoice();
       lostCardRepository.clear();
       callback.onSuccess(null);
    }

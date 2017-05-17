@@ -17,14 +17,18 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.PinOptionalCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -36,6 +40,8 @@ import flow.Flow.Direction;
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
+import io.techery.janet.smartcard.event.PinStatusEvent;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -45,8 +51,10 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordInteractor recordInteractor;
+   @Inject WizardInteractor wizardInteractor;
 
    private final Record record;
+   private String cardNickname;
 
    public AddCardDetailsPresenter(Context context, Injector injector, Record record) {
       super(context, injector);
@@ -69,6 +77,27 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       observeSavingCardDetailsData();
       loadDataFromDevice();
       observeMandatoryFields();
+      observePinOptions();
+   }
+
+   private void observePinOptions() {
+      Observable.combineLatest(
+            smartCardInteractor.pinStatusEventPipe()
+                  .observeSuccess()
+                  .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED),
+            wizardInteractor.pinOptionalActionPipe()
+                  .observeSuccess()
+                  .map(Command::getResult), (isEnabled, shouldAsk) -> !isEnabled && shouldAsk)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(this::handlePinOptions);
+   }
+
+   private void handlePinOptions(Boolean shouldShowPinSuggestion) {
+      if (shouldShowPinSuggestion) {
+         navigator.withoutLast(new PinProposalPath(PinProposalAction.RECORDS, cardNickname));
+      } else {
+         navigator.single(new CardListPath(), Direction.REPLACE);
+      }
    }
 
    private void observeDefaultCardChangeByUser() {
@@ -104,7 +133,8 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    private void onCardAdd(AddRecordCommand command) {
       if (command.setAsDefaultRecord()) trackSetAsDefault(command.getResult());
       trackAddedCard(record, command.setAsDefaultRecord());
-      navigator.single(new CardListPath(), Direction.REPLACE);
+      smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
+      wizardInteractor.pinOptionalActionPipe().send(PinOptionalCommand.fetch());
    }
 
    private void loadDataFromDevice() {
@@ -112,6 +142,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
+      this.cardNickname = cardName;
       recordInteractor.addRecordPipe()
             .send(new AddRecordCommand.Builder().setRecord(record)
                   .setManualAddressInfo(addressInfo)

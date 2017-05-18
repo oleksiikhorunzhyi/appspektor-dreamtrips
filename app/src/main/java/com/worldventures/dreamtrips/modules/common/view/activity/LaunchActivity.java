@@ -10,7 +10,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
@@ -135,15 +134,5 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
       if (passwordError != 0) {
          passwordEditText.setError(getString(passwordError));
       }
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-
    }
 }

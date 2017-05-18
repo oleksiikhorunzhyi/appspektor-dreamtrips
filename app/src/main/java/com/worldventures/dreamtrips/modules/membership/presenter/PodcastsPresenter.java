@@ -10,11 +10,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       TrackingHelper.podcasts(getAccountUserId());
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView {
 
       void startLoading();
 

@@ -290,7 +290,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       view.hideBlockingProgress();
    }
 
-   public interface View extends ProfilePresenter.View, BlockingProgressView, ApiErrorView {
+   public interface View extends ProfilePresenter.View, BlockingProgressView {
 
       void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
 

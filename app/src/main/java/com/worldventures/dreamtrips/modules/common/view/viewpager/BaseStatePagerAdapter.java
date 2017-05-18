@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.view.viewpager;
 
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.adapter.ListAdapter;
 
 import java.util.ArrayList;
@@ -45,6 +47,16 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
          Timber.e(e, "");
       }
       return null;
+   }
+
+   @Override
+   public void restoreState(Parcelable state, ClassLoader loader) {
+      //TODO there are some random crash while state restoring, investigate it after 1.19 release
+      try {
+         super.restoreState(state, loader);
+      } catch (Exception ex) {
+         CrashlyticsTracker.trackError(ex);
+      }
    }
 
    public void setArgs(int position, Fragment fragment) {

@@ -29,7 +29,13 @@ public interface ApiErrorView {
    /**
     * Show user a short textual message, e.g. a {@link android.support.design.widget.Snackbar Snackbar}
     *
-    * @param string message to show
+    * @param message to show
     */
    void informUser(String message);
+
+   /**
+    * Should return if device is connected to internent
+    * @return connection status
+    */
+   boolean isConnected();
 }

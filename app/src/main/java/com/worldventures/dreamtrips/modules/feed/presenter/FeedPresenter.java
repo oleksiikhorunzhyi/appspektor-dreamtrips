@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -501,7 +500,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, ApiErrorView,
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View,
          BlockingProgressView, FeedEntityEditingView {
 
       void setRequestsCount(int count);

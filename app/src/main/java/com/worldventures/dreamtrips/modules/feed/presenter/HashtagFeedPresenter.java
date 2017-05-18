@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -291,7 +290,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       feedActionHandlerDelegate.onDeleteBucketItem(bucketItem);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, ApiErrorView,
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View,
          FeedEntityEditingView {
 
       void startLoading();

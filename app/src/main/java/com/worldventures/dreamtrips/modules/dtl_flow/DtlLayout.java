@@ -13,13 +13,14 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
-import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
@@ -171,5 +172,10 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
       getPresenter().onToolbarMenuPrepared(toolbar.getMenu());
       toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
       return true;
+   }
+
+   @Override
+   public boolean isConnected() {
+      return Utils.isConnected(getContext());
    }
 }

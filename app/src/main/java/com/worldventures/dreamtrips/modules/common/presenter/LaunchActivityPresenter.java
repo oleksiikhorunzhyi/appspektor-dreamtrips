@@ -134,7 +134,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       return false;
    }
 
-   public interface View extends ActivityPresenter.View, ApiErrorView {
+   public interface View extends ActivityPresenter.View {
 
       void openLogin();
 

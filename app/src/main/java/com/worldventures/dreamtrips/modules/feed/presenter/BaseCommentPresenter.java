@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -279,7 +278,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
    }
 
-   public interface View extends RxView, FlagDelegate.View, ApiErrorView {
+   public interface View extends RxView, FlagDelegate.View {
 
       void addComments(List<Comment> commentList);
 

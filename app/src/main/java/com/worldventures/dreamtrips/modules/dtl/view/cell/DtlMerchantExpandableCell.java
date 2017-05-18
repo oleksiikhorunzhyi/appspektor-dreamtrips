@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -61,6 +64,10 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
    @InjectView(R.id.text_view_rating) TextView textViewRating;
+   @InjectView(R.id.layout_rating_reviews) LinearLayout layoutRatingsReview;
+
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject DeviceInfoProvider deviceInfoProvider;
 
    private SelectableDelegate selectableDelegate;
    private DistanceType distanceType;
@@ -90,6 +97,14 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       // TODO :: please tear off my hands
       setExpandedArea();
       ValidateReviewUtil.setUpRating(itemView.getContext(), getModelObject().reviewSummary(), mRatingBar, textViewRating);
+
+      /**This must be removed once we start optimizing for tablets **/
+      if(deviceInfoProvider.isTablet()){
+         layoutRatingsReview.setVisibility(View.GONE);
+      } else {
+         layoutRatingsReview.setVisibility(View.VISIBLE);
+      }
+
    }
 
    private void setSelection(View view) {

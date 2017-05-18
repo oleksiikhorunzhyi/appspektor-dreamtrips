@@ -32,8 +32,6 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChan
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;

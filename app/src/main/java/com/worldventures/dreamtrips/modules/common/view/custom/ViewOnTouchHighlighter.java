@@ -78,6 +78,4 @@ public class ViewOnTouchHighlighter implements View.OnTouchListener {
          return new ViewOnTouchHighlighter(colorNormal, colorPress, duration);
       }
    }
-
-
 }

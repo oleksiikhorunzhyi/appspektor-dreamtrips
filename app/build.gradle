@@ -66,10 +66,11 @@ android {
    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE_MOCK, SMARTCARD_CODE_NXTID, STABLE_CODE]
    //
    String STAGE_CODE = "stage"
-   String PREPROD_CODE = "preprod"
    String PERF_CODE = "perf"
+   String INTEGRATION_CODE = "integration"
+   String PREPROD_CODE = "preprod"
    String PROD_CODE = "prod"
-   String[] CONFIG_CODES = [STAGE_CODE, PREPROD_CODE, PERF_CODE, PROD_CODE]
+   String[] CONFIG_CODES = [STAGE_CODE, INTEGRATION_CODE, PERF_CODE, PREPROD_CODE, PROD_CODE]
    //
    def APP_VERSION_NAME_BASE = "${versionMajor}.${versionMinor}.${versionPatch}"
    //
@@ -91,20 +92,24 @@ android {
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
-   def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://dtapp-qa.worldventures.biz/"',
-         'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
-         'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL': '"http://dtapp-qa.worldventures.biz/uploadery"',
+   def CONFIG_MAP_PERF = [
+         'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
+         'NEWRELIC_API_KEY' : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
+         'UPLOADERY_API_URL': '"dtappupload-perf.wvholdings.com"',
+   ]
+   def CONFIG_MAP_INTEGRATION = [
+         'DreamTripsApi'    : '"http://techery-dt-integration.techery.io/"',
+         'UPLOADERY_API_URL': '"http://techery-dt-integration-uploadery.techery.io"',
    ]
    def CONFIG_MAP_DTL = [
          'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',
          'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
    ]
-   def CONFIG_MAP_PERF = [
-         'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
-         'NEWRELIC_API_KEY' : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
-         'UPLOADERY_API_URL': '"dtappupload-perf.wvholdings.com"',
+   def CONFIG_MAP_PREPROD = [
+         'DreamTripsApi'    : '"http://dtapp-qa.worldventures.biz/"',
+         'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
+         'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
+         'UPLOADERY_API_URL': '"http://dtapp-qa.worldventures.biz/uploadery"',
    ]
    def CONFIG_MAP_PROD = [
          'DreamTripsApi'    : '"https://dtapp.worldventures.biz"',
@@ -122,8 +127,9 @@ android {
    //
    def CONFIG_MAPS = [
          "external"      : CONFIG_MAP_EXTERNAL,
-         "preprod"       : CONFIG_MAP_PREPROD,
          "perf"          : CONFIG_MAP_PERF,
+         "integration"   : CONFIG_MAP_INTEGRATION,
+         "preprod"       : CONFIG_MAP_PREPROD,
          "prod"          : CONFIG_MAP_PROD,
          "smartcardmock" : CONFIG_MAP_SMARTCARD_MOCK,
          "smartcardnxtid": CONFIG_MAP_SMARTCARD_NXTID,
@@ -233,13 +239,17 @@ android {
          dimension "config"
          applicationIdSuffix = STAGE_CODE
       }
-      preprod {
-         dimension "config"
-         applicationIdSuffix = PREPROD_CODE
-      }
       perf {
          dimension "config"
          applicationIdSuffix = PERF_CODE
+      }
+      integration {
+         dimension "config"
+         applicationIdSuffix = INTEGRATION_CODE
+      }
+      preprod {
+         dimension "config"
+         applicationIdSuffix = PREPROD_CODE
       }
       prod {
          dimension "config"
@@ -256,16 +266,16 @@ android {
       String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
       String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
       //
-      if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {
-         variant.ignore = false
-         return
+      if (variant.buildType.name == "debug") {
+         if ((config == STAGE_CODE || config == PREPROD_CODE)) variant.ignore = false
+         if (build == EXTERNAL_CODE && stream == STABLE_CODE && config == INTEGRATION_CODE) variant.ignore = false
       }
       //
-      if (variant.buildType.name.equals("release")) {
-         if (build.equals(EXTERNAL_CODE) && containsAnyOf(config, STAGE_CODE, PREPROD_CODE, PERF_CODE)) {
+      if (variant.buildType.name == "release") {
+         if (build == EXTERNAL_CODE && containsAnyOf(config, STAGE_CODE, PREPROD_CODE, PERF_CODE)) {
             variant.ignore = false
          }
-         if (build.equals(EXTERNAL_CODE) && stream.equals(STABLE_CODE) && config.equals(PROD_CODE)) {
+         if (build == EXTERNAL_CODE && stream == STABLE_CODE && (config == PROD_CODE || config == INTEGRATION_CODE)) {
             variant.ignore = false
          }
       }
@@ -304,6 +314,10 @@ android {
       if (CONFIG_MAPS.containsKey(configSuffix)) {
          CONFIG_MAPS.get(configSuffix).each { entry ->
             buildConfigField 'String', entry.key, entry.value
+         }
+         if (configSuffix == INTEGRATION_CODE && project.hasProperty('api_endpoint') && project.hasProperty('api_uploadery')) {
+            buildConfigField 'String', 'DreamTripsApi', "\"${project.getProperties().get('api_endpoint')}\""
+            buildConfigField 'String', 'UPLOADERY_API_URL', "\"project.getProperties().get('api_uploadery')\""
          }
       }
 

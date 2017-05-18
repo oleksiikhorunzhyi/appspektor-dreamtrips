@@ -7,10 +7,12 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -60,6 +62,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @InjectView(R.id.tv_max_chars) TextView mMaxChars;
    @InjectView(R.id.progress_loader) ProgressBar mProgressBar;
    @InjectView(R.id.post_container) RelativeLayout mContainer;
+   @InjectView(R.id.photos) RecyclerView mRecycler;
 
    @Inject MerchantsInteractor merchantInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
@@ -116,8 +119,10 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @OnClick(R.id.container_add_photos_and_videos)
    void onImage() {
-      if (getPresenter().getRemainingPhotosCount() > 0) {
-         showMediaPicker();
+      if (isAvailableToPost()) {
+         if (getPresenter().getRemainingPhotosCount() > 0) {
+            showMediaPicker();
+         }
       }
    }
 
@@ -185,7 +190,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
          setBoldStyleText();
       }
 
-      if (stringReviewLength >= maximumCharactersAllowed()){
+      if (stringReviewLength >= maximumCharactersAllowed()) {
          showErrorMaxMessage();
       }
    }
@@ -345,13 +350,28 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    public void enableInputs() {
       enableButtons(true);
+      enableButton();
       enablePost();
+      enableDisableViewGroup(mContainer, true);
    }
 
    @Override
    public void disableInputs() {
       enableButtons(false);
+      disableButton();
       disablePost();
+      enableDisableViewGroup(mContainer, false);
+   }
+
+   public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
+      int childCount = viewGroup.getChildCount();
+      for (int i = 0; i < childCount; i++) {
+         View view = viewGroup.getChildAt(i);
+         view.setEnabled(enabled);
+         if (view instanceof ViewGroup) {
+            enableDisableViewGroup((ViewGroup) view, enabled);
+         }
+      }
    }
 
    @Override
@@ -363,6 +383,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       getActivity().runOnUiThread(() -> {
          mComment.setEnabled(status);
          mRatingBar.setEnabled(status);
+         mRecycler.setEnabled(status);
+         mRecycler.setClickable(!status);
+         mRecycler.setNestedScrollingEnabled(status);
       });
    }
 
@@ -572,6 +595,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    public void disablePost() {
       mAvailableToPost = false;
    }
+
 
    @Override
    public void enablePost() {

@@ -91,10 +91,13 @@ public abstract class BaseActivity extends InjectingActivity {
             .immediate());
    }
 
+   protected boolean handleBackPressed() {
+      return backStackDelegate.handleBackPressed() || checkChildFragments(getSupportFragmentManager());
+   }
+
    @Override
    public void onBackPressed() {
-      if (backStackDelegate.handleBackPressed() || checkChildFragments(getSupportFragmentManager())) return;
-
+      if (handleBackPressed()) return;
       FragmentManager fm = getSupportFragmentManager();
 
       if (fm.getBackStackEntryCount() > 1) {

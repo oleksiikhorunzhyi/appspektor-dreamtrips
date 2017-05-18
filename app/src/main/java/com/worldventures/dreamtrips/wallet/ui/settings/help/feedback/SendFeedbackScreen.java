@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
@@ -34,7 +33,6 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
-
 
 public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter.Screen, SendFeedbackPresenter, SendFeedbackPath> implements SendFeedbackPresenter.Screen {
 

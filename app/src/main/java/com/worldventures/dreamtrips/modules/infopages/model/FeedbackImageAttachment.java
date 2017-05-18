@@ -109,7 +109,7 @@ public class FeedbackImageAttachment implements FeedbackAttachment, IFullScreenO
 
    @Override
    public String getImagePath() {
-      return url;
+      return originalFilePath;
    }
 
    @Override

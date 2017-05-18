@@ -32,7 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -82,9 +82,10 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
             });
 
       feedbackInteractor.attachmentsRemovedPipe()
-            .observeSuccessWithReplay()
-            .doOnNext(command -> feedbackInteractor.attachmentsRemovedPipe().clearReplays())
-            .map(Command::getResult)
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(feedbackInteractor.attachmentsRemovedPipe()))
+            .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+            .map(actionState -> actionState.action.getResult())
             .compose(bindViewIoToMainComposer())
             .subscribe(removedAttachments -> Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                if (removedAttachments.contains(holder.entity())) {

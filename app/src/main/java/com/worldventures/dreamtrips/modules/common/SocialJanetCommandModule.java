@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStorag
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
@@ -117,6 +118,7 @@ import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCac
 import dagger.Module;
 
 @Module(injects = {
+      CopyFileCommand.class,
       UploaderyImageCommand.class,
       SimpleUploaderyCommand.class,
       SmartCardUploaderyCommand.class,

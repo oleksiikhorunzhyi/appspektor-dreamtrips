@@ -25,6 +25,8 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvid
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
+import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProviderImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
@@ -59,6 +61,7 @@ import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInter
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberImagesRefresher;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
@@ -297,6 +300,12 @@ public class ManagerModule {
 
    @Provides
    @Singleton
+   UriPathProvider provideUriPathProvider(Context context) {
+      return new UriPathProviderImpl(context);
+   }
+
+   @Provides
+   @Singleton
    DeviceInfoProvider provideProfileInteractor(Context context) {
       return new DeviceInfoProviderImpl(context);
    }
@@ -378,5 +387,11 @@ public class ManagerModule {
    @Singleton
    MemberImagesRefresher provideMemberImagesRefresher(TripImagesInteractor tripImagesInteractor) {
       return new MemberImagesRefresher(tripImagesInteractor);
+   }
+
+   @Provides
+   @Singleton
+   UploadingFileManager provideUploadingFileManager(Context context) {
+      return new UploadingFileManager(context.getFilesDir());
    }
 }

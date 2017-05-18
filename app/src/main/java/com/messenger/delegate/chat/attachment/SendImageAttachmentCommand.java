@@ -45,6 +45,7 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
    @Inject PhotoDAO photoDAO;
    @Inject MessageBodyCreator messageBodyCreator;
    @Inject @ForApplication Context context;
+   @Inject UploadingFileManager uploadingFileManager;
 
    public SendImageAttachmentCommand(@NonNull String conversationId, @NonNull DataMessage message, @NonNull DataAttachment attachment, @NonNull DataPhotoAttachment photoAttachment) {
       super(conversationId);
@@ -71,7 +72,7 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
    }
 
    private Observable<String> getUploadingObservable() {
-      return just(photoAttachment.getLocalPath()).map(localUri -> UploadingFileManager.copyFileIfNeed(localUri, context))
+      return just(photoAttachment.getLocalPath()).map(localUri -> uploadingFileManager.copyFileIfNeed(localUri))
             .flatMap(uri -> uploaderyInteractor.uploadImageActionPipe().createObservable(new SimpleUploaderyCommand(uri)))
             .doOnNext(this::handleUploadStatus)
             .compose(new ActionStateToActionTransformer<>())

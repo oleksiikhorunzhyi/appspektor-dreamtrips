@@ -103,13 +103,6 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       setMaxLengthText(maximumCharactersAllowed());
    }
 
-   /*@OnClick(R.id.close)
-   void onClose() {
-      if (isAvailableToPost()){
-         getPresenter().cancelClicked();
-      }
-   }*/
-
    @Override
    protected Route getRoute() {
       return Route.POST_CREATE;

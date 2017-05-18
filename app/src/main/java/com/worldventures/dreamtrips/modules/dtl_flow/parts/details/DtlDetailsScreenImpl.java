@@ -149,9 +149,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void showButtonAllRateAndReview() {
-      if(deviceInfoProvider.isTablet()){
-         mTvReadAllReviews.setVisibility(View.GONE);
-      }
+      mTvReadAllReviews.setVisibility(deviceInfoProvider.isTablet() ? View.GONE : View.VISIBLE);
    }
 
    @Override

@@ -358,6 +358,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    public void enableInputs() {
       enableButtons(true);
       enableButton();
+      enablePost();
       enableDisableViewGroup(mContainer, true);
    }
 

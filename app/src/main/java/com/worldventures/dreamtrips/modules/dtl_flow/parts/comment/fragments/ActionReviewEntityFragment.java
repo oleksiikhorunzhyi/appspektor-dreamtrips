@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -178,14 +179,16 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void enableButton() {
-      postButton.setTextColor(getResources().getColor(R.color.bucket_detailed_text_color));
+      postButton.setTextColor(ContextCompat.getColor(getContext(), R.color.bucket_detailed_text_color));
       postButton.setClickable(true);
+      photosList.setLayoutFrozen(false);
    }
 
    @Override
    public void disableButton() {
-      postButton.setTextColor(getResources().getColor(R.color.grey));
+      postButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
       postButton.setClickable(false);
+      photosList.setLayoutFrozen(true);
    }
 
    @Override

@@ -61,6 +61,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenImpl;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -131,7 +132,8 @@ import dagger.Provides;
             PostReviewCreationTextCell.class,
             ActionReviewEntityFragment.class,
             CreateReviewPostFragment.class,
-            CreateReviewEntityFragment.class
+            CreateReviewEntityFragment.class,
+            OfferWithReviewView.class
       },
       complete = false, library = true)
 public class DtlActivityModule {

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
 import android.graphics.drawable.Animatable;
-import android.os.Build;
 import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -35,6 +34,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
+import static com.worldventures.dreamtrips.core.utils.GraphicUtils.createResizeImageRequest;
+import static com.worldventures.dreamtrips.core.utils.GraphicUtils.parseUri;
+
 public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresenter<T, ? extends FullScreenPresenter.View>, T extends IFullScreenObject> extends RxBaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements SocialFullScreenPresenter.View {
 
    @InjectView(R.id.iv_image) protected ScaleImageView ivImage;
@@ -56,7 +58,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
             if (ivImage != null) {
                int size = Math.max(ivImage.getWidth(), ivImage.getHeight());
                PipelineDraweeControllerBuilder draweeControllerBuilder = Fresco.newDraweeControllerBuilder()
-                     .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
+                     .setImageRequest(createResizeImageRequest(parseUri(image.getUrl(size, size)), size, size))
                      .setControllerListener(new BaseControllerListener<ImageInfo>() {
                         @Override
                         public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
@@ -75,11 +77,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                ivImage.setController(draweeController);
 
                ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
-               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                  viewTreeObserver.removeOnGlobalLayoutListener(this);
-               } else {
-                  viewTreeObserver.removeGlobalOnLayoutListener(this);
-               }
+               viewTreeObserver.removeOnGlobalLayoutListener(this);
             }
          }
       });

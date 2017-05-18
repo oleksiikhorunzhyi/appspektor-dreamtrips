@@ -74,7 +74,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
    private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
    private Merchant merchant;
-   public boolean mAvailableToPost = true;
+   private boolean mAvailableToPost = true;
 
    private SweetAlertDialog errorDialog;
 

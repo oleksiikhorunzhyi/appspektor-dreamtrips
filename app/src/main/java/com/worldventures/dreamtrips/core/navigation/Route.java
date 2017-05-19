@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;

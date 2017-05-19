@@ -361,6 +361,8 @@
    <string name="terms_and_conditions_reject">Not Now</string>
 
    <string name="camera">Camera</string>
+   <string name="camera_take_a_picture">Take a picture</string>
+   <string name="camera_record_a_video">Record a video</string>
    <string name="add_from_facebook">Add from Facebook</string>
 
    <string name="photos_selected">%d selected</string>
@@ -375,6 +377,8 @@
    <string name="no_mutual_friends">You don\'t have any mutual friends</string>
 
    <string name="photo_limitation_message">Please choose up to %d photos</string>
+   <string name="picker_erros_photos_and_videos">You can\'t select photos and videos</string>
+   <string name="picker_video_duration_limit">You can\'t upload video more than %d min</string>
    <string name="pending">Pending…</string>
 
    <string name="back">Back</string>

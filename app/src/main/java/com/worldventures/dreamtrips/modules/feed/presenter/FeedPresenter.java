@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -101,7 +101,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
    @State ArrayList<FeedItem> feedItems;
    private List<PostCompoundOperationModel> postUploads;
-   private List<PhotoGalleryModel> suggestedPhotos;
+   private List<PhotoPickerModel> suggestedPhotos;
    @State int unreadConversationCount;
 
    @Override
@@ -372,7 +372,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             }).onFail((suggestedPhotoCommand, throwable) -> refreshFeedItems()));
    }
 
-   public boolean hasNewPhotos(List<PhotoGalleryModel> photos) {
+   public boolean hasNewPhotos(List<PhotoPickerModel> photos) {
       return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
    }
 
@@ -390,7 +390,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       suggestedPhotoHelper.subscribeNewPhotoNotifications(notificationObservable);
    }
 
-   public void preloadSuggestionChunk(@NonNull PhotoGalleryModel model) {
+   public void preloadSuggestionChunk(@NonNull PhotoPickerModel model) {
       suggestedPhotoHelper.preloadSuggestionPhotos(model);
    }
 
@@ -398,7 +398,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       suggestedPhotoHelper.sync();
    }
 
-   public void selectPhoto(@NonNull PhotoGalleryModel model) {
+   public void selectPhoto(@NonNull PhotoPickerModel model) {
       suggestedPhotoHelper.selectPhoto(model);
    }
 
@@ -406,10 +406,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       Observable.from(getSelectedSuggestionPhotos())
             .map(element -> {
                Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
-               return new PhotoGalleryModel(pair.first, pair.second);
+               return new PhotoPickerModel(pair.first, pair.second);
             })
             .map(photoGalleryModel -> {
-               ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
+               ArrayList<PhotoPickerModel> chosenImages = new ArrayList<>();
                chosenImages.add(photoGalleryModel);
                return new MediaAttachment(chosenImages, MediaAttachment.Source.GALLERY);
             })
@@ -417,7 +417,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment), error -> Timber.e(error, ""));
    }
 
-   public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {
+   public List<PhotoPickerModel> getSelectedSuggestionPhotos() {
       return suggestedPhotoHelper.selectedPhotos();
    }
 
@@ -509,7 +509,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
       void setUnreadConversationCount(int count);
 
-      void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList, List<PhotoGalleryModel> suggestedPhotos);
+      void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList, List<PhotoPickerModel> suggestedPhotos);
 
       void startLoading();
 

@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v4.util.Pair;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
@@ -23,25 +22,25 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
 
    @Inject Context context;
 
-   private PhotoGalleryModel photoGalleryModel;
+   private PhotoPickerModel photoPickerModel;
    private MediaAttachment.Source source;
 
-   public CreatePhotoCreationItemCommand(PhotoGalleryModel photoGalleryModel, MediaAttachment.Source source) {
-      this.photoGalleryModel = photoGalleryModel;
+   public CreatePhotoCreationItemCommand(PhotoPickerModel photoPickerModel, MediaAttachment.Source source) {
+      this.photoPickerModel = photoPickerModel;
       this.source = source;
    }
 
    @Override
    protected void run(CommandCallback<PhotoCreationItem> callback) throws Throwable {
-      ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getImageUri()), 300, 300)
+      ImageUtils.getBitmap(context, photoPickerModel.getUri(), 300, 300)
             .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable),
                   bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoCreationItem item = new PhotoCreationItem();
-               item.setId(photoGalleryModel.getImageUri().hashCode());
-               item.setFileUri(photoGalleryModel.getImageUri());
-               item.setFilePath(photoGalleryModel.getAbsolutePath());
-               Size imageSize = photoGalleryModel.getSize();
+               item.setId(photoPickerModel.getUri().hashCode());
+               item.setFileUri(photoPickerModel.getUri().toString());
+               item.setFilePath(photoPickerModel.getAbsolutePath());
+               Size imageSize = photoPickerModel.getSize();
                item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());
                item.setHeight(imageSize != null ? imageSize.getHeight() : pair.second.getHeight());
                item.setSuggestions(pair.first);

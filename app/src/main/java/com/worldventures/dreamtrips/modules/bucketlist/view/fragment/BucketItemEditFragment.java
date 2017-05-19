@@ -32,7 +32,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.Bucket
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.Calendar;
@@ -296,7 +296,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(BUCKET_MEDIA_REQUEST_ID, 5, true))
+            .data(new PickerBundle.Builder()
+                  .setRequestId(BUCKET_MEDIA_REQUEST_ID).setPhotoPickLimit(PHOTO_PICK_LIMIT).build())
             .build());
    }
 
@@ -351,4 +352,6 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    public void showError() {
       editTextDescription.validate();
    }
+
+   public static final int PHOTO_PICK_LIMIT = 5;
 }

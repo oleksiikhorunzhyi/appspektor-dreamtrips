@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.modules.background_uploading.service.comman
 
 import android.support.annotation.Nullable;
 
+import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostCompoundOperationModel;
@@ -11,6 +13,8 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAtta
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -32,13 +36,18 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
    private Location location;
    private CreateEntityBundle.Origin origin;
 
-   public CreatePostCompoundOperationCommand(
-         @Nullable String text,
-         @Nullable List<SelectedPhoto> selectedPhotos,
-         @Nullable Location location,
-         CreateEntityBundle.Origin origin) {
+   public CreatePostCompoundOperationCommand(@Nullable String text, @Nullable List<SelectedPhoto> selectedPhotos,
+         CreateEntityBundle.Origin origin, @Nullable Location location) {
       this.text = text;
       this.selectedPhotos = selectedPhotos;
+      this.location = location;
+      this.origin = origin;
+   }
+
+   public CreatePostCompoundOperationCommand(@Nullable String text, @Nullable List<PhotoCreationItem> selectedPhotos,
+         @Nullable Location location, CreateEntityBundle.Origin origin) {
+      this.text = text;
+      this.selectedPhotos = getSelectionPhotos(selectedPhotos);
       this.location = location;
       this.origin = origin;
    }
@@ -91,5 +100,22 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
       if (text == null && selectedPhotos == null) {
          callback.onFail(new IllegalStateException("Both text and attachments cannot be null"));
       }
+   }
+
+   private List<SelectedPhoto> getSelectionPhotos(List<PhotoCreationItem> items) {
+      return Queryable.from(items)
+            .map((Converter<PhotoCreationItem, SelectedPhoto>) element ->
+                  ImmutableSelectedPhoto.builder()
+                        .title(element.getTitle())
+                        .path(element.getFilePath())
+                        .locationFromExif(element.getLocationFromExif())
+                        .tags(element.getCachedAddedPhotoTags())
+                        .locationFromPost(location)
+                        .source(element.getSource())
+                        .size(FileUtils.getFileSize(element.getFilePath()))
+                        .width(element.getWidth())
+                        .height(element.getHeight())
+                        .build())
+            .toList();
    }
 }

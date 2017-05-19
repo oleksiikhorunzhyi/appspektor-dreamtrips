@@ -86,6 +86,7 @@
    <dimen name="post_spacing_horizontal">0dp</dimen>
    <dimen name="post_spacing_vertical_top">0dp</dimen>
    <dimen name="post_spacing_vertical_bottom">0dp</dimen>
+   <dimen name="video_creation_cell_height">200dp</dimen>
 
    <dimen name="template_height">260dp</dimen>
 

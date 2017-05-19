@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.MediaPickerPresenter;
+import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
@@ -47,7 +47,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
-import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;

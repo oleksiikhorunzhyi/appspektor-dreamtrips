@@ -25,6 +25,7 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
          @Override
          public void onViewAttachedToWindow(View v) {
+            onAttachedToWindow(v);
          }
 
          @Override
@@ -33,6 +34,8 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
          }
       });
    }
+
+   protected void onAttachedToWindow(View v) { }
 
    @Override
    public void setEventBus(EventBus bus) {
@@ -55,14 +58,6 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
    public void fillWithItem(T item) {
       setModelObject(item);
       syncUIStateWithModel();
-   }
-
-   public void saveState(Bundle b) {
-
-   }
-
-   public void restoreState(Bundle bundle) {
-
    }
 
    @Override

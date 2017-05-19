@@ -6,11 +6,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
@@ -34,20 +31,14 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_post)
 public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
 
-   @Inject @ForActivity Injector injector;
    @Inject SessionHolder<UserSession> userSessionHolder;
 
-   @InjectView(R.id.shadow) View shadow;
    @InjectView(R.id.photo_container) View photoContainer;
-   @InjectView(R.id.fab_progress) FabButton fabProgress;
    @InjectView(R.id.attached_photo) SimpleDraweeView attachedPhoto;
-   @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
    @InjectView(R.id.tag_btn) TextView tagButton;
    @InjectView(R.id.photo_title) EditText photoTitle;
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
@@ -55,19 +46,15 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
    public PhotoPostCreationCell(View view) {
       super(view);
-      view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-         @Override
-         public void onViewAttachedToWindow(View v) {
-            photoTitle.addTextChangedListener(textWatcher);
-            photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
-               if (!hasFocus) photoContainer.requestFocus();
-               cellDelegate.onPhotoTitleFocusChanged(hasFocus);
-            });
-         }
+   }
 
-         @Override
-         public void onViewDetachedFromWindow(View v) {
-         }
+   @Override
+   public void onAttachedToWindow(View v) {
+      super.onAttachedToWindow(v);
+      photoTitle.addTextChangedListener(textWatcher);
+      photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
+         if (!hasFocus) photoContainer.requestFocus();
+         cellDelegate.onPhotoTitleFocusChanged(hasFocus);
       });
    }
 
@@ -86,9 +73,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          updateUi();
       } else {
          itemView.setVisibility(View.INVISIBLE);
-         ViewUtils.runTaskAfterMeasure(itemView, () -> {
-            updateUi();
-         });
+         ViewUtils.runTaskAfterMeasure(itemView, this::updateUi);
       }
    }
 
@@ -104,10 +89,12 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          }
          invalidateAddTagBtn();
       });
-      PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
-            .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
-            .getController());
-      attachedPhoto.setController(draweeController);
+
+      attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(
+            Uri.parse(getModelObject().getFileUri() == null
+                  ? getModelObject().getOriginUrl()
+                  : getModelObject().getFileUri()
+            ), attachedPhoto.getController()));
       photoTitle.setText(getModelObject().getTitle());
       boolean titleChangesEnabled = getModelObject().isCanEdit();
       photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
@@ -125,8 +112,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          width = cellWidth;
          height = cellWidth;
       }
-      int calculated = (int) (cellWidth / (float) width * height);
-      return calculated;
+      return (int) (cellWidth / (float) width * height);
    }
 
    private void showTagViewGroup() {

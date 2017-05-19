@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.fragment;
+package com.worldventures.dreamtrips.modules.media_picker.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -9,8 +9,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.presenter.MediaPickerPresenter;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import javax.inject.Inject;
@@ -34,13 +35,11 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
       rootView.setClickable(false);
       inject(photoPickerLayout);
       setupPicker();
-      boolean multipickEnabled = false;
       int pickLimit = 1;
       if (getArgs() != null) {
-         multipickEnabled = getArgs().isMultipickEnabled();
          pickLimit = getArgs().getPickLimit();
       }
-      photoPickerLayout.showPanel(multipickEnabled, pickLimit);
+      photoPickerLayout.showPanel(pickLimit > 1, pickLimit, getArgs().isVideoPickingEnabled());
       photoPickerLayout.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
          @Override
          public void onClosed() {
@@ -52,7 +51,8 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
       });
       photoPickerLayout.setTransparentView(transparentView);
 
-      photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
+      photoPickerLayout.setOnDoneClickListener((chosenImages, video, type)
+            -> getPresenter().attachMedia(chosenImages, video, type));
    }
 
    @Override

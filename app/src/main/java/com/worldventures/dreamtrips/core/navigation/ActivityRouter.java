@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.webkit.MimeTypeMap;
@@ -24,6 +25,7 @@ import java.io.File;
 public class ActivityRouter extends ActivityBoundRouter {
 
    public static final int CAPTURE_PICTURE_REQUEST_TYPE = 294;
+   public static final int CAPTURE_VIDEO_REQUEST_TYPE = 295;
 
    public ActivityRouter(Activity activity) {
       super(activity);
@@ -70,10 +72,21 @@ public class ActivityRouter extends ActivityBoundRouter {
    }
 
    public String openCamera(String folderName) {
-      Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       String filePathOriginal = FileUtils.buildFilePathOriginal(folderName, "jpg");
       intent.putExtra("output", Uri.fromFile(new File(filePathOriginal)));
       startActivityResult(intent, CAPTURE_PICTURE_REQUEST_TYPE);
+      return filePathOriginal;
+   }
+
+   public String openCameraForVideoRecording(String folderName, int durationLimitSecs) {
+      Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+      String filePathOriginal = FileUtils.buildFilePathOriginal(folderName, "mp4");
+      intent.putExtra("output", Uri.fromFile(new File(filePathOriginal)));
+      if (durationLimitSecs > 0) {
+         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, durationLimitSecs);
+      }
+      startActivityResult(intent, CAPTURE_VIDEO_REQUEST_TYPE);
       return filePathOriginal;
    }
 
@@ -102,5 +115,4 @@ public class ActivityRouter extends ActivityBoundRouter {
       intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(intent);
    }
-
 }

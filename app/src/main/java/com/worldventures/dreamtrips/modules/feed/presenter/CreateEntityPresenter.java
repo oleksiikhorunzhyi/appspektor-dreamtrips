@@ -2,25 +2,20 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.net.Uri;
 
-import com.innahema.collections.query.functions.Converter;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.State;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
+import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
@@ -52,7 +47,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
-   @Inject BackStackDelegate backStackDelegate;
 
    @State int postInProgressId;
 
@@ -91,7 +85,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                   .onFail(this::handleError)
                   .onSuccess(command -> {
                      postsInteractor.postCreatedPipe().send(new PostCreatedCommand(command.getResult()));
-                     analyticsInteractor.analyticsActionPipe().send(SharePostAction.createPostAction(command.getResult()));
+                     analyticsInteractor.analyticsActionPipe()
+                           .send(SharePostAction.createPostAction(command.getResult()));
                      closeView();
                   }));
       mediaPickerImagesProcessedEventDelegate.getReplayObservable()
@@ -102,14 +97,11 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             });
       mediaPickerEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
-            .subscribe(this::attachImages, error -> Timber.e(error, ""));
+            .subscribe(this::attachMedia, error -> Timber.e(error, ""));
    }
 
-   @Override
-   protected void updateUi() {
-      super.updateUi();
-      if (!isCachedUploadTaskEmpty()) view.attachPhotos(cachedCreationItems);
-      invalidateDynamicViews();
+   public void showMediaPicker() {
+      view.showMediaPicker(!cachedCreationItems.isEmpty());
    }
 
    private void createTextualPost(PostCompoundOperationModel postCompoundOperationModel) {
@@ -121,7 +113,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    protected boolean isChanged() {
       boolean imageAreProcessing = mediaPickerProcessingImages || locallyProcessingImagesCount > 0;
       boolean imagesAreFullyLoaded = cachedCreationItems.size() > 0 && !imageAreProcessing;
-      return !isCachedTextEmpty() && !imageAreProcessing || imagesAreFullyLoaded;
+      boolean videoSelected = selectedVideoPathUri != null;
+      return !isCachedTextEmpty() && !imageAreProcessing || imagesAreFullyLoaded || videoSelected;
    }
 
    @Override
@@ -139,26 +132,15 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .observeOn(Schedulers.io())
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
-                        .send(new CreatePostCompoundOperationCommand(cachedText, getSelectionPhotos(creationItems),
-                              location, origin))
+                        .send(new CreatePostCompoundOperationCommand(cachedText, creationItems, location, origin))
             );
    }
 
-   private List<SelectedPhoto> getSelectionPhotos(List<PhotoCreationItem> items) {
-      return Queryable.from(items)
-            .map((Converter<PhotoCreationItem, SelectedPhoto>) element ->
-                  ImmutableSelectedPhoto.builder()
-                        .title(element.getTitle())
-                        .path(element.getFilePath())
-                        .locationFromExif(element.getLocationFromExif())
-                        .tags(element.getCachedAddedPhotoTags())
-                        .locationFromPost(location)
-                        .source(element.getSource())
-                        .size(FileUtils.getFileSize(element.getFilePath()))
-                        .width(element.getWidth())
-                        .height(element.getHeight())
-                        .build())
-            .toList();
+   public void removeVideo(VideoCreationModel model) {
+      selectedVideoPathUri = null;
+      view.removeVideo(model);
+      updateUi();
+      updatePickerState();
    }
 
    public int getRemainingPhotosCount() {
@@ -174,18 +156,20 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       return removed;
    }
 
-   public void attachImages(MediaAttachment mediaAttachment) {
-      if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.isEmpty()) return;
-
+   public void attachMedia(MediaAttachment mediaAttachment) {
       view.disableImagePicker();
-      imageSelected(mediaAttachment);
+      if (mediaAttachment.hasImages()) {
+         attachImages(mediaAttachment.chosenImages, mediaAttachment.source);
+      } else if (mediaAttachment.hasVideo()) {
+         attachVideo(mediaAttachment.getChosenVideo().getUri());
+      }
    }
 
-   private void imageSelected(MediaAttachment mediaAttachment) {
+   private void attachImages(List<PhotoPickerModel> chosenImages, MediaAttachment.Source source) {
       locallyProcessingImagesCount++;
       invalidateDynamicViews();
-      Observable.from(mediaAttachment.chosenImages)
-            .concatMap(photoGalleryModel -> convertPhotoCreationItem(photoGalleryModel, mediaAttachment.source))
+      Observable.from(chosenImages)
+            .concatMap(photoGalleryModel -> convertPhotoCreationItem(photoGalleryModel, source))
             .compose(bindViewToMainComposer())
             .subscribe(newImage -> {
                if (ValidationUtils.isUrl(newImage.getFileUri())) {
@@ -213,34 +197,41 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       cachedCreationItems.add(newImage);
       view.attachPhoto(newImage);
       invalidateDynamicViews();
-      if (!mediaPickerProcessingImages) {
-         updatePickerState();
-      }
+      if (!mediaPickerProcessingImages) updatePickerState();
    }
 
-   private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel,
+   private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoPickerModel photoPickerModel,
          MediaAttachment.Source source) {
       return tripImagesInteractor.createPhotoCreationItemPipe()
-            .createObservableResult(new CreatePhotoCreationItemCommand(photoGalleryModel, source))
+            .createObservableResult(new CreatePhotoCreationItemCommand(photoPickerModel, source))
             .map(Command::getResult);
    }
 
-   private boolean isCachedUploadTaskEmpty() {
-      return cachedCreationItems.size() == 0;
+   private void attachVideo(Uri uri) {
+      selectedVideoPathUri = uri;
+      updateUi();
+      updatePickerState();
    }
 
    private void updatePickerState() {
-      if (getRemainingPhotosCount() > 0) {
+      if ((selectedVideoPathUri == null && cachedCreationItems.isEmpty())
+            || (!cachedCreationItems.isEmpty() && getRemainingPhotosCount() > 0)) {
          view.enableImagePicker();
       } else {
          view.disableImagePicker();
       }
    }
 
-   public interface View extends ActionEntityPresenter.View {
+   private void closeView() {
+      view.cancel();
+      view = null;
+   }
 
+   public interface View extends ActionEntityPresenter.View {
       void enableImagePicker();
 
       void disableImagePicker();
+
+      void showMediaPicker(boolean picturesSelected);
    }
 }

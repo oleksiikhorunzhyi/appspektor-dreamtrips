@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
@@ -57,7 +57,7 @@ public class MembersImagesListFragment<P extends MembersImagesBasePresenter> ext
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, MEDIA_PICKER_ITEMS_COUNT))
+            .data(new PickerBundle.Builder().setPhotoPickLimit(MEDIA_PICKER_ITEMS_COUNT).build())
             .build());
    }
 

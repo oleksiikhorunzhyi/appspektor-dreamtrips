@@ -53,7 +53,7 @@ public class FeedbackImageAttachment implements FeedbackAttachment, IFullScreenO
    @Override
    public Image getFSImage() {
       Image image = new Image();
-      image.setUrl(originalFilePath);
+      image.setUrl(url);
       return image;
    }
 

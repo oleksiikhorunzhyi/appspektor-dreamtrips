@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.facebook.model;
 
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import android.net.Uri;
+
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
+public class FacebookPhoto implements MediaPickerModel, Serializable {
 
    private String id;
    private List<ImageSource> images;
@@ -29,7 +31,16 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
    }
 
    @Override
-   public String getImageUri() {
+   public Type getType() {
+      return Type.PHOTO;
+   }
+
+   @Override
+   public Uri getUri() {
+      return Uri.parse(getStringUri());
+   }
+
+   private String getStringUri() {
       if (images.size() > 2) {
          return images.get(images.size() / 2 + 1).getSource();
       } else {
@@ -45,6 +56,11 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
    @Override
    public long getPickedTime() {
       return pickedTime;
+   }
+
+   @Override
+   public long getDateTaken() {
+      return 0;
    }
 
    public void setPickedTime(long pickedTime) {

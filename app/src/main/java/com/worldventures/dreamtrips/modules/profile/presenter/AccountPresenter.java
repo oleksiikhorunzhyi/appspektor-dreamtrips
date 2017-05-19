@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -307,7 +307,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void imageSelected(MediaAttachment mediaAttachment) {
-      PhotoGalleryModel image = mediaAttachment.chosenImages.get(0);
+      PhotoPickerModel image = mediaAttachment.chosenImages.get(0);
       switch (mediaAttachment.requestId) {
          case AVATAR_MEDIA_REQUEST_ID:
             onAvatarChosen(image);
@@ -318,7 +318,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       }
    }
 
-   private void onAvatarChosen(PhotoGalleryModel image) {
+   private void onAvatarChosen(PhotoPickerModel image) {
       if (image != null) {
          String filePath = image.getAbsolutePath();
          if (ValidationUtils.isUrl(filePath)) {
@@ -339,7 +339,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail(this::handleError));
    }
 
-   private void onCoverChosen(PhotoGalleryModel image) {
+   private void onCoverChosen(PhotoPickerModel image) {
       if (image != null) {
          String filePath = image.getAbsolutePath();
          if (ValidationUtils.isUrl(filePath)) {

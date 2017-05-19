@@ -3,20 +3,33 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
+
 import java.util.List;
 
 public class MediaAttachment implements Parcelable {
 
-   public final List<PhotoGalleryModel> chosenImages;
+   public final List<PhotoPickerModel> chosenImages;
+   public final VideoPickerModel chosenVideo;
    public final Source source;
    public final int requestId;
 
-   public MediaAttachment(List<PhotoGalleryModel> chosenImages, Source source) {
+   public MediaAttachment(List<PhotoPickerModel> chosenImages, Source source) {
       this(chosenImages, source, -1);
    }
 
-   public MediaAttachment(List<PhotoGalleryModel> chosenImages, Source source, int requestId) {
+   public MediaAttachment(List<PhotoPickerModel> chosenImages, Source source, int requestId) {
+      this(chosenImages, null, source, requestId);
+   }
+
+   public MediaAttachment(VideoPickerModel chosenVideo, Source source, int requestId) {
+      this(null, chosenVideo, source, requestId);
+   }
+
+   private MediaAttachment(List<PhotoPickerModel> chosenImages, VideoPickerModel chosenVideo, Source source, int requestId) {
       this.chosenImages = chosenImages;
+      this.chosenVideo = chosenVideo;
       this.source = source;
       this.requestId = requestId;
    }
@@ -29,12 +42,26 @@ public class MediaAttachment implements Parcelable {
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeTypedList(chosenImages);
+      dest.writeParcelable(chosenVideo, 0);
       dest.writeInt(this.source.ordinal());
       dest.writeInt(this.requestId);
    }
 
+   public VideoPickerModel getChosenVideo() {
+      return chosenVideo;
+   }
+
+   public boolean hasImages() {
+      return chosenImages != null;
+   }
+
+   public boolean hasVideo() {
+      return chosenVideo != null;
+   }
+
    protected MediaAttachment(Parcel in) {
-      this.chosenImages = in.createTypedArrayList(PhotoGalleryModel.CREATOR);
+      this.chosenImages = in.createTypedArrayList(PhotoPickerModel.CREATOR);
+      this.chosenVideo = in.readParcelable(VideoPickerModel.class.getClassLoader());
       this.source = Source.values()[in.readInt()];
       this.requestId = in.readInt();
    }

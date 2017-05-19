@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilter
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
+import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
@@ -74,6 +75,9 @@ import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumen
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
@@ -246,6 +250,10 @@ import dagger.Module;
       SendVideoAnalyticsIfNeedAction.class,
       SendPodcastAnalyticsIfNeedAction.class,
       GetAlbumsCommand.class,
+      GetPhotosFromGalleryCommand.class,
+      GetVideosFromGalleryCommand.class,
+      GetVideoDurationCommand.class,
+      GetMediaFromGalleryCommand.class,
       MigrateFromCachedEntity.class,
       MediaAttachmentPrepareCommand.class
 }, complete = false, library = true)

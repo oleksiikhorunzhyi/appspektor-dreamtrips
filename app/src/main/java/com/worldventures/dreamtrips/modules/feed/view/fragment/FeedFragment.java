@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -225,12 +225,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model) {
+   public void onPreloadSuggestionPhotos(@NonNull PhotoPickerModel model) {
       getPresenter().preloadSuggestionChunk(model);
    }
 
    @Override
-   public void onSelectPhoto(@NonNull PhotoGalleryModel model) {
+   public void onSelectPhoto(@NonNull PhotoPickerModel model) {
       getPresenter().selectPhoto(model);
    }
 
@@ -270,7 +270,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList,
-         List<PhotoGalleryModel> suggestedPhotos) {
+         List<PhotoPickerModel> suggestedPhotos) {
       List feedModels = new ArrayList();
       processSuggestedPhotosItems(suggestedPhotos, feedModels);
       processUploadsInProgressItems(uploadingPostsList, feedModels);
@@ -280,7 +280,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
-   private void processSuggestedPhotosItems(List<PhotoGalleryModel> suggestedPhotos, List feedModels) {
+   private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {
       int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
       if (suggestedPhotosSize > 0) {
          feedModels.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));

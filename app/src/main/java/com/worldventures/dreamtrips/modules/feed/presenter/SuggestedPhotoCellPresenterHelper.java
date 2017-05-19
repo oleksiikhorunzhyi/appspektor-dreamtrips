@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
@@ -41,8 +41,8 @@ public final class SuggestedPhotoCellPresenterHelper {
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject @ForApplication Context context;
 
-   @State ArrayList<PhotoGalleryModel> suggestionItems;
-   @State ArrayList<PhotoGalleryModel> selectedPhotos;
+   @State ArrayList<PhotoPickerModel> suggestionItems;
+   @State ArrayList<PhotoPickerModel> selectedPhotos;
    @State long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
 
    private View view;
@@ -69,7 +69,7 @@ public final class SuggestedPhotoCellPresenterHelper {
       }
    }
 
-   public void preloadSuggestionPhotos(@Nullable PhotoGalleryModel model) {
+   public void preloadSuggestionPhotos(@Nullable PhotoPickerModel model) {
       syncTimestampLast = getLastSyncOrDefault(model);
 
       binder.bindOutLifecycle(getSuggestionObservable(syncTimestampLast)).subscribe(photoGalleryModels -> {
@@ -113,7 +113,7 @@ public final class SuggestedPhotoCellPresenterHelper {
       resetSyncTimestamp();
    }
 
-   public void selectPhoto(PhotoGalleryModel model) {
+   public void selectPhoto(PhotoPickerModel model) {
       int selectedSize = selectedPhotos.size();
       boolean isChecked = !model.isChecked();
 
@@ -132,7 +132,7 @@ public final class SuggestedPhotoCellPresenterHelper {
    }
 
    @NonNull
-   public List<PhotoGalleryModel> selectedPhotos() {
+   public List<PhotoPickerModel> selectedPhotos() {
       return new ArrayList<>(selectedPhotos);
    }
 
@@ -147,10 +147,10 @@ public final class SuggestedPhotoCellPresenterHelper {
    }
 
    @NonNull
-   private Observable<List<PhotoGalleryModel>> getSuggestionObservable(long toTimestamp) {
-      return Observable.create(new Observable.OnSubscribe<PhotoGalleryModel>() {
+   private Observable<List<PhotoPickerModel>> getSuggestionObservable(long toTimestamp) {
+      return Observable.create(new Observable.OnSubscribe<PhotoPickerModel>() {
          @Override
-         public void call(Subscriber<? super PhotoGalleryModel> subscriber) {
+         public void call(Subscriber<? super PhotoPickerModel> subscriber) {
             Cursor cursor = null;
             String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
             //
@@ -166,7 +166,7 @@ public final class SuggestedPhotoCellPresenterHelper {
                   if (!subscriber.isUnsubscribed() && !ImageUtils.getImageExtensionFromPath(path)
                         .toLowerCase()
                         .contains("gif")) {
-                     subscriber.onNext(new PhotoGalleryModel(path, dateTaken));
+                     subscriber.onNext(new PhotoPickerModel(path, dateTaken));
                   }
                }
 
@@ -206,7 +206,7 @@ public final class SuggestedPhotoCellPresenterHelper {
       view.setSuggestionTitle(selectedPhotos.size());
    }
 
-   private long getLastSyncOrDefault(@Nullable PhotoGalleryModel model) {
+   private long getLastSyncOrDefault(@Nullable PhotoPickerModel model) {
       return model == null ? DEFAULT_START_SYNC_TIMESTAMP : model.getDateTaken();
    }
 
@@ -232,9 +232,9 @@ public final class SuggestedPhotoCellPresenterHelper {
 
    public interface View {
 
-      void appendPhotoSuggestions(List<PhotoGalleryModel> items);
+      void appendPhotoSuggestions(List<PhotoPickerModel> items);
 
-      void replacePhotoSuggestions(List<PhotoGalleryModel> items);
+      void replacePhotoSuggestions(List<PhotoPickerModel> items);
 
       void notifyListChange();
 

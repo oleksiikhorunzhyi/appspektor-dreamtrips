@@ -1,37 +1,32 @@
-package com.worldventures.dreamtrips.modules.common.command;
-
+package com.worldventures.dreamtrips.modules.media_picker.service.delegate;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.techery.janet.Command;
-import io.techery.janet.command.annotations.CommandAction;
 import timber.log.Timber;
 
-@CommandAction
-public class GetPhotosFromGalleryCommand extends Command<List<PhotoGalleryModel>> {
+public class PhotosProviderImpl implements PhotosProvider {
 
-   private WeakReference<Context> contextWeakReference;
+   private Context context;
 
-   public GetPhotosFromGalleryCommand(Context context) {
-      this.contextWeakReference = new WeakReference<>(context);
+   public PhotosProviderImpl(Context context) {
+      this.context = context;
    }
 
    @Override
-   protected void run(CommandCallback<List<PhotoGalleryModel>> callback) throws Throwable {
+   public List<PhotoPickerModel> provide() {
       Cursor cursor = null;
       try {
          String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
-         List<PhotoGalleryModel> photos = new ArrayList<>();
-         cursor = MediaStore.Images.Media.query(contextWeakReference.get()
+         List<PhotoPickerModel> photos = new ArrayList<>();
+         cursor = MediaStore.Images.Media.query(context
                      .getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projectionPhotos,
                MediaStore.Images.Media.MIME_TYPE + " != ?", new String[]{ImageUtils.MIME_TYPE_GIF},
                MediaStore.Images.Media.DATE_TAKEN + " DESC");
@@ -40,15 +35,9 @@ public class GetPhotosFromGalleryCommand extends Command<List<PhotoGalleryModel>
          while (cursor.moveToNext()) {
             String path = cursor.getString(dataColumn);
             long dateTaken = cursor.getLong(dateColumn);
-            if (!ImageUtils.getImageExtensionFromPath(path).toLowerCase().contains("gif")) {
-               PhotoGalleryModel photo = new PhotoGalleryModel(path, dateTaken);
-               photos.add(photo);
-            }
+            photos.add(new PhotoPickerModel(path, dateTaken));
          }
-         callback.onSuccess(photos);
-      } catch (Throwable e) {
-         callback.onFail(e);
-         Timber.e(e.getMessage());
+         return photos;
       } finally {
          if (cursor != null) {
             try {
@@ -59,5 +48,4 @@ public class GetPhotosFromGalleryCommand extends Command<List<PhotoGalleryModel>
          }
       }
    }
-
 }

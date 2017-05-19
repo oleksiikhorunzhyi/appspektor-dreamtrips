@@ -57,7 +57,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
             .subscribe(pair -> {
                pair.first.setSuggestions(pair.second);
                if (view != null) {
-                  view.updateItem(pair.first);
+                  view.updatePhoto(pair.first);
                }
             }, e -> {
                Timber.e(e, "");

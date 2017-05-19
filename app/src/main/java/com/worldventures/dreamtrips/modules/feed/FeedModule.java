@@ -13,8 +13,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -46,7 +44,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
@@ -57,11 +54,13 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestionPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
@@ -84,6 +83,10 @@ import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDeleg
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
+import com.worldventures.dreamtrips.modules.media_picker.view.cell.PhotoPickerModelCell;
+import com.worldventures.dreamtrips.modules.media_picker.view.cell.VideoPickerModelCell;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
@@ -105,7 +108,7 @@ import dagger.Provides;
             HashtagFeedFragment.class,
             HashtagFeedPresenter.class,
             PickerIrregularPhotoCell.class,
-            PhotoGalleryCell.class,
+            PhotoPickerModelCell.class,
             EditCommentPresenter.class,
             CommentableFragment.class,
             ComponentPresenter.class,
@@ -146,6 +149,7 @@ import dagger.Provides;
             SuggestedPhotosCell.class,
             SuggestionPhotoCell.class,
             PhotoPostCreationCell.class,
+            VideoPostCreationCell.class,
             PostCreationTextCell.class,
             SubPhotoAttachmentCell.class,
             PostFeedItemDetailsCell.class,
@@ -157,7 +161,8 @@ import dagger.Provides;
             DescriptionCreatorPresenter.class,
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
-            UploadingPhotoPostsSectionCell.class
+            UploadingPhotoPostsSectionCell.class,
+            VideoPickerModelCell.class
       },
       complete = false,
       library = true)
@@ -214,5 +219,11 @@ public class FeedModule {
    @Singleton
    FeedEntityHolderDelegate provideFeedItemsUpdateDelegate(@ForApplication Injector injector) {
       return new FeedEntityHolderDelegate(injector);
+   }
+
+   @Provides
+   @Singleton
+   PickerVideoDurationFormatter provideVideoDurationFormatter() {
+      return new PickerVideoDurationFormatter();
    }
 }

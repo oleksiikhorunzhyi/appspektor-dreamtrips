@@ -35,8 +35,6 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView)
     View emptyView;
     @InjectView(R.id.errorView)
@@ -90,9 +88,6 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
                 Flow.get(getContext()).goBack());
         toolbar.setTitle(getPath().getMerchant());
 
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        refreshLayout.setEnabled(true);
-
         mTlMenuOption.inflateMenu(getPresenter().getMenuFlag());
         mTlMenuOption.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
         initData();
@@ -142,10 +137,6 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
         }
     }
 
-    private void refreshProgress(boolean isShow) {
-        refreshLayout.setRefreshing(isShow);
-    }
-
     private void hideRefreshMerchantsError() {
         errorView.setVisibility(GONE);
     }
@@ -177,21 +168,18 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
 
     @Override
     public void onRefreshSuccess() {
-        this.refreshProgress(false);
         this.hideRefreshMerchantsError();
         this.showEmpty(false);
     }
 
     @Override
     public void onRefreshProgress() {
-        this.refreshProgress(true);
         this.hideRefreshMerchantsError();
         this.showEmpty(false);
     }
 
     @Override
     public void onRefreshError(String error) {
-        this.refreshProgress(false);
         this.showEmpty(false);
     }
 

@@ -26,7 +26,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.container_comments_detail) OfferWithReviewView mContainerDetail;
-   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
 
@@ -53,8 +52,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       toolbar.setNavigationOnClickListener(view -> {
          Flow.get(getContext()).goBack();
       });
-      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-      refreshLayout.setEnabled(true);
       showMessage();
    }
 
@@ -76,31 +73,24 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       mContainerDetail.addBundle(bundle);
    }
 
-   private void refreshProgress(boolean isShow) {
-      refreshLayout.setRefreshing(isShow);
-   }
-
    private void hideRefreshMerchantsError() {
       errorView.setVisibility(GONE);
    }
 
    @Override
    public void onRefreshSuccess() {
-      this.refreshProgress(false);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshProgress() {
-      this.refreshProgress(true);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
-      this.refreshProgress(false);
       this.showEmpty(false);
    }
 

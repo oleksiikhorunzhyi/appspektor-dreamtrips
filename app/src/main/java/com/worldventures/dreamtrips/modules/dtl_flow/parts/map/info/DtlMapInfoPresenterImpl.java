@@ -53,7 +53,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
    @Override
    public void onMarkerClick() {
       trackIfNeeded();
-      fullMerchantInteractor.load(merchant.id(), false);
+      fullMerchantInteractor.load(merchant.id(), merchant.reviewSummary(), false);
    }
 
    private void trackIfNeeded() {
@@ -81,7 +81,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
 
    @Override
    public void onClickRatingsReview() {
-      fullMerchantInteractor.load(merchant.id(), true);
+      fullMerchantInteractor.load(merchant.id(), merchant.reviewSummary(), true);
    }
 
    @Override

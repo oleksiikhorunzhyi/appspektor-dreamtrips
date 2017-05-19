@@ -556,8 +556,8 @@ dependencies {
    provided "org.immutables:gson:2.2.6"
 
    // Messenger
-   compile 'com.github.almozavr.flow:flow:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
-   compile 'com.github.almozavr.flow:flow-path:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+   compile 'com.github.techery.flow:flow:0.13.1'
+   compile 'com.github.techery.flow:flow-path:9fb5d84e9e8801aaf083dbfbfa5316348c7d4bb9'
    compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
    compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
    compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'

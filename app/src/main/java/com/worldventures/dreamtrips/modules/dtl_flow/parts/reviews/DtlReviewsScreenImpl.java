@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
@@ -26,6 +27,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.container_comments_detail) OfferWithReviewView mContainerDetail;
+   @InjectView(R.id.progress_loader) ProgressBar refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
 
@@ -81,16 +83,21 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    public void onRefreshSuccess() {
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
+      this.refreshLayout.setVisibility(View.GONE);
+      this.mContainerDetail.setVisibility(View.VISIBLE);
    }
 
    @Override
    public void onRefreshProgress() {
+      this.refreshLayout.setVisibility(View.VISIBLE);
+      this.mContainerDetail.setVisibility(View.GONE);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
+      this.refreshLayout.setVisibility(View.GONE);
       this.showEmpty(false);
    }
 

@@ -40,6 +40,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     @InjectView(R.id.errorView)
     View errorView;
 
+
     @InjectView(R.id.ivItemReview)
     ImageryDraweeView mIvAvatar;
     @InjectView(R.id.tvUserName)

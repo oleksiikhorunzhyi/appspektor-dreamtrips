@@ -13,8 +13,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
-import rx.Observable;
 
 @CommandAction
 public class ActivateSmartCardCommand extends Command<SmartCard> implements InjectableAction {
@@ -38,14 +36,8 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
             .cardStatus(SmartCard.CardStatus.ACTIVE)
             .build();
       smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand(smartCard))
-            .flatMap(command -> smartCardInteractor.fetchCardPropertiesPipe()
-                  .createObservableResult(new FetchCardPropertiesCommand()))
-            .flatMap(fetchCardPropertiesCommand -> smartCardInteractor.autoClearDelayPipe()
+            .flatMap(command -> smartCardInteractor.autoClearDelayPipe()
                   .createObservableResult(new SetAutoClearSmartCardDelayCommand(DEFAULT_AUTO_CLEAR_DELAY_CLEAR_RECORDS_MINS)))
-            .doOnNext(smartCard ->
-                  janet.createPipe(EnableLockUnlockDeviceAction.class)
-                        .createObservableResult(new EnableLockUnlockDeviceAction(true))
-                        .onErrorResumeNext(Observable.just(null)))
             .subscribe(action -> callback.onSuccess(smartCard), callback::onFail);
    }
 }

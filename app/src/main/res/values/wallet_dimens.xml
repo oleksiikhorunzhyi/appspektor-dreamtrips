@@ -26,12 +26,13 @@
    <dimen name="wallet_add_card_details_edittext_margin_top">3dp</dimen>
 
    <dimen name="wallet_wizard_avatar_size">192dp</dimen>
-   <dimen name="wallet_wizard_bar_code_border_stroke_width">3dp</dimen>
+   <dimen name="wallet_wizard_bar_code_border_stroke_width">2dp</dimen>
    <dimen name="wallet_wizard_bar_code_border_radius">8dp</dimen>
    <dimen name="wallet_wizard_bar_code_view_left">18dp</dimen>
-   <dimen name="wallet_wizard_bar_code_view_top">170dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_top">180dp</dimen>
    <dimen name="wallet_wizard_bar_code_view_right">18dp</dimen>
-   <dimen name="wallet_wizard_bar_code_view_bottom">150dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_bottom">180dp</dimen>
+   <dimen name="wallet_wizard_bar_code_laser_line_border_width">4dp</dimen>
    <dimen name="wallet_wizard_agreement_margin_start_end">60dp</dimen>
    <dimen name="wallet_wizard_agreement_margin_top">30dp</dimen>
    <dimen name="wallet_wizard_agreement_margin_bottom">23dp</dimen>
@@ -42,4 +43,9 @@
    <dimen name="wallet_smartcard_connection_label_height">40dp</dimen>
    <dimen name="wallet_content_divider_header_height">48dp</dimen>
    <dimen name="wallet_content_divider_height">52dp</dimen>
+
+   <dimen name="wallet_settings_menu_item_vertical_spacing">20dp</dimen>
+   <dimen name="wallet_settings_offline_mode_spacing_side">52dp</dimen>
+
+   <dimen name="wallet_edit_text_spaces_top_bottom">8dp</dimen>
 </resources>

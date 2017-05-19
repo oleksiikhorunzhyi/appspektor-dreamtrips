@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;

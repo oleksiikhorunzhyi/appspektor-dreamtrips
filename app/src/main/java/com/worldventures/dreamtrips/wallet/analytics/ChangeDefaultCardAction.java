@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 @AnalyticsEvent(action = "wallet:Card Detail:Set as Default Card",
                 trackers = AdobeTracker.TRACKER_KEY)
@@ -14,11 +14,11 @@ public class ChangeDefaultCardAction extends BaseSetDefaultCardAction {
    private ChangeDefaultCardAction() {
    }
 
-   public static ChangeDefaultCardAction forBankCard(BankCard bankCard) {
+   public static ChangeDefaultCardAction forBankCard(Record record) {
       ChangeDefaultCardAction action = new ChangeDefaultCardAction();
       action.setDefaultWhere = "In-App:Card Detail";
-      action.fillPaycardInfo(bankCard);
-      action.cardNickname = bankCard.nickName();
+      action.fillRecordDetails(record);
+      action.cardNickname = record.nickName();
       return action;
    }
 }

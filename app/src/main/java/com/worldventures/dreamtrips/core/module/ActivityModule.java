@@ -15,7 +15,10 @@ import dagger.Provides;
 @Module(
       complete = false,
       library = true,
-      includes = {UiUtilModule.class, PermissionModule.class})
+      includes = {
+            UiUtilModule.class,
+            PermissionModule.class,
+      })
 public class ActivityModule {
 
    protected BaseActivity baseActivity;

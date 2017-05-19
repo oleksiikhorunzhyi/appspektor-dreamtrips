@@ -7,19 +7,15 @@ import java.util.Collection;
 
 public class SnappyStorageManager {
 
-   private final DiskStorage diskStorage;
    private final Collection<ModelStorage> modelStorageList;
 
-   public SnappyStorageManager(DiskStorage diskStorage, Collection<ModelStorage> modelStorageList) {
-      this.diskStorage = diskStorage;
+   public SnappyStorageManager(Collection<ModelStorage> modelStorageList) {
       this.modelStorageList = modelStorageList;
    }
 
    public void init() {
       for (ModelStorage storage : modelStorageList) {
-         storage.bindStorage(diskStorage);
-
-         diskStorage.execute(db -> checkVersion(db, storage));
+         storage.execute(db -> checkVersion(db, storage));
       }
    }
 
@@ -42,4 +38,5 @@ public class SnappyStorageManager {
    private String getVersionKey(ModelStorage storage) {
       return "version_" + storage.getKey();
    }
+
 }

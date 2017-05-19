@@ -15,8 +15,5 @@ public interface SmartCardUserPhoto extends Serializable {
    File original();
 
    @Nullable
-   File monochrome();//pending value
-
-   @Nullable
    String photoUrl();
 }

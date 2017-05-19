@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -21,7 +20,8 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
 @Module(
       includes = {
             WalletServiceModule.class,
-            StorageModule.class
+            StorageModule.class,
+            JanetNxtModule.class
       },
       complete = false, library = true
 )
@@ -42,11 +42,4 @@ public class SmartCardModule {
    SmartCardClient provideSmartCardClient(Provider<NxtSmartCardClient> nxtProvider, Provider<MockSmartCardClient> mockProvider) {
       return BuildConfig.SMART_CARD_SDK_CLIENT.equals("nxtid") ? nxtProvider.get() : mockProvider.get();
    }
-
-   @Singleton
-   @Provides
-   WizardMemoryStorage provideWizardMemoryStorage() {
-      return new WizardMemoryStorage();
-   }
-
 }

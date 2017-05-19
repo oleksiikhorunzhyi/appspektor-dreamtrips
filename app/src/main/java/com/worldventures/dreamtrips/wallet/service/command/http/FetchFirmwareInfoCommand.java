@@ -3,16 +3,21 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 import com.worldventures.dreamtrips.api.smart_card.firmware.GetFirmwareHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareResponse;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.util.SmartCardSDK;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
@@ -20,15 +25,13 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
 
    @Inject MapperyContext mapperyContext;
    @Inject Janet janet;
+   @Inject SnappyRepository snappyRepository;
    @Inject FirmwareRepository firmwareRepository;
+   @Inject FirmwareInteractor firmwareInteractor;
 
-   private final String scId;
-   private final String sdkVersion;
    private final SmartCardFirmware firmwareVersion;
 
-   public FetchFirmwareInfoCommand(String scId, String sdkVersion, SmartCardFirmware firmwareVersion) {
-      this.scId = scId;
-      this.sdkVersion = sdkVersion;
+   public FetchFirmwareInfoCommand(SmartCardFirmware firmwareVersion) {
       this.firmwareVersion = firmwareVersion;
    }
 
@@ -39,18 +42,19 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
          callback.onSuccess(firmwareRepository.getFirmwareUpdateData());
       } else {
          janet.createPipe(GetFirmwareHttpAction.class)
-               .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), sdkVersion))
+               .createObservableResult(new GetFirmwareHttpAction(getFirmwareVersion(), SmartCardSDK.getSDKVersion()))
                .map(firmwareHttpAction -> createUpdateData(firmwareHttpAction.response()))
                .subscribe(firmwareUpdateData -> {
-                  firmwareRepository.setFirmwareUpdateData(firmwareUpdateData);
+                  firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.save(firmwareUpdateData));
                   callback.onSuccess(firmwareUpdateData);
                }, callback::onFail);
       }
    }
 
    private FirmwareUpdateData createUpdateData(FirmwareResponse firmwareResponse) {
+      SmartCard smartCard = snappyRepository.getSmartCard();
       return ImmutableFirmwareUpdateData.builder()
-            .smartCardId(scId)
+            .smartCardId(smartCard.smartCardId())
             .currentFirmwareVersion(firmwareVersion)
             .firmwareInfo(firmwareResponse.firmwareInfo()) //todo: create converter and store data in domain model
             .updateAvailable(firmwareResponse.updateAvailable())

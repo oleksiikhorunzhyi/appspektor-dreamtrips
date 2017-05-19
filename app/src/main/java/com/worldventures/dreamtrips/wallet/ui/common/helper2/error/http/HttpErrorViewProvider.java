@@ -13,6 +13,7 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import io.techery.janet.helper.JanetActionException;
+import io.techery.janet.http.exception.HttpException;
 import io.techery.janet.http.exception.HttpServiceException;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import rx.functions.Action1;
@@ -20,8 +21,6 @@ import rx.functions.Action1;
 import static com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils.handleJanetHttpError;
 
 public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
-
-   private static final int IGNORE_HTTP_STATUS_CODE = 500;
 
    private final Context context;
    private final Action1<T> retryAction;
@@ -41,14 +40,16 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
    @Override
    @Nullable
    public ErrorView<T> create(T t, Throwable throwable) {
-      throwable = throwable.getCause();
+      throwable =  throwable instanceof HttpServiceException ? throwable.getCause() : throwable;
       if (throwable instanceof JanetActionException &&
             ((JanetActionException) throwable).getAction() instanceof BaseHttpAction) {
          final BaseHttpAction action = ((BaseHttpAction) ((JanetActionException) throwable).getAction());
-         final String httpErrorMessage = action.statusCode() == IGNORE_HTTP_STATUS_CODE ? null
-               : handleJanetHttpError(context, action, throwable, null);
+         final String httpErrorMessage = handleJanetHttpError(context, action, throwable, null);
          if (httpErrorMessage == null) return null;
          return new SimpleErrorView<>(context, cancelAction, httpErrorMessage);
+      }
+      if (throwable instanceof HttpException) {
+         return new SimpleErrorView<>(context, cancelAction, context.getString(R.string.error_internal_server));
       }
       if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {
          return new ConnectionErrorView<>(context, context.getString(R.string.wallet_no_internet_connection), retryAction, cancelAction);

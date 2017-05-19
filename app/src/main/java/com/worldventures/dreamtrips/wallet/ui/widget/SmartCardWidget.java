@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +13,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
 
-import java.io.File;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,7 +32,7 @@ public class SmartCardWidget extends FrameLayout {
 
    @InjectView(R.id.stealth_indicator) View stealthIndicator;
    @InjectView(R.id.lock_indicator) ImageView lockIndicator;
-   @InjectView(R.id.link_indicator) ImageView lickIndicator;
+   @InjectView(R.id.link_indicator) ImageView linkIndicator;
    @InjectView(R.id.smartcard_badge) BadgeView badgeView;
 
    public SmartCardWidget(Context context) {
@@ -46,25 +46,31 @@ public class SmartCardWidget extends FrameLayout {
 
    private void setup() {
       LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_smartcard, this);
+      if (isInEditMode()) return;
       ButterKnife.inject(this);
+      ImageUtils.applyGrayScaleColorFilter(scAvatar);
       setVisibility(INVISIBLE);
    }
 
-   public void bindCard(@NonNull SmartCard smartCard, boolean isFirmwareAvailable) {
-      File photoFile = smartCard.user().userPhoto().monochrome();
-      if (photoFile != null) scAvatar.setImageURI(Uri.fromFile(photoFile));
-      bankLabel.setText(smartCard.user().fullName());
-      batteryView.setLevel(smartCard.batteryLevel());
-      batteryLevel.setText(String.format("%d%%", smartCard.batteryLevel()));
-      stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
-      bindLockStatus(smartCard.lock());
-      bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
-      if (isFirmwareAvailable) {
+   public void bindCard(CardStackHeaderHolder holder) {
+      if (!TextUtils.isEmpty(holder.photoUrl())) {
+         scAvatar.setImageURI(holder.photoUrl());
+      }
+      if (!TextUtils.isEmpty(holder.fullname())) {
+         bankLabel.setText(holder.fullname());
+      }
+      batteryView.setLevel(holder.batteryLevel());
+      batteryLevel.setText(String.format(Locale.US, "%d%%", holder.batteryLevel()));
+      stealthIndicator.setVisibility(holder.stealthMode() ? VISIBLE : GONE);
+      bindLockStatus(holder.lock());
+      bindConnectionStatus(holder.connected());
+      if (holder.firmwareUpdateAvailable()) {
          badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
          badgeView.show();
       } else {
          badgeView.hide();
       }
+      bindCount(holder.cardCount());
       setVisibility(VISIBLE);
    }
 
@@ -73,7 +79,7 @@ public class SmartCardWidget extends FrameLayout {
    }
 
    private void bindConnectionStatus(boolean connected) {
-      lickIndicator.setImageResource(connected ? R.drawable.ic_wallet_link_indicator : R.drawable.ic_wallet_unlink_indicator);
+      linkIndicator.setImageResource(connected ? R.drawable.ic_wallet_link_indicator : R.drawable.ic_wallet_unlink_indicator);
    }
 
    public void bindCount(int cardCount) {

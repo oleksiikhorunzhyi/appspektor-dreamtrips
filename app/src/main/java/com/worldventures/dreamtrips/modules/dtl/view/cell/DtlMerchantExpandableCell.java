@@ -257,7 +257,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
             cellDelegate.sendToRatingReview(getModelObject());
          }
       } else {
-         cellDelegate.userHasPendingReview();
+         cellDelegate.sendToRatingReview(getModelObject());
       }
    }
 }

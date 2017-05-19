@@ -20,7 +20,7 @@ public class ApptentiveTracker extends Tracker {
    private WeakReference<Activity> activity;
 
    public ApptentiveTracker(Application application) {
-      Apptentive.register(application, BuildConfig.SURVEY_API_TOKEN);
+      if (!BuildConfig.QA_AUTOMATION_MODE_ENABLED) Apptentive.register(application, BuildConfig.SURVEY_API_TOKEN);
    }
 
    @Override

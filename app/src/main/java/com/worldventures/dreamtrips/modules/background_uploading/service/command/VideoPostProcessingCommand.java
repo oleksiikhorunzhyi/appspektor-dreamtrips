@@ -7,12 +7,12 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompo
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.video.ImmutableVideoUploadStatus;
+import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.UploadVideoFileCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.util.FileSplitter;
 import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -28,6 +28,7 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
 
    @Inject Janet janet;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
+   @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
    @Inject UploadTimeEstimator uploadTimeEstimator;
 
    private ActionPipe<UploadVideoFileCommand> uploadVideoFilePipe;
@@ -49,6 +50,7 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
                      startTimeEstimation();
                      return Observable.empty();
                   case SUCCESS:
+                     pingAssetStatusInteractor.launchUpdatingVideoProcessingPipe().send(new LaunchUpdatingVideoProcessingCommand());
                      return Observable.just(postCompoundOperationModel);
                   case FAIL:
                      return Observable.error(state.exception);

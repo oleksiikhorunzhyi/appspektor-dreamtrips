@@ -43,7 +43,8 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_feed_post_event)
-public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>> {
+public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>>
+      implements Focusable {
 
    @InjectView(R.id.post) HashtagTextView post;
    @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
@@ -204,6 +205,16 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void processVideo(Video video) {
       videoAttachmentView.setup(video);
+   }
+
+   @Override
+   public void onFocused() {
+      videoAttachmentView.onFocused();
+   }
+
+   @Override
+   public boolean canFocus() {
+      return videoAttachmentView.getVisibility() == View.VISIBLE;
    }
 
    @OnClick(R.id.translate)

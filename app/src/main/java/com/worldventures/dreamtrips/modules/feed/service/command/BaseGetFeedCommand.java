@@ -45,6 +45,9 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
             .createObservableResult(provideRequest())
             .map(action -> mappery.convert(action.response(), FeedItem.class))
             .doOnNext(items -> items.add(0, createVideoItem()))
+            .doOnNext(items -> items.add(0, createVideoItem()))
+            .doOnNext(items -> items.add(0, createVideoItem()))
+            .doOnNext(items -> items.add(0, createVideoItem()))
             .subscribe(feedItems -> itemsLoaded(callback, feedItems), callback::onFail);
    }
 

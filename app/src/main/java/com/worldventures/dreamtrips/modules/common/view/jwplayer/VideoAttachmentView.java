@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.jwplayer;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -10,9 +12,12 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.configuration.PlayerConfig;
+import com.longtailvideo.jwplayer.events.ErrorEvent;
+import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
 import com.longtailvideo.jwplayer.media.playlists.MediaSource;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -27,7 +32,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 public class VideoAttachmentView extends FrameLayout {
 
@@ -37,6 +41,7 @@ public class VideoAttachmentView extends FrameLayout {
 
    @Inject PickerVideoDurationFormatter pickerVideoDurationFormatter;
    @Inject VideoPlayerHolder videoPlayerHolder;
+   @Inject Application application;
 
    @InjectView(R.id.length) TextView duration;
    @InjectView(R.id.videoThumbnail) SimpleDraweeView videoThumbnail;
@@ -84,8 +89,11 @@ public class VideoAttachmentView extends FrameLayout {
    public void clearResources() {
       if (playerView != null) {
          playerView.stop();
+         playerView.onPause();
+         playerView.onDestroy();
          playerView.setVisibility(GONE);
          removeView(playerView);
+         application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
          playerView = null;
       }
    }
@@ -96,22 +104,44 @@ public class VideoAttachmentView extends FrameLayout {
             videoThumbnail.getController()));
    }
 
-   @OnClick(R.id.play)
-   void onPlay() {
+   public void onFocused() {
+      // if playerView is not null - playback already initialized, player status from JWPlayer doesn't provide any
+      // useful information
+      if (playerView != null) {
+         return;
+      }
       showVideo();
    }
 
    private void showVideo() {
+      //Stop video which playing now, on some neighbour cell
+      if (videoPlayerHolder.getJwPlayerView() != null) {
+         videoPlayerHolder.clearCurrent();
+      }
+
+      setupVideoPlayer();
+
+      videoPlayerHolder.init(playerView, this);
+      videoPlayerHolder.attachToContainer();
+      videoPlayerHolder.play();
+   }
+
+   private void setupVideoPlayer() {
       playerView = new JWPlayerView(getContext(), new PlayerConfig.Builder()
             .mute(true)
             .playlist(preparePlaylist())
             .build());
 
       playerView.setSkin(SKIN_URL);
-
-      videoPlayerHolder.init(playerView, this);
-      videoPlayerHolder.attachToContainer();
-      videoPlayerHolder.play();
+      playerView.addOnErrorListener(new VideoPlayerEvents.OnErrorListenerV2() {
+         @Override
+         public void onError(ErrorEvent errorEvent) {
+            clearResources();
+         }
+      });
+      playerView.addOnCompleteListener(this::clearResources);
+      playerView.addOnSetupErrorListener(e -> clearResources());
+      application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
    }
 
    private List<PlaylistItem> preparePlaylist() {
@@ -120,4 +150,33 @@ public class VideoAttachmentView extends FrameLayout {
       mediaSources.add(new MediaSource.Builder().file(video.getHdUrl()).label("HD").build());
       return Collections.singletonList(new PlaylistItem.Builder().sources(mediaSources).build());
    }
+
+   private SimpleActivityLifecycleCallbacks lifecycleCallbacks = new SimpleActivityLifecycleCallbacks() {
+
+      @Override
+      public void onActivityResumed(Activity activity) {
+         super.onActivityResumed(activity);
+         if (playerViewIsActive(activity)) {
+            playerView.onResume();
+         }
+      }
+
+      @Override
+      public void onActivityPaused(Activity activity) {
+         super.onActivityPaused(activity);
+         if (playerViewIsActive(activity)) {
+            playerView.onPause();
+         }
+      }
+
+      @Override
+      public void onActivityDestroyed(Activity activity) {
+         super.onActivityDestroyed(activity);
+         if (playerViewIsActive(activity)) playerView.onDestroy();
+      }
+
+      private boolean playerViewIsActive(Activity activity) {
+         return activity == getContext() && playerView != null;
+      }
+   };
 }

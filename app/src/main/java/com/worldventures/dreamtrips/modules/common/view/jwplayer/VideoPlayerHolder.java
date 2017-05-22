@@ -5,9 +5,6 @@ import android.view.ViewGroup;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.core.PlayerState;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-
-import timber.log.Timber;
 
 public class VideoPlayerHolder {
 
@@ -15,15 +12,14 @@ public class VideoPlayerHolder {
    private final Activity activity;
 
    private JWPlayerView jwPlayerView;
-   private ViewGroup container;
-
+   private VideoAttachmentView container;
 
    public VideoPlayerHolder(Activity activity) {
       this.activity = activity;
       this.dtFullscreenHandler = new DtFullscreenHandler(activity, this);
    }
 
-   public void init(JWPlayerView jwPlayerView, ViewGroup container) {
+   public void init(JWPlayerView jwPlayerView, VideoAttachmentView container) {
       this.container = container;
       this.jwPlayerView = jwPlayerView;
 
@@ -44,9 +40,6 @@ public class VideoPlayerHolder {
 
    public void play() {
       if (playerExists()) {
-         if (ViewUtils.isLandscapeOrientation(activity)) {
-            jwPlayerView.setFullscreen(true, true);
-         }
          jwPlayerView.play(true);
       }
    }
@@ -54,6 +47,13 @@ public class VideoPlayerHolder {
    public void dettachFromContainer() {
       if (playerExists() && container != null) {
          container.removeView(jwPlayerView);
+      }
+   }
+
+   public void clearCurrent() {
+      if (container != null) {
+         jwPlayerView = null;
+         container.clearResources();
       }
    }
 
@@ -91,7 +91,7 @@ public class VideoPlayerHolder {
       }
    }
 
-   public boolean playerExists() {
+   private boolean playerExists() {
       return jwPlayerView != null;
    }
 }

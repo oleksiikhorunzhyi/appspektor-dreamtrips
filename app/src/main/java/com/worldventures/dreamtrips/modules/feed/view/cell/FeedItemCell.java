@@ -31,9 +31,11 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 @Layout(R.layout.adapter_feed_item_cell)
-public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
+public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>>
+      extends AbstractDelegateCell<ITEM, DELEGATE> implements Focusable {
 
    @InjectView(R.id.cell_container) ViewGroup cellContainer;
    @Inject @ForActivity Provider<Injector> injectorProvider;
@@ -120,5 +122,18 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(user))
             .build());
+   }
+
+   @Override
+   public void onFocused() {
+      if (feedItemDetailsCell instanceof Focusable) {
+         ((Focusable) feedItemDetailsCell).onFocused();
+      }
+      Timber.d("OnFocused");
+   }
+
+   @Override
+   public boolean canFocus() {
+      return feedItemDetailsCell instanceof Focusable && ((Focusable) feedItemDetailsCell).canFocus();
    }
 }

@@ -45,8 +45,7 @@ import java.util.List;
 
 public class FragmentWithFeedDelegate {
 
-   Router router;
-
+   private Router router;
    private BaseDelegateAdapter adapter;
 
    public FragmentWithFeedDelegate(Router router) {

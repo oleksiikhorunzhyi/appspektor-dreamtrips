@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,6 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -51,6 +51,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDeleg
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -64,6 +65,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_feed)
@@ -85,7 +87,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    private ContentObserver contentObserver;
    private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
 
-   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private StatePaginatedRecyclerViewManager recyclerViewManager;
    private Bundle savedInstanceState;
 
    private MaterialDialog blockingProgressDialog;
@@ -122,11 +124,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
       // TODO: 2/23/17 put pagination logic into common set of presenter interfaces and view delegates
       // when feed storage refactoring is merged
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
-      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
+      recyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      recyclerViewManager.init(adapter, savedInstanceState);
+      recyclerViewManager.setOnRefreshListener(this);
+      recyclerViewManager.setPaginationListener(() -> {
+         if (!recyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
@@ -138,6 +140,15 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();
       registerCellDelegates();
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      Observable.interval(1, TimeUnit.SECONDS)
+            .compose(bindUntilStopViewComposer())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(i -> recyclerViewManager.findFirstCompletelyVisibleItemPosition());
    }
 
    @Override
@@ -309,12 +320,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void startLoading() {
-      statePaginatedRecyclerViewManager.startLoading();
+      recyclerViewManager.startLoading();
    }
 
    @Override
    public void finishLoading() {
-      statePaginatedRecyclerViewManager.finishLoading();
+      recyclerViewManager.finishLoading();
    }
 
    @Override
@@ -348,7 +359,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
-      statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+      recyclerViewManager.updateLoadingStatus(loading, noMoreElements);
    }
 
    @Override

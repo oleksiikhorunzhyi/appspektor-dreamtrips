@@ -22,8 +22,8 @@ public abstract class BaseViewStateConstraintLayout<V extends MvpView, P extends
 
    @Override
    protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
       if (!isInEditMode()) {
-         super.onAttachedToWindow();
          onPostAttachToWindowView();
          delegate.onAttachedToWindow();
       }
@@ -35,8 +35,8 @@ public abstract class BaseViewStateConstraintLayout<V extends MvpView, P extends
 
    @Override
    protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
       if (!isInEditMode()) {
-         super.onDetachedFromWindow();
          delegate.onDetachedFromWindow();
       }
    }

@@ -10,7 +10,31 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
+
 class DisplayOptionsPagerAdapter extends PagerAdapter {
+
+   static final List<Integer> DISPLAY_OPTIONS = new ArrayList<Integer>() {
+      {
+         add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY);
+         add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME);
+         add(SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY);
+         add(SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME);
+
+      }
+   };
+
+   private static final List<Integer> DISPLAY_OPTION_TITLES = new ArrayList<Integer>() {
+      {
+         add(R.string.wallet_settings_general_display_photo_only);
+         add(R.string.wallet_settings_general_display_photo_first_name);
+         add(R.string.wallet_settings_general_display_full_name_only);
+         add(R.string.wallet_settings_general_display_full_name_phone);
+      }
+   };
 
    private final LayoutInflater inflater;
    private final SmartCardUser smartCardUser;
@@ -27,7 +51,7 @@ class DisplayOptionsPagerAdapter extends PagerAdapter {
       ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.adapter_item_wallet_settings_display, collection, false);
 
       DisplayOptionsViewHolder holder = new DisplayOptionsViewHolder(layout);
-      holder.bindData(smartCardUser, DisplayOptionsEnum.values()[position]);
+      holder.bindData(DISPLAY_OPTIONS.get(position), DISPLAY_OPTION_TITLES.get(position), smartCardUser);
       holder.setClickListener(clickListener);
 
       layout.setTag(holder);
@@ -44,7 +68,7 @@ class DisplayOptionsPagerAdapter extends PagerAdapter {
 
    @Override
    public int getCount() {
-      return DisplayOptionsEnum.values().length;
+      return DISPLAY_OPTIONS.size();
    }
 
    @Override

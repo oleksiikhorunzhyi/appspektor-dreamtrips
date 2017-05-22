@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.display;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,9 +18,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
-import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_ONLY;
+import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY;
 
@@ -45,39 +48,37 @@ class DisplayOptionsViewHolder {
       ImageUtils.applyGrayScaleColorFilter(photo);
    }
 
-   void bindData(SmartCardUser smartCardUser, DisplayOptionsEnum displayOption) {
-      int type = displayOption.getDisplayType();
-
-      SmartCardUserPhoto userPhoto = smartCardUser.userPhoto();
-      SmartCardUserPhone userPhone = smartCardUser.phoneNumber();
+   void bindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, @NonNull SmartCardUser user) {
+      SmartCardUserPhoto userPhoto = user.userPhoto();
+      SmartCardUserPhone userPhone = user.phoneNumber();
       String phone = (userPhone == null) ? String.format(Locale.US, "(%s)", rootView.getResources()
             .getString(R.string.wallet_settings_general_display_phone_required)) : "+" + userPhone.fullPhoneNumber();
 
-      title.setText(displayOption.getTitleRes());
+      title.setText(titleRes);
 
       firstName.setVisibility(type == DISPLAY_PICTURE_AND_NAME ? View.VISIBLE : View.GONE);
-      fullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_ONLY) ? View.VISIBLE : View.GONE);
+      fullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_AND_NAME) ? View.VISIBLE : View.GONE);
 
       boolean hasPhoto = (type == DISPLAY_PICTURE_ONLY || type == DISPLAY_PICTURE_AND_NAME) && userPhoto == null;
       addPhoto.setVisibility(hasPhoto ? View.VISIBLE : View.GONE);
       photoRequired.setVisibility(hasPhoto ? View.VISIBLE : View.GONE);
       silhouette.setVisibility(hasPhoto ? View.VISIBLE : View.GONE);
 
-      addPhone.setVisibility(type == DISPLAY_PHONE_ONLY && userPhone == null ? View.VISIBLE : View.GONE);
+      addPhone.setVisibility(type == DISPLAY_PHONE_AND_NAME && userPhone == null ? View.VISIBLE : View.GONE);
 
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
-            if (userPhoto != null) photo.setImageURI(userPhoto.photoUrl());
+            if (userPhoto != null) photo.setImageURI(userPhoto.uri());
             break;
          case DISPLAY_PICTURE_AND_NAME:
-            if (userPhoto != null) photo.setImageURI(userPhoto.photoUrl());
-            firstName.setText(smartCardUser.firstName());
+            if (userPhoto != null) photo.setImageURI(userPhoto.uri());
+            firstName.setText(user.firstName());
             break;
          case DISPLAY_NAME_ONLY:
-            fullName.setText(smartCardUser.fullName());
+            fullName.setText(user.fullName());
             break;
-         case DISPLAY_PHONE_ONLY:
-            fullName.setText(smartCardUser.fullName() + "\n\n" + phone);
+         case DISPLAY_PHONE_AND_NAME:
+            fullName.setText(user.fullName() + "\n\n" + phone);
             break;
       }
    }

@@ -8,7 +8,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.domain.entity.settings.customer_support.Contact;
-import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -26,7 +26,7 @@ import timber.log.Timber;
 public class WalletCustomerSupportSettingsPresenter extends WalletPresenter<WalletCustomerSupportSettingsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject SettingsHelpInteractor settingsHelpInteractor;
+   @Inject WalletSettingsInteractor walletSettingsInteractor;
 
    WalletCustomerSupportSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -40,7 +40,7 @@ public class WalletCustomerSupportSettingsPresenter extends WalletPresenter<Wall
    }
 
    private void observeContact() {
-      settingsHelpInteractor.customerSupportContactPipe()
+      walletSettingsInteractor.customerSupportContactPipe()
             .observeWithReplay()
             .compose(new NoProgressAfterSuccessTransformer<>())
             .compose(new GuaranteedProgressVisibilityTransformer<>())
@@ -51,7 +51,7 @@ public class WalletCustomerSupportSettingsPresenter extends WalletPresenter<Wall
    }
 
    void fetchCustomerSupportContact() {
-      settingsHelpInteractor.customerSupportContactPipe().send(new GetCustomerSupportContactCommand());
+      walletSettingsInteractor.customerSupportContactPipe().send(new GetCustomerSupportContactCommand());
    }
 
    void goBack() {

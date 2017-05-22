@@ -10,18 +10,18 @@ import com.worldventures.dreamtrips.R;
 
 import rx.functions.Action1;
 
-public class RetryErrorDialogView<T> extends DialogErrorView<T> {
+public class RetryDialogErrorView<T> extends DialogErrorView<T> {
 
    private final String message;
    private final Action1<T> retryAction;
    @Nullable
    private final Action1<T> cancelAction;
 
-   public RetryErrorDialogView(Context context, @StringRes int message, @NonNull Action1<T> retryAction) {
+   public RetryDialogErrorView(Context context, @StringRes int message, @NonNull Action1<T> retryAction) {
       this(context, message, retryAction, null);
    }
 
-   public RetryErrorDialogView(Context context, @StringRes int message, @NonNull Action1<T> retryAction, @Nullable Action1<T> cancelAction) {
+   public RetryDialogErrorView(Context context, @StringRes int message, @NonNull Action1<T> retryAction, @Nullable Action1<T> cancelAction) {
       super(context);
       this.message = context.getString(message);
       this.retryAction = retryAction;

@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
@@ -103,8 +103,8 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SettingsHelpInteractor provideSettingsHelpInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new SettingsHelpInteractor(sessionActionPipeCreator);
+   WalletSettingsInteractor provideSettingsHelpInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new WalletSettingsInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

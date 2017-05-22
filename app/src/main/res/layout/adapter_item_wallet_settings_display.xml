@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -10,47 +10,57 @@
    <com.facebook.drawee.view.SimpleDraweeView
          android:id="@+id/iv_photo"
          android:layout_width="@dimen/wallet_settings_display_options_page_size"
-         android:layout_height="@dimen/wallet_settings_display_options_page_size"
-         android:layout_centerInParent="true"
+         android:layout_height="0dp"
          android:paddingTop="20dp"
          app:backgroundImage="@color/wallet_card_display_default_background"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintDimensionRatio="h,1:1"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
          />
 
    <ImageView
          android:id="@+id/iv_silhouette"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/iv_photo"
-         android:layout_alignEnd="@+id/iv_photo"
-         android:layout_alignStart="@+id/iv_photo"
          android:src="@drawable/flyecard_avatar_placeholder_silhouette"
+         app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
+         app:layout_constraintEnd_toEndOf="@+id/iv_photo"
+         app:layout_constraintStart_toStartOf="@+id/iv_photo"
+         tools:ignore="ContentDescription"
          />
 
    <TextView
          android:id="@+id/tv_full_name"
-         android:layout_width="@dimen/wallet_settings_display_options_page_size"
-         android:layout_height="@dimen/wallet_settings_display_options_page_size"
-         android:layout_centerInParent="true"
+         android:layout_width="0dp"
+         android:layout_height="0dp"
          android:gravity="center"
-         android:paddingLeft="@dimen/spacing_normal"
-         android:paddingRight="@dimen/spacing_normal"
-         android:paddingTop="20dp"
+         android:paddingEnd="@dimen/spacing_small"
+         android:paddingStart="@dimen/spacing_small"
          android:textSize="@dimen/font_medium"
+         app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
+         app:layout_constraintEnd_toEndOf="@+id/iv_photo"
+         app:layout_constraintStart_toStartOf="@+id/iv_photo"
+         app:layout_constraintTop_toBottomOf="@+id/iv_sc_toolbar"
          tools:text="Samantha Louise Saltalamacchia\n\n+14155552671"
          />
 
    <TextView
          android:id="@+id/tv_first_name"
-         android:layout_width="@dimen/wallet_settings_display_options_page_size"
+         android:layout_width="0dp"
          android:layout_height="21dp"
-         android:layout_alignBottom="@+id/iv_photo"
-         android:layout_centerHorizontal="true"
          android:background="@color/black_semi_transparent_darker"
          android:ellipsize="end"
          android:gravity="center"
          android:maxLines="1"
+         android:paddingEnd="@dimen/spacing_small"
+         android:paddingStart="@dimen/spacing_small"
          android:textColor="@color/white"
          android:textSize="@dimen/font_normal"
+         app:layout_constraintBottom_toBottomOf="@id/iv_photo"
+         app:layout_constraintEnd_toEndOf="@+id/iv_photo"
+         app:layout_constraintStart_toStartOf="@+id/iv_photo"
          tools:text="Samantha"
          />
 
@@ -58,34 +68,39 @@
          android:id="@+id/tv_photo_required"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_centerInParent="true"
          android:ellipsize="end"
          android:fontFamily="@string/font_fontFamily_medium"
          android:text="@string/wallet_settings_general_display_photo_required"
          android:textColor="#222"
          android:textSize="@dimen/font_medium"
-         tools:visibility="invisible"
+         app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
+         app:layout_constraintEnd_toEndOf="@+id/iv_photo"
+         app:layout_constraintStart_toStartOf="@+id/iv_photo"
+         app:layout_constraintTop_toBottomOf="@+id/iv_sc_toolbar"
          />
 
    <ImageView
          android:id="@+id/iv_sc_toolbar"
-         android:layout_width="@dimen/wallet_settings_display_options_page_size"
+         android:layout_width="0dp"
          android:layout_height="21dp"
-         android:layout_alignTop="@+id/iv_photo"
-         android:layout_centerHorizontal="true"
          android:scaleType="fitCenter"
          android:src="@drawable/flyecard_status_bar"
+         app:layout_constraintEnd_toEndOf="@+id/iv_photo"
+         app:layout_constraintStart_toStartOf="@+id/iv_photo"
+         app:layout_constraintTop_toTopOf="@+id/iv_photo"
+         tools:ignore="ContentDescription"
          />
 
    <TextView
          android:id="@+id/tv_title"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_above="@+id/iv_sc_toolbar"
-         android:layout_centerHorizontal="true"
          android:layout_marginBottom="@dimen/spacing_normal"
          android:textSize="@dimen/font_medium"
          android:textStyle="bold"
+         app:layout_constraintBottom_toTopOf="@+id/iv_photo"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
          tools:text="@string/wallet_settings_general_display_photo_first_name"
          />
 
@@ -93,9 +108,7 @@
          android:id="@+id/tv_add_photo"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_below="@+id/iv_photo"
-         android:layout_centerHorizontal="true"
-         android:layout_marginTop="@dimen/spacing_small"
+         android:layout_marginTop="@dimen/spacing_medium"
          android:padding="@dimen/spacing_small"
          android:text="@string/wallet_settings_general_display_add_photo"
          android:textColor="@color/wallet_settings_display_options_add_info"
@@ -110,9 +123,7 @@
          android:id="@+id/tv_add_phone"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_below="@+id/iv_photo"
-         android:layout_centerHorizontal="true"
-         android:layout_marginTop="@dimen/spacing_small"
+         android:layout_marginTop="@dimen/spacing_medium"
          android:padding="@dimen/spacing_small"
          android:text="@string/wallet_settings_general_display_add_phone_number"
          android:textColor="@color/wallet_settings_display_options_add_info"
@@ -123,4 +134,4 @@
          app:layout_constraintTop_toBottomOf="@+id/iv_photo"
          />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

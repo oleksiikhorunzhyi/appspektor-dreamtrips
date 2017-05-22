@@ -35,7 +35,9 @@ import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
 import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
+import io.techery.janet.smartcard.action.settings.GetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
+import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
 import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
@@ -97,6 +99,9 @@ public final class SmartCardInteractor {
    private final ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe;
 
    private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
+
+   private final ActionPipe<SetHomeDisplayTypeAction> setHomeDisplayTypePipe;
+   private final ActionPipe<GetHomeDisplayTypeAction> getHomeDisplayTypePipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -161,6 +166,9 @@ public final class SmartCardInteractor {
       removeUserPhotoActionPipe= sessionActionPipeCreator.createPipe(RemoveUserPhotoAction.class, Schedulers.io());
 
       getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
+
+      setHomeDisplayTypePipe = sessionActionPipeCreator.createPipe(SetHomeDisplayTypeAction.class, Schedulers.io());
+      getHomeDisplayTypePipe = sessionActionPipeCreator.createPipe(GetHomeDisplayTypeAction.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -322,6 +330,14 @@ public final class SmartCardInteractor {
    public ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe() {
       return requestPinAuthActionPipe;
    }
+   public ActionPipe<SetHomeDisplayTypeAction> setHomeDisplayTypePipe() {
+      return setHomeDisplayTypePipe;
+   }
+
+   public ActionPipe<GetHomeDisplayTypeAction> getHomeDisplayTypePipe() {
+      return getHomeDisplayTypePipe;
+   }
+
 
    public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {
       return removeUserPhotoActionPipe;

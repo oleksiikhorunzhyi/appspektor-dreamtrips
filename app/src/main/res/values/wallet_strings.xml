@@ -20,6 +20,7 @@
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
    <string name="wallet_no_internet_connection">No internet connection</string>
+   <string name="wallet_connection_timed_out">Connection timed out</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
@@ -556,5 +557,12 @@
    <string name="wallet_settings_general_display_add_photo">Add Photo</string>
    <string name="wallet_settings_general_display_photo_required">Photo Required</string>
    <string name="wallet_settings_general_display_phone_required">Phone Required</string>
+   <string name="wallet_settings_general_display_updating">Updating…</string>
+   <string name="wallet_settings_general_display_loading">Loading…</string>
+   <string name="wallet_settings_general_display_changes_saved">The changes have been saved</string>
+   <string name="wallet_settings_general_display_phone_required_title">Phone number required</string>
+   <string name="wallet_settings_general_display_phone_required_message">A phone number is required for this display option.</string>
+   <string name="wallet_settings_general_display_photo_required_title">Photo required</string>
+   <string name="wallet_settings_general_display_photo_required_message">A photo is required for this display option.</string>
 
 </resources>

@@ -77,7 +77,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    }
 
    @Override
-   protected void track() {
+   protected void trackViewFromViewPagerIfNeeded() {
       getPresenter().track();
    }
 

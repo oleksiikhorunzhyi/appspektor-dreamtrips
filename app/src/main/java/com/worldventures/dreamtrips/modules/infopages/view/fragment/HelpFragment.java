@@ -12,9 +12,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
-import com.worldventures.dreamtrips.util.PageSelectionDetector;
 
 import butterknife.InjectView;
 
@@ -38,18 +36,13 @@ public class HelpFragment extends BaseFragment<HelpTabPresenter> {
    public void afterCreateView(View rootView) {
       if (adapter == null) {
          this.adapter = new BasePagerAdapter(getChildFragmentManager());
-         this.adapter.add(new FragmentItem(Route.DOCUMENT_LIST, getString(R.string.documents)));
+         this.adapter.add(new FragmentItem(Route.HELP_DOCUMENTS_LIST, getString(R.string.documents)));
          this.adapter.add(new FragmentItem(Route.HELP_VIDEOS, getString(R.string.presentations)));
       }
 
       pager.setAdapter(adapter);
       // Is used for block screen rotates
       pager.setOffscreenPageLimit(TERMS_OFFSCREEN_PAGES);
-      PageSelectionDetector.listenPageSelection(pager, pageNumber -> {
-         SelectablePagerFragment fragment = (SelectablePagerFragment) adapter.getCurrentFragment();
-         fragment.onSelectedFromPager();
-      });
-
       tabs.setupWithPagerBadged(pager);
    }
 }

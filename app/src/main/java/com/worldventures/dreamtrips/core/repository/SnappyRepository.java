@@ -183,9 +183,9 @@ public interface SnappyRepository {
 
    void setFeedbackTypes(List<FeedbackType> types);
 
-   List<Document> getDocuments();
+   List<Document> getDocuments(String type);
 
-   void setDocuments(List<Document> documents);
+   void setDocuments(String type, List<Document> documents);
 
    void cleanLastMapCameraPosition();
 

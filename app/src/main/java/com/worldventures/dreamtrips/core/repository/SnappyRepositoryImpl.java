@@ -650,13 +650,13 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    }
 
    @Override
-   public List<Document> getDocuments() {
-      return readList(DOCUMENTS, Document.class);
+   public List<Document> getDocuments(String type) {
+      return readList(DOCUMENTS + ":" + type, Document.class);
    }
 
    @Override
-   public void setDocuments(List<Document> documents) {
-      putList(DOCUMENTS, documents);
+   public void setDocuments(String type, List<Document> documents) {
+      putList(DOCUMENTS + ":" + type, documents);
    }
 
    ///////////////////////////////////////////////////////////////////////////

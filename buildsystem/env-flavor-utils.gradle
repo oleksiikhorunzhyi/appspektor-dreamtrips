@@ -1,0 +1,93 @@
+ext {
+   flavors ?: [:]
+
+   flavors.acceptVariant = { variant ->
+      String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
+      String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
+      String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
+      //
+      if (variant.buildType.name == 'debug') {
+         if (config == flavors.codes.stage || config == flavors.codes.preprod) return true
+      }
+      //
+      if (variant.buildType.name == 'release') {
+         if (build == flavors.codes.external &&
+               [flavors.codes.stage, flavors.codes.preprod, flavors.codes.perf].any { it == config }) {
+            return true
+         }
+         if (build == flavors.codes.external && stream == flavors.codes.stable && config == flavors.codes.prod) {
+            return true
+         }
+      }
+      if (build == flavors.codes.external && stream == flavors.codes.stable && config == flavors.codes.integration) {
+         return true
+      }
+      return false
+   }
+
+   flavors.applyConfig = { variant ->
+      def applyBuildConfig = { params ->
+         params.values().each {
+            it.each { k, v ->
+               variant.buildConfigField v.entrySet().first().key, k, v.entrySet().first().value
+            }
+         }
+      }
+      def applyResParams = { params ->
+         params.values().each {
+            it.each { k, v ->
+               variant.resValue v.entrySet().first().key, k, v.entrySet().first().value
+            }
+         }
+      }
+      def applyManifestPlaceholders = { params ->
+         params.values().each { it.each { its -> variant.mergedFlavor.manifestPlaceholders << its } }
+      }
+      def applyConfigs = { params ->
+         applyBuildConfig(params?.appParams ?: [:])
+         applyResParams(params?.resParams ?: [:])
+         applyManifestPlaceholders(params?.manifestParams ?: [:])
+      }
+
+      // apply default config
+      applyConfigs(ext.envConfig)
+
+      // apply flavor-specific config
+      String flavorName = variant.flavorName.toLowerCase()
+      String buildSuffix, streamSuffix, configSuffix
+      //
+      buildSuffix = flavors.types.build.find { flavorName.contains(it) }
+      streamSuffix = flavors.types.stream.find { flavorName.contains(it) }
+      configSuffix = flavors.types.config.find { flavorName.contains(it) }
+
+      applyConfigs(flavors.configs.get("$buildSuffix"))
+      applyConfigs(flavors.configs.get("$streamSuffix"))
+      applyConfigs(flavors.configs.get("$configSuffix"))
+      applyConfigs(flavors.configs.get("$buildSuffix$streamSuffix"))
+      applyConfigs(flavors.configs.get("$streamSuffix$configSuffix"))
+      applyConfigs(flavors.configs.get("$buildSuffix$streamSuffix$configSuffix"))
+   }
+
+   flavors.applyVersionName = { variant ->
+      String flavorName = variant.flavorName.toLowerCase()
+      String buildSuffix, streamSuffix, configSuffix
+
+      buildSuffix = flavors.types.build.find { flavorName.contains(it) }
+      streamSuffix = flavors.types.stream.find { flavorName.contains(it) }
+      configSuffix = flavors.types.config.find { flavorName.contains(it) }
+
+      String versionName = ext.appConfig.applicationId
+      //
+      if ([flavors.codes.dev, flavors.codes.devpremarshmallow].contains(buildSuffix)) {
+         versionName += "-$flavors.codes.dev"
+      }
+      if (streamSuffix != flavors.codes.stable) {
+         versionName += "-${streamSuffix}"
+      }
+      if (configSuffix != flavors.codes.prod) {
+         versionName += "-${configSuffix}"
+      }
+      //
+      variant.mergedFlavor.setVersionName versionName
+   }
+}

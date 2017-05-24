@@ -21,6 +21,7 @@ android {
       applicationId = project.ext.appConfig.applicationId
       versionCode project.ext.appConfig.buildVersionCode()
       versionName project.ext.appConfig.buildVersionName()
+      archivesBaseName = project.ext.appConfig.archivesBaseName
       //
       minSdkVersion project.ext.androidConfig.minSdk
       targetSdkVersion project.ext.androidConfig.targetSdk

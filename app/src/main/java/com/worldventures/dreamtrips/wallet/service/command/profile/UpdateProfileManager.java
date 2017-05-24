@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 import com.worldventures.dreamtrips.api.smart_card.user_info.UpdateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
@@ -67,10 +66,7 @@ class UpdateProfileManager {
             .phoneNumber(changedFields.phone());
 
       if (changedFields.photo() != null) {
-         userBuilder.userPhoto(ImmutableSmartCardUserPhoto.builder()
-               .from(changedFields.photo())
-               .photoUrl(updateCardUserData.photoUrl())
-               .build());
+         userBuilder.userPhoto(changedFields.photo());
       }
       return userBuilder.build();
    }

@@ -12,12 +12,9 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 
@@ -72,15 +69,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    }
 
    private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
-      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(
-            ImmutableChangedFields.builder()
-                  .firstName(smartCardUser.firstName())
-                  .middleName(smartCardUser.middleName())
-                  .lastName(smartCardUser.lastName())
-                  .photo(smartCardUser.userPhoto())
-                  .phone(smartCardUser.phoneNumber())
-                  .build())
-      );
+      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(smartCardUser));
    }
 
    private void onUserSetupSuccess() {

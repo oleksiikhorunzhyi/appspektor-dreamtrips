@@ -2,12 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -19,31 +14,23 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
-import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
-import com.worldventures.dreamtrips.wallet.util.FormatException;
-import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
-import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhoneScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import rx.Observable;
-import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
@@ -54,62 +41,29 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
-   @Nullable private SmartCardUserPhoto preparedPhoto;
+   private final WalletProfileDelegate delegate;
 
    public WizardEditProfilePresenter(Context context, Injector injector) {
       super(context, injector);
-   }
-
-   @Override
-   public void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new SetupUserAction()));
+      this.delegate = new WalletProfileDelegate(analyticsInteractor);
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      // TODO: 9/1/16 investigate and fix this problem (photo piker brake SoftInputMode too)
-      // hotfix, web view brake SoftInputMode (set ADJUST_RESIZE)
-      setupInputMode();
+      attachProfile(view);
+      observeSetupUserCommand(view);
 
-      observePickerAndCropper(view);
-      subscribePreparingAvatarCommand();
-      subscribeSetupUserCommand();
-
-      User userProfile = appSessionHolder.get().get().getUser();
-      view.setUserFullName(userProfile.getFirstName(), userProfile.getLastName());
-      String defaultUserAvatar = userProfile.getAvatar().getThumb();
-      if (!TextUtils.isEmpty(defaultUserAvatar)) {
-         smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromUrl(defaultUserAvatar));
-      }
+      delegate.sendAnalytics(new SetupUserAction());
+      delegate.setupInputMode(activity);
    }
 
-   void setupInputMode() {
-      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-   }
-
-   private void observePickerAndCropper(Screen view) {
-      view.observePickPhoto().compose(bindView()).subscribe(view::cropPhoto);
-
-      view.observeCropper().compose(bindView()).subscribe(this::prepareImage);
-   }
-
-   private void subscribePreparingAvatarCommand() {
-      smartCardUserDataInteractor.smartCardAvatarPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                  .onFail((command, throwable) -> Timber.e("", throwable))
-                  .onSuccess(command -> photoPrepared(command.getResult())));
-   }
-
-   private void subscribeSetupUserCommand() {
+   private void observeSetupUserCommand(Screen view) {
       wizardInteractor.setupUserDataPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
+            .subscribe(OperationActionSubscriber.forView(view.provideOperationView())
                   .onSuccess(command -> onUserSetupSuccess())
                   .create());
    }
@@ -117,15 +71,20 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    private void onUserSetupSuccess() {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
-      navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
+      navigator.go(new EnterPinPath(Action.SETUP));
    }
 
-   private void photoPrepared(SmartCardUserPhoto photo) {
-      preparedPhoto = photo;
-      getView().setPreviewPhoto(photo.photoUrl());
+   private void attachProfile(Screen view) {
+      final User userProfile = appSessionHolder.get().get().getUser();
+      view.setUserFullName(userProfile.getFirstName(), userProfile.getLastName());
+
+      final String defaultUserAvatar = userProfile.getAvatar().getThumb();
+      if (!ProjectTextUtils.isEmpty(defaultUserAvatar)) {
+         delegate.setPhotoUri(defaultUserAvatar, view);
+      }
    }
 
-   void goToBack() {
+   void back() {
       getView().hidePhotoPicker();
       navigator.goBack();
    }
@@ -134,80 +93,42 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       getView().pickPhoto();
    }
 
-   private void prepareImage(String path) {
-      smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromSchemePath(path));
+   void setupInputMode() {
+      delegate.setupInputMode(activity);
    }
 
    void setupUserData() {
-      final String[] userNames = getView().getUserName();
-      if (isUserDataValid(userNames))
-         getView().showConfirmationDialog(String.format("%s %s", userNames[0], userNames[2]));
+      final Screen view = getView();
+      //noinspection ConstantConditions
+      WalletProfileUtils.checkUserNameValidation(view.getFirstName(), view.getMiddleName(), view.getLastName(),
+            () -> view.showConfirmationDialog(view.getFirstName(), view.getLastName()),
+            e -> view.provideOperationView().showError(null, e));
    }
 
    void onUserDataConfirmed() {
-      final String[] userNames = getView().getUserName();
       wizardInteractor.setupUserDataPipe()
-            .send(new SetupUserDataCommand(prepareData(userNames)));
+            .send(new SetupUserDataCommand(
+                  ImmutableSmartCardUser.builder()
+                        .firstName(getView().getFirstName())
+                        .middleName(getView().getFirstName())
+                        .lastName(getView().getLastName())
+                        .phoneNumber(getView().userPhone())
+                        .userPhoto(delegate.preparedPhoto())
+                        .build()
+            ));
    }
 
-   private ChangedFields prepareData(String[] userNames) {
-      return ImmutableChangedFields.builder()
-            .firstName(userNames[0])
-            .middleName(userNames[1])
-            .lastName(userNames[2])
-            .photo(preparedPhoto)
-            .phone(preparePhone())
-            .build();
-   }
-
-   private SmartCardUserPhone preparePhone() {
-      if (!ProjectTextUtils.isEmpty(getView().getCountryCode()) && !ProjectTextUtils.isEmpty(getView().getPhoneNumber())) {
-         return ImmutableSmartCardUserPhone.of(getView().getPhoneNumber(), getView().getCountryCode());
-      } else {
-         return null;
-      }
-   }
-
-   private boolean isUserDataValid(String[] userNames) {
-      try {
-         if (preparedPhoto == null || preparedPhoto.original() == null || !preparedPhoto.original().exists()) {
-            throw new MissedAvatarException();
-         }
-         WalletValidateHelper.validateUserFullNameOrThrow(userNames[0], userNames[1], userNames[2]);
-      } catch (FormatException | MissedAvatarException e) {
-         getView().provideOperationView().showError(null, e);
-         return false;
-      }
-      return true;
-   }
-
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletProfilePhoneScreen, WalletProfilePhotoView {
 
       OperationView<SetupUserDataCommand> provideOperationView();
 
-      void pickPhoto();
-
-      void cropPhoto(Uri photoPath);
-
-      Observable<Uri> observePickPhoto();
-
-      Observable<String> observeCropper();
-
-      void hidePhotoPicker();
-
-      void setPreviewPhoto(String photoUrl);
-
       void setUserFullName(String firstName, String lastName);
 
-      void setPhone(String countryCode, String number);
+      String getFirstName();
 
-      @NonNull
-      String[] getUserName();
+      String getMiddleName();
 
-      String getCountryCode();
+      String getLastName();
 
-      String getPhoneNumber();
-
-      void showConfirmationDialog(String fullName);
-   }
+      void showConfirmationDialog(String firstName, String lastName);}
 }

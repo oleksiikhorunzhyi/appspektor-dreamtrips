@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
@@ -78,7 +77,6 @@ import dagger.Module;
             DeleteRecordCommand.class,
             SyncSmartCardCommand.class,
             SyncRecordsCommand.class,
-            SmartCardAvatarCommand.class,
             SetupUserDataCommand.class,
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,

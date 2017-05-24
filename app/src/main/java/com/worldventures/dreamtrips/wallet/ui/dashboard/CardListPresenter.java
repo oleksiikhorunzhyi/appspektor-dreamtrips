@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
@@ -172,10 +174,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSmartCardUser(SmartCardUser smartCardUser) {
-      final String photoFileUrl = smartCardUser.userPhoto() != null
-            ? smartCardUser.userPhoto().photoUrl()
-            : "";
-      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUrl);
+      getView().setSmartCardUserAttrs(smartCardUser.fullName(), smartCardUser.userPhoto());
    }
 
    private void observeConnectionStatus() {
@@ -388,7 +387,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
 
-      void setSmartCardUserAttrs(String fullname, String photoFileUrl);
+      void setSmartCardUserAttrs(String fullname, @Nullable SmartCardUserPhoto photo);
 
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 

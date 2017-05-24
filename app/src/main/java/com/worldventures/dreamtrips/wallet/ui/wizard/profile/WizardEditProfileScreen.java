@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,8 +14,11 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
@@ -28,6 +31,7 @@ import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
+import com.worldventures.dreamtrips.wallet.util.PhoneNumberCreator;
 
 import java.io.File;
 
@@ -41,9 +45,9 @@ import rx.Observable;
 public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.first_name) EditText firstName;
-   @InjectView(R.id.middle_name) EditText middleName;
-   @InjectView(R.id.last_name) EditText lastName;
+   @InjectView(R.id.first_name) EditText etFirstName;
+   @InjectView(R.id.middle_name) EditText etMiddleName;
+   @InjectView(R.id.last_name) EditText etLastName;
    @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
    @InjectView(R.id.et_phone_number) EditText etPhoneNumber;
    @InjectView(R.id.et_country_code) EditText etCountryCode;
@@ -83,13 +87,11 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       }
 
       @Override
-      public void onOpened() {
-
-      }
+      public void onOpened() {}
    };
 
    protected void navigateButtonClick() {
-      presenter.goToBack();
+      presenter.back();
    }
 
    @OnClick(R.id.next_button)
@@ -103,9 +105,9 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @OnTouch(value = {R.id.first_name, R.id.middle_name, R.id.last_name,
-                           R.id.et_country_code, R.id.et_phone_number})
+         R.id.et_country_code, R.id.et_phone_number})
    public boolean onClickProfileFields(View view, MotionEvent event) {
-      if(event.getAction() == MotionEvent.ACTION_DOWN) mediaPickerService.hidePicker();
+      if (event.getAction() == MotionEvent.ACTION_DOWN) mediaPickerService.hidePicker();
       return false;
    }
 
@@ -143,8 +145,15 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public Observable<String> observeCropper() {
-      return mediaPickerService.observeCropper().map(File::getAbsolutePath);
+   public Observable<File> observeCropper() {
+      return mediaPickerService.observeCropper();
+   }
+
+   @Override
+   public void setPreviewPhoto(@Nullable SmartCardUserPhoto photo) {
+      if (photo != null) {
+         previewPhotoView.setImageURI(photo.uri());
+      }
    }
 
    @Override
@@ -153,45 +162,32 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void setPreviewPhoto(String photoUrl) {
-      previewPhotoView.setImageURI(photoUrl);
-   }
-
-   @Override
    public void setUserFullName(@NonNull String firstName, @NonNull String lastName) {
-      this.firstName.setText(firstName);
-      this.lastName.setText(lastName);
-      this.firstName.setSelection(firstName.length());
-      this.lastName.setSelection(lastName.length());
+      this.etFirstName.setText(firstName);
+      this.etLastName.setText(lastName);
+      this.etFirstName.setSelection(firstName.length());
+      this.etLastName.setSelection(lastName.length());
    }
 
    @Override
-   public void setPhone(String countryCode, String number) {
-      etCountryCode.setText(countryCode);
-      etPhoneNumber.setText(number);
-   }
-
-   @NonNull
-   @Override
-   public String[] getUserName() {
-      return new String[]{firstName.getText().toString().trim(), middleName.getText().toString().trim(),
-            lastName.getText().toString().trim()};
+   public String getFirstName() {
+      return etFirstName.getText().toString().trim();
    }
 
    @Override
-   public String getCountryCode() {
-      return etCountryCode.getText().toString();
+   public String getMiddleName() {
+      return etMiddleName.getText().toString().trim();
    }
 
    @Override
-   public String getPhoneNumber() {
-      return etPhoneNumber.getText().toString();
+   public String getLastName() {
+      return etLastName.getText().toString().trim();
    }
 
    @Override
-   public void showConfirmationDialog(String fullName) {
+   public void showConfirmationDialog(String firstName, String lastName) {
       new MaterialDialog.Builder(getContext())
-            .content(Html.fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message, fullName)))
+            .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message, firstName, lastName)))
             .contentGravity(GravityEnum.CENTER)
             .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
             .onPositive((dialog, which) -> presenter.onUserDataConfirmed())
@@ -199,5 +195,13 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
             .onNegative((dialog, which) -> dialog.cancel())
             .build()
             .show();
+   }
+
+   @Override
+   @Nullable
+   public SmartCardUserPhone userPhone() {
+      return PhoneNumberCreator.create(
+            etCountryCode.getText().toString().trim(),
+            etPhoneNumber.getText().toString().trim());
    }
 }

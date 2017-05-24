@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDa
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareInteractorSpec.Companion.connectToSmartCardSdk
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository
 import com.worldventures.dreamtrips.wallet.service.lostcard.SmartCardLocationInteractorSpec.Companion.smartCardInteractor
+import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -174,6 +175,7 @@ class FactoryResetInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(AnalyticsInteractor::class.java, { analyticsInteractor })
          daggerCommandActionService.registerProvider(FactoryResetInteractor::class.java, { factoryResetInteractor })
+         daggerCommandActionService.registerProvider(CachedPhotoUtil::class.java, { mock() })
 
          return janet
       }

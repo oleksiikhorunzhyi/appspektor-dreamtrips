@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsGeneralAct
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -136,7 +137,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    private void bindSmartCardUser(SmartCardUser it) {
-      if (it.userPhoto() != null) getView().setPreviewPhoto(it.userPhoto().photoUrl());
+      getView().setPreviewPhoto(it.userPhoto());
       getView().setUserName(it.firstName(), it.middleName(), it.lastName());
    }
 
@@ -180,7 +181,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
 
    public interface Screen extends WalletScreen, FactoryResetView {
 
-      void setPreviewPhoto(String photoUrl);
+      void setPreviewPhoto(@Nullable SmartCardUserPhoto photo);
 
       void setUserName(String firstName, String middleName, String lastName);
 

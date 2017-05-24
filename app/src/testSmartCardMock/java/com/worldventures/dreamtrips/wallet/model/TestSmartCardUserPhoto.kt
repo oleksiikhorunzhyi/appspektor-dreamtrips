@@ -1,12 +1,9 @@
 package com.worldventures.dreamtrips.wallet.model
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto
-import java.io.File
 
-class TestSmartCardUserPhoto : SmartCardUserPhoto {
+class TestSmartCardUserPhoto : SmartCardUserPhoto() {
 
-   override fun original(): File? = null
-
-   override fun photoUrl(): String = ""
+   override fun uri(): String = ""
 }
 

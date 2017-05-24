@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -15,7 +13,8 @@ import io.techery.janet.Janet;
       injects = {
             UpdateSmartCardUserCommand.class,
             RevertSmartCardUserUpdatingCommand.class,
-            RetryHttpUploadUpdatingCommand.class
+            RetryHttpUploadUpdatingCommand.class,
+            UpdateSmartCardUserPhotoCommand.class
       },
       library = true, complete = false)
 public class UpdateProfileModule {

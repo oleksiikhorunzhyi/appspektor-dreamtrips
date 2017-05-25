@@ -67,7 +67,7 @@ ext {
    def smackVersion = '4.1.6'
    moduleDependencies.networking = [
          // API
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api:2.8.36-STAGE-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api:2.8.39-STAGE-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -89,7 +89,7 @@ ext {
    ]
    // smartcard
    moduleDependencies.smartcard = [
-         service: [c: 'io.techery.janet:smartcard:0.20.9-SNAPSHOT'],
+         service: [c: 'io.techery.janet:smartcard:0.21.3-SNAPSHOT'],
    ]
    // services
    def googleServicesVersion = '10.2.0'

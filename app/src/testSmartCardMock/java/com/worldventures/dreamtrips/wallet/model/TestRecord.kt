@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.model
 
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType
@@ -17,8 +16,7 @@ class TestRecord(
       private val track3: String? = null,
       private val cardType: RecordType = RecordType.FINANCIAL,
       private val financialService: FinancialService = FinancialService.MASTERCARD,
-      private val bankName: String = "",
-      private val addressInfo: AddressInfo = TestAddressInfo()
+      private val bankName: String = ""
 ) : Record() {
 
    override fun id(): String? = id
@@ -38,8 +36,6 @@ class TestRecord(
    override fun nickName(): String = title
 
    override fun cvv(): String = cvv
-
-   override fun addressInfo() = addressInfo
 
    override fun recordType() = cardType
 

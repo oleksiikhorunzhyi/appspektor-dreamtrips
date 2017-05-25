@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 
-import static android.text.TextUtils.getTrimmedLength;
 import static java.lang.String.format;
 
 public class WalletRecordUtil {
@@ -167,12 +166,8 @@ public class WalletRecordUtil {
       );
    }
 
-   public static boolean validationMandatoryFields(String number, String address1, String city, String zipCode, String state, String cvv) {
-      return getTrimmedLength(address1) > 0
-            && getTrimmedLength(city) > 0
-            && getTrimmedLength(zipCode) > 0
-            && getTrimmedLength(state) > 0
-            && cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
+   public static boolean validationMandatoryFields(String number, String cvv) {
+      return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
    }
 
    public CharSequence goodThrough(String date) {

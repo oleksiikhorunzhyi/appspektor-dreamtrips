@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.wallet.service.command.record;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
@@ -23,7 +21,6 @@ import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCvvOrThrow;
 
@@ -36,21 +33,10 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
    @Inject RecordInteractor recordInteractor;
 
    private final Record record;
-   private final AddressInfo manualAddressInfo;
-   private final boolean setAsDefaultAddress;
-   private final boolean useDefaultAddress;
    private final boolean setAsDefaultRecord;
 
-   private AddRecordCommand(Record record,
-         AddressInfo manualAddressInfo,
-         boolean useDefaultAddress,
-         boolean setAsDefaultAddress,
-         boolean setAsDefaultRecord
-   ) {
-      this.setAsDefaultAddress = setAsDefaultAddress;
-      this.useDefaultAddress = useDefaultAddress;
+   private AddRecordCommand(Record record, boolean setAsDefaultRecord) {
       this.record = record;
-      this.manualAddressInfo = manualAddressInfo;
       this.setAsDefaultRecord = setAsDefaultRecord;
    }
 
@@ -62,23 +48,11 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
    protected void run(CommandCallback<Record> callback) throws Throwable {
       checkCardData();
 
-      createRecordWithAddress()
-            .flatMap(recordWithAddress -> prepareRecordForLocalStorage(recordWithAddress)
-                  .flatMap((recordForLocalStorage) -> pushRecordToSmartCard(recordWithAddress)
-                        .map(recordId -> ImmutableRecord.copyOf(recordForLocalStorage).withId(recordId))))
+      prepareRecordForLocalStorage(record)
+            .flatMap((recordForLocalStorage) -> pushRecordToSmartCard(record).map(recordId ->
+                  ImmutableRecord.copyOf(recordForLocalStorage).withId(recordId)))
             .doOnNext(this::saveRecordLocally)
-            .doOnNext(recordForLocalStorageWithId -> saveDefaultAddressIfNeed())
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private Observable<Record> createRecordWithAddress() {
-      if (useDefaultAddress) {
-         return recordInteractor.getDefaultAddressCommandPipe()
-               .createObservableResult(new GetDefaultAddressCommand())
-               .map(defaultAddressAction -> createRecord(defaultAddressAction.getResult()));
-      } else {
-         return Observable.just(createRecord(manualAddressInfo));
-      }
    }
 
    private Observable<Record> prepareRecordForLocalStorage(Record record) {
@@ -113,42 +87,20 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
             .send(RecordListCommand.add(record));
    }
 
-   private void saveDefaultAddressIfNeed() {
-      if (setAsDefaultAddress) {
-         snappyRepository.saveDefaultAddress(manualAddressInfo);
-      }
-   }
-
-   private Record createRecord(AddressInfo address) {
-      return ImmutableRecord.builder()
-            .from(record)
-            .addressInfo(address)
-            .build();
-   }
-
    private void checkCardData() throws FormatException {
       validateCardNameOrThrow(record.nickName());
-      validateAddressInfoOrThrow(manualAddressInfo);
       validateCvvOrThrow(record.cvv(), record.number());
    }
 
    public static class Builder {
 
       private Record record;
-      private AddressInfo manualAddressInfo;
       private String cvv;
       private String recordName;
-      private boolean useDefaultAddress;
-      private boolean setAsDefaultAddress;
       private boolean setAsDefaultRecord;
 
       public Builder setRecord(Record record) {
          this.record = record;
-         return this;
-      }
-
-      public Builder setManualAddressInfo(AddressInfo manualAddressInfo) {
-         this.manualAddressInfo = manualAddressInfo;
          return this;
       }
 
@@ -162,24 +114,17 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
          return this;
       }
 
-      public Builder setUseDefaultAddress(boolean useDefaultAddress) {
-         this.useDefaultAddress = useDefaultAddress;
-         return this;
-      }
-
-      public Builder setSetAsDefaultAddress(boolean setAsDefaultAddress) {
-         this.setAsDefaultAddress = setAsDefaultAddress;
-         return this;
-      }
-
       public Builder setSetAsDefaultRecord(boolean setAsDefaultRecord) {
          this.setAsDefaultRecord = setAsDefaultRecord;
          return this;
       }
 
       public AddRecordCommand create() {
-         return new AddRecordCommand(ImmutableRecord.builder().from(record).cvv(cvv).nickName(recordName).build(),
-               manualAddressInfo, useDefaultAddress, setAsDefaultAddress, setAsDefaultRecord);
+         return new AddRecordCommand(ImmutableRecord.builder()
+               .from(record)
+               .cvv(cvv)
+               .nickName(recordName)
+               .build(), setAsDefaultRecord);
       }
    }
 }

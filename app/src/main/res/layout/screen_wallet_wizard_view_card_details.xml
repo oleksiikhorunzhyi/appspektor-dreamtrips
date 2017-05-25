@@ -20,6 +20,7 @@
    <ScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:fillViewport="true"
          >
 
       <RelativeLayout
@@ -32,18 +33,19 @@
                android:id="@+id/card"
                android:layout_width="match_parent"
                android:layout_height="@dimen/wallet_card_height"
-               app:cardDrawable="blue"
                android:visibility="gone"
+               app:cardDrawable="blue"
                tools:visibility="visible"
                />
 
          <LinearLayout
                android:id="@+id/controls_layout"
-               android:layout_below="@+id/card"
                android:layout_width="match_parent"
-               android:layout_height="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_below="@+id/card"
                android:orientation="vertical"
                >
+
             <Button
                   android:id="@+id/pay_this_card_button"
                   android:layout_width="match_parent"
@@ -94,45 +96,10 @@
                   android:text="@string/wallet_add_card_details_option_set_as_default_card"
                   />
 
-            <LinearLayout
-                  android:id="@+id/billing_address_label"
+            <android.support.v4.widget.Space
                   android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  >
-
-               <TextView
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content"
-                     android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-                     android:layout_weight="1"
-                     android:text="@string/wallet_card_details_label_billing_address"
-                     android:textAppearance="?android:attr/textAppearanceSmall"
-                     android:textColor="@color/wallet_card_details_address_text_color"
-                     />
-
-               <ImageView
-                     android:id="@+id/edit_billing_address"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="bottom"
-                     android:padding="@dimen/spacing_tiny"
-                     android:src="@drawable/ic_wallet_pencil_gray"
-                     />
-
-            </LinearLayout>
-
-            <TextView
-                  android:id="@+id/address_textview"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginBottom="@dimen/spacing_large"
-                  android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
-                  android:importantForAccessibility="no"
-                  android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
-                  android:textAppearance="?android:attr/textAppearanceMedium"
-                  android:textSize="@dimen/wallet_details_screen_address_text_size"
-                  tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
                   />
 
             <Button

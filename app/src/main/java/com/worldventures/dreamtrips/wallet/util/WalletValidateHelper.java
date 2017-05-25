@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.wallet.util;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 
 import java.util.regex.Pattern;
 
@@ -33,13 +30,6 @@ public class WalletValidateHelper {
       }
    }
 
-   public static boolean validateAddressInfo(AddressInfo addressInfo) {
-      boolean infoInvalid = TextUtils.isEmpty(addressInfo.address1()) || TextUtils.isEmpty(addressInfo.city()) || TextUtils
-            .isEmpty(addressInfo.state()) || TextUtils.isEmpty(addressInfo.zip());
-
-      return !infoInvalid;
-   }
-
    public static boolean validateCardCvv(String cvv, String cardNumber) {
       return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(cardNumber);
    }
@@ -55,12 +45,6 @@ public class WalletValidateHelper {
    public static boolean isValidCardName(String cardName) {
       final int length = cardName.length();
       return length > 0 && length <= 11 && CARD_NAME_PATTERN.matcher(cardName).matches();
-   }
-
-   public static void validateAddressInfoOrThrow(AddressInfo addressInfo) throws AddressFormatException {
-      if (!validateAddressInfo(addressInfo)) {
-         throw new AddressFormatException();
-      }
    }
 
    public static void validateCvvOrThrow(String cvv, String cardNumber) throws CvvFormatException {

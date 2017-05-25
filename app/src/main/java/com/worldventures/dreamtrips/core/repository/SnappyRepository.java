@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
@@ -87,7 +86,6 @@ public interface SnappyRepository {
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
    String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
-   String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
    String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
@@ -252,12 +250,6 @@ public interface SnappyRepository {
    SimpleDeviceStorage getWalletDeviceStorage();
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
-
-   void saveDefaultAddress(AddressInfo addressInfo);
-
-   AddressInfo readDefaultAddress();
-
-   void deleteDefaultAddress();
 
    void saveSmartCard(SmartCard smartCard);
 

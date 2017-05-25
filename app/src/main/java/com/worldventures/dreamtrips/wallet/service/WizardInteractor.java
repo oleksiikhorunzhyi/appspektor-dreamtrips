@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
@@ -29,7 +28,6 @@ public final class WizardInteractor {
    private final ActionPipe<WizardCheckCommand> checksPipe;
    private final ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe;
 
-   private final ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe;
    private final ActionPipe<ReAssignCardCommand> reAssignCardPipe;
 
    private final ActionPipe<WizardCompleteCommand> completePipe;
@@ -45,8 +43,6 @@ public final class WizardInteractor {
       startPinSetupPipe = sessionActionPipeCreator.createPipe(StartPinSetupAction.class, Schedulers.io());
       checksPipe = sessionActionPipeCreator.createPipe(WizardCheckCommand.class, Schedulers.io());
 
-      fetchAndStoreDefaultAddressInfoPipe = sessionActionPipeCreator.createPipe(FetchAndStoreDefaultAddressInfoCommand.class, Schedulers
-            .io());
       reAssignCardPipe = sessionActionPipeCreator.createPipe(ReAssignCardCommand.class, Schedulers.io());
       getSmartCardStatusCommandActionPipe = sessionActionPipeCreator.createPipe(GetSmartCardStatusCommand.class, Schedulers
             .io());
@@ -82,10 +78,6 @@ public final class WizardInteractor {
 
    public ActionPipe<WizardCheckCommand> checksPipe() {
       return checksPipe;
-   }
-
-   public ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe() {
-      return fetchAndStoreDefaultAddressInfoPipe;
    }
 
    public ActionPipe<WizardCompleteCommand> completePipe() {

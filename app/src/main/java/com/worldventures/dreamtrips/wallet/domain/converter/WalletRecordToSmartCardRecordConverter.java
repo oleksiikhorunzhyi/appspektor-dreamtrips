@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 import java.util.HashMap;
@@ -28,7 +27,6 @@ public class WalletRecordToSmartCardRecordConverter implements Converter<Record,
       HashMap<String, String> metadata = new HashMap<>(5);
       metadata.put(BANK_NAME_FIELD, card.bankName());
 
-      //// TODO: 11/28/16 add cardNameHolder into Record!!!
       ImmutableRecord.Builder recordBuilder = ImmutableRecord.builder()
             .id(parseCardId(card))
             .title(card.nickName())
@@ -44,17 +42,8 @@ public class WalletRecordToSmartCardRecordConverter implements Converter<Record,
             .firstName(card.cardHolderFirstName())
             .middleName(card.cardHolderMiddleName())
             .cardType(mapperyContext.convert(card.recordType(), io.techery.janet.smartcard.model.Record.CardType.class))
+            .version(card.version())
             .metadata(metadata);
-
-      AddressInfo addressInfo = card.addressInfo();
-      if (addressInfo != null) {
-         recordBuilder
-               .city(addressInfo.city())
-               .state(addressInfo.state())
-               .streetName(addressInfo.address1())
-               .country(addressInfo.address2())
-               .zipCode(addressInfo.zip());
-      }
 
       return recordBuilder.build();
    }

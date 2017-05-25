@@ -13,10 +13,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -30,7 +27,6 @@ import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDia
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
-import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
 import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
 import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
@@ -50,11 +46,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
    @InjectView(R.id.card_cvv) PinEntryEditText etCardCvv;
-   @InjectView(R.id.address1) EditText etAddress1;
-   @InjectView(R.id.address2) EditText etAddress2;
-   @InjectView(R.id.city) EditText etCity;
-   @InjectView(R.id.state) EditText etState;
-   @InjectView(R.id.zip) EditText etZip;
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
@@ -66,10 +57,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
-   private Observable<String> address1Observable;
-   private Observable<String> stateObservable;
-   private Observable<String> cityObservable;
-   private Observable<String> zipObservable;
    private Observable<String> cvvObservable;
 
    public AddCardDetailsScreen(Context context) {
@@ -97,10 +84,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
       cardNicknameObservable = observableFrom(etCardNickname);
 
-      address1Observable = observableFrom(etAddress1);
-      stateObservable = observableFrom(etState);
-      cityObservable = observableFrom(etCity);
-      zipObservable = observableFrom(etZip);
       cvvObservable = observableFrom(etCardCvv);
    }
 
@@ -121,26 +104,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public Observable<String> getAddress1Observable() {
-      return address1Observable;
-   }
-
-   @Override
-   public Observable<String> getStateObservable() {
-      return stateObservable;
-   }
-
-   @Override
-   public Observable<String> getZipObservable() {
-      return zipObservable;
-   }
-
-   @Override
-   public Observable<String> getCityObservable() {
-      return cityObservable;
-   }
-
-   @Override
    public Observable<String> getCvvObservable() {
       return cvvObservable;
    }
@@ -148,24 +111,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public void setCardName(String cardName) {
       bankCardWidget.setCardName(cardName);
-   }
-
-   @Override
-   public void defaultAddress(AddressInfo addressInfo) {
-      etAddress1.setText(addressInfo.address1());
-      etAddress1.setSelection(etAddress1.length());
-
-      etAddress2.setText(addressInfo.address2());
-      etAddress2.setSelection(etAddress2.length());
-
-      etCity.setText(addressInfo.city());
-      etCity.setSelection(etCity.length());
-
-      etState.setText(addressInfo.state());
-      etState.setSelection(etState.length());
-
-      etZip.setText(addressInfo.zip());
-      etZip.setSelection(etZip.length());
    }
 
    @Override
@@ -205,11 +150,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public OperationView<GetDefaultAddressCommand> provideOperationGetDefaultAddress() {
-      return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, false));
-   }
-
-   @Override
    public OperationView<AddRecordCommand> provideOperationAddRecord() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
@@ -221,7 +161,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
                   }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), AddressFormatException.class, R.string.wallet_add_card_details_error_message))
                   .build()
       );
    }
@@ -249,26 +188,12 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       String nickname = etCardNickname.getText().toString().trim();
       boolean setAsDefaultCard = defaultPaymentCardSwitcher.isChecked();
 
-      AddressInfo addressInfo = ImmutableAddressInfo.builder()
-            .address1(etAddress1.getText().toString().trim())
-            .address2(etAddress2.getText().toString().trim())
-            .city(etCity.getText().toString().trim())
-            .state(etState.getText().toString().trim())
-            .zip(etZip.getText().toString().trim())
-            .build();
-
-      getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, setAsDefaultCard);
+      getPresenter().onCardInfoConfirmed(cvv, nickname, setAsDefaultCard);
    }
 
    private void setHintsAndLabels() {
       bindSpannableStringToTarget(cvvLabel, R.string.wallet_add_card_details_cvv_label, true, false);
       bindSpannableStringToTarget(etCardNickname, R.string.wallet_add_card_details_hint_nickname_card, true, true);
-      bindSpannableStringToTarget(etAddress1, R.string.wallet_add_card_details_hint_address1, true, true);
-      bindSpannableStringToTarget(etAddress2, R.string.wallet_add_card_details_hint_address2_label,
-            R.string.wallet_add_card_details_hint_optional, false, true);
-      bindSpannableStringToTarget(etCity, R.string.wallet_add_card_details_hint_city, true, true);
-      bindSpannableStringToTarget(etState, R.string.wallet_add_card_details_hint_state, true, true);
-      bindSpannableStringToTarget(etZip, R.string.wallet_add_card_details_hint_zip, true, true);
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }

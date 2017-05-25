@@ -19,6 +19,7 @@
    <ScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:fillViewport="true"
          >
 
       <LinearLayout
@@ -95,13 +96,6 @@
 
          </android.support.design.widget.TextInputLayout>
 
-         <include
-               android:id="@+id/address_info"
-               layout="@layout/include_wallet_address_info"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               />
-
          <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
                android:id="@+id/set_default_card_switcher"
                android:layout_width="match_parent"
@@ -109,6 +103,12 @@
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:text="@string/wallet_add_card_details_option_set_as_default_card"
                tools:checked="true"
+               />
+
+         <android.support.v4.widget.Space
+               android:layout_width="match_parent"
+               android:layout_height="0dp"
+               android:layout_weight="1"
                />
 
          <Button

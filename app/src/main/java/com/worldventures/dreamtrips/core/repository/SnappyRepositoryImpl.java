@@ -33,9 +33,7 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
@@ -273,21 +271,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public void deleteSmartCardFirmware() {
       act(db -> db.del(WALLET_SMART_CARD_FIRMWARE));
-   }
-
-   @Override
-   public void saveDefaultAddress(AddressInfo addressInfo) {
-      putEncrypted(WALLET_DEFAULT_ADDRESS, addressInfo);
-   }
-
-   @Override
-   public AddressInfo readDefaultAddress() {
-      return getEncrypted(WALLET_DEFAULT_ADDRESS, ImmutableAddressInfo.class);
-   }
-
-   @Override
-   public void deleteDefaultAddress() {
-      act(db -> db.del(WALLET_DEFAULT_ADDRESS));
    }
 
    @Override

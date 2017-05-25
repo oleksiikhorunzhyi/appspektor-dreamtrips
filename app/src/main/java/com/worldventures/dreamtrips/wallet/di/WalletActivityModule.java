@@ -13,9 +13,6 @@ import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.Supporte
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
-import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPresenter;
-import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
@@ -45,8 +42,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.Fac
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
@@ -61,6 +58,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualIn
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
@@ -110,8 +108,6 @@ import dagger.Provides;
             AddCardDetailsPresenter.class,
             EnterPinPresenter.class,
             WizardWelcomePresenter.class,
-            EditBillingAddressPresenter.class,
-            EditBillingAddressScreen.class,
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class,
             WalletUpToDateFirmwarePresenter.class,

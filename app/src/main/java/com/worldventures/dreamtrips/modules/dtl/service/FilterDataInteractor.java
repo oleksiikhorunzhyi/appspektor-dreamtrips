@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableF
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.Collections;
@@ -62,13 +63,9 @@ public class FilterDataInteractor implements Initializable {
 
    public void searchMerchantType(final List<String> merchantType) {
       getLastFilterObservable()
-            .map(filterData -> ImmutableFilterData.builder()
-                  .distanceType(filterData.distanceType())
-                  .distanceMaxIndex(filterData.distanceMaxIndex())
-                  .isOffersOnly(filterData.isOffersOnly())
-                  .budgetMax(filterData.budgetMax())
-                  .budgetMin(filterData.budgetMin())
-                  .merchantType(merchantType).build())
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withDistanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+                  .withMerchantType(merchantType))
             .subscribe(this::send);
    }
 

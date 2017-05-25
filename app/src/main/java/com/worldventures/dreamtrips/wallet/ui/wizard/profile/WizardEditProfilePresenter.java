@@ -54,6 +54,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       attachProfile(view);
       observeSetupUserCommand(view);
 
+      delegate.observePickerAndCropper(view);
       delegate.sendAnalytics(new SetupUserAction());
       delegate.setupInputMode(activity);
    }

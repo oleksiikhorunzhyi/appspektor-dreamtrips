@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.wallet.util.MaltyPartImageBodyCreator;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Janet;
-import io.techery.janet.body.ActionBody;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
@@ -18,6 +18,7 @@ public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmar
 
    @Inject Janet janet;
    @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject MaltyPartImageBodyCreator creator;
 
    private final String photoUri;
    private final String smartCardId;
@@ -28,11 +29,11 @@ public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmar
    }
 
    @Override
-   protected void run(CommandCallback<UploadSmartCardImageHttpAction> callback) throws Exception{
+   protected void run(CommandCallback<UploadSmartCardImageHttpAction> callback) throws Exception {
       final String username = userSessionHolder.get().get().getUsername();
-      janet.createPipe(UploadSmartCardImageHttpAction.class)
-            //// TODO: 6/14/17 null
-            .createObservableResult(new UploadSmartCardImageHttpAction(BuildConfig.UPLOADERY_API_URL, username, smartCardId, (ActionBody) null))
+      creator.createBody(photoUri)
+            .flatMap(body -> janet.createPipe(UploadSmartCardImageHttpAction.class)
+                  .createObservableResult(new UploadSmartCardImageHttpAction(BuildConfig.UPLOADERY_API_URL, username, smartCardId, body)))
             .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
    }
 }

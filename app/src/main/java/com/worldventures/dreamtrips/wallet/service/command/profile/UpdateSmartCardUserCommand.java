@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;

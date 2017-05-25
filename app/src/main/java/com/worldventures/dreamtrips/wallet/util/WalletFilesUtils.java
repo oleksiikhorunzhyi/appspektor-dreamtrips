@@ -61,25 +61,4 @@ public class WalletFilesUtils {
          return missingByteSpace;
       }
    }
-
-   public static File parseUriToFile(String strUri) {
-      final Uri uri = Uri.parse(strUri);
-      if (uri.getScheme() == null) {
-         throw new IllegalArgumentException("Uri scheme is missed: " + strUri);
-      }
-      final File file = new File(uri.getPath());
-      if (file.isFile()) {
-         return file;
-      } else {
-         throw new IllegalArgumentException(strUri + " doesn't correspond to File path scheme");
-      }
-   }
-
-   public static Uri parsePathToUri(String path) {
-      final Uri uri = Uri.parse(path);
-      if (uri.getScheme() == null) {
-         return Uri.fromFile(new File(path));
-      }
-      return Uri.parse(path);
-   }
 }

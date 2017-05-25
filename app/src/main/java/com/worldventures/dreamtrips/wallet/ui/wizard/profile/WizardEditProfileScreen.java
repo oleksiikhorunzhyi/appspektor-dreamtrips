@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -31,6 +33,7 @@ import java.io.File;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
@@ -97,6 +100,13 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @OnClick(R.id.imageContainer)
    public void choosePhotoClick() {
       presenter.choosePhoto();
+   }
+
+   @OnTouch(value = {R.id.first_name, R.id.middle_name, R.id.last_name,
+                           R.id.et_country_code, R.id.et_phone_number})
+   public boolean onClickProfileFields(View view, MotionEvent event) {
+      if(event.getAction() == MotionEvent.ACTION_DOWN) mediaPickerService.hidePicker();
+      return false;
    }
 
    @Override

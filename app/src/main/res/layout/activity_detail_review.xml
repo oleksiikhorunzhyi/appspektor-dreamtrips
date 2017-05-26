@@ -11,10 +11,19 @@
          style="@style/ToolBarStyle"
          />
 
-   <include
-         android:id="@+id/include_detail_review"
-         layout="@layout/include_detail_review"
-         />
+
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <include
+            android:id="@+id/include_detail_review"
+            layout="@layout/include_detail_review"
+            />
+
+   </android.support.v4.widget.SwipeRefreshLayout>
 
    <LinearLayout
          android:id="@+id/emptyView"

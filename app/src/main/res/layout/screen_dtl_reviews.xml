@@ -10,21 +10,19 @@
          style="@style/ToolBarStyle"
          />
 
-   <ProgressBar
-         android:id="@+id/progress_loader"
-         style="?android:attr/progressBarStyle"
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_gravity="center"
-         android:visibility="gone"
-         />
-
+         android:layout_height="match_parent"
+         >
 
    <com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView
          android:id="@+id/container_comments_detail"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          />
+
+   </android.support.v4.widget.SwipeRefreshLayout>
 
    <LinearLayout
          android:id="@+id/emptyView"

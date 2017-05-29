@@ -44,7 +44,7 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
    @NonNull
    @Override
    public WizardWelcomePresenter createPresenter() {
-      return new WizardWelcomePresenter(getContext(), getInjector());
+      return new WizardWelcomePresenter(getContext(), getInjector(), getPath().provisioningMode);
    }
 
    @Override
@@ -99,10 +99,5 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
    @Override
    public OperationScreen provideOperationDelegate() {
       return null;
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 }

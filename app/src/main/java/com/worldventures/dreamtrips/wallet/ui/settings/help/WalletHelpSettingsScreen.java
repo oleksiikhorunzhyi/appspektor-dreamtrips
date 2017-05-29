@@ -47,29 +47,24 @@ public class WalletHelpSettingsScreen extends WalletLinearLayout<WalletHelpSetti
       return new DialogOperationScreen(this);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @OnClick(R.id.item_documents)
    void onClickDocuments() {
-
+      presenter.openDocuments();
    }
 
    @OnClick(R.id.item_videos)
    void onClickVideos() {
-
+      getPresenter().openVideoSection();
    }
 
    @OnClick(R.id.item_send_feedback)
    void onClickSendFeedback() {
-
+      getPresenter().openSendFeedbackSection();
    }
 
    @OnClick(R.id.item_customer_support)
    void onClickCustomerSupport() {
-
+      getPresenter().openCustomerSupportScreen();
    }
-
 }

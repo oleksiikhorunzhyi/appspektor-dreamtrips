@@ -5,9 +5,12 @@
    <color name="wallet_color_primary_dark">#006699</color>
    <color name="wallet_text_color_primary">#222222</color>
    <color name="wallet_text_color_medium">#dd222222</color>
+   <color name="wallet_text_color_menu_item">#fff</color>
+   <color name="wallet_text_color_menu_item_disabled">#c7c7c7</color>
 
    <color name="wallet_button_color_disabled">#8f8f8f</color>
-   <color name="wallet_button_text_color_disabled">#FFFFFF</color>
+   <color name="wallet_button_text_color_disabled">#b4b4b4</color>
+   <color name="wallet_button_text_color_black">#000</color>
    <color name="wallet_gray_background">#226D6D72</color>
    <color name="wallet_hint_color">#9a9a9a</color>
    <color name="wallet_number_edit_text_text_color_hint">#999999</color>
@@ -18,12 +21,16 @@
       <item name="colorPrimary">@color/wallet_color_primary</item>
       <item name="colorPrimaryDark">@color/wallet_color_primary_dark</item>
       <item name="android:textColorPrimary">@color/wallet_text_color_primary</item>
+      <item name="android:actionMenuTextColor">@color/color_selector_wallet_settings_item_white</item>
+      <item name="actionMenuTextColor">@color/color_selector_wallet_settings_item_white</item>
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
       <item name="android:editTextStyle">@style/WalletTheme.EditTextStyle</item>
       <item name="android:buttonStyle">@style/WalletTheme.ButtonStyle</item>
+      <item name="android:spinnerStyle">@style/WalletTheme.SpinnerStyle</item>
       <item name="editTextStyle">@style/WalletTheme.EditTextStyle</item> <!--for support V7 -->
+      <item name="spinnerStyle">@style/WalletTheme.SpinnerStyle</item>
       <item name="buttonStyle">@style/WalletTheme.ButtonStyle</item>
       <item name="switchStyle">@style/WalletTheme.SwitchStyle</item>
 
@@ -45,6 +52,14 @@
       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
       <item name="android:textColor">@color/wallet_button_text_colors</item>
       <item name="android:padding">@dimen/spacing_normal</item>
+   </style>
+
+   <style name="WalletTheme.SpinnerStyle" parent="Widget.AppCompat.Spinner">
+      <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+      <item name="android:textColor">@color/wallet_button_text_colors</item>
+      <item name="android:backgroundTint">@android:color/white</item>
+
+      <item name="backgroundTint">@android:color/white</item>
    </style>
 
    <style name="WalletTheme.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">
@@ -177,5 +192,19 @@
       <item name="android:layout_width">match_parent</item>
       <item name="android:layout_height">match_parent</item>
       <item name="android:padding">@dimen/wallet_common_screen_padding</item>
+   </style>
+
+   <style name="WalletTheme.ProfileField">
+      <item name="android:imeOptions">actionNext</item>
+      <item name="android:inputType">textPersonName|textCapWords</item>
+      <item name="android:maxLength">@integer/wallet_settings_name_max_length</item>
+      <item name="android:maxLines">1</item>
+      <item name="android:textColor">#666666</item>
+      <item name="android:textColorHint">@color/grey</item>
+      <item name="android:textSize">@dimen/font_normal</item>
+   </style>
+
+   <style name="WalletTheme.ProfileField.PhoneNumber" parent="WalletTheme.ProfileField">
+      <item name="android:inputType">number</item>
    </style>
 </resources>

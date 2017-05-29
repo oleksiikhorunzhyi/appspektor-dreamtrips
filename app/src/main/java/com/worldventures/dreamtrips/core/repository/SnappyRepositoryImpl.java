@@ -345,6 +345,21 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
       return actWithResult(db -> db.get(WALLET_SYNC_RECORD_STATUS, SyncRecordsStatus.class)).orNull();
    }
 
+   @Override
+   public void saveShouldAskForPin(boolean shouldAsk) {
+      act(db -> db.putBoolean(WALLET_OPTIONAL_PIN, shouldAsk));
+   }
+
+   @Override
+   public boolean shouldAskForPin() {
+      return actWithResult(db -> db.getBoolean(WALLET_OPTIONAL_PIN)).or(true);
+   }
+
+   @Override
+   public void deletePinOptionChoice() {
+      act(db -> db.del(WALLET_OPTIONAL_PIN));
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Settings
    ///////////////////////////////////////////////////////////////////////////
@@ -596,13 +611,13 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    @Override
-   public List<Document> getDocuments() {
-      return readList(DOCUMENTS, Document.class);
+   public List<Document> getDocuments(String type) {
+      return readList(DOCUMENTS + ":" + type, Document.class);
    }
 
    @Override
-   public void setDocuments(List<Document> documents) {
-      putList(DOCUMENTS, documents);
+   public void setDocuments(String type, List<Document> documents) {
+      putList(DOCUMENTS + ":" + type, documents);
    }
 
    ///////////////////////////////////////////////////////////////////////////

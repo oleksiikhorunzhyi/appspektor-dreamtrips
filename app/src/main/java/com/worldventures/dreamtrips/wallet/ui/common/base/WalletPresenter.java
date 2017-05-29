@@ -7,6 +7,7 @@ import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -18,6 +19,7 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
 
    @SuppressWarnings("WeakerAccess")
    @Inject SmartCardInteractor interactor;
+   @Inject WalletNetworkService networkService;
 
    private Context context;
    private Injector injector;
@@ -32,6 +34,15 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeSmartCardModifierPipe();
+      observeHttpConnectionState();
+   }
+
+   private void observeHttpConnectionState() {
+      networkService.observeConnectedState()
+            .throttleLast(1, TimeUnit.SECONDS)
+            .distinctUntilChanged()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::showHttpConnectionStatus);
    }
 
    private void observeSmartCardModifierPipe() {

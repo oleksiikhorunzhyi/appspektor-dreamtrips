@@ -67,7 +67,7 @@ ext {
    def smackVersion = '4.1.6'
    moduleDependencies.networking = [
          // API
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api:2.8.33-STAGE-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api:2.8.36-STAGE-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -89,7 +89,7 @@ ext {
    ]
    // smartcard
    moduleDependencies.smartcard = [
-         service: [c: 'io.techery.janet:smartcard:0.18.1-SNAPSHOT'],
+         service: [c: 'io.techery.janet:smartcard:0.20.9-SNAPSHOT'],
    ]
    // services
    def googleServicesVersion = '10.2.0'
@@ -155,6 +155,7 @@ ext {
          shadowlayout          : [c: 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'],
          slidinguppanel        : [c: 'com.sothree.slidinguppanel:library:3.2.1'],
          swipelayout           : [c: 'com.daimajia.swipelayout:library:1.2.0@aar'],
+         constraintlayout      : [c: 'com.android.support.constraint:constraint-layout:1.0.2'],
          // Text
          materialedittext      : [c: 'com.rengwuxian.materialedittext:library:2.1.4'],
          expandableTextView    : [c: 'com.ms-square:expandableTextView:0.1.4'],
@@ -187,6 +188,7 @@ ext {
          deviceprint              : [c: [name: 'deviceprint-lib-release-2.3.3', ext: 'aar']],
          leakcanary               : [c: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"],
          leakcanaryNoOp           : [c: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"],
+         databindingcompiler      : [a: 'com.android.databinding:compiler:2.3.1'],
    ]
    // tests
    def spekVersion = '1.1.1'

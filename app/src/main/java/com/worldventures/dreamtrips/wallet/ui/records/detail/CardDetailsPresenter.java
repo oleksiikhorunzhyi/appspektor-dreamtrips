@@ -68,6 +68,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       Screen view = getView();
 
       view.showWalletRecord(record);
+      view.animateCard();
 
       fetchAddressByRecordId(record.id());
       updateCardConditionState();
@@ -86,7 +87,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .map(command -> Queryable.from(command.getResult()).first(element -> element.id().equals(recordId)))
             .subscribe(record -> {
                      this.record = record;
-                     getView().showDefaultAddress(record.addressInfo()); },
+                     getView().showDefaultAddress(record.addressInfo());
+                  },
                   throwable -> Timber.e(throwable, ""));
    }
 
@@ -370,5 +372,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       OperationView<SetDefaultCardOnDeviceCommand> provideOperationSetDefaultOnDevice();
 
       OperationView<SetPaymentCardAction> provideOperationSetPaymentCardAction();
+
+      void animateCard();
    }
 }

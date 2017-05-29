@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCom
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
@@ -234,6 +235,7 @@ import dagger.Module;
       TranslatePhotoCommand.class,
       TranslateBucketItemCommand.class,
       SendAnalyticsIfNeedAction.class,
-      GetAlbumsCommand.class
+      GetAlbumsCommand.class,
+      UpdateStatusCachedEntityCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

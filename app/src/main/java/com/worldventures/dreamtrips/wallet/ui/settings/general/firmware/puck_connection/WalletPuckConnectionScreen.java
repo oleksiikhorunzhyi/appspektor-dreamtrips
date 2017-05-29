@@ -55,10 +55,6 @@ public class WalletPuckConnectionScreen extends WalletLinearLayout<WalletPuckCon
       swipingAnimations.animateSmartCard(smartCard);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @OnClick(R.id.next_button)
    void nextButtonClick() {

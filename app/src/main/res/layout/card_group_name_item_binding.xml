@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      >
+
+   <data>
+
+      <variable
+            name="title"
+            type="com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CardGroupHeaderModel"
+            />
+   </data>
+
+   <TextView android:id="@+id/tv_title"
+         android:layout_width="match_parent"
+         app:cardType="@{title.name}"
+         android:layout_height="wrap_content"
+         android:background="@color/white"
+         android:paddingBottom="@dimen/spacing_small"
+         android:paddingLeft="@dimen/spacing_huge"
+         android:paddingRight="@dimen/spacing_huge"
+         android:paddingTop="@dimen/spacing_normal"
+         android:singleLine="true"
+         android:textColor="@color/wallet_card_list_header_text"
+         android:textSize="@dimen/font_normal"
+         />
+</layout>

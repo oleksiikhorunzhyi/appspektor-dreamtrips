@@ -101,7 +101,7 @@ public class AnalyticsService extends ActionService {
       return holder.action().getClass().getAnnotation(AnalyticsEvent.class).category();
    }
 
-   private static String getAction(ActionHolder holder) throws IllegalAccessException {
+   public static String getAction(ActionHolder holder) throws IllegalAccessException {
       Object analyticAction = holder.action();
       String generatedAction = analyticAction.getClass().getAnnotation(AnalyticsEvent.class).action();
 

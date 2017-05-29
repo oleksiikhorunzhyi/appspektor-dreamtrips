@@ -69,6 +69,11 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
+   Converter provideCustomerSupportConverter() {
+      return new CustomerSupportContactConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
    Converter provideWalletLocationToSmartCardLocationConverter() {
       return new WalletLocationToSmartCardLocationConverter();
    }
@@ -116,5 +121,15 @@ public class SmartCardConverterModule {
    @Provides(type = Provides.Type.SET)
    Converter provideWalletRecordTypeToSmartCardRecordTypeConverter() {
       return new WalletRecordTypeToSmartCardRecordTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideCardUserPhoneToSmartCardUserPhoneConverter() {
+      return new CardUserPhoneToSmartCardUserPhoneConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardUserPhoneToCardUserPhoneConverter() {
+      return new SmartCardUserPhoneToCardUserPhoneConverter();
    }
 }

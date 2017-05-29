@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +29,17 @@ import android.webkit.WebViewClient;
 import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
@@ -69,6 +72,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Inject protected HeaderProvider headerProvider;
    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
    @Inject OfflineErrorInteractor offlineErrorInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject SessionHolder<UserSession> sessionHolder;
 
    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
@@ -134,7 +139,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          @Override
          public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+            // Ensure we don't track redirected urls
+            if (!TextUtils.isEmpty(url) && url.equals(getURL())) {
+               sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+            }
             isLoading = true;
             weakHandler.post(() -> {
                if (refreshLayout != null) refreshLayout.setRefreshing(true);
@@ -439,6 +447,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    abstract protected String getURL();
 
+   protected String getUserId() {
+      return sessionHolder.get().get().getUser().getUsername();
+   }
+
    @Override
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
@@ -499,88 +511,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    @Layout(R.layout.fragment_webview)
-   public static class TermsOfServiceFragment extends LanguageHeaderStaticInfoFragment {
-
-      @Override
-      protected String getURL() {
-         return provider.getTermsOfServiceUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         ((WebViewFragmentPresenter) getPresenter()).track(Route.TERMS_OF_SERVICE);
-      }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-         TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_SERVICE, actionAnalyticEvent);
-      }
-
-   }
-
-   @Layout(R.layout.fragment_webview)
-   public static class CookiePolicyFragment extends LanguageHeaderStaticInfoFragment {
-
-      @Override
-      protected String getURL() {
-         return provider.getCookiesPolicyUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
-      }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-         TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_COOKIE, actionAnalyticEvent);
-      }
-   }
-
-   @Layout(R.layout.fragment_webview)
-   @MenuResource(R.menu.menu_mock)
-   public static class FAQFragment extends LanguageHeaderStaticInfoFragment {
-
-      @Override
-      protected String getURL() {
-         return provider.getFaqUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         ((WebViewFragmentPresenter) getPresenter()).track(Route.FAQ);
-      }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-         //
-      }
-   }
-
-   @Layout(R.layout.fragment_webview)
-   public static class PrivacyPolicyFragment extends LanguageHeaderStaticInfoFragment {
-
-      @Override
-      protected String getURL() {
-         return provider.getPrivacyPolicyUrl();
-      }
-
-      @Override
-      public void afterCreateView(View rootView) {
-         super.afterCreateView(rootView);
-         ((WebViewFragmentPresenter) getPresenter()).track(Route.PRIVACY_POLICY);
-      }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-         TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_PRIVACY, actionAnalyticEvent);
-      }
-   }
-
-   @Layout(R.layout.fragment_webview)
    public static class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<MerchantIdBundle> {
 
       @Override
@@ -596,7 +526,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       }
 
       @Override
-      protected void track() {
+      protected void trackViewFromViewPagerIfNeeded() {
          getPresenter().track(Route.ENROLL_MERCHANT);
       }
    }
@@ -628,11 +558,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          webView.getSettings().setLoadWithOverviewMode(true);
          webView.getSettings().setUseWideViewPort(true);
       }
-
-      @Override
-      protected void sendAnalyticEvent(String actionAnalyticEvent) {
-      }
-
    }
 
    @Layout(R.layout.fragment_webview_with_overlay)

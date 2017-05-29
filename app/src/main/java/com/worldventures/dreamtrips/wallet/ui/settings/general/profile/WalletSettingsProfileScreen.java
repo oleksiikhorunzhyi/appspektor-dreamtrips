@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -32,9 +33,13 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @InjectView(R.id.first_name) EditText etFirstName;
    @InjectView(R.id.middle_name) EditText etMiddleName;
    @InjectView(R.id.last_name) EditText etLastName;
+   @InjectView(R.id.et_phone_number) EditText etPhoneNumber;
+   @InjectView(R.id.et_country_code) EditText etCountryCode;
 
    private Observable<String> firstNameObservable;
    private Observable<String> middleNameObservable;
+   private Observable<String> codeObservable;
+   private Observable<String> phoneObservable;
 
    /**
     * TODO
@@ -77,6 +82,8 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
       firstNameObservable = RxTextView.afterTextChangeEvents(etFirstName).map(event -> event.editable().toString());
       middleNameObservable = RxTextView.afterTextChangeEvents(etMiddleName).map(event -> event.editable().toString());
+      codeObservable = RxTextView.afterTextChangeEvents(etCountryCode).map(event -> event.editable().toString());
+      phoneObservable = RxTextView.afterTextChangeEvents(etPhoneNumber).map(event -> event.editable().toString());
       ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
    }
 
@@ -95,11 +102,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @OnClick(R.id.imageContainer)
    public void choosePhotoClick() {
       presenter.choosePhoto();
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 
    @NonNull
@@ -129,6 +131,12 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
+   public void setPhone(String countryCode, String number) {
+      etCountryCode.setText(countryCode);
+      etPhoneNumber.setText(number);
+   }
+
+   @Override
    public void showRevertChangesDialog() {
       //Some changes were made. Are you sure you want go back without saving them
       new MaterialDialog.Builder(getContext()).content(R.string.wallet_card_settings_profile_dialog_changes_title)
@@ -155,6 +163,16 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
+   public String getCountryCode() {
+      return etCountryCode.getText().toString();
+   }
+
+   @Override
+   public String getPhoneNumber() {
+      return etPhoneNumber.getText().toString();
+   }
+
+   @Override
    public Observable<String> firstNameObservable() {
       return firstNameObservable;
    }
@@ -162,6 +180,16 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    public Observable<String> middleNameObservable() {
       return middleNameObservable;
+   }
+
+   @Override
+   public Observable<String> codeObservable() {
+      return codeObservable;
+   }
+
+   @Override
+   public Observable<String> phoneObservable() {
+      return phoneObservable;
    }
 
    @Override
@@ -240,12 +268,12 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public void cropPhoto(String photoPath) {
+   public void cropPhoto(Uri photoPath) {
       mediaPickerService.crop(photoPath);
    }
 
    @Override
-   public Observable<String> observePickPhoto() {
+   public Observable<Uri> observePickPhoto() {
       return mediaPickerService.observePicker();
    }
 

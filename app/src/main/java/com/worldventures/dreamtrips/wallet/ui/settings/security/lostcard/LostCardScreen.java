@@ -76,10 +76,6 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 
    @NonNull
    @Override

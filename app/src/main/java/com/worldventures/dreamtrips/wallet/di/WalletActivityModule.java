@@ -8,14 +8,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresente
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.BankCardCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
@@ -45,25 +43,30 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSet
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.paymentcomplete.PaymentSyncFinishPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncRecordsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectPresenter;
@@ -83,9 +86,6 @@ import dagger.Provides;
             UnsupportedDeviceInfoCell.class,
             SupportedDevicesListCell.class,
             SupportedDeviceItemCell.class,
-            BankCardCell.class,
-            CardStackCell.class,
-            CardStackHeaderCell.class,
             SettingsRadioCell.class,
             SectionDividerCell.class,
             WalletProvisioningBlockedPresenter.class,
@@ -105,6 +105,7 @@ import dagger.Provides;
             WalletHelpSettingsPresenter.class,
             WalletSettingsProfilePresenter.class,
             WalletOfflineModeSettingsPresenter.class,
+            WalletCustomerSupportSettingsPresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             EnterPinPresenter.class,
@@ -139,7 +140,12 @@ import dagger.Provides;
             PreCheckNewCardPresenter.class,
             PaymentSyncFinishPresenter.class,
             ExistingDeviceDetectPresenter.class,
-            WizardUploadProfilePresenter.class
+            WizardUploadProfilePresenter.class,
+            WalletHelpDocumentsPresenter.class,
+            SendFeedbackPresenter.class,
+            WalletHelpVideoPresenter.class,
+            HelpDocumentPresenter.class,
+            PinProposalPresenter.class
       },
       complete = false, library = true
 )

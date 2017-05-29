@@ -6,6 +6,10 @@ import android.os.Parcelable;
 import android.view.View;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsOfflineModeScreenAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsOfflineModeStateChangeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
@@ -13,9 +17,8 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOf
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -29,6 +32,7 @@ public class WalletOfflineModeSettingsPresenter extends WalletPresenter<WalletOf
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject WalletNetworkService networkService;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private boolean waitingForNetwork = false;
 
@@ -39,6 +43,7 @@ public class WalletOfflineModeSettingsPresenter extends WalletPresenter<WalletOf
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      trackScreen();
 
       observeOfflineModeState();
       observeOfflineModeSwitcher();
@@ -82,10 +87,11 @@ public class WalletOfflineModeSettingsPresenter extends WalletPresenter<WalletOf
 
       smartCardInteractor.switchOfflineModePipe()
             .observe()
-            .throttleLast(1, TimeUnit.SECONDS)
+            .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onProgress(command -> waitingForNetwork = false)
+                  .onSuccess(command -> trackStateChange(command.getResult()))
                   .onFail((command, throwable) -> {
                      if (throwable.getCause() instanceof NetworkUnavailableException) {
                         waitingForNetwork = true;
@@ -110,6 +116,20 @@ public class WalletOfflineModeSettingsPresenter extends WalletPresenter<WalletOf
 
    private void onOfflineModeSwitcherChanged(boolean enabled) {
       getView().showConfirmationDialog(enabled);
+   }
+
+   private void trackStateChange(boolean isOfflineModeEnabled) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new SettingsOfflineModeStateChangeAction(isOfflineModeEnabled)));
+   }
+
+   private void trackScreen() {
+      smartCardInteractor.offlineModeStatusPipe()
+            .observeSuccess()
+            .take(1)
+            .map(Command::getResult)
+            .subscribe(isOfflineModeEnabled -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(new SettingsOfflineModeScreenAction(isOfflineModeEnabled))));
    }
 
    public interface Screen extends WalletScreen {

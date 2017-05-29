@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -42,7 +43,6 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-
       featureManager.with(Feature.WALLET_PROVISIONING,
             this::onWalletAvailable,
             () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)
@@ -103,7 +103,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    }
 
    private void navigateToWizard() {
-      navigator.single(new WizardWelcomePath(), Flow.Direction.REPLACE);
+      navigator.single(new WizardWelcomePath(ProvisioningMode.STANDARD), Flow.Direction.REPLACE);
    }
 
    public interface Screen extends WalletScreen {

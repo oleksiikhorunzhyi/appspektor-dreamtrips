@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -13,11 +14,13 @@ public interface MediaPickerService {
 
    void pickPhoto();
 
-   void crop(String filePath);
+   void pickPhotos(int limit);
+
+   void crop(Uri uri);
 
    void hidePicker();
 
-   Observable<String> observePicker();
+   Observable<Uri> observePicker();
 
    Observable<File> observeCropper();
 

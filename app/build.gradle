@@ -157,6 +157,10 @@ android {
       exclude 'META-INF/NOTICE.txt'
    }
    useLibrary 'org.apache.http.legacy'
+
+   dataBinding{
+      enabled = true
+   }
 }
 
 // disable new relic for non-release tasks

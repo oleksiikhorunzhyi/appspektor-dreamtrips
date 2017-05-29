@@ -324,7 +324,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             .show();
    }
 
-   boolean handleBackPressed() {
+   boolean tryToCloseDrawer() {
       if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
          closeRightDrawer();
          return true;
@@ -380,7 +380,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
    @Override
    public void onBackPressed() {
-      if (!handleBackPressed()) {
+      if (!tryToCloseDrawer()) {
          super.onBackPressed();
       }
    }

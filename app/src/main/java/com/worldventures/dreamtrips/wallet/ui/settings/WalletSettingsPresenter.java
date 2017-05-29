@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -11,7 +8,7 @@ import android.util.Pair;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.settings.WalletSettingsAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
@@ -32,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import timber.log.Timber;
 
 public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
@@ -69,23 +65,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       navigator.go(new WalletSecuritySettingsPath());
    }
 
-   // TODO: 4/13/17 Remove it with Wallet Help Settings classes if feature won't be in development soon
    void openHelpScreen() {
       navigator.go(new WalletHelpSettingsPath());
    }
 
-   void dialPhoneNumber(String phoneNumber) {
-      Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
-      try {
-         getContext().startActivity(intent);
-      } catch (ActivityNotFoundException e) {
-         Timber.e(e, "");
-      }
-   }
-
    private void trackScreen() {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new WalletSettingsAction()));
+            .send(new WalletAnalyticsCommand(new SettingsAction()));
    }
 
    private void observeSmartCardChanges() {

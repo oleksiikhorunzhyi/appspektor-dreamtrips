@@ -7,6 +7,7 @@ ext {
                VERSION_CHECK_API_URL: [String: '"http://qafortius-ucservices.wvhservices.com/"'],
                API_VERSION          : [String: '"2"'],
                API_TIMEOUT_SEC      : [long: '60'],
+               NXT_API              : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
          ],
          messenger: [
                MESSENGER_API_URL : [String: '"dtmsgapp-dev.worldventures.biz"'],

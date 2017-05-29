@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.nxt.util;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Base64;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -101,7 +100,7 @@ public class NxtBankCardHelper {
 
    @Nullable
    private static String getDecodedElement(@Nullable String value) {
-      if (!TextUtils.isEmpty(value)) {
+      if (!isEmpty(value)) {
          return new String(Base64.decode(value.getBytes(), Base64.DEFAULT));
       }
       return null;
@@ -109,7 +108,7 @@ public class NxtBankCardHelper {
 
    private static void safelyAddElement(List<MultiRequestElement> list,
          String operation, String tokenName, @Nullable String value, String refId) {
-      if (!TextUtils.isEmpty(value)) list.add(ImmutableMultiRequestElement.builder()
+      if (!isEmpty(value)) list.add(ImmutableMultiRequestElement.builder()
             .operation(operation).tokenName(tokenName)
             .value(value).referenceId(refId)
             .build());
@@ -117,13 +116,18 @@ public class NxtBankCardHelper {
 
    private static void safelyAddEncodedElement(List<MultiRequestElement> list,
          String operation, String tokenName, @Nullable String value, String refId) {
-      if (!TextUtils.isEmpty(value)) {
+      if (!isEmpty(value)) {
          byte[] encodedValue = Base64.encode(value.getBytes(), Base64.DEFAULT);
          list.add(ImmutableMultiRequestElement.builder()
                .operation(operation).tokenName(tokenName)
                .value(new String(encodedValue)).referenceId(refId)
                .build());
       }
+   }
+
+   public static boolean isEmpty(String str) {
+      //todo replace isEmpty
+      return str == null || str.isEmpty();
    }
 
    public static String prefixRefId(String refId, @Nullable String prefix) {

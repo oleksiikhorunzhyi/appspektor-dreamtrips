@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -16,6 +18,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 
 import javax.inject.Inject;
 
@@ -28,15 +33,21 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FactoryResetInteractor factoryResetInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject WalletBluetoothService bluetoothService;
+   private final CheckPinDelegate checkPinDelegate;
 
    public NewCardPowerOnPresenter(Context context, Injector injector) {
       super(context, injector);
+      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
+            navigator, FactoryResetAction.NEW_CARD);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      checkPinDelegate.observePinStatus(getView());
       fetchSmartCardId();
    }
 
@@ -86,7 +97,7 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
 
    private void handleConnectionSmartCard(boolean bluetoothIsConnected, boolean smartCardConnected) {
       if (bluetoothIsConnected && smartCardConnected) {
-         navigator.go(new EnterPinUnassignPath());
+         checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
       } else {
          navigator.go(new PreCheckNewCardPath());
       }
@@ -96,7 +107,11 @@ public class NewCardPowerOnPresenter extends WalletPresenter<NewCardPowerOnPrese
       navigator.goBack();
    }
 
-   public interface Screen extends WalletScreen {
+   void retryFactoryReset() {
+      checkPinDelegate.getFactoryResetDelegate().factoryReset();
+   }
+
+   public interface Screen extends WalletScreen, FactoryResetView {
 
       void setTitleWithSmartCardID(String scID);
 

@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
@@ -41,16 +41,10 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
    @Inject MapperyContext mappery;
 
-   private final String firstName;
-   private final String middleName;
-   private final String lastName;
-   private final SmartCardUserPhoto avatar;
+   private final ChangedFields changedFields;
 
-   public SetupUserDataCommand(String firstName, String middleName, String lastName, SmartCardUserPhoto avatar) {
-      this.firstName = firstName;
-      this.middleName = middleName;
-      this.lastName = lastName;
-      this.avatar = avatar;
+   public SetupUserDataCommand(ChangedFields changedFields) {
+      this.changedFields = changedFields;
    }
 
    @Override
@@ -68,7 +62,8 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
    private SmartCardUser convertToSmartCardUser(User user) {
       return ImmutableSmartCardUser.builder()
             .from(mappery.convert(user, SmartCardUser.class))
-            .userPhoto(avatar)
+            .userPhoto(changedFields.photo())
+            .phoneNumber(changedFields.phone())
             .build();
    }
 
@@ -84,10 +79,14 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
 
    private Observable<Void> validateUserData() {
       try {
-         if (avatar == null || avatar.original() == null || !avatar.original().exists()) {
+         if (changedFields.photo() == null || changedFields.photo().original() == null || !changedFields.photo().original().exists()) {
             throw new MissedAvatarException();
          }
-         WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
+         WalletValidateHelper.validateUserFullNameOrThrow(
+               changedFields.firstName(),
+               changedFields.middleName(),
+               changedFields.lastName()
+         );
       } catch (FormatException | MissedAvatarException e) {
          return Observable.error(e);
       }
@@ -98,19 +97,23 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
       return smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .map(command -> ImmutableUser.builder()
-                  .firstName(firstName)
-                  .lastName(lastName)
-                  .middleName(middleName)
+                  .firstName(changedFields.firstName())
+                  .lastName(changedFields.lastName())
+                  .middleName(changedFields.middleName())
+                  .phoneNum(fetchPhone())
                   .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
                   .memberId(userSessionHolder.get().get().getUser().getId())
                   .barcodeId(Long.valueOf(command.getResult().smartCardId()))
                   .build());
    }
 
+   private String fetchPhone() {
+      return changedFields.phone() != null ? changedFields.phone().fullPhoneNumber() : null;
+   }
 
    private byte[] getAvatarAsByteArray() throws IOException {
       final int[][] ditheredImageArray =
-            smartCardAvatarHelper.toMonochrome(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
+            smartCardAvatarHelper.toMonochrome(changedFields.photo().original(), ImageUtils.DEFAULT_IMAGE_SIZE);
       return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,22 +13,27 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
+import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
@@ -113,7 +119,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    private void onUserSetupSuccess() {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
-      navigator.go(new EnterPinPath(Action.SETUP));
+      navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {
@@ -143,7 +149,25 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    void onUserDataConfirmed() {
       final String[] userNames = getView().getUserName();
       wizardInteractor.setupUserDataPipe()
-            .send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2], preparedPhoto));
+            .send(new SetupUserDataCommand(prepareData(userNames)));
+   }
+
+   private ChangedFields prepareData(String[] userNames) {
+      return ImmutableChangedFields.builder()
+            .firstName(userNames[0])
+            .middleName(userNames[1])
+            .lastName(userNames[2])
+            .photo(preparedPhoto)
+            .phone(preparePhone())
+            .build();
+   }
+
+   private SmartCardUserPhone preparePhone() {
+      if (!ProjectTextUtils.isEmpty(getView().getCountryCode()) && !ProjectTextUtils.isEmpty(getView().getPhoneNumber())) {
+         return ImmutableSmartCardUserPhone.of(getView().getPhoneNumber(), getView().getCountryCode());
+      } else {
+         return null;
+      }
    }
 
    private boolean isUserDataValid(String[] userNames) {
@@ -170,9 +194,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       void pickPhoto();
 
-      void cropPhoto(String photoPath);
+      void cropPhoto(Uri photoPath);
 
-      Observable<String> observePickPhoto();
+      Observable<Uri> observePickPhoto();
 
       Observable<String> observeCropper();
 
@@ -182,8 +206,14 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       void setUserFullName(String firstName, String lastName);
 
+      void setPhone(String countryCode, String number);
+
       @NonNull
       String[] getUserName();
+
+      String getCountryCode();
+
+      String getPhoneNumber();
 
       void showConfirmationDialog(String fullName);
    }

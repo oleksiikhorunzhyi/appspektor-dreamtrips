@@ -5,19 +5,21 @@ import android.content.Context;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 
+import rx.functions.Action1;
+
 public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
 
    private int contentResId;
-   private MaterialDialog.SingleButtonCallback defaultAction;
+   private Action1<T> defaultAction;
 
    public SimpleErrorDialogView(Context context, int contentResId) {
-      super(context);
-      this.contentResId = contentResId;
+      this(context, contentResId, c -> {});
    }
 
-   public SimpleErrorDialogView(Context context, int messageResId, MaterialDialog.SingleButtonCallback defaultAction) {
-      this(context, messageResId);
+   public SimpleErrorDialogView(Context context, int messageResId, Action1<T> defaultAction) {
+      super(context);
       this.defaultAction = defaultAction;
+      this.contentResId = messageResId;
    }
 
    @Override
@@ -25,7 +27,9 @@ public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
       return new MaterialDialog.Builder(context)
             .content(contentResId)
             .positiveText(R.string.ok)
-            .onPositive(defaultAction)
+            .onPositive((dialog, which) -> {
+               if (defaultAction != null) defaultAction.call(t);
+            })
             .build();
    }
 }

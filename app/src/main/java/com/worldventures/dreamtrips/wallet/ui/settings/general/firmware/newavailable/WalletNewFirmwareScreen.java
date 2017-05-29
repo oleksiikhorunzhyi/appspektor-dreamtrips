@@ -106,9 +106,4 @@ public class WalletNewFirmwareScreen
             .setNegativeButton(R.string.wallet_firmware_space_alert_cancel_action, null)
             .show();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

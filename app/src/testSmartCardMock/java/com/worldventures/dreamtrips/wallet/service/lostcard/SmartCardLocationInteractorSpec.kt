@@ -35,6 +35,10 @@ import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.mockito.ArgumentMatchers.anyList
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -49,7 +53,7 @@ import kotlin.test.sizeShouldBe
 class SmartCardLocationInteractorSpec : BaseSpec({
 
    describe("Lost SmartCard actions") {
-      beforeEach {
+      beforeEachTest {
          mockDb = createMockDb()
          janet = createJanet()
 
@@ -227,12 +231,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          val mockedSmartCard: SmartCard = mock()
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
-//         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.CONNECTED)
-//         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
-//         whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-//         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
-//         whenever(mockedSmartCard.serialNumber()).thenReturn("")
-//         whenever(mockedSmartCard.user()).thenReturn(mock())
 
          return mockedSmartCard
       }

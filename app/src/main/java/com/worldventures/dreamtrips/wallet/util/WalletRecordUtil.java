@@ -10,15 +10,11 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
-
-import java.util.List;
 
 import static android.text.TextUtils.getTrimmedLength;
 import static java.lang.String.format;
@@ -150,13 +146,6 @@ public class WalletRecordUtil {
       }
    }
 
-   public static int stacksToItemsCount(List<CardStackViewModel> items) {
-      if (items == null) return 0;
-      Integer sum = Queryable.from(items)
-            .sum(stack -> stack.getCardList() != null ? stack.getCardList().size() : 0);
-      return sum != null ? sum : 0;
-   }
-
    public static boolean isRealRecord(@Nullable Record record) {
       return record != null && isRealRecordId(record.id());
    }
@@ -181,5 +170,14 @@ public class WalletRecordUtil {
             && getTrimmedLength(zipCode) > 0
             && getTrimmedLength(state) > 0
             && cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
+   }
+
+   public CharSequence goodThrough(String date) {
+      SpannableString goodThru = new SpannableString(context.getString(R.string.wallet_bank_card_good_thru));
+      goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
+      return new SpannableStringBuilder()
+            .append(goodThru)
+            .append(" ")
+            .append(date);
    }
 }

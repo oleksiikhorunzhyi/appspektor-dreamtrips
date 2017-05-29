@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothDisabledAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothEnabledAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SmartCartWillNowBeAssignedAction;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -18,7 +19,9 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,15 +36,20 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject WalletBluetoothService bluetoothService;
+   private final CheckPinDelegate checkPinDelegate;
 
    public PreCheckNewCardPresenter(Context context, Injector injector) {
       super(context, injector);
+      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor,
+            analyticsInteractor, navigator, FactoryResetAction.NEW_CARD);
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      checkPinDelegate.observePinStatus(getView());
       observeChecks();
    }
 
@@ -86,8 +94,7 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
 
    void navigateNext() {
       sendAnalyticAction(new SmartCartWillNowBeAssignedAction());
-
-      navigator.go(new EnterPinUnassignPath());
+      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
    }
 
    private void sendAnalyticAction(WalletAnalyticsAction action) {
@@ -100,7 +107,11 @@ public class PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCardPre
       navigator.goBack();
    }
 
-   public interface Screen extends WalletScreen {
+   void retryFactoryReset() {
+      checkPinDelegate.getFactoryResetDelegate().factoryReset();
+   }
+
+   public interface Screen extends WalletScreen, FactoryResetView {
 
       void showAddCardContinueDialog(String scId);
 

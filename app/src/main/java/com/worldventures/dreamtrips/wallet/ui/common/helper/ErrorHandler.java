@@ -7,8 +7,8 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
-import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -22,11 +22,13 @@ import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.http.exception.HttpException;
 import io.techery.janet.http.exception.HttpServiceException;
 import io.techery.janet.smartcard.exception.NotConnectedException;
+import io.techery.janet.smartcard.exception.SmartCardRequestException;
 import io.techery.janet.smartcard.exception.SmartCardServiceException;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
+@Deprecated
 public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>> {
 
    private static final int IGNORE_HTTP_STATUS_CODE = 500;
@@ -87,6 +89,12 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       }
       if (throwable instanceof SmartCardServiceException) { // SmartCardServiceException is wrapper
          return tryCreateActionHolder(throwable.getCause(), message, action);
+      }
+      if (throwable instanceof SmartCardRequestException) {
+         if (message == null) {
+            message = context.getString(R.string.wallet_sc_operation_could_not_be_completed,
+                  ((SmartCardRequestException) throwable).getRequestName());
+         }
       }
       if (throwable instanceof HttpServiceException) { // HttpServiceException is wrapper
          return tryCreateActionHolder(throwable.getCause(), message, action);

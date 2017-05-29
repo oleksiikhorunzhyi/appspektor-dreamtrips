@@ -15,10 +15,12 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.model.TestDisassociateResponseBody
+import com.worldventures.dreamtrips.wallet.model.TestSmartCardUser
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareInteractorSpec.Companion.connectToSmartCardSdk
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository
@@ -29,13 +31,17 @@ import io.techery.janet.Janet
 import io.techery.janet.SmartCardActionService
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xit
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
 class FactoryResetInteractorSpec : BaseSpec({
 
    describe("Factory Reset Actions") {
-      beforeEach {
+      beforeEachTest {
          mockDb = createMockDb()
          lostCardRepository = createLostCardRepository()
          cardStorage = mock()
@@ -49,18 +55,19 @@ class FactoryResetInteractorSpec : BaseSpec({
 
       context("Factory reset of SmartCard") {
 
-         beforeEach {
+         beforeEachTest {
             // mock active SmartCard
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
+            whenever(mockDb.smartCardUser).thenReturn(TestSmartCardUser())
          }
 
          it("Factory Reset without delete payment cards") {
-            val testSubscriber = TestSubscriber<ActionState<FactoryResetCommand>>()
+            val testSubscriber = TestSubscriber<ActionState<ResetSmartCardCommand>>()
 
-            factoryResetInteractor.factoryResetCommandActionPipe()
-                  .createObservable(FactoryResetCommand(
+            janet.createPipe(ResetSmartCardCommand::class.java)
+                  .createObservable(ResetSmartCardCommand(
                         ResetOptions.builder()
                               .wipePaymentCards(false)
                               .build())
@@ -72,10 +79,10 @@ class FactoryResetInteractorSpec : BaseSpec({
          }
 
          it("Factory Reset with delete payment cards") {
-            val testSubscriber = TestSubscriber<ActionState<FactoryResetCommand>>()
+            val testSubscriber = TestSubscriber<ActionState<ResetSmartCardCommand>>()
 
-            factoryResetInteractor.factoryResetCommandActionPipe()
-                  .createObservable(FactoryResetCommand(
+            janet.createPipe(ResetSmartCardCommand::class.java)
+                  .createObservable(ResetSmartCardCommand(
                         ResetOptions.builder()
                               .wipePaymentCards(true)
                               .build())
@@ -87,10 +94,10 @@ class FactoryResetInteractorSpec : BaseSpec({
          }
 
          it("Factory Reset with delete payment cards and without Smart Card User Data") {
-            val testSubscriber = TestSubscriber<ActionState<FactoryResetCommand>>()
+            val testSubscriber = TestSubscriber<ActionState<ResetSmartCardCommand>>()
 
-            factoryResetInteractor.factoryResetCommandActionPipe()
-                  .createObservable(FactoryResetCommand(
+            janet.createPipe(ResetSmartCardCommand::class.java)
+                  .createObservable(ResetSmartCardCommand(
                         ResetOptions.builder()
                               .wipePaymentCards(true)
                               .wipeUserSmartCardData(false)
@@ -134,7 +141,7 @@ class FactoryResetInteractorSpec : BaseSpec({
          }
       }
    }
-}){
+}) {
    private companion object {
       lateinit var janet: Janet
       lateinit var analyticsInteractor: AnalyticsInteractor

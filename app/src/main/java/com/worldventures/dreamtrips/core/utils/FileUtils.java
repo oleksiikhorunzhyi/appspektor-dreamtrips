@@ -160,14 +160,13 @@ public class FileUtils {
                return cursor.getString(column_index);
             }
          } catch (Exception ignored) {
+            return null;
          } finally {
             if (cursor != null) cursor.close();
          }
-      } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-         return uri.getPath();
       }
 
-      return null;
+      return uri.getPath();
    }
 
    public static String buildFilePathOriginal(String foldername, String extension) {

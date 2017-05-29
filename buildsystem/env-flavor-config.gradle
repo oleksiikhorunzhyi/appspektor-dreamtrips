@@ -80,6 +80,7 @@ ext {
                            DreamTripsApi    : [String: '"https://dtapp.worldventures.biz"'],
                            UPLOADERY_API_URL: [String: '"http://dtappuploads.wvholdings.com"'],
                            API_TIMEOUT_SEC  : [long: '15'],
+                           NXT_API          : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
                      ],
                      messenger: [
                            MESSENGER_API_URL: [String: '"dtmsgapp.worldventures.biz"'],

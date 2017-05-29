@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
@@ -214,8 +215,8 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
             new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
             ErrorViewFactory.<AddRecordCommand>builder()
                   .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_add_card_details_error_default,
-                        command -> addRecordWithCurrentData(), command -> {
-                  }))
+                        command -> addRecordWithCurrentData()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData()))
                   .addProvider(new HttpErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData(), command -> {
                   }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
@@ -257,11 +258,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
             .build();
 
       getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, setAsDefaultCard);
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
 
    private void setHintsAndLabels() {

@@ -18,7 +18,7 @@ public abstract class DialogErrorView<T> implements ErrorView<T> {
    protected abstract MaterialDialog createDialog(T t, Throwable throwable, Context context);
 
    @Override
-   public final void showError(T t, Throwable throwable) {
+   public void showError(T t, Throwable throwable) {
       dialog = createDialog(t, throwable, context);
       dialog.show();
    }

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
@@ -24,7 +23,9 @@ import java.util.concurrent.TimeUnit;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
+import io.techery.janet.smartcard.event.PinStatusEvent;
 import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
 import timber.log.Timber;
@@ -83,7 +84,6 @@ public class SmartCardSyncManager {
    private void cardDisconnected() {
       interactor.deviceStatePipe().send(DeviceStateCommand.connection(DISCONNECTED));
       interactor.deviceStatePipe().send(DeviceStateCommand.battery(0));
-      interactor.deviceStatePipe().send(DeviceStateCommand.lock(true));
    }
 
    private void observeActiveSmartCard(ConnectionStatus connectionStatus) {
@@ -102,7 +102,7 @@ public class SmartCardSyncManager {
    private void activeCardConnected() {
       interactor.setSmartCardTimePipe().send(new SetSmartCardTimeCommand());
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
-      interactor.getPinEnabledCommandActionPipe().send(new GetPinEnabledCommand());
+      interactor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();
@@ -166,7 +166,11 @@ public class SmartCardSyncManager {
                   .observeSuccess()
                   .map(event -> event.locked),
             interactor.lockPipe().observeSuccess()
-                  .map(SetLockStateCommand::isLock)
+                  .map(SetLockStateCommand::isLock),
+            interactor.pinStatusEventPipe()
+                  .observeSuccess()
+                  .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.AUTHENTICATED
+                        && pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED)
       )
             .subscribe(
                   state -> interactor.deviceStatePipe().send(DeviceStateCommand.lock(state)),

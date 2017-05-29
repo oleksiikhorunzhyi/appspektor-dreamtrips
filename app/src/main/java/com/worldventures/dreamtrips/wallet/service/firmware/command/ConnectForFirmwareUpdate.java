@@ -25,7 +25,7 @@ public class ConnectForFirmwareUpdate extends Command<Void> implements Injectabl
       FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(
-                  Integer.parseInt(firmwareUpdateData.smartCardId()))))
+                  Long.parseLong(firmwareUpdateData.smartCardId()))))
             .map(firmwareFacade -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);
    }

@@ -5,7 +5,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
-@AnalyticsEvent(action = "wallet:settings:setup new smartcard:existing card detected:unassign successful",
+@AnalyticsEvent(action = "wallet:settings:general:setup new smartcard:existing card detected:unassign successful",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class UnAssignCardSuccessAction extends WalletAnalyticsAction {
 

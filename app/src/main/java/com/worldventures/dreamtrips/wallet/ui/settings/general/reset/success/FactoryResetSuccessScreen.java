@@ -43,9 +43,4 @@ public class FactoryResetSuccessScreen extends WalletLinearLayout<FactoryResetSu
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
@@ -66,6 +68,24 @@ public class JanetModule {
                   .provideBuilder()
                   .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
                   .create()));
+   }
+
+   @Singleton
+   @Provides
+   AnalyticsService provideAnalyticsService(Set<Tracker> trackers) {
+      return new AnalyticsService(trackers);
+   }
+
+   @Singleton
+   @Provides
+   WalletAnalyticsServiceWrapper provideWalletAnalyticsServiceWrapper(AnalyticsService service) {
+      return new WalletAnalyticsServiceWrapper(service);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionService provideAnalyticsService(WalletAnalyticsServiceWrapper serviceWrapper) {
+      return serviceWrapper;
    }
 
    @Singleton
@@ -127,12 +147,6 @@ public class JanetModule {
    }
 
    @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionService provideAnalyticsService(Set<Tracker> trackers) {
-      return new AnalyticsService(trackers);
-   }
-
-   @Singleton
    @Provides
    @Named(JANET_WALLET)
    Janet provideWalletJanet(
@@ -161,14 +175,26 @@ public class JanetModule {
    }
 
    @Singleton
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionService provideSmartCardService(SmartCardClient client) {
+   @Provides
+   SmartCardActionService provideSmartCardService(SmartCardClient client) {
       return new SmartCardActionService.Builder(client)
             .addDefaults()
             .setLogger(new TimberLogger("SC_ABS_LAYER"))
             .setResponseTimeout(TimeUnit.MINUTES.toMillis(2L))
             .build();
+   }
+
+   @Singleton
+   @Provides
+   SmartCardErrorServiceWrapper provideSmartCardErrorServiceWrapper(SmartCardActionService service) {
+      return new SmartCardErrorServiceWrapper(service);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
+   ActionService provideSmartCardService(SmartCardErrorServiceWrapper serviceWrapper) {
+      return serviceWrapper;
    }
 
    @Singleton

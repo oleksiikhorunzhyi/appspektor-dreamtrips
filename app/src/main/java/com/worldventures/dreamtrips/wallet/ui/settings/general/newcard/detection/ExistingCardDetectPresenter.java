@@ -14,42 +14,49 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCar
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import timber.log.Timber;
 
 public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDetectPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-
+   @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject WalletBluetoothService bluetoothService;
+   private final CheckPinDelegate checkPinDelegate;
 
    public ExistingCardDetectPresenter(Context context, Injector injector) {
       super(context, injector);
+      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
+            navigator, FactoryResetAction.NEW_CARD);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      checkPinDelegate.observePinStatus(getView());
       observerSmartCardConnectedStatus();
       fetchSmartCardId();
    }
@@ -60,7 +67,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> bindSmartCardId(command.getResult().smartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
             );
    }
 
@@ -74,7 +80,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
                   .onSuccess(command -> handleConnectedResult(command.getResult().connectionStatus()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
@@ -90,16 +95,15 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
 
    void unassignCard() {
       sendAnalyticAction(new UnAssignCardContinueAction());
-      navigator.go(new EnterPinUnassignPath());
+      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
    }
 
    void prepareUnassignCard() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
+            .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
                   .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().smartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
@@ -107,12 +111,11 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
+            .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
                   .onSuccess(command -> {
                      sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
                      getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId());
                   })
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 
@@ -128,7 +131,6 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
                      sendAnalyticAction(new ExistSmartCardDontHaveCardContinueAction());
                      navigator.single(new UnassignSuccessPath());
                   })
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, "unassignCardOnBackend()"))
                   .create());
    }
 
@@ -147,9 +149,13 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .send(new WalletAnalyticsCommand(action));
    }
 
-   public interface Screen extends WalletScreen {
+   void retryFactoryReset() {
+      checkPinDelegate.getFactoryResetDelegate().factoryReset();
+   }
 
-      OperationView<ActiveSmartCardCommand> provideOperationView();
+   public interface Screen extends WalletScreen, FactoryResetView {
+
+      OperationView<ActiveSmartCardCommand> provideActiveSmartCardOperationView();
 
       OperationView<DeviceStateCommand> provideDeviceStateOperationView();
 

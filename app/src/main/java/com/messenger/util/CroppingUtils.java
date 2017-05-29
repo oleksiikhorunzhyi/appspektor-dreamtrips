@@ -18,19 +18,15 @@ import java.io.File;
 
 public class CroppingUtils {
 
-   public static void startCropping(Activity activity, String fileFrom, String fileTo, int ratioX, int ratioY) {
+   public static void startCropping(Activity activity, Uri fileFrom, Uri fileTo, int ratioX, int ratioY) {
       obtainBasicUCrop(activity, fileFrom, fileTo).withAspectRatio(ratioX, ratioY).start(activity);
    }
 
    public static void startCropping(Context context, Fragment fragment, int requestCode, String fileFrom, String fileTo, int ratioX, int ratioY) {
-      obtainBasicUCrop(context, fileFrom, fileTo).withAspectRatio(ratioX, ratioY).start(context, fragment, requestCode);
+      obtainBasicUCrop(context, Uri.fromFile(new File(fileFrom)), Uri.fromFile(new File(fileTo))).withAspectRatio(ratioX, ratioY).start(context, fragment, requestCode);
    }
 
-   public static void startCropping(Activity activity, String fileFrom, String fileTo) {
-      obtainBasicUCrop(activity, fileFrom, fileTo).start(activity);
-   }
-
-   private static UCrop obtainBasicUCrop(Context context, String fileFrom, String fileTo) {
+   private static UCrop obtainBasicUCrop(Context context, Uri from, Uri to) {
       UCrop.Options options = new UCrop.Options();
       options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
 
@@ -38,8 +34,6 @@ public class CroppingUtils {
       options.setActiveWidgetColor(obtainColor(R.color.cropping_selected_button, context));
       options.setStatusBarColor(obtainColor(R.color.accent, context));
 
-      Uri from = Uri.fromFile(new File(fileFrom));
-      Uri to = Uri.fromFile(new File(fileTo));
       return UCrop.of(from, to).withOptions(options);
    }
 

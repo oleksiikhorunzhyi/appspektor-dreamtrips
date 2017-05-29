@@ -10,6 +10,8 @@
    <string name="wallet_retry_label">Retry</string>
    <string name="wallet_label_yes">Yes</string>
    <string name="wallet_label_no">No</string>
+   <string name="wallet_label_delete">Delete</string>
+   <string name="wallet_label_we_are_sorry">We\'re Sorry</string>
 
    <string name="wallet">flye\u2122 smart card</string>
    <string name="wallet_dashboard_title">flye\u2122 smart card</string>
@@ -21,6 +23,7 @@
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
+   <string name="wallet_sc_operation_could_not_be_completed" formatted="false">This operation could not be completed\n(%s)</string>
 
    <!--card alias-->
    <string name="wallet_wizard_card_alias_subtitle">Name your Smart Card</string>
@@ -51,6 +54,10 @@
    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the Smart Card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
    <string name="wallet_wizard_setup_new_pin_success">New PIN is set!</string>
+   <string name="wallet_wizard_setup_pin_proposal_toolbar">PIN</string>
+   <string name="wallet_wizard_setup_pin_proposal_label">Creating a PIN helps secure your Smart Card if it is lost or stolen.</string>
+   <string name="wallet_wizard_setup_pin_proposal_dialog_content">Creating a PIN helps keep your payment cards secure if your Smart Card is lost or stolen. Are you sure you want to skip this step?</string>
+   <string name="wallet_wizard_setup_pin_proposal_skip">Skip</string>
 
    <!--pin is set-->
    <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
@@ -82,6 +89,7 @@
    <string name="wallet_add_credit_card">Add credit card</string>
    <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
+   <string name="wallet_loyalty_cards_title">Loyalty cards</string>
 
    <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode.</string>
@@ -103,7 +111,6 @@
    <string name="wallet_card_details_progress_save">Apply changes&#8230;</string>
    <string name="wallet_card_details_title_action_save">Save</string>
    <string name="wallet_card_details_success_save">Card data is updated!</string>
-   <string name="wallet_card_details_error_default">Failed to update Card data.</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
@@ -160,17 +167,13 @@
    <string name="wallet_card_settings_customer_support">Customer Support</string>
    <string name="wallet_card_settings_contact_our_customer_support_team">Contact our customer support team</string>
 
-   <string name="wallet_card_settings_need_assistance">Need assistance?</string>
-   <string name="wallet_card_settings_us_customer_care">US Customer Care</string>
-   <string name="wallet_card_settings_us_customer_care_phone">(855) 999–3593</string>
-   <string name="wallet_card_settings_international_collect">International Collect</string>
-   <string name="wallet_card_settings_international_collect_phone">(469) 609–4830</string>
-
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
    <string name="wallet_card_settings_profile_firstname_hint">First name</string>
    <string name="wallet_card_settings_profile_middle_hint">Middle name (optional)</string>
    <string name="wallet_card_settings_profile_lastname_hint">Last name</string>
+   <string name="wallet_card_settings_profile_phone_hint">Phone (optional)</string>
+   <string name="wallet_card_settings_profile_country_code_hint">Code</string>
    <string name="wallet_card_settings_profile_warning">Make sure your name is similar to what\'s on your payment cards.</string>
    <string name="wallet_card_settings_profile_dialog_changes_title">Some changes were made. Are you sure you want go back without saving them</string>
    <string name="wallet_card_settings_profile_dialog_changes_positive">Back</string>
@@ -224,6 +227,13 @@
    <string name="wallet_tap_confirm_try_again">Did not save to Smart Card.\nTap Confirm to try again.</string>
    <string name="wallet_card_details_nickname_error">Please use letters, numbers, spaces or dashes</string>
    <string name="wallet_add_card_details_error_default">Failed to add Payment Card.</string>
+   <string name="wallet_add_card_details_pin_proposal_toolbar">Card Added</string>
+   <string name="wallet_add_card_details_pin_proposal_label">%1$s has been added to your Smart Card. Help secure it by creating a PIN.</string>
+   <string name="wallet_add_card_details_pin_proposal_remind_later">Remind me later</string>
+   <string name="wallet_add_card_details_pin_proposal_dont_show">Don\'t show again</string>
+   <string name="wallet_add_card_details_pin_proposal_cancel">Cancel</string>
+   <string name="wallet_add_card_details_pin_proposal_create_pin">Create PIN</string>
+   <string name="wallet_add_card_details_pin_proposal_no_thanks">No Thanks</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>
@@ -418,7 +428,7 @@
 
    <!-- Offline Mode screen -->
    <string name="wallet_offline_mode_enable_label">Enable Offline Mode</string>
-   <string name="wallet_offline_mode_explain_message">Offline Mode allows you to add and swap cards between your app and Smart Card without being connected to the internet.</string>
+   <string name="wallet_offline_mode_explain_message">Offline Mode allows you to add cards to your Smart Card without internet connection.</string>
    <string name="wallet_offline_mode_please_note_message"><![CDATA[<b>Please note:</b>]]> Enabling Offline Mode could potentially make your cards less secure.</string>
    <string name="wallet_offline_mode_enable_message">Enabling Offline Mode could potentially make your payment cards less secure. Do you want to continue?</string>
    <string name="wallet_offline_mode_disable_message">By disabling Offline Mode you will be unable to manage payment cards without internet connection.</string>
@@ -495,5 +505,41 @@
    <string name="wallet_wizard_upload_profile_header">Upload User Card Data</string>
    <string name="wallet_wizard_upload_profile_message">This could take a few minutes…</string>
    <string name="wallet_error_uploading_retry">Connection error. Can\'t upload User Data. Please retry.</string>
+
+   <!-- Help section -->
+   <string name="wallet_email_app_choose_dialog_title">Choose Application</string>
+
+   <!-- Send Feedback screen -->
+   <string name="wallet_settings_help_feedback_title_screen">Send Feedback</string>
+   <string name="wallet_settings_help_feedback_user_approve_info">We\'re working hard to make the Smart Card better.\nPlease help us to improve.</string>
+   <string name="wallet_settings_help_feedback_enter_comment_hint">Please, type your message here.</string>
+   <string name="wallet_settings_help_feedback_action_add_photos_title">Add Photos</string>
+   <string name="wallet_settings_help_feedback_action_send_title">Send</string>
+   <string name="wallet_settings_help_feedback_attachment_failed_item_retry">Retry</string>
+   <string name="wallet_settings_help_feedback_attachment_failed_item_remove">Remove</string>
+   <string name="wallet_settings_help_feedback_action_delete_attachment">Are you want to delete attachment?</string>
+   <string name="wallet_settings_help_feedback_progress_send">Sending feedback&#8230;</string>
+   <string name="wallet_settings_help_feedback_has_been_sent">Your feedback is sent. Thank you!</string>
+   <string name="wallet_settings_help_feedback_sending_fail">Could not send feedback.</string>
+   <string-array name="wallet_settings_help_feedback_failed_uploading_attachment">
+      <item>@string/wallet_settings_help_feedback_attachment_failed_item_retry</item>
+      <item>@string/wallet_settings_help_feedback_attachment_failed_item_remove</item>
+   </string-array>
+
+   <!-- Help Video screen -->
+   <string name="wallet_settings_help_video_title_screen">Videos</string>
+   <string name="wallet_settings_help_video_training_no_video">Videos coming soon</string>
+   <string name="wallet_settings_help_video_action_title">Languages</string>
+   <string name="wallet_settings_help_video_loading">Load videos…</string>
+   <string name="wallet_settings_help_video_locales_loading">Load locales…</string>
+   <string name="wallet_settings_help_video_cancel_cached_video_text">Are you sure you want to cancel file download?</string>
+   <string name="wallet_settings_help_video_delete_cached_video_text">Are you sure you want delete video from local cache?</string>
+
+   <!--Customer Support-->
+   <string name="wallet_settings_help_customer_support_us_customer_care">US Customer Care</string>
+   <string name="wallet_settings_help_customer_support_international_collect">International Collect</string>
+   <string name="wallet_settings_help_customer_support_email_us">Email Us</string>
+   <string name="wallet_settings_help_customer_support_email_us_description">Have a question or concern?\nWe\'re here to help.</string>
+   <string name="wallet_settings_help_customer_support_email_us_hint">How can we assist you?</string>
 
 </resources>

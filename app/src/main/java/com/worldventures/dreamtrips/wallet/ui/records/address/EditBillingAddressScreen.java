@@ -118,9 +118,4 @@ public class EditBillingAddressScreen extends WalletLinearLayout<EditBillingAddr
 
       getPresenter().onCardAddressConfirmed(addressInfo);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

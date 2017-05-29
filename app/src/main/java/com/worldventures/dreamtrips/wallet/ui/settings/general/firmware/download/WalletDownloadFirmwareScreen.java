@@ -87,9 +87,4 @@ public class WalletDownloadFirmwareScreen extends WalletLinearLayout<WalletDownl
    public Context context() {
       return getContext();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
 }

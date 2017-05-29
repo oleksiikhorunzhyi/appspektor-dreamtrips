@@ -119,10 +119,4 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
    void onInputManuallyClicked() {
       getPresenter().startManualInput();
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
 }

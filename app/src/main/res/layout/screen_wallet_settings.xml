@@ -17,7 +17,7 @@
 
    <LinearLayout
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="match_parent"
          android:divider="@drawable/divider_horizontal_wallet_settings"
          android:orientation="vertical"
          android:showDividers="middle|end"
@@ -92,136 +92,12 @@
             android:text="@string/wallet_card_settings_security"
             />
 
-   </LinearLayout>
-
-   <RelativeLayout
-         android:layout_width="wrap_content"
-         android:layout_height="0dp"
-         android:layout_weight="1"
-         android:paddingStart="@dimen/spacing_normal"
-         android:paddingEnd="@dimen/spacing_normal"
-         >
-
-      <ImageView
-            android:id="@+id/ic_phone_international_collect"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/spacing_normal"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:scaleX="0.5"
-            android:scaleY="0.5"
-            android:src="@drawable/ic_settings_phone_number"
-            />
-
-      <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ic_phone_international_collect"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/ic_phone_international_collect"
-            android:layout_toEndOf="@+id/ic_phone_international_collect"
-            android:gravity="center"
-            android:orientation="horizontal"
-            >
-
-         <TextView
-               android:layout_width="0dp"
-               android:layout_height="match_parent"
-               android:layout_weight="1"
-               android:fontFamily="@string/font_fontFamily_medium"
-               android:gravity="center_vertical"
-               android:text="@string/wallet_card_settings_international_collect"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               />
-
-         <TextView
-               android:id="@+id/text_phone_international_collect"
-               android:layout_width="0dp"
-               android:layout_height="match_parent"
-               android:layout_weight="1"
-               android:background="@drawable/background_wallet_settings_menu_item"
-               android:fontFamily="@string/font_fontFamily_medium"
-               android:gravity="center"
-               android:text="@string/wallet_card_settings_international_collect_phone"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               android:textColor="#ed015f93"
-               />
-
-      </LinearLayout>
-
-      <ImageView
-            android:id="@+id/ic_phone_us_customer_care"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_above="@+id/ic_phone_international_collect"
-            android:layout_marginBottom="@dimen/spacing_tiny"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:scaleX="0.5"
-            android:scaleY="0.5"
-            android:src="@drawable/ic_settings_phone_number"
-            />
-
-      <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ic_phone_us_customer_care"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/ic_phone_us_customer_care"
-            android:layout_toEndOf="@+id/ic_phone_us_customer_care"
-            android:gravity="center"
-            android:orientation="horizontal"
-            >
-
-         <TextView
-               android:layout_width="0dp"
-               android:layout_height="match_parent"
-               android:layout_weight="1"
-               android:fontFamily="@string/font_fontFamily_medium"
-               android:gravity="center_vertical"
-               android:text="@string/wallet_card_settings_us_customer_care"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               />
-
-         <TextView
-               android:id="@+id/text_phone_us_customer_care"
-               android:layout_width="0dp"
-               android:layout_height="match_parent"
-               android:layout_weight="1"
-               android:background="@drawable/background_wallet_settings_menu_item"
-               android:fontFamily="@string/font_fontFamily_medium"
-               android:gravity="center"
-               android:text="@string/wallet_card_settings_us_customer_care_phone"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               android:textColor="#ed015f93"
-               />
-
-      </LinearLayout>
-
-      <ImageView
-            android:id="@+id/ic_headphones"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_above="@+id/ic_phone_us_customer_care"
-            android:layout_marginBottom="@dimen/spacing_tiny"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:scaleX="0.5"
-            android:scaleY="0.5"
-            android:src="@drawable/ic_settings_headphones"
-            />
-
       <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ic_headphones"
-            android:layout_alignTop="@+id/ic_headphones"
-            android:layout_toEndOf="@+id/ic_headphones"
-            android:gravity="center"
-            android:text="@string/wallet_card_settings_need_assistance"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/item_help"
+            style="@style/SettingsMenuItem.Text"
+            android:text="@string/wallet_card_settings_help"
             />
 
-   </RelativeLayout>
-
+   </LinearLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen>

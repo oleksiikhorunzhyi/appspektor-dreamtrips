@@ -6,10 +6,10 @@ import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.wallet.analytics.firmware.action.FirmwareAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 
 @AnalyticsEvent(action = "wallet:SmartCard Update:Step 1",
+                navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
 public class ViewSdkUpdateAction extends FirmwareAnalyticsAction {
 

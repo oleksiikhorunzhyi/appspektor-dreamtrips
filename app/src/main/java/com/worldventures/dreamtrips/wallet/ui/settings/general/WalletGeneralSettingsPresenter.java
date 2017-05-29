@@ -8,9 +8,11 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.RestartSmartCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsGeneralAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
@@ -23,9 +25,11 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 
 import javax.inject.Inject;
 
@@ -40,20 +44,26 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
+   @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   private final CheckPinDelegate checkPinDelegate;
 
    private Path firmwareUpdatePath = new WalletUpToDateFirmwarePath();
 
    public WalletGeneralSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
+      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
+            navigator, FactoryResetAction.GENERAL);
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      trackScreen();
 
       observeSmartCardUserChanges();
       observeFirmwareUpdates();
+      checkPinDelegate.observePinStatus(getView());
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
@@ -94,7 +104,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    void openFactoryResetScreen() {
-      navigator.go(new FactoryResetPath());
+      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
    }
 
    void openSetupNewSmartCardScreen() {
@@ -158,12 +168,17 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
             );
    }
 
+   private void trackScreen() {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new SettingsGeneralAction()));
+   }
+
    private void trackSmartCardRestart() {
       final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new RestartSmartCardAction());
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen, FactoryResetView {
 
       void setPreviewPhoto(String photoUrl);
 

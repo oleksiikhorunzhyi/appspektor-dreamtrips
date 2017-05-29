@@ -1,33 +1,28 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
-import io.techery.janet.smartcard.action.lock.LockDeviceAction;
-import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
+import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
+import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
+import io.techery.janet.smartcard.event.PinStatusEvent;
+import io.techery.janet.smartcard.event.PinStatusEvent.PinStatus;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class FactoryResetCommand extends Command<Void> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
-   @Inject @Named(JANET_WALLET) Janet walletJanet;
 
    private final PublishSubject<Void> resetCommandPublishSubject;
    private final ResetOptions factoryResetOptions;
@@ -41,12 +36,18 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
    protected void run(CommandCallback<Void> callback) throws Throwable {
       if (factoryResetOptions.isWithEnterPin()) {
          Observable.merge(
-               walletJanet.createPipe(GetLockDeviceStatusAction.class)
-                     .createObservableResult(new GetLockDeviceStatusAction())
-                     .flatMap(action -> lockObservable(action.locked))
-                     .flatMap(confirmResetCommand -> observeUnlockCard())
-                     .flatMap(lockDeviceChangedEvent -> resetSmartCard()),
-               resetCommandPublishSubject).subscribe(action -> callback.onSuccess(null), callback::onFail);
+               requestPinStatus()
+                     .flatMap(status -> {
+                        if (status == PinStatus.DISABLED) {
+                           // skip
+                           return Observable.just(null);
+                        } else {
+                           // lock card and observe authorize
+                           return requestPinEnteringAndReset();
+                        }
+                     }), resetCommandPublishSubject)
+               .flatMap(aVoid -> resetSmartCard()) // reset action cannot be canceled, because it's not handled by hardware
+               .subscribe(action -> callback.onSuccess(null), callback::onFail);
       } else {
          resetSmartCard().subscribe(action -> callback.onSuccess(null), callback::onFail);
       }
@@ -57,20 +58,28 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
             .createObservableResult(new ResetSmartCardCommand(factoryResetOptions));
    }
 
-   private Observable<Void> lockObservable(boolean isLock) {
-      if (!isLock) {
-         return walletJanet.createPipe(LockDeviceAction.class, Schedulers.io())
-               .createObservableResult(new LockDeviceAction(true))
-               .map(lockDeviceAction -> null);
-      }
-      return Observable.just(null);
+   private Observable<PinStatusEvent.PinStatus> requestPinStatus() {
+      return smartCardInteractor.checkPinStatusActionPipe()
+            .createObservableResult(new CheckPinStatusAction())
+            .flatMap(action -> smartCardInteractor.pinStatusEventPipe()
+                  .observeSuccess()
+                  .take(1)
+                  .map(event -> event.pinStatus)
+            );
    }
 
-   private Observable<LockDeviceChangedEvent> observeUnlockCard() {
-      return smartCardInteractor.lockDeviceChangedEventPipe()
+   private Observable<Void> observeAuthenticationAndReset() {
+      return smartCardInteractor.pinStatusEventPipe()
             .observeSuccess()
-            .filter(event -> !event.locked)
-            .take(1);
+            .filter(event -> event.pinStatus == PinStatus.AUTHENTICATED)
+            .take(1)
+            .map(pinStatusEvent -> null);
+   }
+
+   private Observable<Void> requestPinEnteringAndReset() {
+      return smartCardInteractor.requestPinAuthActionPipe()
+            .createObservableResult(new RequestPinAuthAction())
+            .flatMap(action -> observeAuthenticationAndReset());
    }
 
    @Override

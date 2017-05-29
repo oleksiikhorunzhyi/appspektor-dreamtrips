@@ -60,14 +60,9 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       presenter.openSecurityScreen();
    }
 
-   @OnClick(R.id.text_phone_us_customer_care)
-   void onClickPhoneUsCustomerCare() {
-      presenter.dialPhoneNumber(getString(R.string.wallet_card_settings_us_customer_care_phone));
-   }
-
-   @OnClick(R.id.text_phone_international_collect)
-   void onClickPhoneInternationalCollect() {
-      presenter.dialPhoneNumber(getString(R.string.wallet_card_settings_international_collect_phone));
+   @OnClick(R.id.item_help)
+   void onClickHelp() {
+      presenter.openHelpScreen();
    }
 
    @Override
@@ -77,6 +72,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
          builder.append(getString(R.string.wallet_card_settings_version, version.nordicAppVersion())).append("\n");
       }
       builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n")
+      // TODO: 5/5/17 Implement this ffs
       //                  .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync))
       ;
 
@@ -94,10 +90,4 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
 }

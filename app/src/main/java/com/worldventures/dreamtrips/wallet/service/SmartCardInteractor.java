@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelComm
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
@@ -37,6 +36,7 @@ import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
+import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
 import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
@@ -44,6 +44,7 @@ import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
+import io.techery.janet.smartcard.event.PinStatusEvent;
 import rx.Scheduler;
 import rx.functions.Func0;
 import rx.schedulers.Schedulers;
@@ -89,8 +90,9 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe;
    private final ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe;
-   private final ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe;
    private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
+   private final ReadActionPipe<PinStatusEvent> pinStatusEventPipe;
+   private final ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe;
 
    private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
 
@@ -149,10 +151,11 @@ public final class SmartCardInteractor {
 
       connectionActionPipe = sessionActionPipeCreator.createPipe(ConnectAction.class, Schedulers.io());
 
+      pinStatusEventPipe = sessionActionPipeCreator.createPipe(PinStatusEvent.class);
       checkPinStatusActionPipe = sessionActionPipeCreator.createPipe(CheckPinStatusAction.class, Schedulers.io());
       setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
-      getPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(GetPinEnabledCommand.class, Schedulers.io());
       setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
+      requestPinAuthActionPipe = sessionActionPipeCreator.createPipe(RequestPinAuthAction.class, Schedulers.io());
 
       getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
    }
@@ -301,10 +304,6 @@ public final class SmartCardInteractor {
       return setPinEnabledActionPipe;
    }
 
-   public ActionPipe<GetPinEnabledCommand> getPinEnabledCommandActionPipe() {
-      return getPinEnabledCommandActionPipe;
-   }
-
    public ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe() {
       return setPinEnabledCommandActionPipe;
    }
@@ -313,4 +312,11 @@ public final class SmartCardInteractor {
       return getOnCardAnalyticsPipe;
    }
 
+   public ReadActionPipe<PinStatusEvent> pinStatusEventPipe() {
+      return pinStatusEventPipe;
+   }
+
+   public ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe() {
+      return requestPinAuthActionPipe;
+   }
 }

@@ -52,8 +52,4 @@ public class WalletUpToDateFirmwareScreen
       versionView.setText(version == null ? "" : getString(R.string.wallet_settings_version, version.nordicAppVersion()));
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
    }
-}

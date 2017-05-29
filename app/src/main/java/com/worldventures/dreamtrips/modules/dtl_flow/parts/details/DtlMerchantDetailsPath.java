@@ -31,6 +31,7 @@ public class DtlMerchantDetailsPath extends DtlDetailPath {
       this.merchant = merchant;
       this.preExpandOfferPositions = preExpandOfferPositions != null ? preExpandOfferPositions : Collections.emptyList();
       this.message = message;
+
    }
 
    public Merchant getMerchant() {

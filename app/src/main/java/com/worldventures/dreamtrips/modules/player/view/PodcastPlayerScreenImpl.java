@@ -109,6 +109,11 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    }
 
    @Override
+   public boolean isConnected() {
+      return false;
+   }
+
+   @Override
    public boolean isTabletLandscape() {
       return false;
    }

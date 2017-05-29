@@ -33,6 +33,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -428,8 +429,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    private void noInternetConnection() {
-      getPresenter().noInternetConnection();
-      offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand());
+      if (!Utils.isConnected(getContext())) {
+         getPresenter().noInternetConnection();
+         offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand());
+      }
    }
 
    private void cleanError() {

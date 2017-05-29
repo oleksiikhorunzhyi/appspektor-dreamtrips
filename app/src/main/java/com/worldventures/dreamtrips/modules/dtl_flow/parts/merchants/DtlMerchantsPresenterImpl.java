@@ -69,8 +69,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @State FullMerchantParamsHolder actionParamsHolder;
    @State boolean hasPendingReview;
 
-   private User user;
-
    public DtlMerchantsPresenterImpl(Context context, Injector injector) {
       super(context);
       injector.inject(this);
@@ -207,7 +205,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
-      user = appSessionHolder.get().get().getUser();
       if (!action.getFromRating()) {
          navigateToDetails(action.getResult(), action.getOfferId());
       } else {
@@ -324,8 +321,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId, boolean fromRating) {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
-      fullMerchantInteractor.load(merchant.id(), expandedOfferId, fromRating);
-      //hasPendingReview = merchant.reviewSummary().userHasPendingReview();
+      fullMerchantInteractor.load(merchant.id(), merchant.reviewSummary(), expandedOfferId, fromRating);
    }
 
    private void onEmptyMerchantsLoaded() {

@@ -14,6 +14,6 @@ public class VersionCheckInitializer implements AppInitializer {
 
    @Override
    public void initialize(Injector injector) {
-      versionCheckInteractor.versionCheckPipe().send(new VersionCheckCommand());
+      //versionCheckInteractor.versionCheckPipe().send(new VersionCheckCommand());
    }
 }

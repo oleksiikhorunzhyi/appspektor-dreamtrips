@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -21,7 +22,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.Recy
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
 import java.util.ArrayList;
-
 import flow.Flow;
 
 public class OfferWithReviewView extends LinearLayout {
@@ -32,12 +32,16 @@ public class OfferWithReviewView extends LinearLayout {
    private TextView tvReviewCount;
    private View lineSeparator;
    private ReviewAdapter mAdapter;
+   private RelativeLayout reviewHeader;
+   private boolean isTablet = false;
 
    public static final String ARRAY = "arrayList";
    public static final String RATING_MERCHANT = "ratingMerchant";
    public static final String COUNT_REVIEW = "countReview";
    public static final String MERCHANT_NAME = "merchantName";
    public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
+   public static String IS_TABLET = "isTablet";
+
    private ArrayList<ReviewObject> mArrayInfo = new ArrayList<>();
 
    private RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerAdapter,
@@ -71,13 +75,13 @@ public class OfferWithReviewView extends LinearLayout {
 
    private void init() {
       mAdapter = new ReviewAdapter(getContext());
-
       final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_offer_with_review, this, true);
       recyclerAdapter = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       ratingBar2 = (RatingBar) v.findViewById(R.id.ratingBar2);
       tvReview = (TextView) v.findViewById(R.id.tv_Review);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
       lineSeparator = v.findViewById(R.id.line_separator);
+      reviewHeader = (RelativeLayout) v.findViewById(R.id.reviews_header);
 
       initRecycler();
       initAdapter();
@@ -95,6 +99,13 @@ public class OfferWithReviewView extends LinearLayout {
       mCountReview = bundle.getInt(COUNT_REVIEW, 0);
       mMerchantName = bundle.getString(MERCHANT_NAME, "");
       mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
+      isTablet = bundle.getBoolean(IS_TABLET, false);
+
+      /** if statement must be removed when optimizing to tablet **/
+      if(isTablet){
+         recyclerAdapter.setVisibility(View.GONE);
+         reviewHeader.setVisibility(View.GONE);
+      }
 
       setUpInfo();
    }

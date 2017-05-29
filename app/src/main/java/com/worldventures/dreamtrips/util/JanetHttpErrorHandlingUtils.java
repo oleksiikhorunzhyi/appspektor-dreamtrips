@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 
 import java.io.IOException;
 
@@ -29,8 +30,10 @@ public class JanetHttpErrorHandlingUtils {
          if (errorResponseNew != null) errorResponse.setErrors(errorResponseNew.errors());
 
          if (getCauseByType(IOException.class, exception.getCause()) != null) {
-            return context.getString(R.string.no_connection);
-         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors()
+            return Utils.isConnected(context)
+                  ? context.getString(R.string.smth_went_wrong)
+                  : context.getString(R.string.no_connection);
+         } else if (errorResponse.getErrors() != null && !errorResponse.getErrors()
                .isEmpty()) {
             return errorResponse.getFirstMessage();
          } else return fallbackMessage;

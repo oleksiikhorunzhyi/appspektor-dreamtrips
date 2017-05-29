@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.FullMerchantActionParams;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
@@ -26,19 +26,19 @@ public class FullMerchantInteractor {
       return fullMerchantPipe.asReadOnly();
    }
 
-   public void load(String merchantId, boolean fromRating) {
-      load(merchantId, null, fromRating);
+   public void load(String merchantId, ReviewSummary review, boolean fromRating) {
+      load(merchantId, review, null, fromRating);
    }
 
    public void load(FullMerchantParamsHolder fullMerchantParamsHolder) {
-      load(fullMerchantParamsHolder.getMerchantId(), fullMerchantParamsHolder.getOfferId(), false);
+      load(fullMerchantParamsHolder.getMerchantId(), null, fullMerchantParamsHolder.getOfferId(), false);
    }
 
-   public void load(String merchantId, String offerId, boolean fromRating) {
+   public void load(String merchantId, ReviewSummary review, String offerId, boolean fromRating) {
       dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .take(1)
             .map(Command::getResult)
-            .map(location -> FullMerchantAction.create(merchantId, offerId, location, fromRating))
+            .map(location -> FullMerchantAction.create(merchantId, offerId, location, fromRating, review))
             .subscribe(fullMerchantPipe::send);
    }
 }

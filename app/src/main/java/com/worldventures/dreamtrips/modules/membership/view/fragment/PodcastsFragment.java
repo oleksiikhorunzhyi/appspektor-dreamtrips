@@ -15,7 +15,6 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
@@ -175,14 +174,5 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
             .onPositive(callback)
             .onNegative((dialog, which) -> dialog.dismiss())
             .show();
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
    }
 }

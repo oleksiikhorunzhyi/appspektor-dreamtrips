@@ -48,6 +48,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostComma
 import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.FeedListWidthCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
@@ -259,6 +260,7 @@ import dagger.Module;
       UploadVideoFileCommand.class,
       UploadVideoFileChunksCommand.class,
       MigrateFromCachedEntity.class,
+      FeedListWidthCommand.class,
       MediaAttachmentPrepareCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

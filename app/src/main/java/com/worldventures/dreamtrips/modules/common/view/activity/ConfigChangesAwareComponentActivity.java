@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
 @Layout(R.layout.activity_component)
-public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
+public class ConfigChangesAwareComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
    Bundle extras;
 

@@ -8,9 +8,6 @@
 
    <dimen name="bucket_quick_input_edit_text_min_width">192dp</dimen>
 
-   /////Map info sizes
-   <dimen name="map_trip_info_size">412dp</dimen>
-
    <dimen name="locale_flag_size_width">46dp</dimen>
    <dimen name="locale_flag_size_height">26dp</dimen>
 
@@ -24,9 +21,4 @@
    <dimen name="photo_picker_size">166dp</dimen>
    <dimen name="picker_panel_height">256dp</dimen>
    <dimen name="picker_photo_spacing">2dp</dimen>
-
-   <!-- suggested photos feed space -->
-   <dimen name="suggested_cell_spacing_between_elements">4dp</dimen>
-   <dimen name="suggested_size">100dp</dimen>
-
 </resources>

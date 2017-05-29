@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -76,8 +77,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
-   @Optional
    @InjectView(R.id.posting_header) View postingHeader;
+   @InjectView(R.id.additional_info_container) View additionalInfoContainer;
 
    private BadgeImageView friendsBadge;
    private BadgeImageView unreadConversationBadge;
@@ -96,6 +97,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.savedInstanceState = savedInstanceState;
+   }
+
+   @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      setupUi();
    }
 
    @Override
@@ -133,13 +140,24 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
             fragmentWithFeedDelegate.notifyDataSetChanged();
          }
       });
-      if (isTabletLandscape()) {
-         fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(), getPresenter().getAccount());
-      }
+
+      setupUi();
 
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();
       registerCellDelegates();
+   }
+
+   private void setupUi() {
+      if (isTabletLandscape()) {
+         additionalInfoContainer.setVisibility(View.VISIBLE);
+         postingHeader.setVisibility(View.GONE);
+         fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(), getPresenter().getAccount());
+      } else {
+         additionalInfoContainer.setVisibility(View.GONE);
+         postingHeader.setVisibility(View.VISIBLE);
+         fragmentWithFeedDelegate.hideAdditonalInfo(getChildFragmentManager());
+      }
    }
 
    @Override

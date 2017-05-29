@@ -262,9 +262,17 @@ public class FragmentWithFeedDelegate {
             .build());
    }
 
+   public void hideAdditonalInfo(FragmentManager fragmentManager) {
+      router.moveTo(Route.FEED_LIST_ADDITIONAL_INFO, NavigationConfigBuilder.forRemoval()
+            .fragmentManager(fragmentManager)
+            .containerId(R.id.additional_info_container)
+            .build());
+   }
+
    public void openHashtagSearch() {
       router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
             .data(null)
+            .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
    }

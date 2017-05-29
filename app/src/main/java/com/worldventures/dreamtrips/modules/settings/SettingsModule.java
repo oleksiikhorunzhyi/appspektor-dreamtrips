@@ -31,6 +31,12 @@ public class SettingsModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideSettingsComponent() {
-      return new ComponentDescription(Route.SETTINGS.name(), R.string.settings, R.string.settings, R.drawable.ic_settings_menu, SettingsGroupFragment.class);
+      return new ComponentDescription.Builder()
+            .key(SETTINGS)
+            .navMenuTitle(R.string.settings)
+            .toolbarTitle(R.string.settings)
+            .icon(R.drawable.ic_settings_menu)
+            .fragmentClass(SettingsGroupFragment.class)
+            .build();
    }
 }

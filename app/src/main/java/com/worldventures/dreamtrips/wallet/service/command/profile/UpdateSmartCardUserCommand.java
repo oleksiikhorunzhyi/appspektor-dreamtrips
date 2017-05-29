@@ -31,6 +31,7 @@ import io.techery.janet.smartcard.action.user.UpdateUserAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -86,8 +87,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
       final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder();
       final SmartCardUserPhoto userPhoto = user.userPhoto();
-      if(userPhoto != null) dataBuilder.photoUrl(userPhoto.uri());
 
+      dataBuilder.photoUrl(userPhoto != null ? userPhoto.uri() : "");
       dataBuilder.firstName(changedFields.firstName());
       dataBuilder.middleName(changedFields.middleName());
       dataBuilder.lastName(changedFields.lastName());
@@ -133,7 +134,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
 
          return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
                .createObservableResult(new UpdateSmartCardUserPhotoCommand(newPhoto.uri()))
-               .flatMap(aVoid -> janet.createPipe(SmartCardUploaderyCommand.class)
+               .flatMap(aVoid -> janet.createPipe(SmartCardUploaderyCommand.class, Schedulers.io())
                      .createObservableResult(new SmartCardUploaderyCommand(smartCardId, newPhoto.uri())))
                .map(command -> ImmutableUpdateCardUserData.builder()
                      .from(userData)

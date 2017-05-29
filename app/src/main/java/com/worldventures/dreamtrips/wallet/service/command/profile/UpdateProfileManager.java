@@ -63,11 +63,9 @@ class UpdateProfileManager {
             .firstName(changedFields.firstName())
             .middleName(changedFields.middleName())
             .lastName(changedFields.lastName())
-            .phoneNumber(changedFields.phone());
+            .phoneNumber(changedFields.phone())
+            .userPhoto(changedFields.photo());
 
-      if (changedFields.photo() != null) {
-         userBuilder.userPhoto(changedFields.photo());
-      }
       return userBuilder.build();
    }
 }

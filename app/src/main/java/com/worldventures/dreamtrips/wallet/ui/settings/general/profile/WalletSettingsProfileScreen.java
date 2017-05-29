@@ -1,23 +1,20 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
+import android.support.design.widget.BottomSheetBehavior;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
@@ -28,41 +25,31 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFact
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
-import com.worldventures.dreamtrips.wallet.util.PhoneNumberCreator;
 
 import java.io.File;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
-import butterknife.OnTouch;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettingsProfilePresenter.Screen, WalletSettingsProfilePresenter, WalletSettingsProfilePath> implements WalletSettingsProfilePresenter.Screen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
-   @InjectView(R.id.first_name) EditText etFirstName;
-   @InjectView(R.id.middle_name) EditText etMiddleName;
-   @InjectView(R.id.last_name) EditText etLastName;
-   @InjectView(R.id.et_phone_number) EditText etPhoneNumber;
-   @InjectView(R.id.et_country_code) EditText etCountryCode;
-
    /**
     * TODO
     * Send to backend blocked
     * Add ability to change 1 item independently
     * notify other streams that it's ok
     */
-   private SmartCardUser smartCardUser;
+   public static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
    private MediaPickerService mediaPickerService;
+   private ScreenWalletSettingsProfileBinding binding;
+   private ProfileViewModel profileViewModel = new ProfileViewModel();
+   private BottomSheetBehavior bottomSheetBehavior;
 
    public WalletSettingsProfileScreen(Context context) {
       super(context);
@@ -75,9 +62,15 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-      toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
-      toolbar.setOnMenuItemClickListener(item -> {
+      binding = DataBindingUtil.bind(this);
+      binding.setOnAvatarClick(v -> showDialog());
+      binding.setOnChoosePhotoClick(v -> onChoosePhotoClick());
+      binding.setOnDontAddClick(v -> onDontAddClick());
+      binding.setOnCancelClick(v -> showDialog());
+      binding.setProfile(profileViewModel);
+      binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
+      binding.toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.done:
                getPresenter().handleDoneAction();
@@ -88,12 +81,16 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
       if (isInEditMode()) return;
 
-      etLastName.setKeyListener(null);
+      binding.lastName.setKeyListener(null);
 
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
-      ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
+      ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
+      binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      bottomSheetBehavior = BottomSheetBehavior.from(binding.linearLayoutBottomSheetEditProfile);
+      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -106,18 +103,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       public void onOpened() {}
    };
 
-   @OnClick(R.id.imageContainer)
-   public void choosePhotoClick() {
-      presenter.choosePhoto();
-   }
-
-   @OnTouch(value = {R.id.first_name, R.id.middle_name, R.id.last_name,
-         R.id.et_country_code, R.id.et_phone_number})
-   public boolean onClickProfileFields(View view, MotionEvent event) {
-      if(event.getAction() == MotionEvent.ACTION_DOWN) mediaPickerService.hidePicker();
-      return false;
-   }
-
    @NonNull
    @Override
    public WalletSettingsProfilePresenter createPresenter() {
@@ -128,31 +113,29 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       presenter.handleBackAction();
    }
 
-   @Override
-   public void setPreviewPhoto(@Nullable SmartCardUserPhoto photo) {
-      if (photo != null) {
-         previewPhotoView.setImageURI(photo.uri());
-      } // // TODO: 5/23/17 add placeholder
+   void onChoosePhotoClick() {
+      hideDialog();
+      presenter.choosePhoto();
+   }
+
+   void onDontAddClick() {
+      hideDialog();
+      presenter.dontAdd();
    }
 
    @Override
-   public void setUser(SmartCardUser user) {
-      this.smartCardUser = user;
-      SmartCardUserPhone phone = user.phoneNumber();
-      if (phone != null) {
-         etCountryCode.setText(phone.code());
-         etPhoneNumber.setText(phone.number());
-      }
+   public void dropPhoto() {
+      profileViewModel.setChosenPhotoUri(null);
+   }
 
-      etFirstName.setText(user.firstName());
-      etFirstName.setSelection(etFirstName.length());
+   @Override
+   public void showDialog() {
+      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+   }
 
-      etMiddleName.setText(user.middleName());
-      etMiddleName.setSelection(etMiddleName.length());
-
-      etLastName.setText(user.lastName());
-
-      setPreviewPhoto(user.userPhoto());
+   @Override
+   public void hideDialog() {
+      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
    }
 
    @Override
@@ -167,29 +150,40 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public String getFirstName() {
-      return etFirstName.getText().toString();
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      observeNewAvatar();
    }
 
    @Override
-   public String getMiddleName() {
-      return etMiddleName.getText().toString();
+   protected Parcelable onSaveInstanceState() {
+      Bundle bundle = (Bundle) super.onSaveInstanceState();
+      bundle.putParcelable(PROFILE_STATE_KEY, profileViewModel);
+      return bundle;
    }
 
    @Override
-   public String getLastName() {
-      return etLastName.getText().toString();
+   protected void onRestoreInstanceState(Parcelable state) {
+      super.onRestoreInstanceState(state);
+      Bundle bundle = (Bundle) state;
+      setUser(bundle.getParcelable(PROFILE_STATE_KEY));
+   }
+
+   private void observeNewAvatar() {
+      observeCropper()
+            .compose(lifecycle())
+            .subscribe(file -> profileViewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
    }
 
    @Override
-   public SmartCardUser getCurrentUser() {
-      return smartCardUser;
+   public void setUser(ProfileViewModel model) {
+      profileViewModel = model;
+      binding.setProfile(model);
    }
 
    @Override
-   @Nullable
-   public SmartCardUserPhone userPhone() {
-      return PhoneNumberCreator.create(etCountryCode.getText().toString().trim(), etPhoneNumber.getText().toString().trim());
+   public ProfileViewModel getUser() {
+      return profileViewModel;
    }
 
    @Override
@@ -257,5 +251,4 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    public void hidePhotoPicker() {
       mediaPickerService.hidePicker();
    }
-
 }

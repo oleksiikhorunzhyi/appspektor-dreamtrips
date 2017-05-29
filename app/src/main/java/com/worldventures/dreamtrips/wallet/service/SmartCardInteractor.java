@@ -40,6 +40,7 @@ import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
 import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
+import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
@@ -93,6 +94,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
    private final ReadActionPipe<PinStatusEvent> pinStatusEventPipe;
    private final ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe;
+   private final ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe;
 
    private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
 
@@ -156,6 +158,7 @@ public final class SmartCardInteractor {
       setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
       setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
       requestPinAuthActionPipe = sessionActionPipeCreator.createPipe(RequestPinAuthAction.class, Schedulers.io());
+      removeUserPhotoActionPipe= sessionActionPipeCreator.createPipe(RemoveUserPhotoAction.class, Schedulers.io());
 
       getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
    }
@@ -318,5 +321,9 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe() {
       return requestPinAuthActionPipe;
+   }
+
+   public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {
+      return removeUserPhotoActionPipe;
    }
 }

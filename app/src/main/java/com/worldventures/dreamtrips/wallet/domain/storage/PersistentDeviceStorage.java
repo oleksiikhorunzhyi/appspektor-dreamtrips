@@ -260,6 +260,11 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
+   public void removeUserPhoto() {
+
+   }
+
+   @Override
    public boolean isCardRecording() {
       return memoryStorage.isCardRecording();
    }

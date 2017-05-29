@@ -214,7 +214,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
       getView().setFirmwareUpdateAvailable(firmwareUpdateData.updateAvailable());
       if (firmwareUpdateData.updateAvailable()) {
-         if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
+         //if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
          getView().showFirmwareUpdateBtn();
       } else {
          getView().hideFirmwareUpdateBtn();

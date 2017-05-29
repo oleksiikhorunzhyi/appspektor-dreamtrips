@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
 import android.net.Uri;
-import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
 
 import java.io.File;
@@ -22,5 +20,9 @@ public interface WalletProfilePhotoView extends RxLifecycleView{
 
    Observable<File> observeCropper();
 
-   void setPreviewPhoto(@Nullable SmartCardUserPhoto photo);
+   void dropPhoto();
+
+   void showDialog();
+
+   void hideDialog();
 }

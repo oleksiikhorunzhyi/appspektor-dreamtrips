@@ -8,22 +8,22 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhoneScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 
@@ -31,11 +31,14 @@ import javax.inject.Inject;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
+import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
    @Inject Activity activity;
    @Inject Navigator navigator;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
@@ -76,13 +79,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void attachProfile(Screen view) {
-      final User userProfile = appSessionHolder.get().get().getUser();
-      view.setUserFullName(userProfile.getFirstName(), userProfile.getLastName());
-
-      final String defaultUserAvatar = userProfile.getAvatar().getThumb();
-      if (!ProjectTextUtils.isEmpty(defaultUserAvatar)) {
-         delegate.setPhotoUri(defaultUserAvatar, view);
-      }
+      view.setProfile(delegate.toViewModel(appSessionHolder.get().get().getUser()));
    }
 
    void back() {
@@ -100,36 +97,46 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    void setupUserData() {
       final Screen view = getView();
+      // noinspection ConstantConditions
+      final ProfileViewModel profile = view.getProfile();
       //noinspection ConstantConditions
-      WalletProfileUtils.checkUserNameValidation(view.getFirstName(), view.getMiddleName(), view.getLastName(),
-            () -> view.showConfirmationDialog(view.getFirstName(), view.getLastName()),
+      WalletProfileUtils.checkUserNameValidation(profile.getFirstName(), profile.getMiddleName(), profile.getLastName(),
+            () -> view.showConfirmationDialog(profile.getFirstName(), profile.getLastName()),
             e -> view.provideOperationView().showError(null, e));
    }
 
    void onUserDataConfirmed() {
+      // noinspection ConstantConditions
+      final ProfileViewModel profile = getView().getProfile();
       wizardInteractor.setupUserDataPipe()
             .send(new SetupUserDataCommand(
                   ImmutableSmartCardUser.builder()
-                        .firstName(getView().getFirstName())
-                        .middleName(getView().getFirstName())
-                        .lastName(getView().getLastName())
-                        .phoneNumber(getView().userPhone())
-                        .userPhoto(delegate.preparedPhoto())
+                        .firstName(profile.getFirstName())
+                        .middleName(profile.getMiddleName())
+                        .lastName(profile.getLastName())
+                        .phoneNumber(delegate.createPhone(profile))
+                        .userPhoto(delegate.createPhoto(profile))
                         .build()
             ));
+      if (profile.isPhotoEmpty()) {
+         smartCardInteractor.removeUserPhotoActionPipe()
+               .send(new RemoveUserPhotoAction());
+      }
    }
 
-   public interface Screen extends WalletProfilePhoneScreen, WalletProfilePhotoView {
+   public void dontAdd() {
+      getView().hidePhotoPicker();
+      getView().dropPhoto();
+   }
+
+   public interface Screen extends WalletScreen, WalletProfilePhotoView {
 
       OperationView<SetupUserDataCommand> provideOperationView();
 
-      void setUserFullName(String firstName, String lastName);
+      void setProfile(ProfileViewModel model);
 
-      String getFirstName();
+      ProfileViewModel getProfile();
 
-      String getMiddleName();
-
-      String getLastName();
-
-      void showConfirmationDialog(String firstName, String lastName);}
+      void showConfirmationDialog(String firstName, String lastName);
+   }
 }

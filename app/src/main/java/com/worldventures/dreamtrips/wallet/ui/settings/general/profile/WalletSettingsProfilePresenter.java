@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
@@ -20,21 +20,24 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUplo
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhoneScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils.equalsPhone;
+import static com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils.equalsPhoto;
 
-public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettingsProfilePresenter.Screen, WalletSettingsProfileState> {
+public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettingsProfilePresenter.Screen, Parcelable> {
 
    @Inject Activity activity;
    @Inject Navigator navigator;
@@ -44,6 +47,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject BackStackDelegate backStackDelegate;
 
    private final WalletProfileDelegate delegate;
+   private SmartCardUser user;
 
    private BackStackDelegate.BackPressedListener systemBackPressedListener = () -> {
       handleBackAction();
@@ -55,31 +59,12 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       this.delegate = new WalletProfileDelegate(analyticsInteractor);
    }
 
-   // View State // TODO: 5/24/17
-   @Override
-   public void onNewViewState() {
-      state = new WalletSettingsProfileState();
-   }
-
-   @Override
-   public void applyViewState() {
-      super.applyViewState();
-//      delegate.setPreparedPhoto(state.getUserPhoto());
-   }
-
-   @Override
-   public void onSaveInstanceState(Bundle bundle) {
-//      state.setUserPhoto(delegate.preparedPhoto());
-      super.onSaveInstanceState(bundle);
-   }
-
-   // bind to view
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
       backStackDelegate.addListener(systemBackPressedListener);
 
-      fetchProfile(view);
+      fetchProfile();
       observeUploading(view);
 
       delegate.setupInputMode(activity);
@@ -87,11 +72,17 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       delegate.sendAnalytics(new SmartCardProfileAction());
    }
 
-   private void fetchProfile(Screen view) {
-      smartCardInteractor.smartCardUserPipe().createObservableResult(SmartCardUserCommand.fetch())
-            .map(Command::getResult)
+   private void fetchProfile() {
+      smartCardInteractor.smartCardUserPipe()
+            .createObservableResult(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(view::setUser, throwable -> Timber.e(throwable, ""));
+            .subscribe(command -> setUser(command.getResult()), throwable -> Timber.e(throwable, ""));
+   }
+
+   private void setUser(SmartCardUser user) {
+      this.user = user;
+      //noinspection ConstantConditions
+      getView().setUser(delegate.toViewModel(user));
    }
 
    private void observeUploading(Screen view) {
@@ -100,7 +91,12 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation())
-                  .onSuccess(setupUserDataCommand -> goBack())
+                  .onSuccess(new Action1<UpdateSmartCardUserCommand>() {
+                     @Override
+                     public void call(UpdateSmartCardUserCommand setupUserDataCommand) {
+                        WalletSettingsProfilePresenter.this.goBack();
+                     }
+                  })
                   .create());
 
       smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
@@ -117,27 +113,33 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    void handleDoneAction() {
       if (isDataChanged()) {
          //noinspection ConstantConditions
+         final ProfileViewModel profile = getView().getUser();
+
          final ChangedFields changedFields = ImmutableChangedFields.builder()
-               .firstName(getView().getFirstName())
-               .middleName(getView().getMiddleName())
-               .lastName(getView().getLastName())
-               .phone(getView().userPhone())
-               .photo(delegate.preparedPhoto())
+               .firstName(profile.getFirstName())
+               .middleName(profile.getMiddleName())
+               .lastName(profile.getLastName())
+               .phone(delegate.createPhone(profile))
+               .photo(delegate.createPhoto(profile))
                .build();
 
          smartCardUserDataInteractor.updateSmartCardUserPipe().send(new UpdateSmartCardUserCommand(changedFields));
+
+         if (profile.isPhotoEmpty()) {
+            smartCardInteractor.removeUserPhotoActionPipe().send(new RemoveUserPhotoAction());
+         }
          delegate.sendAnalytics(new ProfileChangesSavedAction());
       }
    }
 
    private boolean isDataChanged() {
       //noinspection ConstantConditions
-      final SmartCardUser user = getView().getCurrentUser();
-      return delegate.preparedPhoto() != null ||
-            user.firstName().equals(getView().getFirstName()) ||
-            user.middleName().equals(getView().getMiddleName()) ||
-            user.lastName().equals(getView().getLastName()) ||
-            equalsPhone(user.phoneNumber(), getView().userPhone());
+      final ProfileViewModel profile = getView().getUser();
+      return !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
+            profile.getFirstName().equals(user.firstName()) &&
+            profile.getMiddleName().equals(user.middleName()) &&
+            profile.getLastName().equals(user.lastName()) &&
+            equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
    void handleBackAction() {
@@ -145,6 +147,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
          //noinspection ConstantConditions
          getView().showRevertChangesDialog();
       } else {
+         //noinspection ConstantConditions
+         getView().hidePhotoPicker();
          goBack();
       }
    }
@@ -172,18 +176,18 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       super.detachView(retainInstance);
    }
 
-   public interface Screen extends WalletProfilePhoneScreen, WalletProfilePhotoView {
-      void setUser(SmartCardUser user);
+   public void dontAdd() {
+      getView().hidePhotoPicker();
+      getView().dropPhoto();
+   }
+
+   public interface Screen extends WalletScreen, WalletProfilePhotoView {
+
+      void setUser(ProfileViewModel model);
+
+      ProfileViewModel getUser();
 
       void showRevertChangesDialog();
-
-      String getFirstName();
-
-      String getMiddleName();
-
-      String getLastName();
-
-      SmartCardUser getCurrentUser();
 
       OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation();
 

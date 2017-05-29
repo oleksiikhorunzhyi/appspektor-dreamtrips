@@ -33,7 +33,7 @@
    <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
    <!--edit profile-->
-   <string name="wallet_wizard__welcom_screen_title">Set Up Smart Card</string>
+   <string name="wallet_wizard__welcom_screen_title">Personalize Smart Card</string>
    <string name="wallet_edit_profile_subtitle">Set the display photo and name you would like on your card.</string>
    <string name="wallet_edit_profile_name_hint">Enter your name</string>
    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
@@ -46,6 +46,11 @@
    <string name="wallet_edit_profile_confirmation_dialog_message" formatted="false">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s %s</b><br/>]]></string>
    <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
    <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
+   <string name="wallet_edit_profile_photo_choose">Choose Photo</string>
+   <string name="wallet_edit_profile_photo_not_add">Do not add photo</string>
+   <string name="wallet_edit_profile_photo_cancel">Cancel</string>
+   <string name="wallet_edit_profile_photo_edit">Edit</string>
+   <string name="wallet_edit_profile_photo_empty">No photo</string>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>

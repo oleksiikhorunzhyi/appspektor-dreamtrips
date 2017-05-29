@@ -66,7 +66,8 @@ public class ApiErrorPresenter {
    }
 
    private boolean handleJanetHttpError(Object action, Throwable exception) {
-      if ((action instanceof BaseHttpAction || action instanceof com.worldventures.dreamtrips.api.api_common.BaseHttpAction) && exception instanceof HttpServiceException) {
+      if ((action instanceof BaseHttpAction || action instanceof com.worldventures.dreamtrips.api.api_common.BaseHttpAction)
+            && exception instanceof HttpServiceException) {
          apiErrorView.onApiCallFailed();
 
          ErrorResponse errorResponse = new ErrorResponse();
@@ -76,7 +77,7 @@ public class ApiErrorPresenter {
 
          if (getCauseByType(IOException.class, exception.getCause()) != null) {
             apiErrorView.informUser(R.string.no_connection);
-         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors()
+         } else if (errorResponse.getErrors() != null && !errorResponse.getErrors()
                .isEmpty()) {
             logError(errorResponse);
             if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());

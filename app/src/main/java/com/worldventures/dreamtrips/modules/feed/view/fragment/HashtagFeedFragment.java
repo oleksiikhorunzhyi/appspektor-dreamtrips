@@ -21,7 +21,6 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -335,14 +334,5 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void showComments(FeedItem feedItem) {
       fragmentWithFeedDelegate.openComments(feedItem, isVisibleOnScreen(), isTabletLandscape());
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
    }
 }

@@ -18,9 +18,4 @@
 
    <include layout="@layout/line_separator" />
 
-   <include
-         layout="@layout/rate_review_button"
-         android:visibility="gone"
-         />
-
 </LinearLayout>

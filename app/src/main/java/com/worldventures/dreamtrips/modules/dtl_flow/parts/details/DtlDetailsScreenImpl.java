@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
@@ -76,6 +77,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Inject ActivityResultDelegate activityResultDelegate;
    @Inject Router router;
+   @Inject DeviceInfoProvider deviceInfoProvider;
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
@@ -88,6 +90,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
    @InjectView(R.id.container_comments) OfferWithReviewView mContainerComments;
+   @InjectView(R.id.btn_rate_and_review) TextView rateAndReviewBtn;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -121,6 +124,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       showMessage();
+
+      if(deviceInfoProvider.isTablet()){
+         hideReviewViewsOnTablets();
+      }
    }
 
    @Override
@@ -136,17 +143,23 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, merchant.displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, false);
+      bundle.putBoolean(OfferWithReviewView.IS_TABLET, deviceInfoProvider.isTablet());
       mContainerComments.addBundle(bundle);
    }
 
    @Override
    public void showButtonAllRateAndReview() {
-      mTvReadAllReviews.setVisibility(View.VISIBLE);
+      mTvReadAllReviews.setVisibility(deviceInfoProvider.isTablet() ? View.GONE : View.VISIBLE);
    }
 
    @Override
    public void hideButtonAllRateAndReview() {
-      mTvReadAllReviews.setVisibility(View.GONE);
+
+      /** Remove if statement when optimizing for tablets **/
+      if(deviceInfoProvider.isTablet()){
+         mTvReadAllReviews.setVisibility(View.GONE);
+      }
+
    }
 
    @Override
@@ -467,4 +480,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void showAllReviews() {
    }
+
+   private void hideReviewViewsOnTablets(){
+      rateAndReviewBtn.setVisibility(View.GONE);
+      hideButtonAllRateAndReview();
+   }
+
 }

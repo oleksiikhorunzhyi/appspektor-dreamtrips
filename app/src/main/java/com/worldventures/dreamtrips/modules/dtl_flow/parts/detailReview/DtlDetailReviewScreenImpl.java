@@ -62,6 +62,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     TextView mPhotosNumberIndicator;
     @InjectView(R.id.photos)
     RecyclerView mPhotosRecyclerView;
+
     private LinearLayoutManager mLayoutManager;
     private ReviewImagesAdapter mImagesAdapter;
     private ReviewObject reviewObject;
@@ -120,6 +121,7 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
                 mPhotosIndicatorLayout.setVisibility(View.INVISIBLE);
             }
             setupPhotosList();
+
         }
     }
 

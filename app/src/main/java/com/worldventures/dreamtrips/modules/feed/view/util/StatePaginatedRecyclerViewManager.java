@@ -44,8 +44,7 @@ public class StatePaginatedRecyclerViewManager {
       stateRecyclerView.setup(savedInstanceState, adapter);
       paginationViewManager = new PaginationViewManager(stateRecyclerView);
    }
-
-
+   
    public void findFirstCompletelyVisibleItemPosition() {
       if (stateRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
          float centerPositionY = stateRecyclerView.getY() + stateRecyclerView.getHeight() / 2;

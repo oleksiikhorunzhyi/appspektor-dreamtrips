@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,7 +20,10 @@ import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.util.FeedListWidth;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
+import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.FeedListWidthCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
@@ -36,10 +38,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import io.techery.janet.Command;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_feed_post_event)
@@ -54,6 +62,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Optional @InjectView(R.id.tag) ImageView tag;
    @Optional @InjectView(R.id.videoAttachment) VideoAttachmentView videoAttachmentView;
 
+   @Inject FeedListWidthInteractor feedListWidthInteractor;
+   private Subscription listWidthSubscription;
+
+   private FeedListWidth feedListWidth;
+
    public PostFeedItemCell(View view) {
       super(view);
    }
@@ -61,12 +74,35 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      PostFeedItem obj = getModelObject();
       ViewUtils.runTaskAfterMeasure(itemView, () -> {
-         processAttachments(obj.getItem().getAttachments());
-         processPostText(obj.getItem());
-         processTranslations();
+         if (feedListWidth == null) {
+            feedListWidthInteractor.feedListWidthPipe().send(new FeedListWidthCommand(itemView.getWidth()));
+         }
+         feedListWidthInteractor.feedListWidthPipe()
+               .observeSuccessWithReplay().take(1).subscribe(command -> {
+            feedListWidth = command.getResult();
+            refreshUi();
+         });
       });
+
+      if (listWidthSubscription != null && !listWidthSubscription.isUnsubscribed()) {
+         listWidthSubscription.unsubscribe();
+      }
+      listWidthSubscription = feedListWidthInteractor.feedListWidthPipe().observeSuccess()
+            .map(Command::getResult)
+            .delay(50, TimeUnit.MILLISECONDS)
+            .onBackpressureLatest()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(feedListWidth -> {
+               this.feedListWidth = feedListWidth;
+               processPhotoAttachments();
+            }, throwable -> Timber.w("Could not get list width"));
+   }
+
+   private void refreshUi() {
+      processAttachments(getModelObject().getItem().getAttachments());
+      processPostText(getModelObject().getItem());
+      processTranslations();
    }
 
    private void processTranslations() {
@@ -139,6 +175,16 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       processTags(attachments);
    }
 
+   private void processPhotoAttachments() {
+      List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+      if (attachments != null && !attachments.isEmpty()) {
+         if (attachments.get(0).getItem() instanceof Photo) {
+            videoAttachmentView.hide();
+            processPhotos();
+         }
+      }
+   }
+
    private void processPhotos() {
       collageView.setItemClickListener(new CollageView.ItemClickListener() {
          @Override
@@ -151,7 +197,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
             openFeedItemDetails();
          }
       });
-      collageView.setItems(attachmentsToCollageItems(getModelObject().getItem().getAttachments()), itemView.getWidth());
+      boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(itemView.getContext());
+      collageView.setItems(attachmentsToCollageItems(getModelObject().getItem().getAttachments()),
+            landscapeOrientation ? feedListWidth.getWidthInLandscape() : feedListWidth.getWidthInPortrait());
    }
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
@@ -244,8 +292,10 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    public void clearResources() {
       super.clearResources();
       if (videoAttachmentView != null) {
-         Timber.d("Clear resources");
          videoAttachmentView.clearResources();
+      }
+      if (listWidthSubscription != null && !listWidthSubscription.isUnsubscribed()) {
+         listWidthSubscription.unsubscribe();
       }
    }
 }

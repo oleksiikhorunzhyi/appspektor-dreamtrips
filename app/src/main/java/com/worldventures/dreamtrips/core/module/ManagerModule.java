@@ -50,6 +50,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceIn
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.AccountTimelineStorageInteractor;
@@ -401,5 +402,11 @@ public class ManagerModule {
    @Singleton
    ConfigurationInteractor provideConfigurationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new ConfigurationInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   FeedListWidthInteractor provideFeedListWidthInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedListWidthInteractor(sessionActionPipeCreator);
    }
 }

@@ -9,7 +9,7 @@ ext {
          { o -> o.maven { url 'https://maven.fabric.io/public' } }
    ]
    pluginDependencies << [
-         androidDefault: '2.2.3',
+         androidDefault: '2.3.2',
          kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginDependencies.languages.kotlin",
 
          apt           : 'com.neenbedankt.gradle.plugins:android-apt:1.8',

@@ -204,7 +204,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private boolean validateNickName(String nickname) {
-      if (WalletValidateHelper.validateCardName(nickname)) {
+      if (WalletValidateHelper.isValidCardName(nickname)) {
          getView().hideCardNameError();
          getView().setCardName(nickname);
          return true;

@@ -175,7 +175,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void handleCardNickname(String cardName) {
-      if (WalletValidateHelper.validateCardName(cardName)) {
+      if (WalletValidateHelper.isValidCardName(cardName)) {
          getView().hideCardNameError();
          getView().setCardNickname(cardName);
       } else {

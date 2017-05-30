@@ -1,9 +1,9 @@
 ext {
    appConfig = [
          versionMajor    : 1,
-         versionMinor    : 19,
+         versionMinor    : 20,
          versionPatch    : 0,
-         versionBuild    : 6,
+         versionBuild    : 0,
          applicationId   : 'com.worldventures.dreamtrips',
          archivesBaseName: 'DreamTrips',
 

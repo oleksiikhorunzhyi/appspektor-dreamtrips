@@ -22,6 +22,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
    private String title;
    private Date shotAt;
+   private Date createdAt;
    private Location location;
    private List<String> tags;
    private Image images;
@@ -48,6 +49,19 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
    public void setShotAt(Date shotAt) {
       this.shotAt = shotAt;
+   }
+
+   /*
+    * Can be null if we get photo as attachment from feed
+    * There are complications to add createdAt in feed on server
+    */
+   @Nullable
+   public Date getCreatedAt() {
+      return createdAt;
+   }
+
+   public void setCreatedAt(Date createdAt) {
+      this.createdAt = createdAt;
    }
 
    public List<String> getTags() {
@@ -247,6 +261,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       parcel.writeInt(liked ? 1 : 0);
       parcel.writeString(title);
       parcel.writeSerializable(shotAt);
+      parcel.writeSerializable(createdAt);
       parcel.writeParcelable(location, i);
       parcel.writeStringList(tags);
       parcel.writeParcelable(images, i);
@@ -264,6 +279,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       liked = in.readInt() == 1;
       title = in.readString();
       shotAt = (Date) in.readSerializable();
+      createdAt = (Date) in.readSerializable();
       location = in.readParcelable(Location.class.getClassLoader());
       tags = in.createStringArrayList();
       images = in.readParcelable(Image.class.getClassLoader());

@@ -14,9 +14,9 @@ import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdate
 import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateUiDelegate
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
+import io.techery.janet.Janet
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import io.techery.janet.Janet
 import org.mockito.Mockito.*
 
 class VersionUpdateDelegateSpec : BaseSpec({

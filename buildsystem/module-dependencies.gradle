@@ -61,7 +61,7 @@ ext {
          dbflowCompiler     : [a: "com.raizlabs.android:DBFlow-Compiler:$dbflowVersion"],
    ]
    // networking
-   def janetHttpVersion = '1.0.11'
+   def janetHttpVersion = '1.2.2'
    def okhttp2Version = '2.7.5'
    def okhttp3Version = '3.5.0'
    def smackVersion = '4.1.6'

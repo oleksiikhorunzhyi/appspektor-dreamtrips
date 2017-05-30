@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerSta
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -45,6 +46,7 @@ public interface SnappyRepository {
    String TRANSLATION = "translation";
    String POST = "post";
    String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
+   String MEDIA_UPLOAD_MODEL = "MEDIA_UPLOAD_MODEL";
    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
    String IMAGE = "IMAGE";
@@ -201,11 +203,17 @@ public interface SnappyRepository {
 
    void deleteDtlTransaction(String id);
 
-   void saveDownloadMediaEntity(CachedEntity e);
+   void saveDownloadMediaModel(CachedModel e);
 
+   List<CachedModel> getDownloadMediaModels();
+
+   @Deprecated
    List<CachedEntity> getDownloadMediaEntities();
 
-   CachedEntity getDownloadMediaEntity(String id);
+   @Deprecated
+   void deleteAllMediaEntities();
+
+   CachedModel getDownloadMediaModel(String id);
 
    void setLastSyncAppVersion(String appVersion);
 

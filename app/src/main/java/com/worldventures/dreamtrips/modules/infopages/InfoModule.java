@@ -10,9 +10,9 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAtt
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.HelpDocumentListPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.LegalTermsPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.OtaPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
-import com.worldventures.dreamtrips.modules.infopages.presenter.LegalTermsPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.DocumentCell;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
@@ -87,7 +87,8 @@ public class InfoModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTermsOfServiceComponent() {
-      return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms, R.drawable.ic_termsconditions, LegalTermsFragment.class);
+      return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms,
+            R.drawable.ic_termsconditions, LegalTermsFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -97,6 +98,7 @@ public class InfoModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideFeedbackComponent() {
-      return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback, R.drawable.ic_send_feedback, SendFeedbackFragment.class);
+      return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback,
+            R.drawable.ic_send_feedback, SendFeedbackFragment.class);
    }
 }

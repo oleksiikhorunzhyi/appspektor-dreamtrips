@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.membership.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -70,7 +68,7 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
    }
 
    private void connectCachedEntity(Podcast podcast) {
-      podcast.setCacheEntity(db.getDownloadMediaEntity(podcast.getUid()));
+      podcast.setCacheEntity(db.getDownloadMediaModel(podcast.getUid()));
    }
 
    private void clearCacheIfNeeded() {

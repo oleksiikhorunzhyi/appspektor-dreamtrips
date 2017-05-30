@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.modules.membership.view.cell.delegate;
 
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 public interface PodcastCellDelegate extends CellDelegate<Podcast> {
-   void onDownloadPodcast(CachedEntity entity);
+   void onDownloadPodcast(CachedModel entity);
 
-   void onDeletePodcast(CachedEntity entity);
+   void onDeletePodcast(CachedModel entity);
 
-   void onCancelCachingPodcast(CachedEntity entity);
+   void onCancelCachingPodcast(CachedModel entity);
 
    void play(Podcast podcast);
 }

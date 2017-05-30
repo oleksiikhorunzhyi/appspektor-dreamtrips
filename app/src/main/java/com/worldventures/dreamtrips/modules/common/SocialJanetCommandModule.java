@@ -26,10 +26,11 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStorag
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
-import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
+import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
-import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
@@ -79,6 +80,7 @@ import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneC
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
+import com.worldventures.dreamtrips.modules.player.service.SendPodcastAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.profile.service.command.AddFriendToCircleCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
@@ -107,15 +109,18 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspi
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.PaginatedTripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
 
 import dagger.Module;
 
 @Module(injects = {
+      CopyFileCommand.class,
       UploaderyImageCommand.class,
       SimpleUploaderyCommand.class,
       SmartCardUploaderyCommand.class,
@@ -178,9 +183,9 @@ import dagger.Module;
       GetNotificationsCommand.class,
       MarkNotificationsAsReadCommand.class,
       MarkNotificationAsReadCommand.class,
-      DeleteCachedEntityCommand.class,
-      DownloadCachedEntityCommand.class,
-      ResetCachedEntitiesInProgressCommand.class,
+      DeleteCachedModelCommand.class,
+      DownloadCachedModelCommand.class,
+      ResetCachedModelsInProgressCommand.class,
       LogoutCommand.class,
       GetPrivateProfileCommand.class,
       UploadAvatarCommand.class,
@@ -197,7 +202,7 @@ import dagger.Module;
       GetMembersPhotosCommand.class,
       GetUserPhotosCommand.class,
       GetYSBHPhotosCommand.class,
-      TripImagesCommand.class,
+      PaginatedTripImagesCommand.class,
       DeletePhotoCommand.class,
       DeletePhotoTagsCommand.class,
       SocialJanetCommandModule.class,
@@ -236,6 +241,10 @@ import dagger.Module;
       TranslateBucketItemCommand.class,
       SendAnalyticsIfNeedAction.class,
       GetAlbumsCommand.class,
-      UpdateStatusCachedEntityCommand.class
+      UpdateStatusCachedEntityCommand.class,
+      SendVideoAnalyticsIfNeedAction.class,
+      SendPodcastAnalyticsIfNeedAction.class,
+      GetAlbumsCommand.class,
+      MigrateFromCachedEntity.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

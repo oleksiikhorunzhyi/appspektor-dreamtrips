@@ -25,6 +25,7 @@ public abstract class PhotoConverter<T extends com.worldventures.dreamtrips.api.
       photo.setImages(mapperyContext.convert(apiPhoto.images(), Image.class));
       photo.setTitle(apiPhoto.title());
       photo.setShotAt(apiPhoto.shotAt());
+      photo.setCreatedAt(apiPhoto.createdAt());
       photo.setLanguage(apiPhoto.language());
 
       photo.setLocation(mapperyContext.convert(apiPhoto.location(), Location.class));

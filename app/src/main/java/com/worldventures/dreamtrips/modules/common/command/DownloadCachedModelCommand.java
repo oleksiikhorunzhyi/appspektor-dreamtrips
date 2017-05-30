@@ -4,7 +4,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.modules.video.model.Status;
 
 import java.io.File;
 
@@ -14,7 +15,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 @CommandAction
-public class DownloadCachedEntityCommand extends CachedEntityCommand implements InjectableAction {
+public class DownloadCachedModelCommand extends CachedEntityCommand implements InjectableAction {
 
    // TODO We must send min progress > 0 as view level determines is entity is NOT in progress
    // if entity is not failed and progress is 0.
@@ -28,16 +29,16 @@ public class DownloadCachedEntityCommand extends CachedEntityCommand implements 
    private DownloadFileCommand downloadFileCommand;
    private int lastProgress = PROGRESS_START_MIN;
 
-   public DownloadCachedEntityCommand(CachedEntity cachedEntity, File file) {
-      super(cachedEntity);
+   public DownloadCachedModelCommand(CachedModel cachedModel, File file) {
+      super(cachedModel);
       this.file = file;
    }
 
    @Override
-   protected void run(CommandCallback<CachedEntity> callback) throws Throwable {
+   protected void run(CommandCallback<CachedModel> callback) throws Throwable {
       downloadFileInteractor.
             getDownloadFileCommandPipe().createObservable(downloadFileCommand =
-               new DownloadFileCommand(file, cachedEntity.getUrl()))
+               new DownloadFileCommand(file, cachedModel.getUrl()))
             .onBackpressureLatest()
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
                .onStart(this::onStart)
@@ -47,35 +48,36 @@ public class DownloadCachedEntityCommand extends CachedEntityCommand implements 
    }
 
    private void onStart(DownloadFileCommand command) {
-      cachedEntity.setIsFailed(false);
-      cachedEntity.setProgress(PROGRESS_START_MIN);
-      db.saveDownloadMediaEntity(cachedEntity);
+      cachedModel.setCacheStatus(Status.IN_PROGRESS);
+      cachedModel.setProgress(PROGRESS_START_MIN);
+      db.saveDownloadMediaModel(cachedModel);
    }
 
-   private void onSuccess(CommandCallback<CachedEntity> callback) {
-      cachedEntity.setProgress(100);
-      db.saveDownloadMediaEntity(cachedEntity);
-      callback.onSuccess(cachedEntity);
+   private void onSuccess(CommandCallback<CachedModel> callback) {
+      cachedModel.setProgress(100);
+      cachedModel.setCacheStatus(Status.SUCCESS);
+      db.saveDownloadMediaModel(cachedModel);
+      callback.onSuccess(cachedModel);
    }
 
-   private void onFail(CommandCallback<CachedEntity> callback, Throwable throwable) {
-      cachedEntity.setProgress(0);
-      cachedEntity.setIsFailed(true);
-      db.saveDownloadMediaEntity(cachedEntity);
+   private void onFail(CommandCallback<CachedModel> callback, Throwable throwable) {
+      cachedModel.setProgress(0);
+      cachedModel.setCacheStatus(Status.FAILED);
+      db.saveDownloadMediaModel(cachedModel);
       callback.onFail(throwable);
    }
 
-   private void onProgress(CommandCallback<CachedEntity> callback, int progress) {
+   private void onProgress(CommandCallback<CachedModel> callback, int progress) {
       if (progress == 0) progress = PROGRESS_START_MIN;
       if (progress <= lastProgress) return;
       lastProgress = progress;
-      cachedEntity.setProgress(progress);
-      db.saveDownloadMediaEntity(cachedEntity);
+      cachedModel.setProgress(progress);
+      db.saveDownloadMediaModel(cachedModel);
       callback.onProgress(progress);
    }
 
-   public CachedEntity getCachedEntity() {
-      return cachedEntity;
+   public CachedModel getCachedModel() {
+      return cachedModel;
    }
 
    public File getFile() {
@@ -90,8 +92,8 @@ public class DownloadCachedEntityCommand extends CachedEntityCommand implements 
    @Override
    protected void cancel() {
       if (downloadFileCommand != null) downloadFileCommand.cancel();
-      cachedEntity.setProgress(0);
-      db.saveDownloadMediaEntity(cachedEntity);
+      cachedModel.setProgress(0);
+      db.saveDownloadMediaModel(cachedModel);
    }
 
    @Override
@@ -104,15 +106,15 @@ public class DownloadCachedEntityCommand extends CachedEntityCommand implements 
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
 
-      DownloadCachedEntityCommand that = (DownloadCachedEntityCommand) o;
+      DownloadCachedModelCommand that = (DownloadCachedModelCommand) o;
 
-      if (cachedEntity != null ? !cachedEntity.equals(that.cachedEntity) : that.cachedEntity != null) return false;
+      if (cachedModel != null ? !cachedModel.equals(that.cachedModel) : that.cachedModel != null) return false;
       return file != null ? file.equals(that.file) : that.file == null;
    }
 
    @Override
    public int hashCode() {
-      int result = cachedEntity != null ? cachedEntity.hashCode() : 0;
+      int result = cachedModel != null ? cachedModel.hashCode() : 0;
       result = 31 * result + (file != null ? file.hashCode() : 0);
       return result;
    }

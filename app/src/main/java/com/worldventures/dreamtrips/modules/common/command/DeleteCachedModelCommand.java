@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 import java.io.File;
 
@@ -12,23 +12,23 @@ import javax.inject.Inject;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DeleteCachedEntityCommand extends CachedEntityCommand implements InjectableAction {
+public class DeleteCachedModelCommand extends CachedEntityCommand implements InjectableAction {
 
    private File file;
 
    @Inject SnappyRepository db;
 
-   public DeleteCachedEntityCommand(CachedEntity cachedEntity, File file) {
-      super(cachedEntity);
+   public DeleteCachedModelCommand(CachedModel cachedModel, File file) {
+      super(cachedModel);
       this.file = file;
    }
 
    @Override
-   protected void run(CommandCallback<CachedEntity> callback) throws Throwable {
+   protected void run(CommandCallback<CachedModel> callback) throws Throwable {
       file.delete();
-      cachedEntity.setProgress(0);
-      db.saveDownloadMediaEntity(cachedEntity);
-      callback.onSuccess(cachedEntity);
+      cachedModel.setProgress(0);
+      db.saveDownloadMediaModel(cachedModel);
+      callback.onSuccess(cachedModel);
    }
 
    @Override

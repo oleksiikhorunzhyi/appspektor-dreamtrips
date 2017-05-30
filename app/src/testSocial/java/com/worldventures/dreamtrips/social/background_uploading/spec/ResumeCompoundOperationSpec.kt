@@ -12,7 +12,7 @@ import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class ResumeCompoundOperationSpec : BaseUploadingInteractorSpec({
-   xdescribe("Resume compound operation command") {
+   describe("Resume compound operation command") {
       initJanet(compoundOperationsNotEmptyContract())
 
       context("Resuming compound operation") {

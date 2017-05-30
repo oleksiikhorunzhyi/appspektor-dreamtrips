@@ -13,9 +13,9 @@ import rx.Observable
 import rx.lang.kotlin.PublishSubject
 
 class SocialConnectionOverlaySpec : BaseSpec({
-   xdescribe("Test social connection overlay") {
+   describe("Test social connection overlay") {
       val socialConnectionOverlayFactory: SocialConnectionOverlayViewFactory = mock()
-      val socialConnectionOverlayView: SocialConnectionOverlayView = spy()
+      val socialConnectionOverlayView: SocialConnectionOverlayView = mock()
 
       whenever(socialConnectionOverlayFactory.createOverlayView()).thenReturn(socialConnectionOverlayView)
       whenever(socialConnectionOverlayView.closeClickObservable).thenReturn(Observable.empty())

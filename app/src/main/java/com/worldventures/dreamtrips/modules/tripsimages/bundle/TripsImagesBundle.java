@@ -9,10 +9,16 @@ public class TripsImagesBundle implements Parcelable {
 
    private TripImagesType type;
    private int userId;
+   private boolean showTimestamps;
 
    public TripsImagesBundle(TripImagesType type, int userId) {
+      this(type, userId, false);
+   }
+
+   public TripsImagesBundle(TripImagesType type, int userId, boolean showTimestamps) {
       this.type = type;
       this.userId = userId;
+      this.showTimestamps = showTimestamps;
    }
 
    protected TripsImagesBundle(Parcel in) {
@@ -38,6 +44,10 @@ public class TripsImagesBundle implements Parcelable {
 
    public int getUserId() {
       return userId;
+   }
+
+   public boolean showTimestamps() {
+      return showTimestamps;
    }
 
    @Override

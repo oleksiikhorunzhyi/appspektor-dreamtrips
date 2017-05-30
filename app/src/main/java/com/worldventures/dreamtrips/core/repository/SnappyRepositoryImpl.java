@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerSta
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -159,6 +160,18 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
+   public List<CachedModel> getDownloadMediaModels() {
+      return actWithResult(db -> {
+         List<CachedModel> entities = new ArrayList<>();
+         String[] keys = db.findKeys(MEDIA_UPLOAD_MODEL);
+         for (String key : keys) {
+            entities.add(db.get(key, CachedModel.class));
+         }
+         return entities;
+      }).or(Collections.emptyList());
+   }
+
+   @Override
    public List<CachedEntity> getDownloadMediaEntities() {
       return actWithResult(db -> {
          List<CachedEntity> entities = new ArrayList<>();
@@ -171,13 +184,21 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    @Override
-   public void saveDownloadMediaEntity(CachedEntity e) {
-      act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));
+   public void deleteAllMediaEntities() {
+      act(db -> {
+         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
+         for (String key : keys) db.del(key);
+      });
    }
 
    @Override
-   public CachedEntity getDownloadMediaEntity(String id) {
-      return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class)).orNull();
+   public void saveDownloadMediaModel(CachedModel e) {
+      act(db -> db.put(MEDIA_UPLOAD_MODEL + e.getUuid(), e));
+   }
+
+   @Override
+   public CachedModel getDownloadMediaModel(String id) {
+      return actWithResult(db -> db.get(MEDIA_UPLOAD_MODEL + id, CachedModel.class)).orNull();
    }
 
    @Override

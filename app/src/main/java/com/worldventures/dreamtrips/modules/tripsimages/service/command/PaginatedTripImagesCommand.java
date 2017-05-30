@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +17,8 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public abstract class TripImagesCommand<T extends IFullScreenObject> extends CommandWithError<List<T>> implements InjectableAction {
+public abstract class PaginatedTripImagesCommand<T extends IFullScreenObject> extends CommandWithError<List<T>>
+      implements InjectableAction, CommandWithTripImages {
 
    @Inject Janet janet;
    @Inject MapperyContext mappery;
@@ -24,7 +26,7 @@ public abstract class TripImagesCommand<T extends IFullScreenObject> extends Com
    protected int perPage;
    protected int page;
 
-   public TripImagesCommand(int page, int perPage) {
+   public PaginatedTripImagesCommand(int page, int perPage) {
       this.page = page;
       this.perPage = perPage;
    }
@@ -35,5 +37,10 @@ public abstract class TripImagesCommand<T extends IFullScreenObject> extends Com
 
    public void setPerPage(int perPage) {
       this.perPage = perPage;
+   }
+
+   @Override
+   public List<IFullScreenObject> getImages() {
+      return new ArrayList<>(getResult());
    }
 }

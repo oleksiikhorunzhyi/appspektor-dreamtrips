@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.modules.video.model;
 import android.content.Context;
 import android.os.Environment;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -18,6 +21,7 @@ import java.io.Serializable;
  * 1. Refactor related commands and presenters
  * 2. Migrate it from using default Kryo's FieldSerializer which does not support adding new fields to entities.
  */
+@Deprecated
 public class CachedEntity implements Serializable {
 
    protected static final long serialVersionUID = 12332;

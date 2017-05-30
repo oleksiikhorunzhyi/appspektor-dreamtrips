@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class FriendСandidateToUserConverter implements Converter<FriendCandidate, User> {
+public class FriendCandidateToUserConverter implements Converter<FriendCandidate, User> {
    @Override
    public Class<FriendCandidate> sourceClass() {
       return FriendCandidate.class;

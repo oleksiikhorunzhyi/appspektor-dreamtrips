@@ -51,9 +51,9 @@ utils.runBuild('android', getNotifier(utils)) {
                  notifyTeam        : true,
                  releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
                  uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
-                ] << ([
+                ] << (
                      buildParams.hockeyAppTeams.isEmpty() ? [:] : [teams: buildParams.hockeyAppTeams.join(',')]
-               ])],
+               )],
                debugMode: false, failGracefully: true
          ])
       }

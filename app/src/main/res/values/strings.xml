@@ -187,7 +187,7 @@
    <string name="selected">%d selected</string>
    <string name="email_is_not_valid">Email is not valid</string>
    <string name="invitation_deselect_all">Deselect All</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, %s <br/>Check it out <a href="%s">here</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Hi%s, %s <br/>Check it out here. <br/>%s]]></string>
    <string name="invite_add_photo">Add Photo</string>
    <string name="invite_select_first">Select contacts at first</string>
    <string name="filters_show_favorite">SHOW FAVORITE TRIPS</string>
@@ -581,4 +581,8 @@
 
    <string name="show_original">Show original</string>
    <string name="error_fail_to_translate_bucket_item">Failed to translate bucket item</string>
+
+   <string name="n_friends_accepted">%d friends accepted</string>
+   <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
+
 </resources>

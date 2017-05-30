@@ -73,12 +73,5 @@ abstract class BaseUploadingInteractorSpec(spekBody: DescribeBody.() -> Unit) : 
          `when`(feedItem.type).thenReturn(FeedEntityHolder.Type.PHOTO)
          return feedItem
       }
-
-      fun mockActionService(service: ActionService, mockContracts: List<Contract>) = MockCommandActionService.Builder()
-            .apply {
-               actionService(service)
-               for (contract in mockContracts) addContract(contract)
-            }
-            .build()
    }
 }

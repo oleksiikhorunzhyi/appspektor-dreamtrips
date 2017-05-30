@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Αποδοχή</string>
    <string name="flag_description_negative">Ακύρωση</string>
    <string name="log_in">Σύνδεση</string>
+   <string name="facebook_error_loading_albums">Η φόρτωση άλμπουμ απέτυχε</string>
+   <string name="facebook_error_loading_photos">Η φόρτωση φωτογραφιών απέτυχε</string>
+   <string name="facebook_login_error">Η είσοδος στο Facebook απέτυχε</string>
    <string name="fab_posted">Δημοσιεύτηκε με επιτυχία στο Facebook</string>
+   <string name="facebook_posting_error">Η δημοσίευση στο Facebook απέτυχε</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -182,7 +186,7 @@
    <string name="selected">Επιλέχθηκαν %1$d</string>
    <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
    <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το <a href=\"%3$s\">εδώ</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το εδώ.<br/> %3$s]]></string>
    <string name="invite_add_photo">Προσθήκη φωτογραφίας</string>
    <string name="invite_select_first">Επιλογή επαφών στην αρχή</string>
    <string name="filters_show_favorite">ΕΜΦΑΝΙΣΗ ΑΓΑΠΗΜΕΝΩΝ ΤΑΞΙΔΙΩΝ</string>
@@ -575,5 +579,8 @@
    <string name="documents_empty_text">Τα έγγραφα δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή.</string>
 
    <string name="show_original">Δείξε αρχικό</string>
+   <string name="error_fail_to_translate_bucket_item">Η μετάφραση αντικειμένου καλαθιού απέτυχε</string>
+
    
+
 </resources>

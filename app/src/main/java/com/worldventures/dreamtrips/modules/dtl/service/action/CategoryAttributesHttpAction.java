@@ -9,7 +9,6 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-
 @HttpAction(value = "api/dtl/v2/attributes")
 public class CategoryAttributesHttpAction extends AuthorizedHttpAction {
 

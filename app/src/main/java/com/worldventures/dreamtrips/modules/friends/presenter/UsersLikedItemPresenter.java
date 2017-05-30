@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 
@@ -11,16 +12,16 @@ import rx.functions.Action1;
 
 public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListPresenter.View> {
 
-   private String entityUid;
+   private FeedEntity feedEntity;
 
    public UsersLikedItemPresenter(UsersLikedEntityBundle bundle) {
-      entityUid = bundle.getUid();
+      feedEntity = bundle.getFeedEntity();
    }
 
    @Override
    protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
       friendsInteractor.getLikersPipe()
-            .createObservable(new GetLikersCommand(entityUid, page, getPerPageCount()))
+            .createObservable(new GetLikersCommand(feedEntity, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetLikersCommand>()
                   .onSuccess(likersCommand -> onSuccessAction.call(likersCommand.getResult()))

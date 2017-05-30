@@ -35,9 +35,11 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
@@ -175,7 +177,23 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    private void onSuccessMerchantLoad(FullMerchantAction command) {
       getView().hideBlockingProgress();
-      navigateToDetails(command.getResult());
+      if (!command.getFromRating()) {
+         navigateToDetails(command.getResult());
+      } else {
+         if (!command.getResult().reviews().total().isEmpty() && Integer.parseInt(command.getResult().reviews().total()) > 0) {
+            navigateToRatingList(command.getResult());
+         } else {
+            navigateToCommentRating(command.getResult());
+         }
+      }
+   }
+
+   public void navigateToCommentRating(Merchant merchant) {
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+   }
+
+   public void navigateToRatingList(Merchant merchant) {
+      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
    }
 
    private boolean isNeedShowBlockingProgress(MerchantsAction action) {
@@ -184,7 +202,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private void navigateToDetails(Merchant merchant) {
-      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null);
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null, "");
       if (Flow.get(getContext()).getHistory().size() < 2) {
          Flow.get(getContext()).set(path);
       } else {

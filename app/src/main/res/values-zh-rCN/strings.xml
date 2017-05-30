@@ -66,7 +66,11 @@
    <string name="flag_description_positive">接受</string>
    <string name="flag_description_negative">取消</string>
    <string name="log_in">登录</string>
+   <string name="facebook_error_loading_albums">无法加载相册</string>
+   <string name="facebook_error_loading_photos">无法加载照片</string>
+   <string name="facebook_login_error">无法登录至Facebook</string>
    <string name="fab_posted">成功地发布至脸书</string>
+   <string name="facebook_posting_error">无法发布至Facebook</string>
    <string-array name="share_dialog_items">
       <item>脸书</item>
       <item>推特</item>
@@ -182,7 +186,7 @@
    <string name="selected">%1$d已选</string>
    <string name="email_is_not_valid">电子邮件无效</string>
    <string name="invitation_deselect_all">全部取消</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[你好%1$s ， %2$s<br/>一探究竟<a href=\"%3$s\">这里</a> 。]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[你好%1$s ， %2$s<br/>一探究竟这里 。<br/>%3$s\]]></string>
    <string name="invite_add_photo">添加照片</string>
    <string name="invite_select_first">首先选择联系人</string>
    <string name="filters_show_favorite">显示收藏的旅行</string>
@@ -535,6 +539,9 @@
    <string name="app_update_alert_title">更新可用</string>
    <string name="app_update_alert_neutral_button">不是现在</string>
    <string name="app_update_alert_pos_button">更新</string>
+   <string name="app_update_alert_optional_update_message">DreamTrips应用程序的软件更新已准备就绪。为获取更好的体验，请在%1$s前更新。</string>
+   <string name="app_update_alert_force_update_message">DreamTrips应用程序的软件更新已准备就绪。更新只需要几分钟的时间安装。</string>
+
    <string name="min">分钟</string>
    <string name="post_hint_with_hashtag">说些什么，添加#标签</string>
    <string name="add_text">添加文字</string>
@@ -572,5 +579,8 @@
    <string name="documents_empty_text">此次无法加载文件。</string>
 
    <string name="show_original">显示最初的</string>
+   <string name="error_fail_to_translate_bucket_item">翻译愿望清单失败</string>
+
    
+
 </resources>

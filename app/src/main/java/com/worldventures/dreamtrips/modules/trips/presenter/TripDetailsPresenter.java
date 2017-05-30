@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.BookItAction;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -99,8 +100,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    }
 
    public void actionBookIt() {
-      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), trip.getName());
-      //
+      analyticsInteractor.analyticsActionPipe().send(new BookItAction(trip.getTripId(), trip.getName()));
       String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
       view.openBookIt(url);
    }

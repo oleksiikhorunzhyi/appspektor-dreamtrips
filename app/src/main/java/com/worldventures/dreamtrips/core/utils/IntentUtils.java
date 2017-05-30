@@ -25,7 +25,11 @@ public class IntentUtils {
          intent.putExtra(Intent.EXTRA_BCC, addresses);
       }
       intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-      intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body,Html.FROM_HTML_MODE_LEGACY));
+      } else {
+         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
+      }
       return intent;
    }
 

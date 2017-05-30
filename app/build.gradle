@@ -21,6 +21,18 @@ repositories {
    maven { url 'http://dl.bintray.com/amulyakhare/maven' }
    maven { url "http://repository.jetbrains.com/all" }
    maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
+
+   flatDir {
+      dirs 'libs'
+   }
+}
+
+buildscript {
+   repositories {
+      flatDir {
+         dirs 'libs'
+      }
+   }
 }
 
 configurations.all {
@@ -34,9 +46,9 @@ android {
    def APPLICATION_PACKAGE_PROD = "com.worldventures.dreamtrips"
    // App version
    def versionMajor = 1
-   def versionMinor = 18
+   def versionMinor = 19
    def versionPatch = 0
-   def versionBuild = 5 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 7 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -180,7 +192,6 @@ android {
       dev {
          dimension "build"
          applicationIdSuffix = DEV_CODE
-         minSdkVersion 23
          ext.enableCrashlytics = false
          buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
          buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
@@ -403,7 +414,7 @@ tasks.whenTaskAdded { task ->
    }
 }
 
-def googleLibrariesVersion = '24.2.0'
+def googleLibrariesVersion = '25.2.0'
 def googlePlayServicesVersion = '10.2.0'
 def leakCanaryVersion = '1.3.1'
 def roboelectricVersion = '3.1.2'
@@ -413,7 +424,7 @@ dependencies {
    // Di
    compile 'com.squareup.dagger:dagger:1.2.2'
    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-   apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
+   apt files('libs/apt/dagger-proguard-helper-processor-1.0.1-SNAPSHOT.jar')
    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
    compile 'javax.annotation:jsr250-api:1.0'
    // janet
@@ -429,10 +440,12 @@ dependencies {
    compile 'de.greenrobot:eventbus:2.4.0'
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
+
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.19-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.33-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
+
    compile 'com.squareup.okhttp:okhttp:2.7.5'
    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.5.0'
@@ -478,7 +491,6 @@ dependencies {
    compile 'com.github.traex.expandablelayout:library:1.3'
    compile 'com.facebook.fresco:fresco:1.1.0'
    compile 'com.facebook.fresco:imagepipeline-okhttp:1.1.0'
-   compile 'com.facebook.fresco:animated-gif:1.1.0'
    compile "com.android.support:appcompat-v7:${googleLibrariesVersion}"
    compile "com.android.support:cardview-v7:${googleLibrariesVersion}"
    compile "com.android.support:recyclerview-v7:${googleLibrariesVersion}"
@@ -528,7 +540,7 @@ dependencies {
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
-   compile('com.github.techery:mappery:8675fb6') {
+   compile('com.github.techery:mappery:35aec77') {
       exclude group: "org.jetbrains.kotlin"
    }
    compile 'com.jaredrummler:android-device-names:1.1.2'
@@ -562,10 +574,12 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
-   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.18.1-SNAPSHOT', changing: true) {
+      exclude group: 'com.github.techery', module: 'mappery'
+   }
+
+   //FingerPrint Library
+   compile(name:'deviceprint-lib-release-2.3.3', ext:'aar')
 
    // Testing
    testCompile 'junit:junit:4.12'
@@ -586,4 +600,5 @@ dependencies {
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {
       exclude group: 'org.mockito', module: 'mockito-core'
    }
+
 }

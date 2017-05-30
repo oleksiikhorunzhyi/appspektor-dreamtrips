@@ -36,6 +36,10 @@ public class StateRecyclerView extends EmptyRecyclerView {
    }
 
    public void setup(Bundle savedInstanceState, BaseArrayListAdapter adapter) {
+      setup(savedInstanceState, adapter, new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    }
+
+   public void setup(Bundle savedInstanceState, BaseArrayListAdapter adapter, LinearLayoutManager linearLayoutManager) {
       this.adapter = adapter;
       setAdapter(this.adapter);
       //
@@ -43,7 +47,7 @@ public class StateRecyclerView extends EmptyRecyclerView {
       stateDelegate.onCreate(savedInstanceState);
       stateDelegate.setRecyclerView(this);
       //
-      layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+      layoutManager = linearLayoutManager;
       layoutManager.setAutoMeasureEnabled(true);
       setLayoutManager(layoutManager);
       //

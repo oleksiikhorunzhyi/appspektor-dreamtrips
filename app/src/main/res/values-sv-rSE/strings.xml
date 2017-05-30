@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Acceptera</string>
    <string name="flag_description_negative">Avbryt</string>
    <string name="log_in">Logga in</string>
+   <string name="facebook_error_loading_albums">Kunde inte ladda album</string>
+   <string name="facebook_error_loading_photos">Kunda inte ladda bilder</string>
+   <string name="facebook_login_error">Kunda inte logga in på Facebook</string>
    <string name="fab_posted">Publiceringen på Facebook har genomförts</string>
+   <string name="facebook_posting_error"> Kunda inte göra inlägg på Facebook </string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -182,7 +186,7 @@
    <string name="selected">Valt: %1$d</string>
    <string name="email_is_not_valid">Ogiltig e-postadress</string>
    <string name="invitation_deselect_all">Avmarkera alla</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det <a href=\"%3$s\">här</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det här.<br/>%3$s]]></string>
    <string name="invite_add_photo">Lägg till foto</string>
    <string name="invite_select_first">Välj kontakter först</string>
    <string name="filters_show_favorite">VISA FAVORITRESOR</string>
@@ -575,5 +579,8 @@
    <string name="documents_empty_text">Det gick inte att läsa in dokumenten just nu.</string>
 
    <string name="show_original">Visa ursprunglig</string>
+   <string name="error_fail_to_translate_bucket_item">Kunde inte översätta hinkobjektet</string>
+
    
+
 </resources>

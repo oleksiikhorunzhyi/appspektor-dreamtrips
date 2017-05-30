@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:visibility="gone"
+      >
+
+   <TextView
+         android:id="@+id/post"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="top"
+         android:hint="@string/post_hint_with_hashtag"
+         android:paddingBottom="@dimen/spacing_normal"
+         android:paddingLeft="@dimen/spacing_medium"
+         android:paddingRight="@dimen/spacing_medium"
+         android:paddingTop="@dimen/spacing_normal"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_normal"
+         />
+
+</LinearLayout>

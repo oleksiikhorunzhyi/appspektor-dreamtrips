@@ -23,7 +23,7 @@ import io.techery.mappery.MapperyContext;
 @CommandAction
 public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private VideoType videoType;

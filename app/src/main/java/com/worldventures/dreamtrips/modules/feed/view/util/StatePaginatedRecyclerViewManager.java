@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -28,9 +29,13 @@ public class StatePaginatedRecyclerViewManager {
 
    public void init(BaseArrayListAdapter adapter, Bundle savedInstanceState) {
       swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
-      //
       stateRecyclerView.setup(savedInstanceState, adapter);
-      //
+      paginationViewManager = new PaginationViewManager(stateRecyclerView);
+   }
+
+   public void init(BaseArrayListAdapter adapter, Bundle savedInstanceState, LinearLayoutManager linearLayoutManager) {
+      swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
+      stateRecyclerView.setup(savedInstanceState, adapter, linearLayoutManager);
       paginationViewManager = new PaginationViewManager(stateRecyclerView);
    }
 

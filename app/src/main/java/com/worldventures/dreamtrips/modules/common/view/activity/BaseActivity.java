@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.messenger.di.MessengerActivityModule;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -19,8 +18,10 @@ import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
@@ -43,6 +44,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public abstract class BaseActivity extends InjectingActivity {
@@ -50,10 +54,14 @@ public abstract class BaseActivity extends InjectingActivity {
    @Inject protected ActivityResultDelegate activityResultDelegate;
    @Inject protected BackStackDelegate backStackDelegate;
    @Inject protected AnalyticsInteractor analyticsInteractor;
+   @Inject protected LogoutInteractor logoutInteractor;
    @Inject protected PickImageDelegate pickImageDelegate;
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected Router router;
    @Inject protected ActivityRouter activityRouter;
+
+   // TODO Move here RX lifecycle composers from ActivityWithPresenter
+   private Subscription logoutSubscription;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,38 @@ public abstract class BaseActivity extends InjectingActivity {
       super.onCreate(savedInstanceState);
       analyticsInteractor.analyticsActionPipe()
             .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE), Schedulers.immediate());
+      subscribeToLogoutEvents();
+   }
+
+   private void subscribeToLogoutEvents() {
+      logoutSubscription = logoutInteractor.logoutPipe().observe()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<LogoutCommand>()
+               .onProgress((logoutCommand, integer) -> {
+                  // If possible don't wait until command finishes completely
+                  // as we don't show any blocking progress in UI currently
+                  if (logoutCommand.isUserDataCleared()) {
+                     unsubscribeFromLogoutEventsAndLaunchLogin();
+                  }
+               })
+               .onSuccess(logoutCommand -> unsubscribeFromLogoutEventsAndLaunchLogin()));
+   }
+
+   private void unsubscribeFromLogoutEventsAndLaunchLogin() {
+      unsubscribeFromLogoutEvents();
+      activityRouter.openLaunch();
+   }
+
+   private void unsubscribeFromLogoutEvents() {
+      if (logoutSubscription != null && !logoutSubscription.isUnsubscribed()) {
+         logoutSubscription.unsubscribe();
+      }
+   }
+
+   @Override
+   protected void onDestroy() {
+      super.onDestroy();
+      unsubscribeFromLogoutEvents();
    }
 
    @Override
@@ -147,10 +187,6 @@ public abstract class BaseActivity extends InjectingActivity {
       modules.add(new WalletActivityModule());
       modules.add(new VersionCheckActivityModule());
       return modules;
-   }
-
-   public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-      activityRouter.openLaunch();
    }
 
    @Override

@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class GetRegionsCommand extends Command<List<RegionModel>> implements InjectableAction, CachedAction<List<RegionModel>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private List<RegionModel> cachedData;

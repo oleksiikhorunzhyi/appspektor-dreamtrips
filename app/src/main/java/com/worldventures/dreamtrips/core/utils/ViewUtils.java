@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
+import com.worldventures.dreamtrips.R;
 
 public class ViewUtils {
 
@@ -185,5 +186,15 @@ public class ViewUtils {
 
    public static void setViewVisibility(int visibility, View... views) {
       Queryable.from(views).forEachR(view -> setViewVisibility(view, visibility));
+   }
+
+   public static String getLabelReviews(Context context, int totalReviews) {
+      return totalReviews == 1 ? String.format(context.getResources()
+            .getString(R.string.format_review_text), totalReviews) : String.format(context.getResources()
+            .getString(R.string.format_reviews_text), totalReviews);
+   }
+
+   public static String getStringById(Context context, @StringRes int text) {
+      return context.getResources().getString(text);
    }
 }

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.crashlytics.android.Crashlytics;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
+import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
@@ -66,22 +66,18 @@ public class ApiErrorPresenter {
    }
 
    private boolean handleJanetHttpError(Object action, Throwable exception) {
-      if ((action instanceof BaseHttpAction || action instanceof com.worldventures.dreamtrips.api.api_common.BaseHttpAction) && exception instanceof HttpServiceException) {
+      if ((action instanceof BaseHttpAction || action instanceof com.worldventures.dreamtrips.api.api_common.BaseHttpAction)
+            && exception instanceof HttpServiceException) {
          apiErrorView.onApiCallFailed();
 
-         ErrorResponse errorResponse;
-         if (action instanceof BaseHttpAction) {
-            errorResponse = ((BaseHttpAction) action).getErrorResponse();
-         } else {
-            errorResponse = new ErrorResponse();
-            com.worldventures.dreamtrips.api.api_common.error.ErrorResponse errorResponseNew = ((com.worldventures.dreamtrips.api.api_common.BaseHttpAction) action)
-                  .errorResponse();
-            if (errorResponseNew != null) errorResponse.setErrors(errorResponseNew.errors());
-         }
+         ErrorResponse errorResponse = new ErrorResponse();
+         com.worldventures.dreamtrips.api.api_common.error.ErrorResponse errorResponseNew = ((com.worldventures.dreamtrips.api.api_common.BaseHttpAction) action)
+               .errorResponse();
+         if (errorResponseNew != null) errorResponse.setErrors(errorResponseNew.errors());
 
          if (getCauseByType(IOException.class, exception.getCause()) != null) {
             apiErrorView.informUser(R.string.no_connection);
-         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors()
+         } else if (errorResponse.getErrors() != null && !errorResponse.getErrors()
                .isEmpty()) {
             logError(errorResponse);
             if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());

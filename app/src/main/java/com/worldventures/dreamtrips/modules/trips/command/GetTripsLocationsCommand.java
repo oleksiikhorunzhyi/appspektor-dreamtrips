@@ -29,7 +29,7 @@ import io.techery.mappery.MapperyContext;
 public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implements InjectableAction,
       CachedAction<List<Pin>> {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private String searchQuery;
@@ -62,6 +62,8 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
       return ImmutableGetTripsLocationsHttpAction.Params.builder()
             .durationMax(tripsFilterData.getMaxNights())
             .durationMin(tripsFilterData.getMinNights())
+            .priceMin(tripsFilterData.getMinPrice())
+            .priceMax(tripsFilterData.getMaxPrice())
             .liked(tripsFilterData.isShowFavorites())
             .soldOut(tripsFilterData.isShowSoldOut())
             .recentFirst(tripsFilterData.isShowRecentlyAdded())

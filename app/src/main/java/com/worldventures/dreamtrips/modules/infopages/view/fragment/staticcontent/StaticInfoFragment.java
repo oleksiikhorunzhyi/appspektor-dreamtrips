@@ -32,6 +32,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
@@ -420,15 +421,17 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    private void noInternetConnection() {
-      getPresenter().noInternetConnection();
-      offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand());
+      if (!Utils.isConnected(getContext())) {
+         getPresenter().noInternetConnection();
+         offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand());
+      }
    }
 
    private void cleanError() {
       if (getPresenter() != null) {
          getPresenter().setInErrorState(false);
       }
-      if (errorFragment != null) {
+      if (errorFragment != null && getActivity() != null) {
          getChildFragmentManager().beginTransaction().remove(errorFragment).commitAllowingStateLoss();
          errorFragment = null;
       }
@@ -478,7 +481,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    protected void lockOrientationIfNeeded() {
       lockHandler.postDelayed(() -> {
-         if (ViewUtils.isFullVisibleOnScreen(this)) {
+         if (ViewUtils.isFullVisibleOnScreen(this) && getActivity() != null) {
             lockHandler.postDelayed(() -> lockOrientation(getActivity()), 300L);
          } else {
             unlockOrientation(getActivity());

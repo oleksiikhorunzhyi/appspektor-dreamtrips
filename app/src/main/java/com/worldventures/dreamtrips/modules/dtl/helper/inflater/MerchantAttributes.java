@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Discla
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +57,7 @@ public abstract class MerchantAttributes implements Serializable {
    @Nullable public abstract List<MerchantMedia> images();
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract List<Disclaimer> disclaimers();
+   @Nullable public abstract ReviewSummary reviewSummary();
 
    @Value.Derived public boolean hasPoints() {
       return offersCount(OfferType.POINTS) > 0;

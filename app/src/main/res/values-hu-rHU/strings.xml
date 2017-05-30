@@ -66,7 +66,11 @@
    <string name="flag_description_positive">Elfogadás</string>
    <string name="flag_description_negative">Mégse</string>
    <string name="log_in">Bejelentkezés</string>
+   <string name="facebook_error_loading_albums">albumok betöltése sikertelen</string>
+   <string name="facebook_error_loading_photos">fotók betöltése sikertelen </string>
+   <string name="facebook_login_error">Facebook belépés sikertelen</string>
    <string name="fab_posted">Sikeresen elküldve a Facebookra</string>
+   <string name="facebook_posting_error">Facebook poszt sikertelen</string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -182,7 +186,7 @@
    <string name="selected">%1$d kiválasztva</string>
    <string name="email_is_not_valid">Az e-mail cím érvénytelen</string>
    <string name="invitation_deselect_all">Összes kijelölés törlése</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Üdv, %1$s! %2$s <br/>Nézze meg <a href=\"%3$s\">itt</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Üdv, %1$s! %2$s <br/>Nézze meg itt.<br/>%3$s]]></string>
    <string name="invite_add_photo">Fénykép hozzáadása</string>
    <string name="invite_select_first">Előbb válasszon kapcsolattartókat</string>
    <string name="filters_show_favorite">KEDVENC UTAK MEGJELENÍTÉSE</string>
@@ -575,5 +579,8 @@
    <string name="documents_empty_text">Dokumentumokat nem lehet betölteni jelenleg.</string>
 
    <string name="show_original">Eredeti mutatása</string>
+   <string name="error_fail_to_translate_bucket_item">Bakancslista tétel fordítása sikertelen</string>
+
    
+
 </resources>

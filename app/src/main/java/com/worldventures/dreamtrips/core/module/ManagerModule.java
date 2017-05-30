@@ -6,7 +6,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -130,9 +129,8 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   DtlTransactionInteractor provideDtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator) {
-      return new DtlTransactionInteractor(sessionActionPipeCreator, sessionApiActionPipeCreator);
+   DtlTransactionInteractor provideDtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new DtlTransactionInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

@@ -93,12 +93,13 @@
 
                <io.techery.properratingbar.ProperRatingBar
                      android:id="@+id/merchantPricing"
-                     style="?android:attr/ratingBarStyleSmall"
+                     style="@style/SmallRatingBar"
                      android:layout_alignParentBottom="true"
                      android:layout_alignParentEnd="true"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      app:prb_symbolicTick="$"
+                     android:theme="@style/SmallRatingBar"
                      app:prb_symbolicTickNormalColor="@color/grey"
                      app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
                      app:prb_totalTicks="4"
@@ -113,6 +114,38 @@
             android:layout_height="wrap_content"
             android:minHeight="40dp"
             >
+
+         <LinearLayout
+               android:id="@+id/layout_rating_reviews"
+               android:layout_width="@dimen/dtlMerchantCoverImageWidth"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:visibility="gone"
+               android:layout_marginTop="@dimen/spacing_small"
+               android:layout_marginBottom="@dimen/spacing_small">
+
+            <RatingBar
+                  android:id="@+id/ratingBarReviews"
+                  style="@style/SmallRatingBar"
+                  android:theme="@style/SmallRatingBar"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:isIndicator="true"
+                  android:numStars="5"
+                  android:rating="0"
+                  />
+            <TextView
+                  android:id="@+id/text_view_rating"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/to_be_first_reviews"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:textColor="@android:color/black"
+                  android:textSize="@dimen/dtl_no_reviews_dimen_nine"
+                  android:textStyle="bold"/>
+
+         </LinearLayout>
 
          <TextView
                android:id="@+id/view_points"

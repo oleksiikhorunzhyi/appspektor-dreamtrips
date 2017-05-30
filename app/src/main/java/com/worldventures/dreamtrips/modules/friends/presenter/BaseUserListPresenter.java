@@ -122,7 +122,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       if (!finishedLoadingAllData && !loading && lastVisible >= totalItemCount - 1) {
          view.startLoading();
          loading = true;
-         loadUsers(nextPage, this::onUsersAdded);
+         loadUsers(nextPage, nextPage == 1 ? this::onUsersLoaded : this::onUsersAdded);
       }
    }
 

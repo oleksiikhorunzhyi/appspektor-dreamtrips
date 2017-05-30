@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -15,7 +14,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -23,7 +21,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentableBundle;
@@ -35,7 +32,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
-import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
@@ -44,11 +40,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
 public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentableBundle> extends RxBaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
@@ -108,7 +102,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
       adapter = new BaseDelegateAdapter(getActivity(), this);
       adapter.registerCell(Comment.class, CommentCell.class);
-      adapter.registerCell(LoadMore.class, LoadMoreCell.class);
       adapter.registerDelegate(Comment.class, new CommentCell.CommentCellDelegate() {
          @Override
          public void onEditComment(Comment comment) {
@@ -140,6 +133,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
          }
       });
+      adapter.registerCell(LoadMore.class, LoadMoreCell.class);
+      adapter.registerDelegate(LoadMore.class, model -> getPresenter().onLoadMoreComments());
 
       loadMore = new LoadMore();
       loadMore.setVisible(false);
@@ -191,8 +186,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    public void setLikePanel(FeedEntity entity) {
       if (likersPanel == null || !getArgs().shouldShowLikersPanel()) return;
       likersPanelHelper.setup(likersPanel, entity);
-      likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity
-            .getUid(), entity.getLikesCount())));
+      likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
+            new UsersLikedEntityBundle(entity, entity.getLikesCount())));
    }
 
    @Override
@@ -306,14 +301,5 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    @Override
    public void flagSentSuccess() {
       informUser(R.string.flag_sent_success_msg);
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
    }
 }

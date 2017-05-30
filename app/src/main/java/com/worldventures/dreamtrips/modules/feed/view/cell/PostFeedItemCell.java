@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
@@ -41,6 +42,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_feed_post_event)
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>> {
@@ -55,26 +57,19 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Inject FragmentManager fragmentManager;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
-   private int width;
-
    public PostFeedItemCell(View view) {
       super(view);
-      itemView.post(() -> width = cardViewWrapper.getWidth());
    }
 
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
       PostFeedItem obj = getModelObject();
-      if (width > 0) {
-         itemView.setVisibility(View.VISIBLE);
+      ViewUtils.runTaskAfterMeasure(itemView, () -> {
          processAttachments(obj.getItem().getAttachments());
          processPostText(obj.getItem());
          processTranslations();
-      } else {
-         itemView.setVisibility(View.INVISIBLE);
-         itemView.post(this::syncUIStateWithModel);
-      }
+      });
    }
 
    private void processTranslations() {
@@ -146,7 +141,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
                openFeedItemDetails();
             }
          });
-         collageView.setItems(attachmentsToCollageItems(attachments), width);
+         collageView.setItems(attachmentsToCollageItems(attachments), cardViewWrapper.getWidth());
       } else {
          collageView.clear();
       }

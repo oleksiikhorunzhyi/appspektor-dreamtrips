@@ -18,7 +18,7 @@ public class RemoveFriendCommand extends CommandWithError<User> implements Injec
 
    private User user;
 
-   @Named(JanetModule.JANET_API_LIB) @Inject Janet janet;
+   @Inject Janet janet;
 
    public RemoveFriendCommand(User user) {
       this.user = user;

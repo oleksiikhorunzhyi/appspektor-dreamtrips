@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/reviews_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+   <RatingBar
+         android:id="@+id/ratingBar2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginRight="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_ten"
+         android:isIndicator="true"
+         android:numStars="5"
+         android:rating="0"
+         style="@style/SmallRatingBar"
+         android:theme="@style/SmallRatingBar"
+         />
+
+   <TextView
+         android:id="@+id/tv_Review"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="@dimen/dtl_all_reviews_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin"
+         android:text="@string/reviews_text"
+         android:textColor="@android:color/black"
+         android:textSize="@dimen/dtl_no_reviews_text"
+         android:textStyle="bold"
+         />
+
+   <TextView
+         android:id="@+id/tv_review_count"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/ratingBar2"
+         android:layout_alignStart="@+id/ratingBar2"
+         android:layout_below="@+id/ratingBar2"
+         android:layout_marginBottom="@dimen/dtl_all_reviews_margin_small"
+         android:layout_marginLeft="@dimen/dtl_review_small_margin"
+         android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
+         android:text="@string/without_reviews_text"
+         android:textColor="@android:color/black"
+         android:textSize="@dimen/dtl_no_reviews_dimen_nine"
+         android:textStyle="bold"
+         />
+
+</RelativeLayout>

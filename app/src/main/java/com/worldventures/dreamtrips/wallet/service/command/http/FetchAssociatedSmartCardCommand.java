@@ -34,7 +34,7 @@ import rx.Observable;
 @CommandAction
 public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmartCardCommand.AssociatedCard> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
    @Inject @Named(JanetModule.JANET_WALLET) Janet janetWallet;
 
    @Inject SystemPropertiesProvider propertiesProvider;

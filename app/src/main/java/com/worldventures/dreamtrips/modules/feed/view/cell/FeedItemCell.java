@@ -8,7 +8,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractCell;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -52,7 +51,6 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
       if (feedItemDetailsCell == null) {
          feedItemDetailsCell = createCell(item);
          cellContainer.addView(feedItemDetailsCell.itemView);
-         feedItemDetailsCell.setEventBus(getEventBus());
          feedItemDetailsCell.setCellDelegate(cellDelegate);
          injectorProvider.get().inject(feedItemDetailsCell);
          feedItemDetailsCell.afterInject();

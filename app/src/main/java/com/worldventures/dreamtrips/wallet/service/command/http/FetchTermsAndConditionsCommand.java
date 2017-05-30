@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndCondit
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -17,12 +16,10 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
-
 @CommandAction
 public class FetchTermsAndConditionsCommand extends Command<TermsAndConditions> implements InjectableAction, CachedAction<TermsAndConditions> {
 
-   @Inject @Named(JANET_API_LIB) Janet janet;
+   @Inject Janet janet;
 
    @Override
    protected void run(CommandCallback<TermsAndConditions> callback) throws Throwable {

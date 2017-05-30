@@ -28,7 +28,7 @@ public class UpdateProfileModule {
    @Provides
    @Singleton
    UpdateProfileManager updateProfileManager(
-         @Named(JanetModule.JANET_API_LIB) Janet janetApi,
+         Janet janetApi,
          @Named(JanetModule.JANET_WALLET) Janet janetWallet,
          UpdateDataHolder updateDataHolder) {
       return new UpdateProfileManager(janetApi, janetWallet, updateDataHolder);

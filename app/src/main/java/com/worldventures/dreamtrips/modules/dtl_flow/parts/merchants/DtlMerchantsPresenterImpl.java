@@ -6,7 +6,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
@@ -32,9 +35,12 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCom
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import java.util.List;
 
@@ -46,6 +52,7 @@ import flow.path.Path;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
@@ -55,10 +62,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
+   @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AttributesInteractor attributesInteractor;
 
    @State boolean initialized;
    @State FullMerchantParamsHolder actionParamsHolder;
+   @State boolean hasPendingReview;
 
    public DtlMerchantsPresenterImpl(Context context, Injector injector) {
       super(context);
@@ -196,7 +205,15 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
-      navigateToDetails(action.getResult(), action.getOfferId());
+      if (!action.getFromRating()) {
+         navigateToDetails(action.getResult(), action.getOfferId());
+      } else {
+         if (!action.getResult().reviews().total().isEmpty() && Integer.parseInt(action.getResult().reviews().total()) > 0) {
+            navigateToRatingList(action.getResult());
+         } else {
+            navigateToCommentRating(action.getResult());
+         }
+      }
    }
 
    protected void onProgressMerchantLoad(CommandWithError<Merchant> action, Integer progress) {
@@ -223,6 +240,16 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void loadAmenities(List<String> merchantType) {
       attributesInteractor.requestAmenities(merchantType);
+   }
+
+   @Override
+   public void sendToRatingReview(ThinMerchant merchant) {
+      loadMerchant(merchant, null, true);
+   }
+
+   @Override
+   public void setMerchantType(List<String> merchantType) {
+      filterDataInteractor.searchMerchantType(merchantType);
    }
 
    @Override
@@ -262,7 +289,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    @Override
    public void onOfferClick(ThinMerchant dtlMerchant, Offer offer) {
-      loadMerchant(dtlMerchant, offer.id());
+      loadMerchant(dtlMerchant, offer.id(), false);
    }
 
    @Override
@@ -289,12 +316,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(MerchantFromSearchEvent::new)
             .subscribe(this::sendAnalyticsAction);
 
-      loadMerchant(merchant, null);
+      loadMerchant(merchant, null, false);
    }
 
-   private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId) {
+   private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId, boolean fromRating) {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
-      fullMerchantInteractor.load(merchant.id(), expandedOfferId);
+      fullMerchantInteractor.load(merchant.id(), merchant.reviewSummary(), expandedOfferId, fromRating);
    }
 
    private void onEmptyMerchantsLoaded() {
@@ -319,7 +346,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    public void navigateToDetails(Merchant merchant, String id) {
       List<String> expandIds = MerchantHelper.buildExpandedOffersIds(id);
-      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, expandIds);
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, expandIds, "");
       if (Flow.get(getContext()).getHistory().size() < 2) {
          Flow.get(getContext()).set(path);
       } else {
@@ -328,6 +355,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
          historyBuilder.push(path);
          Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
       }
+   }
+
+   public void navigateToCommentRating(Merchant merchant) {
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+   }
+
+   public void navigateToRatingList(Merchant merchant) {
+      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
    }
 
    protected void sendAnalyticsAction(DtlAnalyticsAction action) {

@@ -65,7 +65,7 @@ public class CardListStackConverter {
                               loadedCard.recordType().name(),
                               isCardDefault(defaultCardId, loadedCard),
                               utils.obtainShortCardNumber(loadedCard.numberLastFourDigits()),
-                              loadedCard.cardHolderFirstName(),
+                              WalletRecordUtil.fetchFullName(loadedCard),
                               utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
                               utils.goodThrough(loadedCard.expDate()),
                               index % 2 == 0

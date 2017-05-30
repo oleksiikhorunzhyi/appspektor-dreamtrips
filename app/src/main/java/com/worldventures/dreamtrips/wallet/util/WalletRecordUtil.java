@@ -12,6 +12,7 @@ import android.text.style.StyleSpan;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
@@ -159,9 +160,11 @@ public class WalletRecordUtil {
    }
 
    public static String fetchFullName(Record card) {
-      return card.cardHolderFirstName()
-            + (!TextUtils.isEmpty(card.cardHolderMiddleName()) ? (" " + card.cardHolderMiddleName()) : "")
-            + " " + card.cardHolderLastName();
+      return String.format("%s %s", card.cardHolderFirstName(),
+            (ProjectTextUtils.isEmpty(card.cardHolderMiddleName()) ?
+                  card.cardHolderLastName() :
+                  String.format("%s %s", card.cardHolderMiddleName(), card.cardHolderLastName()))
+      );
    }
 
    public static boolean validationMandatoryFields(String number, String address1, String city, String zipCode, String state, String cvv) {

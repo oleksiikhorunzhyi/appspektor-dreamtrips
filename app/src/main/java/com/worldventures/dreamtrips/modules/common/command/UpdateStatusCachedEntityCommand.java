@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.command;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class UpdateStatusCachedEntityCommand extends Command<List<VideoCategory>
       Observable.just(videoCategories)
             .map(categories -> {
                Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
-                  CachedEntity e = db.getDownloadMediaEntity(video.getUid());
+                  CachedModel e = db.getDownloadMediaModel(video.getUid());
                   video.setCacheEntity(e);
                }));
                return categories;

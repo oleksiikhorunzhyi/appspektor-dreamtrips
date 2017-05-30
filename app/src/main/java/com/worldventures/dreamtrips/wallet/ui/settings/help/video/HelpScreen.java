@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
 
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
@@ -21,11 +21,11 @@ public interface HelpScreen extends WalletScreen {
 
    OperationView<GetVideoLocalesCommand> provideOperationLoadLanguages();
 
-   void confirmCancelDownload(CachedEntity entity);
+   void confirmCancelDownload(CachedModel entity);
 
-   void confirmDeleteVideo(CachedEntity entity);
+   void confirmDeleteVideo(CachedModel entity);
 
-   void notifyItemChanged(CachedEntity cachedEntity);
+   void notifyItemChanged(CachedModel cachedEntity);
 
    List<Video> getCurrentItems();
 

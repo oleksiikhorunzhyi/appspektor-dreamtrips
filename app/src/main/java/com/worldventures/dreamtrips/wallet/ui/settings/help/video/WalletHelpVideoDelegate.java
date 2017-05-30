@@ -7,11 +7,12 @@ import android.net.Uri;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,8 +56,8 @@ public class WalletHelpVideoDelegate {
       return Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase();
    }
 
-   String getPathForCache(final CachedEntity entity) {
-      return CachedEntity.getFilePath(context, entity.getUrl());
+   String getPathForCache(final CachedModel entity) {
+      return getFilePath(entity.getUrl());
    }
 
    String obtainVideoLanguage(final Video video) {
@@ -64,10 +65,10 @@ public class WalletHelpVideoDelegate {
    }
 
    void playVideo(final Video video) {
-      CachedEntity videoEntity = video.getCacheEntity();
+      CachedModel videoEntity = video.getCacheEntity();
       Uri parse = Uri.parse(video.getVideoUrl());
-      if (videoEntity.isCached(context)) {
-         parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
+      if (isCached(videoEntity)) {
+         parse = Uri.parse(getFilePath(videoEntity.getUrl()));
       }
 
       Intent intent = new Intent(context, PlayerActivity.class).setData(parse)
@@ -81,7 +82,7 @@ public class WalletHelpVideoDelegate {
       return lastVideoLocale == null || videoLocale.equals(lastVideoLocale);
    }
 
-   void processCachingState(final CachedEntity cachedEntity, final HelpScreen view) {
+   void processCachingState(final CachedModel cachedEntity, final HelpScreen view) {
       Queryable.from(view.getCurrentItems())
             .notNulls()
             .filter(video -> video.getCacheEntity().getUuid().equals(cachedEntity.getUuid()))
@@ -111,5 +112,17 @@ public class WalletHelpVideoDelegate {
 
    public VideoLanguage getDefaultLanguageFromLastLocales() {
       return getDefaultLanguage(lastVideoLocale);
+   }
+
+   private boolean isCached(CachedModel cachedModel) {
+      return new File(getFilePath(cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
+   }
+
+   private String getFilePath(String url) {
+      return context.getFilesDir().getPath() + File.separator + getFileName(url);
+   }
+
+   private String getFileName(String url) {
+      return url.substring(url.lastIndexOf("/") + 1);
    }
 }

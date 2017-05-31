@@ -23,6 +23,7 @@ public class ReviewsConverter implements Converter<com.worldventures.dreamtrips.
    public Reviews convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.Reviews reviews) {
       return ImmutableReviews.builder()
             .total(reviews.total())
+            .userHasPendingReview(reviews.userHasPendingReview())
             .ratingAverage(reviews.ratingAverage())
             .reviews(reviews.reviews() != null ? mapperyContext.convert(reviews.reviews(), Review.class) : null)
             .reviewSettings(reviews.reviewSettings() != null ? mapperyContext.convert(reviews.reviewSettings(), ReviewSettings.class) : null)

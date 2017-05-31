@@ -162,8 +162,10 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
     * (there are complications to add createdAt in feed on server as well)
     */
    private void copyCreatedAtFromUploadedPhotos(PostCompoundOperationModel postOperationModel) {
+      if (postOperationModel.body().uploadedPhotos() == null) return;
       for (Photo photo : postOperationModel.body().uploadedPhotos()) {
          List<Photo> addedPhotos = Queryable.from((postOperationModel.body().createdPost()).getAttachments())
+               .filter(holder -> holder.getItem() instanceof Photo)
                .map(holder -> (Photo) holder.getItem())
                .toList();
          for (Photo addedPhoto : addedPhotos) {

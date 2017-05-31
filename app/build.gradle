@@ -161,6 +161,19 @@ android {
    dataBinding{
       enabled = true
    }
+
+   sourceSets {
+      smartcardnxtid {
+         test.java.srcDirs += 'src/testSmartCardMock/java'
+      }
+      smartcardmock {
+         test.java.srcDirs += 'src/testSmartCardMock/java'
+      }
+      social {
+         test.java.srcDirs += 'src/testSocial/java'
+      }
+   }
+
 }
 
 // disable new relic for non-release tasks

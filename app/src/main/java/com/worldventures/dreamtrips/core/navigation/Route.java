@@ -54,6 +54,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedback
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -125,7 +126,7 @@ public enum Route {
    MEMBERSHIP(MembershipFragment.class),
    TRAINING_VIDEOS(TrainingVideosFragment.class),
    ENROLL_MEMBER(EnrollMemberFragment.class, R.string.enroll_member),
-   ENROLL_MERCHANT(StaticInfoFragment.EnrollMerchantFragment.class, R.string.suggest_merchant_title),
+   ENROLL_MERCHANT(EnrollMerchantFragment.class, R.string.suggest_merchant_title),
    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
    INVITE(InviteFragment.class),
    EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),

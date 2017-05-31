@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.wallet.domain.entity.record;
 
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
-
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -48,11 +45,6 @@ public abstract class Record {
    }
 
    @Value.Default
-   public AddressInfo addressInfo() {
-      return ImmutableAddressInfo.builder().build();
-   }
-
-   @Value.Default
    public String bankName() {
       return "";
    }
@@ -75,6 +67,11 @@ public abstract class Record {
 
    @Nullable
    public abstract String track3();
+
+   @Value.Default
+   public String version() { // TODO: 12/6/16 remove to cardName
+      return "";
+   }
 
    @Override
    public boolean equals(Object obj) {

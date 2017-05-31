@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -77,7 +76,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       observePickerAndCropper(view);
       subscribePreparingAvatarCommand();
       subscribeSetupUserCommand();
-      fetchAndStoreDefaultAddress();
 
       User userProfile = appSessionHolder.get().get().getUser();
       view.setUserFullName(userProfile.getFirstName(), userProfile.getLastName());
@@ -181,11 +179,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
          return false;
       }
       return true;
-   }
-
-   private void fetchAndStoreDefaultAddress() {
-      wizardInteractor
-            .fetchAndStoreDefaultAddressInfoPipe().send(new FetchAndStoreDefaultAddressInfoCommand());
    }
 
    public interface Screen extends WalletScreen {

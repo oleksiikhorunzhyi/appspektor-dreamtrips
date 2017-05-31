@@ -150,17 +150,17 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
          throw new IllegalArgumentException("Branch is not supported")
    }
 
+   def buildArgs = [:]
    if (isInternalOnly) {
       if (!env.FORCED_SERVER_FLAVOR.isEmpty()) params.serverFlavor = env.FORCED_SERVER_FLAVOR
       if (!env.FORCED_STREAM_FLAVOR.isEmpty()) params.streamFlavor = env.FORCED_STREAM_FLAVOR
       if (!env.FORCED_APK_BUILD_TYPE.isEmpty()) params.apkBuildType = env.FORCED_APK_BUILD_TYPE
+      if (!env.FORCED_API_ENDPOINT.isEmpty()) buildArgs << [api_endpoint: env.FORCED_API_ENDPOINT]
+      if (!env.FORCED_API_UPLOADERY.isEmpty()) buildArgs << [api_uploadery: env.FORCED_API_UPLOADERY]
       if (params.serverFlavor == 'Integration') params.streamFlavor = 'Stable'
+      //
+      if (Boolean.valueOf(env.QA_AUTOMATION_MODE)) buildArgs << [qa_automation_mode: 'true']
    }
-
-   def buildArgs = [:]
-   if (Boolean.valueOf(env.QA_AUTOMATION_MODE)) buildArgs << [qa_automation_mode: 'true']
-   if (!env.FORCED_API_ENDPOINT.isEmpty()) buildArgs << [api_endpoint: env.FORCED_API_ENDPOINT]
-   if (!env.FORCED_API_UPLOADERY.isEmpty()) buildArgs << [api_uploadery: env.FORCED_API_UPLOADERY]
    params.buildArgs = buildArgs.collect { key, value -> "-P${key}=${value}" }.join(' ')
 
 

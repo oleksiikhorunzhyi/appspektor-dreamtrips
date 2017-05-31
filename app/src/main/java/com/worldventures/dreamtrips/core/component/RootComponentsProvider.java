@@ -47,7 +47,7 @@ public class RootComponentsProvider {
    }
 
    public ComponentDescription getComponentByFragment(Class<? extends Fragment> fragmentClass) {
-      return Queryable.from(activeComponents).firstOrDefault(c -> c.getFragmentClass().equals(fragmentClass));
+      return Queryable.from(activeComponents).firstOrDefault(c -> fragmentClass.equals(c.getFragmentClass()));
    }
 
    public ComponentDescription getComponent(FragmentManager fm) {

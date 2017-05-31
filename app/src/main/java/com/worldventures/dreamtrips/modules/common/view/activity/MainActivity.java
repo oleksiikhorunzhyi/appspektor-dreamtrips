@@ -66,7 +66,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
    @Inject DrawerOpenedEventDelegate drawerOpenedEventDelegate;
 
    @State ComponentDescription currentComponent;
-   @State boolean toolbarGone;
    @State int defaultActionBarContentInset;
 
    private NavigationDrawerPresenter navigationDrawerPresenter;
@@ -79,7 +78,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
    @Override
    protected void onResume() {
       super.onResume();
-      makeActionBarGone(toolbarGone);
+      makeActionBarGone(currentComponent.isSkipGeneralToolbar());
    }
 
    @Override
@@ -162,7 +161,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
    @Override
    public void makeActionBarGone(boolean hide) {
-      this.toolbarGone = hide;
       if (hide) {
          toolbar.setVisibility(View.GONE);
       } else {

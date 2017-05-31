@@ -107,7 +107,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void restoreInstanceState(Bundle savedState) {
       super.restoreInstanceState(savedState);
-      if (savedState == null) feedItems = new ArrayList<>();
+      if (savedState == null || feedItems == null) feedItems = new ArrayList<>();
       filterCircle = db.getFilterCircle();
       if (filterCircle == null) filterCircle = createDefaultFilterCircle();
    }

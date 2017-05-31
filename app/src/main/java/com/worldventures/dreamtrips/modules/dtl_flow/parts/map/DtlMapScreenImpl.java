@@ -140,21 +140,20 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void updateMerchantType(List<String> type) {
-        int idResource = 0;
-
-       if (type != null ) {
-          if (type.size() > 1) {
-             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
-                filterFood.setSelected(true);
-                idResource = R.string.dtlt_search_hint;
-             }
-          } else {
+       int idResource = R.string.dtlt_search_hint;
+       if (type != null && type.size() > 0) {
+          if (type.size() == 1) {
              if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
                 filterEntertainment.setSelected(true);
                 idResource = R.string.filter_merchant_entertainment;
              } else if (type.get(0).equals(FilterData.SPAS)) {
                 filterSpa.setSelected(true);
                 idResource = R.string.filter_merchant_spa;
+             }
+          } else {
+             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
+                filterFood.setSelected(true);
+                idResource = R.string.dtlt_search_hint;
              }
           }
        }

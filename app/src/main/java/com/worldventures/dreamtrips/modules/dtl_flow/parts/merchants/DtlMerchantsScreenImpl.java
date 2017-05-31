@@ -461,7 +461,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
       updateFiltersView(stringResource);
-      getPresenter().setMerchantType(merchantType);
+      getPresenter().setMerchantType(merchantType, getActivity().getString(stringResource));
       getPresenter().loadAmenities(merchantType);
    }
 }

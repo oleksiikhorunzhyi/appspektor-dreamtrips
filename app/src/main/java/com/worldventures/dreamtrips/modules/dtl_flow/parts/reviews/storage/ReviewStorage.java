@@ -32,7 +32,7 @@ public class ReviewStorage {
 
     private static String[] getReviewsPosted(Context context, String idUser) {
         Gson gson = new Gson();
-        String json = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString(idUser, null);
+        String json = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString(idUser, "[]");
         return gson.fromJson(json, String[].class);
     }
 

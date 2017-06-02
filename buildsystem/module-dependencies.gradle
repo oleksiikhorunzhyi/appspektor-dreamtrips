@@ -56,6 +56,7 @@ ext {
          kryo               : [c: 'com.esotericsoftware.kryo:kryo:2.24.0'],
          objenesis          : [c: 'org.objenesis:objenesis:2.5'],
          icepick            : [c: 'frankiesardo:icepick:3.2.0'],
+         icepickProcessor   : [a: 'frankiesardo:icepick-processor:3.2.0'],
          dbflow             : [c: "com.raizlabs.android:DBFlow:$dbflowVersion"],
          dbflowCore         : [c: "com.raizlabs.android:DBFlow-Core:$dbflowVersion"],
          dbflowCompiler     : [a: "com.raizlabs.android:DBFlow-Compiler:$dbflowVersion"],

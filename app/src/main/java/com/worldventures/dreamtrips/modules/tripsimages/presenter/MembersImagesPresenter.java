@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -79,9 +80,16 @@ public class MembersImagesPresenter extends MembersImagesBasePresenter<GetMember
       if (loading || uploading) return;
       int newPhotosCount = Queryable.from(newPhotos).filter(photo -> !photos.contains(photo)).count();
       if (newPhotosCount > 0) {
+         String newImagesString;
          String photosCountString = String.valueOf(newPhotosCount);
-         if (newPhotosCount >= getPageSize()) photosCountString+="+";
-         view.showNewImagesButton(photosCountString);
+         if (newPhotosCount >= getPageSize()) {
+            newImagesString = context.getString(R.string.member_images_new_items_plus, photosCountString);
+         } else if (newPhotosCount == 1) {
+            newImagesString = context.getString(R.string.member_images_new_item, photosCountString);
+         } else {
+            newImagesString = context.getString(R.string.member_images_new_items, photosCountString);
+         }
+         view.showNewImagesButton(newImagesString);
       }
    }
 
@@ -106,7 +114,7 @@ public class MembersImagesPresenter extends MembersImagesBasePresenter<GetMember
 
    public void onShowNewImagesClick() {
       List<Photo> lastPhotos = memberImagesRefresher.getLastPhotos();
-      if(lastPhotos.size() < getPageSize()) {
+      if (lastPhotos.size() < getPageSize()) {
          photos.addAll(0, lastPhotos);
          view.addAll(0, new ArrayList<>(lastPhotos));
          restartImageRefreshing();

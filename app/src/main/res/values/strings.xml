@@ -30,7 +30,9 @@
    <string name="smth_went_wrong">Something went wrong =(</string>
    <string name="inspire_me">Inspire Me</string>
    <string name="three_sixty">360 Experience</string>
+   <string name="member_images_new_item">%s New Item</string>
    <string name="member_images_new_items">%s New Items</string>
+   <string name="member_images_new_items_plus">%s+ New Items</string>
    <string name="book_it">Book It!</string>
    <string name="reload_trip_details">Reload Trip Details</string>
    <string name="user_id_hint">WV Member Id</string>

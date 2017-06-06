@@ -124,7 +124,7 @@ public abstract class MembersImagesBasePresenter<C extends CommandWithTripImages
 
       void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList);
 
-      void showNewImagesButton(String newImagesCount);
+      void showNewImagesButton(String newImagesString);
 
       void hideNewImagesButton();
    }

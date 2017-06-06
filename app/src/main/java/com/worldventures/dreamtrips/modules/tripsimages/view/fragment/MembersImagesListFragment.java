@@ -115,9 +115,9 @@ public class MembersImagesListFragment<P extends MembersImagesBasePresenter> ext
    }
 
    @Override
-   public void showNewImagesButton(String newImagesCount) {
+   public void showNewImagesButton(String newImagesCountString) {
       newImagesButton.setVisibility(View.VISIBLE);
-      newImagesButton.setText(getString(R.string.member_images_new_items, newImagesCount));
+      newImagesButton.setText(newImagesCountString);
    }
 
    @Override

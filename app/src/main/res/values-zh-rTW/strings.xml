@@ -29,6 +29,9 @@
    <string name="smth_went_wrong">出了錯=（</string>
    <string name="inspire_me">激勵我</string>
    <string name="three_sixty">360體驗</string>
+   <string name="member_images_new_item">%1$s 新項目</string>
+   <string name="member_images_new_items">%1$s 新項目</string>
+   <string name="member_images_new_items_plus">%1$s+新項目</string>
    <string name="book_it">預訂！</string>
    <string name="reload_trip_details">刷新行程詳細信息</string>
    <string name="user_id_hint">WV會員號碼</string>
@@ -581,6 +584,7 @@
    <string name="show_original">顯示最初的</string>
    <string name="error_fail_to_translate_bucket_item">翻譯願望清單失敗</string>
 
-   
+   <string name="n_friends_accepted">%1$d朋友請求已接受。</string>
+   <string name="friends_will_appear_momentarily">他們馬上將出現在我的朋友列表。</string>
 
 </resources>

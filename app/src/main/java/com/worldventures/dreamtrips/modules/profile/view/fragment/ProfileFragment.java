@@ -77,15 +77,15 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void onStop() {
-      super.onStop();
-      fragmentWithFeedDelegate.resetTranslatedStatus();
+   public void onPause() {
+      super.onPause();
+      setToolbarAlpha(100);
    }
 
    @Override
-   public void onDestroyView() {
-      setToolbarAlpha(100);
-      super.onDestroyView();
+   public void onStop() {
+      super.onStop();
+      fragmentWithFeedDelegate.resetTranslatedStatus();
    }
 
    @Override

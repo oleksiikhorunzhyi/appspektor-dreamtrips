@@ -61,7 +61,10 @@ public class OrientationUtil {
     * Unlocks the device window in user defined screen mode.
     */
    public static void unlockOrientation(Activity activity) {
-      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+      //TODO Release 1.18, 1.19 top-3 issue, find root cause in 1.21
+      if (activity != null) {
+         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+      }
    }
 
 }

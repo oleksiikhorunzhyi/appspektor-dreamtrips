@@ -98,7 +98,8 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
             bucketInteractor.deleteItemPipe().observeSuccess()
                   .map(DeleteBucketItemCommand::getResult)
-                  .map(this::updateItemOperation),
+                  .map(this::createFeedItem)
+                  .map(ListStorageOperationFactory::deleteItemOperation),
 
             friendsInteractor.getLikersPipe().observeSuccess()
                   .map(GetLikersCommand::getFeedEntity)

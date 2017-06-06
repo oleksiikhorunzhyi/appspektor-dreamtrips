@@ -37,6 +37,10 @@ public class TripsFilterData implements Serializable {
    private List<ActivityModel> allParentActivities = new ArrayList<>();
 
    public TripsFilterData() {
+      reset();
+   }
+
+   public void reset() {
       maxPrice = MAX_PRICE;
       minPrice = MIN_PRICE;
       maxNights = MAX_NIGHTS;

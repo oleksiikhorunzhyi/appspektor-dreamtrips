@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.modules.video.model.Status;
 
 import java.io.File;
 
@@ -27,6 +28,7 @@ public class DeleteCachedModelCommand extends CachedEntityCommand implements Inj
    protected void run(CommandCallback<CachedModel> callback) throws Throwable {
       file.delete();
       cachedModel.setProgress(0);
+      cachedModel.setCacheStatus(Status.INITIAL);
       db.saveDownloadMediaModel(cachedModel);
       callback.onSuccess(cachedModel);
    }

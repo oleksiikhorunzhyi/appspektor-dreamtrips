@@ -34,6 +34,7 @@ public class CachedEntityDelegate {
             -> element.getCachedModel().getUuid().equals(cachedModel.getUuid()));
       if (command != null) {
          cachedEntityInteractor.getDownloadCachedModelPipe().cancel(command);
+         downloadFileCommandList.remove(command);
       }
       deleteCache(cachedModel, path);
    }

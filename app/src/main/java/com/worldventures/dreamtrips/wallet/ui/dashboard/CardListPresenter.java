@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
 import android.view.View;
@@ -226,15 +227,18 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
     * Create transition animation model which contains coordinates of\
     * transition view, its overlap rate and background
     *
-    * @param view           transition view itself
-    * @param overlap        overlap rate (used in ItemDecorator {@see OverlapDecoration}
-    * @param cardBackGround true for blue background, false for dark blue
+    * @param view                transition view itself
+    * @param overlap             overlap rate (used in ItemDecorator {@see OverlapDecoration}
+    * @param cardBackGroundResId
+    * @param defaultCard         true if card is default
     * @return {@see TransitionModel}
     */
-   public TransitionModel getCardPosition(View view, int overlap, boolean cardBackGround) {
+   public TransitionModel getCardPosition(View view, int overlap, @DrawableRes int cardBackGroundResId,
+         boolean defaultCard) {
       int[] position = new int[2];
       view.getLocationOnScreen(position);
-      return new TransitionModel(position[0], position[1], view.getWidth(), view.getHeight(), overlap, cardBackGround);
+      return new TransitionModel(defaultCard, position[0], position[1], view.getWidth(), view.getHeight(), overlap,
+            cardBackGroundResId);
    }
 
    void cardClicked(String recId, TransitionModel transitionModel) {

@@ -58,4 +58,6 @@
    <color name="wallet_settings_feedback_message_stroke">#76b2fe</color>
    <color name="wallet_settings_feedback_line_divider">#76b2fe</color>
 
+   <color name="wallet_default_card_text">#006ca2</color>
+
 </resources>

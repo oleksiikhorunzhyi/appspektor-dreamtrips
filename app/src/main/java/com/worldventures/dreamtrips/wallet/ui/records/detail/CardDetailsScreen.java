@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -272,12 +273,15 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       if (transitionModel != null) {
 
          setUpViewPosition(transitionModel, bankCardWidget);
-         bankCardWidget.setBankCardHolder(transitionModel.isBackground()
-               ? R.drawable.background_card_blue
-               : R.drawable.background_card_dark_blue);
+         bankCardWidget.setBackground(ContextCompat.getDrawable(getContext(), transitionModel.getBackground()));
 
          bankCardWidget.setVisibility(View.VISIBLE);
          controlsLayout.setAlpha(0);
+
+         if (transitionModel.isDefaultCard()) {
+            bankCardWidget.animateCardFromDefault(ContextCompat.getDrawable(getContext(),
+                  transitionModel.getBackground()), (int) CARD_TRANSITION_DURATION);
+         }
 
          bankCardWidget
                .animate()

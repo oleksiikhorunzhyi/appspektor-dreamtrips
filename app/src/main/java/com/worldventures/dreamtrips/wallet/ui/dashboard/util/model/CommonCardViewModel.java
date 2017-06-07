@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
 
 import android.databinding.BindingAdapter;
+import android.support.annotation.DrawableRes;
 import android.view.View;
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.HolderTypeFactory;
 
@@ -19,10 +19,11 @@ public class CommonCardViewModel extends BaseViewModel {
    private String cardHolderName;
    private CharSequence cardLastDigitsLong;
    private CharSequence goodThrough;
-   private boolean cardBackGround;
+   private @DrawableRes int cardBackGround;
 
-   public CommonCardViewModel(String recordId, CharSequence cardName, StackType cardType, String cardTypeName, boolean defaultCard, CharSequence cardLastDigitsShort,
-         String cardHolderName, CharSequence cardLastDigitsLong, CharSequence goodThrough, boolean cardBackGround) {
+   public CommonCardViewModel(String recordId, CharSequence cardName, StackType cardType, String cardTypeName,
+         boolean defaultCard, CharSequence cardLastDigitsShort, String cardHolderName,
+         CharSequence cardLastDigitsLong, CharSequence goodThrough, @DrawableRes int cardBackGround) {
       this.recordId = recordId;
       this.cardName = cardName;
       this.cardType = cardType;
@@ -71,15 +72,14 @@ public class CommonCardViewModel extends BaseViewModel {
       return goodThrough;
    }
 
-   public boolean isCardBackGround() {
+   public int getCardBackGround() {
       return cardBackGround;
    }
 
    @BindingAdapter({"bind:cardBackground"})
-   public static void getCardBackground(View view, boolean backGround) {
-      view.setBackgroundResource(backGround ? R.drawable.background_card_blue : R.drawable.background_card_dark_blue);
+   public static void getCardBackground(View view, @DrawableRes int backGround) {
+      view.setBackgroundResource(backGround);
    }
-
 
    @Override
    public int type(HolderTypeFactory typeFactory) {

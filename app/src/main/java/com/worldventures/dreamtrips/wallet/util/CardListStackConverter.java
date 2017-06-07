@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CardGroupHeaderModel;
@@ -68,8 +69,15 @@ public class CardListStackConverter {
                               WalletRecordUtil.fetchFullName(loadedCard),
                               utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
                               utils.goodThrough(loadedCard.expDate()),
-                              index % 2 == 0
+                              getCardBackGroundResId(defaultCardId, loadedCard)
                         );
+   }
+
+   private int getCardBackGroundResId(String defaultCardId, Record loadedCard) {
+      if (defaultCardId.equals(loadedCard.id())) {
+         return R.drawable.background_card_transition;
+      }
+      return index % 2 == 0 ? R.drawable.background_card_dark_blue : R.drawable.background_card_blue;
    }
 
    private CommonCardViewModel.StackType setCardType(String name) {

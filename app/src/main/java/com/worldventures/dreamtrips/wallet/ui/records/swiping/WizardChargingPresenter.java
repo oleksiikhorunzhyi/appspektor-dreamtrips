@@ -35,6 +35,7 @@ import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 
+// TODO: 5/30/17 Create task and refactor both screen and presenter, it's ugly and error handling is a joke
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;

@@ -34,12 +34,6 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
             .subscribe(command -> reportNoConnection());
    }
 
-   @Override
-   public void dropView() {
-      eventBus.removeAllStickyEvents();
-      super.dropView();
-   }
-
    public interface View extends Presenter.View {
 
       void setSelection(int selection);

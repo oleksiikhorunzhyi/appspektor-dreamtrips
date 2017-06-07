@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
-import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.GsonAdaptersRecord;
 
@@ -59,7 +58,6 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
             //smartcard flow
             .registerTypeAdapterFactory(new GsonAdaptersRecord())
-            .registerTypeAdapterFactory(new GsonAdaptersAddressInfo())
             .registerTypeAdapterFactory(new GsonAdaptersRecordIssuerInfo())
             .create();
    }

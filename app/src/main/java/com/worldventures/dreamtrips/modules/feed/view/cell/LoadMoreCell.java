@@ -4,15 +4,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_more_comments)
-public class LoadMoreCell extends AbstractCell<LoadMore> {
+public class LoadMoreCell extends AbstractDelegateCell<LoadMore, CellDelegate<LoadMore>> {
 
    @InjectView(R.id.caption) TextView caption;
 
@@ -22,9 +22,7 @@ public class LoadMoreCell extends AbstractCell<LoadMore> {
 
    @Override
    protected void syncUIStateWithModel() {
-      itemView.setOnClickListener(view -> {
-         if (!getModelObject().isLoading()) getEventBus().post(new LoadMoreEvent());
-      });
+      itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
 
       caption.setText(getModelObject().isLoading() ? R.string.loading : R.string.comment_view_more);
       caption.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);

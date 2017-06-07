@@ -29,6 +29,9 @@
    <string name="smth_went_wrong">Sesuatu yang tidak kena = (</string>
    <string name="inspire_me">Berikan inspirasi kepada saya</string>
    <string name="three_sixty">Pengalaman 360</string>
+   <string name="member_images_new_item">%1$s Item baru</string>
+   <string name="member_images_new_items">%1$s Item baru</string>
+   <string name="member_images_new_items_plus">%1$s+ Item baru</string>
    <string name="book_it">Tempah sekarang!</string>
    <string name="reload_trip_details">Muat Semula Butir-butir Perjalanan</string>
    <string name="user_id_hint">ID Ahli WV</string>
@@ -186,7 +189,7 @@
    <string name="selected">%1$d dipilih</string>
    <string name="email_is_not_valid">E-mel tidak sah</string>
    <string name="invitation_deselect_all">Nyahpilih Semua</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hai%1$s, %2$s <br/>Baca ini <a href=\"%3$s\">di sini</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Hai%1$s, %2$s <br/>Baca ini di sini.<br/>%3$s]]></string>
    <string name="invite_add_photo">Tambah Gambar</string>
    <string name="invite_select_first">Pilih kenalan dahulu</string>
    <string name="filters_show_favorite">TUNJUKKAN PERJALANAN KEGEMARAN</string>
@@ -580,4 +583,8 @@
 
    <string name="show_original">Tunjukkan yang asal</string>
    <string name="error_fail_to_translate_bucket_item">Tidak dapat menterjemahkan item baldi</string>
+
+   <string name="n_friends_accepted">%1$d kawan-kawan diterima.</string>
+   <string name="friends_will_appear_momentarily">Mereka akan muncul dalam Rakan Saya sebentar lagi.</string>
+
 </resources>

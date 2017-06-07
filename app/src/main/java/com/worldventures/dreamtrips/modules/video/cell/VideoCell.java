@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import javax.inject.Inject;
 
@@ -31,12 +32,18 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
 
    @Inject @ForActivity protected Context context;
    @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject CachedModelHelper cachedModelHelper;
 
    protected ProgressVideoCellHelper progressVideoCellHelper;
 
    public VideoCell(View view) {
       super(view);
-      progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress);
+   }
+
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress, cachedModelHelper);
    }
 
    @Override
@@ -67,7 +74,7 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
    @OnClick(R.id.download_progress)
    public void onDownloadClick() {
       Video video = getModelObject();
-      progressVideoCellHelper.onDownloadClick(context, cellDelegate);
+      progressVideoCellHelper.onDownloadClick(cellDelegate);
       //
       TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
             .get()

@@ -1,0 +1,19 @@
+ext {
+   appConfig = [
+         versionMajor    : 1,
+         versionMinor    : 20,
+         versionPatch    : 0,
+         versionBuild    : 0,
+         applicationId   : 'com.worldventures.dreamtrips',
+         archivesBaseName: 'DreamTrips',
+
+         buildVersionCode: {
+            return appConfig.versionMajor * 100000 + appConfig.versionMinor * 1000 + appConfig.versionPatch * 100 + appConfig.versionBuild
+         },
+
+         buildVersionName: {
+            return "${appConfig.versionMajor}.${appConfig.versionMinor}.${appConfig.versionPatch}"
+         }
+
+   ]
+}

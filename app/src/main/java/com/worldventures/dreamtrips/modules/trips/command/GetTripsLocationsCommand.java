@@ -62,6 +62,8 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
       return ImmutableGetTripsLocationsHttpAction.Params.builder()
             .durationMax(tripsFilterData.getMaxNights())
             .durationMin(tripsFilterData.getMinNights())
+            .priceMin(tripsFilterData.getMinPrice())
+            .priceMax(tripsFilterData.getMaxPrice())
             .liked(tripsFilterData.isShowFavorites())
             .soldOut(tripsFilterData.isShowSoldOut())
             .recentFirst(tripsFilterData.isShowRecentlyAdded())

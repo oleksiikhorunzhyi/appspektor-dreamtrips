@@ -41,7 +41,6 @@ import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import de.greenrobot.event.EventBus;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -53,7 +52,6 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject @ForApplication Context context;
-   @Inject @Global EventBus eventBus;
    @Inject SnappyRepository snappyRepository;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject LocaleSwitcher localeSwitcher;
@@ -72,10 +70,15 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject NxtSessionHolder nxtSessionHolder;
 
+   private boolean userDataCleared;
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.zip(clearSessionDependants(), args -> null)
-            .flatMap(o -> clearSession())
+            .flatMap(o -> clearSession().doOnNext(o1 -> {
+               userDataCleared = true;
+               callback.onProgress(0);
+            }))
             .flatMap(o -> clearUserData())
             .doOnError(throwable -> {
                Timber.w((Throwable) throwable, "Could not log out");
@@ -123,7 +126,6 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          cookieManager.clearCookies();
          appSessionHolder.destroy();
          localeSwitcher.resetLocale();
-         eventBus.post(new SessionHolder.Events.SessionDestroyed());
          sessionActionPipeCreator.clearReplays();
          //
          subscriber.onNext(null);
@@ -158,6 +160,10 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          subscriber.onNext(null);
          subscriber.onCompleted();
       });
+   }
+
+   public boolean isUserDataCleared() {
+      return userDataCleared;
    }
 
    private void clearFrescoCaches() {

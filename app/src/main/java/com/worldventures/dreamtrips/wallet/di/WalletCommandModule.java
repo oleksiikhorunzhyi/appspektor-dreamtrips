@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCo
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
@@ -30,14 +29,12 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
@@ -87,9 +84,7 @@ import dagger.Module;
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
             WizardCheckCommand.class,
-            GetDefaultAddressCommand.class,
             AddRecordCommand.class,
-            SetupDefaultAddressCommand.class,
             SetDefaultCardOnDeviceCommand.class,
             SetPaymentCardAction.class,
             SetStealthModeCommand.class,
@@ -116,7 +111,6 @@ import dagger.Module;
             SmartCardCommunicationErrorAction.class,
             GetOnCardAnalyticsCommand.class,
             SetDisableDefaultCardDelayCommand.class,
-            FetchAndStoreDefaultAddressInfoCommand.class,
             RemoveSmartCardDataCommand.class,
             ResetSmartCardCommand.class,
             FetchBatteryLevelCommand.class,

@@ -16,8 +16,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -27,7 +25,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHa
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
-import com.worldventures.dreamtrips.modules.feed.utils.FeedUtils;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -71,7 +68,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void restoreInstanceState(Bundle savedState) {
       super.restoreInstanceState(savedState);
-      if (savedState == null) feedItems = new ArrayList<>();
+      if (savedState == null || feedItems == null) feedItems = new ArrayList<>();
    }
 
    @Override
@@ -148,25 +145,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
       feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
-   }
-
-   public void onEventMainThread(FeedEntityChangedEvent event) {
-      updateFeedEntity(event.getFeedEntity());
-   }
-
-   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      FeedUtils.updateFeedItemInList(feedItems, updatedFeedEntity);
-      refreshFeedItems();
-   }
-
-   public void onEvent(FeedEntityCommentedEvent event) {
-      Queryable.from(feedItems).forEachR(item -> {
-         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-            item.setItem(event.getFeedEntity());
-         }
-      });
-
-      refreshFeedItems();
    }
 
    @Override

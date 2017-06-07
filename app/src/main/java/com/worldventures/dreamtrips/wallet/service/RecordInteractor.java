@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -35,7 +34,6 @@ public final class RecordInteractor {
    private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
    private final ActionPipe<DeleteRecordCommand> deleteRecordPipe;
    private final ActionPipe<CreateRecordCommand> recordIssuerInfoPipe;
-   private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final ActionPipe<SyncRecordOnNewDeviceCommand> syncRecordOnNewDevicePipe;
    private final ActionPipe<SyncRecordStatusCommand> syncRecordStatusPipe;
 
@@ -56,7 +54,6 @@ public final class RecordInteractor {
       setPaymentCardActionActionPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
       deleteRecordPipe = sessionActionPipeCreator.createPipe(DeleteRecordCommand.class, Schedulers.io());
       recordIssuerInfoPipe = sessionActionPipeCreator.createPipe(CreateRecordCommand.class, Schedulers.io());
-      getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
       syncRecordOnNewDevicePipe = sessionActionPipeCreator.createPipe(SyncRecordOnNewDeviceCommand.class, Schedulers.io());
       syncRecordStatusPipe = sessionActionPipeCreator.createPipe(SyncRecordStatusCommand.class, Schedulers.io());
 
@@ -108,10 +105,6 @@ public final class RecordInteractor {
 
    public ActionPipe<CreateRecordCommand> bankCardPipe() {
       return recordIssuerInfoPipe;
-   }
-
-   public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
-      return getDefaultAddressCommandPipe;
    }
 
    public ActionPipe<SyncRecordOnNewDeviceCommand> syncRecordOnNewDevicePipe() {

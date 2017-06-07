@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +33,6 @@ import javax.inject.Inject;
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -183,7 +181,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    }
 
    private void bindObservables(View view) {
-      view.bind(bucketInteractor.addBucketItemPhotoPipe().observe().observeOn(AndroidSchedulers.mainThread()))
+      bucketInteractor.addBucketItemPhotoPipe().observe()
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>().onStart(command -> {
                operationList.add(command);
                view.addItemInProgressState(command.photoEntityStateHolder());
@@ -199,20 +198,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                view.changeItemState(command.photoEntityStateHolder());
             }));
 
-      view.bind(Observable.merge(bucketInteractor.updatePipe()
-            .observeSuccess()
-            .map(UpdateBucketItemCommand::getResult), bucketInteractor.addBucketItemPhotoPipe()
-            .observeSuccess()
-            .map(addBucketItemPhotoCommand -> addBucketItemPhotoCommand.getResult().first), bucketInteractor.deleteItemPhotoPipe()
-            .observeSuccess()
-            .map(DeleteItemPhotoCommand::getResult)))
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(bucketItem -> {
-               eventBus.post(new FeedEntityChangedEvent(bucketItem)); //TODO fix it when feed would be rewrote
-            });
-      //
-      view.bind(mediaPickerEventDelegate.getObservable()
-            .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
+      mediaPickerEventDelegate.getObservable()
+            .compose(bindView())
+            .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID)
             .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
    }
 

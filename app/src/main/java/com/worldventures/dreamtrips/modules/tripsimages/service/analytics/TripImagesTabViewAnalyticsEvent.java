@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-@AnalyticsEvent(action = "dta:trip_images:${tabName}",
+@AnalyticsEvent(action = "trip_images:${tabName}",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction{
 
@@ -21,9 +21,9 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction{
          case MEMBERS_IMAGES:
             return new TripImagesTabViewAnalyticsEvent("member_images");
          case YOU_SHOULD_BE_HERE:
-            return new TripImagesTabViewAnalyticsEvent("inspire_me_images");
-         case INSPIRE_ME:
             return new TripImagesTabViewAnalyticsEvent("ysbh_images");
+         case INSPIRE_ME:
+            return new TripImagesTabViewAnalyticsEvent("inspire_me_images");
          default:
             return new TripImagesTabViewAnalyticsEvent("my_images");
       }

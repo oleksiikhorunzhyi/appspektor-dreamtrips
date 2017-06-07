@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -78,9 +76,8 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);
-      eventBus.post(new FeedEntityChangedEvent(feedEntity));
       checkCommentsAndLikesToLoad();
-      refreshFeedItems();
+      refreshFeedItem();
       view.showAdditionalInfo(feedEntity.getOwner());
    }
 
@@ -106,16 +103,12 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
                   }));
    }
 
-   public void onEventMainThread(FeedEntityChangedEvent event) {
-      updateFeedEntity(event.getFeedEntity());
-   }
-
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
       if (updatedFeedEntity.equals(feedItem.getItem())) {
          feedItem.setItem(updatedFeedEntity);
          feedEntity = updatedFeedEntity;
-         refreshFeedItems();
+         refreshFeedItem();
       }
    }
 
@@ -126,7 +119,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       }
    }
 
-   public void refreshFeedItems() {
+   private void refreshFeedItem() {
       view.updateFeedItem(feedItem);
    }
 
@@ -140,20 +133,15 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(this::likeStatusChanged)
+                  .onSuccess(command -> onItemLiked(command.getResult()))
                   .onFail(this::handleError));
    }
 
-   private void likeStatusChanged(ChangeFeedEntityLikedStatusCommand command) {
-      feedEntity.syncLikeState(command.getResult());
-      eventBus.post(new FeedEntityChangedEvent(feedEntity));
-   }
-
-   public void onEvent(FeedEntityCommentedEvent event) {
-      if (event.getFeedEntity().equals(feedItem.getItem())) {
-         feedItem.setItem(event.getFeedEntity());
-         feedEntity = event.getFeedEntity();
-         refreshFeedItems();
+   private void onItemLiked(FeedEntity updatedFeedEntity) {
+      if (updatedFeedEntity.equals(feedItem.getItem())) {
+         feedEntity.setLikesCount(updatedFeedEntity.getLikesCount());
+         feedEntity.setLiked(updatedFeedEntity.isLiked());
+         refreshFeedItem();
       }
    }
 

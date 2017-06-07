@@ -24,16 +24,16 @@ import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
@@ -158,6 +158,18 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
+   public List<CachedModel> getDownloadMediaModels() {
+      return actWithResult(db -> {
+         List<CachedModel> entities = new ArrayList<>();
+         String[] keys = db.findKeys(MEDIA_UPLOAD_MODEL);
+         for (String key : keys) {
+            entities.add(db.get(key, CachedModel.class));
+         }
+         return entities;
+      }).or(Collections.emptyList());
+   }
+
+   @Override
    public List<CachedEntity> getDownloadMediaEntities() {
       return actWithResult(db -> {
          List<CachedEntity> entities = new ArrayList<>();
@@ -170,13 +182,21 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    @Override
-   public void saveDownloadMediaEntity(CachedEntity e) {
-      act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));
+   public void deleteAllMediaEntities() {
+      act(db -> {
+         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
+         for (String key : keys) db.del(key);
+      });
    }
 
    @Override
-   public CachedEntity getDownloadMediaEntity(String id) {
-      return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class)).orNull();
+   public void saveDownloadMediaModel(CachedModel e) {
+      act(db -> db.put(MEDIA_UPLOAD_MODEL + e.getUuid(), e));
+   }
+
+   @Override
+   public CachedModel getDownloadMediaModel(String id) {
+      return actWithResult(db -> db.get(MEDIA_UPLOAD_MODEL + id, CachedModel.class)).orNull();
    }
 
    @Override
@@ -251,21 +271,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public void deleteSmartCardFirmware() {
       act(db -> db.del(WALLET_SMART_CARD_FIRMWARE));
-   }
-
-   @Override
-   public void saveDefaultAddress(AddressInfo addressInfo) {
-      putEncrypted(WALLET_DEFAULT_ADDRESS, addressInfo);
-   }
-
-   @Override
-   public AddressInfo readDefaultAddress() {
-      return getEncrypted(WALLET_DEFAULT_ADDRESS, ImmutableAddressInfo.class);
-   }
-
-   @Override
-   public void deleteDefaultAddress() {
-      act(db -> db.del(WALLET_DEFAULT_ADDRESS));
    }
 
    @Override
@@ -702,6 +707,16 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public List<TripModel> getTrips() {
       return readList(TRIPS, TripModel.class);
+   }
+
+   @Override
+   public void saveTripFilters(CachedTripFilters tripFilters) {
+      act(db -> db.put(TRIP_FILTERS, tripFilters));
+   }
+
+   @Override
+   public CachedTripFilters getTripFilters() {
+      return actWithResult(db -> db.get(TRIP_FILTERS, CachedTripFilters.class)).orNull();
    }
 
    @Override

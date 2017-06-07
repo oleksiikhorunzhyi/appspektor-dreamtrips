@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
-public abstract class CachedEntityCommand extends CommandWithError<CachedEntity> {
+public abstract class CachedEntityCommand extends CommandWithError<CachedModel> {
 
-   protected CachedEntity cachedEntity;
+   protected CachedModel cachedModel;
 
-   public CachedEntityCommand(CachedEntity cachedEntity) {
-      this.cachedEntity = cachedEntity;
+   public CachedEntityCommand(CachedModel cachedModel) {
+      this.cachedModel = cachedModel;
    }
 
-   public CachedEntity getCachedEntity() {
-      return cachedEntity;
+   public CachedModel getCachedModel() {
+      return cachedModel;
    }
 }

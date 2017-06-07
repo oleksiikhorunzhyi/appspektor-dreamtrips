@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.ChangeDefaultCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
@@ -32,7 +31,6 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.records.address.EditBillingAddressPath;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -70,7 +68,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       view.showWalletRecord(record);
       view.animateCard();
 
-      fetchAddressByRecordId(record.id());
       updateCardConditionState();
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
@@ -78,18 +75,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       observeCardNickName();
       observeDefaultCardSwitcher();
       observeSaveCardData();
-   }
-
-   private void fetchAddressByRecordId(final String recordId) {
-      recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.fetch())
-            .compose(bindViewIoToMainComposer())
-            .map(command -> Queryable.from(command.getResult()).first(element -> element.id().equals(recordId)))
-            .subscribe(record -> {
-                     this.record = record;
-                     getView().showDefaultAddress(record.addressInfo());
-                  },
-                  throwable -> Timber.e(throwable, ""));
    }
 
    private void observeSaveCardData() {
@@ -106,7 +91,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       record = ImmutableRecord.builder()
             .from(record)
             .nickName(updatedRecord.nickName())
-            .addressInfo(updatedRecord.addressInfo())
             .build();
    }
 
@@ -175,7 +159,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    private void handleCardNickname(String cardName) {
-      if (WalletValidateHelper.validateCardName(cardName)) {
+      if (WalletValidateHelper.isValidCardName(cardName)) {
          getView().hideCardNameError();
          getView().setCardNickname(cardName);
       } else {
@@ -196,16 +180,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             getView().showDeleteCardDialog();
          } else {
             getView().showSCNonConnectionDialog();
-         }
-      });
-   }
-
-   void editAddress() {
-      fetchConnectionStats(connectionStatus -> {
-         if (connectionStatus.isConnected()) {
-            navigator.go(new EditBillingAddressPath(record));
-         } else {
-            getView().showConnectionErrorDialog();
          }
       });
    }
@@ -335,13 +309,9 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    public interface Screen extends WalletScreen {
       void showWalletRecord(Record record);
 
-      void showDefaultAddress(AddressInfo addressInfo);
-
       void showDefaultCardDialog(Record defaultRecord);
 
       void showDeleteCardDialog();
-
-      void showConnectionErrorDialog();
 
       void showNetworkConnectionErrorDialog();
 

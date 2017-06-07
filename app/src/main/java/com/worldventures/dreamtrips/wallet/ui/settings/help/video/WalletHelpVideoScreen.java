@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
@@ -122,17 +122,17 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
       public void sendAnalytic(String action, String name) {}
 
       @Override
-      public void onDownloadVideo(CachedEntity entity) {
+      public void onDownloadVideo(CachedModel entity) {
          getPresenter().downloadVideo(entity);
       }
 
       @Override
-      public void onDeleteVideo(CachedEntity entity) {
+      public void onDeleteVideo(CachedModel entity) {
          getPresenter().deleteCachedVideo(entity);
       }
 
       @Override
-      public void onCancelCachingVideo(CachedEntity entity) {
+      public void onCancelCachingVideo(CachedModel entity) {
          getPresenter().cancelCachingVideo(entity);
       }
 
@@ -184,7 +184,7 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
    }
 
    @Override
-   public void confirmCancelDownload(CachedEntity entity) {
+   public void confirmCancelDownload(CachedModel entity) {
       new MaterialDialog.Builder(getContext())
             .content(R.string.wallet_settings_help_video_cancel_cached_video_text)
             .positiveText(R.string.wallet_label_yes)
@@ -196,7 +196,7 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
    }
 
    @Override
-   public void confirmDeleteVideo(CachedEntity entity) {
+   public void confirmDeleteVideo(CachedModel entity) {
       new MaterialDialog.Builder(getContext())
             .content(R.string.wallet_settings_help_video_delete_cached_video_text)
             .positiveText(R.string.wallet_label_delete)
@@ -208,7 +208,7 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
    }
 
    @Override
-   public void notifyItemChanged(CachedEntity cachedEntity) {
+   public void notifyItemChanged(CachedModel cachedEntity) {
       adapter.notifyDataSetChanged();
    }
 

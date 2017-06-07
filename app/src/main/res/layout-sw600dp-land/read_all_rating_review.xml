@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/tv_read_all_review"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/dtl_all_reviews_text"
+      android:textColor="@color/rating_background_button"
+      android:gravity="center"
+      android:textStyle="bold"
+      android:visibility="gone"
+      android:layout_marginTop="@dimen/dtl_all_reviews_margin"
+      android:layout_marginBottom="@dimen/dtl_all_reviews_margin">
+
+</TextView>

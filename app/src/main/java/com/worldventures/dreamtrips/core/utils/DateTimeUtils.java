@@ -48,6 +48,8 @@ public class DateTimeUtils {
    public static final String ISO_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
    public static final String TRIP_FILTER_ANALYTIC_DATE_FORMAT = "MM-dd-yyyy";
+   public static final String REVIEWS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+   public static final String UTC = "UTC";
 
    private DateTimeUtils() {
    }

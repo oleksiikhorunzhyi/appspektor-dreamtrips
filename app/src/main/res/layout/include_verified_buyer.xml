@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+   <ImageView
+         android:id="@+id/iv_verified_buyer"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/success"
+         android:layout_gravity="center"
+         android:layout_marginLeft="@dimen/dtl_all_reviews_margin_ft"
+         />
+
+   <TextView
+         android:id="@+id/tv_verified_buyer"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_weight="1"
+         android:layout_gravity="center"
+         android:layout_marginLeft="@dimen/dtl_review_small_margin"
+         android:text="@string/tvVerifiedReview"
+         android:textColor="@color/greenVerifiedView"
+         android:textSize="@dimen/chat_list_date_entry_text_size"
+         android:textStyle="bold" />
+</LinearLayout>

@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityShowEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
@@ -23,10 +22,8 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
       this.isSlave = isSlave;
    }
 
-   public void onEvent(FeedEntityShowEvent event) {
-      if (!this.feedItem.equals(event.feedItem)) return;
-      //
-      Pair<Route, Parcelable> entityData = fragmentFactory.create(event.feedItem);
+   public void onEntityShownInCell(FeedItem feedItem) {
+      Pair<Route, Parcelable> entityData = fragmentFactory.create(feedItem);
       /**
        * for bucket list tablet landscape orientation (slave mode)
        */

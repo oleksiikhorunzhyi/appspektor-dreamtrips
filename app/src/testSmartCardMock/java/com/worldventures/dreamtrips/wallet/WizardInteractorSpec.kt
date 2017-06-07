@@ -5,7 +5,6 @@ import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.api.profile.model.ProfileAddress
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
@@ -27,7 +26,6 @@ import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository
@@ -103,16 +101,6 @@ class WizardInteractorSpec : BaseSpec({
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
             verify(mockDb, times(0)).saveWalletTermsAndConditions(any())
-         }
-
-         it("should be save DefaultAddress to db") {
-            val testSubscriber: TestSubscriber<ActionState<FetchAndStoreDefaultAddressInfoCommand>> = TestSubscriber()
-            janet.createPipe(FetchAndStoreDefaultAddressInfoCommand::class.java)
-                  .createObservable(FetchAndStoreDefaultAddressInfoCommand())
-                  .subscribe(testSubscriber)
-
-            AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(1)).saveDefaultAddress(null) // todo
          }
 
          it("disassociates SmartCard") {
@@ -191,7 +179,6 @@ class WizardInteractorSpec : BaseSpec({
 
       fun mockHttpService(): MockHttpActionService {
          val termsAndConditionsResponse = mockTermsAndConditionsResponse()
-         val emptyAddressResponse: List<ProfileAddress> = emptyList()
          return MockHttpActionService.Builder()
                .bind(MockHttpActionService.Response(204), { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("delete", true)
@@ -199,9 +186,6 @@ class WizardInteractorSpec : BaseSpec({
                .bind(MockHttpActionService.Response(204).body(TestSmartCardDetails(MOCK_SMART_CARD_ID)), { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("post", true)
                })
-               .bind(MockHttpActionService.Response(200).body(emptyAddressResponse)) { request ->
-                  request.url.contains("api/profile/addresses")
-               }
                .bind(MockHttpActionService.Response(200).body(termsAndConditionsResponse)) { request ->
                   request.url.contains("api/smartcard/provisioning/terms_and_conditions")
                }

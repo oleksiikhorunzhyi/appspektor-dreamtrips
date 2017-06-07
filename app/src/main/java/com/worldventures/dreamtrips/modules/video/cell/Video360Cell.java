@@ -18,8 +18,9 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import javax.inject.Inject;
 
@@ -37,12 +38,18 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
    @Inject Context context;
    @Inject ActivityRouter activityRouter;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject CachedModelHelper cachedModelHelper;
 
    private ProgressVideoCellHelper progressVideoCellHelper;
 
    public Video360Cell(View view) {
       super(view);
-      progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress);
+   }
+
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress, cachedModelHelper);
    }
 
    @Override
@@ -63,10 +70,10 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
    @OnClick(R.id.iv_bg)
    public void onItemClick() {
       Video video = getModelObject();
-      CachedEntity cacheEntity = getModelObject().getCacheEntity();
+      CachedModel cacheEntity = getModelObject().getCacheEntity();
       String url = getModelObject().getVideoUrl();
-      if (cacheEntity.isCached(context)) {
-         url = CachedEntity.getFilePath(context, getModelObject().getVideoUrl());
+      if (cachedModelHelper.isCached(cacheEntity)) {
+         url = cachedModelHelper.getFilePath(getModelObject().getVideoUrl());
       }
       activityRouter.open360Activity(url, video.getVideoName());
       //
@@ -81,7 +88,7 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
    @OnClick(R.id.download_progress)
    public void onDownloadClick() {
       Video video = getModelObject();
-      progressVideoCellHelper.onDownloadClick(context, cellDelegate);
+      progressVideoCellHelper.onDownloadClick(cellDelegate);
       //
       TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
             .get()

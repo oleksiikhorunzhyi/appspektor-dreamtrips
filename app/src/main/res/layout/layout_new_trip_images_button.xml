@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/new_images_button"
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+   android:layout_centerHorizontal="true"
+   android:text="2 New Images"
+   android:background="@drawable/new_trip_images_button"
+   android:layout_marginLeft="@dimen/spacing_medium"
+   android:layout_marginRight="@dimen/spacing_medium"
+   android:layout_marginTop="@dimen/spacing_medium"
+   android:padding="@dimen/spacing_medium"
+   android:textColor="@color/white"
+   android:textSize="13sp"
+   android:visibility="gone"
+      />

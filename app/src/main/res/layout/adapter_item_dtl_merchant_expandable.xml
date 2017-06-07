@@ -117,6 +117,37 @@
                android:background="@color/grey_lighter"
                />
 
+         <LinearLayout
+               android:id="@+id/layout_rating_reviews"
+               android:layout_width="@dimen/dtlMerchantCoverImageWidth"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:layout_marginTop="@dimen/spacing_small"
+               android:layout_marginBottom="@dimen/spacing_small">
+
+            <RatingBar
+                  android:id="@+id/ratingBarReviews"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:isIndicator="true"
+                  android:numStars="5"
+                  android:rating="0"
+                  style="@style/SmallRatingBar"
+                  android:theme="@style/SmallRatingBar"
+                  />
+            <TextView
+                  android:id="@+id/text_view_rating"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/to_be_first_reviews"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:textColor="@android:color/black"
+                  android:textSize="@dimen/dtl_no_reviews_dimen_nine"
+                  android:textStyle="bold"/>
+
+         </LinearLayout>
+
          <TextView
                android:id="@+id/view_points"
                android:layout_width="wrap_content"
@@ -128,6 +159,7 @@
                android:drawableLeft="@drawable/ic_points_dtl"
                android:drawablePadding="5dp"
                android:layout_centerVertical="true"
+               android:layout_toRightOf="@+id/layout_rating_reviews"
                android:text="@string/points"
                />
 
@@ -152,21 +184,10 @@
                android:layout_height="wrap_content"
                android:layout_centerVertical="true"
                android:layout_alignParentRight="true"
-               android:layout_marginRight="@dimen/spacing_normal"
+               android:layout_marginRight="@dimen/spacing_small"
                tools:src="@drawable/ic_arrow_down_grey"
                />
 
-         <TextView
-               android:id="@+id/perk_toggle_label"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_centerVertical="true"
-               android:layout_toLeftOf="@id/perk_toggle_view"
-               android:layout_marginRight="@dimen/spacing_normal"
-               android:text="@string/friend_hide"
-               android:visibility="gone"
-               tools:visibility="visible"
-               />
       </RelativeLayout>
 
       <LinearLayout

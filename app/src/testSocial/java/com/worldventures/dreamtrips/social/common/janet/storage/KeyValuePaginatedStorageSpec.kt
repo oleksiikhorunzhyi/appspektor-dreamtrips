@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.common.janet.storage
 
+import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl
 import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage
@@ -7,18 +8,20 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValueStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.Storage
 import org.assertj.core.api.Assertions
-import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class KeyValuePaginatedStorageSpec : Spek({
+class KeyValuePaginatedStorageSpec : BaseSpec({
 
-   describe("Key value paginated memory storage")  {
+   describe("Key value paginated memory storage") {
 
       context("when using pagination logic") {
-         var storage : Storage<List<Any>> = KeyValuePaginatedMemoryStorage()
+         var storage: Storage<List<Any>> = KeyValuePaginatedMemoryStorage()
 
-         beforeEach {
+         beforeEachTest {
             storage = KeyValuePaginatedMemoryStorage()
          }
 
@@ -43,9 +46,9 @@ class KeyValuePaginatedStorageSpec : Spek({
 
       context("when using key value logic") {
 
-         var storage : Storage<List<Any>> = KeyValuePaginatedMemoryStorage()
+         var storage: Storage<List<Any>> = KeyValuePaginatedMemoryStorage()
 
-         it ("should contain different data for different keys") {
+         it("should contain different data for different keys") {
             val firstKey = "keyA";
             val firstKeyBundle = CacheBundleImpl()
             val firstKeyData = listOf(1)

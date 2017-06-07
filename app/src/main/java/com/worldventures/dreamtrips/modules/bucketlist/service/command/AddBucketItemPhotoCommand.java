@@ -29,7 +29,6 @@ import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolde
 @CommandAction
 public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPhoto>> implements InjectableAction {
 
-   @Inject @ForApplication Context context;
    @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
    @Inject BucketInteractor bucketInteractor;
@@ -48,7 +47,7 @@ public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPh
    @Override
    protected void run(CommandCallback<Pair<BucketItem, BucketPhoto>> callback) throws Throwable {
       janet.createPipe(CopyFileCommand.class)
-            .createObservableResult(new CopyFileCommand(context, photoEntityStateHolder.entity()
+            .createObservableResult(new CopyFileCommand(photoEntityStateHolder.entity()
                   .getImagePath()))
             .map(Command::getResult)
             .flatMap(path -> uploaderyInteractor.uploadImageActionPipe()

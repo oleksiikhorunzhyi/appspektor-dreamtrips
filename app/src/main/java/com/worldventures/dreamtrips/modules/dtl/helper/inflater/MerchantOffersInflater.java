@@ -10,6 +10,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -27,6 +28,7 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
@@ -55,8 +57,11 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.merchant_details_cover) SimpleDraweeView cover;
    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
    @InjectView(R.id.perk_divider) View perkDivider;
+   @InjectView(R.id.rating_header)
+   LinearLayout ratingHeader;
 
    @Inject protected SessionHolder<UserSession> sessionHolder;
+   @Inject DeviceInfoProvider deviceInfoProvider;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<String, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
@@ -71,6 +76,11 @@ public class MerchantOffersInflater extends MerchantDataInflater {
 
    @Override
    protected void onMerchantAttributesApply() {
+      /** below if statement to be removed when tablet optimization starts **/
+      if(deviceInfoProvider.isTablet()){
+         ratingHeader.setVisibility(View.GONE);
+      }
+
       setType();
       setImage();
       setDescriptions();

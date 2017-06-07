@@ -271,17 +271,6 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
-   public void enableLockUnlockCard(boolean enable) {
-      memoryStorage.enableLockUnlockCard(enable);
-      persistStorage();
-   }
-
-   @Override
-   public boolean isLockUnlockCardEnabled() {
-      return memoryStorage.isLockUnlockCardEnabled();
-   }
-
-   @Override
    public void setPinEnabled(boolean enabled) {
       memoryStorage.setPinEnabled(enabled);
       persistStorage();
@@ -301,5 +290,20 @@ public class PersistentDeviceStorage implements DeviceStorage {
    @Override
    public long getCardTime() {
       return memoryStorage.getCardTime();
+   }
+
+   @Override
+   public void setHomeDisplayType(int type) {
+
+   }
+
+   @Override
+   public int getHomeDisplayType() {
+      return 0;
+   }
+
+   @Override
+   public void removeUserPhoto() {
+
    }
 }

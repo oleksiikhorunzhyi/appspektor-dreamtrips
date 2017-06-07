@@ -29,6 +29,9 @@
    <string name="smth_went_wrong">Något gick fel =(</string>
    <string name="inspire_me">Ge mig inspiration</string>
    <string name="three_sixty">360-upplevelsen</string>
+   <string name="member_images_new_item">%1$s Nya objekt</string>
+   <string name="member_images_new_items">%1$s Nya objekt</string>
+   <string name="member_images_new_items_plus">%1$s+ Nya objekt</string>
    <string name="book_it">Boka den!</string>
    <string name="reload_trip_details">Läs in resedetaljer igen</string>
    <string name="user_id_hint">WV-medlems-id</string>
@@ -66,7 +69,11 @@
    <string name="flag_description_positive">Acceptera</string>
    <string name="flag_description_negative">Avbryt</string>
    <string name="log_in">Logga in</string>
+   <string name="facebook_error_loading_albums">Kunde inte ladda album</string>
+   <string name="facebook_error_loading_photos">Kunda inte ladda bilder</string>
+   <string name="facebook_login_error">Kunda inte logga in på Facebook</string>
    <string name="fab_posted">Publiceringen på Facebook har genomförts</string>
+   <string name="facebook_posting_error"> Kunda inte göra inlägg på Facebook </string>
    <string-array name="share_dialog_items">
       <item>Facebook</item>
       <item>Twitter</item>
@@ -182,7 +189,7 @@
    <string name="selected">Valt: %1$d</string>
    <string name="email_is_not_valid">Ogiltig e-postadress</string>
    <string name="invitation_deselect_all">Avmarkera alla</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det <a href=\"%3$s\">här</a>.]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det här.<br/>%3$s]]></string>
    <string name="invite_add_photo">Lägg till foto</string>
    <string name="invite_select_first">Välj kontakter först</string>
    <string name="filters_show_favorite">VISA FAVORITRESOR</string>
@@ -575,5 +582,9 @@
    <string name="documents_empty_text">Det gick inte att läsa in dokumenten just nu.</string>
 
    <string name="show_original">Visa ursprunglig</string>
-   
+   <string name="error_fail_to_translate_bucket_item">Kunde inte översätta hinkobjektet</string>
+
+   <string name="n_friends_accepted">%1$d vänner accepterade.</string>
+   <string name="friends_will_appear_momentarily">De kommer tillfälligt synas under Mina vänner.</string>
+
 </resources>

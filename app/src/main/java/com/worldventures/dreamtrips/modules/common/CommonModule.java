@@ -55,11 +55,13 @@ import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
+import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
@@ -94,6 +96,7 @@ import dagger.Provides;
             PresentationVideosPresenter.class,
             MessengerActivity.class,
             PodcastPlayerActivity.class,
+            PodcastPlayerPresenter.class,
             DtlActivity.class,
             ComponentActivity.class,
             ComponentPresenter.class,

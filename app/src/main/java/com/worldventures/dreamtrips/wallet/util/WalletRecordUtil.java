@@ -12,11 +12,11 @@ import android.text.style.StyleSpan;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 
-import static android.text.TextUtils.getTrimmedLength;
 import static java.lang.String.format;
 
 public class WalletRecordUtil {
@@ -159,17 +159,15 @@ public class WalletRecordUtil {
    }
 
    public static String fetchFullName(Record card) {
-      return card.cardHolderFirstName()
-            + (!TextUtils.isEmpty(card.cardHolderMiddleName()) ? (" " + card.cardHolderMiddleName()) : "")
-            + " " + card.cardHolderLastName();
+      return String.format("%s %s", card.cardHolderFirstName(),
+            (ProjectTextUtils.isEmpty(card.cardHolderMiddleName()) ?
+                  card.cardHolderLastName() :
+                  String.format("%s %s", card.cardHolderMiddleName(), card.cardHolderLastName()))
+      );
    }
 
-   public static boolean validationMandatoryFields(String number, String address1, String city, String zipCode, String state, String cvv) {
-      return getTrimmedLength(address1) > 0
-            && getTrimmedLength(city) > 0
-            && getTrimmedLength(zipCode) > 0
-            && getTrimmedLength(state) > 0
-            && cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
+   public static boolean validationMandatoryFields(String number, String cvv) {
+      return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
    }
 
    public CharSequence goodThrough(String date) {

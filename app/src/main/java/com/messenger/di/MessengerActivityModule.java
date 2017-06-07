@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import javax.inject.Singleton;
 

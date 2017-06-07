@@ -61,7 +61,6 @@ public class TrackingHelper {
    public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "profile_photo_upload_finish";
 
    public static final String ACTION_MEMBERSHIP_VIDEOS = "membership:videos";
-   public static final String ACTION_MEMBERSHIP_PODCASTS = "membership:podcasts";
    public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play";
    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
    public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
@@ -179,10 +178,6 @@ public class TrackingHelper {
       trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
    }
 
-   public static void bookIt(String id, String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_DREAMTRIPS, "book_it", id);
-   }
-
    public static void insprDetails(String memberId, String id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
    }
@@ -264,11 +259,6 @@ public class TrackingHelper {
 
    public static void likeSS(String memberId, int id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_LIKE, String.valueOf(id));
-   }
-
-   public static void podcasts(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
    }
 
    public static void inviteShareContacts(String memberId) {
@@ -355,7 +345,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
    public static final String ATTRIBUTE_MAP = "map";
    public static final String ATTRIBUTE_ADD_TO_BUCKET_LIST = "add_to_bucket_list";
-   public static final String ATTRIBUTE_BOOK_IT = "book_it";
    public static final String ATTRIBUTE_LOAD_MORE = "load_more";
    public static final String ATTRIBUTE_UPLOAD_PHOTO = "upload_photo";
    public static final String ATTRIBUTE_SHARE = "share";
@@ -542,16 +531,6 @@ public class TrackingHelper {
       Map data = new HashMap<>();
       data.put("trip_id", tripName + "-" + tripId);
       data.put(eventType, tripId);
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void actionBookIt(String eventType, String tripId, String tripName) {
-      //apptentive, probabaly legacy code
-      bookIt(tripId, tripId);
-
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(eventType, 1);
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
    }
 

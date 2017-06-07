@@ -2,21 +2,20 @@ package com.worldventures.dreamtrips.util;
 
 import android.support.annotation.Nullable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class TripsFilterData implements Serializable {
 
    public static final int MIN_NIGHTS = 0;
@@ -34,8 +33,28 @@ public class TripsFilterData implements Serializable {
    private Date startDate;
    private Date endDate;
    //
-   private ArrayList<RegionModel> allRegions = new ArrayList<>();
-   private ArrayList<ActivityModel> allParentActivities = new ArrayList<>();
+   private List<RegionModel> allRegions = new ArrayList<>();
+   private List<ActivityModel> allParentActivities = new ArrayList<>();
+
+   public TripsFilterData() {
+      reset();
+   }
+
+   public void reset() {
+      maxPrice = MAX_PRICE;
+      minPrice = MIN_PRICE;
+      maxNights = MAX_NIGHTS;
+      minNights = MIN_NIGHTS;
+      showSoldOut = false;
+
+      Calendar calendar = Calendar.getInstance();
+      startDate = calendar.getTime();
+      calendar.add(Calendar.MONTH, 12);
+      endDate = calendar.getTime();
+
+      showFavorites = false;
+      showRecentlyAdded = false;
+   }
 
    public Integer getMinNights() {
       return minNights <= MIN_NIGHTS ? null : minNights;
@@ -91,19 +110,19 @@ public class TripsFilterData implements Serializable {
             .toList();
    }
 
-   public void setAllRegions(ArrayList<RegionModel> allRegions) {
+   public void setAllRegions(List<RegionModel> allRegions) {
       this.allRegions = allRegions;
    }
 
-   public void setAllParentActivities(ArrayList<ActivityModel> allParentActivities) {
+   public void setAllParentActivities(List<ActivityModel> allParentActivities) {
       this.allParentActivities = allParentActivities;
    }
 
-   public ArrayList<RegionModel> getAllRegions() {
+   public List<RegionModel> getAllRegions() {
       return allRegions;
    }
 
-   public ArrayList<ActivityModel> getAllParentActivities() {
+   public List<ActivityModel> getAllParentActivities() {
       return allParentActivities;
    }
 
@@ -115,16 +134,8 @@ public class TripsFilterData implements Serializable {
       this.showSoldOut = showSoldOut;
    }
 
-   public String getStartDateFormatted() {
-      return DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()));
-   }
-
    public void setStartDate(Date startDate) {
       this.startDate = startDate;
-   }
-
-   public String getEndDateFormatted() {
-      return DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()));
    }
 
    public Date getStartDate() {
@@ -153,45 +164,5 @@ public class TripsFilterData implements Serializable {
 
    public boolean isShowRecentlyAdded() {
       return showRecentlyAdded;
-   }
-
-   public static TripsFilterData createDefault(SnappyRepository db) {
-      TripsFilterData tripsFilterData = new TripsFilterData();
-      tripsFilterData.maxPrice = MAX_PRICE;
-      tripsFilterData.minPrice = MIN_PRICE;
-      tripsFilterData.maxNights = MAX_NIGHTS;
-      tripsFilterData.minNights = MIN_NIGHTS;
-      tripsFilterData.showSoldOut = false;
-
-      Calendar calendar = Calendar.getInstance();
-      tripsFilterData.startDate = calendar.getTime();
-      calendar.add(Calendar.MONTH, 12);
-      tripsFilterData.endDate = calendar.getTime();
-
-      tripsFilterData.allRegions = new ArrayList<>();
-      tripsFilterData.allRegions.addAll(getRegions(db));
-
-      tripsFilterData.allParentActivities = new ArrayList<>();
-      tripsFilterData.allParentActivities.addAll(getThemes(db));
-
-      tripsFilterData.showFavorites = false;
-      tripsFilterData.showRecentlyAdded = false;
-
-      return tripsFilterData;
-   }
-
-   private static List<RegionModel> getRegions(SnappyRepository db) {
-      return db.readList(SnappyRepository.REGIONS, RegionModel.class);
-   }
-
-   private static List<ActivityModel> getParentActivities(List<ActivityModel> activities) {
-      return Queryable.from(activities).filter(ActivityModel::isParent).toList();
-   }
-
-   private static ArrayList<ActivityModel> getThemes(SnappyRepository db) {
-      List<ActivityModel> activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
-      List<ActivityModel> parentActivities = getParentActivities(activities);
-
-      return new ArrayList<>(parentActivities);
    }
 }

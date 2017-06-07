@@ -7,7 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
@@ -108,30 +108,30 @@ public class WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoPre
 
    private void subscribeToCachingStatusUpdates() {
       Observable.merge(
-            cachedEntityInteractor.getDownloadCachedEntityPipe().observe(),
-            cachedEntityInteractor.getDeleteCachedEntityPipe().observe())
+            cachedEntityInteractor.getDownloadCachedModelPipe().observe(),
+            cachedEntityInteractor.getDeleteCachedModelPipe().observe())
             .compose(bindViewIoToMainComposer())
-            .map(actionState -> actionState.action.getCachedEntity())
+            .map(actionState -> actionState.action.getCachedModel())
             .subscribe(entity -> helpVideoDelegate.processCachingState(entity, getView()));
    }
 
-   void cancelCachingVideo(CachedEntity entity) {
+   void cancelCachingVideo(CachedModel entity) {
       getView().confirmCancelDownload(entity);
    }
 
-   void onCancelAction(CachedEntity entity) {
+   void onCancelAction(CachedModel entity) {
       cachedEntityDelegate.cancelCaching(entity, helpVideoDelegate.getPathForCache(entity));
    }
 
-   void deleteCachedVideo(CachedEntity entity) {
+   void deleteCachedVideo(CachedModel entity) {
       getView().confirmDeleteVideo(entity);
    }
 
-   void onDeleteAction(CachedEntity entity) {
+   void onDeleteAction(CachedModel entity) {
       cachedEntityDelegate.deleteCache(entity, helpVideoDelegate.getPathForCache(entity));
    }
 
-   void downloadVideo(CachedEntity entity) {
+   void downloadVideo(CachedModel entity) {
       cachedEntityDelegate.startCaching(entity, helpVideoDelegate.getPathForCache(entity));
    }
 

@@ -4,13 +4,16 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.documents.model.DocumentType
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedDiskStorage
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValueStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.infopages.model.Document
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand
-import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage
 import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -20,8 +23,10 @@ import io.techery.mappery.MapperyContext
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.mockito.ArgumentCaptor
 import rx.observers.TestSubscriber
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class DocumentsInteractorSpec : BaseSpec({
    describe("Test get documents action") {
@@ -35,7 +40,7 @@ class DocumentsInteractorSpec : BaseSpec({
             whenever(documentsDiscStorage.get(any())).thenReturn(emptyList())
 
             documentsInteractor.documentsActionPipe
-                  .createObservable(GetDocumentsCommand(true))
+                  .createObservable(GetDocumentsCommand(DOCUMENT_TYPE_HELP, true))
                   .subscribe(testSubscriber)
 
             it("should contain new items") {
@@ -49,7 +54,7 @@ class DocumentsInteractorSpec : BaseSpec({
             whenever(documentsMemoryStorage.get(any())).thenReturn(storedDocuments)
 
             documentsInteractor.documentsActionPipe
-                  .createObservable(GetDocumentsCommand(true))
+                  .createObservable(GetDocumentsCommand(DOCUMENT_TYPE_HELP, true))
                   .subscribe(testSubscriber)
 
             it("Items should contain only new items") {
@@ -66,29 +71,60 @@ class DocumentsInteractorSpec : BaseSpec({
          whenever(documentsMemoryStorage.get(any())).thenReturn(storedDocuments)
 
          documentsInteractor.documentsActionPipe
-               .createObservable(GetDocumentsCommand())
+               .createObservable(GetDocumentsCommand(DOCUMENT_TYPE_HELP))
                .subscribe(testSubscriber)
 
-         it("Items should contain new items and storedItems") {
+         it("Items should contain new items and stored items") {
             AssertUtil.assertActionSuccess(testSubscriber) {
                it.items().containsAll(documents) &&
                      it.items().containsAll(storedDocuments)
             }
+
+         }
          }
       }
-   }
+
+      context("Check key value logic") {
+         val restoreBundleCaptor = ArgumentCaptor.forClass(CacheBundle::class.java)
+         whenever(documentsMemoryStorage.get(restoreBundleCaptor.capture())).thenReturn(emptyList())
+         val saveBundleCaptor = ArgumentCaptor.forClass(CacheBundle::class.java)
+         whenever(documentsMemoryStorage.save(saveBundleCaptor.capture(), any())).then{}
+
+         documentsInteractor.documentsActionPipe
+               .createObservable(GetDocumentsCommand(DOCUMENT_TYPE_HELP))
+               .subscribe(TestSubscriber<ActionState<GetDocumentsCommand>>())
+         documentsInteractor.documentsActionPipe
+               .createObservable(GetDocumentsCommand(DOCUMENT_TYPE_LEGAL))
+               .subscribe(TestSubscriber<ActionState<GetDocumentsCommand>>())
+
+         it("should save and restore documents using different keys") {
+            val helpDocumentsRestoreKey = restoreBundleCaptor.allValues[0].get<String>(KeyValueStorage.BUNDLE_KEY_VALUE)
+            val legalDocumentsRestoreKey = restoreBundleCaptor.allValues[1].get<String>(KeyValueStorage.BUNDLE_KEY_VALUE)
+            assertNotEquals(helpDocumentsRestoreKey, legalDocumentsRestoreKey, "data was restored using the same key")
+
+            val helpDocumentsSaveKey = saveBundleCaptor.allValues[0].get<String>(KeyValueStorage.BUNDLE_KEY_VALUE)
+            val legalDocumentsSaveKey = saveBundleCaptor.allValues[1].get<String>(KeyValueStorage.BUNDLE_KEY_VALUE)
+            assertNotEquals(helpDocumentsSaveKey, legalDocumentsSaveKey, "data was saved using the same key")
+
+            assertEquals(helpDocumentsRestoreKey, helpDocumentsSaveKey)
+            assertEquals(legalDocumentsRestoreKey, legalDocumentsSaveKey)
+         }
+      }
 }) {
    companion object {
 
+      val DOCUMENT_TYPE_HELP = GetDocumentsCommand.DocumentType.HELP
+      val DOCUMENT_TYPE_LEGAL = GetDocumentsCommand.DocumentType.LEGAL
+
       val apiDocuments = emptyList<Document>()
 
-      val documents = listOf(Document(1, "Techery", "https://techery.io"),
-            Document(2, "Google", "https://google.com"))
-      val storedDocuments = listOf(Document(3, "Amazon", "https://amazon.com"),
-            Document(4, "HBO", "https://hbo.com"))
+      val documents = listOf(Document("Techery", "Techery", "https://techery.io"),
+            Document("Google", "Google", "https://google.com"))
+      val storedDocuments = listOf(Document("Amazon", "Amazon", "https://amazon.com"),
+            Document("HBO", "HBO", "https://hbo.com"))
 
-      val documentsMemoryStorage: PaginatedMemoryStorage<Document> = mock()
-      val documentsDiscStorage: DocumentsDiskStorage = mock()
+      var documentsMemoryStorage: KeyValuePaginatedMemoryStorage<Document> = mock()
+      val documentsDiscStorage: KeyValuePaginatedDiskStorage<Document> = mock()
       val storage = DocumentsStorage(documentsMemoryStorage, documentsDiscStorage)
 
       val mappery: MapperyContext = mock()
@@ -114,6 +150,10 @@ class DocumentsInteractorSpec : BaseSpec({
 
          whenever(mappery.convert(apiDocuments, Document::class.java))
                .thenReturn(documents)
+         whenever(mappery.convert(DOCUMENT_TYPE_HELP, DocumentType::class.java))
+               .thenReturn(DocumentType.GENERAL)
+         whenever(mappery.convert(DOCUMENT_TYPE_LEGAL, DocumentType::class.java))
+               .thenReturn(DocumentType.LEGAL)
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }

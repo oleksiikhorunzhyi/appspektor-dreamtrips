@@ -6,6 +6,4 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.AccountImagesP
 
 @Layout(R.layout.fragment_account_images_list)
 public class AccountImagesListFragment extends MembersImagesListFragment<AccountImagesPresenter> {
-
-
 }

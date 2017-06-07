@@ -15,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
@@ -247,6 +248,10 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
    public void hideSoftInput(View view) {
       SoftInputUtil.hideSoftInputMethod(view);
+   }
+
+   public boolean isConnected() {
+      return Utils.isConnected(getContext());
    }
 
    /**

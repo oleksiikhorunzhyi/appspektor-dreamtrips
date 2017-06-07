@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.wallet.service.command.record;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
@@ -22,7 +21,6 @@ import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
 
 @CommandAction
@@ -43,15 +41,6 @@ public class UpdateRecordCommand extends Command<Void> implements InjectableActi
       return new UpdateRecordCommand(ImmutableRecord.builder().from(record).nickName(nickName).build());
    }
 
-   public static UpdateRecordCommand updateAddress(Record record, AddressInfo addressInfo) {
-      return new UpdateRecordCommand(
-            ImmutableRecord.builder()
-                  .from(record)
-                  .addressInfo(addressInfo)
-                  .build()
-      );
-   }
-
    public Record getRecord() {
       return record;
    }
@@ -68,7 +57,6 @@ public class UpdateRecordCommand extends Command<Void> implements InjectableActi
 
    private void checkCardData() throws FormatException {
       validateCardNameOrThrow(record.nickName());
-      validateAddressInfoOrThrow(record.addressInfo());
    }
 
    private Observable<io.techery.janet.smartcard.model.Record> prepareRecordForSmartCard(Record record) {

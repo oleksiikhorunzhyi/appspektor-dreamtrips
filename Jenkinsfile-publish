@@ -5,7 +5,7 @@ def buildParams = [:]
 
 utils.runBuild('android', getNotifier(utils)) {
    stage('prepare build') {
-      buildParams = generateParams(isPullRequest())
+      buildParams = generateParams(isPullRequest(), isInternalOnly())
       println "Build params: $buildParams"
    }
    stage('checkout') {
@@ -33,28 +33,29 @@ utils.runBuild('android', getNotifier(utils)) {
          utils.scripts.bash("chmod +rx ${SIGNING_PROPS}")
          utils.scripts.bash("cp -f ${SIGNING_KEY} signing")
          utils.scripts.bash("cp -f ${SIGNING_PROPS} signing")
-         utils.scripts.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType} -Pqa_automation_mode=${buildParams.qa_automation_mode}"
+         utils.scripts.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType} ${buildParams.buildArgs}"
       }
    }
    stage('publish') {
-     if (Boolean.valueOf(env.INTERNAL_ONLY)) {
-        archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
+      if (isInternalOnly()) {
+         archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
       } else {
-        def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
-        echo releaseNotes
-        def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
-        step([$class   : 'HockeyappRecorder', applications:
-              [[apiToken          : params.hockeyApiToken,
-                filePath          : apkPath,
-                downloadAllowed   : true,
-                mandatory         : false,
-                notifyTeam        : true,
-                teams             : buildParams.hockeyAppTeams.join(','),
-                releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
-                uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
-               ]],
-              debugMode: false, failGracefully: true
-        ])
+         def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
+         echo releaseNotes
+         def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+         step([$class   : 'HockeyappRecorder', applications:
+               [[apiToken          : params.hockeyApiToken,
+                 filePath          : apkPath,
+                 downloadAllowed   : true,
+                 mandatory         : false,
+                 notifyTeam        : true,
+                 releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
+                 uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
+                ] << (
+                     buildParams.hockeyAppTeams.isEmpty() ? [:] : [teams: buildParams.hockeyAppTeams.join(',')]
+               )],
+               debugMode: false, failGracefully: true
+         ])
       }
    }
    if (isPullRequest()) stage('notify') {
@@ -69,15 +70,15 @@ node('android') {
 }
 
 @NonCPS
-def Map generateParams(boolean isPullRequest) {
+def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
    def params = [
-         streamFlavor       : "Stable",
-         serverFlavor       : "Stage",
-         apkBuildType       : "Debug",
-         hockeyApiToken     : "c190d98f211e4ed689ce441d0de9ef1d",
-         hockeyAppId        : "",
-         hockeyAppTeams     : [],
-         qa_automation_mode : false
+         streamFlavor      : "Stable",
+         serverFlavor      : "Stage",
+         apkBuildType      : "Debug",
+         hockeyApiToken    : "c190d98f211e4ed689ce441d0de9ef1d",
+         hockeyAppId       : "",
+         hockeyAppTeams    : [],
+         qa_automation_mode: false
    ]
 
    def devTeam = "40021"
@@ -85,7 +86,6 @@ def Map generateParams(boolean isPullRequest) {
 
    params.branch = (isPullRequest ? env.gitlabSourceBranch : env.GIT_BRANCH).replace("origin/", "")
    params.comment = (isPullRequest ? env.gitlabTriggerPhrase : env.COMMENT) ?: ""
-   params.qa_automation_mode = params.comment.contains("-qa_automation_mode")
 
    switch (params.branch) {
       case ~/^(develop)|(common\/.+)/:
@@ -114,8 +114,7 @@ def Map generateParams(boolean isPullRequest) {
             ]
          }
          params << [
-               apkBuildType  : "Release",
-               hockeyAppTeams: [qaTeam, devTeam]
+               apkBuildType: "Release",
          ]
          break
       case ~/^social\/.+/:
@@ -151,6 +150,20 @@ def Map generateParams(boolean isPullRequest) {
          throw new IllegalArgumentException("Branch is not supported")
    }
 
+   def buildArgs = [:]
+   if (isInternalOnly) {
+      if (!env.FORCED_SERVER_FLAVOR.isEmpty()) params.serverFlavor = env.FORCED_SERVER_FLAVOR
+      if (!env.FORCED_STREAM_FLAVOR.isEmpty()) params.streamFlavor = env.FORCED_STREAM_FLAVOR
+      if (!env.FORCED_APK_BUILD_TYPE.isEmpty()) params.apkBuildType = env.FORCED_APK_BUILD_TYPE
+      if (!env.FORCED_API_ENDPOINT.isEmpty()) buildArgs << [api_endpoint: env.FORCED_API_ENDPOINT]
+      if (!env.FORCED_API_UPLOADERY.isEmpty()) buildArgs << [api_uploadery: env.FORCED_API_UPLOADERY]
+      if (params.serverFlavor == 'Integration') params.streamFlavor = 'Stable'
+      //
+      if (Boolean.valueOf(env.QA_AUTOMATION_MODE)) buildArgs << [qa_automation_mode: 'true']
+   }
+   params.buildArgs = buildArgs.collect { key, value -> "-P${key}=${value}" }.join(' ')
+
+
    def targetBranch
    if (isPullRequest) targetBranch = env.gitlabTargetBranch
    else switch (params.branch) {
@@ -183,6 +196,10 @@ def Map generateParams(boolean isPullRequest) {
 
 def boolean isPullRequest() {
    env.gitlabBranch != null
+}
+
+def boolean isInternalOnly() {
+   Boolean.valueOf(env.INTERNAL_ONLY)
 }
 
 def getNotifier(utils) {

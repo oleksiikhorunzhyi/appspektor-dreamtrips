@@ -1,29 +1,24 @@
 package com.worldventures.dreamtrips.modules.feed.storage.delegate;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
-import com.worldventures.dreamtrips.modules.feed.storage.command.HashtagFeedStorageCommand;
-import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedStorageInteractor;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.command.HashtagFeedStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedStorageInteractor;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
 public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagFeedStorageCommand> {
 
-   private HashtagInteractor hashtagInteractor;
+   @Inject HashtagInteractor hashtagInteractor;
+
    private String hashtag;
 
-   public HashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor,
-         HashtagInteractor hashtagInteractor, PostsInteractor postsInteractor,
-         TripImagesInteractor tripImagesInteractor, BucketInteractor bucketInteractor,
-         SessionHolder<UserSession> sessionHolder) {
-      super(hashtagFeedStorageInteractor, postsInteractor, tripImagesInteractor, bucketInteractor, sessionHolder);
-      this.hashtagInteractor = hashtagInteractor;
+   public HashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor, Injector injector) {
+      super(hashtagFeedStorageInteractor, injector);
    }
 
    @Override

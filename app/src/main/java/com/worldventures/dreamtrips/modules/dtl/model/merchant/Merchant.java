@@ -4,13 +4,13 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributesFactory;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Disclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +47,7 @@ public abstract class Merchant implements Serializable {
    @Nullable public abstract List<MerchantMedia> images();
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract List<Disclaimer> disclaimers();
+   @Nullable public abstract Reviews reviews();
 
    @Value.Derived public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);

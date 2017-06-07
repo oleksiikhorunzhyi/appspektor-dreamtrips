@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/dtl_all_reviews_height_big"
+      android:orientation="vertical"
+      >
+
+   <include layout="@layout/merchant_review" />
+
+   <include layout="@layout/no_review" />
+
+</LinearLayout>

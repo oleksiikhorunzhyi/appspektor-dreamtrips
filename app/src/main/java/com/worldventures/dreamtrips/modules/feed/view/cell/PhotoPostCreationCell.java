@@ -104,11 +104,9 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          }
          invalidateAddTagBtn();
       });
-
       PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
             .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
             .getController());
-
       attachedPhoto.setController(draweeController);
       photoTitle.setText(getModelObject().getTitle());
       boolean titleChangesEnabled = getModelObject().isCanEdit();

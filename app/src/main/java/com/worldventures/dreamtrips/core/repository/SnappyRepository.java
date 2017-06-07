@@ -12,14 +12,15 @@ import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
@@ -37,14 +38,14 @@ import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 public interface SnappyRepository {
 
    String CIRCLES = "circles";
-   String REGIONS = "regions_new";
+   String TRIP_FILTERS = "trip_filters";
    String CATEGORIES = "categories";
-   String ACTIVITIES = "activities_new";
    String BUCKET_LIST = "bucket_items";
    String SETTINGS_KEY = "settings";
    String TRANSLATION = "translation";
    String POST = "post";
    String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
+   String MEDIA_UPLOAD_MODEL = "MEDIA_UPLOAD_MODEL";
    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
    String IMAGE = "IMAGE";
@@ -85,7 +86,6 @@ public interface SnappyRepository {
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
    String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
-   String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
    String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
@@ -201,11 +201,17 @@ public interface SnappyRepository {
 
    void deleteDtlTransaction(String id);
 
-   void saveDownloadMediaEntity(CachedEntity e);
+   void saveDownloadMediaModel(CachedModel e);
 
+   List<CachedModel> getDownloadMediaModels();
+
+   @Deprecated
    List<CachedEntity> getDownloadMediaEntities();
 
-   CachedEntity getDownloadMediaEntity(String id);
+   @Deprecated
+   void deleteAllMediaEntities();
+
+   CachedModel getDownloadMediaModel(String id);
 
    void setLastSyncAppVersion(String appVersion);
 
@@ -222,6 +228,10 @@ public interface SnappyRepository {
    void saveTrips(List<TripModel> trips);
 
    List<TripModel> getTrips();
+
+   void saveTripFilters(CachedTripFilters tripFilters);
+
+   CachedTripFilters getTripFilters();
 
    void savePins(List<Pin> pins);
 
@@ -240,12 +250,6 @@ public interface SnappyRepository {
    SimpleDeviceStorage getWalletDeviceStorage();
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
-
-   void saveDefaultAddress(AddressInfo addressInfo);
-
-   AddressInfo readDefaultAddress();
-
-   void deleteDefaultAddress();
 
    void saveSmartCard(SmartCard smartCard);
 

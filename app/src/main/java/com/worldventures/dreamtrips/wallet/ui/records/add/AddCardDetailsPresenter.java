@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -12,13 +11,11 @@ import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
@@ -73,9 +70,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       trackScreen();
       presetRecordToDefaultIfNeeded();
       observeDefaultCardChangeByUser();
-      observeFetchingDefaultAddress();
       observeSavingCardDetailsData();
-      loadDataFromDevice();
       observeMandatoryFields();
       observePinOptions();
    }
@@ -106,21 +101,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .subscribe(this::onUpdateStatusDefaultCard);
    }
 
-   private void observeFetchingDefaultAddress() {
-      recordInteractor.getDefaultAddressCommandPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDefaultAddress())
-                  .onSuccess(command -> setDefaultAddress(command.getResult()))
-                  .create()
-            );
-   }
-
-   private void setDefaultAddress(@Nullable AddressInfo defaultAddress) {
-      if (defaultAddress == null) return;
-      getView().defaultAddress(defaultAddress);
-   }
-
    private void observeSavingCardDetailsData() {
       recordInteractor.addRecordPipe()
             .observe()
@@ -137,15 +117,10 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       wizardInteractor.pinOptionalActionPipe().send(PinOptionalCommand.fetch());
    }
 
-   private void loadDataFromDevice() {
-      recordInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
-   }
-
-   void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
+   void onCardInfoConfirmed(String cvv, String cardName, boolean setAsDefaultCard) {
       this.cardNickname = cardName;
       recordInteractor.addRecordPipe()
             .send(new AddRecordCommand.Builder().setRecord(record)
-                  .setManualAddressInfo(addressInfo)
                   .setRecordName(cardName)
                   .setCvv(cvv)
                   .setSetAsDefaultRecord(setAsDefaultCard)
@@ -204,7 +179,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private boolean validateNickName(String nickname) {
-      if (WalletValidateHelper.validateCardName(nickname)) {
+      if (WalletValidateHelper.isValidCardName(nickname)) {
          getView().hideCardNameError();
          getView().setCardName(nickname);
          return true;
@@ -215,29 +190,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void observeMandatoryFields() {
-      final Screen screen = getView();
-      //noinspection ConstantConditions
-      Observable.combineLatest(
-            observeCardNickName(),
-            screen.getAddress1Observable(),
-            screen.getCityObservable(),
-            screen.getZipObservable(),
-            screen.getStateObservable(),
-            screen.getCvvObservable(),
-            this::checkMandatoryFields)
+      Observable.combineLatest(observeCardNickName(), getView().getCvvObservable(), this::checkMandatoryFields)
             .compose(bindView())
-            .subscribe(screen::setEnableButton);
+            .subscribe(getView()::setEnableButton);
    }
 
-   private boolean checkMandatoryFields(boolean cardNameValid, String address1, String city, String zipCode, String state, String cvv) {
-      return cardNameValid && WalletRecordUtil.validationMandatoryFields(
-            record.number(),
-            address1,
-            city,
-            zipCode,
-            state,
-            cvv
-      );
+   private boolean checkMandatoryFields(boolean cardNameValid, String cvv) {
+      return cardNameValid && WalletRecordUtil.validationMandatoryFields(record.number(), cvv);
    }
 
    private void trackScreen() {
@@ -269,17 +228,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       Observable<String> getCardNicknameObservable();
 
-      Observable<String> getAddress1Observable();
-
-      Observable<String> getStateObservable();
-
-      Observable<String> getZipObservable();
-
-      Observable<String> getCityObservable();
-
       Observable<String> getCvvObservable();
-
-      void defaultAddress(AddressInfo addressInfo);
 
       void defaultPaymentCard(boolean defaultPaymentCard);
 
@@ -292,8 +241,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       void showCardNameError();
 
       void hideCardNameError();
-
-      OperationView<GetDefaultAddressCommand> provideOperationGetDefaultAddress();
 
       OperationView<AddRecordCommand> provideOperationAddRecord();
    }

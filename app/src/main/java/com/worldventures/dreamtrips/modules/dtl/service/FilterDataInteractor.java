@@ -61,6 +61,28 @@ public class FilterDataInteractor implements Initializable {
             .subscribe(this::send);
    }
 
+   public void searchMerchantType(final List<String> merchantType, String searchQuery) {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.builder()
+                  .distanceType(filterData.distanceType())
+                  .distanceMaxIndex(filterData.distanceMaxIndex())
+                  .isOffersOnly(filterData.isOffersOnly())
+                  .budgetMax(filterData.budgetMax())
+                  .budgetMin(filterData.budgetMin())
+                  .searchQuery(searchQuery)
+                  .merchantType(merchantType)
+                  .build())
+            .subscribe(this::send);
+   }
+
+   public void resetAmenities() {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(0)
+                  .withSelectedAmenities(Collections.emptyList()))
+            .subscribe(this::send);
+   }
+
    public void mergeAndApply(FilterData newFilterData) {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)

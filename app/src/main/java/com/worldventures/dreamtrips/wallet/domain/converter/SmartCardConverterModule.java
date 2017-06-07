@@ -34,11 +34,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideProfileAddressToUserAddressConverter() {
-      return new ProfileAddressToUserAddressConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideSmartCardUserToUserConverter() {
       return new SmartCardUserToUserConverter();
    }

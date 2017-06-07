@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.wallet
 
 import android.content.Context
 import android.test.mock.MockContext
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.NxtSessionHolder
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
@@ -13,7 +15,6 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType
@@ -22,11 +23,9 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.TestRecordsStorage
-import com.worldventures.dreamtrips.wallet.model.TestAddressInfo
 import com.worldventures.dreamtrips.wallet.model.TestMultiResponseBody
 import com.worldventures.dreamtrips.wallet.model.TestRecord
 import com.worldventures.dreamtrips.wallet.service.*
-import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand
@@ -106,14 +105,8 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(testSubscriber, { it.result.id() != null })
          }
 
-         it("creates record with saving address as default") {
-            val testSubscriber = addRecord(debitCard, setAsDefaultCard = true, setAsDefaultAddress = true)
-            assertActionSuccess(testSubscriber, { it.result.id() != null })
-            verify(mockDb, times(1)).saveDefaultAddress(any())
-         }
-
          it("creates record and saves default record id") {
-            val testSubscriber = addRecord(debitCard, setAsDefaultCard = true, setAsDefaultAddress = true)
+            val testSubscriber = addRecord(debitCard, setAsDefaultCard = true)
 
             var savedRecord: Record? = null
             assertActionSuccess(testSubscriber, {
@@ -126,7 +119,7 @@ class SmartCardInteractorSpec : BaseSpec({
          }
 
          it("throws FormatException when creating record with invalid data") {
-            val subscriber = addRecord(debitCard, cvv = "pp", setAsDefaultCard = true, setAsDefaultAddress = true)
+            val subscriber = addRecord(debitCard, cvv = "pp")
             assertActionFail(subscriber, { it.cause is FormatException })
          }
 
@@ -307,17 +300,6 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(getLockState(), { it.locked })
          }
       }
-
-      context("Fetch default address") {
-         val addressInfo = TestAddressInfo()
-         beforeEachTest {
-            whenever(mockDb.readDefaultAddress()).thenReturn(addressInfo)
-         }
-
-         it("should fetch only from cache") {
-            assertActionSuccess(loadDefaultAddress(), { addressInfo.address1() == it.result.address1() })
-         }
-      }
    }
 }) {
    private companion object {
@@ -410,32 +392,14 @@ class SmartCardInteractorSpec : BaseSpec({
          assertActionSuccess(testSubscriber, { predicate(it) })
       }
 
-      fun loadDefaultAddress(): TestSubscriber<ActionState<GetDefaultAddressCommand>> {
-         val testSubscriber = TestSubscriber<ActionState<GetDefaultAddressCommand>>()
-
-         recordInteractor.defaultAddressCommandPipe
-               .createObservable(GetDefaultAddressCommand())
-               .subscribe(testSubscriber)
-         return testSubscriber
-      }
-
-      fun addRecord(record: Record,
-                    setAsDefaultAddress: Boolean = false,
-                    setAsDefaultCard: Boolean = false,
-                    useDefaultAddress: Boolean = false,
-                    manualAddressInfo: AddressInfo = TestAddressInfo(),
-                    nickName: String = "Test Card",
-                    cvv: String = "000"): TestSubscriber<ActionState<AddRecordCommand>> {
+      fun addRecord(record: Record, nickName: String = "Test Card", cvv: String = "000", setAsDefaultCard: Boolean = false): TestSubscriber<ActionState<AddRecordCommand>> {
          // by default, mock payment card number is 123456789. It mean then cvv should be contain only 3 digit.
          val testSubscriber = TestSubscriber<ActionState<AddRecordCommand>>()
          val cmd = AddRecordCommand.Builder()
                .setRecord(record)
-               .setManualAddressInfo(manualAddressInfo)
                .setRecordName(nickName)
-               .setCvv(cvv)
-               .setUseDefaultAddress(useDefaultAddress)
-               .setSetAsDefaultAddress(setAsDefaultAddress)
-               .setSetAsDefaultRecord(setAsDefaultCard)
+               .setCvv(cvv).setSetAsDefaultRecord(setAsDefaultCard)
+
                .create()
 
          recordInteractor.addRecordPipe()
@@ -462,6 +426,5 @@ class SmartCardInteractorSpec : BaseSpec({
                .toBlocking()
                .subscribe()
       }
-
    }
 }

@@ -17,7 +17,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -35,7 +34,6 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionMod
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
-import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.InjectView;
@@ -55,7 +53,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
    @InjectView(R.id.controls_layout) LinearLayout controlsLayout;
 
-   @InjectView(R.id.address_textview) TextView tvAddress;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
    @InjectView(R.id.default_payment_card_checkbox) WalletSwitcher defaultPaymentCardSwitcher;
@@ -63,7 +60,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
-   private MaterialDialog connectedErrorDialog;
    private MaterialDialog networkConnectionErrorDialog;
    private final WalletRecordUtil walletRecordUtil;
 
@@ -115,11 +111,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       getPresenter().onDeleteCardClick();
    }
 
-   @OnClick(R.id.edit_billing_address)
-   public void onEditBillingAddress() {
-      getPresenter().editAddress();
-   }
-
    @OnClick(R.id.pay_this_card_button)
    public void onPayThisCardClicked() {
       getPresenter().payThisCard();
@@ -157,19 +148,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             .onPositive((dialog, which) -> getPresenter().onDeleteCardConfirmed())
             .build()
             .show();
-   }
-
-   @Override
-   public void showConnectionErrorDialog() {
-      if (connectedErrorDialog == null) {
-         connectedErrorDialog = new MaterialDialog.Builder(getContext())
-               .title(R.string.wallet_smartcard_disconnected_label)
-               .content(R.string.wallet_smartcard_connection_try_description)
-               .positiveText(R.string.ok)
-               .onPositive((dialog, which) -> dialog.dismiss())
-               .build();
-      }
-      if (!connectedErrorDialog.isShowing()) connectedErrorDialog.show();
    }
 
    @Override
@@ -213,11 +191,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void setDefaultCardCondition(boolean defaultCard) {
       defaultPaymentCardSwitcher.setCheckedWithoutNotify(defaultCard);
-   }
-
-   @Override
-   public void showDefaultAddress(AddressInfo addressInfo) {
-      tvAddress.setText(AddressUtil.obtainAddressLabel(addressInfo));
    }
 
    @Override
@@ -330,7 +303,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    protected void onDetachedFromWindow() {
       if (networkConnectionErrorDialog != null) networkConnectionErrorDialog.dismiss();
-      if (connectedErrorDialog != null) connectedErrorDialog.dismiss();
       super.onDetachedFromWindow();
    }
 }

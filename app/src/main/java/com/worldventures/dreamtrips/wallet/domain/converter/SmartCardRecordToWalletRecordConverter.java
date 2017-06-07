@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
@@ -44,30 +42,10 @@ public class SmartCardRecordToWalletRecordConverter implements Converter<io.tech
             .bankName(bankName == null ? "" : bankName)
             .financialService(mapperyContext.convert(record.financialService(), FinancialService.class))
             .recordType(mapperyContext.convert(record.cardType(), RecordType.class))
-            .addressInfo(fetchAddressInfoFromRecord(record))
             .cardHolderFirstName(record.firstName())
             .cardHolderLastName(record.lastName())
             .cardHolderMiddleName(record.middleName())
+            .version(record.version())
             .build();
-   }
-
-   private AddressInfo fetchAddressInfoFromRecord(io.techery.janet.smartcard.model.Record record) {
-      ImmutableAddressInfo.Builder addressInfoBuilder = ImmutableAddressInfo.builder();
-      if (record.streetName() != null) {
-         addressInfoBuilder.address1(record.streetName());
-      }
-      if (record.country() != null) {
-         addressInfoBuilder.address2(record.country());
-      }
-      if (record.city() != null) {
-         addressInfoBuilder.city(record.city());
-      }
-      if (record.state() != null) {
-         addressInfoBuilder.state(record.state());
-      }
-      if (record.zipCode() != null) {
-         addressInfoBuilder.zip(record.zipCode());
-      }
-      return addressInfoBuilder.build();
    }
 }

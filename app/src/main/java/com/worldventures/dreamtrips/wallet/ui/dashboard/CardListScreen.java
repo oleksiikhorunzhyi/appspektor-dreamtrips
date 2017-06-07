@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -69,7 +68,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
-   @InjectView(R.id.content_layer) RelativeLayout contentLayout;
 
    private CardStackHeaderHolder cardStackHeaderHolder;
 

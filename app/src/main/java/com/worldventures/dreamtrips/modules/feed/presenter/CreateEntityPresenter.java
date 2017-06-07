@@ -190,7 +190,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .subscribe(newImage -> {
                if (ValidationUtils.isUrl(newImage.getFileUri())) {
                   mediaInteractor.copyFilePipe()
-                        .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
+                        .createObservableResult(new CopyFileCommand(newImage.getFileUri()))
                         .compose(bindViewToMainComposer())
                         .subscribe(command -> {
                            String stringUri = command.getResult();

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Podcast
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity
+import com.worldventures.dreamtrips.modules.video.model.CachedModel
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -35,7 +36,7 @@ class PodcastsInteractorSpec : BaseSpec({
 
       it("Verify cached entity restored") {
          val subscriber = loadPodcastsWithRefresh()
-         verify(mockDb, times(2)).getDownloadMediaEntity(anyString())
+         verify(mockDb, times(2)).getDownloadMediaModel(anyString())
       }
    }
 }) {
@@ -48,8 +49,8 @@ class PodcastsInteractorSpec : BaseSpec({
 
       fun setup() {
          mockDb = spy()
-         val cachedEntity = mock<CachedEntity>()
-         whenever(mockDb.getDownloadMediaEntity(anyString())).thenReturn(cachedEntity)
+         val cachedEntity = mock<CachedModel>()
+         whenever(mockDb.getDownloadMediaModel(anyString())).thenReturn(cachedEntity)
          stubPodcasts = makeStubPodcasts()
 
          val daggerCommandActionService = CommandActionService()

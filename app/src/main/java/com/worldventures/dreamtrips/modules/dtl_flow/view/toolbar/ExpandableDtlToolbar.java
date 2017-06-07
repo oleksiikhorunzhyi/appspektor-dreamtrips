@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -248,6 +249,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    protected void onMerchantSearchInputClicked() {
       if (collapsed) {
          expand();
+      } else {
+         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+         imm.hideSoftInputFromWindow(merchantSearchInput.getWindowToken(), 0);
       }
    }
 

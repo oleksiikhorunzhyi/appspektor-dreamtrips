@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -23,7 +22,7 @@ public class PinProposalScreen extends WalletLinearLayout<PinProposalPresenter.S
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.not_now_button) TextView btnSkip;
    @InjectView(R.id.txt_pin_proposal_label) TextView tvLabel;
-   @InjectView(R.id.linear_layout_bottom_sheet_pin_proposal) LinearLayout bottomSheetLinearLayout;
+
    private PinProposalDialog pinProposalDialog;
 
    public PinProposalScreen(Context context) {
@@ -66,7 +65,7 @@ public class PinProposalScreen extends WalletLinearLayout<PinProposalPresenter.S
 
    @Override
    public void preparePinOptionalDialog(PinProposalDelegate pinProposalDelegate) {
-      pinProposalDialog = pinProposalDelegate.createPinDialog(presenter, bottomSheetLinearLayout, getContext());
+      pinProposalDialog = pinProposalDelegate.createPinDialog(presenter, null, getContext());
    }
 
    @Override

@@ -1,48 +1,57 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog;
 
 
-import android.support.design.widget.BottomSheetBehavior;
-import android.view.View;
+import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
+import android.support.design.widget.BottomSheetDialog;
+import android.view.LayoutInflater;
 
+import com.worldventures.dreamtrips.BR;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class RecordsPinProposalDialog extends PinProposalDialog {
 
-   private final BottomSheetBehavior bottomSheetBehavior;
+   private final BottomSheetDialog bottomSheetDialog;
 
-   public RecordsPinProposalDialog(PinProposalPresenter presenter, View bottomSheetView) {
+   public RecordsPinProposalDialog(Context context, PinProposalPresenter presenter) {
       super(presenter);
-      bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-      ButterKnife.inject(this, bottomSheetView);
+      bottomSheetDialog = new BottomSheetDialog(context);
+
+      ViewDataBinding viewDataBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(context),
+            R.layout.wallet_pin_proposal_bottom_sheet_dialog,
+            null,
+            false
+      );
+
+      viewDataBinding.setVariable(BR.recordBottomDialog, this);
+
+      bottomSheetDialog.setContentView(viewDataBinding.getRoot());
    }
 
-   @OnClick(R.id.txt_pin_proposal_remind_later)
-   void onRemindLaterClick() {
+   public void onRemindLaterClick() {
+      hideDialog();
       remindLater();
    }
 
-   @OnClick(R.id.txt_pin_proposal_dont_show)
-   void onDontShowClick() {
+   public void onDontShowClick() {
+      hideDialog();
       presenter.dontShowAgain();
    }
 
-   @OnClick(R.id.txt_pin_proposal_cancel)
-   void onCancelClick() {
+   public void onCancelClick() {
       hideDialog();
    }
 
    @Override
    public void showDialog() {
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+      bottomSheetDialog.show();
    }
 
    @Override
    public void hideDialog() {
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+      bottomSheetDialog.cancel();
    }
 }

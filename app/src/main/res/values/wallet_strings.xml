@@ -166,6 +166,8 @@
    <string name="wallet_card_settings_help_us_make_sc_better">Help us make Smart Card better</string>
    <string name="wallet_card_settings_customer_support">Customer Support</string>
    <string name="wallet_card_settings_contact_our_customer_support_team">Contact our customer support team</string>
+   <string name="wallet_card_settings_help_payment_feedback">Payment Feedback</string>
+   <string name="wallet_card_settings_help_other_feedback">Suggestions, Comments or Bugs</string>
 
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>

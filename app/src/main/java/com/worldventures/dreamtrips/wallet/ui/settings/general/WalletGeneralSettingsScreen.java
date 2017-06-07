@@ -143,9 +143,9 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    public void showConfirmRestartSCDialog() {
       if (confirmRestartSmartCardDialog == null) {
          confirmRestartSmartCardDialog = new MaterialDialog.Builder(getContext())
-               .title(R.string.wallet_card_settings_restart_your_sc)
+               .title(R.string.wallet_card_settings_turn_off_your_sc)
                .content(R.string.wallet_card_settings_are_you_sure)
-               .positiveText(R.string.wallet_card_settings_restart)
+               .positiveText(R.string.wallet_card_settings_power_off)
                .negativeText(R.string.cancel)
                .onPositive(((dialog, which) -> presenter.onConfirmedRestartSmartCard()))
                .build();

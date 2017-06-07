@@ -142,12 +142,12 @@
 
             <TextView
                   style="@style/SettingsText.Primary"
-                  android:text="@string/wallet_card_settings_restart"
+                  android:text="@string/wallet_card_settings_power_off"
                   />
 
             <TextView
                   style="@style/SettingsText.Secondary"
-                  android:text="@string/wallet_card_settings_restart_your_sc"
+                  android:text="@string/wallet_card_settings_turn_off_your_sc"
                   />
 
          </LinearLayout>

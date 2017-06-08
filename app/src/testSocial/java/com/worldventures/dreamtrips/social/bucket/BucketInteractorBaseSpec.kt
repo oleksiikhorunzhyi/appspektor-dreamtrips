@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.bucket
 import android.content.Context
 import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
@@ -19,7 +18,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.*
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
@@ -37,10 +35,7 @@ import java.util.*
 abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSpec(speckBody) {
    companion object BaseCompanion {
       val MOCK_USER_ID = 1
-
       val TEST_IMAGE_PATH = TemporaryFolder().createFileAndGetPath("TestPhoto.jpeg")
-
-
 
       val mockSessionHolder: SessionHolder<UserSession> = mock()
       val userSession: UserSession = mock()

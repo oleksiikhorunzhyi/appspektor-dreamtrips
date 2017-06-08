@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardVie
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardGroupHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CommonCardHolder;
 
-public class HolderFactoryImpl implements HolderTypeFactory {
+public class DashboardHolderFactoryImpl implements DashboardHolderTypeFactory {
 
    @Override
    public int type(CommonCardViewModel commonCardViewModel) {

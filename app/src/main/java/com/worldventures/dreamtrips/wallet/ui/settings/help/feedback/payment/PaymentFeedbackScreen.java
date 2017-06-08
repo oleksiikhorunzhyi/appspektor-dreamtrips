@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -20,12 +19,11 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.BaseFeedbackScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel;
 
 import java.util.List;
@@ -37,9 +35,7 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.BaseSendFeedbackPresenter.MAX_PHOTOS_ATTACHMENT;
-
-public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPresenter.Screen, PaymentFeedbackPresenter, PaymentFeedbackPath> implements PaymentFeedbackPresenter.Screen {
+public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPresenter.Screen, PaymentFeedbackPresenter, PaymentFeedbackPath> implements PaymentFeedbackPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.feedback_add_photos) View addPhotosButton;
@@ -49,7 +45,6 @@ public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPre
    private PaymentFeedbackViewModel paymentFeedbackView = new PaymentFeedbackViewModel();
 
    private MenuItem actionSendMenuItem = null;
-   private MediaPickerService mediaPickerService;
    private ScreenWalletSettingsHelpPaymentFeedbackBinding binding;
 
    private Observable<CharSequence> observerMerchantName;
@@ -85,10 +80,6 @@ public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPre
       binding = DataBindingUtil.bind(this);
       binding.setPaymentFeedbackViewModel(paymentFeedbackView);
       setupAsteriskColor();
-
-      //noinspection WrongConstant
-      mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
-      mediaPickerService.setPhotoPickerListener(photoPickerListener);
 
       observerMerchantName = RxTextView.textChanges(tvMerchantName);
    }
@@ -176,11 +167,6 @@ public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPre
    }
 
    @Override
-   public void pickPhoto() {
-      mediaPickerService.pickPhotos(MAX_PHOTOS_ATTACHMENT - feedbackAttachments.getItemCount());
-   }
-
-   @Override
    public void changeActionSendMenuItemEnabled(boolean enable) {
       if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
    }
@@ -225,11 +211,6 @@ public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPre
    }
 
    @Override
-   public Observable<Uri> observePickPhoto() {
-      return mediaPickerService.observePicker();
-   }
-
-   @Override
    public OperationView<SendWalletFeedbackCommand> provideOperationSendFeedback() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_feedback_progress_send, false),
@@ -259,7 +240,6 @@ public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPre
    }
 
    private void onNavigationBack() {
-      mediaPickerService.hidePicker();
       getPresenter().clearAttachments();
       getPresenter().back();
    }

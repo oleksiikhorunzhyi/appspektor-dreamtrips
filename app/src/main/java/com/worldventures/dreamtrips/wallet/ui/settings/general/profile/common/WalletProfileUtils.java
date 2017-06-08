@@ -12,6 +12,11 @@ import rx.functions.Action1;
 import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.isEmpty;
 
 public class WalletProfileUtils {
+   private static final String DEFAULT_AVATAR_URL = "/avatars/thumb/missing.png";
+
+   public static boolean isPhotoEmpty(String chosenPhotoUri) {
+      return chosenPhotoUri == null || chosenPhotoUri.equals(DEFAULT_AVATAR_URL) || chosenPhotoUri.isEmpty();
+   }
 
    public static boolean equalsPhone(@Nullable SmartCardUserPhone phone1, @Nullable SmartCardUserPhone phone2) {
       return phone1 == phone2 || (phone1 != null && phone1.equals(phone2));

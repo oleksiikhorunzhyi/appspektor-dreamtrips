@@ -15,12 +15,11 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
+import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -29,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionE
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerDialog;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
@@ -52,10 +52,11 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
     * notify other streams that it's ok
     */
    public static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
-   private MediaPickerService mediaPickerService;
+   private WalletCropImageService cropImageService;
    private ScreenWalletSettingsProfileBinding binding;
    private ProfileViewModel profileViewModel = new ProfileViewModel();
    private WalletPhotoProposalDialog photoActionDialog;
+   private WalletPickerDialog walletPickerDialog;
 
    private PublishSubject<ProfileViewModel> observeProfileViewModel = PublishSubject.create();
 
@@ -98,22 +99,11 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       binding.lastName.setKeyListener(null);
 
       //noinspection all
-      mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
-      mediaPickerService.setPhotoPickerListener(photoPickerListener);
+      cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
       ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
       binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
    }
-
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         presenter.setupInputMode();
-      }
-
-      @Override
-      public void onOpened() {}
-   };
 
    @NonNull
    @Override
@@ -125,14 +115,24 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       presenter.handleBackAction();
    }
 
-   void onChoosePhotoClick() {
+   void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
-      presenter.choosePhoto();
+      walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
+      walletPickerDialog.setOnDoneListener(models -> {
+         if (!models.isEmpty()) {
+            presenter.handlePickedPhoto(models.get(0));
+         }
+      });
+      if (initialPhotoUrl != null) {
+         walletPickerDialog.show(initialPhotoUrl);
+      } else {
+         walletPickerDialog.show();
+      }
    }
 
    void onDontAddClick() {
       hideDialog();
-      presenter.doNotAdd();
+      presenter.dontAdd();
    }
 
    @Override
@@ -144,7 +144,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    public void showDialog() {
       SoftInputUtil.hideSoftInputMethod(this);
       photoActionDialog = new WalletPhotoProposalDialog(getContext());
-      photoActionDialog.setOnChoosePhotoAction(this::onChoosePhotoClick);
+      photoActionDialog.setOnChoosePhotoAction(() -> getPresenter().choosePhoto());
       photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
       photoActionDialog.setOnCancelAction(this::hideDialog);
       photoActionDialog.show();
@@ -258,28 +258,18 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public void pickPhoto() {
-      mediaPickerService.pickPhoto();
+   public void pickPhoto(String initialPhotoUrl) {
+      onChoosePhotoClick(initialPhotoUrl);
    }
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      mediaPickerService.crop(photoPath);
-   }
-
-   @Override
-   public Observable<Uri> observePickPhoto() {
-      return mediaPickerService.observePicker();
+      cropImageService.cropImage(photoPath);
    }
 
    @Override
    public Observable<File> observeCropper() {
-      return mediaPickerService.observeCropper();
-   }
-
-   @Override
-   public void hidePhotoPicker() {
-      mediaPickerService.hidePicker();
+      return cropImageService.observeCropper();
    }
 
    @Override

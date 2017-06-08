@@ -40,6 +40,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDial
 import com.worldventures.dreamtrips.wallet.ui.common.recycler.WrapContentLinearLayoutManager;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderFactoryImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -305,7 +306,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private void setupCardStackList() {
 
       int dimension = getContext().getResources().getDimensionPixelSize(R.dimen.wallet_card_height);
-      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>());
+      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>(), new DashboardHolderFactoryImpl());
       bankCardList.setAdapter(multiAdapter);
       final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
       listAnimator.setSupportsChangeAnimations(false);

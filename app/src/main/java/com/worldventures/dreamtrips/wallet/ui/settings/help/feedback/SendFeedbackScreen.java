@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -18,8 +17,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -33,9 +30,7 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.BaseSendFeedbackPresenter.MAX_PHOTOS_ATTACHMENT;
-
-public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter.Screen, SendFeedbackPresenter, SendFeedbackPath> implements SendFeedbackPresenter.Screen {
+public class SendFeedbackScreen extends BaseFeedbackScreen<SendFeedbackPresenter.Screen, SendFeedbackPresenter, SendFeedbackPath> implements SendFeedbackPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -46,7 +41,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
 
    private MenuItem actionSendMenuItem = null;
    private Observable<CharSequence> textMessageObserver;
-   private MediaPickerService mediaPickerService;
 
    public SendFeedbackScreen(Context context) {
       super(context);
@@ -76,8 +70,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       supportHttpConnectionStatusLabel(true);
 
       //noinspection WrongConstant
-      mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
-      mediaPickerService.setPhotoPickerListener(photoPickerListener);
       textMessageObserver = RxTextView.textChanges(etFeedbackMessage);
 
       initItemMenu();
@@ -95,7 +87,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
 
    private void onNavigationBack() {
       getPresenter().goBack();
-      mediaPickerService.hidePicker();
       getPresenter().clearAttachments();
    }
 
@@ -176,11 +167,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    }
 
    @Override
-   public void pickPhoto() {
-      mediaPickerService.pickPhotos(MAX_PHOTOS_ATTACHMENT - feedbackAttachments.getItemCount());
-   }
-
-   @Override
    public void changeActionSendMenuItemEnabled(boolean enable) {
       if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
    }
@@ -221,11 +207,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    public void updateAttachment(EntityStateHolder<FeedbackImageAttachment> image) {
       feedbackAttachments.changeItemState(image);
       updateAttachmentsViewVisibility();
-   }
-
-   @Override
-   public Observable<Uri> observePickPhoto() {
-      return mediaPickerService.observePicker();
    }
 
    @Override

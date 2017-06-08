@@ -4,13 +4,14 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.HolderTypeFactory;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
-public class CardGroupHeaderModel extends BaseViewModel {
+public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable{
 
    private CommonCardViewModel.StackType name;
 
@@ -24,7 +25,7 @@ public class CardGroupHeaderModel extends BaseViewModel {
    }
 
    @Override
-   public int type(HolderTypeFactory typeFactory) {
+   public int type(DashboardHolderTypeFactory typeFactory) {
       return typeFactory.type(this);
    }
 

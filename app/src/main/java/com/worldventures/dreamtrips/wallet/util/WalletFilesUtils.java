@@ -6,7 +6,11 @@ import android.net.Uri;
 import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 
+import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
+
 import java.io.File;
+
+import timber.log.Timber;
 
 public class WalletFilesUtils {
 
@@ -50,6 +54,20 @@ public class WalletFilesUtils {
 
    public static long getAvailableBytes(File directory) {
       return new StatFs(directory.getPath()).getAvailableBytes();
+   }
+
+   public static Uri convertPickedPhotoToUri(BasePickerViewModel photoModel) {
+      Uri uri = Uri.parse(photoModel.getImageUri());
+      if (uri.getScheme() == null) {
+         //check if is local file path
+         final File localFile = new File(photoModel.getImageUri());
+         if (localFile.exists()) {
+            uri = Uri.fromFile(localFile);
+         } else {
+            Timber.e("Cannot parse path into Uri : %s", photoModel.getImageUri());
+         }
+      }
+      return uri;
    }
 
    public static class NotEnoughSpaceException extends Throwable {

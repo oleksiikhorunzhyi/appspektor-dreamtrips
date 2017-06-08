@@ -16,16 +16,16 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
+import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerDialog;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
@@ -44,8 +44,9 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    public static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
    private ScreenWalletWizardPersonalInfoBinding binding;
    private ProfileViewModel viewModel = new ProfileViewModel();
-   private MediaPickerService mediaPickerService;
+   private WalletCropImageService cropImageService;
    private WalletPhotoProposalDialog photoActionDialog;
+   private WalletPickerDialog walletPickerDialog;
 
    public WizardEditProfileScreen(Context context) {
       super(context);
@@ -76,9 +77,8 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
          }
       });
       //noinspection all
-      mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
+      cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
       binding.toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-      mediaPickerService.setPhotoPickerListener(photoPickerListener);
       ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
       binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
@@ -105,23 +105,24 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       Bundle bundle = (Bundle) state;
       setProfile(bundle.getParcelable(PROFILE_STATE_KEY));
    }
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         presenter.setupInputMode();
-      }
-
-      @Override
-      public void onOpened() {}
-   };
 
    protected void navigateButtonClick() {
       presenter.back();
    }
 
-   void onChoosePhotoClick() {
+   void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
-      presenter.choosePhoto();
+      walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
+      walletPickerDialog.setOnDoneListener(models -> {
+         if (!models.isEmpty()) {
+            presenter.handlePickedPhoto(models.get(0));
+         }
+      });
+      if (initialPhotoUrl != null) {
+         walletPickerDialog.show(initialPhotoUrl);
+      } else {
+         walletPickerDialog.show();
+      }
    }
 
    void onDontAddClick() {
@@ -144,7 +145,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    public void showDialog() {
       SoftInputUtil.hideSoftInputMethod(this);
       photoActionDialog = new WalletPhotoProposalDialog(getContext());
-      photoActionDialog.setOnChoosePhotoAction(this::onChoosePhotoClick);
+      photoActionDialog.setOnChoosePhotoAction(() -> getPresenter().choosePhoto());
       photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
       photoActionDialog.setOnCancelAction(this::hideDialog);
       photoActionDialog.show();
@@ -176,23 +177,18 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void pickPhoto() {
-      mediaPickerService.pickPhoto();
+   public void pickPhoto(String initialPhotoUrl) {
+      onChoosePhotoClick(initialPhotoUrl);
    }
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      mediaPickerService.crop(photoPath);
-   }
-
-   @Override
-   public Observable<Uri> observePickPhoto() {
-      return mediaPickerService.observePicker();
+      cropImageService.cropImage(photoPath);
    }
 
    @Override
    public Observable<File> observeCropper() {
-      return mediaPickerService.observeCropper();
+      return cropImageService.observeCropper();
    }
 
    @Override
@@ -204,11 +200,6 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @Override
    public ProfileViewModel getProfile() {
       return viewModel;
-   }
-
-   @Override
-   public void hidePhotoPicker() {
-      mediaPickerService.hidePicker();
    }
 
    @Override

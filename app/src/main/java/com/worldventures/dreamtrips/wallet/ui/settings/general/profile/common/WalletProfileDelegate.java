@@ -32,7 +32,6 @@ public class WalletProfileDelegate {
    }
 
    public void observePickerAndCropper(WalletProfilePhotoView view) {
-      view.observePickPhoto().compose(view.lifecycle()).subscribe(view::cropPhoto);
       view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
    }
 
@@ -76,5 +75,21 @@ public class WalletProfileDelegate {
          model.setChosenPhotoUri(user.getAvatar().getThumb());
       }
       return model;
+   }
+
+   public String provideInitialPhotoUrl(SmartCardUser user, ProfileViewModel profileViewModel) {
+      final SmartCardUserPhoto userPhoto = user.userPhoto();
+      return (userPhoto != null && !WalletProfileUtils.isPhotoEmpty(userPhoto.uri())
+            && WalletProfileUtils.isPhotoEmpty(profileViewModel.getChosenPhotoUri()) )
+            ? userPhoto.uri()
+            : null;
+   }
+
+   public String provideInitialPhotoUrl(User user, ProfileViewModel profileViewModel) {
+      final User.Avatar userPhoto = user.getAvatar();
+      return (userPhoto != null && !WalletProfileUtils.isPhotoEmpty(userPhoto.getThumb())
+            && WalletProfileUtils.isPhotoEmpty(profileViewModel.getChosenPhotoUri()) )
+            ? userPhoto.getThumb()
+            : null;
    }
 }

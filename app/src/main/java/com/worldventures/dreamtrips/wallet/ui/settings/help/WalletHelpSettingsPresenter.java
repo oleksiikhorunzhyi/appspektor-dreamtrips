@@ -26,23 +26,36 @@ public class WalletHelpSettingsPresenter extends WalletPresenter<WalletHelpSetti
       navigator.goBack();
    }
 
-   void openSendFeedbackSection() {
-      navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.SmartCardFeedback));
+   public void openPaymentFeedbackScreen() {
+      getView().hideBottomFeedbackMenu();
+      // TODO: 6/7/17 Add payment feedback screen
    }
 
-   void openVideoSection() {
+   void openVideoScreen() {
       navigator.go(new WalletHelpVideoPath());
    }
 
-   public void openCustomerSupportScreen() {
+   void openCustomerSupportScreen() {
       navigator.go(new WalletCustomerSupportSettingsPath());
+   }
+
+   void openDocumentsScreen() {
+      navigator.go(new WalletHelpDocumentsPath());
+   }
+
+   void handleVariantFeedback() {
+      getView().showBottomFeedbackMenu();
+   }
+
+   public void openOtherFeedbackScreen() {
+      getView().hideBottomFeedbackMenu();
+      navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.SmartCardFeedback));
    }
 
    public interface Screen extends WalletScreen {
 
-   }
+      void showBottomFeedbackMenu();
 
-   public void openDocuments() {
-      navigator.go(new WalletHelpDocumentsPath());
+      void hideBottomFeedbackMenu();
    }
 }

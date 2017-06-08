@@ -207,4 +207,12 @@
    <style name="WalletTheme.ProfileField.PhoneNumber" parent="WalletTheme.ProfileField">
       <item name="android:inputType">number</item>
    </style>
+
+   <style name="WalletTheme.BottomSheetMenuItem">
+      <item name="android:background">?attr/selectableItemBackground</item>
+      <item name="android:clickable">true</item>
+      <item name="android:padding">@dimen/spacing_normal</item>
+      <item name="android:textSize">@dimen/font_normal</item>
+   </style>
+
 </resources>

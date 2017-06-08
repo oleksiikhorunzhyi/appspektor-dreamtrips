@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,6 +26,7 @@ import java.io.File;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import rx.Observable;
 
 public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettingsProfilePresenter.Screen, WalletSettingsProfilePresenter, WalletSettingsProfilePath> implements WalletSettingsProfilePresenter.Screen {
@@ -102,6 +105,13 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @OnClick(R.id.imageContainer)
    public void choosePhotoClick() {
       presenter.choosePhoto();
+   }
+
+   @OnTouch(value = {R.id.first_name, R.id.middle_name, R.id.last_name,
+         R.id.et_country_code, R.id.et_phone_number})
+   public boolean onClickProfileFields(View view, MotionEvent event) {
+      if(event.getAction() == MotionEvent.ACTION_DOWN) mediaPickerService.hidePicker();
+      return false;
    }
 
    @NonNull

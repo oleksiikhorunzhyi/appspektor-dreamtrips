@@ -96,7 +96,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
-               view.setPreviewPhoto(it.userPhoto().photoUrl());
+               if(it.userPhoto() != null) view.setPreviewPhoto(it.userPhoto().photoUrl());
                view.setUserName(it.firstName(), it.middleName(), it.lastName());
                if (it.phoneNumber() != null) view.setPhone(it.phoneNumber().code(), it.phoneNumber().number());
             }, throwable -> Timber.e(throwable, ""));

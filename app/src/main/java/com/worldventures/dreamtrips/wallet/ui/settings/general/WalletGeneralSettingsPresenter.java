@@ -136,7 +136,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    private void bindSmartCardUser(SmartCardUser it) {
-      getView().setPreviewPhoto(it.userPhoto().photoUrl());
+      if (it.userPhoto() != null) getView().setPreviewPhoto(it.userPhoto().photoUrl());
       getView().setUserName(it.firstName(), it.middleName(), it.lastName());
    }
 

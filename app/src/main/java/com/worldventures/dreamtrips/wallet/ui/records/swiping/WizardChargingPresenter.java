@@ -8,12 +8,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -22,10 +21,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
-import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPath;
 
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -65,20 +62,15 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto().photoUrl()))
+                  .onSuccess(this::bindSmartCardUser)
             );
    }
 
-   private void observeConnectionStatus() {
-      smartCardInteractor.deviceStatePipe()
-            .observeSuccessWithReplay()
-            .throttleLast(1, TimeUnit.SECONDS)
-            .map(command -> command.getResult().connectionStatus())
-            .distinctUntilChanged()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::checkConnection);
-
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+   private void bindSmartCardUser(SmartCardUserCommand command) {
+      final SmartCardUser smartCardUser = command.getResult();
+      if (smartCardUser.userPhoto() != null) {
+         getView().userPhoto(command.getResult().userPhoto().photoUrl());
+      }
    }
 
    private void observeCharger() {
@@ -158,13 +150,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       navigator.withoutLast(new AddCardDetailsPath(record));
    }
 
-   public void showConnectionErrorScreen() {
-      navigator.withoutLast(new ConnectionErrorPath());
-   }
-
    public interface Screen extends WalletScreen {
-
-      void checkConnection(ConnectionStatus connectionStatus);
 
       void showSwipeError();
 

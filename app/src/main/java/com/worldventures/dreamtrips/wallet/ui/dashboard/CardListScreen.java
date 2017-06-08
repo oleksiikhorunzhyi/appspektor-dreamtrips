@@ -314,7 +314,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    private void showDetails(View view, int overlap) {
       CommonCardViewModel model = ((CommonCardHolder) bankCardList.getChildViewHolder(view)).getData();
-      TransitionModel transitionModel = presenter.getCardPosition(view, overlap, model.isCardBackGround());
+      TransitionModel transitionModel = presenter.getCardPosition(view, overlap, model.getCardBackGround(),
+            model.isDefaultCard());
       addTransitionView(model, transitionModel);
       smartCardWidget.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION).start();
       bankCardList

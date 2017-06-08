@@ -15,15 +15,11 @@
             />
    </data>
 
-   <RelativeLayout
+   <android.support.constraint.ConstraintLayout
          android:id="@+id/bank_card"
          android:layout_width="match_parent"
          android:layout_height="@dimen/wallet_card_height"
          android:layout_gravity="center_horizontal"
-         android:paddingBottom="@dimen/spacing_large"
-         android:paddingLeft="@dimen/spacing_normal"
-         android:paddingRight="@dimen/spacing_normal"
-         android:paddingTop="@dimen/spacing_medium"
          app:cardBackground="@{cardModel.cardBackGround}"
          tools:background="@drawable/background_card_blue"
          >
@@ -32,83 +28,98 @@
             android:id="@+id/tv_card_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/tv_expire_date"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="16dp"
             android:importantForAccessibility="no"
             android:text="@{cardModel.cardLastDigitsLong}"
-            android:textColor="@android:color/white"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
             android:textSize="@dimen/font_large"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_owner_name"
             tools:text="•••• •••• •••• 1234"
             />
 
-      <RelativeLayout
+
+      <TextView
+            android:id="@+id/tv_default_card_label"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/wallet_bank_card_default_bank_info_container_height"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:gravity="center_vertical"
-            tools:ignore="RelativeOverlap"
-            >
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/wallet_wizard_default_card_label"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
+            android:textSize="@dimen/font_small"
+            android:visibility="@{cardModel.defaultCard ? View.VISIBLE : View.GONE}"
+            app:layout_constraintLeft_toRightOf="@+id/imageView2"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="11dp"
+            tools:layout_conversion_absoluteWidth="37dp"
+            tools:layout_conversion_absoluteX="0dp"
+            tools:layout_conversion_absoluteY="6dp"
+            />
 
-         <TextView
-               android:id="@+id/tv_default_card_label"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="@string/wallet_wizard_default_card_label"
-               android:textColor="@android:color/white"
-               android:textSize="9sp"
-               android:visibility="@{cardModel.defaultCard ? View.VISIBLE : View.GONE}"
-               />
+      <TextView
+            android:id="@+id/tv_card_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="28dp"
+            android:importantForAccessibility="no"
+            android:text="@{cardModel.cardName}"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
+            android:textSize="@dimen/font_large"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="16dp"
+            tools:layout_conversion_absoluteWidth="69dp"
+            tools:layout_conversion_absoluteX="0dp"
+            tools:layout_conversion_absoluteY="17dp"
+            tools:text="Card Name"
+            />
 
-         <TextView
-               android:id="@+id/tv_card_name"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_below="@+id/tv_default_card_label"
-               android:importantForAccessibility="no"
-               android:text="@{cardModel.cardName}"
-               android:textColor="@android:color/white"
-               android:textSize="@dimen/font_large"
-               tools:text="Card Name"
-               />
+      <TextView
+            android:id="@+id/tv_card_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="18dp"
+            android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
+            android:textAllCaps="true"
+            android:textSize="@dimen/font_small"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Credit"
+            />
 
-         <TextView
-               android:id="@+id/tv_card_type"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentEnd="true"
-               android:layout_marginEnd="8dp"
-               android:importantForAccessibility="no"
-               android:textAllCaps="true"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               android:textColor="@android:color/white"
-               tools:text="Credit"
-               />
+      <TextView
+            android:id="@+id/tv_short_card_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="18dp"
+            android:layout_marginTop="0dp"
+            android:text="@{cardModel.cardLastDigitsShort}"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_type"
+            tools:text="••••1234"
+            />
 
-         <TextView
-               android:id="@+id/tv_short_card_number"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignEnd="@+id/tv_card_type"
-               android:layout_below="@+id/tv_card_type"
-               android:text="@{cardModel.cardLastDigitsShort}"
-               android:textColor="@android:color/white"
-               tools:text="••••1234"
-               />
-
-      </RelativeLayout>
 
       <TextView
             android:id="@+id/tv_owner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/tv_card_number"
-            android:layout_alignParentStart="true"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="96dp"
             android:importantForAccessibility="no"
             android:text="@{cardModel.cardHolderName}"
-            android:textColor="@android:color/white"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
             android:textSize="@dimen/font_normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Shirly A template"
             />
 
@@ -116,15 +127,30 @@
             android:id="@+id/tv_expire_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="15dp"
             android:importantForAccessibility="no"
             android:text="@{cardModel.goodThrough}"
-            android:textColor="@android:color/white"
+            android:textColor="@{cardModel.defaultCard ? @color/wallet_default_card_text : @android:color/white}"
             android:textSize="@dimen/font_normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_number"
             tools:text="good thru 09/18"
             />
-   </RelativeLayout>
+
+      <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="0dp"
+            android:visibility="@{cardModel.defaultCard ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_default_card_label"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_default_card_label"
+            app:srcCompat="@drawable/ic_vector_check_circle_green"
+            />
+   </android.support.constraint.ConstraintLayout>
 
 </layout>

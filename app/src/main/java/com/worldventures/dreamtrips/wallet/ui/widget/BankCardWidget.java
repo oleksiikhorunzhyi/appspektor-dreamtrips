@@ -1,8 +1,13 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
@@ -15,6 +20,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,6 +44,7 @@ public class BankCardWidget extends FrameLayout {
 
    private boolean showShortNumber;
    private int drawableResId;
+   private List<TextView> textViews;
 
    public BankCardWidget(Context context) {
       this(context, null);
@@ -70,6 +79,28 @@ public class BankCardWidget extends FrameLayout {
       setBankCardHolder(drawableResId);
       ButterKnife.inject(this);
       tvShortCardNumber.setVisibility(GONE);
+
+       textViews = Arrays.asList(tvCardType, tvCardName, tvOwnerName, tvCardNumber, tvExpireDate);
+   }
+
+   final private ButterKnife.Setter<TextView, AnimationInfo> ANIMATE_TEXT_COLOR = (textView, animationInfo, index) -> {
+      ObjectAnimator animator = ObjectAnimator.ofInt(textView, "textColor",
+            animationInfo.colorFrom,
+            animationInfo.colorTo)
+            .setDuration(animationInfo.duration);
+      animator.setEvaluator(new ArgbEvaluator());
+      animator.start();
+   };
+
+   public void animateCardFromDefault(Drawable drawable, int duration) {
+      bankCardHolder.setBackground(drawable);
+      TransitionDrawable transition = (TransitionDrawable) bankCardHolder.getBackground();
+      transition.setCrossFadeEnabled(true);
+      transition.startTransition(duration);
+
+      ButterKnife.apply(textViews, ANIMATE_TEXT_COLOR,
+            new AnimationInfo(ContextCompat.getColor(bankCardHolder.getContext(), R.color.wallet_default_card_text),
+                           ContextCompat.getColor(bankCardHolder.getContext(), android.R.color.white), duration * 2));
    }
 
    public void setShowShortNumber(boolean show) {
@@ -147,6 +178,18 @@ public class BankCardWidget extends FrameLayout {
             if (drawables.attrId == attrId) return drawables;
          }
          throw new IllegalArgumentException();
+      }
+   }
+
+   private class AnimationInfo{
+      int colorFrom;
+      int colorTo;
+      int duration;
+
+      AnimationInfo(int colorFrom, int colorTo, int duration) {
+         this.colorFrom = colorFrom;
+         this.colorTo = colorTo;
+         this.duration = duration;
       }
    }
 }

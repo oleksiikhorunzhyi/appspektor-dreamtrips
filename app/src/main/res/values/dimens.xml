@@ -176,6 +176,7 @@
    <dimen name="uploading_cell_status_label_text_size">14sp</dimen>
    <dimen name="uploading_cell_time_left_text_size">14sp</dimen>
    <dimen name="uploading_cell_progress_bar_height">2dp</dimen>
+   <dimen name="uploading_cell_progress_bar_height_infinite">4dp</dimen>
    <dimen name="uploading_cell_progress_bar_margin_top">6dp</dimen>
 
    <!--messenger-->

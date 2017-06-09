@@ -133,8 +133,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .observeOn(Schedulers.io())
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
-                        .send(new CreatePostCompoundOperationCommand(cachedText, creationItems, selectedVideoPathUri.getPath(),
-                              location, origin))
+                        .send(new CreatePostCompoundOperationCommand(cachedText, creationItems,
+                              selectedVideoPathUri != null ? selectedVideoPathUri.getPath() : null, location, origin))
             );
    }
 

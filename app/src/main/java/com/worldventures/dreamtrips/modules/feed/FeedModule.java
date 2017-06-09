@@ -58,7 +58,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
@@ -162,7 +162,7 @@ import dagger.Provides;
             DescriptionCreatorPresenter.class,
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
-            UploadingPhotoPostsSectionCell.class,
+            UploadingPostsSectionCell.class,
             VideoAttachmentView.class,
             VideoPickerModelCell.class
       },

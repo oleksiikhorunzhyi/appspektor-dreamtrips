@@ -592,4 +592,8 @@
    <string name="n_friends_accepted">%d friends accepted</string>
    <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
 
+   <string name="uploading_post_status_processing">Processing</string>
+   <string name="uploading_post_status_progress_video"><b><i>Step 1 of 2.</i></b> Uploading…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
+
 </resources>

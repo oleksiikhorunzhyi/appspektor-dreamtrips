@@ -1,17 +1,13 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.dreamtrips.modules.background_uploading.model.*
-import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoUploadUrls
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.DeleteCompoundOperationsCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.PhotoAttachmentUploadingCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.UpdateCompoundOperationCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.UploadVideoFileCommand
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.*
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle
 import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoCommand
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.listOfMockPhotos
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.mockCreatedPost
@@ -71,30 +67,27 @@ internal fun createPostBodyWithScheduledPhotos() =
                   createPhotoAttachment(22, PostBody.State.SCHEDULED)))
             .build()
 
-internal fun createPostBodyWithUploadedVideo() =
-      ImmutablePostWithVideoAttachmentBody.builder()
-            .text("testText")
-            .location(Location(20.0, 20.0))
-            .origin(CreateEntityBundle.Origin.FEED)
-            .remoteURL("www://blabla")
-            .videoPath("file://blabla")
-            .state(PostBody.State.UPLOADED)
-            .aspectRatio(1.7)
-            .videoUploadStatus(null)
-            .build()
-
-internal fun createVideoUploadUrls() = VideoUploadUrls()
-
 internal fun createPostBodyWithScheduledVideo() =
       ImmutablePostWithVideoAttachmentBody.builder()
             .text("testText")
             .location(Location(20.0, 20.0))
             .origin(CreateEntityBundle.Origin.FEED)
-            .remoteURL("www://blabla")
             .videoPath("file://blabla")
+            .size(1000L)
             .aspectRatio(1.7)
             .state(PostBody.State.SCHEDULED)
-            .videoUploadStatus(null)
+            .build()
+
+internal fun createPostBodyWithUploadedVideo() =
+      ImmutablePostWithVideoAttachmentBody.builder()
+            .text("testText")
+            .location(Location(20.0, 20.0))
+            .origin(CreateEntityBundle.Origin.FEED)
+            .videoPath("file://blabla")
+            .size(1000L)
+            .aspectRatio(1.7)
+            .uploadId("fsdafsdfsfdsadf")
+            .state(PostBody.State.UPLOADED)
             .build()
 
 internal fun createPhotoAttachment(id: Int, state: PostBody.State) =
@@ -122,14 +115,14 @@ internal fun compoundOperationsNotEmptyContract() = listOf<Contract>(
             createStartedPostCompoundOperationModel())))
 
 internal fun compoundOperationsHasScheduledAndDontHaveStarted() = listOf<Contract>(
-      BaseContract.of(UpdateCompoundOperationCommand::class.java).result(listOf<PostCompoundOperationModel<in PostBody>>(
-            createPostCompoundOperationModel())),
-      BaseContract.of(QueryCompoundOperationsCommand::class.java).result(listOf<PostCompoundOperationModel<in PostBody>>(
-            createPostCompoundOperationModel())))
+      BaseContract.of(QueryCompoundOperationsCommand::class.java)
+            .result(listOf<PostCompoundOperationModel<in PostBody>>(createPostCompoundOperationModel())))
 
 internal fun compoundOperationsHasScheduledAndHasStarted() = listOf<Contract>(
-      BaseContract.of(UpdateCompoundOperationCommand::class.java).result(listOf<PostCompoundOperationModel<in PostBody>>(
-            createPostCompoundOperationModel(), createStartedPostCompoundOperationModel())))
+      BaseContract.of(QueryCompoundOperationsCommand::class.java).result(
+            listOf<PostCompoundOperationModel<in PostBody>>(
+                  createPostCompoundOperationModel(),
+                  createStartedPostCompoundOperationModel())))
 
 internal fun queryCompoundOperationsNotEmptyContract() = listOf<Contract>(
       BaseContract.of(UpdateCompoundOperationCommand::class.java).result(listOf<PostCompoundOperationModel<in PostBody>>(
@@ -154,7 +147,8 @@ internal fun postCreatingFailsContract() = listOf<Contract>(
       BaseContract.of(PhotoAttachmentUploadingCommand::class.java)
             .result(createPostCompoundOperationModel(createPostBodyWithUploadedPhotos())),
       BaseContract.of(UploadVideoFileCommand::class.java)
-            .result(createPostBodyWithUploadedVideo()),
+            .result(createPostCompoundOperationModel(createPostBodyWithUploadedVideo())),
+      BaseContract.of(CreateVideoCommand::class.java).result("videoUid"),
       BaseContract.of(CreatePhotosCommand::class.java).result(listOfMockPhotos),
       BaseContract.of(CreatePostCommand::class.java).exception(IllegalStateException()))
 
@@ -162,6 +156,7 @@ internal fun successContract() = listOf<Contract>(
       BaseContract.of(PhotoAttachmentUploadingCommand::class.java)
             .result(createPostCompoundOperationModel(createPostBodyWithUploadedPhotos())),
       BaseContract.of(UploadVideoFileCommand::class.java)
-            .result(createPostBodyWithUploadedVideo()),
+            .result(createPostCompoundOperationModel(createPostBodyWithUploadedVideo())),
+      BaseContract.of(CreateVideoCommand::class.java).result("videoUid"),
       BaseContract.of(CreatePhotosCommand::class.java).result(listOfMockPhotos),
       BaseContract.of(CreatePostCommand::class.java).result(mockCreatedPost))

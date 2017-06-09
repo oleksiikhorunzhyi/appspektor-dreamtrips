@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,6 +126,7 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
             .videoPath(selectedVideoPath)
             .state(PostBody.State.SCHEDULED)
             .aspectRatio(obtainAspectRatio(selectedVideoPath))
+            .size(new File(selectedVideoPath).length())
             .build();
    }
 

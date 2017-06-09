@@ -31,7 +31,6 @@ import dagger.Module;
 import dagger.Provides;
 import rx.schedulers.Schedulers;
 
-
 @Module(
       injects = {
             PostProcessingCommand.class,
@@ -64,7 +63,8 @@ public class BackgroundUploadingModule {
       return new CompoundOperationsInteractor(sessionActionPipeCreator, Schedulers.from(Executors.newSingleThreadExecutor()));
    }
 
-   @Provides PingAssetStatusInteractor providePingAssetStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+   @Provides
+   PingAssetStatusInteractor providePingAssetStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new PingAssetStatusInteractor(sessionActionPipeCreator);
    }
 

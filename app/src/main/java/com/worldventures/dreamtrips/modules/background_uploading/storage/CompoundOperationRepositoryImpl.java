@@ -31,7 +31,6 @@ public class CompoundOperationRepositoryImpl implements CompoundOperationReposit
    public void saveCompoundOperations(List<PostCompoundOperationModel> compoundOperations) {
       Timber.d("Saving compound operations, %s", compoundOperations.toString());
       snappyRepository.putList(COMPOUND_OBJECT_POSTS, Queryable.from(compoundOperations)
-            .filter(item -> item instanceof PostCompoundOperationModel)
             .cast(PostCompoundOperationModel.class).toList());
    }
 }

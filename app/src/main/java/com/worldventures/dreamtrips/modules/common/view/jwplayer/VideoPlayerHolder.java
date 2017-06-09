@@ -9,13 +9,11 @@ import com.longtailvideo.jwplayer.core.PlayerState;
 public class VideoPlayerHolder {
 
    private final DtFullscreenHandler dtFullscreenHandler;
-   private final Activity activity;
 
    private JWPlayerView jwPlayerView;
    private VideoAttachmentView container;
 
    public VideoPlayerHolder(Activity activity) {
-      this.activity = activity;
       this.dtFullscreenHandler = new DtFullscreenHandler(activity, this);
    }
 
@@ -24,12 +22,6 @@ public class VideoPlayerHolder {
       this.jwPlayerView = jwPlayerView;
 
       jwPlayerView.setFullscreenHandler(dtFullscreenHandler);
-   }
-
-   public void onConfigurationChangedToLandscape() {
-      if (playerExists() && jwPlayerView.getState() == PlayerState.PLAYING) {
-         jwPlayerView.setFullscreen(true, true);
-      }
    }
 
    public void attachToContainer() {
@@ -71,24 +63,6 @@ public class VideoPlayerHolder {
          return true;
       }
       return false;
-   }
-
-   public void onResume() {
-      if (playerExists()) {
-         jwPlayerView.onResume();
-      }
-   }
-
-   public void onPause() {
-      if (playerExists()) {
-         jwPlayerView.onPause();
-      }
-   }
-
-   public void onDestroy() {
-      if (playerExists()) {
-         jwPlayerView.onDestroy();
-      }
    }
 
    private boolean playerExists() {

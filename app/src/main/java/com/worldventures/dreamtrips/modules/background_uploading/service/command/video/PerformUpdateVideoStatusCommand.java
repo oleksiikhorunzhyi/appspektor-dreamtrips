@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.modules.background_uploading.service.comman
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.storage.CompoundOperationRepository;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,10 +18,10 @@ import rx.Observable;
 @CommandAction
 public class PerformUpdateVideoStatusCommand extends Command<Void> implements InjectableAction {
 
-   private static final int DELAY_START_UPDATE_COMMAND = 1;
+   private static final int DELAY_START_UPDATE_COMMAND = 30;
 
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
-   @Inject CompoundOperationRepository compoundOperationRepository;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    private CommandCallback callback;
 
@@ -31,23 +32,24 @@ public class PerformUpdateVideoStatusCommand extends Command<Void> implements In
    }
 
    private void tryUpdateVideoStatus() {
-      if (isProcessingVideoExists()) {
-         launchUpdateProcess();
-      } else {
-         callback.onSuccess(null);
-      }
+      compoundOperationsInteractor.compoundOperationsPipe()
+            .createObservableResult(new QueryCompoundOperationsCommand())
+            .map(Command::getResult)
+            .subscribe(items -> {
+               boolean itemsExists = Queryable.from(items)
+                     .firstOrDefault(element -> element.state() == CompoundOperationState.PROCESSING) != null;
+               if (itemsExists) {
+                  launchUpdateProcess();
+               } else {
+                  callback.onSuccess(null);
+               }
+            });
    }
 
    private void launchUpdateProcess() {
-      Observable.timer(DELAY_START_UPDATE_COMMAND, TimeUnit.MINUTES)
+      Observable.timer(DELAY_START_UPDATE_COMMAND, TimeUnit.SECONDS)
             .flatMap(v -> pingAssetStatusInteractor.updateVideoProcessStatusPipe()
                   .createObservableResult(new UpdateVideoProcessStatusCommand()))
             .subscribe(v -> tryUpdateVideoStatus(), callback::onFail);
    }
-
-   private boolean isProcessingVideoExists() {
-      return Queryable.from(compoundOperationRepository.readCompoundOperations())
-            .firstOrDefault(element -> element.state() == CompoundOperationState.PROCESSING) != null;
-   }
-
 }

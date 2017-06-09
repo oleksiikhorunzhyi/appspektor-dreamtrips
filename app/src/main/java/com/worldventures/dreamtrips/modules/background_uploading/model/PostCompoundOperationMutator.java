@@ -13,7 +13,7 @@ import timber.log.Timber;
 
 public class PostCompoundOperationMutator {
 
-   private static final int PROGRESS_PHOTOS_CREATING = 90;
+   private static final int PROGRESS_MEDIA_UPLOADING = 90;
    private static final int PROGRESS_MEDIA_CREATED = 95;
    private static final int PROGRESS_POST_CREATED = 100;
 
@@ -45,20 +45,22 @@ public class PostCompoundOperationMutator {
    }
 
    public PostCompoundOperationModel finished(PostCompoundOperationModel compoundOperationModel, TextualPost textualPost) {
-      textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+      CompoundOperationState compoundOperationState = CompoundOperationState.FINISHED;
 
       PostBody body;
       switch (compoundOperationModel.type()) {
          case VIDEO:
-            body = ImmutablePostWithVideoAttachmentBody.copyOf((PostWithVideoAttachmentBody) compoundOperationModel.body())
-                  .withCreatedPost(textualPost);
+            compoundOperationState = CompoundOperationState.PROCESSING;
+            body = compoundOperationModel.body();
             break;
          case PHOTO:
+            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
             body = ImmutablePostWithPhotoAttachmentBody
                   .copyOf((PostWithPhotoAttachmentBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;
          case TEXT:
+            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
             body = ImmutableTextPostBody.copyOf((TextPostBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;
@@ -69,13 +71,20 @@ public class PostCompoundOperationMutator {
       return ImmutablePostCompoundOperationModel
             .copyOf(compoundOperationModel)
             .withProgress(PROGRESS_POST_CREATED)
-            .withState(CompoundOperationState.FINISHED)
+            .withState(compoundOperationState)
             .withBody(body);
+   }
+
+   public PostCompoundOperationModel finishedEmpty(PostCompoundOperationModel compoundOperationModel) {
+      return ImmutablePostCompoundOperationModel
+            .copyOf(compoundOperationModel)
+            .withProgress(PROGRESS_POST_CREATED)
+            .withState(CompoundOperationState.FINISHED);
    }
 
    public PostCompoundOperationModel<PostWithPhotoAttachmentBody> photoAttachmentChanged(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postCompoundOperationModel,
          PhotoAttachment photoAttachment, int attachmentIndex, double attachmentsUploadingProgress, long remainingTime, double averageUploadSpeed) {
-      int progress = (int) (PROGRESS_PHOTOS_CREATING * attachmentsUploadingProgress);
+      int progress = (int) (PROGRESS_MEDIA_UPLOADING * attachmentsUploadingProgress);
       Timber.d("Post uploading progress - %d of 100", progress);
       List<PhotoAttachment> attachments = new ArrayList<>(postCompoundOperationModel.body().attachments());
       attachments.remove(attachmentIndex);
@@ -90,6 +99,18 @@ public class PostCompoundOperationMutator {
                   .withAttachments(new ArrayList<>(attachments)));
    }
 
+   public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoAttachmentChanged(
+         PostCompoundOperationModel<PostWithVideoAttachmentBody> postCompoundOperationModel,
+         PostWithVideoAttachmentBody updatedPostWithVideoAttachment, int videoUploadProgress, long remainingTime, double averageUploadSpeed) {
+      int progress = (PROGRESS_MEDIA_UPLOADING * videoUploadProgress) / 100;
+      return ImmutablePostCompoundOperationModel
+            .copyOf(postCompoundOperationModel)
+            .withProgress(progress)
+            .withBody(updatedPostWithVideoAttachment)
+            .withMillisLeft(remainingTime)
+            .withAverageUploadSpeed(averageUploadSpeed);
+   }
+
    public PostCompoundOperationModel<PostWithPhotoAttachmentBody> photosUploaded(PostCompoundOperationModel<PostWithPhotoAttachmentBody> compoundOperationModel, List<Photo> photos) {
       return ImmutablePostCompoundOperationModel
             .copyOf(compoundOperationModel)
@@ -99,16 +120,22 @@ public class PostCompoundOperationMutator {
                   .withUploadedPhotos(new ArrayList<>(photos)));
    }
 
-   public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoAttachmentChanged(
-         PostCompoundOperationModel<PostWithVideoAttachmentBody> postCompoundOperationModel,
-         PostWithVideoAttachmentBody body,
-         int uploadingProgress, long remainingTime, double averageUploadSpeed) {
+   public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoUploaded(PostCompoundOperationModel<PostWithVideoAttachmentBody> compoundOperationModel, String uploadId) {
       return ImmutablePostCompoundOperationModel
-            .copyOf(postCompoundOperationModel)
-            .withBody(body)
-            .withProgress(uploadingProgress)
-            .withMillisLeft(remainingTime)
-            .withAverageUploadSpeed(averageUploadSpeed);
+            .copyOf(compoundOperationModel)
+            .withProgress(PROGRESS_MEDIA_UPLOADING)
+            .withBody(ImmutablePostWithVideoAttachmentBody
+                  .copyOf(compoundOperationModel.body())
+                  .withState(PostBody.State.UPLOADED)
+                  .withUploadId(uploadId));
    }
 
+   public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoCreated(PostCompoundOperationModel<PostWithVideoAttachmentBody> compoundOperationModel, String uid) {
+      return ImmutablePostCompoundOperationModel
+            .copyOf(compoundOperationModel)
+            .withProgress(PROGRESS_MEDIA_CREATED)
+            .withBody(ImmutablePostWithVideoAttachmentBody
+                  .copyOf(compoundOperationModel.body())
+                  .withVideoUid(uid));
+   }
 }

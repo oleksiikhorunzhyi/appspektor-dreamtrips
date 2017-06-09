@@ -4,18 +4,17 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 
 public class Video extends BaseFeedEntity {
 
-   private String title;
+   private String uploadId;
    private String thumbnail;
    private String sdUrl;
    private String hdUrl;
    private double aspectRatio;
-   private long duration;
 
    public Video() {
    }
 
-   public String getTitle() {
-      return title;
+   public String getUploadId() {
+      return uploadId;
    }
 
    public String getThumbnail() {
@@ -30,10 +29,6 @@ public class Video extends BaseFeedEntity {
       return hdUrl;
    }
 
-   public long getDuration() {
-      return duration;
-   }
-
    public double getAspectRatio() {
       return aspectRatio;
    }
@@ -43,8 +38,8 @@ public class Video extends BaseFeedEntity {
       return null;
    }
 
-   public void setTitle(String title) {
-      this.title = title;
+   public void setUploadId(String uploadId) {
+      this.uploadId = uploadId;
    }
 
    public void setThumbnail(String thumbnail) {
@@ -57,10 +52,6 @@ public class Video extends BaseFeedEntity {
 
    public void setHdUrl(String hdUrl) {
       this.hdUrl = hdUrl;
-   }
-
-   public void setDuration(long duration) {
-      this.duration = duration;
    }
 
    public void setAspectRatio(double aspectRatio) {

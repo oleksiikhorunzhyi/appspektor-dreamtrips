@@ -5,8 +5,11 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,15 +20,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoAttachmentPreviewView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoPreviewViewFactory;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util.UploadingTimeLeftFormatter;
 
+import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -36,7 +44,7 @@ import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
 import static android.text.format.DateUtils.FORMAT_SHOW_DATE;
 import static android.text.format.DateUtils.FORMAT_SHOW_YEAR;
 
-public class UploadingPhotoPostCell extends FrameLayout {
+public class UploadingPostCell extends FrameLayout {
 
    private static final int ANIMATION_DURATION_DELAY = 2000;
    private static final int ANIMATION_DURATION_FADE_OUT = 500;
@@ -50,21 +58,22 @@ public class UploadingPhotoPostCell extends FrameLayout {
    @InjectView(R.id.uploading_cell_upload_time_left_text_view) TextView timeLeftTextView;
    @InjectView(R.id.uploading_cell_control_main_action) ImageView mainControlImageView;
    @InjectView(R.id.uploading_cell_progress_bar) ProgressBar progressBar;
+   @InjectView(R.id.uploading_cell_progress_infinite) ProgressBar progressBarInfinite;
    private PhotoAttachmentPreviewView photoPreviewView;
 
-   private UploadingPhotoPostsSectionCell.Delegate cellDelegate;
+   private UploadingPostsSectionCell.Delegate cellDelegate;
    private UploadingTimeLeftFormatter timeLeftFormatter;
 
    private PostCompoundOperationModel compoundOperationModel;
 
    private AnimatorSet removeCellAnimationSet;
 
-   public UploadingPhotoPostCell(Context context) {
+   public UploadingPostCell(Context context) {
       super(context);
       init();
    }
 
-   public UploadingPhotoPostCell(Context context, AttributeSet attrs) {
+   public UploadingPostCell(Context context, AttributeSet attrs) {
       super(context, attrs);
       init();
    }
@@ -75,14 +84,15 @@ public class UploadingPhotoPostCell extends FrameLayout {
       timeLeftFormatter = new UploadingTimeLeftFormatter(getContext());
    }
 
-   public void update(PostCompoundOperationModel compoundOperationModel, UploadingPhotoPostsSectionCell.Delegate delegate) {
+   public void update(PostCompoundOperationModel compoundOperationModel, UploadingPostsSectionCell.Delegate delegate) {
       this.compoundOperationModel = compoundOperationModel;
       this.cellDelegate = delegate;
 
-      PostWithPhotoAttachmentBody postWithAttachmentBody = (PostWithPhotoAttachmentBody) compoundOperationModel.body();
-      List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
-
-      refreshPhotoPreviewView(compoundOperationModel.state(), attachments);
+      if (compoundOperationModel.type() == PostBody.Type.PHOTO) {
+         processPhotoPost();
+      } else if (compoundOperationModel.type() == PostBody.Type.VIDEO) {
+         processVideoPost();
+      }
 
       titleTextView.setText(DateUtils.formatDateTime(getContext(),
             compoundOperationModel.creationDate()
@@ -92,17 +102,31 @@ public class UploadingPhotoPostCell extends FrameLayout {
       updateViewsAccordingToState(compoundOperationModel);
    }
 
+   private void processPhotoPost() {
+      PostWithPhotoAttachmentBody postWithAttachmentBody = (PostWithPhotoAttachmentBody) compoundOperationModel.body();
+      List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
+      refreshPhotoPreviewView(Queryable.from(attachments)
+            .map(item -> Uri.fromFile(new File(item.selectedPhoto().path())))
+            .toList());
+   }
+
+   private void processVideoPost() {
+      PostWithVideoAttachmentBody postWithAttachmentBody = (PostWithVideoAttachmentBody) compoundOperationModel.body();
+      refreshPhotoPreviewView(Collections.singletonList(Uri.fromFile(new File(postWithAttachmentBody.videoPath()))));
+   }
+
    /*
     * Reuse photo preview view is suitable, otherwise attach new one
     */
-   private void refreshPhotoPreviewView(CompoundOperationState state, List<PhotoAttachment> attachments) {
-      PhotoAttachmentPreviewView newPhotoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
+   private void refreshPhotoPreviewView(List<Uri> attachments) {
+      int size = attachments.size();
+      PhotoAttachmentPreviewView newPhotoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), size);
       if (photoPreviewView == null || !photoPreviewView.getClass().equals(newPhotoPreviewView.getClass())) {
          previewContainer.removeAllViews();
          newPhotoPreviewView.attachView(previewContainer);
          photoPreviewView = newPhotoPreviewView;
       }
-      photoPreviewView.showPreview(attachments, state == CompoundOperationState.STARTED);
+      photoPreviewView.showPreview(attachments, compoundOperationModel.state() == CompoundOperationState.STARTED);
    }
 
    private void updateViewsAccordingToState(PostCompoundOperationModel compoundOperationModel) {
@@ -125,24 +149,35 @@ public class UploadingPhotoPostCell extends FrameLayout {
          case FINISHED:
             updateAccordingToFinishedState(compoundOperationModel);
             break;
+         case PROCESSING:
+            updateAccordingToProcessingState();
+            break;
       }
    }
 
    private void updateAccordingToStartedState(PostCompoundOperationModel compoundOperationModel) {
-      PostWithPhotoAttachmentBody postWithAttachmentBody = (PostWithPhotoAttachmentBody) compoundOperationModel.body();
-      List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
-
       initViewsForGeneralUploadState();
 
       mainControlImageView.setImageResource(R.drawable.uploading_control_pause);
       mainControlImageView.setVisibility(VISIBLE);
 
-      if (attachments.size() > 1) {
-         statusTextView.setText(getContext().getString(R.string.uploading_post_status_progress_plural, attachments.size()));
-      } else {
-         statusTextView.setText(getContext().getString(R.string.uploading_post_status_progress_singular));
-      }
       statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_uploading));
+      if (compoundOperationModel.type() == PostBody.Type.PHOTO) {
+         List<PhotoAttachment> attachments = ((PostWithPhotoAttachmentBody) compoundOperationModel.body()).attachments();
+         if (attachments.size() > 1) {
+            statusTextView.setText(getContext().getString(R.string.uploading_post_status_progress_plural, attachments.size()));
+         } else {
+            statusTextView.setText(getContext().getString(R.string.uploading_post_status_progress_singular));
+         }
+      } else if (compoundOperationModel.type() == PostBody.Type.VIDEO) {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            statusTextView.setText(Html
+                  .fromHtml(getContext().getString(R.string.uploading_post_status_progress_video), Html.FROM_HTML_MODE_COMPACT));
+         } else {
+            statusTextView.setText(Html
+                  .fromHtml(getContext().getString(R.string.uploading_post_status_progress_video)));
+         }
+      }
 
       timeLeftTextView.setVisibility(View.VISIBLE);
       timeLeftTextView.setText(timeLeftFormatter.format(compoundOperationModel.millisLeft()));
@@ -181,8 +216,14 @@ public class UploadingPhotoPostCell extends FrameLayout {
    private void updateAccordingToFailedState() {
       initViewsForGeneralUploadState();
 
-      mainControlImageView.setImageResource(R.drawable.uploading_control_retry);
-      mainControlImageView.setVisibility(VISIBLE);
+      if (compoundOperationModel.type() == PostBody.Type.VIDEO &&
+            compoundOperationModel.progress() == 100 &&
+            compoundOperationModel.state() == CompoundOperationState.PROCESSING) {
+         mainControlImageView.setVisibility(GONE);
+      } else {
+         mainControlImageView.setImageResource(R.drawable.uploading_control_retry);
+         mainControlImageView.setVisibility(VISIBLE);
+      }
 
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_failed_connection));
       statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_failure));
@@ -192,7 +233,32 @@ public class UploadingPhotoPostCell extends FrameLayout {
             R.color.uploading_cell_progress_bar_paused_total);
    }
 
+   private void updateAccordingToProcessingState() {
+      initViewsForGeneralUploadState();
+
+      mainControlImageView.setImageResource(R.drawable.uploading_control_pause);
+      mainControlImageView.setVisibility(VISIBLE);
+      mainControlImageView.setVisibility(GONE);
+
+      statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_uploading));
+      if (compoundOperationModel.type() == PostBody.Type.VIDEO) {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            statusTextView.setText(Html
+                  .fromHtml(getContext().getString(R.string.uploading_post_status_progress_video_processing), Html.FROM_HTML_MODE_COMPACT));
+         } else {
+            statusTextView.setText(Html
+                  .fromHtml(getContext().getString(R.string.uploading_post_status_progress_video_processing)));
+         }
+      }
+
+      timeLeftTextView.setVisibility(View.GONE);
+
+      progressBar.setVisibility(GONE);
+      progressBarInfinite.setVisibility(VISIBLE);
+   }
+
    private void initViewsForGeneralUploadState() {
+      progressBarInfinite.setVisibility(GONE);
       generalUploadContainer.setVisibility(View.VISIBLE);
       generalUploadContainer.setAlpha(1f);
       uploadFinishedView.setVisibility(View.GONE);

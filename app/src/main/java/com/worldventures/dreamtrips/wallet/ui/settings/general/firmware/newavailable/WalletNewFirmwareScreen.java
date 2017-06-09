@@ -15,18 +15,26 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletNewFirmwareScreen
       extends WalletLinearLayout<WalletNewFirmwareAvailablePresenter.Screen, WalletNewFirmwareAvailablePresenter, WalletNewFirmwareAvailablePath>
       implements WalletNewFirmwareAvailablePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
+   @InjectView(R.id.container) View container;
    @InjectView(R.id.new_dt_app_required) View newDtAppRequired;
    @InjectView(R.id.update_dt_app) View updateDtApp;
    @InjectView(R.id.available_version) TextView availableVersion;
@@ -50,6 +58,7 @@ public class WalletNewFirmwareScreen
       super.onFinishInflate();
       newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      container.setVisibility(INVISIBLE);
    }
 
    @NonNull
@@ -74,14 +83,16 @@ public class WalletNewFirmwareScreen
    }
 
    @Override
-   public void requiredLatestDtAppVersion() {
-      newDtAppRequired.setVisibility(VISIBLE);
-      updateDtApp.setVisibility(VISIBLE);
-      downloadVersion.setEnabled(false);
+   public void currentFirmwareInfo(@Nullable SmartCardFirmware version, FirmwareInfo firmwareInfo, boolean isCompatible) {
+      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.nordicAppVersion()));
+
+      availableFirmwareInfo(firmwareInfo);
+      requiredLatestDtAppVersion(isCompatible);
+
+      container.setVisibility(VISIBLE);
    }
 
-   @Override
-   public void availableFirmwareInfo(FirmwareInfo firmwareInfo) {
+   private void availableFirmwareInfo(FirmwareInfo firmwareInfo) {
       availableVersion.setText(getResources().getString(R.string.wallet_settings_version, firmwareInfo.firmwareVersion()));
       String size = FileUtils.byteCountToDisplaySize(firmwareInfo.fileSize());
       availableVersionSize.setText(getResources().getString(R.string.wallet_settings_update_size, size)); // convert to KB
@@ -90,9 +101,10 @@ public class WalletNewFirmwareScreen
       latestVersion.setText(getResources().getString(R.string.wallet_settings_version_latest, firmwareInfo.firmwareVersion()));
    }
 
-   @Override
-   public void currentFirmwareInfo(@Nullable SmartCardFirmware version) {
-      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.nordicAppVersion()));
+   public void requiredLatestDtAppVersion(boolean isCompatible) {
+      newDtAppRequired.setVisibility(isCompatible ? GONE : VISIBLE);
+      updateDtApp.setVisibility(isCompatible ? GONE : VISIBLE);
+      downloadVersion.setEnabled(isCompatible);
    }
 
    @Override
@@ -105,5 +117,19 @@ public class WalletNewFirmwareScreen
                   .openSettings())
             .setNegativeButton(R.string.wallet_firmware_space_alert_cancel_action, null)
             .show();
+   }
+
+   @Override
+   public OperationView<FetchFirmwareUpdateDataCommand> provideOperationView() {
+      return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<FetchFirmwareUpdateDataCommand>builder()
+                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.error_something_went_wrong,
+                        command -> getPresenter().fetchFirmwareInfo(),
+                        command -> getPresenter().goBack()))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                        command -> getPresenter().fetchFirmwareInfo(),
+                        command -> getPresenter().goBack()))
+                  .build()
+      );
    }
 }

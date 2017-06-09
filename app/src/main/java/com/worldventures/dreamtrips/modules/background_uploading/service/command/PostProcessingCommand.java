@@ -15,9 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -33,16 +31,16 @@ import timber.log.Timber;
 @CommandAction
 public class PostProcessingCommand<T extends PostBody> extends Command<PostCompoundOperationModel<T>> implements InjectableAction {
 
-   private static final int DELAY_TO_DELETE_COMPOUND_OPERATION = 3;
+   public static final int DELAY_TO_DELETE_COMPOUND_OPERATION = 3;
 
    @Inject Janet janet;
    @Inject PostsInteractor postsInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
-   @Inject protected PostCompoundOperationMutator compoundOperationObjectMutator;
+   @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
-   protected PostCompoundOperationModel<T> postCompoundOperationModel;
+   PostCompoundOperationModel<T> postCompoundOperationModel;
 
    private PublishSubject cancelationSubject = PublishSubject.create();
 
@@ -75,7 +73,7 @@ public class PostProcessingCommand<T extends PostBody> extends Command<PostCompo
       Observable.just(postCompoundOperationModel)
             .map(postOperationModel -> compoundOperationObjectMutator.start(postOperationModel))
             .doOnNext(this::notifyCompoundCommandChanged)
-            .flatMap(this::createMediaEntitiesIfNeeded)
+            .flatMap(this::prepareCompoundOperation)
             .flatMap(postModel -> createPost((PostCompoundOperationModel<T>) postModel))
             // use trampoline for unit tests, works OK for usual scenario too
             .delay(compoundOperationDeletionDelay, TimeUnit.SECONDS, Schedulers.trampoline())
@@ -85,8 +83,8 @@ public class PostProcessingCommand<T extends PostBody> extends Command<PostCompo
                notifyCompoundCommandChanged(compoundOperationObjectMutator.failed(postCompoundOperationModel));
                backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
             })
-            .subscribe(postModel -> callback.onSuccess((PostCompoundOperationModel<T>) postModel), throwable -> callback
-                  .onFail((Throwable) throwable));
+            .subscribe(postModel -> callback.onSuccess((PostCompoundOperationModel<T>) postModel),
+                  throwable -> callback.onFail((Throwable) throwable));
    }
 
    public void setCompoundOperationDeletionDelay(int compoundOperationDeletionDelay) {
@@ -103,20 +101,24 @@ public class PostProcessingCommand<T extends PostBody> extends Command<PostCompo
       cancelationSubject.onNext(null);
    }
 
-   protected Observable<PostCompoundOperationModel<T>> createMediaEntitiesIfNeeded(PostCompoundOperationModel<T> postOperationModel) {
+   protected Observable<PostCompoundOperationModel<T>> prepareCompoundOperation(PostCompoundOperationModel<T> postOperationModel) {
       return Observable.just(postOperationModel);
    }
 
-   protected Observable<PostCompoundOperationModel<T>> createPost(PostCompoundOperationModel<T> postOperationModel) {
+   private Observable<PostCompoundOperationModel<T>> createPost(PostCompoundOperationModel<T> postOperationModel) {
       return postsInteractor.createPostPipe()
             .createObservableResult(new CreatePostCommand(postOperationModel))
             .map(Command::getResult)
             .doOnNext(createdPost -> Timber.d("[New Post Creation] Post created"))
-            .map(textualPost -> (PostCompoundOperationModel<T>) compoundOperationObjectMutator.finished(postOperationModel, textualPost))
+            .map(textualPost -> finished(postOperationModel, textualPost))
             .doOnNext(this::notifyCompoundCommandChanged);
    }
 
-   protected void notifyCompoundCommandChanged(PostCompoundOperationModel postOperationModel) {
+   protected PostCompoundOperationModel<T> finished(PostCompoundOperationModel<T> postOperationModel, TextualPost textualPost) {
+      return (PostCompoundOperationModel<T>) compoundOperationObjectMutator.finished(postOperationModel, textualPost);
+   }
+
+   void notifyCompoundCommandChanged(PostCompoundOperationModel postOperationModel) {
       Timber.d("[New Post Creation] Compound operation changed, %s", postOperationModel);
       postCompoundOperationModel = postOperationModel;
       compoundOperationsInteractor.compoundOperationsPipe()
@@ -125,21 +127,15 @@ public class PostProcessingCommand<T extends PostBody> extends Command<PostCompo
 
    protected void notifyCompoundCommandFinished(PostCompoundOperationModel<T> postOperationModel) {
       Timber.d("[New Post Creation] Compound operation finished, %s", postOperationModel);
-      TextualPost textualPost = obtainTextualPost(postOperationModel);
-      postsInteractor.postCreatedPipe().send(new PostCreatedCommand(textualPost));
+      postsInteractor.postCreatedPipe().send(new PostCreatedCommand(postOperationModel.body().createdPost()));
       compoundOperationsInteractor.compoundOperationsPipe()
             .send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
       backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
       sendAnalytics();
    }
 
-   protected TextualPost obtainTextualPost(PostCompoundOperationModel<T> postOperationModel) {
-      return postOperationModel.body().createdPost();
-   }
-
    protected void sendAnalytics() {
       BaseAnalyticsAction action = SharePostAction.createPostAction(postCompoundOperationModel.body().createdPost());
       analyticsInteractor.analyticsActionPipe().send(action);
    }
-
 }

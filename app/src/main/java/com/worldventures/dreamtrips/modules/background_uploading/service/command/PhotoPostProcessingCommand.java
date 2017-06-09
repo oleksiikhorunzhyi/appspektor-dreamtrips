@@ -27,7 +27,7 @@ public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPh
    }
 
    @Override
-   protected Observable<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> createMediaEntitiesIfNeeded(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postOperationModel) {
+   protected Observable<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> prepareCompoundOperation(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postOperationModel) {
       return createPhotos(postOperationModel);
    }
 

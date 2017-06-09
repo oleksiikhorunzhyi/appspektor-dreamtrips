@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -138,7 +138,7 @@ public class FragmentWithFeedDelegate {
       adapter.registerCell(BucketFeedItem.class, FeedItemCell.class);
       adapter.registerCell(PostFeedItem.class, FeedItemCell.class);
       adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
-      adapter.registerCell(UploadingPostsList.class, UploadingPhotoPostsSectionCell.class);
+      adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
    }
 

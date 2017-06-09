@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.converter;
 
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder;
+import com.worldventures.dreamtrips.api.feed.model.VideoAttachment;
 import com.worldventures.dreamtrips.api.photos.model.Photo;
 import com.worldventures.dreamtrips.api.post.model.response.Post;
 import com.worldventures.dreamtrips.api.trip.model.Trip;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
@@ -71,6 +73,9 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
       if (entity instanceof BucketItem) {
          return new TargetClassInfo(FeedEntityHolder.Type.BUCKET_LIST_ITEM,
                com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.class);
+      }
+      if (entity instanceof VideoAttachment) {
+         return new TargetClassInfo(FeedEntityHolder.Type.VIDEO, Video.class);
       }
       return new TargetClassInfo(FeedEntityHolder.Type.UNDEFINED, null);
    }

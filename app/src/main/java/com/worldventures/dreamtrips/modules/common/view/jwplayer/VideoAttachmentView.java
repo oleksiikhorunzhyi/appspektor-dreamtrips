@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.longtailvideo.jwplayer.JWPlayerView;
@@ -43,7 +42,6 @@ public class VideoAttachmentView extends FrameLayout {
    @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject Application application;
 
-   @InjectView(R.id.length) TextView duration;
    @InjectView(R.id.videoThumbnail) SimpleDraweeView videoThumbnail;
 
    private JWPlayerView playerView;
@@ -99,7 +97,6 @@ public class VideoAttachmentView extends FrameLayout {
    }
 
    private void update() {
-      duration.setText(pickerVideoDurationFormatter.getFormattedDuration(video.getDuration()));
       videoThumbnail.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(video.getThumbnail()),
             videoThumbnail.getController()));
    }
@@ -139,7 +136,6 @@ public class VideoAttachmentView extends FrameLayout {
             clearResources();
          }
       });
-      playerView.addOnCompleteListener(this::clearResources);
       playerView.addOnSetupErrorListener(e -> clearResources());
       application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
    }

@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.background_uploading.model;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoUploadStatus;
-
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -15,10 +13,12 @@ public interface PostWithVideoAttachmentBody extends PostBody {
    PostBody.State state();
 
    @Nullable
-   String remoteURL();
+   String uploadId();
+
+   @Nullable
+   String videoUid();
 
    double aspectRatio();
 
-   @Nullable
-   VideoUploadStatus videoUploadStatus();
+   long size();
 }

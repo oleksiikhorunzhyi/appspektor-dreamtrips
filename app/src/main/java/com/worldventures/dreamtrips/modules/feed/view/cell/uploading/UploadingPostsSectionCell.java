@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_uploading_items_section_cell)
-public class UploadingPhotoPostsSectionCell extends AbstractDelegateCell<UploadingPostsList, UploadingPhotoPostsSectionCell.Delegate> {
+public class UploadingPostsSectionCell extends AbstractDelegateCell<UploadingPostsList, UploadingPostsSectionCell.Delegate> {
 
    @Inject Context context;
    @Inject FeedViewInjector feedViewInjector;
@@ -29,9 +29,9 @@ public class UploadingPhotoPostsSectionCell extends AbstractDelegateCell<Uploadi
    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
    @InjectView(R.id.uploading_items_container) ViewGroup itemCellsContainer;
 
-   private List<UploadingPhotoPostCell> cellsList = new ArrayList<>();
+   private List<UploadingPostCell> cellsList = new ArrayList<>();
 
-   public UploadingPhotoPostsSectionCell(View view) {
+   public UploadingPostsSectionCell(View view) {
       super(view);
    }
 
@@ -49,11 +49,11 @@ public class UploadingPhotoPostsSectionCell extends AbstractDelegateCell<Uploadi
       int currentCellsSize = cellsList.size();
       for (int i = Math.min(currentCellsSize, newSize); i < Math.max(currentCellsSize, newSize); i++) {
          if (i > currentCellsSize - 1) {
-            UploadingPhotoPostCell itemCell = new UploadingPhotoPostCell(context);
+            UploadingPostCell itemCell = new UploadingPostCell(context);
             cellsList.add(itemCell);
             itemCellsContainer.addView(itemCell);
          } else {
-            UploadingPhotoPostCell sectionCell = cellsList.remove(i);
+            UploadingPostCell sectionCell = cellsList.remove(i);
             itemCellsContainer.removeView(sectionCell);
          }
       }

@@ -18,8 +18,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.WalletFirmwareChecksPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
@@ -74,26 +74,26 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
       if (associatedCard.exist()) {
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       } else {
-         fetchFirmwareUpdateData(associatedCard);
+         fetchFirmwareUpdateData();
       }
    }
 
-   private void fetchFirmwareUpdateData(final FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
+   private void fetchFirmwareUpdateData() {
       firmwareInteractor.fetchFirmwareUpdateDataPipe()
             .createObservable(new FetchFirmwareUpdateData())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<FetchFirmwareUpdateData>()
-                  .onSuccess(command -> checkFirmwareUpdateData(command.getResult(), associatedCard))
+                  .onSuccess(command -> checkFirmwareUpdateData(command.getResult()))
                   .onFail((command, throwable) -> navigateToWizard())
             );
    }
 
-   private void checkFirmwareUpdateData(FetchFirmwareUpdateData.Result result, FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
+   private void checkFirmwareUpdateData(FetchFirmwareUpdateData.Result result) {
       if (result.isForceUpdateStarted()) {
          final FirmwareUpdateData firmwareUpdateData = result.firmwareUpdateData();
          //noinspection ConstantConditions
          if (firmwareUpdateData.fileDownloaded()) {
-            navigator.single(new WalletFirmwareChecksPath(), Flow.Direction.REPLACE);
+            navigator.single(new WalletInstallFirmwarePath(), Flow.Direction.REPLACE);
          } else {
             navigator.single(new WalletNewFirmwareAvailablePath(), Flow.Direction.REPLACE);
          }

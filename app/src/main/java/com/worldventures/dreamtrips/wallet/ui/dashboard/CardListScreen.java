@@ -237,7 +237,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
                .title(R.string.wallet_dashboard_update_dialog_title)
                .content(R.string.wallet_dashboard_update_dialog_content)
                .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
-               .cancelListener(dialog -> getPresenter().navigateBack())
+               .cancelable(false)
                .onNegative((dialog, which) -> getPresenter().navigateBack())
                .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
                .onPositive((dialog, which) -> getPresenter().confirmForceFirmwareUpdate())
@@ -245,7 +245,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       } else {
          forceUpdateDialog.dismiss();
       }
-      if (installFirmwareErrorDialog == null || !installFirmwareErrorDialog.isShowing()) {
+      if (!forceUpdateDialog.isShowing() && (installFirmwareErrorDialog == null || !installFirmwareErrorDialog.isShowing())) {
          forceUpdateDialog.show();
       }
    }

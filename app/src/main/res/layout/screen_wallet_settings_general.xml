@@ -41,8 +41,8 @@
                   android:layout_height="35dp"
                   android:layout_marginEnd="@dimen/spacing_normal"
                   android:src="@drawable/ic_dt_launcher"
-                  app:failureImage="@drawable/ic_avatar_placeholder"
-                  app:placeholderImage="@drawable/ic_avatar_placeholder"
+                  app:failureImage="@drawable/ic_edit_profile_silhouette"
+                  app:placeholderImage="@drawable/ic_edit_profile_silhouette"
                   app:roundAsCircle="true"
                   />
 

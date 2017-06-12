@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProv
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
@@ -49,7 +49,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    private MediaPickerService mediaPickerService;
    private ScreenWalletSettingsProfileBinding binding;
    private ProfileViewModel profileViewModel = new ProfileViewModel();
-   private BottomSheetBehavior bottomSheetBehavior;
+   private WalletPhotoProposalDialog photoActionDialog;
 
    public WalletSettingsProfileScreen(Context context) {
       super(context);
@@ -64,9 +64,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       super.onFinishInflate();
       binding = DataBindingUtil.bind(this);
       binding.setOnAvatarClick(v -> showDialog());
-      binding.setOnChoosePhotoClick(v -> onChoosePhotoClick());
-      binding.setOnDontAddClick(v -> onDontAddClick());
-      binding.setOnCancelClick(v -> showDialog());
       binding.setProfile(profileViewModel);
       binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
@@ -89,8 +86,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
       binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
-      bottomSheetBehavior = BottomSheetBehavior.from(binding.linearLayoutBottomSheetEditProfile);
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -130,12 +125,18 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public void showDialog() {
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+      photoActionDialog = new WalletPhotoProposalDialog(getContext());
+      photoActionDialog.setOnChoosePhotoAction(this::onChoosePhotoClick);
+      photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
+      photoActionDialog.setOnCancelAction(this::hideDialog);
+      photoActionDialog.show();
    }
 
    @Override
    public void hideDialog() {
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+      if (photoActionDialog == null) return;
+      photoActionDialog.hide();
+      photoActionDialog = null;
    }
 
    @Override

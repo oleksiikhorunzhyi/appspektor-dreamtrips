@@ -306,9 +306,4 @@ public class PersistentDeviceStorage implements DeviceStorage {
    public int getHomeDisplayType() {
       return 0;
    }
-
-   @Override
-   public void removeUserPhoto() {
-
-   }
 }

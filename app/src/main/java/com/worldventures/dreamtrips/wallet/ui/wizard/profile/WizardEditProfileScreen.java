@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFact
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
@@ -42,8 +42,8 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    public static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
    private ScreenWalletWizardPersonalInfoBinding binding;
    private ProfileViewModel viewModel = new ProfileViewModel();
-   private BottomSheetBehavior bottomSheetBehavior;
    private MediaPickerService mediaPickerService;
+   private WalletPhotoProposalDialog photoActionDialog;
 
    public WizardEditProfileScreen(Context context) {
       super(context);
@@ -66,9 +66,6 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       if (isInEditMode()) return;
       binding = DataBindingUtil.bind(this);
       binding.setOnAvatarClick(v -> showDialog());
-      binding.setOnChoosePhotoClick(v -> onChoosePhotoClick());
-      binding.setOnDontAddClick(v -> onDontAddClick());
-      binding.setOnCancelClick(v -> hideDialog());
       binding.setOnNextClick(v -> presenter.setupUserData());
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
@@ -78,13 +75,12 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.setProfile(viewModel);
-      bottomSheetBehavior = BottomSheetBehavior.from(binding.linearLayoutBottomSheetEditProfile);
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
    }
 
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
+      if (isInEditMode()) return;
       observeNewAvatar();
    }
 
@@ -138,12 +134,18 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
 
    @Override
    public void showDialog() {
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+      photoActionDialog = new WalletPhotoProposalDialog(getContext());
+      photoActionDialog.setOnChoosePhotoAction(this::onChoosePhotoClick);
+      photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
+      photoActionDialog.setOnCancelAction(this::hideDialog);
+      photoActionDialog.show();
    }
 
    @Override
    public void hideDialog() {
-      bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+      if (photoActionDialog == null) return;
+      photoActionDialog.hide();
+      photoActionDialog = null;
    }
 
    @Override

@@ -34,7 +34,7 @@ public abstract class DocumentListPresenter extends Presenter<DocumentListPresen
       documentsInteractor.getDocumentsActionPipe().send(new GetDocumentsCommand(getDocumentType()));
    }
 
-   private void observeDocumentsChanges() {
+   public void observeDocumentsChanges() {
       documentsInteractor.getDocumentsActionPipe()
             .observe()
             .compose(bindViewToMainComposer())
@@ -59,7 +59,7 @@ public abstract class DocumentListPresenter extends Presenter<DocumentListPresen
       view.hideProgress();
    }
 
-   private void onDocumentsLoadError(GetDocumentsCommand command, Throwable error) {
+   public void onDocumentsLoadError(GetDocumentsCommand command, Throwable error) {
       view.setDocumentList(command.items());
       view.hideProgress();
 

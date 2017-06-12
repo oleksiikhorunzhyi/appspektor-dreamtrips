@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.infopages
+package com.worldventures.dreamtrips.social.infopages.service
 
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.times

@@ -193,7 +193,7 @@ ext {
          databindingcompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
    ]
    // tests
-   def spekVersion = '1.1.1'
+   def spekVersion = '1.1.2'
    def roboelectricVersion = '3.1.2'
    def powerMockVersion = '1.7.0RC4'
    moduleDependencies.test = [

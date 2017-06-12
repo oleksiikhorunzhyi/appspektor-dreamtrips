@@ -52,7 +52,6 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          it ("should handle error") {
             init(BaseContract.of(GetSuccessStoriesCommand::class.java).exception(RuntimeException()))
             doReturn(0).whenever(view).itemsCount
-            doReturn(false).whenever(presenter).isConnected
             presenter.takeView(view)
             presenter.onResume()
             verify(presenter, VerificationModeFactory.times(1)).handleError(any(), any())

@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManag
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
@@ -289,7 +290,7 @@ public class ManagerModule {
    @Provides
    @Singleton
    ConnectionInfoProvider connectionInfoProvider(Context context) {
-      return new ConnectionInfoProvider(context);
+      return new ConnectionInfoProviderImpl(context);
    }
 
    @Provides

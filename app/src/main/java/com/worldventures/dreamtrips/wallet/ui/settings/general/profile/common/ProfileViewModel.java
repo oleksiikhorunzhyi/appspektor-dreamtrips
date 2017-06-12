@@ -11,15 +11,17 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.BR;
 
 public class ProfileViewModel extends BaseObservable implements Parcelable {
-   static final String DEFAULT_COUNTRY_CODE = "1";
-   static final String DEFAULT_AVATAR_URL = "/avatars/thumb/missing.png";
+
+   private static final String DEFAULT_COUNTRY_CODE = "1";
+   private static final String DEFAULT_AVATAR_URL = "/avatars/thumb/missing.png";
+
    private String firstName = "";
    private String middleName = "";
    private String lastName = "";
    private String phoneCode = DEFAULT_COUNTRY_CODE;
    private String phoneNumber = "";
    @Nullable private String chosenPhotoUri;
-   private boolean isPhotoEmpty;
+   private boolean isPhotoEmpty = true; // because chosenPhotoUri is null by default
 
    public ProfileViewModel() {}
 

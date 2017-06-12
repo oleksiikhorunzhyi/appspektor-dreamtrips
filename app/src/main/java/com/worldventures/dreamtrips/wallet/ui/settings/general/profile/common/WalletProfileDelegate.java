@@ -47,6 +47,7 @@ public class WalletProfileDelegate {
 
    @Nullable
    public SmartCardUserPhoto createPhoto(ProfileViewModel model) {
+      //noinspection all
       return !model.isPhotoEmpty() ? SmartCardUserPhoto.of(model.getChosenPhotoUri()) : null;
    }
 

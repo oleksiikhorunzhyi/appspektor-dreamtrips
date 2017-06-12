@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
-import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 

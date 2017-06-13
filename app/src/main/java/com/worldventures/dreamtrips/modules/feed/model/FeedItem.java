@@ -70,6 +70,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       this.id = id;
    }
 
+   public FeedItem() {
+      super();
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Getters / Setters
    ///////////////////////////////////////////////////////////////////////////
@@ -147,23 +151,18 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
       FeedItem<?> that = (FeedItem<?>) o;
 
-      if (item == null && super.equals(that)) return true;
-      return !(item != null ? !item.equals(that.item) : that.item != null);
+      return item == null && super.equals(that) || equalsWith(that);
    }
 
    @Override
    public int hashCode() {
       if (item == null) return super.hashCode();
-      return item != null ? item.hashCode() : 0;
+      return item.hashCode();
    }
 
    public boolean equalsWith(@Nullable FeedItem feedItem) {
-      if (feedItem == null) return false;
-      return getItem().getUid().equals(feedItem.getItem().getUid()) && getAction().equals(feedItem.getAction());
-   }
-
-   public FeedItem() {
-      super();
+      return feedItem != null && getItem().getUid().equals(feedItem.getItem()
+            .getUid()) && getAction().equals(feedItem.getAction());
    }
 
    ///////////////////////////////////////////////////////////////////////////

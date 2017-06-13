@@ -186,9 +186,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    @Override
    public void refreshFeedItems(List<FeedItem> items) {
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(items);
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.updateItems(items);
    }
 
    @Override

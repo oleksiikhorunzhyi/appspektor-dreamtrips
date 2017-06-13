@@ -249,9 +249,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void refreshFeedItems(List feedItems) {
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(feedItems);
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.updateItems(feedItems);
    }
 
    @Override

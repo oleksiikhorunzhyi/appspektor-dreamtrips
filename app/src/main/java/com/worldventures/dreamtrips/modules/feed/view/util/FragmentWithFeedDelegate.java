@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.util.DiffUtil;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
@@ -73,24 +74,42 @@ public class FragmentWithFeedDelegate {
       adapter.addItem(position, item);
    }
 
-   public void addItems(List items) {
-      adapter.addItems(items);
+   public void updateItems(final List items) {
+      DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+         @Override
+         public int getOldListSize() {
+            return adapter.getItems().size();
+         }
+
+         @Override
+         public int getNewListSize() {
+            return items.size();
+         }
+
+         @Override
+         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&
+                  items.get(newItemPosition) instanceof UploadingPostsList) {
+               return true;
+            }
+            return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
+         }
+
+         @Override
+         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
+         }
+      });
+      adapter.setItemsNoNotify(items);
+      diffResult.dispatchUpdatesTo(adapter);
    }
 
    public void updateItem(Object item) {
       adapter.updateItem(item);
    }
 
-   public Object getItem(int position) {
-      return adapter.getItem(position);
-   }
-
    public List getItems() {
       return adapter.getItems();
-   }
-
-   public int getItemsCount() {
-      return adapter.getCount();
    }
 
    public void notifyDataSetChanged() {
@@ -125,10 +144,6 @@ public class FragmentWithFeedDelegate {
          if (item instanceof FeedItem) ((FeedItem) item).getItem().setTranslated(false);
       });
       notifyDataSetChanged();
-   }
-
-   public void clearItems() {
-      adapter.clear();
    }
 
    private void registerBaseFeedCells() {

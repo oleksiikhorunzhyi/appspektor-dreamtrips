@@ -45,6 +45,7 @@ public class VideoAttachmentView extends FrameLayout {
    @InjectView(R.id.videoThumbnail) SimpleDraweeView videoThumbnail;
 
    private JWPlayerView playerView;
+   private boolean isPlayerDestroyed;
 
    public VideoAttachmentView(Context context) {
       this(context, null);
@@ -88,7 +89,10 @@ public class VideoAttachmentView extends FrameLayout {
       if (playerView != null) {
          playerView.stop();
          playerView.onPause();
-         playerView.onDestroy();
+         if (!isPlayerDestroyed) {
+            playerView.onDestroy();
+            isPlayerDestroyed = true;
+         }
          playerView.setVisibility(GONE);
          removeView(playerView);
          application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
@@ -138,6 +142,7 @@ public class VideoAttachmentView extends FrameLayout {
       });
       playerView.addOnSetupErrorListener(e -> clearResources());
       application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
+      isPlayerDestroyed = false;
    }
 
    private List<PlaylistItem> preparePlaylist() {
@@ -168,7 +173,10 @@ public class VideoAttachmentView extends FrameLayout {
       @Override
       public void onActivityDestroyed(Activity activity) {
          super.onActivityDestroyed(activity);
-         if (playerViewIsActive(activity)) playerView.onDestroy();
+         if (playerViewIsActive(activity) && !isPlayerDestroyed) {
+               playerView.onDestroy();
+            isPlayerDestroyed = true;
+         }
       }
 
       private boolean playerViewIsActive(Activity activity) {

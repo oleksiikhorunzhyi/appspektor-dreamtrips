@@ -138,6 +138,7 @@ public class UploadingPostCell extends FrameLayout {
             updateAccordingToScheduledState();
             break;
          case STARTED:
+            progressBar.setVisibility(VISIBLE);
             updateAccordingToStartedState(compoundOperationModel);
             break;
          case FAILED:

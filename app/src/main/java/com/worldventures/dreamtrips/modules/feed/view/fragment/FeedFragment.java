@@ -47,7 +47,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
@@ -142,7 +141,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       recyclerViewManager.setPaginationListener(() -> {
          if (!recyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyDataSetChanged();
+            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
       feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
@@ -312,9 +311,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       processSuggestedPhotosItems(suggestedPhotos, feedModels);
       processUploadsInProgressItems(uploadingPostsList, feedModels);
       processFeedItems(feedItems, feedModels);
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(feedModels);
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.updateItems(feedModels);
    }
 
    private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {

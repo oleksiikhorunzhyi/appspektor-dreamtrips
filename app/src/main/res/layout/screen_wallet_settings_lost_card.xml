@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_settings_lost_card_title"
+         />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
+         android:orientation="vertical"
+         >
+
+      <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_tiny"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_tiny"
+            >
+
+         <TextView
+               style="@style/SettingsText.Primary"
+               android:layout_centerVertical="true"
+               android:text="@string/wallet_lost_card_tracking_enable_label"
+               />
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
+               android:id="@+id/tracking_enable_switcher"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentTop="true"
+               android:padding="@dimen/spacing_normal"
+               tools:checked="true"
+               />
+
+      </RelativeLayout>
+
+      <!--divider-->
+      <View style="@style/SettingsItemDividerStyle" />
+
+      <LinearLayout
+            android:id="@+id/last_connection_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_small"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <TextView
+               style="@style/SettingsText.Primary"
+               android:text="@string/wallet_lost_card_last_connected"
+               android:textStyle="bold"
+               />
+
+         <TextView
+               android:id="@+id/last_connected_label"
+               style="@style/SettingsText.Secondary"
+               tools:text="Sunday, October 3rd, 12:08PM"
+               />
+      </LinearLayout>
+   </LinearLayout>
+
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_gravity="top"
+            android:background="@drawable/square_shadow"
+            android:elevation="@dimen/spacing_tiniest"
+            android:translationZ="@dimen/spacing_tiniest"
+            />
+
+      <FrameLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView
+               android:id="@+id/map_view"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               />
+
+         <android.support.v7.widget.CardView
+               android:id="@+id/empty_location_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:layout_margin="@dimen/spacing_small"
+               android:visibility="gone"
+               app:cardCornerRadius="2dp"
+               app:cardElevation="2dp"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:padding="@dimen/spacing_normal"
+                  android:text="@string/wallet_lost_card_empty_last_location_msg"
+                  android:textSize="@dimen/font_medium"
+                  />
+         </android.support.v7.widget.CardView>
+
+      </FrameLayout>
+
+      <FrameLayout
+            android:id="@+id/noGoogleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:visibility="gone"
+            >
+
+         <TextView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:gravity="center"
+               android:paddingLeft="@dimen/spacing_normal"
+               android:paddingRight="@dimen/spacing_normal"
+               android:text="@string/wallet_google_play_services_unsupported_text"
+               android:textSize="@dimen/font_medium"
+               />
+      </FrameLayout>
+
+      <include layout="@layout/empty_location_lost_card" />
+   </FrameLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen>

@@ -100,10 +100,8 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
    }
 
    @Override
-   public void onBackPressed() {
-      if (backStackDelegate.handleBackPressed()) return;
-      if (flowActivityHelper.handleBack()) return;
-      super.onBackPressed();
+   protected boolean handleBackPressed() {
+      return super.handleBackPressed() || flowActivityHelper.handleBack();
    }
 
    @Override

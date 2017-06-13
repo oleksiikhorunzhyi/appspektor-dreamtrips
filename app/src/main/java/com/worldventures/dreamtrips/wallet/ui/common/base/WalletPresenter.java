@@ -6,21 +6,20 @@ import android.os.Parcelable;
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
-
 public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements ViewStateMvpPresenter<V, S> {
 
    @SuppressWarnings("WeakerAccess")
    @Inject SmartCardInteractor interactor;
+   @Inject WalletNetworkService networkService;
 
    private Context context;
    private Injector injector;
@@ -35,18 +34,26 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeSmartCardModifierPipe();
+      observeHttpConnectionState();
+   }
+
+   private void observeHttpConnectionState() {
+      networkService.observeConnectedState()
+            .throttleLast(1, TimeUnit.SECONDS)
+            .distinctUntilChanged()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::showHttpConnectionStatus);
    }
 
    private void observeSmartCardModifierPipe() {
-      interactor.activeSmartCardPipe()
+      interactor.deviceStatePipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(Command::getResult)
-            .map(SmartCard::connectionStatus)
+            .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::showConnectionStatus);
-      interactor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      interactor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
    public Context getContext() {

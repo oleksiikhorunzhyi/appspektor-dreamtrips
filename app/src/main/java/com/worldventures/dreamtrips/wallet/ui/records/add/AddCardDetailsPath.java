@@ -4,19 +4,19 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 @Layout(R.layout.screen_wallet_wizard_add_card_details)
 public class AddCardDetailsPath extends StyledPath {
 
-   private final BankCard bankCard;
+   private final Record record;
 
-   public AddCardDetailsPath(BankCard bankCard) {
-      this.bankCard = bankCard;
+   public AddCardDetailsPath(Record record) {
+      this.record = record;
    }
 
-   public BankCard getBankCard() {
-      return bankCard;
+   public Record getRecord() {
+      return record;
    }
 
    @Override

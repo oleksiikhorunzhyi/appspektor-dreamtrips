@@ -8,19 +8,21 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPres
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.HelpDocumentListPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.LegalTermsPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.OtaPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
-import com.worldventures.dreamtrips.modules.infopages.presenter.TermsTabPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.cell.DocumentCell;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.DocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpDocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollRepFragment;
@@ -46,10 +48,6 @@ import dagger.Provides;
             StaticInfoFragment.class,
             StaticInfoFragment.BookItFragment.class,
             StaticInfoFragment.BundleUrlFragment.class,
-            StaticInfoFragment.TermsOfServiceFragment.class,
-            StaticInfoFragment.PrivacyPolicyFragment.class,
-            StaticInfoFragment.CookiePolicyFragment.class,
-            StaticInfoFragment.FAQFragment.class,
             EnrollRepFragment.class,
             StaticInfoFragment.EnrollUpgradeFragment.class,
             DocumentFragment.class,
@@ -62,8 +60,8 @@ import dagger.Provides;
             HelpVideosPresenter.class,
             HelpFragment.class,
             HelpTabPresenter.class,
-            TermsTabFragment.class,
-            TermsTabPresenter.class,
+            LegalTermsFragment.class,
+            LegalTermsPresenter.class,
             WebViewFragmentPresenter.class,
             SendFeedbackFragment.class,
             SendFeedbackPresenter.class,
@@ -76,18 +74,21 @@ import dagger.Provides;
             DocumentListPresenter.class,
             DocumentPresenter.class,
             OtaPresenter.class,
-            DocumentCell.class},
+            DocumentCell.class,
+            HelpDocumentListFragment.class,
+            HelpDocumentListPresenter.class},
       complete = false,
       library = true)
 public class InfoModule {
 
    public static final String HELP = Route.HELP.name();
-   public static final String TERMS = Route.TERMS.name();
+   public static final String TERMS = Route.LEGAL_TERMS.name();
    public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTermsOfServiceComponent() {
-      return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
+      return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms,
+            R.drawable.ic_termsconditions, LegalTermsFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -97,6 +98,7 @@ public class InfoModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideFeedbackComponent() {
-      return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback, R.drawable.ic_send_feedback, SendFeedbackFragment.class);
+      return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback,
+            R.drawable.ic_send_feedback, SendFeedbackFragment.class);
    }
 }

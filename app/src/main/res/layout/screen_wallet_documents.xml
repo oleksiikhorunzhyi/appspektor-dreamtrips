@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/grey_lighter"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_documents"
+         />
+
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_lighter"
+            >
+
+         <com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView
+               android:id="@+id/recyclerView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:overScrollMode="never"
+               />
+
+         <TextView
+               android:id="@+id/empty_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:layout_marginLeft="@dimen/spacing_huge"
+               android:layout_marginRight="@dimen/spacing_huge"
+               android:layout_marginTop="@dimen/spacing_large"
+               android:gravity="center"
+               android:text="@string/documents_empty_text"
+               android:textColor="@color/black"
+               android:textSize="@dimen/font_large"
+               android:textStyle="bold"
+               android:visibility="gone"
+               />
+
+      </FrameLayout>
+   </android.support.v4.widget.SwipeRefreshLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsScreen>

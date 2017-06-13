@@ -15,6 +15,7 @@ public interface Reviews extends Serializable {
 
    String total();
    String ratingAverage();
+   Boolean userHasPendingReview();
    @Nullable List<Review> reviews();
    @Nullable ReviewSettings reviewSettings();
 }

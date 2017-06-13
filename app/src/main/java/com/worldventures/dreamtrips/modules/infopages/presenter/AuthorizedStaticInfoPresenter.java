@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import android.webkit.WebViewClient;
 
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
@@ -41,18 +40,27 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
          action.call();
       } else {
          view.setRefreshing(true);
-         view.bindUntilDropView(loginInteractor.loginActionPipe()
-               .createObservable(new LoginCommand())
-               .compose(new IoToMainComposer<>()))
-               .subscribe(new ActionStateSubscriber<LoginCommand>().onSuccess(loginCommand -> {
-                  view.setRefreshing(false);
-                  reload();
-               }).onFail((loginCommand, throwable) -> {
-                  Timber.e(throwable, "Can't login during WebView loading");
-                  view.showError(WebViewClient.ERROR_AUTHENTICATION);
-                  view.setRefreshing(false);
-               }));
+         reLogin();
       }
+   }
+
+   public void reLogin() {
+      loginInteractor.loginActionPipe()
+            .createObservable(new LoginCommand())
+            .compose(bindUntilPauseIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<LoginCommand>().onSuccess(loginCommand -> onLoginSuccess())
+                  .onFail((loginCommand, throwable) -> onLoginFail(throwable)));
+   }
+
+   protected void onLoginSuccess() {
+      view.setRefreshing(false);
+      reload();
+   }
+
+   protected void onLoginFail(Throwable throwable) {
+      Timber.e(throwable, "Can't login during WebView loading");
+      view.showError(WebViewClient.ERROR_AUTHENTICATION);
+      view.setRefreshing(false);
    }
 
    public interface View extends WebViewFragmentPresenter.View {}

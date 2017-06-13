@@ -49,12 +49,12 @@ class NotificationFeedInteractorTest : BaseSpec({
          context("Notifications cache is empty") {
             val testSubrciber = TestSubscriber<ActionState<GetNotificationsCommand>>()
 
-            feedInteractor
-                  .notificationsPipe()
-                  .createObservable(GetNotificationsCommand.refresh())
-                  .subscribe(testSubrciber)
+            it("Should not call onProgress") {
+               feedInteractor
+                     .notificationsPipe()
+                     .createObservable(GetNotificationsCommand.refresh())
+                     .subscribe(testSubrciber)
 
-            xit("Should not call onProgress") {
                assertTrue {
                   testSubrciber.onNextEvents.firstOrNull {
                      it.status == ActionState.Status.PROGRESS } == null }
@@ -67,16 +67,17 @@ class NotificationFeedInteractorTest : BaseSpec({
             }
          }
          context("Notifications cache is not empty") {
-            doReturn(notificationsList2).whenever(mockMemoryStorage).get(any())
 
             val testSubrciber = TestSubscriber<ActionState<GetNotificationsCommand>>()
 
-            feedInteractor
-                  .notificationsPipe()
-                  .createObservable(GetNotificationsCommand.refresh())
-                  .subscribe(testSubrciber)
-
             it("Should call onProgress") {
+               doReturn(notificationsList2).whenever(mockMemoryStorage).get(any())
+
+               feedInteractor
+                     .notificationsPipe()
+                     .createObservable(GetNotificationsCommand.refresh())
+                     .subscribe(testSubrciber)
+
                assertTrue { testSubrciber.onNextEvents.firstOrNull { it.status == ActionState.Status.PROGRESS } != null }
             }
 
@@ -91,16 +92,17 @@ class NotificationFeedInteractorTest : BaseSpec({
 
       context("Load more notifications") {
          context("Notifications cache is not empty") {
-            doReturn(notificationsList2).whenever(mockMemoryStorage).get(any())
 
             val testSubrciber = TestSubscriber<ActionState<GetNotificationsCommand>>()
 
-            feedInteractor
-                  .notificationsPipe()
-                  .createObservable(GetNotificationsCommand.loadMore())
-                  .subscribe(testSubrciber)
-
             it("Should call onProgress") {
+               doReturn(notificationsList2).whenever(mockMemoryStorage).get(any())
+
+               feedInteractor
+                     .notificationsPipe()
+                     .createObservable(GetNotificationsCommand.loadMore())
+                     .subscribe(testSubrciber)
+
                assertTrue { testSubrciber.onNextEvents.firstOrNull { it.status == ActionState.Status.PROGRESS } != null }
             }
 

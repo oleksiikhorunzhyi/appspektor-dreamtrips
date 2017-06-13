@@ -37,11 +37,6 @@ public class WizardCheckingScreen extends WalletLinearLayout<WizardCheckingPrese
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
    @NonNull
    @Override
    public WizardCheckingPresenter createPresenter() {

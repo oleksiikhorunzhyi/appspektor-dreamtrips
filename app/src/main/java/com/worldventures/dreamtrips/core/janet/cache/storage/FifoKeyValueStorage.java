@@ -7,9 +7,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class FifoKeyValueStorage<K, T> implements Storage<T>, ClearableStorage {
-
-   public static final String BUNDLE_KEY_VALUE = "BUNDLE_KEY_VALUE";
+public class FifoKeyValueStorage<K, T> implements Storage<T>, KeyValueStorage<T>, ClearableStorage {
 
    private static final int SIZE_DEFAULT = 3;
 

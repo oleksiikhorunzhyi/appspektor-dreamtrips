@@ -13,7 +13,7 @@ import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class RestoreCompoundOperationsSpec : BaseUploadingInteractorSpec({
-   xdescribe("Restore compound operations command") {
+   describe("Restore compound operations command") {
       initJanet(queryCompoundOperationsNotEmptyContract())
 
       val testSubscribeRestore = TestSubscriber<ActionState<RestoreCompoundOperationsCommand>>()

@@ -32,7 +32,7 @@ public class ReviewStorage {
 
     private static String[] getReviewsPosted(Context context, String idUser) {
         Gson gson = new Gson();
-        String json = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString(idUser, null);
+        String json = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString(idUser, "[]");
         return gson.fromJson(json, String[].class);
     }
 
@@ -46,15 +46,18 @@ public class ReviewStorage {
     }
 
     public static void updateReviewsPosted(Context context, String idUser, String idMerchant, boolean hasPending) {
+        String[] merchants = getReviewsPosted(context, idUser);
+        List<String> merchantsArray = new ArrayList<>(Arrays.asList(merchants));
         if (exists(context, idUser, idMerchant) && !hasPending) {
-            String[] merchants = getReviewsPosted(context, idUser);
-            List<String> merchantsArray = new ArrayList<>(Arrays.asList(merchants));
             for (String s : merchants) {
                 if (s.equals(idMerchant)){
                     merchantsArray.remove(s);
                 }
             }
-            saveReviewsList(context, idUser, merchantsArray);
+           saveReviewsList(context, idUser, merchantsArray);
+        } else if(!exists(context, idUser, idMerchant) && hasPending){
+           merchantsArray.add(idMerchant);
+           saveReviewsList(context, idUser, merchantsArray);
         }
     }
 

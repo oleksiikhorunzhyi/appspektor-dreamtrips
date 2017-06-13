@@ -74,9 +74,9 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    public void translationSuccess_translatingMessage() {
       mockJanetWithResponse(createSuccessResponse());
 
-      DataTranslation translationFromDВ = new DataTranslation(testMessage.getId(), null, TranslationStatus.TRANSLATING);
+      DataTranslation translationFromDB = new DataTranslation(testMessage.getId(), null, TranslationStatus.TRANSLATING);
       TestSubscriber<DataTranslation> testSubscriber = new TestSubscriber<>();
-      mockTranslationDAO(translationFromDВ, testMessage.getId(), testSubscriber);
+      mockTranslationDAO(translationFromDB, testMessage.getId(), testSubscriber);
 
       translateMessage();
 

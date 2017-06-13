@@ -29,6 +29,9 @@
    <string name="smth_went_wrong">Algo fue mal =(</string>
    <string name="inspire_me">Inspiración</string>
    <string name="three_sixty">Experiencia 360</string>
+   <string name="member_images_new_item">%1$s Artículo nuevo</string>
+   <string name="member_images_new_items">%1$s Artículos nuevos</string>
+   <string name="member_images_new_items_plus">%1$s+ Artículos nuevos</string>
    <string name="book_it">¡Resérvalo!</string>
    <string name="reload_trip_details">Volver a cargar los detalles del viaje</string>
    <string name="user_id_hint">ID de miembro de WV</string>
@@ -581,6 +584,7 @@
    <string name="show_original">Mostrar original</string>
    <string name="error_fail_to_translate_bucket_item">No se ha podido traducir lista de pendientes </string>
 
-   
+   <string name="n_friends_accepted">%1$d amigos aceptados.</string>
+   <string name="friends_will_appear_momentarily">Aparecerán en Mis amigos momentáneamente.</string>
 
 </resources>

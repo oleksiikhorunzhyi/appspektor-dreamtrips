@@ -1,7 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -12,56 +17,76 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
-import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
-import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
+import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
+import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardListHeaderAdapter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.AnimatorProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.MultiHolderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.RecyclerItemClickListener;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CommonCardHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dialog.InstallFirmwareErrorDialog;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.exception.WaitingResponseException;
 
 public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
 
    private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
+   private static final long FADE_ANIMATION_DURATION = 250;
+   private static final double VISIBLE_SCALE = 0.64;
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
-   @InjectView(R.id.empty_card_view) View emptyCardListView;
-   @InjectView(R.id.add_card_button) FloatingActionButton addCardButton;
+   @InjectView(R.id.empty_card_view) TextView emptyCardListView;
+   @InjectView(R.id.fab_button) FloatingActionButton fabButton;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
+   @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
 
-   private IgnoreFirstItemAdapter adapter;
+   private CardStackHeaderHolder cardStackHeaderHolder;
 
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
-   private Dialog synchronizationDialog;
    private MaterialDialog forceUpdateDialog;
    private Dialog addCardErrorDialog;
    private Dialog factoryResetConfirmationDialog;
    private Dialog scNonConnectionDialog;
 
+   private MultiHolderAdapter multiAdapter;
+   private ScreenWalletCardlistBinding binding;
+
    public CardListScreen(Context context) {
-      super(context);
+      this(context, null);
    }
 
    public CardListScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
    }
 
    @NonNull
@@ -73,9 +98,11 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onPostAttachToWindowView() {
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
-
+      if (isInEditMode()) return;
+      binding = DataBindingUtil.bind(this);
       setupCardStackList();
    }
+
 
    @Override
    protected void onDetachedFromWindow() {
@@ -85,7 +112,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    private void dismissDialogs() {
-      if (synchronizationDialog != null) synchronizationDialog.dismiss();
       if (installFirmwareErrorDialog != null) installFirmwareErrorDialog.dismiss();
       if (forceUpdateDialog != null) forceUpdateDialog.dismiss();
       if (addCardErrorDialog != null) addCardErrorDialog.dismiss();
@@ -99,20 +125,58 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void showRecordsInfo(List<CardStackViewModel> result) {
-      adapter.clear();
-      adapter.addItems(result);
-      emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
+   public void showRecordsInfo(List<BaseViewModel> result) {
+      multiAdapter.updateItems(result);
+      emptyCardListView.setVisibility(multiAdapter.getItemCount() <= 1 ? VISIBLE : GONE);
    }
 
    @Override
-   public void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
-      Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
-      if (header != null) {
-         adapter.remove(header);
-      }
-      adapter.addItem(0, cardStackHeaderHolder);
-      adapter.notifyDataSetChanged();
+   public void setDefaultSmartCard() {
+      smartCardWidget.bindCard(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .batteryLevel(batteryLevel)
+            .connected(connected)
+            .lock(lock)
+            .stealthMode(stealthMode)
+            .build();
+
+      smartCardWidget.bindCard(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setSmartCardUserAttrs(String fullname, String photoFileUrl) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .fullname(fullname)
+            .photoUrl(photoFileUrl)
+            .build();
+
+      smartCardWidget.bindCard(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .firmwareUpdateAvailable(firmwareUpdateAvailable)
+            .build();
+
+      smartCardWidget.bindCard(cardStackHeaderHolder);
+   }
+
+   @Override
+   public void setCardsCount(int count) {
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .cardCount(count)
+            .build();
+
+      smartCardWidget.bindCard(cardStackHeaderHolder);
    }
 
    @Override
@@ -154,8 +218,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public void showFirmwareUpdateError() {
       if (installFirmwareErrorDialog == null) {
          installFirmwareErrorDialog = new InstallFirmwareErrorDialog(getContext())
-               .setOnRetryction(() -> presenter.navigateToInstallFirmware())
-               .setOnCancelAction(() -> presenter.navigateBack());
+               .setOnRetryction(() -> presenter.retryFWU())
+               .setOnCancelAction(() -> presenter.retryFWUCanceled());
       }
       if (!installFirmwareErrorDialog.isShowing()) {
          if (forceUpdateDialog != null && forceUpdateDialog.isShowing()) {
@@ -167,54 +231,38 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void showCardSynchronizationDialog(boolean visible) {
-      if (visible) {
-         if (synchronizationDialog == null) createSynchronizationDialog();
-         synchronizationDialog.show();
-      } else {
-         if (synchronizationDialog != null) synchronizationDialog.dismiss();
-      }
-   }
-
-   private void createSynchronizationDialog() {
-      synchronizationDialog = new MaterialDialog.Builder(getContext())
-            .content(getString(R.string.wallet_wizard_card_list_card_synchronization_dialog_text))
-            .progress(true, 0)
-            .cancelable(false)
-            .build();
-   }
-
-   @Override
    public void showForceFirmwareUpdateDialog() {
       if (forceUpdateDialog == null) {
          forceUpdateDialog = new MaterialDialog.Builder(getContext())
                .title(R.string.wallet_dashboard_update_dialog_title)
                .content(R.string.wallet_dashboard_update_dialog_content)
                .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
-               .cancelListener(dialog -> getPresenter().navigateBack())
+               .cancelable(false)
                .onNegative((dialog, which) -> getPresenter().navigateBack())
                .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
-               .onPositive((dialog, which) -> getPresenter().handleForceFirmwareUpdateConfirmation())
+               .onPositive((dialog, which) -> getPresenter().confirmForceFirmwareUpdate())
                .build();
       } else {
          forceUpdateDialog.dismiss();
       }
-      if (installFirmwareErrorDialog == null || !installFirmwareErrorDialog.isShowing()) {
+      if (!forceUpdateDialog.isShowing() && (installFirmwareErrorDialog == null || !installFirmwareErrorDialog.isShowing())) {
          forceUpdateDialog.show();
       }
    }
 
    @Override
    public void showFactoryResetConfirmationDialog() {
-      factoryResetConfirmationDialog = new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_dashboard_factory_reset_dialog_content)
-            .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
-            .cancelListener(dialog -> getPresenter().navigateBack())
-            .onNegative((dialog, which) -> getPresenter().navigateBack())
-            .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
-            .onPositive((dialog, which) -> getPresenter().navigateToForceUpdate())
-            .build();
-      factoryResetConfirmationDialog.show();
+      if (factoryResetConfirmationDialog == null) {
+         factoryResetConfirmationDialog = new MaterialDialog.Builder(getContext())
+               .content(R.string.wallet_dashboard_factory_reset_dialog_content)
+               .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
+               .cancelListener(dialog -> getPresenter().navigateBack())
+               .onNegative((dialog, which) -> getPresenter().navigateBack())
+               .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
+               .onPositive((dialog, which) -> getPresenter().navigateToFirmwareUpdate())
+               .build();
+      }
+      if (!factoryResetConfirmationDialog.isShowing()) factoryResetConfirmationDialog.show();
    }
 
    @Override
@@ -231,76 +279,156 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       super.onRestoreInstanceState(state);
    }
 
+
    private void setupCardStackList() {
-      adapter = new IgnoreFirstItemAdapter(getContext(), getInjector());
-      adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
-      adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
-         @Override
-         public void onCardClicked(BankCard bankCard) {
-            getPresenter().cardClicked(bankCard);
-         }
-      });
-      adapter.registerIdDelegate(CardStackViewModel.class, model -> {
-         CardStackViewModel vm = ((CardStackViewModel) model);
-         return vm.getHeaderTitle() != null ? vm.getHeaderTitle().hashCode() : 0;
-      });
 
-      adapter.registerCell(ImmutableCardStackHeaderHolder.class, CardStackHeaderCell.class);
-      adapter.registerDelegate(ImmutableCardStackHeaderHolder.class, new CardStackHeaderCell.Delegate() {
-         @Override
-         public void onCellClicked(CardStackHeaderHolder model) {
-
-         }
-
-         @Override
-         public void onSettingsChosen() {
-            presenter.onSettingsChosen();
-         }
-      });
-
-      bankCardList.setAdapter(adapter);
-      bankCardList.setItemAnimator(new DefaultItemAnimator());
-      bankCardList.addItemDecoration(getStickyHeadersItemDecoration(adapter));
+      int dimension = getContext().getResources().getDimensionPixelSize(R.dimen.wallet_card_height);
+      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>());
+      bankCardList.setAdapter(multiAdapter);
+      final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
+      listAnimator.setSupportsChangeAnimations(false);
+      bankCardList.setItemAnimator(listAnimator);
+      bankCardList.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
       LinearLayoutManager layout = new LinearLayoutManager(getContext());
       layout.setAutoMeasureEnabled(true);
       bankCardList.setLayoutManager(layout);
+      bankCardList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
+            new RecyclerItemClickListener.OnItemClickListener() {
+               @Override
+               public void onItemClick(View view, int position) {
+                  if (multiAdapter.getItemViewType(position) == R.layout.card_cell_binding) {
+                     showDetails(view, (int) (dimension * VISIBLE_SCALE * -1));
+                  }
+               }
+
+               @Override
+               public void onItemLongClick(View childView, int position, Point point) {
+
+               }
+            }));
+
+      smartCardWidget.setOnSettingsClickListener(v -> presenter.onSettingsChosen());
+
+      binding.transitionView.getRoot().setVisibility(GONE);
    }
 
-   private StickyHeadersItemDecoration getStickyHeadersItemDecoration(BaseArrayListAdapter adapter) {
-      return new StickyHeadersBuilder().setAdapter(adapter)
-            .setRecyclerView(bankCardList)
-            .setStickyHeadersAdapter(new CardListHeaderAdapter(adapter.getItems()), false)
-            .build();
+   private void showDetails(View view, int overlap) {
+      CommonCardViewModel model = ((CommonCardHolder) bankCardList.getChildViewHolder(view)).getData();
+      TransitionModel transitionModel = presenter.getCardPosition(view, overlap, model.isCardBackGround());
+      addTransitionView(model, transitionModel);
+      smartCardWidget.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION).start();
+      bankCardList
+            .animate()
+            .alpha(0)
+            .setDuration(FADE_ANIMATION_DURATION)
+            .setListener(new AnimatorListenerAdapter() {
+               @Override
+               public void onAnimationEnd(Animator animation) {
+                  super.onAnimationEnd(animation);
+                  presenter.cardClicked(model.getRecordId(), transitionModel);
+               }
+            });
    }
 
-   @OnClick(R.id.add_card_button)
-   protected void addCardButtonClick() {
-//      add coming soon dialog for 1.18
-//      getPresenter().addCardRequired();
-      new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_wizard_card_list_add_card_coming_soon_title)
-            .content(R.string.wallet_wizard_card_list_add_card_coming_soon_text)
-            .positiveText(R.string.ok)
-            .show();
+   private void addTransitionView(CommonCardViewModel model, TransitionModel transitionModel) {
+      CardCellBindingBinding transitionView = binding.transitionView;
+      transitionView.setCardModel(model);
+      setUpViewPosition(transitionModel, transitionView.getRoot());
+      transitionView.getRoot().setVisibility(VISIBLE);
+   }
+
+   private void setUpViewPosition(TransitionModel params, View view) {
+      int[] coords = new int[2];
+      view.getLocationOnScreen(coords);
+      view.setTranslationX(0);
+      view.setTranslationY(params.getTop() - coords[1]);
    }
 
    @OnClick(R.id.firmware_available)
    protected void firmwareAvailableBtnClick() {
-      getPresenter().installFirmwareClick();
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
+      getPresenter().navigateToFirmwareUpdate();
    }
 
    @Override
    public void showSCNonConnectionDialog() {
-      scNonConnectionDialog = new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_card_settings_cant_connected)
-            .content(R.string.wallet_card_settings_message_cant_connected)
-            .positiveText(R.string.ok)
-            .build();
-      scNonConnectionDialog.show();
+      if (scNonConnectionDialog == null) {
+         scNonConnectionDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_card_settings_cant_connected)
+               .content(R.string.wallet_card_settings_message_cant_connected)
+               .positiveText(R.string.ok)
+               .build();
+      }
+      if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
+   }
+
+   @Override
+   public void modeAddCard() {
+      emptyCardListView.setText(R.string.wallet_wizard_empty_card_list_label);
+      fabButton.setRotation(0);
+      fabButton.setImageResource(R.drawable.ic_white_plus);
+      fabButton.setOnClickListener(v -> addCardButtonClick());
+   }
+
+   @Override
+   public void modeSyncPaymentsFab() {
+      emptyCardListView.setText(R.string.wallet_wizard_card_list_remove_payment_cards_message);
+      fabButton.setImageResource(R.drawable.ic_sync);
+      fabButton.setOnClickListener(v -> onSyncPaymentsCardsButtonClick());
+   }
+
+   private void addCardButtonClick() {
+      getPresenter().addCardRequired(cardStackHeaderHolder.cardCount());
+   }
+
+   protected void onSyncPaymentsCardsButtonClick() {
+      presenter.syncPayments();
+   }
+
+   @Override
+   public void showSyncFailedOptionsDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_wizard_card_list_sync_fail_dialog_title)
+            .content(R.string.wallet_wizard_card_list_sync_fail_dialog_message)
+            .positiveText(R.string.wallet_wizard_card_list_sync_fail_dialog_cancel)
+            .neutralText(R.string.wallet_wizard_card_list_sync_fail_dialog_retry)
+            .negativeText(R.string.wallet_wizard_card_list_sync_fail_dialog_factory_reset)
+            .onNeutral((dialog, which) -> presenter.syncPayments())
+            .onNegative((dialog, which) -> presenter.goToFactoryReset())
+            .build().show();
+   }
+
+   @Override
+   public OperationView<SyncSmartCardCommand> provideOperationSyncSmartCard() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_card_list_card_synchronization_dialog_text, false),
+            ErrorViewFactory.<SyncSmartCardCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
+                  .build()
+      );
+   }
+
+   public OperationView<SyncRecordOnNewDeviceCommand> provideReSyncOperationView() {
+      return new ComposableOperationView<>(
+            new AnimatorProgressView<>(ObjectAnimator.ofFloat(fabButton, View.ROTATION.getName(), 0f, -360f)
+                  .setDuration(650))
+      );
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
+      return FactoryResetOperationView.create(getContext(),
+            factoryResetDelegate::factoryReset,
+            () -> {},
+            R.string.wallet_error_enter_pin_title,
+            R.string.wallet_error_enter_pin_msg,
+            R.string.retry,
+            R.string.cancel,
+            R.string.loading,
+            false);
    }
 }

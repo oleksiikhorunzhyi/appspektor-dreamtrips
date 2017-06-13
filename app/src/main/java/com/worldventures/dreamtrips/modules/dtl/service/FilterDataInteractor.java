@@ -61,11 +61,17 @@ public class FilterDataInteractor implements Initializable {
             .subscribe(this::send);
    }
 
-   public void searchMerchantType(final List<String> merchantType) {
+   public void searchMerchantType(final List<String> merchantType, String searchQuery) {
       getLastFilterObservable()
-            .map(filterData -> ImmutableFilterData.copyOf(filterData)
-                  .withDistanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
-                  .withMerchantType(merchantType))
+            .map(filterData -> ImmutableFilterData.builder()
+                  .distanceType(filterData.distanceType())
+                  .distanceMaxIndex(filterData.distanceMaxIndex())
+                  .isOffersOnly(filterData.isOffersOnly())
+                  .budgetMax(filterData.budgetMax())
+                  .budgetMin(filterData.budgetMin())
+                  .searchQuery(searchQuery)
+                  .merchantType(merchantType)
+                  .build())
             .subscribe(this::send);
    }
 

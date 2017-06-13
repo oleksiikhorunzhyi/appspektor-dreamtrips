@@ -32,10 +32,9 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
    }
 
    public void openFacebook() {
-      view.openFacebookAlbums();
-      //
       resetPickedItems();
       view.updatePickedItemsCount(0);
+      view.openFacebookAlbums();
    }
 
    private void loadGallery() {

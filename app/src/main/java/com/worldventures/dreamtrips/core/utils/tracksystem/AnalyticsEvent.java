@@ -15,4 +15,6 @@ public @interface AnalyticsEvent {
    String action() default "";
 
    String[] trackers();
+
+   boolean navigationState() default false;
 }

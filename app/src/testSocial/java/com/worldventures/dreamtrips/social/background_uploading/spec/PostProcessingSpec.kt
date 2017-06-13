@@ -12,11 +12,13 @@ import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class PostProcessingSpec : BaseUploadingInteractorSpec({
-   xdescribe("Post processing command") {
+   describe("Post processing command") {
       context("Result is success") {
+
          initJanet()
 
          context("Creating post without attachment") {
+
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
             val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 
@@ -37,13 +39,11 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
                AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 4)
             }
          }
-      }
 
-
-      context("Result is success") {
          initJanet()
 
          context("Creating post with attachments") {
+
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
             val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 

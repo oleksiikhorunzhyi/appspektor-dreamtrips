@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.uploader;
 
-import android.content.Context;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
@@ -17,13 +16,15 @@ import java.util.Date;
 
 import timber.log.Timber;
 
-
 public class UploadingFileManager {
 
-   private UploadingFileManager() {
+   private File uploadingFilesDir;
+
+   public UploadingFileManager(File uploadingFilesDir) {
+      this.uploadingFilesDir = uploadingFilesDir;
    }
 
-   public static String md5(final String s) {
+   private String md5(final String s) {
       final String md5 = "MD5";
       try {
          // Create MD5 Hash
@@ -46,7 +47,7 @@ public class UploadingFileManager {
       return "";
    }
 
-   public static String copyFileIfNeed(String filePath, Context context) {
+   public String copyFileIfNeed(String filePath) {
       ValidationUtils.checkNotNull(filePath);
 
       String finalPath = null;
@@ -64,7 +65,7 @@ public class UploadingFileManager {
             ValidationUtils.checkNotNull(extension);
             String fileKeyHash = md5(fileKey);
             in = new URL(uri.toString()).openStream();
-            File file = File.createTempFile(fileKeyHash, "." + extension, context.getFilesDir());
+            File file = File.createTempFile(fileKeyHash, "." + extension, uploadingFilesDir);
             out = new FileOutputStream(file, false);
             byte[] buffer = new byte[1024];
             int read;

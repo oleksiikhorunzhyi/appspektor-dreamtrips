@@ -1,33 +1,37 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.common.provider;
 
-import android.support.annotation.StringRes;
-
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
 
 import java.util.List;
 
 abstract class BaseItemProvider {
 
-   public abstract List<SettingsRadioModel> items();
+   private final List<SettingsRadioModel> items;
 
-   public abstract int getDefaultPosition();
+   protected BaseItemProvider(List<SettingsRadioModel> items) {
+      this.items = items;
+   }
 
-   public abstract @StringRes int getDefaultTextId();
+   public final List<SettingsRadioModel> items() {
+      return items;
+   }
 
-   public int getPositionForValue(long value) {
-      List<SettingsRadioModel> items = items();
+   public SettingsRadioModel item(int position) {
+      return items.get(position);
+   }
+   public final int getPositionForValue(long value) {
+      final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
          if (value == items.get(i).getValue()) return i;
       }
-      return getDefaultPosition();
+      return 0;
    }
 
-   @StringRes
-   public int provideTextByValue(long value) {
-      List<SettingsRadioModel> items = items();
+   public final String provideTextByValue(long value) {
+      final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
-         if (value == items.get(i).getValue()) return items.get(i).getStringId();
+         if (value == items.get(i).getValue()) return items.get(i).getText();
       }
-      return getDefaultTextId();
+      return items.get(0).getText();
    }
 }

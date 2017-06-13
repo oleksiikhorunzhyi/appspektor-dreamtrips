@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificatio
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.PaginatedTripImagesCommand;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
 
-public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImagesListPresenter.View, TripImagesCommand<? extends IFullScreenObject>> {
+public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImagesListPresenter.View, PaginatedTripImagesCommand<? extends IFullScreenObject>> {
 
    private int notificationId;
 
@@ -41,17 +41,17 @@ public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImages
    }
 
    @Override
-   protected ActionPipe<TripImagesCommand<? extends IFullScreenObject>> getLoadingPipe() {
+   protected ActionPipe<PaginatedTripImagesCommand<? extends IFullScreenObject>> getLoadingPipe() {
       return null;
    }
 
    @Override
-   protected TripImagesCommand<? extends IFullScreenObject> getReloadCommand() {
+   protected PaginatedTripImagesCommand<? extends IFullScreenObject> getReloadCommand() {
       return null;
    }
 
    @Override
-   protected TripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int currentPage) {
+   protected PaginatedTripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int currentPage) {
       return null;
    }
 }

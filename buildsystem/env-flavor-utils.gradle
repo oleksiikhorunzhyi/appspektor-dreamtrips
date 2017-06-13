@@ -76,7 +76,7 @@ ext {
       streamSuffix = flavors.types.stream.find { flavorName.contains(it) }
       configSuffix = flavors.types.config.find { flavorName.contains(it) }
 
-      String versionName = ext.appConfig.applicationId
+      String versionName = ext.appConfig.buildVersionName()
       //
       if ([flavors.codes.dev, flavors.codes.devpremarshmallow].contains(buildSuffix)) {
          versionName += "-$flavors.codes.dev"

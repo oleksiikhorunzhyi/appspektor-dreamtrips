@@ -57,7 +57,6 @@ public class FeedbackImageAttachmentsFragment extends RxBaseFragmentWithArgs<Fee
       activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_photo_back_rounded);
       activity.getSupportActionBar().setTitle("");
       toolbar.setNavigationOnClickListener(v -> {
-         getPresenter().handleBackPress();
          activity.onBackPressed();
       });
    }

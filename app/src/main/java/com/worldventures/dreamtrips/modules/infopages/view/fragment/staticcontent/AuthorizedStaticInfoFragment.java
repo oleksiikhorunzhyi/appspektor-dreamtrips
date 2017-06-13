@@ -8,6 +8,10 @@ import android.webkit.WebSettings;
 
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 
+import java.net.HttpURLConnection;
+
+import timber.log.Timber;
+
 public abstract class AuthorizedStaticInfoFragment<P extends Parcelable> extends StaticInfoFragment<AuthorizedStaticInfoPresenter, P> implements AuthorizedStaticInfoPresenter.View {
 
    @Override
@@ -21,6 +25,12 @@ public abstract class AuthorizedStaticInfoFragment<P extends Parcelable> extends
          webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
       }//otherwise enabled  by default
       super.afterCreateView(rootView);
+   }
+
+   @Override
+   protected void onReceivedHttpError(int errorCode) {
+      super.onReceivedHttpError(errorCode);
+      if (errorCode == HttpURLConnection.HTTP_UNAUTHORIZED) getPresenter().reLogin();
    }
 
    @Override

@@ -57,6 +57,7 @@ public class Presenter<VT extends Presenter.View> {
 
    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
    private PublishSubject<Void> pauseViewStopper = PublishSubject.create();
+   private PublishSubject<Void> stopViewStopper = PublishSubject.create();
 
    protected PublishSubject<ConnectionState> connectionStatePublishSubject = PublishSubject.create();
 
@@ -130,6 +131,7 @@ public class Presenter<VT extends Presenter.View> {
    }
 
    public void onStop() {
+      stopViewStopper.onNext(null);
    }
 
    public void onMenuPrepared() {
@@ -146,6 +148,10 @@ public class Presenter<VT extends Presenter.View> {
 
    protected <T> Observable.Transformer<T, T> bindUntilPause() {
       return input -> input.takeUntil(pauseViewStopper);
+   }
+
+   protected <T> Observable.Transformer<T, T> bindUntilStop() {
+      return input -> input.takeUntil(stopViewStopper);
    }
 
    protected <T> Observable.Transformer<T, T> bindUntilPauseIoToMainComposer() {

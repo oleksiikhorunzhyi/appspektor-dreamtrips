@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.analytics;
 
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 abstract class BaseSetDefaultCardAction extends BaseCardDetailsWithDefaultAction {
 
@@ -10,8 +10,8 @@ abstract class BaseSetDefaultCardAction extends BaseCardDetailsWithDefaultAction
    @Attribute("setdefaultwhere") String setDefaultWhere;
 
    @Override
-   public void fillPaycardInfo(BankCard bankCard) {
-      super.fillPaycardInfo(bankCard);
+   public void fillRecordDetails(Record record) {
+      super.fillRecordDetails(record);
       defaultPaycard = "Yes";
    }
 }

@@ -68,7 +68,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void restoreInstanceState(Bundle savedState) {
       super.restoreInstanceState(savedState);
-      if (savedState == null) feedItems = new ArrayList<>();
+      if (savedState == null || feedItems == null) feedItems = new ArrayList<>();
    }
 
    @Override

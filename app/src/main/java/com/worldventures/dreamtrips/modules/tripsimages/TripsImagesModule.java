@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.Soc
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.TripImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.YouShouldBeHerePhotoFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoTimestampCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
@@ -59,6 +60,7 @@ import dagger.Provides;
             TripImagePagerFragment.class,
             FullScreenTripImageFragment.class,
             PhotoCell.class,
+            PhotoTimestampCell.class,
             PhotoUploadCell.class,
             FullScreenPhotoWrapperFragment.class,
             AccountImagesListFragment.class,

@@ -2,32 +2,40 @@ package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
+import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
+import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
@@ -38,26 +46,17 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
    @InjectView(R.id.card_cvv) PinEntryEditText etCardCvv;
-   @InjectView(R.id.address1) EditText etAddress1;
-   @InjectView(R.id.address2) EditText etAddress2;
-   @InjectView(R.id.city) EditText etCity;
-   @InjectView(R.id.state) EditText etState;
-   @InjectView(R.id.zip) EditText etZip;
+   @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
    @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
-   @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
+   @InjectView(R.id.set_default_card_switcher) WalletSwitcher defaultPaymentCardSwitcher;
    @InjectView(R.id.confirm_button) View confirmButton;
-   @InjectView(R.id.tvPostDataError) View tvPostDataError;
+   @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
 
-   private final BankCardHelper bankCardHelper;
-   private DialogOperationScreen dialogOperationScreen;
+   private final WalletRecordUtil walletRecordUtil;
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
-   private Observable<String> address1Observable;
-   private Observable<String> stateObservable;
-   private Observable<String> cityObservable;
-   private Observable<String> zipObservable;
    private Observable<String> cvvObservable;
 
    public AddCardDetailsScreen(Context context) {
@@ -66,13 +65,13 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    public AddCardDetailsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
-      bankCardHelper = new BankCardHelper(context);
+      walletRecordUtil = new WalletRecordUtil(context);
    }
 
    @NonNull
    @Override
    public AddCardDetailsPresenter createPresenter() {
-      return new AddCardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
+      return new AddCardDetailsPresenter(getContext(), getInjector(), getPath().getRecord());
    }
 
    @Override
@@ -85,10 +84,6 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
       cardNicknameObservable = observableFrom(etCardNickname);
 
-      address1Observable = observableFrom(etAddress1);
-      stateObservable = observableFrom(etState);
-      cityObservable = observableFrom(etCity);
-      zipObservable = observableFrom(etZip);
       cvvObservable = observableFrom(etCardCvv);
    }
 
@@ -97,35 +92,15 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void setCardBank(BankCard bankCard) {
-      bankCardWidget.setBankCard(bankCard);
+   public void setCardBank(Record record) {
+      bankCardWidget.setBankCard(record);
 
-      int cvvLength = BankCardHelper.obtainRequiredCvvLength(bankCard.number());
+      int cvvLength = WalletRecordUtil.obtainRequiredCvvLength(record.number());
       etCardCvv.setMaxLength(cvvLength);
    }
 
    public Observable<String> getCardNicknameObservable() {
       return cardNicknameObservable;
-   }
-
-   @Override
-   public Observable<String> getAddress1Observable() {
-      return address1Observable;
-   }
-
-   @Override
-   public Observable<String> getStateObservable() {
-      return stateObservable;
-   }
-
-   @Override
-   public Observable<String> getZipObservable() {
-      return zipObservable;
-   }
-
-   @Override
-   public Observable<String> getCityObservable() {
-      return cityObservable;
    }
 
    @Override
@@ -139,39 +114,18 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void defaultAddress(AddressInfoWithLocale defaultAddress) {
-      final AddressInfo addressInfo = defaultAddress.addressInfo();
-      etAddress1.setText(addressInfo.address1());
-      etAddress1.setSelection(etAddress1.length());
-
-      etAddress2.setText(addressInfo.address2());
-      etAddress2.setSelection(etAddress2.length());
-
-      etCity.setText(addressInfo.city());
-      etCity.setSelection(etCity.length());
-
-      etState.setText(addressInfo.state());
-      etState.setSelection(etState.length());
-
-      etZip.setText(addressInfo.zip());
-      etZip.setSelection(etZip.length());
-   }
-
-   @Override
    public void defaultPaymentCard(boolean defaultPaymentCard) {
       defaultPaymentCardSwitcher.setChecked(defaultPaymentCard);
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
-      return dialogOperationScreen;
-   }
+   public OperationScreen provideOperationDelegate() {return null;}
 
    @Override
-   public void showChangeCardDialog(BankCard bankCard) {
-      new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(bankCard))
-            .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
+   public void showChangeCardDialog(Record record) {
+      new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(record))
+            .setOnCancelAction(() -> getPresenter().onCardToDefaultClick(false))
+            .setOnConfirmAction(() -> getPresenter().onCardToDefaultClick(true))
             .show();
    }
 
@@ -186,8 +140,29 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void showPushCardError() {
-      tvPostDataError.setVisibility(VISIBLE);
+   public void showCardNameError() {
+      cardNameInputLayout.setError(getString(R.string.wallet_card_details_nickname_error));
+   }
+
+   @Override
+   public void hideCardNameError() {
+      cardNameInputLayout.setError("");
+   }
+
+   @Override
+   public OperationView<AddRecordCommand> provideOperationAddRecord() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<AddRecordCommand>builder()
+                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_add_card_details_error_default,
+                        command -> addRecordWithCurrentData()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData()))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData(), command -> {
+                  }))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
+                  .build()
+      );
    }
 
    protected void navigateButtonClick() {
@@ -205,36 +180,21 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @OnClick(R.id.confirm_button)
    public void onConfirmButtonClicked() {
-      tvPostDataError.setVisibility(GONE);
+      addRecordWithCurrentData();
+   }
 
+   private void addRecordWithCurrentData() {
       String cvv = etCardCvv.getText().toString().trim();
       String nickname = etCardNickname.getText().toString().trim();
       boolean setAsDefaultCard = defaultPaymentCardSwitcher.isChecked();
 
-      AddressInfo addressInfo = ImmutableAddressInfo.builder()
-            .address1(etAddress1.getText().toString().trim())
-            .address2(etAddress2.getText().toString().trim())
-            .city(etCity.getText().toString().trim())
-            .state(etState.getText().toString().trim())
-            .zip(etZip.getText().toString().trim())
-            .build();
-
-      getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, setAsDefaultCard);
-   }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
+      getPresenter().onCardInfoConfirmed(cvv, nickname, setAsDefaultCard);
    }
 
    private void setHintsAndLabels() {
       bindSpannableStringToTarget(cvvLabel, R.string.wallet_add_card_details_cvv_label, true, false);
       bindSpannableStringToTarget(etCardNickname, R.string.wallet_add_card_details_hint_nickname_card, true, true);
-      bindSpannableStringToTarget(etAddress1, R.string.wallet_add_card_details_hint_address1, true, true);
-      bindSpannableStringToTarget(etAddress2, R.string.wallet_add_card_details_hint_address2_label,
-            R.string.wallet_add_card_details_hint_optional, false, true);
-      bindSpannableStringToTarget(etCity, R.string.wallet_add_card_details_hint_city, true, true);
-      bindSpannableStringToTarget(etState, R.string.wallet_add_card_details_hint_state, true, true);
-      bindSpannableStringToTarget(etZip, R.string.wallet_add_card_details_hint_zip, true, true);
+      bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
+            R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }
 }

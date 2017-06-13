@@ -8,11 +8,12 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -20,25 +21,24 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
-import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPath;
 
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.exception.NotConnectedException;
-import io.techery.janet.smartcard.model.Record;
 
+// TODO: 5/30/17 Create task and refactor both screen and presenter, it's ugly and error handling is a joke
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
-   @Inject SmartCardInteractor smartCardInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Navigator navigator;
+   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject RecordInteractor recordInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardChargingPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -48,6 +48,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      fetchUserPhoto();
       observeCharger();
       observeBankCardCreation();
       //observeConnectionStatus();
@@ -56,17 +57,20 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       //TODO: uncomment by request in future
    }
 
-   private void observeConnectionStatus() {
-      smartCardInteractor.activeSmartCardPipe()
-            .observeSuccessWithReplay()
-            .throttleLast(1, TimeUnit.SECONDS)
-            .map(Command::getResult)
-            .map(SmartCard::connectionStatus)
-            .distinctUntilChanged()
+   private void fetchUserPhoto() {
+      smartCardInteractor.smartCardUserPipe()
+            .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::checkConnection);
+            .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
+                  .onSuccess(this::bindSmartCardUser)
+            );
+   }
 
-      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+   private void bindSmartCardUser(SmartCardUserCommand command) {
+      final SmartCardUser smartCardUser = command.getResult();
+      if (smartCardUser.userPhoto() != null) {
+         getView().userPhoto(command.getResult().userPhoto().photoUrl());
+      }
    }
 
    private void observeCharger() {
@@ -103,11 +107,11 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeBankCardCreation() {
-      smartCardInteractor.bankCardPipe()
+      recordInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
-                  .onFail(createErrorHandlerBuilder(CreateBankCardCommand.class).build())
+            .subscribe(OperationActionStateSubscriberWrapper.<CreateRecordCommand>forView(getView().provideOperationDelegate())
+                  .onFail(createErrorHandlerBuilder(CreateRecordCommand.class).build())
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
    }
@@ -138,26 +142,22 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       navigator.goBack();
    }
 
-   private void cardSwiped(Record card) {
-      smartCardInteractor.bankCardPipe().send(new CreateBankCardCommand(card));
+   private void cardSwiped(io.techery.janet.smartcard.model.Record card) {
+      recordInteractor.bankCardPipe().send(new CreateRecordCommand(card));
    }
 
-   private void bankCardCreated(BankCard bankCard) {
-      navigator.withoutLast(new AddCardDetailsPath(bankCard));
-   }
-
-   public void showConnectionErrorScreen() {
-      navigator.withoutLast(new ConnectionErrorPath());
+   private void bankCardCreated(Record record) {
+      navigator.withoutLast(new AddCardDetailsPath(record));
    }
 
    public interface Screen extends WalletScreen {
-
-      void checkConnection(SmartCard.ConnectionStatus connectionStatus);
 
       void showSwipeError();
 
       void trySwipeAgain();
 
       void showSwipeSuccess();
+
+      void userPhoto(String photoUrl);
    }
 }

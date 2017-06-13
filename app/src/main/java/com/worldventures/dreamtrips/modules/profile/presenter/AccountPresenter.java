@@ -36,7 +36,7 @@ import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatar
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
@@ -48,7 +48,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User>
@@ -71,6 +70,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject SnappyRepository db;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject AccountTimelineStorageDelegate accountTimelineStorageDelegate;
+   @Inject CachedModelHelper cachedModelHelper;
 
    @State boolean shouldReload;
    @State int mediaRequestId;
@@ -330,7 +330,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void cacheFacebookImage(String url, Action<String> action) {
-      String filePath = CachedEntity.getFilePath(context, url);
+      String filePath = cachedModelHelper.getFilePath(url);
       downloadFileInteractor.getDownloadFileCommandPipe()
             .createObservable(new DownloadFileCommand(new File(filePath), url))
             .compose(bindViewToMainComposer())

@@ -20,6 +20,9 @@ public abstract class SmartCardUser {
    }
 
    @Nullable
+   public abstract SmartCardUserPhone phoneNumber();
+
+   @Nullable
    public abstract SmartCardUserPhoto userPhoto();
 
    public String fullName() {

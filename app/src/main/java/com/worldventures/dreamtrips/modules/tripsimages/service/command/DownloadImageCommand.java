@@ -11,9 +11,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +29,7 @@ import timber.log.Timber;
 public class DownloadImageCommand extends Command<String> implements InjectableAction {
 
    @Inject @ForApplication Context context;
+   @Inject CachedModelHelper cachedModelHelper;
 
    private String url;
 
@@ -44,7 +44,7 @@ public class DownloadImageCommand extends Command<String> implements InjectableA
 
    private String cacheBitmap() throws Exception {
       Bitmap bitmap = BitmapFactory.decodeStream(new URL(url).openStream());
-      return insertImage(bitmap, CachedEntity.getFileName(url));
+      return insertImage(bitmap, cachedModelHelper.getFileName(url));
    }
 
    /**

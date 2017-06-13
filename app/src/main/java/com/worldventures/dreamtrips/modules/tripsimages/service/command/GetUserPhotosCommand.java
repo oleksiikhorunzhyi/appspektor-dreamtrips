@@ -3,12 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.photos.GetPhotosOfUserHttpAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class GetUserPhotosCommand extends TripImagesCommand<Photo> {
+public class GetUserPhotosCommand extends PaginatedTripImagesCommand<Photo> {
    private int userId;
 
    public GetUserPhotosCommand(int userId, int page, int perPage) {

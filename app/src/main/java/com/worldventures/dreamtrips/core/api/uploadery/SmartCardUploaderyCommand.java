@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.core.api.uploadery;
 
-import android.content.Context;
-
-import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction;
@@ -21,7 +18,6 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmartCardImageHttpAction> implements InjectableAction {
 
-   @ForApplication @Inject Context context;
    @Inject Janet janet;
    @Inject SessionHolder<UserSession> userSessionHolder;
 

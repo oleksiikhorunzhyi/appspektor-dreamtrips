@@ -64,11 +64,18 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
       });
    }
 
+
    @Override
+   @Deprecated
    public void showMultiPhotoPicker() {
+      showMultiPhotoPicker(MESSENGER_MULTI_PICK_LIMIT);
+   }
+
+   @Override
+   public void showMultiPhotoPicker(final int max) {
       checkPermissions().subscribe(aVoid -> {
          if (!photoPickerLayoutDelegate.isPanelVisible()) {
-            photoPickerLayoutDelegate.showPicker(true, MESSENGER_MULTI_PICK_LIMIT);
+            photoPickerLayoutDelegate.showPicker(true, max);
          } else {
             photoPickerLayoutDelegate.hidePicker();
          }

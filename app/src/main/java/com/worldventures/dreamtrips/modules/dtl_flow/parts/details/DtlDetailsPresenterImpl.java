@@ -303,19 +303,53 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickRatingsReview(Merchant merchant) {
-      User user = appSessionHolder.get().get().getUser();
-      if (!ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
-         if (!merchant.reviews().total().isEmpty() && Integer.parseInt(merchant.reviews().total()) > 0) {
-            Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      if (isReviewCached()) {
+         if (userHasReviews()) {
+            goToReviewList();
          } else {
-            Path path = new DtlCommentReviewPath(merchant);
-            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-            historyBuilder.push(path);
-            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+            getView().userHasPendingReview();
          }
       } else {
-         getView().userHasPendingReview();
+         if (userHasReviews()) {
+            goToReviewList();
+         } else {
+            goToCommentReview();
+         }
       }
+   }
+
+   private boolean userHasReviews() {
+      if (merchant.reviews() == null) {
+         return false;
+      }
+
+      try {
+         return Integer.parseInt(merchant.reviews().total()) > 0;
+      } catch (NumberFormatException e) {
+         // nothing to do, default value is false
+      }
+
+      return false;
+   }
+
+
+   private User getUser() {
+      return appSessionHolder.get().get().getUser();
+   }
+
+   private boolean isReviewCached() {
+      return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
+   }
+
+   private void goToReviewList(){
+      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+   }
+
+   private void goToCommentReview(){
+      Path path = new DtlCommentReviewPath(merchant);
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      historyBuilder.push(path);
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
    }
 
    @Override

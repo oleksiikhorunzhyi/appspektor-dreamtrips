@@ -14,7 +14,10 @@ public interface MessengerMediaPickerDelegate {
 
    void showPhotoPicker();
 
+   @Deprecated
    void showMultiPhotoPicker();
+
+   void showMultiPhotoPicker(final int max);
 
    void hidePhotoPicker();
 

@@ -54,12 +54,7 @@ public class WalletProvisioningBlockedScreen extends WalletLinearLayout<WalletPr
       layout.setAutoMeasureEnabled(true);
       deviceList.setLayoutManager(layout);
    }
-
-   @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
+   
    private void onNavigationClick() {
       presenter.goBack();
    }

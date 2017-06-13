@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCom
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPath;
 
 import javax.inject.Inject;

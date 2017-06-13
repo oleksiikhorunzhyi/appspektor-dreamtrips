@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.core.selectable;
 
 import android.support.v7.widget.RecyclerView;
 
+import java.util.List;
+
 public class SimpleSelectionManager implements SelectionManager {
 
    protected SelectableWrapperAdapter selectableWrapperAdapter;
@@ -35,6 +37,11 @@ public class SimpleSelectionManager implements SelectionManager {
    protected void toggleSelectionImpl(int position) {
       selectableWrapperAdapter.toggleSelection(position);
       selectableWrapperAdapter.notifyDataSetChanged();
+   }
+
+   public int getSelectedPosition() {
+      List<Integer> list = selectableWrapperAdapter.getSelectedItems();
+      return list.isEmpty() ? -1 : list.get(0);
    }
 
    @Override

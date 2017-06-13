@@ -47,7 +47,7 @@ class SendFeedbackInteractorSpec : BaseSpec({
                   .addContract(BaseContract.of(ActiveSmartCardCommand::class.java).result(smartCard))
                   .build())
             .build()
-      val smartCardInteractor = SmartCardInteractor(smartcardJanet, SessionActionPipeCreator(smartcardJanet), { Schedulers.immediate() })
+      val smartCardInteractor = SmartCardInteractor(SessionActionPipeCreator(smartcardJanet))
 
       lateinit var feedbackInteractor: FeedbackInteractor
 

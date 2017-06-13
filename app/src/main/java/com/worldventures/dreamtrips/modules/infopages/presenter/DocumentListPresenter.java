@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.analytics.ViewDocumentsTabAnalyticAction;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class DocumentListPresenter extends Presenter<DocumentListPresenter.View> {
+public abstract class DocumentListPresenter extends Presenter<DocumentListPresenter.View> {
 
    @Inject DocumentsInteractor documentsInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
@@ -27,16 +26,12 @@ public class DocumentListPresenter extends Presenter<DocumentListPresenter.View>
       refreshDocuments();
    }
 
-   public void onSelectedFromPager() {
-      analyticsInteractor.analyticsActionPipe().send(new ViewDocumentsTabAnalyticAction());
-   }
-
    public void refreshDocuments() {
-      documentsInteractor.getDocumentsActionPipe().send(new GetDocumentsCommand(true));
+      documentsInteractor.getDocumentsActionPipe().send(new GetDocumentsCommand(getDocumentType(), true));
    }
 
    public void loadNextDocuments() {
-      documentsInteractor.getDocumentsActionPipe().send(new GetDocumentsCommand());
+      documentsInteractor.getDocumentsActionPipe().send(new GetDocumentsCommand(getDocumentType()));
    }
 
    private void observeDocumentsChanges() {
@@ -70,6 +65,16 @@ public class DocumentListPresenter extends Presenter<DocumentListPresenter.View>
 
       handleError(command, error);
    }
+
+   public String getAnalyticsActionForOpenedItem(Document document) {
+      return String.format("%s:%s", getAnalyticsSectionName(), document.getOriginalName());
+   }
+
+   public abstract void track();
+
+   public abstract String getAnalyticsSectionName();
+
+   public abstract GetDocumentsCommand.DocumentType getDocumentType();
 
    public interface View extends Presenter.View {
 

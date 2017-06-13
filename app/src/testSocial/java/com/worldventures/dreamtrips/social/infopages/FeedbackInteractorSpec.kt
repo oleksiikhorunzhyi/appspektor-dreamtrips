@@ -36,7 +36,7 @@ import kotlin.test.assertEquals
 
 class FeedbackInteractorSpec : BaseSpec({
 
-   xdescribe("Get feedback command") {
+   describe("Get feedback command") {
 
       beforeEachTest {
          setup(makeGetFeedbackReasonsHttpService())
@@ -54,7 +54,7 @@ class FeedbackInteractorSpec : BaseSpec({
       }
    }
 
-   xdescribe("Image attachments mapper") {
+   describe("Image attachments mapper") {
 
       beforeEachTest {
          setup(makeGetFeedbackReasonsHttpService())

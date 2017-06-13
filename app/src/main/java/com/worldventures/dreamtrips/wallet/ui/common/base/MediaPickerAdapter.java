@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.messenger.delegate.CropImageDelegate;
@@ -19,24 +20,24 @@ public class MediaPickerAdapter implements MediaPickerService {
 
    private final MessengerMediaPickerDelegate messengerMediaPickerDelegate;
    private final CropImageDelegate cropImageDelegate;
-   private final Callable<String> callablePaddingPathOnce = new Callable<String>() {
+   private final Callable<String> callablePendingPathOnce = new Callable<String>() {
       @Override
       public String call() throws Exception {
          try {
-            return paddingPath;
+            return pendingPath;
          } finally {
-            paddingPath = null;
+            clearPendingPath();
          }
       }
    };
 
-   @State String paddingPath;
+   @State String pendingPath;
    private Subscription subscription;
 
    public MediaPickerAdapter(MessengerMediaPickerDelegate messengerMediaPickerDelegate, CropImageDelegate cropImageDelegate) {
       this.messengerMediaPickerDelegate = messengerMediaPickerDelegate;
       this.cropImageDelegate = cropImageDelegate;
-      subscription = messengerMediaPickerDelegate.getImagePathsStream().subscribe(path -> paddingPath = path);
+      subscription = messengerMediaPickerDelegate.getImagePathsStream().subscribe(path -> pendingPath = path);
    }
 
    @Override
@@ -64,14 +65,19 @@ public class MediaPickerAdapter implements MediaPickerService {
 
    @Override
    public void pickPhoto() {
-      paddingPath = null;
+      clearPendingPath();
       messengerMediaPickerDelegate.showPhotoPicker();
    }
 
    @Override
-   public void crop(String filePath) {
-      paddingPath = null;
-      cropImageDelegate.cropImage(filePath);
+   public void pickPhotos(int limit) {
+      clearPendingPath();
+      messengerMediaPickerDelegate.showMultiPhotoPicker(limit);
+   }
+
+   @Override
+   public void crop(Uri uri) {
+      cropImageDelegate.cropImage(uri);
    }
 
    @Override
@@ -80,11 +86,24 @@ public class MediaPickerAdapter implements MediaPickerService {
    }
 
    @Override
-   public Observable<String> observePicker() {
+   public Observable<Uri> observePicker() {
       return messengerMediaPickerDelegate.getImagePathsStream()
-            .startWith(Observable.fromCallable(callablePaddingPathOnce))
+            .startWith(Observable.fromCallable(callablePendingPathOnce))
             .filter(path -> path != null)
-            .distinct();
+            .flatMap(path -> {
+               Uri uri = Uri.parse(path);
+               if (uri.getScheme() == null) {
+                  //check if is local file path
+                  final File localFile = new File(path);
+                  if (localFile.exists()) {
+                     uri = Uri.fromFile(localFile);
+                  } else {
+                     return Observable.error(new IllegalArgumentException("Cannot parse path into Uri : " + path));
+                  }
+               }
+               return Observable.just(uri);
+            })
+            .doOnNext(path -> clearPendingPath());
    }
 
    @Override
@@ -92,6 +111,10 @@ public class MediaPickerAdapter implements MediaPickerService {
       return cropImageDelegate.getCroppedImagesStream()
             .filter(cropNotification -> cropNotification.getKind() == Notification.Kind.OnNext)
             .map(Notification::getValue);
+   }
+
+   private void clearPendingPath() {
+      this.pendingPath = null;
    }
 
 }

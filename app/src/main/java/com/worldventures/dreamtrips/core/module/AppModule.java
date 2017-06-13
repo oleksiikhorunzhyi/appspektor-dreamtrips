@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
+import com.worldventures.dreamtrips.core.janet.cache.LocalCacheModule;
 import com.worldventures.dreamtrips.core.repository.SnappyModule;
 import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
@@ -48,7 +49,7 @@ import dagger.Provides;
             //
             RouteCreatorModule.class,
             //
-            CacheActionStorageModule.class,
+            CacheActionStorageModule.class, LocalCacheModule.class,
             //
             GcmModule.class, ActionReceiverModule.class,
             //

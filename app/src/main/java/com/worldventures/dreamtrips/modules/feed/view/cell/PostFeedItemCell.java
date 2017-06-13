@@ -159,20 +159,24 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       }
    }
 
-   protected void processAttachments(List<FeedEntityHolder> attachments) {
+   private void processAttachments(List<FeedEntityHolder> attachments) {
       if (attachments != null && !attachments.isEmpty()) {
          if (attachments.get(0).getItem() instanceof Photo) {
             videoAttachmentView.hide();
             processPhotos();
          } else if (attachments.get(0).getItem() instanceof Video) {
-            collageView.clear();
+            clearImages();
             processVideo((Video) attachments.get(0).getItem());
          }
       } else {
          videoAttachmentView.hide();
-         collageView.clear();
+         clearImages();
       }
       processTags(attachments);
+   }
+
+   protected void clearImages() {
+      collageView.clear();
    }
 
    private void processPhotoAttachments() {
@@ -185,7 +189,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       }
    }
 
-   private void processPhotos() {
+   protected void processPhotos() {
       collageView.setItemClickListener(new CollageView.ItemClickListener() {
          @Override
          public void itemClicked(int position) {
@@ -240,6 +244,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void openFeedItemDetails() {
       router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
    }

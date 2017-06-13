@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.jwplayer;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -44,9 +43,9 @@ class DtFullscreenHandler implements FullscreenHandler {
       videoPlayerHolder.getJwPlayerView().destroySurface();
 
       videoPlayerHolder.dettachFromContainer();
-
       videoPlayerHolder.getJwPlayerView().initializeSurface();
 
+      videoPlayerHolder.getJwPlayerView().setMute(false);
       getRootContainer().post(() -> getRootContainer().addView(videoPlayerHolder.getJwPlayerView()));
 
       backStackDelegate.setListener(() -> {
@@ -61,15 +60,13 @@ class DtFullscreenHandler implements FullscreenHandler {
       showSystemUI();
       videoPlayerHolder.getJwPlayerView().destroySurface();
 
-      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
       dettachFromFullscreenContainer();
 
       videoPlayerHolder.getJwPlayerView().initializeSurface();
 
       videoPlayerHolder.getContainer().post(() -> {
          videoPlayerHolder.attachToContainer();
-         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+         videoPlayerHolder.getJwPlayerView().setMute(true);
       });
 
       backStackDelegate.setListener(null);

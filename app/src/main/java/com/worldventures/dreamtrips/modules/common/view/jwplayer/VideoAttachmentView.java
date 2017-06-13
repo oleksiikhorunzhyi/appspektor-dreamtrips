@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class VideoAttachmentView extends FrameLayout {
 
@@ -111,6 +112,11 @@ public class VideoAttachmentView extends FrameLayout {
       if (playerView != null) {
          return;
       }
+      showVideo();
+   }
+
+   @OnClick(R.id.play)
+   public void onPlay() {
       showVideo();
    }
 

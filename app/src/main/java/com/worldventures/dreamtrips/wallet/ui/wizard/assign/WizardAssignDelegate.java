@@ -3,15 +3,12 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.assign;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupCompleteAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupCompleteAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -68,6 +65,10 @@ abstract class WizardAssignDelegate {
             .send(new WalletAnalyticsCommand(action));
    }
 
+   protected void activateSmartCard() {
+      wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand());
+   }
+
    private static final class WizardAssignDelegateStandard extends WizardAssignDelegate {
 
       private WizardAssignDelegateStandard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
@@ -77,6 +78,7 @@ abstract class WizardAssignDelegate {
 
       @Override
       protected void toNextScreen(RxLifecycleView view) {
+         activateSmartCard();
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       }
    }
@@ -121,11 +123,6 @@ abstract class WizardAssignDelegate {
       private void restoreOfflineModeDefaultState() {
          smartCardInteractor.restoreOfflineModeDefaultStatePipe()
                .send(new RestoreOfflineModeDefaultStateCommand());
-      }
-
-      private void activateSmartCard() {
-         smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand(sc ->
-               ImmutableSmartCard.builder().from(sc).cardStatus(SmartCard.CardStatus.ACTIVE).build()));
       }
    }
 }

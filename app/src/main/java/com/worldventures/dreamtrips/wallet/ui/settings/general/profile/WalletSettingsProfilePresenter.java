@@ -275,6 +275,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       }
       if ((user.userPhoto() == null && newAvatar != null) ||
             (user.userPhoto() != null && newAvatar != null && !newAvatar.original().equals(user.userPhoto().original()))) {
+         profileDataIsChanged = true;
          return null;
       }
       if (user.phoneNumber() == null && !code.isEmpty() && !phone.isEmpty()) {

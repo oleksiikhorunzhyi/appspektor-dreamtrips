@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.core.PlayerState;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 
 public class VideoPlayerHolder {
 
@@ -13,8 +14,8 @@ public class VideoPlayerHolder {
    private JWPlayerView jwPlayerView;
    private VideoAttachmentView container;
 
-   public VideoPlayerHolder(Activity activity) {
-      this.dtFullscreenHandler = new DtFullscreenHandler(activity, this);
+   public VideoPlayerHolder(Activity activity, BackStackDelegate backStackDelegate) {
+      this.dtFullscreenHandler = new DtFullscreenHandler(activity, backStackDelegate, this);
    }
 
    public void init(JWPlayerView jwPlayerView, VideoAttachmentView container) {

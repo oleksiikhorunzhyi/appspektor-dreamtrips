@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.longtailvideo.jwplayer.fullscreen.FullscreenHandler;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 
 import butterknife.ButterKnife;
 
@@ -14,9 +15,11 @@ class DtFullscreenHandler implements FullscreenHandler {
 
    private final VideoPlayerHolder videoPlayerHolder;
    private final Activity activity;
+   private BackStackDelegate backStackDelegate;
 
-   DtFullscreenHandler(Activity activity, VideoPlayerHolder videoPlayerHolder) {
+   DtFullscreenHandler(Activity activity, BackStackDelegate backStackDelegate, VideoPlayerHolder videoPlayerHolder) {
       this.activity = activity;
+      this.backStackDelegate = backStackDelegate;
       this.videoPlayerHolder = videoPlayerHolder;
    }
 
@@ -45,6 +48,12 @@ class DtFullscreenHandler implements FullscreenHandler {
       videoPlayerHolder.getJwPlayerView().initializeSurface();
 
       getRootContainer().post(() -> getRootContainer().addView(videoPlayerHolder.getJwPlayerView()));
+
+      backStackDelegate.setListener(() -> {
+         videoPlayerHolder.onBackPressed();
+         backStackDelegate.setListener(null);
+         return true;
+      });
    }
 
    @Override
@@ -62,10 +71,13 @@ class DtFullscreenHandler implements FullscreenHandler {
          videoPlayerHolder.attachToContainer();
          activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
       });
+
+      backStackDelegate.setListener(null);
    }
 
    private void dettachFromFullscreenContainer() {
       getRootContainer().removeView(videoPlayerHolder.getJwPlayerView());
+      backStackDelegate.setListener(null);
    }
 
    @Override

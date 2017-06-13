@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -88,6 +89,10 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof MediaAttachment &&
+                  items.get(newItemPosition) instanceof MediaAttachment) {
+               return true;
+            }
             if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&
                   items.get(newItemPosition) instanceof UploadingPostsList) {
                return true;

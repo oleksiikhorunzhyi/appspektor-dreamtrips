@@ -149,7 +149,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    private void toggleFirmwareBargeOrVersion(@Nullable FirmwareUpdateData firmwareUpdateData) {
-      if (firmwareUpdateData == null || firmwareUpdateData.updateAvailable()) {
+      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
          getView().firmwareUpdateCount(1);
          getView().showFirmwareBadge();
          firmwareUpdatePath = new StartFirmwareInstallPath();

@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.nxt;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 public class NxtInteractor {
@@ -11,11 +12,11 @@ public class NxtInteractor {
    private final ActionPipe<DetokenizeRecordCommand> detokenizeRecordPipe;
    private final ActionPipe<DetokenizeMultipleRecordsCommand> detokenizeMultipleRecordsPipe;
 
-   public NxtInteractor(Janet janet) {
-      tokenizeRecordPipe = janet.createPipe(TokenizeRecordCommand.class, Schedulers.io());
-      tokenizeMultipleRecordsPipe = janet.createPipe(TokenizeMultipleRecordsCommand.class, Schedulers.io());
-      detokenizeRecordPipe = janet.createPipe(DetokenizeRecordCommand.class, Schedulers.io());
-      detokenizeMultipleRecordsPipe = janet.createPipe(DetokenizeMultipleRecordsCommand.class, Schedulers.io());
+   public NxtInteractor(SessionActionPipeCreator pipeCreator) {
+      tokenizeRecordPipe = pipeCreator.createPipe(TokenizeRecordCommand.class, Schedulers.io());
+      tokenizeMultipleRecordsPipe = pipeCreator.createPipe(TokenizeMultipleRecordsCommand.class, Schedulers.io());
+      detokenizeRecordPipe = pipeCreator.createPipe(DetokenizeRecordCommand.class, Schedulers.io());
+      detokenizeMultipleRecordsPipe = pipeCreator.createPipe(DetokenizeMultipleRecordsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<TokenizeRecordCommand> tokenizeRecordPipe() {

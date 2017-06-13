@@ -100,7 +100,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       }
 
       return new FirmwareChecksState(bluetoothEnabled, connectionStatus.isConnected(),
-            cardIsCharged(batteryLevel), chargerRequired(data.currentFirmwareVersion()), cardInCharger);
+            cardIsCharged(batteryLevel, cardInCharger), chargerRequired(data.currentFirmwareVersion()), cardInCharger);
    }
 
    private void updateViewStates(FirmwareChecksState checksState) {

@@ -8,7 +8,7 @@ import timber.log.Timber;
 
 public final class SCFirmwareUtils {
 
-   private static final int MIN_BATTERY_LEVEL = 50;
+   private static final int MIN_BATTERY_LEVEL = 10;
    private final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
    private final static int SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW = 1070;
 
@@ -25,8 +25,8 @@ public final class SCFirmwareUtils {
             (!UNKNOWN_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion));
    }
 
-   public static boolean cardIsCharged(int batteryLevel) {
-      return batteryLevel >= MIN_BATTERY_LEVEL;
+   public static boolean cardIsCharged(int batteryLevel, boolean cardInCharger) {
+      return batteryLevel >= MIN_BATTERY_LEVEL || cardInCharger;
    }
 
    public static boolean chargerRequired(@Nullable SmartCardFirmware firmware) {

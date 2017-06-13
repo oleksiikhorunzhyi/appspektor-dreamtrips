@@ -97,20 +97,20 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   FirmwareInteractor firmwareInteractor(@Named(JANET_WALLET) Janet janet) {
-      return new FirmwareInteractor(janet);
+   FirmwareInteractor firmwareInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FirmwareInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   NxtInteractor nxtInteractor(@Named(JANET_WALLET) Janet janet) {
-      return new NxtInteractor(janet);
+   NxtInteractor nxtInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new NxtInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   FactoryResetInteractor factoryResetManager(@Named(JANET_WALLET) Janet janet) {
-      return new FactoryResetInteractor(janet);
+   FactoryResetInteractor factoryResetManager(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FactoryResetInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

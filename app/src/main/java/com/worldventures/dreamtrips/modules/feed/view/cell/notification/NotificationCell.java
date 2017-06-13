@@ -125,6 +125,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
    private void openDetails() {
       router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
    }

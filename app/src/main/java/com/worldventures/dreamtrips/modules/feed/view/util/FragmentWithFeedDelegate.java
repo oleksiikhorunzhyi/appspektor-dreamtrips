@@ -217,7 +217,8 @@ public class FragmentWithFeedDelegate {
          if (isTabletLandscape) {
             bundleBuilder.slave(true);
          }
-         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().data(bundleBuilder.build()).build());
+         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+               .data(bundleBuilder.build()).build());
       }
    }
 

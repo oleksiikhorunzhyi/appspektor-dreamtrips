@@ -153,6 +153,9 @@ public class UploadingPostCell extends FrameLayout {
          case PROCESSING:
             updateAccordingToProcessingState();
             break;
+         case FAILED_PROCESSING:
+            updateAccordingToFailedProcessingState();
+            break;
       }
    }
 
@@ -217,21 +220,24 @@ public class UploadingPostCell extends FrameLayout {
    private void updateAccordingToFailedState() {
       initViewsForGeneralUploadState();
 
-      if (compoundOperationModel.type() == PostBody.Type.VIDEO &&
-            compoundOperationModel.progress() == 100 &&
-            compoundOperationModel.state() == CompoundOperationState.PROCESSING) {
-         mainControlImageView.setVisibility(GONE);
-      } else {
-         mainControlImageView.setImageResource(R.drawable.uploading_control_retry);
-         mainControlImageView.setVisibility(VISIBLE);
-      }
-
+      mainControlImageView.setImageResource(R.drawable.uploading_control_retry);
+      mainControlImageView.setVisibility(VISIBLE);
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_failed_connection));
       statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_failure));
       timeLeftTextView.setVisibility(View.GONE);
 
       setProgressBarProgressColor(R.color.uploading_cell_progress_bar_paused_current,
             R.color.uploading_cell_progress_bar_paused_total);
+   }
+
+   private void updateAccordingToFailedProcessingState() {
+      initViewsForGeneralUploadState();
+
+      statusTextView.setText(R.string.uploading_post_status_progress_video_processing_failed);
+      statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_failure));
+      mainControlImageView.setVisibility(View.GONE);
+      timeLeftTextView.setVisibility(View.GONE);
+      progressBar.setVisibility(GONE);
    }
 
    private void updateAccordingToProcessingState() {

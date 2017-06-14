@@ -7,4 +7,5 @@ public enum  CompoundOperationState {
    PAUSED,
    FAILED,
    PROCESSING, //used for video transcoding status check
+   FAILED_PROCESSING, //used for video transcoding status check
 }

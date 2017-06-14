@@ -24,6 +24,19 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
 
    @Override
    protected Observable<PostCompoundOperationModel<PostWithVideoAttachmentBody>> prepareCompoundOperation(PostCompoundOperationModel<PostWithVideoAttachmentBody> postOperationModel) {
+      return Observable.just(postOperationModel)
+            .flatMap(postCompoundOperationModel -> {
+               if (postCompoundOperationModel.body().videoUid() != null) {
+                  return Observable.just(postCompoundOperationModel);
+               } else if (postCompoundOperationModel.body().uploadId() != null) {
+                  return createVideoEntity(postCompoundOperationModel);
+               } else {
+                  return uploadVideoToMicrosevice(postOperationModel).flatMap(this::createVideoEntity);
+               }
+            });
+   }
+
+   private Observable<PostCompoundOperationModel<PostWithVideoAttachmentBody>> uploadVideoToMicrosevice(PostCompoundOperationModel<PostWithVideoAttachmentBody> postOperationModel) {
       return janet.createPipe(UploadVideoFileCommand.class)
             .createObservable(new UploadVideoFileCommand(postOperationModel))
             .flatMap(state -> {
@@ -39,8 +52,7 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
             })
             .doOnNext(textualPost -> Timber.d("[New Post Creation] Videos uploaded"))
             .map(uploadId -> compoundOperationObjectMutator.videoUploaded(postOperationModel, uploadId))
-            .doOnNext(this::notifyCompoundCommandChanged)
-            .flatMap(this::createVideoEntity);
+            .doOnNext(this::notifyCompoundCommandChanged);
    }
 
    private Observable<PostCompoundOperationModel<PostWithVideoAttachmentBody>> createVideoEntity(PostCompoundOperationModel<PostWithVideoAttachmentBody> postOperationModel) {

@@ -8,11 +8,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupCompleteAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -27,7 +24,6 @@ public class PaymentSyncFinishPresenter extends WalletPresenter<PaymentSyncFinis
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
    public PaymentSyncFinishPresenter(Context context, Injector injector) {
@@ -43,8 +39,7 @@ public class PaymentSyncFinishPresenter extends WalletPresenter<PaymentSyncFinis
    }
 
    private void activateSmartCard() {
-      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand(sc ->
-            ImmutableSmartCard.builder().from(sc).cardStatus(SmartCard.CardStatus.ACTIVE).build()));
+      wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand());
    }
 
    private void finishProvisioning() {

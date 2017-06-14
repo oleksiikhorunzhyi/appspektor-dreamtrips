@@ -30,14 +30,22 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
    @Inject FirmwareInteractor firmwareInteractor;
 
    private final SmartCardFirmware firmwareVersion;
+   private final boolean skipCache;
+   private final boolean markAsStarted;
 
    public FetchFirmwareInfoCommand(SmartCardFirmware firmwareVersion) {
+      this(firmwareVersion, false, false);
+   }
+
+   public FetchFirmwareInfoCommand(SmartCardFirmware firmwareVersion, boolean skipCache, boolean markAsStarted) {
       this.firmwareVersion = firmwareVersion;
+      this.skipCache = skipCache;
+      this.markAsStarted = markAsStarted;
    }
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
-      if (firmwareRepository.getFirmwareUpdateData() != null && firmwareRepository.getFirmwareUpdateData()
+      if (!skipCache && firmwareRepository.getFirmwareUpdateData() != null && firmwareRepository.getFirmwareUpdateData()
             .isStarted()) {
          callback.onSuccess(firmwareRepository.getFirmwareUpdateData());
       } else {
@@ -60,6 +68,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
             .updateAvailable(firmwareResponse.updateAvailable())
             .factoryResetRequired(firmwareResponse.factoryResetRequired())
             .updateCritical(firmwareResponse.updateCritical())
+            .isStarted(markAsStarted)
             .build();
    }
 

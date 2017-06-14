@@ -363,7 +363,7 @@
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the Smart Card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the Smart Card</string>
-   <string name="wallet_firmware_pre_installation_charging">Make sure your Smart Card is 50% charged</string>
+   <string name="wallet_firmware_pre_installation_charging">Make sure your Smart Card is 10% charged</string>
    <string name="wallet_firmware_pre_installation_insert_smart_card_to_charger">Insert Smart Card into the charger</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>

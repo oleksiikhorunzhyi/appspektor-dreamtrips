@@ -10,6 +10,7 @@ import android.view.View;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
@@ -192,11 +194,21 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeFirmwareInfo() {
-      firmwareInteractor.firmwareInfoCachedPipe()
-            .observeSuccessWithReplay()
+      Observable.combineLatest(
+            firmwareInteractor.firmwareInfoCachedPipe().observeSuccess().map(Command::getResult),
+            smartCardInteractor.smartCardFirmwarePipe().observeSuccess().map(Command::getResult),
+            (firmwareUpdate, scFirmware) -> {
+               if (!ProjectTextUtils.isEmpty(scFirmware.nordicAppVersion()) || scFirmware.firmwareBundleVersion() != null) {
+                  return firmwareUpdate;
+               }
+               return null;
+            })
+            .filter(firmwareUpdateData -> firmwareUpdateData != null)
+            .distinct()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> firmwareLoaded(command.getResult()), throwable -> Timber.e(throwable, ""));
+            .subscribe(this::firmwareLoaded, throwable -> Timber.e(throwable, ""));
 
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
 

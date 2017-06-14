@@ -201,7 +201,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
+      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(SessionActionPipeCreator(janet))
 
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 

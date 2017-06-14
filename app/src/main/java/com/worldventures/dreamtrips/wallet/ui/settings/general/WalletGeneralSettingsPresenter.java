@@ -136,7 +136,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    private void bindSmartCardUser(SmartCardUser it) {
-      getView().setPreviewPhoto(it.userPhoto().photoUrl());
+      if (it.userPhoto() != null) getView().setPreviewPhoto(it.userPhoto().photoUrl());
       getView().setUserName(it.firstName(), it.middleName(), it.lastName());
    }
 
@@ -149,7 +149,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    private void toggleFirmwareBargeOrVersion(@Nullable FirmwareUpdateData firmwareUpdateData) {
-      if (firmwareUpdateData == null || firmwareUpdateData.updateAvailable()) {
+      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
          getView().firmwareUpdateCount(1);
          getView().showFirmwareBadge();
          firmwareUpdatePath = new StartFirmwareInstallPath();

@@ -96,7 +96,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
-               view.setPreviewPhoto(it.userPhoto().photoUrl());
+               if(it.userPhoto() != null) view.setPreviewPhoto(it.userPhoto().photoUrl());
                view.setUserName(it.firstName(), it.middleName(), it.lastName());
                if (it.phoneNumber() != null) view.setPhone(it.phoneNumber().code(), it.phoneNumber().number());
             }, throwable -> Timber.e(throwable, ""));
@@ -275,6 +275,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       }
       if ((user.userPhoto() == null && newAvatar != null) ||
             (user.userPhoto() != null && newAvatar != null && !newAvatar.original().equals(user.userPhoto().original()))) {
+         profileDataIsChanged = true;
          return null;
       }
       if (user.phoneNumber() == null && !code.isEmpty() && !phone.isEmpty()) {

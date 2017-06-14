@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -40,6 +41,12 @@ public class StatePaginatedRecyclerViewManager {
       swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
       layoutManager = new LinearLayoutManager(stateRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
       layoutManager.setAutoMeasureEnabled(true);
+
+      RecyclerView.ItemAnimator animator = stateRecyclerView.getItemAnimator();
+      if (animator instanceof SimpleItemAnimator) {
+         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+      }
+
       stateRecyclerView.setLayoutManager(layoutManager);
       stateRecyclerView.setup(savedInstanceState, adapter);
       paginationViewManager = new PaginationViewManager(stateRecyclerView);

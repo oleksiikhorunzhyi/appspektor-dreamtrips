@@ -269,11 +269,12 @@ public class UploadingPostCell extends FrameLayout {
       if (generalUploadContainer.getAlpha() < 0.9f) {
          generalUploadContainer.setAlpha(1f);
       }
-      uploadFinishedView.setVisibility(View.GONE);
+      if (uploadFinishedView.getVisibility() != GONE) {
+         uploadFinishedView.setVisibility(View.GONE);
+      }
    }
 
    private void updateAccordingToFinishedState(PostCompoundOperationModel compoundOperationModel) {
-      updateAccordingToStartedState(compoundOperationModel);
       generalUploadContainer.setAlpha(0.1f);
       // show finished view as overlay
       uploadFinishedView.setVisibility(View.VISIBLE);
@@ -306,8 +307,14 @@ public class UploadingPostCell extends FrameLayout {
          removeCellAnimationSet.removeAllListeners();
          removeCellAnimationSet.cancel();
       }
+      if (getAlpha() < 1f) {
+         setAlpha(1f);
+      }
       removeCellAnimationSet = null;
-      ((MarginLayoutParams) getLayoutParams()).topMargin = 0;
+      MarginLayoutParams params = (MarginLayoutParams) getLayoutParams();
+      if (params.topMargin != 0) {
+         params.topMargin = 0;
+      }
    }
 
    private void setProgressBarProgressColor(@ColorRes int current, @ColorRes int total) {

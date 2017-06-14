@@ -12,7 +12,9 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.FeedItemsVideoProcessingStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
@@ -59,6 +61,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject LogoutInteractor logoutInteractor;
    @Inject DownloadFileInteractor downloadFileInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
+   @Inject FeedItemsVideoProcessingStatusInteractor feedItemsVideoProcessingStatusInteractor;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
@@ -166,7 +169,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       accountTimelineStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<AccountTimelineStorageCommand>()
-                  .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+                  .onSuccess(storageCommand -> {
+                     List<FeedItem> items = storageCommand.getResult();
+                     feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
+                           .send(new FeedItemsVideoProcessingStatusCommand(items));
+                     onItemsChanged(items);
+                  })
                   .onFail(this::handleError));
    }
 

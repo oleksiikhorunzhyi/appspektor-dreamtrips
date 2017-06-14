@@ -20,7 +20,9 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.FeedItemsVideoProcessingStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
@@ -89,6 +91,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
+   @Inject FeedItemsVideoProcessingStatusInteractor feedItemsVideoProcessingStatusInteractor;
 
    private Circle filterCircle;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
@@ -200,14 +203,18 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<FeedStorageCommand>()
-                  .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
+                  .onSuccess(feedStorageCommand -> {
+                     List<FeedItem> items = feedStorageCommand.getResult();
+                     refreshFeed(items);
+                     feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
+                           .send(new FeedItemsVideoProcessingStatusCommand(items));
+                  })
                   .onFail(this::handleError));
    }
 
    private void refreshFeed(List<FeedItem> newFeedItems) {
       feedItems.clear();
       feedItems.addAll(newFeedItems);
-      refreshFeedItems();
    }
 
    private void subscribeRefreshFeeds() {

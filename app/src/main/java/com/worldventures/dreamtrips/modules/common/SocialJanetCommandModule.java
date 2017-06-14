@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCo
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.UploadVideoFileCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -262,6 +263,7 @@ import dagger.Module;
       FeedListWidthCommand.class,
       CreateVideoCommand.class,
       MigrateFromCachedEntity.class,
+      FeedItemsVideoProcessingStatusCommand.class,
       MediaAttachmentPrepareCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

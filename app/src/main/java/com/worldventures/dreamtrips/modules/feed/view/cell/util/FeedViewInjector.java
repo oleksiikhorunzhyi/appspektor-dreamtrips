@@ -17,11 +17,15 @@ public class FeedViewInjector {
 
    public void initCardViewWrapper(CardView cardView) {
       if (ViewUtils.isTablet(context)) {
-         cardView.setCardElevation(4);
-         int m = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
-         ((ViewGroup.MarginLayoutParams) cardView.getLayoutParams()).setMargins(m, m, m, m);
+         if (((int)cardView.getCardElevation()) != 4) {
+            cardView.setCardElevation(4);
+            int m = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
+            ((ViewGroup.MarginLayoutParams) cardView.getLayoutParams()).setMargins(m, m, m, m);
+         }
       } else {
-         cardView.setCardElevation(0);
+         if (((int)cardView.getCardElevation()) != 0) {
+            cardView.setCardElevation(0);
+         }
       }
    }
 }

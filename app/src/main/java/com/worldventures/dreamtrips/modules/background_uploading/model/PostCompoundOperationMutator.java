@@ -44,6 +44,11 @@ public class PostCompoundOperationMutator {
             .withState(CompoundOperationState.FAILED);
    }
 
+   public PostCompoundOperationModel failedProcessing(PostCompoundOperationModel compoundOperationModel) {
+      return ImmutablePostCompoundOperationModel.copyOf(compoundOperationModel)
+            .withState(CompoundOperationState.FAILED_PROCESSING);
+   }
+
    public PostCompoundOperationModel finished(PostCompoundOperationModel compoundOperationModel, TextualPost textualPost) {
       CompoundOperationState compoundOperationState = CompoundOperationState.FINISHED;
 

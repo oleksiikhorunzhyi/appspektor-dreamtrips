@@ -73,7 +73,7 @@ public class UpdateVideoProcessStatusCommand extends Command<Void> implements In
                               .doOnNext(this::notifyCompoundOperationRemoved);
                      } else if (videoProcessStatus.getAssetStatus().equals(VideoProcessStatus.STATUS_ERROR)) {
                         return Observable.just(operationModel)
-                              .map(compoundOperationObjectMutator::failed)
+                              .map(compoundOperationObjectMutator::failedProcessing)
                               .doOnNext(this::notifyCompoundOperationChanged);
                      } else return Observable.empty();
                   }

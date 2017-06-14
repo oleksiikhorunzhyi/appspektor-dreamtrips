@@ -595,5 +595,6 @@
    <string name="uploading_post_status_processing">Processing</string>
    <string name="uploading_post_status_progress_video"><b><i>Step 1 of 2.</i></b> Uploading…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
+   <string name="uploading_post_status_progress_video_processing_failed">Failed to process. Something wrong with video</string>
 
 </resources>

@@ -266,8 +266,9 @@ public class UploadingPostCell extends FrameLayout {
 
    private void initViewsForGeneralUploadState() {
       progressBarInfinite.setVisibility(GONE);
-      generalUploadContainer.setVisibility(View.VISIBLE);
-      generalUploadContainer.setAlpha(1f);
+      if (generalUploadContainer.getAlpha() < 0.9f) {
+         generalUploadContainer.setAlpha(1f);
+      }
       uploadFinishedView.setVisibility(View.GONE);
    }
 
@@ -306,7 +307,6 @@ public class UploadingPostCell extends FrameLayout {
          removeCellAnimationSet.cancel();
       }
       removeCellAnimationSet = null;
-      setAlpha(1f);
       ((MarginLayoutParams) getLayoutParams()).topMargin = 0;
    }
 

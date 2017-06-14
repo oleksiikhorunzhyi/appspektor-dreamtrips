@@ -59,6 +59,42 @@ public class MediaAttachment implements Parcelable {
       return chosenVideo != null;
    }
 
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      MediaAttachment that = (MediaAttachment) o;
+
+      if (requestId != that.requestId) return false;
+      if (chosenImages != null && that.chosenImages != null) return compareImages(that.chosenImages);
+      if (chosenVideo != null ? !chosenVideo.equals(that.chosenVideo) : that.chosenVideo != null) return false;
+      return source == that.source;
+   }
+
+   private boolean compareImages(List<PhotoPickerModel> thatChosenImages) {
+      if (chosenImages.size() != thatChosenImages.size()) {
+         return false;
+      }
+
+      for (PhotoPickerModel photoPickerModel : thatChosenImages) {
+         if (!chosenImages.contains(photoPickerModel)) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   @Override
+   public int hashCode() {
+      int result = chosenImages != null ? chosenImages.hashCode() : 0;
+      result = 31 * result + (chosenVideo != null ? chosenVideo.hashCode() : 0);
+      result = 31 * result + (source != null ? source.hashCode() : 0);
+      result = 31 * result + requestId;
+      return result;
+   }
+
    protected MediaAttachment(Parcel in) {
       this.chosenImages = in.createTypedArrayList(PhotoPickerModel.CREATOR);
       this.chosenVideo = in.readParcelable(VideoPickerModel.class.getClassLoader());

@@ -10,7 +10,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
@@ -151,10 +151,13 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void setSmartCardUserAttrs(String fullname, @Nullable SmartCardUserPhoto photo) {
+   public void setSmartCardUser(SmartCardUser smartCardUser) {
+      final SmartCardUserPhoto photo = smartCardUser.userPhoto();
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
-            .fullname(fullname)
+            .firstName(smartCardUser.firstName())
+            .middleName(smartCardUser.middleName())
+            .lastName(smartCardUser.lastName())
             .photoUrl(photo != null ? photo.uri() : "")
             .build();
 
@@ -310,7 +313,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             }));
 
       smartCardWidget.setOnSettingsClickListener(v -> presenter.onSettingsChosen());
-
+      smartCardWidget.setOnPhotoClickListener(v -> presenter.onProfileChosen());
       binding.transitionView.getRoot().setVisibility(GONE);
    }
 

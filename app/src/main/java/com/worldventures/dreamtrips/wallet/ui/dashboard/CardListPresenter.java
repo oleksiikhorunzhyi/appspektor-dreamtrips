@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -23,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
@@ -52,6 +50,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
@@ -174,7 +173,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSmartCardUser(SmartCardUser smartCardUser) {
-      getView().setSmartCardUserAttrs(smartCardUser.fullName(), smartCardUser.userPhoto());
+      getView().setSmartCardUser(smartCardUser);
    }
 
    private void observeConnectionStatus() {
@@ -214,7 +213,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
       getView().setFirmwareUpdateAvailable(firmwareUpdateData.updateAvailable());
       if (firmwareUpdateData.updateAvailable()) {
-         //if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
+         if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
          getView().showFirmwareUpdateBtn();
       } else {
          getView().hideFirmwareUpdateBtn();
@@ -265,6 +264,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    void onSettingsChosen() {
       navigator.go(new WalletSettingsPath());
+   }
+
+   void onProfileChosen() {
+      navigator.go(new WalletSettingsProfilePath());
    }
 
    void navigateBack() {
@@ -387,7 +390,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
 
-      void setSmartCardUserAttrs(String fullname, @Nullable SmartCardUserPhoto photo);
+      void setSmartCardUser(SmartCardUser smartCardUser);
 
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 

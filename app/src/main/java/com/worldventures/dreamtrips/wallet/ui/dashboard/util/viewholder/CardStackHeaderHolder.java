@@ -28,7 +28,17 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    }
 
    @Value.Default
-   public String fullname() {
+   public String firstName() {
+      return "";
+   }
+
+   @Value.Default
+   public String middleName() {
+      return "";
+   }
+
+   @Value.Default
+   public String lastName() {
       return "";
    }
 

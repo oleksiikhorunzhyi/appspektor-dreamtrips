@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.FeedItemsVideoProcessingStatusInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -408,5 +409,11 @@ public class ManagerModule {
    @Singleton
    FeedListWidthInteractor provideFeedListWidthInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FeedListWidthInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   FeedItemsVideoProcessingStatusInteractor provideFeedItemsVideoProcessingStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedItemsVideoProcessingStatusInteractor(sessionActionPipeCreator);
    }
 }

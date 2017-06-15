@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithV
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoAttachmentPreviewView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoPreviewViewFactory;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util.UploadingTimeLeftFormatter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
 
 import java.io.File;
 import java.util.Collections;
@@ -59,6 +60,9 @@ public class UploadingPostCell extends FrameLayout {
    @InjectView(R.id.uploading_cell_control_main_action) ImageView mainControlImageView;
    @InjectView(R.id.uploading_cell_progress_bar) ProgressBar progressBar;
    @InjectView(R.id.uploading_cell_progress_infinite) ProgressBar progressBarInfinite;
+   @InjectView(R.id.uploading_cell_duration) TextView duration;
+   @InjectView(R.id.uploading_cell_video_details) View videoDetails;
+
    private PhotoAttachmentPreviewView photoPreviewView;
 
    private UploadingPostsSectionCell.Delegate cellDelegate;
@@ -103,6 +107,7 @@ public class UploadingPostCell extends FrameLayout {
    }
 
    private void processPhotoPost() {
+      videoDetails.setVisibility(GONE);
       PostWithPhotoAttachmentBody postWithAttachmentBody = (PostWithPhotoAttachmentBody) compoundOperationModel.body();
       List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
       refreshPhotoPreviewView(Queryable.from(attachments)
@@ -111,6 +116,9 @@ public class UploadingPostCell extends FrameLayout {
    }
 
    private void processVideoPost() {
+      videoDetails.setVisibility(VISIBLE);
+      long durationInMs = ((PostWithVideoAttachmentBody) compoundOperationModel.body()).durationInSeconds() * 1000;
+      duration.setText(PickerVideoDurationFormatter.getFormattedDuration(durationInMs));
       PostWithVideoAttachmentBody postWithAttachmentBody = (PostWithVideoAttachmentBody) compoundOperationModel.body();
       refreshPhotoPreviewView(Collections.singletonList(Uri.fromFile(new File(postWithAttachmentBody.videoPath()))));
    }

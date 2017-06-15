@@ -4,7 +4,7 @@ import org.joda.time.Period;
 
 public class PickerVideoDurationFormatter {
 
-   public String getFormattedDuration(long duration) {
+   public static String getFormattedDuration(long duration) {
       Period period = new Period(duration);
       int hours = period.getHours();
       int minutes = period.getMinutes();

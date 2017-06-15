@@ -34,7 +34,6 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xit
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
@@ -191,7 +190,7 @@ class FactoryResetInteractorSpec : BaseSpec({
                .build()
       }
 
-      fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(janet)
+      fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(SessionActionPipeCreator(janet))
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 

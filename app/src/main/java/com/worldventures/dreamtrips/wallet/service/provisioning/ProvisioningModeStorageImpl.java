@@ -19,7 +19,7 @@ class ProvisioningModeStorageImpl implements ProvisioningModeStorage {
    @Override
    public void saveState(ProvisioningMode state) {
       sharedPreferences.edit()
-            .putString(PROVISIONING_STATE_NAME, state.toString())
+            .putString(PROVISIONING_STATE_NAME, state == null ? null : state.toString())
             .commit();
    }
 

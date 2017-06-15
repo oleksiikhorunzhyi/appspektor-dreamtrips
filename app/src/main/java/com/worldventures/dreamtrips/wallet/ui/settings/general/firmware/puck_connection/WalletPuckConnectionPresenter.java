@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -29,14 +30,23 @@ public class WalletPuckConnectionPresenter extends WalletPresenter<WalletPuckCon
       super.onAttachedToWindow();
       fetchUserPhoto();
    }
+
    private void fetchUserPhoto() {
       smartCardInteractor.smartCardUserPipe()
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto().photoUrl()))
+                  .onSuccess(this::bindSmartCardUser)
             );
    }
+
+   private void bindSmartCardUser(SmartCardUserCommand command) {
+      final SmartCardUser smartCardUser = command.getResult();
+      if (smartCardUser != null && smartCardUser.userPhoto() != null) {
+         getView().userPhoto(command.getResult().userPhoto().photoUrl());
+      }
+   }
+
    void goNext() {
       navigator.withoutLast(new WalletDownloadFirmwarePath());
    }

@@ -322,11 +322,11 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
+      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(SessionActionPipeCreator(janet))
 
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createNxtInteractor(janet: Janet) = NxtInteractor(janet)
+      fun createNxtInteractor(janet: Janet) = NxtInteractor(SessionActionPipeCreator(janet))
 
       fun createAnalyticsInteractor(janet: Janet) = AnalyticsInteractor(SessionActionPipeCreator(janet))
 

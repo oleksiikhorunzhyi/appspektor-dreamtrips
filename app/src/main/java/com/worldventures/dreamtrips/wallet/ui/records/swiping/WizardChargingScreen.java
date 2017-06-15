@@ -72,11 +72,6 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    }
 
    @Override
-   public void checkConnection(ConnectionStatus connectionStatus) {
-      if (!connectionStatus.isConnected()) presenter.showConnectionErrorScreen();
-   }
-
-   @Override
    public void showSwipeError() {
       operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {
       });

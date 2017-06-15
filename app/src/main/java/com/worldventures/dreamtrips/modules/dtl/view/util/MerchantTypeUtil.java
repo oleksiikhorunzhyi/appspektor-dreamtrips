@@ -28,7 +28,7 @@ public class MerchantTypeUtil {
         int stringResource = R.string.dtlt_search_hint;
 
         if (type.equals(FilterData.SPAS)) {
-            stringResource = R.string.filter_merchant_spa;
+            stringResource = R.string.text_to_filter_by_spa;
         } else if (type.equals(FilterData.ENTERTAINMENT)) {
             stringResource = R.string.filter_merchant_entertainment;
         }

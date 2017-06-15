@@ -112,6 +112,7 @@
    <string name="filter_merchant_food">Food</string>
    <string name="filter_merchant_entertainment">Entertainment</string>
    <string name="filter_merchant_spa">Spas</string>
+   <string name="text_to_filter_by_spa">Spa</string>
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">RATE &amp; REVIEW</string>
    <string name="first_reviews_text">Be the first to review this location</string>

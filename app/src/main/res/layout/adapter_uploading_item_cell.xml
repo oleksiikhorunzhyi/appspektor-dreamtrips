@@ -21,7 +21,45 @@
             android:id="@+id/uploading_cell_attachment_container"
             android:layout_width="@dimen/uploading_cell_width"
             android:layout_height="@dimen/uploading_cell_height"
+            tools:background="@color/bg_item_dragging_state"
             />
+
+      <FrameLayout
+            android:layout_width="@dimen/uploading_cell_width"
+            android:layout_height="@dimen/uploading_cell_height"
+            >
+         <RelativeLayout
+               android:id="@+id/uploading_cell_video_details"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingLeft="@dimen/spacing_small"
+               android:paddingRight="@dimen/spacing_small"
+               android:paddingTop="@dimen/spacing_tiny"
+               android:paddingBottom="@dimen/spacing_tiny"
+               android:background="#66000000"
+               android:layout_gravity="bottom"
+               android:visibility="gone"
+               >
+            <ImageView
+                  android:layout_width="16dp"
+                  android:layout_height="16dp"
+                  android:src="@drawable/video_ic_small"
+                  android:layout_centerVertical="true"
+                  />
+            <TextView
+                  android:id="@+id/uploading_cell_duration"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:layout_alignParentRight="true"
+                  android:textColor="@color/white"
+                  android:textSize="12sp"
+                  />
+         </RelativeLayout>
+
+      </FrameLayout>
+
+
 
       <RelativeLayout
             android:layout_width="match_parent"
@@ -77,7 +115,7 @@
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
                   android:layout_weight="1"
-                  android:text="Uploading 15 photos..."
+                  tools:text="Uploading 15 photos..."
                   />
 
             <TextView

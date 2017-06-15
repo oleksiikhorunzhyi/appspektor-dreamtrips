@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 
+import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ShareVideoPostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoCommand;
 
 import javax.inject.Inject;
@@ -43,7 +45,7 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
                notifyCompoundCommandChanged(state.action.getPostCompoundOperationModel());
                switch (state.status) {
                   case SUCCESS:
-                     return Observable.just(state.action.getResult().body().uploadId());
+                     return Observable.just(state.action.getResult().body());
                   case FAIL:
                      return Observable.error(state.exception);
                   default:
@@ -51,7 +53,7 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
                }
             })
             .doOnNext(textualPost -> Timber.d("[New Post Creation] Videos uploaded"))
-            .map(uploadId -> compoundOperationObjectMutator.videoUploaded(postOperationModel, uploadId))
+            .map(updateBody -> compoundOperationObjectMutator.videoUploaded(postOperationModel, updateBody))
             .doOnNext(this::notifyCompoundCommandChanged);
    }
 
@@ -68,5 +70,12 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
    protected void notifyCompoundCommandFinished(PostCompoundOperationModel<PostWithVideoAttachmentBody> postOperationModel) {
       backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
       pingAssetStatusInteractor.launchUpdatingVideoProcessingPipe().send(new LaunchUpdatingVideoProcessingCommand());
+      sendAnalytics();
+   }
+
+   @Override
+   protected void sendAnalytics() {
+      BaseAnalyticsAction action = ShareVideoPostAction.createPostAction(postCompoundOperationModel.body());
+      analyticsInteractor.analyticsActionPipe().send(action);
    }
 }

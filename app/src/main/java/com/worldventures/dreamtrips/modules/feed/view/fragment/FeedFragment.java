@@ -67,7 +67,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_feed)
@@ -170,10 +169,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    @Override
    public void onResume() {
       super.onResume();
-      Observable.interval(1, TimeUnit.SECONDS)
-            .compose(bindUntilStopViewComposer())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(i -> recyclerViewManager.findFirstCompletelyVisibleItemPosition());
+      startAutoplayVideos();
+   }
+
+   private void startAutoplayVideos() {
+      recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }
 
    @Override
@@ -312,6 +312,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       processUploadsInProgressItems(uploadingPostsList, feedModels);
       processFeedItems(feedItems, feedModels);
       fragmentWithFeedDelegate.updateItems(feedModels);
+      startAutoplayVideos();
    }
 
    private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {

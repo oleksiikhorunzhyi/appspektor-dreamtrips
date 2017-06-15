@@ -84,6 +84,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
          float percent = calculateOffset();
          setToolbarAlpha(percent);
       }
+      startAutoplayVideos();
+   }
+
+   protected void startAutoplayVideos() {
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }
 
    @Override
@@ -187,6 +192,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void refreshFeedItems(List<FeedItem> items) {
       fragmentWithFeedDelegate.updateItems(items);
+      startAutoplayVideos();
    }
 
    @Override

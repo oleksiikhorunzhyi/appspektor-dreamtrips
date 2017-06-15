@@ -13,8 +13,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Focusable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 
 public class StatePaginatedRecyclerViewManager {
 
@@ -24,6 +30,9 @@ public class StatePaginatedRecyclerViewManager {
    private WeakHandler weakHandler;
    private PaginationViewManager paginationViewManager;
    private LinearLayoutManager layoutManager;
+
+   private PublishSubject<Integer> scrollStateSubject = PublishSubject.create();
+   private Subscription scrollStateAutoplaySubscription;
 
    public StatePaginatedRecyclerViewManager(View rootView) {
       ButterKnife.inject(this, rootView);
@@ -49,17 +58,39 @@ public class StatePaginatedRecyclerViewManager {
 
       stateRecyclerView.setLayoutManager(layoutManager);
       stateRecyclerView.setup(savedInstanceState, adapter);
+      initScrollStateListener();
+
       paginationViewManager = new PaginationViewManager(stateRecyclerView);
+   }
+
+   private void initScrollStateListener() {
+      stateRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            scrollStateSubject.onNext(newState);
+         }
+      });
+   }
+
+   public void startLookingForCompletelyVisibleItem(Observable.Transformer stopper) {
+      if (scrollStateAutoplaySubscription != null && !scrollStateAutoplaySubscription.isUnsubscribed()) {
+         scrollStateAutoplaySubscription.unsubscribe();
+      }
+      scrollStateAutoplaySubscription = scrollStateSubject
+            .startWith(stateRecyclerView.getScrollState())
+            .debounce(1, TimeUnit.SECONDS)
+            .filter(state -> state == RecyclerView.SCROLL_STATE_IDLE)
+            .compose(stopper)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(aVoid -> findFirstCompletelyVisibleItemPosition());
    }
    
    public void findFirstCompletelyVisibleItemPosition() {
-      if (stateRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-         float centerPositionY = stateRecyclerView.getY() + stateRecyclerView.getHeight() / 2;
+      float centerPositionY = stateRecyclerView.getY() + stateRecyclerView.getHeight() / 2;
 
-         Focusable focusableViewHolder = findNearestFocusableViewHolder(centerPositionY,
-               layoutManager.findFirstVisibleItemPosition(), layoutManager.findLastVisibleItemPosition());
-         if (focusableViewHolder != null) focusableViewHolder.onFocused();
-      }
+      Focusable focusableViewHolder = findNearestFocusableViewHolder(centerPositionY,
+            layoutManager.findFirstVisibleItemPosition(), layoutManager.findLastVisibleItemPosition());
+      if (focusableViewHolder != null) focusableViewHolder.onFocused();
    }
 
    private Focusable findNearestFocusableViewHolder(float centerPositionY, int firstItemPosition,

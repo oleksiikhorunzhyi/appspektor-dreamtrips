@@ -62,6 +62,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    public void onResume() {
       super.onResume();
       TrackingHelper.viewMyProfileScreen();
+      startAutoplayVideos();
    }
 
    @Override
@@ -77,6 +78,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
       }
       newItems.addAll(items);
       fragmentWithFeedDelegate.updateItems(items);
+      startAutoplayVideos();
    }
 
    @Override

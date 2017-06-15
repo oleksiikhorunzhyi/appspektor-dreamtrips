@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
@@ -15,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -24,6 +27,9 @@ import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorImpl;
+import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorMock;
+import com.worldventures.dreamtrips.wallet.service.impl.WalletBluetoothServiceMock;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;
@@ -56,7 +62,19 @@ public class WalletServiceModule {
    @Singleton
    @Provides
    WalletBluetoothService walletBluetoothService(@ForApplication Context appContext) {
+      if (BuildConfig.WALLET_EMULATOR_MODE) {
+         return new WalletBluetoothServiceMock();
+      }
       return new AndroidBleService(appContext);
+   }
+
+   @Singleton
+   @Provides
+   WalletAccessValidator walletNetworkService(FeatureManager featureManager) {
+      if (BuildConfig.WALLET_EMULATOR_MODE) {
+         return new WalletAccessValidatorMock();
+      }
+      return new WalletAccessValidatorImpl(featureManager);
    }
 
    @Singleton

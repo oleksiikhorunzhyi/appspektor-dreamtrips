@@ -60,6 +60,10 @@ android {
          dimension "stream"
          applicationIdSuffix = 'smartcard'
       }
+      smartcardemulmode {
+         dimension "stream"
+         applicationIdSuffix = 'smartcard'
+      }
       smartcardnxtid {
          dimension "stream"
          applicationIdSuffix = 'smartcard'

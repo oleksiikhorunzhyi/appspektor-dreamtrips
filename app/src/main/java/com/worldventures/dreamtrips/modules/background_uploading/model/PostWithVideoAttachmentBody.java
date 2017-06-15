@@ -18,7 +18,10 @@ public interface PostWithVideoAttachmentBody extends PostBody {
    @Nullable
    String videoUid();
 
-   double aspectRatio();
-
    long size();
+
+   long durationInSeconds();
+
+   @Nullable
+   Long uploadTime();
 }

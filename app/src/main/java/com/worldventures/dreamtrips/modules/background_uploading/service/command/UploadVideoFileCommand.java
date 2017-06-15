@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithV
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.http.UploadVideoHttpAction;
 import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -33,10 +34,13 @@ public class UploadVideoFileCommand extends Command<PostCompoundOperationModel<P
    private double totalSize;
    private double totalUploadedSize;
 
+   private long uploadStartedTimeStamp;
+
    public UploadVideoFileCommand(PostCompoundOperationModel<PostWithVideoAttachmentBody> postCompoundOperationModel) {
       this.postCompoundOperationModel = postCompoundOperationModel;
       this.totalSize = postCompoundOperationModel.body().size();
       this.totalUploadedSize = 0;
+      this.uploadStartedTimeStamp = new Date().getTime();
    }
 
    @Override
@@ -64,6 +68,7 @@ public class UploadVideoFileCommand extends Command<PostCompoundOperationModel<P
                      String uploadId = actionState.action.getAssetId();
                      Timber.d("[New Photo Attachment Creation] Succeed %s", uploadId);
                      progress = 100;
+                     builder.uploadTime((new Date().getTime() - uploadStartedTimeStamp) / 1000);
                      builder.state(PostBody.State.UPLOADED);
                      builder.uploadId(uploadId);
                      break;

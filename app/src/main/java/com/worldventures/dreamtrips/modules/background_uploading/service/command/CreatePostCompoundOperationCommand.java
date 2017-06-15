@@ -125,7 +125,7 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
             .location(location)
             .videoPath(selectedVideoPath)
             .state(PostBody.State.SCHEDULED)
-            .aspectRatio(obtainAspectRatio(selectedVideoPath))
+            .durationInSeconds(obtainDurationInSeconds(selectedVideoPath))
             .size(new File(selectedVideoPath).length())
             .build();
    }
@@ -165,15 +165,11 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
             .toList();
    }
 
-   public static double obtainAspectRatio(String filePath) {
+   private static long obtainDurationInSeconds(String filePath) {
       MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
       metaRetriever.setDataSource(filePath);
-      int rotation = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
-      String height = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-      String width = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-
-      return (rotation == 90 || rotation == 270)
-            ? Double.parseDouble(height) / Double.parseDouble(width)
-            : Double.parseDouble(width) / Double.parseDouble(height);
+      long duration = Long.parseLong(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+      metaRetriever.release();
+      return duration / 1000;
    }
 }

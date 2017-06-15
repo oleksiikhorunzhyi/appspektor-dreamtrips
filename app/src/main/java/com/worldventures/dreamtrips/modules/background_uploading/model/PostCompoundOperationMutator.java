@@ -125,14 +125,12 @@ public class PostCompoundOperationMutator {
                   .withUploadedPhotos(new ArrayList<>(photos)));
    }
 
-   public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoUploaded(PostCompoundOperationModel<PostWithVideoAttachmentBody> compoundOperationModel, String uploadId) {
+   public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoUploaded(PostCompoundOperationModel<PostWithVideoAttachmentBody> compoundOperationModel, PostWithVideoAttachmentBody body) {
       return ImmutablePostCompoundOperationModel
             .copyOf(compoundOperationModel)
             .withProgress(PROGRESS_MEDIA_UPLOADING)
-            .withBody(ImmutablePostWithVideoAttachmentBody
-                  .copyOf(compoundOperationModel.body())
-                  .withState(PostBody.State.UPLOADED)
-                  .withUploadId(uploadId));
+            .withBody(ImmutablePostWithVideoAttachmentBody.copyOf(body)
+                  .withState(PostBody.State.UPLOADED));
    }
 
    public PostCompoundOperationModel<PostWithVideoAttachmentBody> videoCreated(PostCompoundOperationModel<PostWithVideoAttachmentBody> compoundOperationModel, String uid) {

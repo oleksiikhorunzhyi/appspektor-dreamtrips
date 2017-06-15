@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
-import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
@@ -11,18 +10,16 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
-
-import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,24 +28,22 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.user.UpdateUserAction;
-import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
-import timber.log.Timber;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implements InjectableAction {
 
-   @Inject Janet janetApi;
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardAvatarHelper smartCardAvatarHelper;
    @Inject WalletNetworkService networkService;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject UpdateProfileManager updateProfileManager;
    @Inject MapperyContext mapperyContext;
+   @Inject CachedPhotoUtil cachedPhotoUtil;
 
    private final ChangedFields changedFields;
 
@@ -90,34 +85,27 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    }
 
    private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
-      boolean needUpdate = false;
-      final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder()
-            .photoUrl(user.userPhoto().photoUrl().toString()); // photoUrl is mandatory field for API
+      final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder();
+      final SmartCardUserPhoto userPhoto = user.userPhoto();
 
+      dataBuilder.photoUrl(userPhoto != null ? userPhoto.uri() : "");
       dataBuilder.firstName(changedFields.firstName());
       dataBuilder.middleName(changedFields.middleName());
       dataBuilder.lastName(changedFields.lastName());
+
       if (changedFields.phone() != null) {
          dataBuilder.phone(mapperyContext.convert(changedFields.phone(), CardUserPhone.class));
       }
 
-      if (!changedFields.firstName().equals(user.firstName())
-            || !changedFields.middleName().equals(user.middleName())
-            || !changedFields.lastName().equals(user.lastName())
-            || (changedFields.phone() == null && user.phoneNumber() != null)
-            || (changedFields.phone() != null && !changedFields.phone().equals(user.phoneNumber()))) {
-         needUpdate = true;
-      }
-
       final UpdateCardUserData userData = dataBuilder.build();
-
-      if (needUpdate) {
+      final SmartCardUserPhone phone = changedFields.phone();
+      if (needToUpdate(user)) {
          return janet.createPipe(UpdateUserAction.class)
                .createObservableResult(new UpdateUserAction(ImmutableUser.builder()
                      .firstName(changedFields.firstName())
                      .middleName(changedFields.middleName())
                      .lastName(changedFields.lastName())
-                     .phoneNum(changedFields.phone() != null ? changedFields.phone().fullPhoneNumber() : null)
+                     .phoneNum(phone != null ? phone.fullPhoneNumber() : null)
                      .isUserAssigned(true)
                      .memberId(userSessionHolder.get().get().getUser().getId())
                      .barcodeId(Long.parseLong(scId))
@@ -129,39 +117,40 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
       }
    }
 
-   private Observable<UpdateCardUserData> uploadPhotoIfNeed(SmartCardUser user, String smartCardId, UpdateCardUserData userData) {
-      final SmartCardUserPhoto photo = changedFields.photo();
-      if (photo != null) {
+   private boolean needToUpdate(SmartCardUser user) {
+      final SmartCardUserPhone phoneNumber = user.phoneNumber();
+      return !changedFields.firstName().equals(user.firstName())
+            || !changedFields.middleName().equals(user.middleName())
+            || !changedFields.lastName().equals(user.lastName())
+            || ( phoneNumber != null && !phoneNumber.equals(changedFields.phone()));
+   }
+
+   private Observable<UpdateCardUserData> uploadPhotoIfNeed(SmartCardUser user, String smartCardId,
+         UpdateCardUserData userData) {
+      final SmartCardUserPhoto newPhoto = changedFields.photo();
+      if (newPhoto != null) {
 
          clearUserImageCache(user.userPhoto());
 
-         return Observable
-               .fromCallable(() -> getAvatarAsByteArray(photo))
-               .flatMap(bytes ->  janet.createPipe(UpdateUserPhotoAction.class)
-                     .createObservableResult(new UpdateUserPhotoAction(bytes)))
-               .flatMap(action -> janet.createPipe(SmartCardUploaderyCommand.class)
-                     .createObservableResult(new SmartCardUploaderyCommand(smartCardId, photo.original())))
+         return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
+               .createObservableResult(new UpdateSmartCardUserPhotoCommand(newPhoto.uri()))
+               .flatMap(aVoid -> janet.createPipe(SmartCardUploaderyCommand.class, Schedulers.io())
+                     .createObservableResult(new SmartCardUploaderyCommand(smartCardId, newPhoto.uri())))
                .map(command -> ImmutableUpdateCardUserData.builder()
                      .from(userData)
-                     //photoUrl saved in UpdateProfileManager
+                     //uri saved in UpdateProfileManager
                      .photoUrl(command.getResult().response().uploaderyPhoto().location())
                      .build());
       } else {
-         return Observable.just(ImmutableUpdateCardUserData.copyOf(userData).withPhotoUrl(user.userPhoto().photoUrl().toString()));
+         final SmartCardUserPhoto userPhoto = user.userPhoto();
+         return Observable.just(ImmutableUpdateCardUserData.copyOf(userData)
+               .withPhotoUrl(userPhoto != null ? userPhoto.uri() : null));
       }
    }
 
-   private void clearUserImageCache(SmartCardUserPhoto photo) {
-      try {
-         Fresco.getImagePipeline().evictFromCache(Uri.parse(photo.photoUrl()));
-      } catch (Exception e) {
-         Timber.e(e, "");
+   private void clearUserImageCache(@Nullable SmartCardUserPhoto photo) {
+      if (photo != null) {
+         cachedPhotoUtil.removeCachedPhoto(photo.uri());
       }
-   }
-
-   private byte[] getAvatarAsByteArray(SmartCardUserPhoto avatar) throws IOException {
-      final int[][] ditheredImageArray =
-            smartCardAvatarHelper.toMonochrome(avatar.original(), ImageUtils.DEFAULT_IMAGE_SIZE);
-      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 }

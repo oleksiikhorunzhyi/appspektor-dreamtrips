@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -12,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -77,6 +79,11 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
       presenter.openSoftwareUpdateScreen();
    }
 
+   @OnClick(R.id.item_display_options)
+   void onClickDisplayOptions() {
+      presenter.openDisplayOptionsScreen();
+   }
+
    @OnClick(R.id.item_factory_reset)
    void onClickReset() {
       presenter.onClickFactoryResetSmartCard();
@@ -113,8 +120,10 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    }
 
    @Override
-   public void setPreviewPhoto(String photoUrl) {
-      profilePhoto.setImageURI(photoUrl);
+   public void setPreviewPhoto(@Nullable SmartCardUserPhoto photo) {
+      if (photo != null) {
+         profilePhoto.setImageURI(photo.uri());
+      } //// TODO: 5/23/17 add placeholder
    }
 
    @Override
@@ -183,7 +192,8 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {},
+            () -> {
+            },
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.retry,

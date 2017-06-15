@@ -23,6 +23,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
@@ -149,11 +151,14 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void setSmartCardUserAttrs(String fullname, String photoFileUrl) {
+   public void setSmartCardUser(SmartCardUser smartCardUser) {
+      final SmartCardUserPhoto photo = smartCardUser.userPhoto();
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
-            .fullname(fullname)
-            .photoUrl(photoFileUrl)
+            .firstName(smartCardUser.firstName())
+            .middleName(smartCardUser.middleName())
+            .lastName(smartCardUser.lastName())
+            .photoUrl(photo != null ? photo.uri() : "")
             .build();
 
       smartCardWidget.bindCard(cardStackHeaderHolder);
@@ -308,7 +313,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             }));
 
       smartCardWidget.setOnSettingsClickListener(v -> presenter.onSettingsChosen());
-
+      smartCardWidget.setOnPhotoClickListener(v -> presenter.onProfileChosen());
       binding.transitionView.getRoot().setVisibility(GONE);
    }
 

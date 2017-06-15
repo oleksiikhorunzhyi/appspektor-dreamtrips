@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDivide
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
@@ -104,6 +105,7 @@ import dagger.Provides;
             WalletSettingsProfilePresenter.class,
             WalletOfflineModeSettingsPresenter.class,
             WalletCustomerSupportSettingsPresenter.class,
+            DisplayOptionsSettingsPresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             EnterPinPresenter.class,

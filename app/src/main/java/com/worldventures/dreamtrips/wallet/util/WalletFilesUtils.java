@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.util;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 
@@ -60,5 +61,4 @@ public class WalletFilesUtils {
          return missingByteSpace;
       }
    }
-
 }

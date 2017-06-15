@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="@dimen/wallet_card_height"
@@ -126,16 +125,40 @@
          tools:text="@string/wallet_card_list_records_connected"
          />
 
-   <com.facebook.drawee.view.SimpleDraweeView
-         android:id="@+id/cardListSCAvatar"
+   <FrameLayout
+         android:id="@+id/photo_container"
          android:layout_width="90.4dp"
          android:layout_height="90.4dp"
          android:layout_above="@+id/indicators_container"
          android:layout_alignParentEnd="true"
          android:layout_marginBottom="10dp"
-         app:placeholderImage="@drawable/avatar"
-         app:placeholderImageScaleType="fitCenter"
-         />
+         >
+
+      <TextView
+            android:id="@+id/place_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#dddddd"
+            android:gravity="center"
+            android:textSize="@dimen/font_small"
+            />
+
+      <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/cardListSCAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+      <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/spacing_tiniest"
+            android:src="@drawable/ic_wallet_edit_button"
+            tools:ignore="ContentDescription"
+            />
+   </FrameLayout>
+
 
    <TextView
          android:id="@+id/bankLabel"

@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUse
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository
+import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -161,6 +162,7 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(SystemPropertiesProvider::class.java, { propertiesProvider })
          daggerCommandActionService.registerProvider(LostCardRepository::class.java, { lostCardStorage })
+         daggerCommandActionService.registerProvider(CachedPhotoUtil::class.java, { mock() })
 
          return janet
       }

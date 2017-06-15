@@ -260,6 +260,11 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
+   public void removeUserPhoto() {
+
+   }
+
+   @Override
    public boolean isCardRecording() {
       return memoryStorage.isCardRecording();
    }
@@ -294,16 +299,12 @@ public class PersistentDeviceStorage implements DeviceStorage {
 
    @Override
    public void setHomeDisplayType(int type) {
-
+      memoryStorage.setHomeDisplayType(type);
+      persistStorage();
    }
 
    @Override
    public int getHomeDisplayType() {
-      return 0;
-   }
-
-   @Override
-   public void removeUserPhoto() {
-
+      return memoryStorage.getHomeDisplayType();
    }
 }

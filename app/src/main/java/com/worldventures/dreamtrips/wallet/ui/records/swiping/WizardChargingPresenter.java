@@ -2,13 +2,14 @@ package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -62,15 +63,8 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(this::bindSmartCardUser)
+                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto()))
             );
-   }
-
-   private void bindSmartCardUser(SmartCardUserCommand command) {
-      final SmartCardUser smartCardUser = command.getResult();
-      if (smartCardUser.userPhoto() != null) {
-         getView().userPhoto(command.getResult().userPhoto().photoUrl());
-      }
    }
 
    private void observeCharger() {
@@ -158,6 +152,6 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
 
       void showSwipeSuccess();
 
-      void userPhoto(String photoUrl);
+      void userPhoto(@Nullable SmartCardUserPhoto photo);
    }
 }

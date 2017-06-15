@@ -41,8 +41,8 @@
                   android:layout_height="35dp"
                   android:layout_marginEnd="@dimen/spacing_normal"
                   android:src="@drawable/ic_dt_launcher"
-                  app:failureImage="@drawable/ic_avatar_placeholder"
-                  app:placeholderImage="@drawable/ic_avatar_placeholder"
+                  app:failureImage="@drawable/ic_edit_profile_silhouette"
+                  app:placeholderImage="@drawable/ic_edit_profile_silhouette"
                   app:roundAsCircle="true"
                   />
 
@@ -106,6 +106,25 @@
                   />
 
          </RelativeLayout>
+
+         <!--Display Options-->
+         <LinearLayout
+               android:id="@+id/item_display_options"
+               style="@style/SettingsMenuItem"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_display_options"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:text="@string/wallet_card_settings_customize_sc_display"
+                  />
+
+         </LinearLayout>
 
          <!--Reset-->
          <LinearLayout

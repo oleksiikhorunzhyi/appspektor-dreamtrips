@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.WelcomeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -23,9 +22,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
 
 import javax.inject.Inject;
-
-import io.techery.janet.helper.ActionStateSubscriber;
-import timber.log.Timber;
 
 public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresenter.Screen, Parcelable> {
 
@@ -61,16 +57,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    }
 
    private void loadUserPhoto(String avatarPath) {
-      if (!TextUtils.isEmpty(avatarPath)) {
-         smartCardUserDataInteractor.smartCardAvatarPipe()
-               .observe()
-               .compose(bindViewIoToMainComposer())
-               .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                     .onSuccess(command -> getView().userPhoto(command.getResult().photoUrl()))
-                     .onFail((command, throwable) -> Timber.e("", throwable)));
-
-         smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromUrl(avatarPath));
-      }
+      if (!TextUtils.isEmpty(avatarPath)) getView().userPhoto(avatarPath);
    }
 
    private String obtainMessage(User user) {

@@ -4,6 +4,8 @@
    <color name="wallet_success_green">#FF81c435</color>
    <color name="wallet_waring_red">#FFfa2d46</color>
 
+   <color name="wallet_card_display_default_background">#ddd</color>
+
    <color name="wallet_card_details_address_text_color">#666666</color>
    <color name="wallet_card_details_delete_card_button_color">#ea283b</color> <!--does not use like background, should be fixed -->
 
@@ -57,6 +59,8 @@
 
    <color name="wallet_settings_feedback_message_stroke">#76b2fe</color>
    <color name="wallet_settings_feedback_line_divider">#76b2fe</color>
+
+   <color name="wallet_settings_display_options_add_info">#169BD5</color>
 
    <color name="wallet_default_card_text">#006ca2</color>
 

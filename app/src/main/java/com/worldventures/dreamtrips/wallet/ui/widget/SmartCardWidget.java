@@ -23,7 +23,9 @@ import butterknife.InjectView;
 
 public class SmartCardWidget extends FrameLayout {
 
+   @InjectView(R.id.photo_container) View photoContainer;
    @InjectView(R.id.cardListSCAvatar) SimpleDraweeView scAvatar;
+   @InjectView(R.id.place_holder) TextView tvPlaceHolder;
    @InjectView(R.id.bankLabel) TextView bankLabel;
    @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
    @InjectView(R.id.batteryView) BatteryView batteryView;
@@ -53,12 +55,19 @@ public class SmartCardWidget extends FrameLayout {
    }
 
    public void bindCard(CardStackHeaderHolder holder) {
+      final StringBuilder fullNameBuilder = new StringBuilder(holder.firstName());
+      if (!holder.middleName().isEmpty()) {
+         fullNameBuilder.append("\n").append(holder.middleName());
+      }
+      if (!holder.lastName().isEmpty()) {
+         fullNameBuilder.append("\n").append(holder.lastName());
+      }
+      tvPlaceHolder.setText(fullNameBuilder);
+
       if (!TextUtils.isEmpty(holder.photoUrl())) {
          scAvatar.setImageURI(holder.photoUrl());
       }
-      if (!TextUtils.isEmpty(holder.fullname())) {
-         bankLabel.setText(holder.fullname());
-      }
+      bankLabel.setText(fullNameBuilder.toString().replace("\n", " "));
       batteryView.setLevel(holder.batteryLevel());
       batteryLevel.setText(String.format(Locale.US, "%d%%", holder.batteryLevel()));
       stealthIndicator.setVisibility(holder.stealthMode() ? VISIBLE : GONE);
@@ -94,5 +103,9 @@ public class SmartCardWidget extends FrameLayout {
 
    public void setOnSettingsClickListener(View.OnClickListener listener) {
       settingsButton.setOnClickListener(listener);
+   }
+
+   public void setOnPhotoClickListener(View.OnClickListener listener) {
+      photoContainer.setOnClickListener(listener);
    }
 }

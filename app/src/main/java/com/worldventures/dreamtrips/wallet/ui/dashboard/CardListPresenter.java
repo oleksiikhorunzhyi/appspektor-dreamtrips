@@ -50,6 +50,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
@@ -172,10 +173,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSmartCardUser(SmartCardUser smartCardUser) {
-      final String photoFileUrl = smartCardUser.userPhoto() != null
-            ? smartCardUser.userPhoto().photoUrl()
-            : "";
-      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUrl);
+      getView().setSmartCardUser(smartCardUser);
    }
 
    private void observeConnectionStatus() {
@@ -266,6 +264,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    void onSettingsChosen() {
       navigator.go(new WalletSettingsPath());
+   }
+
+   void onProfileChosen() {
+      navigator.go(new WalletSettingsProfilePath());
    }
 
    void navigateBack() {
@@ -388,7 +390,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
 
-      void setSmartCardUserAttrs(String fullname, String photoFileUrl);
+      void setSmartCardUser(SmartCardUser smartCardUser);
 
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 

@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorVi
 import org.jetbrains.annotations.Nullable;
 
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import io.techery.janet.helper.JanetActionException;
@@ -64,6 +65,9 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
          return new ConnectionErrorView<>(context, context.getString(R.string.wallet_no_internet_connection), retryAction, cancelAction);
       }
 
+      if (throwable instanceof SocketTimeoutException) {
+         return new ConnectionErrorView<>(context, context.getString(R.string.wallet_connection_timed_out), retryAction, cancelAction);
+      }
       return null;
    }
 }

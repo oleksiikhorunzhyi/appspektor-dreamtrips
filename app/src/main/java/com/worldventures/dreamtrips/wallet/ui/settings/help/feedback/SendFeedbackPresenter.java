@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachm
 import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
-import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
@@ -44,7 +44,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
 
    @Inject Activity activity;
    @Inject Navigator navigator;
-   @Inject SettingsHelpInteractor settingsHelpInteractor;
+   @Inject WalletSettingsInteractor settingsInteractor;
    @Inject FeedbackInteractor feedbackInteractor;
    @Inject Router router;
 
@@ -144,7 +144,7 @@ public class SendFeedbackPresenter extends WalletPresenter<SendFeedbackPresenter
    void sendFeedback(SendFeedbackPath.FeedbackType feedbackType, String text) {
       getView().changeActionSendMenuItemEnabled(false);
 
-      settingsHelpInteractor.walletFeedbackPipe()
+      settingsInteractor.walletFeedbackPipe()
             .createObservable(feedbackType == SendFeedbackPath.FeedbackType.SmartCardFeedback ?
                   new SmartCardFeedbackCommand(text, getImagesAttachments()) :
                   new CustomerSupportFeedbackCommand(text, getImagesAttachments()))

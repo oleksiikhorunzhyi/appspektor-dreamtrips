@@ -20,6 +20,7 @@
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
    <string name="wallet_no_internet_connection">No internet connection</string>
+   <string name="wallet_connection_timed_out">Connection timed out</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
@@ -33,7 +34,7 @@
    <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
    <!--edit profile-->
-   <string name="wallet_wizard__welcom_screen_title">Set Up Smart Card</string>
+   <string name="wallet_wizard__welcom_screen_title">Personalize Smart Card</string>
    <string name="wallet_edit_profile_subtitle">Set the display photo and name you would like on your card.</string>
    <string name="wallet_edit_profile_name_hint">Enter your name</string>
    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
@@ -43,9 +44,14 @@
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
-   <string name="wallet_edit_profile_confirmation_dialog_message">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s</b><br/>]]></string>
+   <string name="wallet_edit_profile_confirmation_dialog_message" formatted="false">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s %s</b><br/>]]></string>
    <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
    <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
+   <string name="wallet_edit_profile_photo_choose">Choose Photo</string>
+   <string name="wallet_edit_profile_photo_not_add">Do not add photo</string>
+   <string name="wallet_edit_profile_photo_cancel">Cancel</string>
+   <string name="wallet_edit_profile_photo_edit">Edit</string>
+   <string name="wallet_edit_profile_photo_empty">No photo</string>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>
@@ -156,6 +162,8 @@
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_unpair_sc">Unpair Smart Card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>
+   <string name="wallet_card_settings_display_options">Display Options</string>
+   <string name="wallet_card_settings_customize_sc_display">Customize your Smart Card\'s display</string>
    <string name="wallet_settings_prepare_remove_pin">A PIN helps protect your payment cards from theft. Are you sure you want to disable PIN?</string>
 
    <string name="wallet_card_settings_documents">Documents</string>
@@ -174,6 +182,7 @@
    <string name="wallet_card_settings_profile_firstname_hint">First name</string>
    <string name="wallet_card_settings_profile_middle_hint">Middle name (optional)</string>
    <string name="wallet_card_settings_profile_lastname_hint">Last name</string>
+   <string name="wallet_card_settings_profile_phone_number">Phone Number</string>
    <string name="wallet_card_settings_profile_phone_hint">Phone (optional)</string>
    <string name="wallet_card_settings_profile_country_code_hint">Code</string>
    <string name="wallet_card_settings_profile_warning">Make sure your name is similar to what\'s on your payment cards.</string>
@@ -536,5 +545,24 @@
    <string name="wallet_settings_help_customer_support_email_us">Email Us</string>
    <string name="wallet_settings_help_customer_support_email_us_description">Have a question or concern?\nWe\'re here to help.</string>
    <string name="wallet_settings_help_customer_support_email_us_hint">How can we assist you?</string>
+
+   <!--Display Options-->
+   <string name="wallet_settings_general_display_customize_sleep_screen">Customize Your Sleep Screen</string>
+   <string name="wallet_settings_general_display_how_screen_appear_on_sc">This is how your screen will appear when your\nSmart Card is off.</string>
+   <string name="wallet_settings_general_display_photo_only">Photo Only</string>
+   <string name="wallet_settings_general_display_photo_first_name">Photo &amp; First Name</string>
+   <string name="wallet_settings_general_display_full_name_phone">Full Name &amp; Phone</string>
+   <string name="wallet_settings_general_display_full_name_only">Full Name Only</string>
+   <string name="wallet_settings_general_display_add_phone_number">Add Phone Number</string>
+   <string name="wallet_settings_general_display_add_photo">Add Photo</string>
+   <string name="wallet_settings_general_display_photo_required">Photo Required</string>
+   <string name="wallet_settings_general_display_phone_required">Phone Required</string>
+   <string name="wallet_settings_general_display_updating">Updating…</string>
+   <string name="wallet_settings_general_display_loading">Loading…</string>
+   <string name="wallet_settings_general_display_changes_saved">The changes have been saved</string>
+   <string name="wallet_settings_general_display_phone_required_title">Phone number required</string>
+   <string name="wallet_settings_general_display_phone_required_message">A phone number is required for this display option.</string>
+   <string name="wallet_settings_general_display_photo_required_title">Photo required</string>
+   <string name="wallet_settings_general_display_photo_required_message">A photo is required for this display option.</string>
 
 </resources>

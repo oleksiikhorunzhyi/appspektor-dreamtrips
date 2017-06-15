@@ -71,10 +71,6 @@ public class FragmentWithFeedDelegate {
       adapter.addItem(item);
    }
 
-   public void addItem(int position, Object item) {
-      adapter.addItem(position, item);
-   }
-
    public void updateItems(final List items) {
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
          @Override
@@ -109,10 +105,6 @@ public class FragmentWithFeedDelegate {
       diffResult.dispatchUpdatesTo(adapter);
    }
 
-   public void updateItem(Object item) {
-      adapter.updateItem(item);
-   }
-
    public List getItems() {
       return adapter.getItems();
    }
@@ -125,11 +117,12 @@ public class FragmentWithFeedDelegate {
       adapter.notifyItemInserted(position);
    }
 
+   public void notifyItemChanged(int index) {
+      adapter.notifyItemChanged(index);
+   }
+
    public void notifyItemChanged(FeedItem feedItem) {
-      if (feedItem == null) {
-         adapter.notifyDataSetChanged();
-         return;
-      }
+      if (feedItem == null) return;
       int size = adapter.getItems().size();
       for (int i = 0; i < size; i++) {
          Object object = adapter.getItems().get(i);

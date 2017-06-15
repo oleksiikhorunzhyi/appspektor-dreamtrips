@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
@@ -43,6 +42,7 @@ import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCe
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -106,14 +106,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      BaseDelegateAdapter adapter = createAdapter();
+      BaseDelegateAdapter adapter = new BaseDelegateAdapter(getContext(), this);
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
          if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().onLoadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyDataSetChanged();
+            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
       if (ViewUtils.isTablet(getContext())) {
@@ -147,19 +147,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void setUser(User user) {
-      if (fragmentWithFeedDelegate.getItems().contains(user)) {
-         fragmentWithFeedDelegate.updateItem(user);
-      } else {
-         fragmentWithFeedDelegate.addItem(0, user);
-         fragmentWithFeedDelegate.notifyItemInserted(0);
-      }
-      //
-      ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
-      profileToolbarTitle.setText(user.getFullName());
-   }
-
-   @Override
    public void updateItem(FeedItem feedItem) {
       fragmentWithFeedDelegate.notifyItemChanged(feedItem);
    }
@@ -185,14 +172,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void notifyUserChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
-   }
-
-   @Override
-   public void refreshFeedItems(List<FeedItem> items) {
-      fragmentWithFeedDelegate.updateItems(items);
-      startAutoplayVideos();
+   public void refreshFeedItems(List<FeedItem> items, User user) {
+      List feedModels = new ArrayList();
+      feedModels.add(user);
+      feedModels.addAll(items);
+      fragmentWithFeedDelegate.updateItems(feedModels);
+         startAutoplayVideos();
+      ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
+      profileToolbarTitle.setText(user.getFullName());
    }
 
    @Override
@@ -236,8 +223,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    protected abstract void initToolbar();
-
-   protected abstract BaseDelegateAdapter createAdapter();
 
    private float calculateOffset() {
       return Math.min(statePaginatedRecyclerViewManager.stateRecyclerView.getScrollOffset() / (float) scrollArea, 1);

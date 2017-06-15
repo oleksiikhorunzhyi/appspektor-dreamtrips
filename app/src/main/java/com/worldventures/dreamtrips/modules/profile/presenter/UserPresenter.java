@@ -164,7 +164,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                   .onSuccess(action -> {
                      view.finishLoading();
                      user.unfriend();
-                     view.notifyUserChanged();
+                     refreshFeedItems();
                   })
                   .onFail(this::onError));
    }
@@ -183,7 +183,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                   .onSuccess(action -> {
                      user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                      view.finishLoading();
-                     view.notifyUserChanged();
+                     refreshFeedItems();
                   })
                   .onFail(this::onError));
    }
@@ -202,7 +202,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                   .onSuccess(action -> {
                      view.finishLoading();
                      user.setRelationship(User.Relationship.FRIEND);
-                     view.notifyUserChanged();
+                     refreshFeedItems();
                   })
                   .onFail(this::onError));
    }
@@ -221,7 +221,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                   .onSuccess(action -> {
                      view.finishLoading();
                      user.setRelationship(User.Relationship.REJECTED);
-                     view.notifyUserChanged();
+                     refreshFeedItems();
                   })
                   .onFail(this::onError));
    }
@@ -237,7 +237,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             .subscribe(command -> {
                if (user.getId() == command.getUserId()) {
                   user.getCircles().add(command.getCircle());
-                  view.notifyUserChanged();
+                  refreshFeedItems();
                }
             });
       profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
@@ -245,7 +245,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             .subscribe(command -> {
                if (user.getId() == command.getUserId()) {
                   user.getCircles().remove(command.getCircle());
-                  view.notifyUserChanged();
+                  refreshFeedItems();
                }
             });
    }

@@ -8,15 +8,14 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
-import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
@@ -58,15 +57,9 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
    }
 
    @Override
-   public void setUser(User user) {
-      super.setUser(user);
+   public void refreshFeedItems(List<FeedItem> items, User user) {
+      super.refreshFeedItems(items, user);
       showChatButtonForFriend(user);
-   }
-
-   @Override
-   public void notifyUserChanged() {
-      super.notifyUserChanged();
-      showChatButtonForFriend(getPresenter().getUser());
    }
 
    public void showChatButtonForFriend(User user) {
@@ -105,11 +98,6 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
    protected void initToolbar() {
       profileToolbar.setNavigationIcon(R.drawable.back_icon);
       profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
-   }
-
-   @Override
-   protected BaseDelegateAdapter createAdapter() {
-      return new IgnoreFirstItemAdapter(getContext(), this);
    }
 
    @Override

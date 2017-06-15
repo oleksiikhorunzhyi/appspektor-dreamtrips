@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -14,13 +13,13 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
-import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
 import java.util.ArrayList;
@@ -66,18 +65,14 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
-   protected BaseDelegateAdapter createAdapter() {
-      return new IgnoreFirstExpandedItemAdapter(getContext(), this);
-   }
-
-   @Override
-   public void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList) {
+   public void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user) {
       List newItems = new ArrayList();
+      newItems.add(user);
       if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
          newItems.add(uploadingPostsList);
       }
       newItems.addAll(items);
-      fragmentWithFeedDelegate.updateItems(items);
+      fragmentWithFeedDelegate.updateItems(newItems);
       startAutoplayVideos();
    }
 

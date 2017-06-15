@@ -127,7 +127,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail((command, e) -> {
                      handleError(command, e);
                      user.setAvatarUploadInProgress(false);
-                     view.notifyUserChanged();
+                     refreshFeedItems();
                   })
             );
    }
@@ -141,7 +141,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail((command, e) -> {
                      handleError(command, e);
                      user.setCoverUploadInProgress(false);
-                     view.notifyUserChanged();
+                     refreshFeedItems();
                   })
             );
    }
@@ -225,7 +225,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       this.user.setAvatar(currentUser.getAvatar());
       this.user.setAvatarUploadInProgress(false);
-      view.notifyUserChanged();
+      refreshFeedItems();
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
@@ -236,7 +236,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
       this.user.setCoverUploadInProgress(false);
-      view.notifyUserChanged();
+      refreshFeedItems();
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
@@ -282,7 +282,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       TrackingHelper.profileUploadStart(getAccountUserId());
       profileInteractor.uploadAvatarPipe().send(new UploadAvatarCommand(fileThumbnail));
       user.setAvatarUploadInProgress(true);
-      view.notifyUserChanged();
+      refreshFeedItems();
    }
 
    private void onCoverCropped(File croppedFile, String errorMsg) {
@@ -290,7 +290,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
          TrackingHelper.profileUploadStart(getAccountUserId());
          profileInteractor.uploadBackgroundPipe().send(new UploadBackgroundCommand(croppedFile.getPath()));
          user.setCoverUploadInProgress(true);
-         view.notifyUserChanged();
+         refreshFeedItems();
       } else {
          view.informUser(errorMsg);
       }
@@ -364,7 +364,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Override
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads));
+      view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads), user);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -405,6 +405,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       void cropImage(SocialCropImageManager socialCropImageManager, String path);
 
-      void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList);
+      void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user);
    }
 }

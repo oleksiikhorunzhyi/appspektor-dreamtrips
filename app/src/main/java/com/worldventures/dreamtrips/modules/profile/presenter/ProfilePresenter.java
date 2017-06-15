@@ -4,15 +4,12 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
@@ -23,21 +20,18 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPres
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -45,16 +39,10 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
       implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
-   protected U user;
-
+   @State protected U user;
    @State ArrayList<FeedItem> feedItems;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-
-   @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
-   @Inject TripImagesInteractor tripImagesInteractor;
-   @Inject PostsInteractor postsInteractor;
    @Inject TranslationDelegate translationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
@@ -81,7 +69,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    public void takeView(T view) {
       super.takeView(view);
       if (feedItems.size() != 0) {
-         view.refreshFeedItems(feedItems);
+         refreshFeedItems();
       }
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       attachUserToView(user);
@@ -103,7 +91,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    private void attachUserToView(U user) {
       this.user = user;
-      view.setUser(this.user);
+      refreshFeedItems();
    }
 
    @Override
@@ -234,7 +222,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems);
+      view.refreshFeedItems(feedItems, user);
    }
 
    @Override
@@ -278,15 +266,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
       void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
 
-      void notifyUserChanged();
-
-      void setUser(User user);
-
       void startLoading();
 
       void finishLoading();
 
-      void refreshFeedItems(List<FeedItem> items);
+      void refreshFeedItems(List<FeedItem> items, User user);
 
       void updateLoadingStatus(boolean loading, boolean noMoreElements);
    }

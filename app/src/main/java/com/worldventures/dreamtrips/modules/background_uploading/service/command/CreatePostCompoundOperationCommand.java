@@ -81,10 +81,7 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
       PostBody.Type type = obtainType();
       return ImmutablePostCompoundOperationModel.builder()
             .id(resolveId())
-            .progress(0)
             .creationDate(new Date())
-            .millisLeft(0)
-            .averageUploadSpeed(0)
             .type(type)
             .state(CompoundOperationState.SCHEDULED)
             .body(createBody(type))

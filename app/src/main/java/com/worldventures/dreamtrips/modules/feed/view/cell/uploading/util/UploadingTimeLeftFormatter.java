@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
 public class UploadingTimeLeftFormatter {
 
@@ -24,9 +25,9 @@ public class UploadingTimeLeftFormatter {
    }
 
    public String format(long durationMillis) {
-      if (durationMillis == 0) {
-         return context.getString(R.string.uploading_post_time_left_posting);
-      }
+      if (durationMillis == PostCompoundOperationModel.TIME_LEFT_INITIAL_VALUE) return "";
+      if (durationMillis == 0) return context.getString(R.string.uploading_post_time_left_posting);
+
       long totalSecondsCount = durationMillis / 1000;
       long totalMinutesCount = totalSecondsCount / 60;
       long totalHoursCount = totalMinutesCount / 60;

@@ -215,6 +215,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    private void refreshFeed(List<FeedItem> newFeedItems) {
       feedItems.clear();
       feedItems.addAll(newFeedItems);
+      refreshFeedItems();
    }
 
    private void subscribeRefreshFeeds() {

@@ -176,8 +176,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       List feedModels = new ArrayList();
       feedModels.add(user);
       feedModels.addAll(items);
-      fragmentWithFeedDelegate.updateItems(feedModels);
-         startAutoplayVideos();
+      fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.stateRecyclerView);
+      startAutoplayVideos();
       ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
       profileToolbarTitle.setText(user.getFullName());
    }

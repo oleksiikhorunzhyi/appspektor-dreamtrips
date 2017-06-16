@@ -311,7 +311,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       processSuggestedPhotosItems(suggestedPhotos, feedModels);
       processUploadsInProgressItems(uploadingPostsList, feedModels);
       processFeedItems(feedItems, feedModels);
-      fragmentWithFeedDelegate.updateItems(feedModels);
+      fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
       startAutoplayVideos();
    }
 

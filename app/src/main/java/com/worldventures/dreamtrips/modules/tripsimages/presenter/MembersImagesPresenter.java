@@ -116,6 +116,7 @@ public class MembersImagesPresenter extends MembersImagesBasePresenter<GetMember
       List<Photo> lastPhotos = memberImagesRefresher.getLastPhotos();
       if (lastPhotos.size() < getPageSize()) {
          photos.addAll(0, lastPhotos);
+         db.savePhotoEntityList(type, userId, photos);
          view.addAll(0, new ArrayList<>(lastPhotos));
          restartImageRefreshing();
       } else {

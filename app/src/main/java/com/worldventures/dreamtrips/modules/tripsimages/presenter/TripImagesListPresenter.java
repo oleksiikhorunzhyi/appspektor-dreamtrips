@@ -32,9 +32,8 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
 
-public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View,
-      C extends CommandWithTripImages> extends Presenter<VT>
-      implements FeedEntityHolder {
+public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View, C extends CommandWithTripImages>
+      extends Presenter<VT> implements FeedEntityHolder {
 
    private static final int PER_PAGE = 15;
    private static final int VISIBLE_THRESHOLD = 5;
@@ -155,7 +154,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          if (newPhotos.size() == 0) {
             lastPageReached = true;
          }
-         savePhotosAndUpdateView(photos);
+         savePhotosAndUpdateView(newPhotos);
       });
    }
 

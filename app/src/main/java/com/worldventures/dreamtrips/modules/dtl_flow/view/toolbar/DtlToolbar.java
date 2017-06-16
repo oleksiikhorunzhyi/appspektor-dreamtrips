@@ -76,6 +76,9 @@ public class DtlToolbar extends LinearLayout {
       if (TextUtils.isEmpty(searchQuery)) {
          merchantSearchInput.setHint(defaultEmptySearchCaption);
       } else {
+         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
+            searchQuery = defaultEmptySearchCaption;
+         }
          merchantSearchInput.setHint(searchQuery);
       }
       locationSearchInput.setText(locationTitle);

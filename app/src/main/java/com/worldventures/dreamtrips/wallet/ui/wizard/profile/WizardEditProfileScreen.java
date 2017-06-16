@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -67,6 +68,12 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       binding = DataBindingUtil.bind(this);
       binding.setOnAvatarClick(v -> showDialog());
       binding.setOnNextClick(v -> presenter.setupUserData());
+      binding.setOnEditTextFocusChange((view, hasFocus) -> {
+         if (hasFocus) {
+            EditText editText = (EditText) view;
+            editText.setSelection(editText.length());
+         }
+      });
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       binding.toolbar.setNavigationOnClickListener(v -> navigateButtonClick());

@@ -18,6 +18,11 @@
             name="onAvatarClick"
             type="android.view.View.OnClickListener"
             />
+
+      <variable
+            name="onEditTextFocusChange"
+            type="View.OnFocusChangeListener"
+            />
    </data>
 
    <com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen
@@ -145,6 +150,7 @@
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@+id/text_description2"
                app:layout_constraintVertical_chainStyle="packed"
+               app:onFocusChangeListener="@{onEditTextFocusChange}"
                tools:text="Shirley"
                />
 
@@ -160,6 +166,7 @@
                app:layout_constraintRight_toRightOf="parent"
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@+id/first_name"
+               app:onFocusChangeListener="@{onEditTextFocusChange}"
                tools:text="Shirley Temple"
                />
 
@@ -188,6 +195,7 @@
                app:layout_constraintRight_toRightOf="parent"
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@+id/last_name"
+               app:onEditTextFocusChange="@{onEditTextFocusChange}"
                app:profile="@{profile}"
                />
 

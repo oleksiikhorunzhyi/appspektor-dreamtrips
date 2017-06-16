@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -65,6 +66,12 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       binding = DataBindingUtil.bind(this);
       binding.setOnAvatarClick(v -> showDialog());
       binding.setProfile(profileViewModel);
+      binding.setOnEditTextFocusChange((view, hasFocus) -> {
+         if (hasFocus) {
+            EditText editText = (EditText) view;
+            editText.setSelection(editText.length());
+         }
+      });
       binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
       binding.toolbar.setOnMenuItemClickListener(item -> {

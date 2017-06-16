@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       >
 
@@ -9,6 +10,11 @@
       <variable
             name="profile"
             type="com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel"
+            />
+
+      <variable
+            name="onEditTextFocusChange"
+            type="android.view.View.OnFocusChangeListener"
             />
    </data>
 
@@ -42,6 +48,7 @@
             android:hint="@string/wallet_card_settings_profile_country_code_hint"
             android:maxLength="5"
             android:text="@={profile.phoneCode}"
+            app:onFocusChangeListener="@{onEditTextFocusChange}"
             tools:text="1"
             />
 
@@ -57,6 +64,7 @@
             android:imeOptions="actionDone"
             android:maxLength="12"
             android:text="@={profile.phoneNumber}"
+            app:onFocusChangeListener="@{onEditTextFocusChange}"
             tools:ignore="TextFields"
             />
 

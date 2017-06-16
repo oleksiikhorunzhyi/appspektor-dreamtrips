@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
-import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +38,6 @@ public class VideoAttachmentView extends FrameLayout {
 
    private Video video;
 
-   @Inject PickerVideoDurationFormatter pickerVideoDurationFormatter;
    @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject Application application;
 

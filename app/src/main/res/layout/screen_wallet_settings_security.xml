@@ -43,7 +43,7 @@
             <TextView
                   style="@style/SettingsText.Secondary"
                   android:layout_below="@+id/lock_card"
-                  android:text="@string/wallet_card_settings_requires_pin_entry_to_unlock"
+                  android:text="@string/wallet_card_settings_lock_card_description"
                   />
 
             <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher

@@ -72,7 +72,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
          newItems.add(uploadingPostsList);
       }
       newItems.addAll(items);
-      fragmentWithFeedDelegate.updateItems(newItems);
+      fragmentWithFeedDelegate.updateItems(newItems, statePaginatedRecyclerViewManager.stateRecyclerView);
       startAutoplayVideos();
    }
 

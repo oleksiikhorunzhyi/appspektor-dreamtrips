@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.util.ListUpdateCallback;
+import android.support.v7.widget.RecyclerView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
@@ -71,7 +73,7 @@ public class FragmentWithFeedDelegate {
       adapter.addItem(item);
    }
 
-   public void updateItems(final List items) {
+   public void updateItems(final List items, RecyclerView recyclerView) {
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
          @Override
          public int getOldListSize() {
@@ -102,7 +104,11 @@ public class FragmentWithFeedDelegate {
          }
       });
       adapter.setItemsNoNotify(items);
-      diffResult.dispatchUpdatesTo(adapter);
+      UpdateCallback updateCallback = new UpdateCallback();
+      diffResult.dispatchUpdatesTo(updateCallback);
+      if (updateCallback.firstInsertPosition == 0) {
+         recyclerView.scrollToPosition(updateCallback.firstInsertPosition);
+      }
    }
 
    public List getItems() {
@@ -289,5 +295,36 @@ public class FragmentWithFeedDelegate {
             .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
+   }
+
+   /*
+    * Copy of default DiffUtil implementation with ability
+    * to track and save insert position
+    */
+   private class UpdateCallback implements ListUpdateCallback {
+      private int firstInsertPosition = -1;
+
+      @Override
+      public void onInserted(int position, int count) {
+         if (firstInsertPosition < position) {
+            firstInsertPosition = position;
+         }
+         adapter.notifyItemRangeInserted(position, count);
+      }
+
+      @Override
+      public void onRemoved(int position, int count) {
+         adapter.notifyItemRangeRemoved(position, count);
+      }
+
+      @Override
+      public void onMoved(int fromPosition, int toPosition) {
+         adapter.notifyItemMoved(fromPosition, toPosition);
+      }
+
+      @Override
+      public void onChanged(int position, int count, Object payload) {
+         adapter.notifyItemRangeChanged(position, count, payload);
+      }
    }
 }

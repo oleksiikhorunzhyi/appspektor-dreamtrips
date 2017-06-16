@@ -123,17 +123,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       subscribeToLikesChanges();
       subscribeToBackgroundUploadingOperations();
       translationDelegate.onTakeView(view, feedItems);
-
-      if (feedItems.size() != 0) {
-         refreshFeedItems();
-      }
+      if (feedItems.size() != 0) refreshFeedItems();
+      refreshFeed();
    }
 
    @Override
    public void onResume() {
       super.onResume();
       analyticsInteractor.analyticsActionPipe().send(new ViewFeedAction());
-      refreshFeed();
    }
 
    @Override

@@ -74,7 +74,7 @@ internal fun createPostBodyWithScheduledVideo() =
             .origin(CreateEntityBundle.Origin.FEED)
             .videoPath("file://blabla")
             .size(1000L)
-            .aspectRatio(1.7)
+            .durationInSeconds(100)
             .state(PostBody.State.SCHEDULED)
             .build()
 
@@ -85,7 +85,7 @@ internal fun createPostBodyWithUploadedVideo() =
             .origin(CreateEntityBundle.Origin.FEED)
             .videoPath("file://blabla")
             .size(1000L)
-            .aspectRatio(1.7)
+            .durationInSeconds(100)
             .uploadId("fsdafsdfsfdsadf")
             .state(PostBody.State.UPLOADED)
             .build()

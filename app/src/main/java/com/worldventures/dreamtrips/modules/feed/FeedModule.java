@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -60,8 +61,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsC
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
-import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
-import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
@@ -234,11 +233,5 @@ public class FeedModule {
    @Singleton
    FeedEntityHolderDelegate provideFeedItemsUpdateDelegate(@ForApplication Injector injector) {
       return new FeedEntityHolderDelegate(injector);
-   }
-
-   @Provides
-   @Singleton
-   PickerVideoDurationFormatter provideVideoDurationFormatter() {
-      return new PickerVideoDurationFormatter();
    }
 }

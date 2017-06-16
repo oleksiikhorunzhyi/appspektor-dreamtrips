@@ -28,8 +28,6 @@ class DurationFormatterSpec : Spek({
 
 }) {
    companion object  {
-      val durationFormatter: PickerVideoDurationFormatter = PickerVideoDurationFormatter()
-
       fun format(seconds: Int): String {
          return format(0, seconds)
       }
@@ -40,7 +38,7 @@ class DurationFormatterSpec : Spek({
 
       fun format(hours: Int, minutes: Int, seconds: Int): String {
          val millis = MutablePeriod(hours, minutes, seconds, 0).toPeriod().toStandardDuration().millis
-         return durationFormatter.getFormattedDuration(millis)
+         return PickerVideoDurationFormatter.getFormattedDuration(millis)
       }
    }
 }

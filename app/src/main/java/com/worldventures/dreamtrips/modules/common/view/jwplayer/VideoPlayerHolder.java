@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.ViewGroup;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
-import com.longtailvideo.jwplayer.core.PlayerState;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 
 public class VideoPlayerHolder {
@@ -12,22 +11,22 @@ public class VideoPlayerHolder {
    private final DtFullscreenHandler dtFullscreenHandler;
 
    private JWPlayerView jwPlayerView;
-   private VideoAttachmentView container;
+   private VideoAttachmentView videoAttachmentView;
 
    public VideoPlayerHolder(Activity activity, BackStackDelegate backStackDelegate) {
       this.dtFullscreenHandler = new DtFullscreenHandler(activity, backStackDelegate, this);
    }
 
-   public void init(JWPlayerView jwPlayerView, VideoAttachmentView container) {
-      this.container = container;
+   public void init(JWPlayerView jwPlayerView, VideoAttachmentView videoAttachmentView) {
+      this.videoAttachmentView = videoAttachmentView;
       this.jwPlayerView = jwPlayerView;
 
       jwPlayerView.setFullscreenHandler(dtFullscreenHandler);
    }
 
    public void attachToContainer() {
-      if (playerExists() && container != null) {
-         container.addView(jwPlayerView);
+      if (playerExists() && videoAttachmentView != null) {
+         videoAttachmentView.getVideoContainer().addView(jwPlayerView);
       }
    }
 
@@ -38,20 +37,20 @@ public class VideoPlayerHolder {
    }
 
    public void dettachFromContainer() {
-      if (playerExists() && container != null) {
-         container.removeView(jwPlayerView);
+      if (playerExists() && videoAttachmentView != null) {
+         videoAttachmentView.getVideoContainer().removeView(jwPlayerView);
       }
    }
 
    public void clearCurrent() {
-      if (container != null) {
+      if (videoAttachmentView != null) {
          jwPlayerView = null;
-         container.clearResources();
+         videoAttachmentView.clearResources();
       }
    }
 
    public ViewGroup getContainer() {
-      return container;
+      return videoAttachmentView.getVideoContainer();
    }
 
    public JWPlayerView getJwPlayerView() {

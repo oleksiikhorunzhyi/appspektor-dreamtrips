@@ -42,9 +42,10 @@ public class VideoAttachmentView extends FrameLayout {
    @Inject Application application;
 
    @InjectView(R.id.videoThumbnail) SimpleDraweeView videoThumbnail;
+   @InjectView(R.id.videoThumbnailContainer) FrameLayout videoThumbnailContainer;
+   @InjectView(R.id.videoContainer) FrameLayout videoContainer;
 
    private JWPlayerView playerView;
-   private boolean isPlayerDestroyed;
 
    public VideoAttachmentView(Context context) {
       this(context, null);
@@ -65,6 +66,7 @@ public class VideoAttachmentView extends FrameLayout {
 
    public void setup(Video video) {
       setVisibility(VISIBLE);
+      videoThumbnailContainer.setVisibility(VISIBLE);
       this.video = video;
       ViewUtils.runTaskAfterMeasure(this, () -> {
          resizeVideoHolder();
@@ -86,14 +88,9 @@ public class VideoAttachmentView extends FrameLayout {
 
    public void clearResources() {
       if (playerView != null) {
+         videoThumbnailContainer.setVisibility(VISIBLE);
          playerView.stop();
-         playerView.onPause();
-         if (!isPlayerDestroyed) {
-            playerView.onDestroy();
-            isPlayerDestroyed = true;
-         }
-         playerView.setVisibility(GONE);
-         removeView(playerView);
+         videoContainer.removeView(playerView);
          application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
          playerView = null;
       }
@@ -131,6 +128,10 @@ public class VideoAttachmentView extends FrameLayout {
       videoPlayerHolder.play();
    }
 
+   public FrameLayout getVideoContainer() {
+      return videoContainer;
+   }
+
    private void setupVideoPlayer() {
       playerView = new JWPlayerView(getContext(), new PlayerConfig.Builder()
             .mute(true)
@@ -138,6 +139,7 @@ public class VideoAttachmentView extends FrameLayout {
             .build());
 
       playerView.setSkin(SKIN_URL);
+      playerView.addOnFirstFrameListener(i -> videoThumbnailContainer.setVisibility(GONE));
       playerView.addOnErrorListener(new VideoPlayerEvents.OnErrorListenerV2() {
          @Override
          public void onError(ErrorEvent errorEvent) {
@@ -146,7 +148,6 @@ public class VideoAttachmentView extends FrameLayout {
       });
       playerView.addOnSetupErrorListener(e -> clearResources());
       application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
-      isPlayerDestroyed = false;
    }
 
    private List<PlaylistItem> preparePlaylist() {
@@ -177,9 +178,8 @@ public class VideoAttachmentView extends FrameLayout {
       @Override
       public void onActivityDestroyed(Activity activity) {
          super.onActivityDestroyed(activity);
-         if (playerViewIsActive(activity) && !isPlayerDestroyed) {
-               playerView.onDestroy();
-            isPlayerDestroyed = true;
+         if (playerViewIsActive(activity)) {
+            playerView.onDestroy();
          }
       }
 

@@ -7,28 +7,31 @@
       tools:layout_height="200dp"
       >
 
-   <com.facebook.drawee.view.SimpleDraweeView
-         android:id="@+id/videoThumbnail"
+   <FrameLayout
+         android:id="@+id/videoContainer"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         tools:background="@drawable/dream_trips_logo"
          />
 
-   <ImageView
-         android:id="@+id/play"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:src="@drawable/ic_video_play"
-         android:layout_gravity="center"
-         />
+   <FrameLayout
+         android:id="@+id/videoThumbnailContainer"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-   <TextView
-         android:id="@+id/length"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_gravity="bottom|end"
-         android:padding="@dimen/spacing_small"
-         tools:text="11:01"
-         />
+      <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/videoThumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:background="@drawable/dream_trips_logo"
+            />
 
+      <ImageView
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_video_play"
+            />
+   </FrameLayout>
 </FrameLayout>

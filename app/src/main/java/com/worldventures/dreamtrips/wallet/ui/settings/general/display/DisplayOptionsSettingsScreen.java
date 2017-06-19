@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryDialogEr
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleSnackbarSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -135,7 +135,7 @@ public class DisplayOptionsSettingsScreen extends WalletConstraintLayout<Display
    @Override
    public OperationView<SaveHomeDisplayTypeCommand> provideSaveDisplayTypeOperationView() {
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_general_display_updating, false),
-            new SimpleSnackbarSuccessView<>(wrapperPager, R.string.wallet_settings_general_display_changes_saved),
+            new SimpleToastSuccessView<>(getContext(), R.string.wallet_settings_general_display_changes_saved),
             ErrorViewFactory.<SaveHomeDisplayTypeCommand>builder()
                   .addProvider(getUserRequiredInfoMissingDialogProvider(
                         SaveHomeDisplayTypeCommand.MissingUserPhoneException.class,

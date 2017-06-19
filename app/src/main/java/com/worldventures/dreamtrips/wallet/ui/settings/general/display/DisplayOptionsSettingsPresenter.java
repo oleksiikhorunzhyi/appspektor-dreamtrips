@@ -68,6 +68,7 @@ public class DisplayOptionsSettingsPresenter extends WalletPresenter<DisplayOpti
             .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SetHomeDisplayTypeAction>provideSaveDisplayTypeOperationView())
+                  .onSuccess(command -> goBack())
                   .create()
             );
    }

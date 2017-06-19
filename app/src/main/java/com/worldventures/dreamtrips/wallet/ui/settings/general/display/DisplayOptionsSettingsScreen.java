@@ -15,7 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveHomeDisplayTypeCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletConstraintLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.DialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -38,7 +38,7 @@ import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import me.relex.circleindicator.CircleIndicator;
 
-public class DisplayOptionsSettingsScreen extends WalletConstraintLayout<DisplayOptionsSettingsPresenter.Screen, DisplayOptionsSettingsPresenter, DisplayOptionsSettingsPath> implements DisplayOptionsSettingsPresenter.Screen {
+public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOptionsSettingsPresenter.Screen, DisplayOptionsSettingsPresenter, DisplayOptionsSettingsPath> implements DisplayOptionsSettingsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.wrapper_pager) ViewGroup wrapperPager;

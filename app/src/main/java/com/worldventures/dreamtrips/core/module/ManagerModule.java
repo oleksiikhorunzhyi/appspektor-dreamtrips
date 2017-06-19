@@ -60,6 +60,7 @@ import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedS
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
@@ -415,5 +416,11 @@ public class ManagerModule {
    @Singleton
    FeedItemsVideoProcessingStatusInteractor provideFeedItemsVideoProcessingStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FeedItemsVideoProcessingStatusInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   MediaMetadataInteractor provideMediaMetadataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new MediaMetadataInteractor(sessionActionPipeCreator);
    }
 }

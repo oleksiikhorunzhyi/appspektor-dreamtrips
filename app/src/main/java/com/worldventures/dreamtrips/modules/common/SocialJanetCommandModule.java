@@ -81,6 +81,7 @@ import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedba
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
@@ -264,6 +265,7 @@ import dagger.Module;
       CreateVideoCommand.class,
       MigrateFromCachedEntity.class,
       FeedItemsVideoProcessingStatusCommand.class,
+      GetVideoMetadataCommand.class,
       MediaAttachmentPrepareCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -327,7 +328,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncSmartCard()).create());
    }
 
-   private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
+   private void cardsLoaded(List<Record> loadedRecords, @Nullable String defaultRecordId) {
       this.records = loadedRecords;
       getView().setCardsCount(null != loadedRecords ? loadedRecords.size() : 0);
       List<BaseViewModel> cardModels = cardListStackConverter.mapToViewModel(loadedRecords, defaultRecordId);

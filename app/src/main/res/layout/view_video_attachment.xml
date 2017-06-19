@@ -27,11 +27,19 @@
             />
 
       <ImageView
-            android:id="@+id/play"
+            android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/ic_video_play"
+            />
+
+      <ProgressBar
+            android:id="@+id/playProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
             />
    </FrameLayout>
 </FrameLayout>

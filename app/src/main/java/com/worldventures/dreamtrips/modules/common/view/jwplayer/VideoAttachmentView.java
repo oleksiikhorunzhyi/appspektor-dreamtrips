@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.longtailvideo.jwplayer.JWPlayerView;
@@ -43,6 +45,8 @@ public class VideoAttachmentView extends FrameLayout {
 
    @InjectView(R.id.videoThumbnail) SimpleDraweeView videoThumbnail;
    @InjectView(R.id.videoThumbnailContainer) FrameLayout videoThumbnailContainer;
+   @InjectView(R.id.playButton) ImageView playButton;
+   @InjectView(R.id.playProgress) ProgressBar playProgressBar;
    @InjectView(R.id.videoContainer) FrameLayout videoContainer;
 
    private JWPlayerView playerView;
@@ -110,7 +114,7 @@ public class VideoAttachmentView extends FrameLayout {
       showVideo();
    }
 
-   @OnClick(R.id.play)
+   @OnClick(R.id.playButton)
    public void onPlay() {
       showVideo();
    }
@@ -121,6 +125,8 @@ public class VideoAttachmentView extends FrameLayout {
          videoPlayerHolder.clearCurrent();
       }
 
+      playProgressBar.setVisibility(VISIBLE);
+      playButton.setVisibility(GONE);
       setupVideoPlayer();
 
       videoPlayerHolder.init(playerView, this);
@@ -139,7 +145,12 @@ public class VideoAttachmentView extends FrameLayout {
             .build());
 
       playerView.setSkin(SKIN_URL);
-      playerView.addOnFirstFrameListener(i -> videoThumbnailContainer.setVisibility(GONE));
+      playerView.addOnFirstFrameListener(i -> {
+         videoThumbnailContainer.setVisibility(GONE);
+         playButton.setVisibility(VISIBLE);
+         playProgressBar.setVisibility(GONE);
+      });
+      playerView.addOnCompleteListener(() -> videoThumbnailContainer.setVisibility(VISIBLE));
       playerView.addOnErrorListener(new VideoPlayerEvents.OnErrorListenerV2() {
          @Override
          public void onError(ErrorEvent errorEvent) {

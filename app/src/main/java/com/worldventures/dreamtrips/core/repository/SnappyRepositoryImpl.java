@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
+import com.worldventures.dreamtrips.modules.version_check.model.Configuration;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
@@ -437,13 +437,13 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
-   public void saveAppUpdateRequirement(UpdateRequirement updateRequirement) {
-      act(db -> db.put(UPDATE_REQUIREMENT, updateRequirement));
+   public void saveAppUpdateRequirement(Configuration updateRequirement) {
+      act(db -> db.put(CONFIGURATION, updateRequirement));
    }
 
    @Override
-   public UpdateRequirement getAppUpdateRequirement() {
-      return actWithResult(db -> db.getObject(UPDATE_REQUIREMENT, UpdateRequirement.class)).orNull();
+   public Configuration getAppUpdateRequirement() {
+      return actWithResult(db -> db.getObject(CONFIGURATION, Configuration.class)).orNull();
    }
 
    @Override

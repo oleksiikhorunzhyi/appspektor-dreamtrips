@@ -24,6 +24,8 @@ import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
+import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.List;
@@ -44,6 +46,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject MediaInteractor mediaInteractor;
+   @Inject VersionCheckInteractor versionCheckInteractor;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
@@ -53,6 +56,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    private boolean mediaPickerProcessingImages;
    private int locallyProcessingImagesCount;
+   private int videoLengthLimit;
 
    public CreateEntityPresenter(CreateEntityBundle.Origin origin) {
       this.origin = origin;
@@ -65,6 +69,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
          view.disableImagePicker();
          view.disableButton();
       }
+      subscribeToVideoLength();
       postsInteractor.createPostCompoundOperationPipe()
             .observeSuccess()
             .map(Command::getResult)
@@ -102,7 +107,15 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void showMediaPicker() {
-      view.showMediaPicker(!cachedCreationItems.isEmpty());
+      view.showMediaPicker(!cachedCreationItems.isEmpty(), videoLengthLimit);
+   }
+
+   private void subscribeToVideoLength() {
+      versionCheckInteractor.configurationCommandActionPipe()
+            .createObservableResult(new ConfigurationCommand())
+            .compose(bindViewToMainComposer())
+            .map(ConfigurationCommand::getVideoMaxLength)
+            .subscribe(maxLength -> videoLengthLimit = maxLength);
    }
 
    private void createTextualPost(PostCompoundOperationModel postCompoundOperationModel) {
@@ -234,6 +247,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
       void disableImagePicker();
 
-      void showMediaPicker(boolean picturesSelected);
+      void showMediaPicker(boolean picturesSelected, int videoPickerLimit);
    }
 }

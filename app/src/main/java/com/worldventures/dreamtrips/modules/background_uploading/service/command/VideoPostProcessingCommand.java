@@ -52,7 +52,7 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
                      return Observable.empty();
                }
             })
-            .doOnNext(textualPost -> Timber.d("[New Post Creation] Videos uploaded"))
+            .doOnNext(body -> sendAnalytics())
             .map(updateBody -> compoundOperationObjectMutator.videoUploaded(postOperationModel, updateBody))
             .doOnNext(this::notifyCompoundCommandChanged);
    }
@@ -70,7 +70,6 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
    protected void notifyCompoundCommandFinished(PostCompoundOperationModel<PostWithVideoAttachmentBody> postOperationModel) {
       backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
       pingAssetStatusInteractor.launchUpdatingVideoProcessingPipe().send(new LaunchUpdatingVideoProcessingCommand());
-      sendAnalytics();
    }
 
    @Override

@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
-import com.worldventures.dreamtrips.modules.version_check.service.command.VersionCheckCommand;
+import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 
 import javax.inject.Inject;
 
@@ -58,11 +58,12 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    private void subscribeToAppVersionUpdates() {
-      versionCheckInteractor.versionCheckPipe().observeWithReplay()
+      versionCheckInteractor.configurationCommandActionPipe()
+            .observeWithReplay()
             .compose(bindUntilPauseIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<VersionCheckCommand>()
-                  .onProgress((command, integer) -> processUpdateRequirement(command.getUpdateRequirement()))
-                  .onSuccess(command -> processUpdateRequirement(command.getUpdateRequirement()))
+            .subscribe(new ActionStateSubscriber<ConfigurationCommand>()
+                  .onProgress((command, integer) -> processUpdateRequirement(command.getResult().getUpdateRequirement()))
+                  .onSuccess(command -> processUpdateRequirement(command.getResult().getUpdateRequirement()))
                   .onFail((versionCheckAction, throwable) ->
                         Timber.w(throwable, "Could not check latest app version")));
    }

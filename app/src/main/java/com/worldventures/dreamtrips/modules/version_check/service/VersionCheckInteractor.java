@@ -1,20 +1,37 @@
 package com.worldventures.dreamtrips.modules.version_check.service;
 
-import com.worldventures.dreamtrips.modules.version_check.service.command.VersionCheckCommand;
+import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.modules.version_check.service.command.LoadConfigurationCommand;
 
 import io.techery.janet.ActionPipe;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 public class VersionCheckInteractor {
 
-   private ActionPipe<VersionCheckCommand> versionCheckActionPipe;
+   private ActionPipe<LoadConfigurationCommand> versionCheckActionPipe;
+   private ActionPipe<ConfigurationCommand> configurationCommandActionPipe;
 
    public VersionCheckInteractor(Janet janet) {
-      versionCheckActionPipe = janet.createPipe(VersionCheckCommand.class, Schedulers.io());
+      versionCheckActionPipe = janet.createPipe(LoadConfigurationCommand.class, Schedulers.io());
+      configurationCommandActionPipe = janet.createPipe(ConfigurationCommand.class, Schedulers.io());
+      subscribeToUpdates();
    }
 
-   public ActionPipe<VersionCheckCommand> versionCheckPipe() {
+   public ActionPipe<LoadConfigurationCommand> versionCheckPipe() {
       return versionCheckActionPipe;
+   }
+
+   public ActionPipe<ConfigurationCommand> configurationCommandActionPipe() {
+      return configurationCommandActionPipe;
+   }
+
+   private void subscribeToUpdates() {
+      versionCheckActionPipe.observeSuccess()
+            .map(Command::getResult)
+            .subscribe(configuration -> {
+               configurationCommandActionPipe.send(new ConfigurationCommand(configuration));
+            });
    }
 }

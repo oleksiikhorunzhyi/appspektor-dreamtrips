@@ -35,20 +35,8 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
       rootView.setClickable(false);
       inject(photoPickerLayout);
       setupPicker();
-      int pickLimit = 1;
-      if (getArgs() != null) {
-         pickLimit = getArgs().getPickLimit();
-      }
-      photoPickerLayout.showPanel(pickLimit > 1, pickLimit, getArgs().isVideoPickingEnabled());
-      photoPickerLayout.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
-         @Override
-         public void onClosed() {
-         }
-
-         @Override
-         public void onOpened() {
-         }
-      });
+      photoPickerLayout.showPanel(getArgs().getPickLimit() > 1, getArgs().getPickLimit(),
+            getArgs().getVideoPickLimit(), getArgs().isVideoPickingEnabled());
       photoPickerLayout.setTransparentView(transparentView);
 
       photoPickerLayout.setOnDoneClickListener((chosenImages, video, type)
@@ -77,7 +65,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
 
    @Override
    protected MediaPickerPresenter createPresenter(Bundle savedInstanceState) {
-      return new MediaPickerPresenter(getArgs().getRequestId());
+      return new MediaPickerPresenter(getArgs().getRequestId(), getArgs().getVideoPickLimit());
    }
 
    private boolean onBackPressed() {

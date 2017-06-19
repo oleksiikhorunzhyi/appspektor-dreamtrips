@@ -4,17 +4,20 @@ import android.util.Pair;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
+import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,26 +32,52 @@ import rx.internal.util.RxThreadFactory;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.modules.common.util.MediaPickerConstants.MAX_VIDEO_DURATION_SEC;
 import static com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment.PHOTOS_TYPE_FACEBOOK;
 
 public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    private static final String THREAD_NAME_PREFIX = "MEDIA_PICKER_THREAD";
 
    private int requestId;
+   private int videoLengthLimit;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject MediaInteractor mediaInteractor;
    @Inject DrawableUtil drawableUtil;
 
-   public MediaPickerPresenter(int requestId) {
+   public MediaPickerPresenter(int requestId, int videoLengthLimit) {
       this.requestId = requestId;
+      this.videoLengthLimit = videoLengthLimit;
    }
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      subsbribeToPhotoAttachments();
+      subscribeToVideoAttachment(view);
+   }
+
+   private void subscribeToVideoAttachment(View view) {
+      mediaInteractor.videoCapturedPipe()
+            .observeSuccess()
+            .map(VideoCapturedCommand::getUri)
+            .flatMap(uri -> mediaInteractor.getVideoDurationPipe()
+                  .createObservableResult(new GetVideoDurationCommand(uri)))
+            .compose(bindViewToMainComposer())
+            .subscribe(getDurationCommand -> {
+               VideoPickerModel videoPickerModel = new VideoPickerModel(getDurationCommand.getUri().getPath(),
+                     getDurationCommand.getResult());
+               int videoDurationSec = (int) (videoPickerModel.getDuration() / 1000);
+               if (videoDurationSec > videoLengthLimit) {
+                  view.informUser(context.getString(R.string.picker_video_duration_limit, videoLengthLimit));
+               } else {
+                  mediaPickerEventDelegate.post(new MediaAttachment(videoPickerModel, MediaAttachment.Source.CAMERA, requestId));
+                  closeMediaPicker();
+               }
+            }, throwable -> Timber.e(throwable, "Could not load video"));
+   }
+
+   private void subsbribeToPhotoAttachments() {
       mediaInteractor.imageCapturedPipe()
             .observeSuccess()
             .map(imageCapturedCommand -> {
@@ -61,24 +90,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
             .subscribe(photoGalleryModels -> {
                mediaPickerEventDelegate.post(new MediaAttachment(photoGalleryModels, MediaAttachment.Source.CAMERA, requestId));
                closeMediaPicker();
-
             });
-      mediaInteractor.videoCapturedPipe()
-            .observeSuccess()
-            .map(videoCapturedCommand -> videoCapturedCommand.getUri())
-            .flatMap(uri -> mediaInteractor.getVideoDurationPipe().createObservableResult(new GetVideoDurationCommand(uri)))
-            .compose(bindViewToMainComposer())
-            .subscribe(getDurationCommand -> {
-               VideoPickerModel videoPickerModel = new VideoPickerModel(getDurationCommand.getUri().getPath(),
-                     getDurationCommand.getResult());
-               int videoDurationSec = (int) (videoPickerModel.getDuration() / 1000);
-               if (videoDurationSec > MAX_VIDEO_DURATION_SEC) {
-                  view.informUser(context.getString(R.string.picker_video_duration_limit, MAX_VIDEO_DURATION_SEC));
-               } else {
-                  mediaPickerEventDelegate.post(new MediaAttachment(videoPickerModel, MediaAttachment.Source.CAMERA, requestId));
-                  closeMediaPicker();
-               }
-            }, throwable -> Timber.e(throwable, "Could not load video"));
    }
 
    private void closeMediaPicker() {

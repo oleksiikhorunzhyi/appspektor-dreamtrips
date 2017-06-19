@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.version_check.model.Configuration;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
@@ -71,7 +72,7 @@ public interface SnappyRepository {
    String DOCUMENTS = "DOCUMENTS";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
-   String UPDATE_REQUIREMENT = "UPDATE_REQUIREMENT";
+   String CONFIGURATION = "CONFIGURATION";
    String UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP = "UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP";
 
    String NOTIFICATIONS = "notifications";
@@ -124,9 +125,9 @@ public interface SnappyRepository {
 
    long getLastSuggestedPhotosSyncTime();
 
-   void saveAppUpdateRequirement(UpdateRequirement updateRequirement);
+   void saveAppUpdateRequirement(Configuration updateRequirement);
 
-   UpdateRequirement getAppUpdateRequirement();
+   Configuration getAppUpdateRequirement();
 
    void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp);
 

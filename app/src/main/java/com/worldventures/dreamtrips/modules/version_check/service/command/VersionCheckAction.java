@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.version_check.service.command;
 
-import com.worldventures.dreamtrips.modules.version_check.model.api.UpdateRequirementDTO;
+import com.worldventures.dreamtrips.modules.version_check.model.api.ConfigurationDTO;
 
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Response;
@@ -10,9 +10,9 @@ import io.techery.janet.http.annotations.Response;
 public class VersionCheckAction {
 
    @Response
-   UpdateRequirementDTO updateRequirementDTO;
+   ConfigurationDTO configurationDTO;
 
-   public UpdateRequirementDTO getUpdateRequirement() {
-      return updateRequirementDTO;
+   public ConfigurationDTO getConfiguration() {
+      return configurationDTO;
    }
 }

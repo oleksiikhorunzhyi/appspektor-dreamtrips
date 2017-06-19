@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.version_check.service.command.VersionCheckCommand;
+import com.worldventures.dreamtrips.modules.version_check.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.version_check.service.storage.UpdateRequirementStorage;
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator;
 
@@ -33,7 +33,7 @@ import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 
 @Module (complete = false, library = true, injects = {
-      VersionCheckCommand.class
+      LoadConfigurationCommand.class
 })
 public class VersionCheckModule {
 

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class PickerBundle implements Parcelable {
 
    private boolean videoPickingEnabled;
+   private int videoPickLimit;
    private int pickLimit;
    private int requestId;
 
@@ -18,6 +19,10 @@ public class PickerBundle implements Parcelable {
 
    public int getRequestId() {
       return requestId;
+   }
+
+   public int getVideoPickLimit() {
+      return videoPickLimit;
    }
 
    public boolean isVideoPickingEnabled() {
@@ -34,6 +39,11 @@ public class PickerBundle implements Parcelable {
 
       public Builder setPhotoPickLimit(int photoPickLimit) {
          pickerBundle.pickLimit = photoPickLimit;
+         return this;
+      }
+
+      public Builder setVideoPickLimit(int videoPickLimit) {
+         pickerBundle.videoPickLimit = videoPickLimit;
          return this;
       }
 

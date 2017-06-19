@@ -9,11 +9,15 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.model.ImmutableVideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostDescriptionCreatedCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
+import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
@@ -25,6 +29,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.Command;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -38,6 +44,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    @Inject EditPhotoTagsCallback editPhotoTagsCallback;
    @Inject PostLocationPickerCallback postLocationPickerCallback;
    @Inject CreatePostBodyInteractor createPostBodyInteractor;
+   @Inject MediaMetadataInteractor mediaMetadataInteractor;
 
    @Override
    public void takeView(V view) {
@@ -76,13 +83,28 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       view.setText(cachedText);
       if (cachedCreationItems.size() != 0) {
          view.attachPhotos(cachedCreationItems);
+         invalidateDynamicViews();
       } else if (selectedVideoPathUri != null) {
-            view.attachVideo(ImmutableVideoCreationModel.builder()
-                  .state(VideoCreationModel.State.LOCAL)
-                  .uri(selectedVideoPathUri)
-                  .build());
+         getVideoMetadata().map(videoMetadata ->
+                     ImmutableVideoCreationModel.builder()
+                        .state(VideoCreationModel.State.LOCAL)
+                        .size(videoMetadata == null ? null : new Size(videoMetadata.width(), videoMetadata.height()))
+                        .uri(selectedVideoPathUri)
+                        .build()
+               ).subscribe(videoCreationModel -> {
+                  view.attachVideo(videoCreationModel);
+                  invalidateDynamicViews();
+               }
+         );
       }
-      invalidateDynamicViews();
+   }
+
+   private Observable<VideoMetadata> getVideoMetadata() {
+      return mediaMetadataInteractor.videoMetadataCommandActionPipe()
+            .createObservableResult(new GetVideoMetadataCommand(selectedVideoPathUri))
+            .compose(bindViewToMainComposer())
+            .map(Command::getResult)
+            .onErrorReturn(throwable -> null);
    }
 
    public void cancelClicked() {

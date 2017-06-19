@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
+
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 
 import org.immutables.value.Value;
 
@@ -8,6 +11,7 @@ import org.immutables.value.Value;
 public abstract class VideoCreationModel {
 
    public abstract Uri uri();
+   @Nullable public abstract Size size();
    public abstract State state();
 
    @Override

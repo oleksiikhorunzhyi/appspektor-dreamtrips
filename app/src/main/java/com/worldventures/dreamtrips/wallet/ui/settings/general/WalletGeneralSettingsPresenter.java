@@ -96,7 +96,13 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    void openDisplayOptionsScreen() {
-      navigator.go(new DisplayOptionsSettingsPath());
+      fetchConnectionStatus(connectionStatus -> {
+         if (connectionStatus.isConnected()) {
+            navigator.go(new DisplayOptionsSettingsPath());
+         } else {
+            getView().showSCNonConnectionDialog();
+         }
+      });
    }
 
    void onClickFactoryResetSmartCard() {

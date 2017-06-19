@@ -118,11 +118,14 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    }
 
    private boolean needToUpdate(SmartCardUser user) {
-      final SmartCardUserPhone phoneNumber = user.phoneNumber();
       return !changedFields.firstName().equals(user.firstName())
             || !changedFields.middleName().equals(user.middleName())
             || !changedFields.lastName().equals(user.lastName())
-            || ( phoneNumber != null && !phoneNumber.equals(changedFields.phone()));
+            || !equals(user.phoneNumber(), changedFields.phone());
+   }
+
+   private boolean equals(Object a, Object b) {
+      return (a == b) || (a != null && a.equals(b));
    }
 
    private Observable<UpdateCardUserData> uploadPhotoIfNeed(SmartCardUser user, String smartCardId,

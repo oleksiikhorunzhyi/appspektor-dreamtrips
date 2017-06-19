@@ -15,7 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveHomeDisplayTypeCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletConstraintLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.DialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryDialogEr
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleSnackbarSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +38,7 @@ import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import me.relex.circleindicator.CircleIndicator;
 
-public class DisplayOptionsSettingsScreen extends WalletConstraintLayout<DisplayOptionsSettingsPresenter.Screen, DisplayOptionsSettingsPresenter, DisplayOptionsSettingsPath> implements DisplayOptionsSettingsPresenter.Screen {
+public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOptionsSettingsPresenter.Screen, DisplayOptionsSettingsPresenter, DisplayOptionsSettingsPath> implements DisplayOptionsSettingsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.wrapper_pager) ViewGroup wrapperPager;
@@ -68,7 +68,7 @@ public class DisplayOptionsSettingsScreen extends WalletConstraintLayout<Display
    protected void onFinishInflate() {
       super.onFinishInflate();
       if (isInEditMode()) return;
-      supportConnectionStatusLabel(false);
+      supportConnectionStatusLabel(true);
       setupToolbar();
       setupViewPager();
    }
@@ -135,7 +135,7 @@ public class DisplayOptionsSettingsScreen extends WalletConstraintLayout<Display
    @Override
    public OperationView<SaveHomeDisplayTypeCommand> provideSaveDisplayTypeOperationView() {
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_general_display_updating, false),
-            new SimpleSnackbarSuccessView<>(wrapperPager, R.string.wallet_settings_general_display_changes_saved),
+            new SimpleToastSuccessView<>(getContext(), R.string.wallet_settings_general_display_changes_saved),
             ErrorViewFactory.<SaveHomeDisplayTypeCommand>builder()
                   .addProvider(getUserRequiredInfoMissingDialogProvider(
                         SaveHomeDisplayTypeCommand.MissingUserPhoneException.class,

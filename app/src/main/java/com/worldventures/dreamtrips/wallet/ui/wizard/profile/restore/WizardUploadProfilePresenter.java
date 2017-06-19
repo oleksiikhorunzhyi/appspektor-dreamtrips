@@ -48,8 +48,8 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetupUserData())
-                  .onSuccess(setupUserDataCommand -> onUserSetupSuccess())
-                  .onFail((setupUserDataCommand, throwable) -> {
+                  .onSuccess(command -> onUserSetupSuccess(command.getResult()))
+                  .onFail((command, throwable) -> {
                      getView().showRetryDialog();
                      Timber.e(throwable, "");
                   })
@@ -72,9 +72,11 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
       wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(smartCardUser));
    }
 
-   private void onUserSetupSuccess() {
+   private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
+            .send(new WalletAnalyticsCommand(
+                  user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
+            );
       navigator.withoutLast(new PinProposalPath(PinProposalAction.WIZARD));
    }
 

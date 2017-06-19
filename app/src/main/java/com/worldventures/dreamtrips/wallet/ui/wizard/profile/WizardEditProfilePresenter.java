@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -67,13 +68,15 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideOperationView())
-                  .onSuccess(command -> onUserSetupSuccess())
+                  .onSuccess(command -> onUserSetupSuccess(command.getResult()))
                   .create());
    }
 
-   private void onUserSetupSuccess() {
+   private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
+            .send(new WalletAnalyticsCommand(
+                  user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
+            );
       navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
    }
 

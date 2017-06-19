@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
@@ -26,7 +27,7 @@ public class CardListStackConverter {
       this.utils = new WalletRecordUtil(context);
    }
 
-   public List<BaseViewModel> mapToViewModel(List<Record> loadedCards, String defaultCardId) {
+   public List<BaseViewModel> mapToViewModel(List<Record> loadedCards, @Nullable String defaultCardId) {
 
       if (loadedCards == null) {
          new ArrayList<>();
@@ -39,7 +40,7 @@ public class CardListStackConverter {
                   .sort((o1, o2) ->
                         Boolean.compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
                   .map(loadedCard -> {
-                     CommonCardViewModel model = createCommonCardViewModel(defaultCardId, loadedCard);
+                     CommonCardViewModel model = createCommonCardViewModel(loadedCard, isCardDefault(defaultCardId, loadedCard));
                      index++;
                      return model;
                   })
@@ -58,23 +59,23 @@ public class CardListStackConverter {
    }
 
    @NonNull
-   private CommonCardViewModel createCommonCardViewModel(String defaultCardId, Record loadedCard) {
+   private CommonCardViewModel createCommonCardViewModel(Record loadedCard, boolean isDefault) {
       return new CommonCardViewModel(
-                              loadedCard.id(),
-                              utils.toBoldSpannable(loadedCard.nickName()),
-                              setCardType(loadedCard.recordType().name()),
-                              loadedCard.recordType().name(),
-                              isCardDefault(defaultCardId, loadedCard),
-                              utils.obtainShortCardNumber(loadedCard.numberLastFourDigits()),
-                              WalletRecordUtil.fetchFullName(loadedCard),
-                              utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
-                              utils.goodThrough(loadedCard.expDate()),
-                              getCardBackGroundResId(defaultCardId, loadedCard)
-                        );
+            loadedCard.id(),
+            utils.toBoldSpannable(loadedCard.nickName()),
+            setCardType(loadedCard.recordType().name()),
+            loadedCard.recordType().name(),
+            isDefault,
+            utils.obtainShortCardNumber(loadedCard.numberLastFourDigits()),
+            WalletRecordUtil.fetchFullName(loadedCard),
+            utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
+            utils.goodThrough(loadedCard.expDate()),
+            getCardBackGroundResId(isDefault)
+      );
    }
 
-   private int getCardBackGroundResId(String defaultCardId, Record loadedCard) {
-      if (defaultCardId.equals(loadedCard.id())) {
+   private int getCardBackGroundResId(boolean isDefault) {
+      if (isDefault) {
          return R.drawable.background_card_transition;
       }
       return index % 2 == 0 ? R.drawable.background_card_dark_blue : R.drawable.background_card_blue;
@@ -84,7 +85,7 @@ public class CardListStackConverter {
       return name.equals(PREFERENCE) ? LOYALTY : PAYMENT;
    }
 
-   private boolean isCardDefault(String defaultCardId, Record loadedCard) {
+   private boolean isCardDefault(@Nullable String defaultCardId, Record loadedCard) {
       if (defaultCardId == null || defaultCardId.isEmpty()) {
          return false;
       }

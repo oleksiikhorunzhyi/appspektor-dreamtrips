@@ -68,7 +68,7 @@ public class DisplayOptionsSettingsScreen extends WalletConstraintLayout<Display
    protected void onFinishInflate() {
       super.onFinishInflate();
       if (isInEditMode()) return;
-      supportConnectionStatusLabel(false);
+      supportConnectionStatusLabel(true);
       setupToolbar();
       setupViewPager();
    }

@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils.equalsPhone;
@@ -79,9 +78,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .subscribe(command -> setUser(command.getResult()), throwable -> Timber.e(throwable, ""));
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void setUser(SmartCardUser user) {
       this.user = user;
-      //noinspection ConstantConditions
       getView().setUser(delegate.toViewModel(user));
    }
 
@@ -91,12 +90,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation())
-                  .onSuccess(new Action1<UpdateSmartCardUserCommand>() {
-                     @Override
-                     public void call(UpdateSmartCardUserCommand setupUserDataCommand) {
-                        WalletSettingsProfilePresenter.this.goBack();
-                     }
-                  })
+                  .onSuccess(setupUserDataCommand -> goBack())
                   .create());
 
       smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
@@ -110,9 +104,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       delegate.setupInputMode(activity);
    }
 
+   @SuppressWarnings("ConstantConditions")
    void handleDoneAction() {
       if (isDataChanged()) {
-         //noinspection ConstantConditions
          final ProfileViewModel profile = getView().getUser();
 
          final ChangedFields changedFields = ImmutableChangedFields.builder()
@@ -132,8 +126,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       }
    }
 
+   @SuppressWarnings("ConstantConditions")
    private boolean isDataChanged() {
-      //noinspection ConstantConditions
       final ProfileViewModel profile = getView().getUser();
       return !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
             profile.getFirstName().equals(user.firstName()) &&
@@ -142,12 +136,11 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
+   @SuppressWarnings("ConstantConditions")
    void handleBackAction() {
       if (isDataChanged()) {
-         //noinspection ConstantConditions
          getView().showRevertChangesDialog();
       } else {
-         //noinspection ConstantConditions
          getView().hidePhotoPicker();
          goBack();
       }
@@ -165,20 +158,21 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       smartCardUserDataInteractor.retryHttpUploadUpdatingPipe().send(new RetryHttpUploadUpdatingCommand());
    }
 
+   @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
-      //noinspection ConstantConditions
       getView().pickPhoto();
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   void doNotAdd() {
+      getView().hidePhotoPicker();
+      getView().dropPhoto();
    }
 
    @Override
    public void detachView(boolean retainInstance) {
       backStackDelegate.removeListener(systemBackPressedListener);
       super.detachView(retainInstance);
-   }
-
-   public void dontAdd() {
-      getView().hidePhotoPicker();
-      getView().dropPhoto();
    }
 
    public interface Screen extends WalletScreen, WalletProfilePhotoView {

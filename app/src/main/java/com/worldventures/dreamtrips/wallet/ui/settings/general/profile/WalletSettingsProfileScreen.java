@@ -23,7 +23,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
@@ -122,7 +124,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    void onDontAddClick() {
       hideDialog();
-      presenter.dontAdd();
+      presenter.doNotAdd();
    }
 
    @Override
@@ -210,6 +212,8 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
                   .addProvider(provideUploadDataExceptionHandler())
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
                   .build()
       );
    }

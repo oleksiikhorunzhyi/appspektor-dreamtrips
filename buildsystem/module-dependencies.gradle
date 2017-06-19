@@ -175,8 +175,8 @@ ext {
          materialRangeBar      : [c: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [c: 'me.leolin:ShortcutBadger:1.1.3@aar'],
          circleindicator       : [c: 'me.relex:circleindicator:1.2.2@aar'],
-         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:+'],
-         jwPlayerCore          : [c: 'com.longtailvideo.jwplayer:jwplayer-common:+'],
+         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:2.7.3+19'],
+         jwPlayerCore          : [c: 'com.longtailvideo.jwplayer:jwplayer-common:2.7.3+19'],
    ]
    //
    def leakCanaryVersion = '1.3.1'

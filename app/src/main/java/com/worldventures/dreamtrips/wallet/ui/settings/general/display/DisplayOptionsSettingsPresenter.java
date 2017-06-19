@@ -45,6 +45,7 @@ public class DisplayOptionsSettingsPresenter extends WalletPresenter<DisplayOpti
       observeHomeDisplay();
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void observeHomeDisplay() {
       Observable.combineLatest(
             smartCardInteractor.smartCardUserPipe()
@@ -58,10 +59,13 @@ public class DisplayOptionsSettingsPresenter extends WalletPresenter<DisplayOpti
             .doOnSubscribe(this::fetchDisplayType)
             .subscribe(pair -> getView().setupViewPager(pair.first, pair.second), t -> Timber.e(t, ""));
 
+      final OperationView<GetHomeDisplayTypeAction> getHomeDisplayTypeOperationView =
+            getView().<GetHomeDisplayTypeAction>provideGetDisplayTypeOperationView();
+      getHomeDisplayTypeOperationView.showProgress(null);
       smartCardInteractor.getHomeDisplayTypePipe().observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().<GetHomeDisplayTypeAction>provideGetDisplayTypeOperationView())
+            .subscribe(OperationActionSubscriber.forView(getHomeDisplayTypeOperationView)
                   .create()
             );
       settingsInteractor.saveHomeDisplayTypePipe().observe()

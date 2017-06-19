@@ -9,13 +9,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
+import com.worldventures.dreamtrips.modules.feed.model.PickerIrregularPhotoModel;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.GalleryBundle;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.GalleryBundle;
-import com.worldventures.dreamtrips.modules.feed.model.PickerIrregularPhotoModel;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.PhotoPickerModelCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.VideoPickerModelCell;
 
@@ -96,7 +96,7 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter, Gall
 
    @Override
    protected GalleryPresenter createPresenter(Bundle savedInstanceState) {
-      return new GalleryPresenter(getArgs().isVideoPickingEnabled());
+      return new GalleryPresenter(getArgs().isVideoPickingEnabled(), getArgs().getVideoMaxLength());
    }
 
    @Override

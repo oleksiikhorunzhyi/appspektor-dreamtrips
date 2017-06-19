@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
@@ -13,16 +15,16 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 
-import static com.worldventures.dreamtrips.modules.common.util.MediaPickerConstants.MAX_VIDEO_DURATION_SEC;
-
 public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View> {
 
    @Inject PickImageDelegate pickImageDelegate;
    @Inject MediaInteractor mediaInteractor;
    private boolean videoPickingEnabled;
+   private int videoLengthLimit;
 
-   public GalleryPresenter(boolean videoPickingEnabled) {
+   public GalleryPresenter(boolean videoPickingEnabled, int videoLengthLimit) {
       this.videoPickingEnabled = videoPickingEnabled;
+      this.videoLengthLimit = videoLengthLimit;
    }
 
    @Override
@@ -45,11 +47,30 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
    }
 
    public void openCameraForVideo() {
-      pickImageDelegate.recordVideo(MAX_VIDEO_DURATION_SEC);
+      pickImageDelegate.recordVideo(videoLengthLimit);
    }
 
    public void tryOpenCameraForVideo() {
       view.checkPermissionsForVideo();
+   }
+
+   public void onVideoPickerModelSelected(VideoPickerModel model) {
+      if (getCheckedPhotosCount() > 0) {
+         resetModelState(model);
+         view.informUser(context.getString(R.string.picker_erros_photos_and_videos));
+         return;
+      }
+      int videoDurationSec = (int) (model.getDuration() / 1000);
+      if (videoDurationSec > videoLengthLimit) {
+         resetModelState(model);
+         view.informUser(context.getString(R.string.picker_video_duration_limit, videoLengthLimit));
+         return;
+      }
+      MediaPickerModel previouslySelectedVideo = Queryable.from(mediaPickerModels)
+            .filter(element -> element.isChecked() && !element.equals(model))
+            .firstOrDefault();
+      if (previouslySelectedVideo != null) resetModelState(previouslySelectedVideo);
+      view.updateItem(model);
    }
 
    public void openFacebook() {

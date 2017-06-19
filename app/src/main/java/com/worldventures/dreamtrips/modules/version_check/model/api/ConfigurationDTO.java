@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.version_check.model.api;
 
 import java.util.List;
 
-public class UpdateRequirementDTO {
+public class ConfigurationDTO {
 
    private String scope;
    private List<Category> categories;

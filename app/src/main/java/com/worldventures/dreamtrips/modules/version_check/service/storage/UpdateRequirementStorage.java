@@ -6,10 +6,10 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
-import com.worldventures.dreamtrips.modules.version_check.service.command.VersionCheckCommand;
+import com.worldventures.dreamtrips.modules.version_check.model.Configuration;
+import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 
-public class UpdateRequirementStorage implements ActionStorage<UpdateRequirement> {
+public class UpdateRequirementStorage implements ActionStorage<Configuration> {
 
    private SnappyRepository snappyRepository;
 
@@ -19,16 +19,16 @@ public class UpdateRequirementStorage implements ActionStorage<UpdateRequirement
 
    @Override
    public Class<? extends CachedAction> getActionClass() {
-      return VersionCheckCommand.class;
+      return ConfigurationCommand.class;
    }
 
    @Override
-   public void save(@Nullable CacheBundle params, UpdateRequirement data) {
+   public void save(@Nullable CacheBundle params, Configuration data) {
       snappyRepository.saveAppUpdateRequirement(data);
    }
 
    @Override
-   public UpdateRequirement get(@Nullable CacheBundle action) {
+   public Configuration get(@Nullable CacheBundle action) {
       return snappyRepository.getAppUpdateRequirement();
    }
 }

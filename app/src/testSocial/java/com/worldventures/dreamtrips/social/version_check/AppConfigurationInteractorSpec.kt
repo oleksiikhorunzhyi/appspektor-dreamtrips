@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.config.model.Category
 import com.worldventures.dreamtrips.api.config.model.ConfigSetting
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.version_check.model.Configuration
-import com.worldventures.dreamtrips.modules.version_check.model.converter.ConfigurationConverter
-import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor
-import com.worldventures.dreamtrips.modules.version_check.service.command.LoadConfigurationCommand
-import com.worldventures.dreamtrips.modules.version_check.service.storage.UpdateRequirementStorage
+import com.worldventures.dreamtrips.modules.config.model.Configuration
+import com.worldventures.dreamtrips.modules.config.model.converter.ConfigurationConverter
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor
+import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand
+import com.worldventures.dreamtrips.modules.config.service.storage.UpdateRequirementStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService

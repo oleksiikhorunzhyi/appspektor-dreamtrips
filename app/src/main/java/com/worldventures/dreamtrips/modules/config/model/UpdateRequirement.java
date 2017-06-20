@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.version_check.model;
+package com.worldventures.dreamtrips.modules.config.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;

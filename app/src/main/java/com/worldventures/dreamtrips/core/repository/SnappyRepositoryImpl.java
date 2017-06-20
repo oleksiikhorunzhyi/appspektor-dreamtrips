@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.version_check.model.Configuration;
+import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;

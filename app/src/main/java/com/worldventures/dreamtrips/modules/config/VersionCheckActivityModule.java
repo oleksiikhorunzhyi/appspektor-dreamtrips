@@ -1,14 +1,14 @@
-package com.worldventures.dreamtrips.modules.version_check;
+package com.worldventures.dreamtrips.modules.config;
 
 import android.app.Activity;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate;
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateUiDelegate;
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateUiDelegateImpl;
-import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator;
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegate;
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegateImpl;
+import com.worldventures.dreamtrips.modules.config.util.VersionComparator;
 
 import javax.inject.Singleton;
 

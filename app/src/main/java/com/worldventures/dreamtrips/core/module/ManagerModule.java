@@ -69,7 +69,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberI
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
 import javax.inject.Singleton;

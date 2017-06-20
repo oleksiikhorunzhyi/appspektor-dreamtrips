@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.AnimatorProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
@@ -190,7 +192,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
       switch (errorDialogType) {
          case ERROR_DIALOG_FULL_SMARTCARD:
-            builder.content(R.string.wallet_wizard_full_card_list_error_message);
+            builder.content(R.string.wallet_wizard_full_card_list_error_message, WalletConstants.MAX_CARD_LIMIT);
             break;
          case ERROR_DIALOG_NO_INTERNET_CONNECTION:
             builder.title(R.string.wallet_wizard_no_internet_connection_title);
@@ -409,6 +411,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_card_list_card_synchronization_dialog_text, false),
             ErrorViewFactory.<SyncSmartCardCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
                   .build()
       );
    }
@@ -429,7 +432,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {},
+            () -> {
+            },
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.retry,

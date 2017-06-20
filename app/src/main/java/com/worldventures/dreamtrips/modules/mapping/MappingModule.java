@@ -75,6 +75,7 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.modules.version_check.model.converter.ConfigurationConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
@@ -578,5 +579,11 @@ public class MappingModule {
    @Singleton
    Converter provideVideoAttachmentConverter() {
       return new VideoAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideConfigurationConverter() {
+      return new ConfigurationConverter();
    }
 }

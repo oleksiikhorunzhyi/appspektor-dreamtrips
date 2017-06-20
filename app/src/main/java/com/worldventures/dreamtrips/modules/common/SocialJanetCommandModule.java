@@ -123,6 +123,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.Paginate
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.modules.version_check.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
@@ -266,6 +267,7 @@ import dagger.Module;
       MigrateFromCachedEntity.class,
       FeedItemsVideoProcessingStatusCommand.class,
       GetVideoMetadataCommand.class,
+      LoadConfigurationCommand.class,
       MediaAttachmentPrepareCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

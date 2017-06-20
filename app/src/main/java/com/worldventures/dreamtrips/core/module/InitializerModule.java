@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteract
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.Initializable;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -120,7 +120,7 @@ public class InitializerModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   public AppInitializer provideVersionCheckInitializer(VersionCheckInteractor interactor) {
+   public AppInitializer provideVersionCheckInitializer(AppConfigurationInteractor interactor) {
       return new VersionCheckInitializer(interactor);
    }
 

@@ -16,8 +16,6 @@ import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
-import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;

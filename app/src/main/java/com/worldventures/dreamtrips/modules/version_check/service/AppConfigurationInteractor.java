@@ -8,18 +8,18 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
-public class VersionCheckInteractor {
+public class AppConfigurationInteractor {
 
    private ActionPipe<LoadConfigurationCommand> versionCheckActionPipe;
    private ActionPipe<ConfigurationCommand> configurationCommandActionPipe;
 
-   public VersionCheckInteractor(Janet janet) {
+   public AppConfigurationInteractor(Janet janet) {
       versionCheckActionPipe = janet.createPipe(LoadConfigurationCommand.class, Schedulers.io());
       configurationCommandActionPipe = janet.createPipe(ConfigurationCommand.class, Schedulers.io());
       subscribeToUpdates();
    }
 
-   public ActionPipe<LoadConfigurationCommand> versionCheckPipe() {
+   public ActionPipe<LoadConfigurationCommand> loadConfigurationPipe() {
       return versionCheckActionPipe;
    }
 

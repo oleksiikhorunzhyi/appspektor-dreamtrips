@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages.service.command;
 
-import android.content.Context;
 import android.net.Uri;
 
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.uploadery.UploadFeedbackImageHttpAction;
 import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse;
@@ -16,7 +14,6 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachm
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -60,13 +57,9 @@ public class UploadFeedbackAttachmentCommand extends CommandWithError implements
    }
 
    private Observable<UploaderyImageResponse> uploadFile(File file) {
-      try {
-         return actionActionPipe
-               .createObservableResult(new UploadFeedbackImageHttpAction(staticPageProvider.getUploaderyUrl(), file))
-               .map(UploadFeedbackImageHttpAction::response);
-      } catch (IOException ex) {
-         return Observable.error(ex);
-      }
+      return actionActionPipe
+            .createObservableResult(new UploadFeedbackImageHttpAction(staticPageProvider.getUploaderyUrl(), file))
+            .map(UploadFeedbackImageHttpAction::response);
    }
 
    private Observable<File> copyFileIfNeeded(String filePath) {

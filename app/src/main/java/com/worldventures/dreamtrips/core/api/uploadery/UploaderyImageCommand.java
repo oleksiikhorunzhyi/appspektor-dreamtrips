@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.util.HttpUploaderyException;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,12 +50,8 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
 
    protected Observable<ActionState<UploadImageHttpAction>> upload(File file) {
       String uploaderyUrl = staticPageProvider.getUploaderyUrl();
-      try {
-         return janet.createPipe(UploadImageHttpAction.class, Schedulers.io())
-               .createObservable(new UploadImageHttpAction(uploaderyUrl, file));
-      } catch (IOException e) {
-         return Observable.error(e);
-      }
+      return janet.createPipe(UploadImageHttpAction.class, Schedulers.io())
+            .createObservable(new UploadImageHttpAction(uploaderyUrl, file));
    }
 
    protected abstract Observable.Transformer<ActionState<UploadImageHttpAction>, T> nextAction();

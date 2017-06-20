@@ -10,10 +10,10 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateUiDelegate
-import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement
-import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegate
+import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement
+import com.worldventures.dreamtrips.modules.config.util.VersionComparator
 import io.techery.janet.Janet
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it

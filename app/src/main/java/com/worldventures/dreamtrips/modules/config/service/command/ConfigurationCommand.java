@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.modules.version_check.service.command;
+package com.worldventures.dreamtrips.modules.config.service.command;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.modules.version_check.model.Configuration;
+import com.worldventures.dreamtrips.modules.config.model.Configuration;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;

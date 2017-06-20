@@ -1,7 +1,7 @@
-package com.worldventures.dreamtrips.modules.version_check.service;
+package com.worldventures.dreamtrips.modules.config.service;
 
-import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
-import com.worldventures.dreamtrips.modules.version_check.service.command.LoadConfigurationCommand;
+import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;

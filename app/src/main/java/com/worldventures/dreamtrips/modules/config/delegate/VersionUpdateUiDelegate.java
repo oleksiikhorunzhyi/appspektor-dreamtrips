@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.version_check.delegate;
+package com.worldventures.dreamtrips.modules.config.delegate;
 
 public interface VersionUpdateUiDelegate {
 

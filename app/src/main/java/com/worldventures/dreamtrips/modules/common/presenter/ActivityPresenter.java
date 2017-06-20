@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate;
-import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
-import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor;
-import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
+import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 
 import javax.inject.Inject;
 

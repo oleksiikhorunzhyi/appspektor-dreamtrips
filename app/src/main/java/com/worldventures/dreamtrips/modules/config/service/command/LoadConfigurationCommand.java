@@ -1,8 +1,8 @@
-package com.worldventures.dreamtrips.modules.version_check.service.command;
+package com.worldventures.dreamtrips.modules.config.service.command;
 
 import com.worldventures.dreamtrips.api.config.GetConfigAction;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
-import com.worldventures.dreamtrips.modules.version_check.model.Configuration;
+import com.worldventures.dreamtrips.modules.config.model.Configuration;
 
 import io.techery.janet.command.annotations.CommandAction;
 

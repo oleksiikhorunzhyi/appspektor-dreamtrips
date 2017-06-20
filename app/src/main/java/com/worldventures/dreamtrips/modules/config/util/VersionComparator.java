@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.version_check.util;
+package com.worldventures.dreamtrips.modules.config.util;
 
 public class VersionComparator {
 

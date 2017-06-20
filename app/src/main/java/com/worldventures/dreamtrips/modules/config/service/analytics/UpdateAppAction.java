@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.version_check.service.analytics;
+package com.worldventures.dreamtrips.modules.config.service.analytics;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;

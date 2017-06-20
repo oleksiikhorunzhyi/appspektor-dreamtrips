@@ -125,7 +125,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantHoursInflater.setView(this);
       showMessage();
 
-      if(deviceInfoProvider.isTablet()){
+      if(isTablet()){
          hideReviewViewsOnTablets();
       }
    }
@@ -143,20 +143,20 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, merchant.displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, false);
-      bundle.putBoolean(OfferWithReviewView.IS_TABLET, deviceInfoProvider.isTablet());
+      bundle.putBoolean(OfferWithReviewView.IS_TABLET, isTablet());
       mContainerComments.addBundle(bundle);
    }
 
    @Override
    public void showButtonAllRateAndReview() {
-      mTvReadAllReviews.setVisibility(deviceInfoProvider.isTablet() ? View.GONE : View.VISIBLE);
+      mTvReadAllReviews.setVisibility(isTablet() ? View.GONE : View.VISIBLE);
    }
 
    @Override
    public void hideButtonAllRateAndReview() {
 
       /** Remove if statement when optimizing for tablets **/
-      if(deviceInfoProvider.isTablet()){
+      if(isTablet()){
          mTvReadAllReviews.setVisibility(View.GONE);
       }
 
@@ -177,6 +177,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       errorDialog.showCancelButton(true);
       errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
       errorDialog.show();
+   }
+
+   @Override
+   public boolean isTablet() {
+      return deviceInfoProvider.isTablet();
    }
 
    @OnClick(R.id.tv_read_all_review)

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -40,6 +41,7 @@ import java.io.File;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettingsProfilePresenter.Screen, WalletSettingsProfilePresenter, WalletSettingsProfilePath> implements WalletSettingsProfilePresenter.Screen {
    /**
@@ -53,6 +55,10 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    private ScreenWalletSettingsProfileBinding binding;
    private ProfileViewModel profileViewModel = new ProfileViewModel();
    private WalletPhotoProposalDialog photoActionDialog;
+
+   private PublishSubject<ProfileViewModel> observeProfileViewModel = PublishSubject.create();
+
+   private MenuItem actionDoneMenuItem;
 
    public WalletSettingsProfileScreen(Context context) {
       super(context);
@@ -76,6 +82,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       });
       binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
+      actionDoneMenuItem = binding.toolbar.getMenu().findItem(R.id.done);
       binding.toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.done:
@@ -187,9 +194,18 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public void setUser(ProfileViewModel model) {
+      profileViewModel.removeOnPropertyChangedCallback(profileViewModelCallback);
       profileViewModel = model;
       binding.setProfile(model);
+      profileViewModel.addOnPropertyChangedCallback(profileViewModelCallback);
    }
+
+   private android.databinding.Observable.OnPropertyChangedCallback profileViewModelCallback = new android.databinding.Observable.OnPropertyChangedCallback() {
+      @Override
+      public void onPropertyChanged(android.databinding.Observable observable, int i) {
+         observeProfileViewModel.onNext(profileViewModel);
+      }
+   };
 
    @Override
    public ProfileViewModel getUser() {
@@ -262,5 +278,15 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    public void hidePhotoPicker() {
       mediaPickerService.hidePicker();
+   }
+
+   @Override
+   public void setDoneButtonEnabled(boolean enable) {
+      if (actionDoneMenuItem != null) actionDoneMenuItem.setEnabled(enable);
+   }
+
+   @Override
+   public PublishSubject<ProfileViewModel> observeChangesProfileFields() {
+      return observeProfileViewModel;
    }
 }

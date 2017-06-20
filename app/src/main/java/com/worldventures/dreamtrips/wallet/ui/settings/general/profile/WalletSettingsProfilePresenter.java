@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils.equalsPhone;
@@ -65,10 +66,16 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
       fetchProfile();
       observeUploading(view);
+      observeChangeFields(view);
 
       delegate.setupInputMode(activity);
       delegate.observePickerAndCropper(view);
       delegate.sendAnalytics(new SmartCardProfileAction());
+   }
+
+   private void observeChangeFields(Screen view) {
+      view.setDoneButtonEnabled(isDataChanged());
+      view.observeChangesProfileFields().subscribe(changed -> view.setDoneButtonEnabled(isDataChanged()));
    }
 
    private void fetchProfile() {
@@ -107,6 +114,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @SuppressWarnings("ConstantConditions")
    void handleDoneAction() {
       if (isDataChanged()) {
+         getView().setDoneButtonEnabled(false);
          final ProfileViewModel profile = getView().getUser();
 
          final ChangedFields changedFields = ImmutableChangedFields.builder()
@@ -129,7 +137,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @SuppressWarnings("ConstantConditions")
    private boolean isDataChanged() {
       final ProfileViewModel profile = getView().getUser();
-      return !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
+      return user != null &&
+            !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
             profile.getFirstName().equals(user.firstName()) &&
             profile.getMiddleName().equals(user.middleName()) &&
             profile.getLastName().equals(user.lastName()) &&
@@ -186,5 +195,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation();
 
       OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation();
+
+      void setDoneButtonEnabled(boolean enable);
+
+      PublishSubject<ProfileViewModel> observeChangesProfileFields();
    }
 }

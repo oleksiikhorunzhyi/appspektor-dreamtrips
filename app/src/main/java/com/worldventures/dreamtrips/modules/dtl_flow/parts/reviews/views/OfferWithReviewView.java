@@ -48,6 +48,7 @@ public class OfferWithReviewView extends LinearLayout {
          new RecyclerClickListener() {
             @Override
             public void onClick(View view, int position) {
+               if (isTablet) return;
                Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo
                      .get(position)
                      .getReviewId(), mIsFromListReview));
@@ -101,11 +102,7 @@ public class OfferWithReviewView extends LinearLayout {
       mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
       isTablet = bundle.getBoolean(IS_TABLET, false);
 
-      /** if statement must be removed when optimizing to tablet **/
-      if(isTablet){
-         recyclerAdapter.setVisibility(View.GONE);
-         reviewHeader.setVisibility(View.GONE);
-      }
+      mAdapter.setTablet(isTablet);
 
       setUpInfo();
    }
@@ -116,6 +113,7 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void initListener() {
+      if (isTablet) return;
       recyclerAdapter.addOnItemTouchListener(onItemTouchListener);
    }
 

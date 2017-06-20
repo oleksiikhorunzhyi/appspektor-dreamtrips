@@ -25,9 +25,18 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
 
    private ArrayList<ReviewObject> mItems = new ArrayList<>();
    private Context context;
+   private boolean isTablet;
 
    public ReviewAdapter(Context context) {
       this.context = context;
+   }
+
+   public void setTablet(boolean tablet) {
+      isTablet = tablet;
+   }
+
+   public boolean isTablet() {
+      return isTablet;
    }
 
    @Override
@@ -68,6 +77,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       private ImageView mIvVerifiedReview;
       private LinearLayout mPhotosIndicatorLayout;
       private TextView mPhotosNumber;
+      private TextView mReadMoreView;
+      private ImageView mPicsAvatarView;
 
       public RecyclerViewHolder(View itemView) {
          super(itemView);
@@ -80,6 +91,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
          mIvVerifiedReview = (ImageView) itemView.findViewById(R.id.iv_verified_buyer);
          mPhotosIndicatorLayout = (LinearLayout) itemView.findViewById(R.id.photos_indicator_layout);
          mPhotosNumber = (TextView) itemView.findViewById(R.id.pics_number_tv);
+         mReadMoreView = (TextView) itemView.findViewById(R.id.tv_read_more);
+         mPicsAvatarView = (ImageView) itemView.findViewById(R.id.pics_avatar);
       }
 
       public void bind(int position) {
@@ -103,6 +116,21 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
             mPhotosNumber.setText(String.valueOf(mItems.get(position).getUrlReviewImages().size()));
          } else {
             mPhotosIndicatorLayout.setVisibility(View.INVISIBLE);
+         }
+         setUpReadMore();
+         setUpPicsAndNumber();
+      }
+
+      private void setUpPicsAndNumber() {
+         if(isTablet){
+            changeVisibility(mPhotosNumber, View.GONE);
+            changeVisibility(mPicsAvatarView, View.GONE);
+         }
+      }
+
+      private void setUpReadMore() {
+         if(isTablet){
+            changeVisibility(mReadMoreView, View.GONE);
          }
       }
 

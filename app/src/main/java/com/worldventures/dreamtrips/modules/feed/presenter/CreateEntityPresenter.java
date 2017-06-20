@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
@@ -46,7 +46,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject MediaInteractor mediaInteractor;
-   @Inject VersionCheckInteractor versionCheckInteractor;
+   @Inject AppConfigurationInteractor appConfigurationInteractor;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
@@ -111,7 +111,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private void subscribeToVideoLength() {
-      versionCheckInteractor.configurationCommandActionPipe()
+      appConfigurationInteractor.configurationCommandActionPipe()
             .createObservableResult(new ConfigurationCommand())
             .compose(bindViewToMainComposer())
             .map(ConfigurationCommand::getVideoMaxLength)

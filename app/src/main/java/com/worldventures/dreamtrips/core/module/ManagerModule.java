@@ -69,11 +69,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberI
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -353,8 +351,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   VersionCheckInteractor provideVersionCheckInteractor(@Named(VersionCheckModule.JANET_QUALIFIER) Janet janet) {
-      return new VersionCheckInteractor(janet);
+   AppConfigurationInteractor provideVersionCheckInteractor(Janet janet) {
+      return new AppConfigurationInteractor(janet);
    }
 
    @Provides

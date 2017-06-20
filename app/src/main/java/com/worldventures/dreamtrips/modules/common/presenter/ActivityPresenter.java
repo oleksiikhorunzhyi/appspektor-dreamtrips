@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.version_check.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.version_check.service.command.ConfigurationCommand;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
    @Inject VersionUpdateDelegate versionUpdateDelegate;
-   @Inject VersionCheckInteractor versionCheckInteractor;
+   @Inject AppConfigurationInteractor appConfigurationInteractor;
 
    @State boolean isTermsShown;
 
@@ -58,7 +58,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    private void subscribeToAppVersionUpdates() {
-      versionCheckInteractor.configurationCommandActionPipe()
+      appConfigurationInteractor.configurationCommandActionPipe()
             .observeWithReplay()
             .compose(bindUntilPauseIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ConfigurationCommand>()

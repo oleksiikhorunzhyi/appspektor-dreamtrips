@@ -345,8 +345,6 @@
    <string name="no_feed">在这里您会看到您的朋友的活动。\n点击下面的链接找到您的朋友</string>
    <string name="search_friends">搜索朋友</string>
 
-   <string name="feed_share_post">分享帖子</string>
-   <string name="feed_share_photos">分享照片</string>
    <string name="feed_view_profile_btn">查看资料</string>
    <string name="start_searching">键入开始搜索</string>
 

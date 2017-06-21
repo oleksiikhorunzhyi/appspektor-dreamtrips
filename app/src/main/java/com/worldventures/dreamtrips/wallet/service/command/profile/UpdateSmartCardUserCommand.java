@@ -86,9 +86,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
 
    private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
       final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder();
-      final SmartCardUserPhoto userPhoto = user.userPhoto();
 
-      dataBuilder.photoUrl(userPhoto != null ? userPhoto.uri() : "");
+      dataBuilder.photoUrl(changedFields.photo() != null ? changedFields.photo().uri() : null);
       dataBuilder.firstName(changedFields.firstName());
       dataBuilder.middleName(changedFields.middleName());
       dataBuilder.lastName(changedFields.lastName());
@@ -129,7 +128,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    }
 
    private Observable<UpdateCardUserData> uploadPhotoIfNeed(SmartCardUser user, String smartCardId,
-         UpdateCardUserData userData) {
+         UpdateCardUserData updateUserData) {
       final SmartCardUserPhoto newPhoto = changedFields.photo();
       if (newPhoto != null) {
 
@@ -140,14 +139,12 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                .flatMap(aVoid -> janet.createPipe(SmartCardUploaderyCommand.class, Schedulers.io())
                      .createObservableResult(new SmartCardUploaderyCommand(smartCardId, newPhoto.uri())))
                .map(command -> ImmutableUpdateCardUserData.builder()
-                     .from(userData)
+                     .from(updateUserData)
                      //uri saved in UpdateProfileManager
                      .photoUrl(command.getResult().response().uploaderyPhoto().location())
                      .build());
       } else {
-         final SmartCardUserPhoto userPhoto = user.userPhoto();
-         return Observable.just(ImmutableUpdateCardUserData.copyOf(userData)
-               .withPhotoUrl(userPhoto != null ? userPhoto.uri() : null));
+         return Observable.just(updateUserData);
       }
    }
 

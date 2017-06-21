@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeRecordCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ public class SecureRecordCommand extends Command<Record> implements InjectableAc
    @Inject NxtInteractor nxtInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final Record record;
    private final boolean secureForLocalStorage;
@@ -35,7 +37,6 @@ public class SecureRecordCommand extends Command<Record> implements InjectableAc
    private final ActionType actionType;
 
    private SecureRecordCommand(Record record, boolean secureForLocalStorage, @Nullable ActionType actionType) {
-
       this.record = record;
       this.secureForLocalStorage = secureForLocalStorage;
       this.actionType = actionType;
@@ -43,7 +44,7 @@ public class SecureRecordCommand extends Command<Record> implements InjectableAc
 
    @Override
    protected void run(CommandCallback<Record> callback) throws Throwable {
-      boolean offlineModeEnabled = recordsStorage.readOfflineModeState();
+      boolean offlineModeEnabled = featureHelper.offlineModeState(recordsStorage.readOfflineModeState());
 
       if (offlineModeEnabled) {
          callback.onSuccess(record);

@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.Wal
 import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +49,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletFeatureHelper featureHelper;
 
    public WalletSecuritySettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -56,7 +58,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-
+      featureHelper.prepareSettingsSecurityScreen(view);
       observeSmartCardChanges();
 
       observeStealthModeController(view);
@@ -225,7 +227,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
 
    void openLostCardScreen() {
-      navigator.go(new LostCardPath());
+      featureHelper.openFindCard(getContext(), () -> navigator.go(new LostCardPath()));
    }
 
    void openOfflineModeScreen() {

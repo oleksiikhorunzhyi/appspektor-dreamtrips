@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmw
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,16 +40,18 @@ public class SmartCardSyncManager {
    private final Janet janet;
    private final SmartCardInteractor interactor;
    private final RecordInteractor recordInteractor;
+   private final WalletFeatureHelper featureHelper;
    private final FirmwareInteractor firmwareInteractor;
 
    private volatile boolean syncDisabled = false;
 
    public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor,
-         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor) {
+         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor, WalletFeatureHelper featureHelper) {
       this.janet = janet;
       this.interactor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.recordInteractor = recordInteractor;
+      this.featureHelper = featureHelper;
       observeConnection();
       connectUpdateSmartCard();
       connectSyncSmartCard();
@@ -198,6 +201,7 @@ public class SmartCardSyncManager {
    }
 
    private void connectSyncSmartCard() {
+      if (!featureHelper.isCardSyncSupported()) return;
       Observable.interval(10, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))

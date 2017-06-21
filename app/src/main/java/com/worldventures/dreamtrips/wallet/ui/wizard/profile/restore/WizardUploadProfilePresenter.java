@@ -16,10 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChan
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
 
@@ -34,6 +31,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    @Inject WizardInteractor wizardInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletFeatureHelper featureHelper;
 
    public WizardUploadProfilePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -51,7 +49,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetupUserData())
-                  .onSuccess(setupUserDataCommand -> onUserSetupSuccess())
+                  .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
                   .onFail((setupUserDataCommand, throwable) -> {
                      getView().showRetryDialog();
                      Timber.e(throwable, "");
@@ -83,10 +81,10 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
       );
    }
 
-   private void onUserSetupSuccess() {
+   private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
-      navigator.withoutLast(new PinProposalPath(PinProposalAction.WIZARD));
+      featureHelper.navigateFromSetupUserScreen(navigator, user);
    }
 
    public interface Screen extends WalletScreen {

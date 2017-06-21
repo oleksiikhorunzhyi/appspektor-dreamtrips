@@ -63,8 +63,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private static final double VISIBLE_SCALE = 0.64;
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
-   @InjectView(R.id.empty_card_view) TextView emptyCardListView;
-   @InjectView(R.id.fab_button) FloatingActionButton fabButton;
+   @InjectView(R.id.empty_card_view) public TextView emptyCardListView;
+   @InjectView(R.id.fab_button) public FloatingActionButton fabButton;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
@@ -296,6 +296,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             new RecyclerItemClickListener.OnItemClickListener() {
                @Override
                public void onItemClick(View view, int position) {
+                  if (!presenter.isCardDetailSupported()) return;
                   if (multiAdapter.getItemViewType(position) == R.layout.card_cell_binding) {
                      showDetails(view, (int) (dimension * VISIBLE_SCALE * -1));
                   }

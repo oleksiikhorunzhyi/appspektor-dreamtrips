@@ -53,6 +53,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDel
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.io.File;
 import java.util.List;
@@ -83,6 +84,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject WalletNetworkService networkService;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final CardListStackConverter cardListStackConverter;
    private final CheckPinDelegate checkPinDelegate;
@@ -98,6 +100,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      featureHelper.prepareDashboardScreen(getView());
       getView().setDefaultSmartCard();
       checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
@@ -138,6 +141,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
+      if (featureHelper.addingCardIsNotSupported()) return;
       if (status.isFailAfterProvision()) {
          //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
@@ -256,6 +260,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       }
    }
 
+   public boolean isCardDetailSupported() {
+      return featureHelper.isCardDetailSupported();
+   }
+
    void navigationClick() {
       navigationDrawerPresenter.openDrawer();
    }
@@ -311,7 +319,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> { /*ignore here*/ });
+            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> Timber.d(throwable, ""));
 
       //noinspection ConstantConditions
       smartCardInteractor.smartCardSyncPipe()

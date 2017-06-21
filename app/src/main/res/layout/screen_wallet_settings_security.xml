@@ -179,6 +179,7 @@
 
          <!--Keep My Identity Private-->
          <RelativeLayout
+               android:id="@+id/item_stealth_mode"
                style="@style/SettingsMenuItem"
                android:background="@null"
                >

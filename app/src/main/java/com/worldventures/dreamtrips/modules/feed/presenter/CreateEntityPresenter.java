@@ -126,9 +126,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Override
    protected boolean isChanged() {
       boolean imageAreProcessing = mediaPickerProcessingImages || locallyProcessingImagesCount > 0;
-      boolean imagesAreFullyLoaded = cachedCreationItems.size() > 0 && !imageAreProcessing;
       boolean videoSelected = selectedVideoPathUri != null;
-      return !isCachedTextEmpty() && !imageAreProcessing || imagesAreFullyLoaded || videoSelected;
+      return !imageAreProcessing && (!isCachedTextEmpty() || cachedCreationItems.size() > 0 || videoSelected);
    }
 
    @Override

@@ -63,4 +63,29 @@ public class TextualPost extends BaseFeedEntity {
    public String getOriginalText() {
       return description;
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      if (!super.equals(o)) return false;
+
+      TextualPost that = (TextualPost) o;
+
+      if (description != null ? !description.equals(that.description) : that.description != null) return false;
+      if (attachments != null ? !attachments.equals(that.attachments) : that.attachments != null) return false;
+      if (location != null ? !location.equals(that.location) : that.location != null) return false;
+      return hashtags != null ? hashtags.equals(that.hashtags) : that.hashtags == null;
+
+   }
+
+   @Override
+   public int hashCode() {
+      int result = super.hashCode();
+      result = 31 * result + (description != null ? description.hashCode() : 0);
+      result = 31 * result + (attachments != null ? attachments.hashCode() : 0);
+      result = 31 * result + (location != null ? location.hashCode() : 0);
+      result = 31 * result + (hashtags != null ? hashtags.hashCode() : 0);
+      return result;
+   }
 }

@@ -200,19 +200,15 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<FeedStorageCommand>()
-                  .onSuccess(feedStorageCommand -> {
-                     List<FeedItem> items = feedStorageCommand.getResult();
-                     refreshFeed(items);
-                     feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
-                           .send(new FeedItemsVideoProcessingStatusCommand(items));
-                  })
+                  .onSuccess(feedStorageCommand -> feedChanged(feedStorageCommand.getResult()))
                   .onFail(this::handleError));
    }
 
-   private void refreshFeed(List<FeedItem> newFeedItems) {
-      feedItems.clear();
-      feedItems.addAll(newFeedItems);
+   private void feedChanged(List<FeedItem> items) {
+      feedItems = new ArrayList<>(items);
       refreshFeedItems();
+      feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
+            .send(new FeedItemsVideoProcessingStatusCommand(items));
    }
 
    private void subscribeRefreshFeeds() {

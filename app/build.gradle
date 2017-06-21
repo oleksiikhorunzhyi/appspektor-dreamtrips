@@ -255,7 +255,6 @@ dependencies {
    deps.applyAll(owner, deps.test)
 
    // customized dependencies
-
    devCompile deps.provide(deps.util.leakcanary)
    devpremarshmallowCompile deps.provide(deps.util.leakcanary)
    externalCompile deps.provide(deps.util.leakcanaryNoOp)

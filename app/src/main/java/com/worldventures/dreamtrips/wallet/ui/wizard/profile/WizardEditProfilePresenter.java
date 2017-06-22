@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
@@ -53,6 +54,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;
 

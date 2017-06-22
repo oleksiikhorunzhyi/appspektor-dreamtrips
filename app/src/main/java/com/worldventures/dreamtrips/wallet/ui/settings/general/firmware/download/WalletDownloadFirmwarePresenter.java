@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.WalletFirmwareChecksPath;
@@ -24,6 +24,7 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject Navigator navigator;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private DownloadFirmwareCommand action;
 
@@ -46,7 +47,7 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<DownloadFirmwareCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> openPreInstallationChecks())
-                  .onFail(ErrorHandler.create(getContext(), it -> navigator.goBack()))
+                  .onFail(errorHandlerFactory.errorHandler(it -> navigator.goBack()))
                   .wrap());
    }
 

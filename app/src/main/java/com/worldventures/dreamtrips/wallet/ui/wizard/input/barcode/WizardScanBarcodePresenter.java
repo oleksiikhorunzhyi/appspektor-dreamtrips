@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -25,6 +26,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject PermissionDispatcher permissionDispatcher;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private InputBarcodeDelegate inputBarcodeDelegate;
 
@@ -64,6 +66,10 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
 
    void retry(String barcode) {
       inputBarcodeDelegate.retry(barcode);
+   }
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen, InputDelegateView {

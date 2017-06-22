@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -22,6 +23,7 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final String smartCardId;
 
@@ -72,6 +74,10 @@ public class ExistingDeviceDetectPresenter extends WalletPresenter<ExistingDevic
 
    private void reAssignSuccess() {
       navigator.single(new PairKeyPath(ProvisioningMode.SETUP_NEW_DEVICE, smartCardId));
+   }
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen {

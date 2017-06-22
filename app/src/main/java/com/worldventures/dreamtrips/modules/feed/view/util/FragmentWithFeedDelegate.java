@@ -330,9 +330,6 @@ public class FragmentWithFeedDelegate {
 
       @Override
       public void onChanged(int position, int count, Object payload) {
-         if (firstInsertPosition < position) {
-            firstInsertPosition = position;
-         }
          adapter.notifyItemRangeChanged(position, count, payload);
       }
    }

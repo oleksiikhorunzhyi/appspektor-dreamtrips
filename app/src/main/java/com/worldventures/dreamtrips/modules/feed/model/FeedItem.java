@@ -164,6 +164,16 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       return feedItem != null && getItem().equals(feedItem.getItem());
    }
 
+   public boolean contentSame(@Nullable FeedItem feedItem) {
+      if (feedItem == null) return false;
+
+      FeedEntity feedEntity = getItem();
+      FeedEntity otherFeedEntity = feedItem.getItem();
+
+      if (feedEntity == null) return false;
+      return feedEntity.contentSame(otherFeedEntity);
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Parcelable
    ///////////////////////////////////////////////////////////////////////////

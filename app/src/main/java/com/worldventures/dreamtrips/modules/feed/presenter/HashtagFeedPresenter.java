@@ -41,7 +41,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 
 public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends JobPresenter<T>
-   implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
+      implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
    private final static int FEEDS_PER_PAGE = 10;
    private final static int MIN_QUERY_LENGTH = 3;
@@ -290,8 +290,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       feedActionHandlerDelegate.onDeleteBucketItem(bucketItem);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View,
-         FeedEntityEditingView {
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, FeedEntityEditingView {
 
       void startLoading();
 

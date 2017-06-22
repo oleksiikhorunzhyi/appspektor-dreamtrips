@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
@@ -24,6 +24,7 @@ public class EnterPinPresenter extends WalletPresenter<EnterPinPresenter.Screen,
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private final EnterPinDelegate enterPinDelegate;
 
@@ -63,7 +64,7 @@ public class EnterPinPresenter extends WalletPresenter<EnterPinPresenter.Screen,
                      enterPinDelegate.pinEntered();
                      getView().provideOperationDelegate().hideProgress();
                   })
-                  .onFail(ErrorHandler.<PinSetupFinishedEvent>builder(getContext())
+                  .onFail(errorHandlerFactory.<PinSetupFinishedEvent>builder()
                         .defaultMessage(R.string.wallet_wizard_setup_error)
                         .build())
                   .wrap());
@@ -72,7 +73,7 @@ public class EnterPinPresenter extends WalletPresenter<EnterPinPresenter.Screen,
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartPinSetupAction>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.<StartPinSetupAction>builder(getContext())
+                  .onFail(errorHandlerFactory.<StartPinSetupAction>builder()
                         .defaultMessage(R.string.wallet_wizard_setup_error)
                         .build())
                   .onStart(action -> getView().provideOperationDelegate().showProgress(null))

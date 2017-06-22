@@ -2,12 +2,13 @@ package com.worldventures.dreamtrips.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.flow.util.Utils;
+import com.worldventures.dreamtrips.mobilesdk.DreamTripsErrorParser;
+import com.worldventures.dreamtrips.mobilesdk.service.ServiceLabel;
 
 import java.io.IOException;
 
@@ -17,37 +18,32 @@ import io.techery.janet.http.exception.HttpServiceException;
 
 import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
-public class JanetHttpErrorHandlingUtils {
-   private JanetHttpErrorHandlingUtils() {
+public class HttpErrorHandlingUtil {
 
+   private final Context context;
+   private final DreamTripsErrorParser errorParser;
+
+   public HttpErrorHandlingUtil(Context context, DreamTripsErrorParser errorParser) {
+      this.context = context;
+      this.errorParser = errorParser;
    }
 
-   public static String handleJanetHttpError(Context context, Object action, Throwable exception, String fallbackMessage) {
-      if (action instanceof BaseHttpAction && exception instanceof HttpServiceException) {
-         ErrorResponse errorResponse = new ErrorResponse();
-         com.worldventures.dreamtrips.api.api_common.error.ErrorResponse errorResponseNew = ((BaseHttpAction) action)
-               .errorResponse();
-         if (errorResponseNew != null) errorResponse.setErrors(errorResponseNew.errors());
-
-         if (getCauseByType(IOException.class, exception.getCause()) != null) {
-            return Utils.isConnected(context)
-                  ? context.getString(R.string.smth_went_wrong)
-                  : context.getString(R.string.no_connection);
-         } else if (errorResponse.getErrors() != null && !errorResponse.getErrors()
-               .isEmpty()) {
-            return errorResponse.getFirstMessage();
-         } else return fallbackMessage;
-      }
-
+   public String handleJanetHttpError(Object action, Throwable exception, String fallbackMessage) {
       if (exception instanceof JanetActionException) {
          JanetActionException actionError = (JanetActionException) exception;
-         return handleJanetHttpError(context, actionError.getAction(), actionError.getCause(), fallbackMessage);
+         return handleJanetHttpError(actionError.getAction(), actionError.getCause(), fallbackMessage);
       }
-
+      if (isNoInternetConnectionError(exception)) {
+         return this.context.getString(R.string.no_connection);
+      }
+      if (action instanceof ServiceLabel && exception instanceof HttpServiceException) {
+         String errorReason = errorParser.parseReason((ServiceLabel) action);
+         if (TextUtils.isEmpty(errorReason)) return fallbackMessage;
+         else return errorReason;
+      }
       if (exception.getCause() != null) {
-         return handleJanetHttpError(context, action, exception.getCause(), fallbackMessage);
+         return handleJanetHttpError(action, exception.getCause(), fallbackMessage);
       }
-
       return fallbackMessage;
    }
 
@@ -92,5 +88,4 @@ public class JanetHttpErrorHandlingUtils {
             && (exception.getCause() instanceof HttpException)
             && ((HttpException)exception.getCause()).getRequest() == null;
    }
-
 }

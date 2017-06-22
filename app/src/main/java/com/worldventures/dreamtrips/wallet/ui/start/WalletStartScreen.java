@@ -55,7 +55,7 @@ public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPre
    public OperationView<FetchAssociatedSmartCardCommand> provideOperationView() {
       return new ComposableOperationView<>(new WalletProgressView<>(progressView),
             ErrorViewFactory.<FetchAssociatedSmartCardCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> presenter.retryFetchingCard(),
                         command -> presenter.cancelFetchingCard()))
                   .build());

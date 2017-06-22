@@ -21,6 +21,8 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
       includes = {
             WalletServiceModule.class,
             StorageModule.class,
+            WalletUtilModule.class,
+            StorageModule.class,
             JanetNxtModule.class
       },
       complete = false, library = true

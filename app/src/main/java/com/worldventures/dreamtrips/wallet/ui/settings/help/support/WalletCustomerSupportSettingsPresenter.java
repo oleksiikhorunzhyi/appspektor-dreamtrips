@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.settings.customer_support.Contact;
 import com.worldventures.dreamtrips.wallet.service.command.settings.SettingsHelpInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
@@ -27,6 +28,7 @@ public class WalletCustomerSupportSettingsPresenter extends WalletPresenter<Wall
 
    @Inject Navigator navigator;
    @Inject SettingsHelpInteractor settingsHelpInteractor;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    WalletCustomerSupportSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -69,6 +71,10 @@ public class WalletCustomerSupportSettingsPresenter extends WalletPresenter<Wall
 
    void openCustomerSupportFeedbackScreen() {
       navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.CustomerSupport));
+   }
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    interface Screen extends WalletScreen {

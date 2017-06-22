@@ -6,9 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.util.HttpUploaderyException;
-import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -31,8 +30,6 @@ import timber.log.Timber;
 @Deprecated
 public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>> {
 
-   private static final int IGNORE_HTTP_STATUS_CODE = 500;
-
    private final Map<Class<? extends Throwable>, String> throwableMessageMap;
    private final Map<Class<? extends Throwable>, Action1<T>> throwableActionMap;
    private final List<Class<? extends Throwable>> ignoredThrowables;
@@ -40,6 +37,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
    private final Action1<T> defaultErrorAction;
    private final String defaultErrorMessage;
    private final Context context;
+   private final HttpErrorHandlingUtil errorHandlingUtils;
 
    private ErrorHandler(Builder<T> builder) {
       throwableMessageMap = builder.throwableMessageMap;
@@ -49,6 +47,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       defaultErrorAction = builder.defaultErrorAction;
       context = builder.context;
       defaultErrorMessage = builder.defaultErrorMessage;
+      errorHandlingUtils = builder.errorHandlingUtils;
    }
 
    @Override
@@ -119,23 +118,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
 
    @Nullable
    private String obtainServerError(JanetActionException throwable) {
-      if (!(throwable.getAction() instanceof BaseHttpAction)) return null;
-
-      BaseHttpAction httpAction = (BaseHttpAction) throwable.getAction();
-      return httpAction.statusCode() == IGNORE_HTTP_STATUS_CODE ?
-            null : JanetHttpErrorHandlingUtils.handleJanetHttpError(context, httpAction, throwable, null);
-   }
-
-   public static <T> ErrorHandler.Builder<T> builder(Context context) {
-      return new Builder<>(context);
-   }
-
-   public static <T> ErrorHandler<T> create(Context context) {
-      return new Builder<T>(context).build();
-   }
-
-   public static <T> ErrorHandler<T> create(Context context, Action1<T> action) {
-      return new Builder<T>(context).defaultAction(action).build();
+      return errorHandlingUtils.handleJanetHttpError(throwable.getAction(), throwable.getCause(), null);
    }
 
    public static class Builder<T> {
@@ -148,9 +131,11 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       }; // stub defaultErrorAction
       private String defaultErrorMessage;
       private final Context context;
+      private final HttpErrorHandlingUtil errorHandlingUtils;
 
-      private Builder(Context context) {
+      public Builder(Context context, HttpErrorHandlingUtil errorHandlingUtils) {
          this.context = context;
+         this.errorHandlingUtils = errorHandlingUtils;
          this.defaultErrorMessage = context.getString(R.string.error_something_went_wrong);
       }
 
@@ -195,5 +180,6 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       public ErrorHandler<T> build() {
          return new ErrorHandler<>(this);
       }
+
    }
 }

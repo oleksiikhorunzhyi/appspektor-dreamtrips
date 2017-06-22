@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCard
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
@@ -29,6 +29,7 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private final DisableDefaultCardItemProvider itemProvider;
    private boolean delayWasChanged = false;
@@ -103,7 +104,7 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
                      bindToView(command.getResult());
                      delayWasChanged = true;
                   })
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(errorHandlerFactory.errorHandler())
                   .wrap());
    }
 

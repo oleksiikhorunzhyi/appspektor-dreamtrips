@@ -86,7 +86,7 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), c -> presenter.retry(c.barcode), c -> { /*nothing*/ }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), c -> presenter.retry(c.barcode), c -> { /*nothing*/ }))
                   .build()
       );
    }

@@ -500,8 +500,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View,
-         BlockingProgressView, FeedEntityEditingView {
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, BlockingProgressView,
+         FeedEntityEditingView {
 
       void setRequestsCount(int count);
 

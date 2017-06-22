@@ -91,7 +91,7 @@ public class WalletCustomerSupportSettingsScreen extends WalletLinearLayout<Wall
                   .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.error_something_went_wrong,
                         command -> getPresenter().fetchCustomerSupportContact(),
                         command -> getPresenter().goBack()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> getPresenter().fetchCustomerSupportContact(),
                         command -> getPresenter().goBack()))
                   .build()

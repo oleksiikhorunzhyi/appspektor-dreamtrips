@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -29,6 +30,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Activity activity;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final int scidLength;
    private InputBarcodeDelegate inputBarcodeDelegate;
@@ -76,6 +78,10 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
 
    void retry(String barcode) {
       inputBarcodeDelegate.retry(barcode);
+   }
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen, InputDelegateView {

@@ -75,7 +75,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
                   }).onFail((command, e) -> {
                      if (command.getCacheData() == null || command.getCacheData().getContent() == null)
                         view.setContent(null);
-                        handleError(command, e);
+                     handleError(command, e);
                   }));
    }
 

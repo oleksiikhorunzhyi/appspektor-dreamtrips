@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import android.support.v4.util.Pair;
 
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -24,7 +25,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
-import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
 import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
@@ -64,8 +64,7 @@ public class SmartCardSyncManager {
    }
 
    private void observeConnection() {
-      // // TODO: 2/20/17 create pipe in interactor
-      janet.createPipe(ConnectAction.class)
+      interactor.connectionActionPipe()
             .observeSuccess()
             .throttleLast(1, TimeUnit.SECONDS)
             .subscribe(connectAction -> cardConnected(connectAction.type == ConnectionType.DFU ? DFU : CONNECTED),
@@ -198,12 +197,12 @@ public class SmartCardSyncManager {
    }
 
    private void connectSyncSmartCard() {
-      Observable.interval(10, TimeUnit.MINUTES)
+      Observable.interval(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
-            .throttleFirst(10, TimeUnit.MINUTES)
+            .throttleFirst(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .flatMap(aLong -> recordInteractor.syncRecordStatusPipe()
                   .createObservableResult(SyncRecordStatusCommand.fetch()))
             .map(Command::getResult)

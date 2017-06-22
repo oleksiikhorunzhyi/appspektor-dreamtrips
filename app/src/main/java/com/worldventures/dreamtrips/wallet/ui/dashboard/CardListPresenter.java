@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.RetryInstallUpdateAction;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
@@ -75,8 +76,6 @@ import timber.log.Timber;
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
-
-   public static final int MAX_CARD_LIMIT = 10;
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -276,7 +275,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void addCardRequired(int cardLoadedCount) {
-      if (cardLoadedCount >= MAX_CARD_LIMIT) {
+      if (cardLoadedCount >= WalletConstants.MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
          return;
       }

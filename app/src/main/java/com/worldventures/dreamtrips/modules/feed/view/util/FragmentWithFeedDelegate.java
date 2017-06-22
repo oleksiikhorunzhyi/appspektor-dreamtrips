@@ -100,6 +100,12 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof FeedItem &&
+                  items.get(newItemPosition) instanceof FeedItem) {
+               FeedItem oldItem = (FeedItem) adapter.getItem(oldItemPosition);
+               FeedItem newItem = (FeedItem) items.get(newItemPosition);
+               return oldItem.contentSame(newItem);
+            }
             return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
          }
       });
@@ -324,6 +330,9 @@ public class FragmentWithFeedDelegate {
 
       @Override
       public void onChanged(int position, int count, Object payload) {
+         if (firstInsertPosition < position) {
+            firstInsertPosition = position;
+         }
          adapter.notifyItemRangeChanged(position, count, payload);
       }
    }

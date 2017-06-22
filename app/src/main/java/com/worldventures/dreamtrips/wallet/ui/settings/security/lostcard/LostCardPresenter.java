@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.ClickDirectionsAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayLocateCardAnalyticsAction;
@@ -53,6 +54,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    @Inject SmartCardLocationInteractor smartCardLocationInteractor;
    @Inject WalletDetectLocationService locationService;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final LocationSettingsService locationSettingsService;
 
@@ -270,6 +272,10 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       analyticsInteractor.locateCardAnalyticsCommandActionPipe()
             .send(new LocateCardAnalyticsCommand(enableTracking
                   ? new LocateEnabledAnalyticsAction() : new LocateDisabledAnalyticsAction()));
+   }
+
+   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen {

@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 
 import java.io.IOException;
 
@@ -51,10 +51,9 @@ public class Presenter<VT extends Presenter.View> {
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject protected OfflineErrorInteractor offlineErrorInteractor;
    @Inject ConnectionInfoProvider connectionInfoProvider;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    protected int priorityEventBus = 0;
-
-   protected ApiErrorPresenter apiErrorPresenter;
 
    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
    private PublishSubject<Void> pauseViewStopper = PublishSubject.create();
@@ -63,11 +62,6 @@ public class Presenter<VT extends Presenter.View> {
    protected PublishSubject<ConnectionState> connectionStatePublishSubject = PublishSubject.create();
 
    public Presenter() {
-      apiErrorPresenter = provideApiErrorPresenter();
-   }
-
-   protected ApiErrorPresenter provideApiErrorPresenter() {
-      return new ApiErrorPresenter();
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -113,7 +107,6 @@ public class Presenter<VT extends Presenter.View> {
    public void dropView() {
       destroyViewStopper.onNext(null);
       this.view = null;
-      apiErrorPresenter.dropView();
       if (eventBus.isRegistered(this)) eventBus.unregister(this);
    }
 
@@ -178,7 +171,7 @@ public class Presenter<VT extends Presenter.View> {
          view.informUser(((CommandWithError) action).getErrorMessage());
          return;
       }
-      String message = JanetHttpErrorHandlingUtils.handleJanetHttpError(context,
+      String message = httpErrorHandlingUtil.handleJanetHttpError(
             action, error, context.getString(R.string.smth_went_wrong));
       view.informUser(message);
    }

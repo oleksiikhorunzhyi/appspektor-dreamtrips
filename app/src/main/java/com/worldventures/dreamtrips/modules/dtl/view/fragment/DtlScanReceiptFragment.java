@@ -11,7 +11,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -22,7 +21,6 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.AmountValidator;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
@@ -145,22 +143,15 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
       verify.setEnabled(false);
    }
 
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
-         amountInput.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
-      }
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-      progressDialog.dismiss();
-   }
 
    @Override
    public void showProgress() {
       progressDialog.show(getFragmentManager());
+   }
+
+   @Override
+   public void hideProgress() {
+      progressDialog.dismiss();
    }
 
    @Override

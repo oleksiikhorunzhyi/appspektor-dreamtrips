@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmw
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
@@ -30,6 +30,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Navigator navigator;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    public WalletInstallFirmwarePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -48,7 +49,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
                   .onSuccess(command -> openSuccess(command.getResult()))
                   .onProgress((command, integer) -> getView().showInstallingStatus(command.getCurrentStep(),
                         InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, integer))
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(errorHandlerFactory.errorHandler())
                   .wrap()
                   .onStart(installFirmwareCommand -> state.started = true)
             );

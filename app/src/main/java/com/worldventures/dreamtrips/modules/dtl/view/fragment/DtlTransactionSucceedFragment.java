@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
@@ -37,15 +36,6 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return true;
-   }
-
-   @Override
-   public void onApiCallFailed() {
    }
 
    @Override

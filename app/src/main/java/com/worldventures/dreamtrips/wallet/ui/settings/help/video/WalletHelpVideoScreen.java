@@ -164,7 +164,7 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_video_loading, false),
             ErrorViewFactory.<GetMemberVideosCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> getPresenter().fetchSmartCardVideosForDefaultLocale(null),
                         command -> getPresenter().goBack())
                   ).build()
@@ -176,7 +176,7 @@ public class WalletHelpVideoScreen extends WalletLinearLayout<WalletHelpVideoPre
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_video_locales_loading, false),
             ErrorViewFactory.<GetVideoLocalesCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> getPresenter().fetchVideoLocales(),
                         command -> getPresenter().goBack())
                   ).build()

@@ -41,6 +41,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStat
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
@@ -80,6 +81,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject RecordInteractor recordInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
    @Inject WalletNetworkService networkService;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;

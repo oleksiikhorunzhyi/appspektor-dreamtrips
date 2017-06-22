@@ -144,15 +144,15 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                      .build()))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
-                  .onSuccess(createBucketItemCommand -> {
-                     tripModel.setInBucketList(true);
-                     view.dataSetChanged();
-                     view.showItemAddedToBucketList(createBucketItemCommand.getResult());
-                  })
-               .onFail((createBucketItemCommand, throwable) -> {
-                  tripModel.setInBucketList(!tripModel.isInBucketList());
-                  handleError(createBucketItemCommand, throwable);
-               }));
+                     .onSuccess(createBucketItemCommand -> {
+                        tripModel.setInBucketList(true);
+                        view.dataSetChanged();
+                        view.showItemAddedToBucketList(createBucketItemCommand.getResult());
+                     })
+                     .onFail((createBucketItemCommand, throwable) -> {
+                        tripModel.setInBucketList(!tripModel.isInBucketList());
+                        handleError(createBucketItemCommand, throwable);
+                     }));
       } else {
          tripModel.setInBucketList(!tripModel.isInBucketList());
          view.dataSetChanged();

@@ -61,7 +61,7 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
    public OperationView<WizardCompleteCommand> provideOperationView() {
       return new ComposableOperationView<>(new WalletProgressView<>(assignProgress),
             ErrorViewFactory.<WizardCompleteCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> presenter.onWizardComplete(),
                         command -> presenter.onWizardCancel()))
                   .build());

@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareUpdateType;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePath;
@@ -22,6 +22,7 @@ import flow.Flow;
 public class StartFirmwareInstallPresenter extends WalletPresenter<StartFirmwareInstallPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
    @Inject FirmwareInteractor firmwareInteractor;
 
    public StartFirmwareInstallPresenter(Context context, Injector injector) {
@@ -36,7 +37,7 @@ public class StartFirmwareInstallPresenter extends WalletPresenter<StartFirmware
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<PrepareForUpdateCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> cardPrepared(command.getResult()))
-                  .onFail(ErrorHandler.create(getContext(), command -> prepareForUpdate()))
+                  .onFail(errorHandlerFactory.errorHandler(command -> prepareForUpdate()))
                   .wrap());
 
       prepareForUpdate();

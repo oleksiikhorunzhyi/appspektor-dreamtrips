@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
@@ -29,6 +30,7 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private boolean autoClearWasChanged = false;
    private final AutoClearSmartCardItemProvider itemProvider;
@@ -103,7 +105,7 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
                      bindToView(command.getResult());
                      autoClearWasChanged = true;
                   })
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(errorHandlerFactory.errorHandler())
                   .wrap());
    }
 

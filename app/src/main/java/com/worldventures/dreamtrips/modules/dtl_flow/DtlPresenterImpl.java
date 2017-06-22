@@ -7,26 +7,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
-import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements DtlPresenter<V, S> {
 
    @Inject protected AnalyticsInteractor analyticsInteractor;
-
-   protected ApiErrorPresenter apiErrorPresenter;
+   @Inject protected DtlApiErrorViewAdapter apiErrorViewAdapter;
 
    protected Context context;
 
    public DtlPresenterImpl(Context context) {
       this.context = context;
-      apiErrorPresenter = new ApiErrorPresenter();
    }
 
    public Context getContext() {
@@ -58,6 +52,6 @@ public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable
    @Override
    @CallSuper
    public void onDetachedFromWindow() {
-      apiErrorPresenter.dropView();
+      apiErrorViewAdapter.dropView();
    }
 }

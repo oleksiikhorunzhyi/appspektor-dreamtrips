@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
@@ -383,16 +382,6 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
     @Override
     public boolean isTabletLandscape() {
         return false;
-    }
-
-    @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
-        return false;
-    }
-
-    @Override
-    public void onApiCallFailed() {
-
     }
 
     @Override

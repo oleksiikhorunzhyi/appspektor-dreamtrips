@@ -17,7 +17,8 @@ def obtainResourceName(resourceName)
   startPos = resourceName.index('<')
   endPos   = resourceName.index('>')
   if (startPos != nil && endPos != nil)
-    return resourceName.slice(startPos, endPos).scan(/"([^"]*)"/)[0][0]
+    nameGroup = resourceName.slice(startPos, endPos).scan(/"([^"]*)"/)[0]
+    return nameGroup[0] unless nameGroup.nil?
   end
   return ""
 end
@@ -64,7 +65,7 @@ def lintCommit(commit)
   message += is_not_capitalized ? ":warning: Subject is not capitalized\n" : ""
   message += ends_with_dot ? ":warning: Subject ends with dot\n" : ""
 
-  fail(message) if is_failed
+  warn(message) if is_failed
 end
 
 fail('Labels are not assigned') if gitlab.mr_labels.empty?
@@ -75,6 +76,7 @@ searchDeletedResources()
 
 for commit in git.commits
 	next if commit.message =~ /^Merge (remote-tracking )?branch/
+  next if commit.message =~ /^Revert\s/
   lintCommit(commit)
 end
 

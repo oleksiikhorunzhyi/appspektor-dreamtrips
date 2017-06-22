@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
@@ -32,6 +33,7 @@ public class WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoPre
    @Inject MemberVideosInteractor memberVideosInteractor;
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final WalletHelpVideoDelegate helpVideoDelegate;
 
@@ -149,6 +151,10 @@ public class WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoPre
 
    void onSelectLastLocale() {
       getView().setSelectedLocale(helpVideoDelegate.getLastSelectedLocaleIndex());
+   }
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends HelpScreen {

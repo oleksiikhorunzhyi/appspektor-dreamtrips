@@ -242,10 +242,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       return false;
    }
 
-   @Override
-   public void onApiCallFailed() {
-      ViewUtils.setViewVisibility(View.GONE, progress);
-   }
+
 
    @Override
    public void locationResolutionRequired(Status status) {

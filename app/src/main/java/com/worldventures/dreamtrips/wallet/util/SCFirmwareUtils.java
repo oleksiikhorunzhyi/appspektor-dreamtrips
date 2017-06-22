@@ -53,4 +53,8 @@ public final class SCFirmwareUtils {
       return 0;
    }
 
+   public static String obtainRecordVersion(String nordicVersion) {
+      return firmwareVersionStringToInt(nordicVersion) >= 1080 ? "2.0.0" : "1.0.78";
+   }
+
 }

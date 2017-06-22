@@ -60,6 +60,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -318,8 +319,13 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .compose(new ActionPipeCacheWiper<>(recordInteractor.defaultRecordIdPipe()))
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
+            .map(loadedRecords -> {
+               records = loadedRecords.first;
+               return cardListStackConverter.mapToViewModel(loadedRecords.first, loadedRecords.second);
+            })
+            .distinct()
             .compose(bindViewIoToMainComposer())
-            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> { /*ignore here*/ });
+            .subscribe(this::cardsLoaded, throwable -> Timber.e(throwable, ""));
 
       //noinspection ConstantConditions
       smartCardInteractor.smartCardSyncPipe()
@@ -329,11 +335,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncSmartCard()).create());
    }
 
-   private void cardsLoaded(List<Record> loadedRecords, @Nullable String defaultRecordId) {
-      this.records = loadedRecords;
-      getView().setCardsCount(null != loadedRecords ? loadedRecords.size() : 0);
-      List<BaseViewModel> cardModels = cardListStackConverter.mapToViewModel(loadedRecords, defaultRecordId);
-
+   private void cardsLoaded(ArrayList<BaseViewModel> cardModels) {
+      getView().setCardsCount(null != this.records ? this.records.size() : 0);
       getView().showRecordsInfo(cardModels);
    }
 
@@ -386,7 +389,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       int ERROR_DIALOG_NO_INTERNET_CONNECTION = 2;
       int ERROR_DIALOG_NO_SMARTCARD_CONNECTION = 3;
 
-      void showRecordsInfo(List<BaseViewModel> result);
+      void showRecordsInfo(ArrayList<BaseViewModel> result);
 
       void setDefaultSmartCard();
 

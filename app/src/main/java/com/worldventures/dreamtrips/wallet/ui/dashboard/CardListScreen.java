@@ -12,11 +12,11 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogE
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.AnimatorProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.recycler.WrapContentLinearLayoutManager;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.MultiHolderAdapter;
@@ -52,7 +53,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -84,6 +84,9 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private MultiHolderAdapter multiAdapter;
    private ScreenWalletCardlistBinding binding;
 
+   private ArrayList<BaseViewModel> cardViewModels;
+   private static final String KEY_LOADED_CARDS_LIST = "CardListScreen#KEY_CARD_LIST";
+
    public CardListScreen(Context context) {
       this(context, null);
    }
@@ -111,7 +114,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onDetachedFromWindow() {
       dismissDialogs();
-
       super.onDetachedFromWindow();
    }
 
@@ -129,9 +131,18 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void showRecordsInfo(List<BaseViewModel> result) {
-      multiAdapter.updateItems(result);
-      emptyCardListView.setVisibility(multiAdapter.getItemCount() <= 1 ? VISIBLE : GONE);
+   public void showRecordsInfo(ArrayList<BaseViewModel> result) {
+      if (this.cardViewModels == null) {
+         bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
+               R.anim.bottom_to_top_layout_animation));
+         bankCardList.scheduleLayoutAnimation();
+      } else {
+         bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
+               R.anim.instant_layout_animation));
+      }
+      multiAdapter.swapList(result);
+      this.cardViewModels = result;
+      emptyCardListView.setVisibility(result != null && !result.isEmpty() ? GONE : VISIBLE);
    }
 
    @Override
@@ -276,13 +287,17 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    protected Parcelable onSaveInstanceState() {
       Bundle state = (Bundle) super.onSaveInstanceState();
       state.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
+      state.putParcelableArrayList(KEY_LOADED_CARDS_LIST, this.cardViewModels);
       return state;
    }
 
+   @SuppressWarnings("WrongConstant")
    @Override
    protected void onRestoreInstanceState(Parcelable state) {
       //noinspection all
-      firmwareAvailableView.setVisibility(((Bundle) state).getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      Bundle bundle = (Bundle) state;
+      firmwareAvailableView.setVisibility(bundle.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      this.cardViewModels = bundle.getParcelableArrayList(KEY_LOADED_CARDS_LIST);
       super.onRestoreInstanceState(state);
    }
 
@@ -296,7 +311,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       listAnimator.setSupportsChangeAnimations(false);
       bankCardList.setItemAnimator(listAnimator);
       bankCardList.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
-      LinearLayoutManager layout = new LinearLayoutManager(getContext());
+      WrapContentLinearLayoutManager layout = new WrapContentLinearLayoutManager(getContext());
       layout.setAutoMeasureEnabled(true);
       bankCardList.setLayoutManager(layout);
       bankCardList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
@@ -317,6 +332,11 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       smartCardWidget.setOnSettingsClickListener(v -> presenter.onSettingsChosen());
       smartCardWidget.setOnPhotoClickListener(v -> presenter.onProfileChosen());
       binding.transitionView.getRoot().setVisibility(GONE);
+
+
+      if (null != this.cardViewModels) {
+         showRecordsInfo(this.cardViewModels);
+      }
    }
 
    private void showDetails(View view, int overlap) {

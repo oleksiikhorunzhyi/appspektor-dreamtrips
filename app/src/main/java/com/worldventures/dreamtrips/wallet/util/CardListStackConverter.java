@@ -27,7 +27,7 @@ public class CardListStackConverter {
       this.utils = new WalletRecordUtil(context);
    }
 
-   public List<BaseViewModel> mapToViewModel(List<Record> loadedCards, @Nullable String defaultCardId) {
+   public ArrayList<BaseViewModel> mapToViewModel(List<Record> loadedCards, @Nullable String defaultCardId) {
 
       if (loadedCards == null) {
          new ArrayList<>();
@@ -46,7 +46,7 @@ public class CardListStackConverter {
                   })
                   .toList();
 
-      List<BaseViewModel> viewModels = new ArrayList<>();
+      ArrayList<BaseViewModel> viewModels = new ArrayList<>();
       CommonCardViewModel.StackType currentType = LOYALTY;
       for (int i = 0; i < commonCardViewModels.size(); i++) {
          if (!commonCardViewModels.get(i).getCardType().equals(currentType)) {
@@ -76,7 +76,7 @@ public class CardListStackConverter {
 
    private int getCardBackGroundResId(boolean isDefault) {
       if (isDefault) {
-         return R.drawable.background_card_transition;
+         return R.drawable.background_default_card;
       }
       return index % 2 == 0 ? R.drawable.background_card_dark_blue : R.drawable.background_card_blue;
    }

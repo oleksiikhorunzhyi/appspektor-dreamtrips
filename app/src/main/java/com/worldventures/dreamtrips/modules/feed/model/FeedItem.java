@@ -161,7 +161,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    }
 
    public boolean equalsWith(@Nullable FeedItem feedItem) {
-      return feedItem != null && getItem().equals(feedItem);
+      return feedItem != null && getItem().equals(feedItem.getItem());
    }
 
    ///////////////////////////////////////////////////////////////////////////

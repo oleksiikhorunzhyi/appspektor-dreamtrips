@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.config.service.command;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.config.GetConfigAction;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
@@ -31,6 +32,6 @@ public class LoadConfigurationCommand extends MappableApiActionCommand<GetConfig
 
    @Override
    public int getFallbackErrorMessage() {
-      return 0;
+      return R.string.smth_went_wrong;
    }
 }

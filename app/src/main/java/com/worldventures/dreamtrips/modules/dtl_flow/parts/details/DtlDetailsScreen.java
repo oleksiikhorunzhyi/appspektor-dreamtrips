@@ -65,4 +65,6 @@ public interface DtlDetailsScreen extends DtlScreen {
    void userHasPendingReview();
 
    boolean isTablet();
+
+   void hideReviewViewsOnTablets();
 }

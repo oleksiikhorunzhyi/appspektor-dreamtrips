@@ -10,7 +10,7 @@ import io.techery.janet.http.annotations.Part;
 import io.techery.janet.http.annotations.Response;
 import io.techery.janet.http.model.MultipartRequestBody;
 
-@HttpAction(value = "api/v1/Async/Asset/", method = HttpAction.Method.POST, type = HttpAction.Type.MULTIPART)
+@HttpAction(value = "api/v1/Async/Asset", method = HttpAction.Method.POST, type = HttpAction.Type.MULTIPART)
 public class UploadVideoHttpAction extends BaseVideoHttpAction {
 
    @Part("MemberId") String memberId;

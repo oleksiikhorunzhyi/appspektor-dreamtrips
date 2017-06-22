@@ -92,6 +92,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       getView().setMerchant(merchant);
       preExpandOffers();
       tryHideSuggestMerchantButton();
+      validateTablet();
+   }
+
+   @Override
+   public void validateTablet() {
+      if(getView().isTablet()){
+         getView().hideReviewViewsOnTablets();
+      }
    }
 
    @Override
@@ -279,25 +287,23 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             //Business logic: If the size is equals than 0, so we need to show an screen without info
             int countReview = Integer.parseInt(reviews.total());
             float ratingMerchant = Float.parseFloat(reviews.ratingAverage());
-            if (getView() != null) {
-               if (countReview == 0) {
-                  getView().addNoCommentsAndReviews();
-               } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
-                  //If list size is major or equals 3, must be show read all message button
-                  getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
-                  getView().showButtonAllRateAndReview();
-                  getView().setTextRateAndReviewButton(countReview);
-               } else {
-                  //if it doesn't, only show the comment in the same screen
-                  getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
-                  getView().hideButtonAllRateAndReview();
-               }
+            if (countReview == 0) {
+               getView().addNoCommentsAndReviews();
+            } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
+               //If list size is major or equals 3, must be show read all message button
+               getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
+               getView().showButtonAllRateAndReview();
+               getView().setTextRateAndReviewButton(countReview);
+            } else {
+               //if it doesn't, only show the comment in the same screen
+               getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
+               getView().hideButtonAllRateAndReview();
             }
          } else {
-            if (getView() != null) {
-               getView().addNoCommentsAndReviews();
-            }
+            getView().addNoCommentsAndReviews();
          }
+      } else {
+         getView().addNoCommentsAndReviews();
       }
    }
 
@@ -318,7 +324,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       }
    }
 
-   private boolean userHasReviews() {
+   public boolean userHasReviews() {
       if (merchant.reviews() == null) {
          return false;
       }
@@ -337,7 +343,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       return appSessionHolder.get().get().getUser();
    }
 
-   private boolean isReviewCached() {
+   public boolean isReviewCached() {
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 

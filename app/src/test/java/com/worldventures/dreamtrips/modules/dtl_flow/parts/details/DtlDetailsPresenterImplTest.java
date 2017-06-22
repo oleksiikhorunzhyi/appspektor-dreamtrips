@@ -45,6 +45,14 @@ public class DtlDetailsPresenterImplTest {
    }
 
    @Test
+   public void itShouldShowReviewsInTablet(){
+      initMerchant();
+      Mockito.when(view.isTablet()).thenReturn(true);
+      mPresenterDetail.validateTablet();
+      Mockito.verify(view).hideReviewViewsOnTablets();
+   }
+
+   @Test
    public void itShouldNotShowReview() throws Exception {
       initMerchant(false);
       mPresenterDetail.addNewComments(getMerchant());

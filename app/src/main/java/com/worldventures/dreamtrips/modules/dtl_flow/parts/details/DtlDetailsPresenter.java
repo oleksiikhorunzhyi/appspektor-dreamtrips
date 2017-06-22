@@ -23,4 +23,5 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void addNewComments(Merchant merchant);
    void onClickRatingsReview(Merchant merchant);
    void onClickRateView();
+   void validateTablet();
 }

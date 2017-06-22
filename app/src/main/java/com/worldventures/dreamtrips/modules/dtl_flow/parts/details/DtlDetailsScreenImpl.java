@@ -124,10 +124,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       showMessage();
-
-      if(isTablet()){
-         hideReviewViewsOnTablets();
-      }
    }
 
    @Override
@@ -486,7 +482,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public void showAllReviews() {
    }
 
-   private void hideReviewViewsOnTablets(){
+   @Override
+   public void hideReviewViewsOnTablets(){
       rateAndReviewBtn.setVisibility(View.GONE);
       hideButtonAllRateAndReview();
    }

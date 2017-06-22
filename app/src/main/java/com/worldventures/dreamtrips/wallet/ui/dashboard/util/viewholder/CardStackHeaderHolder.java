@@ -4,6 +4,8 @@ import com.techery.spares.adapter.HeaderItem;
 
 import org.immutables.value.Value;
 
+import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
+
 @Value.Immutable
 public abstract class CardStackHeaderHolder implements HeaderItem {
 
@@ -48,10 +50,20 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    }
 
    @Value.Default
+   public String phoneNumber() {
+      return "";
+   }
+
+   @Value.Default
    public boolean firmwareUpdateAvailable() {
       return false;
    }
 
    @Value.Default
    public int cardCount() { return 0;}
+
+   @Value.Default
+   public int displayType() {
+      return SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
+   }
 }

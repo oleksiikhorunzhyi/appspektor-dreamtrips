@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
@@ -153,49 +154,51 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @Override
    public void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .batteryLevel(batteryLevel)
             .connected(connected)
             .lock(lock)
             .stealthMode(stealthMode)
-            .build();
-
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+            .build());
    }
 
    @Override
    public void setSmartCardUser(SmartCardUser smartCardUser) {
       final SmartCardUserPhoto photo = smartCardUser.userPhoto();
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      final SmartCardUserPhone phone = smartCardUser.phoneNumber();
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .firstName(smartCardUser.firstName())
             .middleName(smartCardUser.middleName())
             .lastName(smartCardUser.lastName())
             .photoUrl(photo != null ? photo.uri() : "")
-            .build();
-
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+            .phoneNumber(phone != null ? phone.fullPhoneNumber() : "")
+            .build());
    }
 
    @Override
    public void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .firmwareUpdateAvailable(firmwareUpdateAvailable)
-            .build();
-
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+            .build());
    }
 
    @Override
    public void setCardsCount(int count) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .cardCount(count)
-            .build();
+            .build());
+   }
 
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+   @Override
+   public void setDisplayType(int displayType) {
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .displayType(displayType)
+            .build());
    }
 
    @Override

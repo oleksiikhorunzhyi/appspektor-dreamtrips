@@ -308,6 +308,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       startAutoplayVideos();
    }
 
+   @Override
+   public void dataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
+
    private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {
       int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
       if (suggestedPhotosSize > 0) {

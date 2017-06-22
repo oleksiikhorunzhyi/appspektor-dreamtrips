@@ -169,13 +169,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       accountTimelineStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<AccountTimelineStorageCommand>()
-                  .onSuccess(storageCommand -> {
-                     List<FeedItem> items = storageCommand.getResult();
-                     feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
-                           .send(new FeedItemsVideoProcessingStatusCommand(items));
-                     onItemsChanged(items);
-                  })
+                  .onSuccess(storageCommand -> timeLineUpdated(storageCommand.getResult()))
                   .onFail(this::handleError));
+   }
+
+   private void timeLineUpdated(List<FeedItem> items) {
+      feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
+            .send(new FeedItemsVideoProcessingStatusCommand(items));
+      onItemsChanged(items);
    }
 
    private void subscribeLoadNextFeeds() {

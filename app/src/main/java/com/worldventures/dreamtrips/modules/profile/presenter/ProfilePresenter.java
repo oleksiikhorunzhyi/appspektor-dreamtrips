@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.os.Bundle;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -20,7 +19,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPres
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -34,7 +32,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
       implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
@@ -74,7 +71,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       attachUserToView(user);
       loadProfile();
-      subscribeToLikesChanges();
       translationDelegate.onTakeView(view, feedItems);
    }
 
@@ -140,15 +136,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.onLikeItem(feedItem);
    }
 
-   private void subscribeToLikesChanges() {
-      feedInteractor.changeFeedEntityLikedStatusPipe()
-            .observe()
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(command -> itemLiked(command.getResult()))
-                  .onFail(this::handleError));
-   }
-
    @Override
    public void onCommentItem(FeedItem feedItem) {
       view.openComments(feedItem);
@@ -162,17 +149,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void onShowOriginal(FeedEntity translatableItem) {
       translationDelegate.showOriginal(translatableItem);
-   }
-
-   private void itemLiked(FeedEntity feedEntity) {
-      Queryable.from(feedItems).forEachR(feedItem -> {
-         FeedEntity item = feedItem.getItem();
-         if (item.getUid().equals(feedEntity.getUid())) {
-            item.syncLikeState(feedEntity);
-         }
-      });
-
-      refreshFeedItems();
    }
 
    public void onRefresh() {
@@ -219,6 +195,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedItems.clear();
       feedItems.addAll(newFeedItems);
       refreshFeedItems();
+      view.dataSetChanged();
    }
 
    public void refreshFeedItems() {
@@ -269,6 +246,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       void startLoading();
 
       void finishLoading();
+
+      void dataSetChanged();
 
       void refreshFeedItems(List<FeedItem> items, User user);
 

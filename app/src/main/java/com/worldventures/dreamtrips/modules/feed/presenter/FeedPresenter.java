@@ -42,7 +42,6 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.FeedStorageCommand;
@@ -120,7 +119,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       subscribePhotoGalleryCheck();
       subscribeUnreadConversationsCount();
       subscribeFriendsNotificationsCount();
-      subscribeToLikesChanges();
       subscribeToBackgroundUploadingOperations();
       translationDelegate.onTakeView(view, feedItems);
       if (feedItems.size() != 0) refreshFeedItems();
@@ -207,6 +205,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    private void feedChanged(List<FeedItem> items) {
       feedItems = new ArrayList<>(items);
       refreshFeedItems();
+      view.dataSetChanged();
       feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
             .send(new FeedItemsVideoProcessingStatusCommand(items));
    }
@@ -303,15 +302,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedActionHandlerDelegate.onLikeItem(feedItem);
    }
 
-   private void subscribeToLikesChanges() {
-      feedInteractor.changeFeedEntityLikedStatusPipe()
-            .observe()
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(command -> itemLiked(command.getResult()))
-                  .onFail(this::handleError));
-   }
-
    @Override
    public void onCommentItem(FeedItem feedItem) {
       view.openComments(feedItem);
@@ -335,17 +325,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
       feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
-   }
-
-   private void itemLiked(FeedEntity feedEntity) {
-      Queryable.from(feedItems).forEachR(feedItem -> {
-         FeedEntity item = feedItem.getItem();
-         if (item.getUid().equals(feedEntity.getUid())) {
-            item.syncLikeState(feedEntity);
-         }
-      });
-
-      refreshFeedItems();
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -503,6 +482,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       void setUnreadConversationCount(int count);
 
       void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList, List<PhotoPickerModel> suggestedPhotos);
+
+      void dataSetChanged();
 
       void startLoading();
 

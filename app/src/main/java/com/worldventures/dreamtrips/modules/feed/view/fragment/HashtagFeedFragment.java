@@ -253,6 +253,11 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    }
 
    @Override
+   public void dataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
+
+   @Override
    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
       statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
    }

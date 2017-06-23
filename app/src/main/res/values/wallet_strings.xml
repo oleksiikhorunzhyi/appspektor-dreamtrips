@@ -565,4 +565,36 @@
    <string name="wallet_settings_general_display_photo_required_title">Photo required</string>
    <string name="wallet_settings_general_display_photo_required_message">A photo is required for this display option.</string>
 
+   <!-- Payment Feedback screen -->
+   <string name="wallet_settings_help_payment_feedback_title_screen">Payment Feedback</string>
+   <string name="wallet_payment_feedback_payment_experience_label">Tell us about your payment experience</string>
+   <string name="wallet_payment_feedback_was_success_label">Was your payment successful?</string>
+   <string name="wallet_payment_feedback_number_attempts_label"><![CDATA[<font color=#dc0013>*</font> Number of payment attempts]]></string>
+   <string name="wallet_payment_feedback_merchant_label">Merchant</string>
+   <string name="wallet_payment_feedback_merchant_type_label"><![CDATA[<font color=#dc0013>*</font> Merchant Type]]></string>
+   <string name="wallet_payment_feedback_merchant_name_label"><![CDATA[<font color=#dc0013>*</font> Merchant Name]]></string>
+   <string name="wallet_payment_feedback_merchant_name_hint">Enter merchant name</string>
+   <string name="wallet_payment_feedback_merchant_location_label">Merchant Location</string>
+   <string name="wallet_payment_feedback_merchant_address_1_label">Address line 1</string>
+   <string name="wallet_payment_feedback_merchant_address_2_label">Address line 2 (optional)</string>
+   <string name="wallet_payment_feedback_merchant_address_city_label">City</string>
+   <string name="wallet_payment_feedback_merchant_address_tx_label">TX</string>
+   <string name="wallet_payment_feedback_merchant_address_zip_label">Zip</string>
+   <string name="wallet_payment_feedback_payment_terminal_label">Payment Terminal</string>
+   <string name="wallet_payment_feedback_payment_terminal_name_model">Terminal Name &amp; Model Number</string>
+   <string name="wallet_payment_feedback_enter_name_model_hint">Enter name and model</string>
+   <string name="wallet_payment_feedback_how_pay_label">How did you pay?</string>
+   <string name="wallet_payment_feedback_magnetic_swipe_label">Magnetic Swipe</string>
+   <string name="wallet_payment_feedback_magnetic_swipe_description">Swiped card through reader</string>
+   <string name="wallet_payment_feedback_wireless_magnetic_label">Wireless Magnetic</string>
+   <string name="wallet_payment_feedback_wireless_magnetic_description">Held card near reader</string>
+   <string name="wallet_payment_feedback_additional_info_title">Additional info</string>
+   <string name="wallet_payment_feedback_notes_label">Notes</string>
+   <string name="wallet_payment_feedback_notes_hint">Enter Notes (Optional)</string>
+   <string-array name="wallet_payment_feedback_merchant">
+      <item>Retail</item>
+   </string-array>
+   <string name="wallet_settings_help_payment_feedback_dialog_discard_changes">Discard changes?</string>
+   <string name="wallet_settings_help_payment_feedback_dialog_changes_positive">Discard</string>
+
 </resources>

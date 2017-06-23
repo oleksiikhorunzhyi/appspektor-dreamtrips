@@ -57,9 +57,9 @@
    <style name="WalletTheme.SpinnerStyle" parent="Widget.AppCompat.Spinner">
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
       <item name="android:textColor">@color/wallet_button_text_colors</item>
-      <item name="android:backgroundTint">@android:color/white</item>
+      <item name="android:backgroundTint">#cccccc</item>
 
-      <item name="backgroundTint">@android:color/white</item>
+      <item name="backgroundTint">#cccccc</item>
    </style>
 
    <style name="WalletTheme.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">
@@ -204,8 +204,45 @@
       <item name="android:textSize">@dimen/font_normal</item>
    </style>
 
+   <style name="WalletTheme.PaymentFeedbackEditText">
+      <item name="android:imeOptions">actionNext</item>
+      <item name="android:inputType">textPersonName</item>
+      <item name="android:maxLines">1</item>
+      <item name="android:textColor">#666666</item>
+      <item name="android:backgroundTint">@color/wallet_bottom_line_fields_payment_feedback</item>
+      <item name="android:textColorHint">@color/grey</item>
+      <item name="android:textSize">@dimen/font_normal</item>
+   </style>
+
+   <style name="WalletTheme.PaymentFeedbackEditText.Notes" parent="WalletTheme.PaymentFeedbackEditText">
+      <item name="android:imeOptions">actionDone</item>
+      <item name="android:inputType">textMultiLine</item>
+      <item name="android:background">@null</item>
+      <item name="android:minLines">6</item>
+      <item name="android:lines">1000</item>
+      <item name="android:singleLine">false</item>
+      <item name="android:scrollbars">vertical</item>
+      <item name="android:gravity">top</item>
+   </style>
+
    <style name="WalletTheme.ProfileField.PhoneNumber" parent="WalletTheme.ProfileField">
       <item name="android:inputType">number</item>
+   </style>
+
+   <style name="WalletTheme.PaymentFeedbackSecondaryText">
+      <item name="android:textColor">@color/wallet_payment_feedback_secondary_text</item>
+      <item name="android:textSize">@dimen/font_medium</item>
+   </style>
+
+   <style name="WalletTheme.PaymentFeedbackSubjectView">
+      <item name="android:textColor">#8e8e93</item>
+      <item name="android:textAllCaps">true</item>
+      <item name="android:paddingTop">@dimen/spacing_tiny</item>
+      <item name="android:paddingBottom">@dimen/spacing_tiny</item>
+      <item name="android:paddingLeft">@dimen/spacing_normal</item>
+      <item name="android:textStyle">bold</item>
+      <item name="android:textSize">@dimen/font_medium</item>
+      <item name="android:background">#eeeeee</item>
    </style>
 
    <style name="WalletTheme.BottomSheetMenuItem">

@@ -33,7 +33,11 @@ public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmar
       final String username = userSessionHolder.get().get().getUsername();
       creator.createBody(photoUri)
             .flatMap(body -> janet.createPipe(UploadSmartCardImageHttpAction.class)
-                  .createObservableResult(new UploadSmartCardImageHttpAction(BuildConfig.UPLOADERY_API_URL, username, smartCardId, body)))
-            .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
+                  .createObservableResult(new UploadSmartCardImageHttpAction(
+                        BuildConfig.UPLOADERY_API_URL,
+                        username,
+                        smartCardId,
+                        body))
+            ).subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
    }
 }

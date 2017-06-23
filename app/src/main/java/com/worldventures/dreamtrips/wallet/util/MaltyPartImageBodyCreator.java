@@ -71,5 +71,4 @@ public class MaltyPartImageBodyCreator {
    private String createFakeFileName() {
       return userSessionHolder.get().get().getUsername() + "_social_avatar";
    }
-
 }

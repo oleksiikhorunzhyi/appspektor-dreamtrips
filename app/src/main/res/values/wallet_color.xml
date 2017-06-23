@@ -59,9 +59,11 @@
 
    <color name="wallet_settings_feedback_message_stroke">#76b2fe</color>
    <color name="wallet_settings_feedback_line_divider">#76b2fe</color>
+   <color name="wallet_payment_feedback_secondary_text">#797979</color>
 
    <color name="wallet_settings_display_options_add_info">#169BD5</color>
 
    <color name="wallet_default_card_text">#006ca2</color>
+   <color name="wallet_bottom_line_fields_payment_feedback">#979797</color>
 
 </resources>

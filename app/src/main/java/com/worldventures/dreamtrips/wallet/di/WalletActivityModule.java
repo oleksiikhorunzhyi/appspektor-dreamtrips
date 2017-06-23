@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPr
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
@@ -143,7 +144,8 @@ import dagger.Provides;
             SendFeedbackPresenter.class,
             WalletHelpVideoPresenter.class,
             HelpDocumentPresenter.class,
-            PinProposalPresenter.class
+            PinProposalPresenter.class,
+            PaymentFeedbackPresenter.class
       },
       complete = false, library = true
 )

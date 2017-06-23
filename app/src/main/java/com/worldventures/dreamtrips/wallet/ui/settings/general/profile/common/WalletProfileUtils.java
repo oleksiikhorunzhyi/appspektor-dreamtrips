@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;

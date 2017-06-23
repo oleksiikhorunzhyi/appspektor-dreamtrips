@@ -1,6 +1,7 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback;
+package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
@@ -8,11 +9,12 @@ import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsHelpPaymentFeedbackBinding;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
@@ -24,42 +26,46 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel;
 
 import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.BaseSendFeedbackPresenter.MAX_PHOTOS_ATTACHMENT;
 
-public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter.Screen, SendFeedbackPresenter, SendFeedbackPath> implements SendFeedbackPresenter.Screen {
+public class PaymentFeedbackScreen extends WalletLinearLayout<PaymentFeedbackPresenter.Screen, PaymentFeedbackPresenter, PaymentFeedbackPath> implements PaymentFeedbackPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-
-   @InjectView(R.id.tv_description) TextView tvDescription;
-   @InjectView(R.id.et_feedback_message) EditText etFeedbackMessage;
    @InjectView(R.id.feedback_add_photos) View addPhotosButton;
    @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView feedbackAttachments;
+   @InjectView(R.id.et_merchant_name) EditText tvMerchantName;
+
+   private PaymentFeedbackViewModel paymentFeedbackView = new PaymentFeedbackViewModel();
 
    private MenuItem actionSendMenuItem = null;
-   private Observable<CharSequence> textMessageObserver;
    private MediaPickerService mediaPickerService;
+   private ScreenWalletSettingsHelpPaymentFeedbackBinding binding;
 
-   public SendFeedbackScreen(Context context) {
+   private Observable<CharSequence> observerMerchantName;
+
+   public PaymentFeedbackScreen(Context context) {
       super(context);
    }
 
-   public SendFeedbackScreen(Context context, AttributeSet attrs) {
+   public PaymentFeedbackScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 
    @NonNull
    @Override
-   public SendFeedbackPresenter createPresenter() {
-      return new SendFeedbackPresenter(getContext(), getInjector());
+   public PaymentFeedbackPresenter createPresenter() {
+      return new PaymentFeedbackPresenter(getContext(), getInjector());
    }
 
    @Override
@@ -70,33 +76,59 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      if (isInEditMode()) return;
-      toolbar.setNavigationOnClickListener(v -> onNavigationBack());
       supportConnectionStatusLabel(false);
       supportHttpConnectionStatusLabel(true);
+      if (isInEditMode()) return;
+
+      initToolbar();
+
+      binding = DataBindingUtil.bind(this);
+      binding.setPaymentFeedbackViewModel(paymentFeedbackView);
+      setupAsteriskColor();
 
       //noinspection WrongConstant
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
-      textMessageObserver = RxTextView.textChanges(etFeedbackMessage);
 
-      initItemMenu();
-      applyFeedbackType(getPath().getFeedbackType());
+      observerMerchantName = RxTextView.textChanges(tvMerchantName);
    }
 
-   private void applyFeedbackType(SendFeedbackPath.FeedbackType feedbackType) {
-      boolean smartCardFeedback = feedbackType == SendFeedbackPath.FeedbackType.SmartCardFeedback;
-      toolbar.setTitle(smartCardFeedback ? R.string.wallet_card_settings_send_feedback : R.string.wallet_card_settings_customer_support);
-      tvDescription.setText(smartCardFeedback ? R.string.wallet_settings_help_feedback_user_approve_info :
-            R.string.wallet_settings_help_customer_support_email_us_description);
-      etFeedbackMessage.setHint(smartCardFeedback ? R.string.wallet_settings_help_feedback_enter_comment_hint :
-            R.string.wallet_settings_help_customer_support_email_us_hint);
+   private void setupAsteriskColor() {
+      binding.incAttempts.tvCounterTitle.setText(ProjectTextUtils.fromHtml(
+            getString(R.string.wallet_payment_feedback_number_attempts_label)
+      ));
+      binding.incMerchant.tvMerchantTypeTitle.setText(ProjectTextUtils.fromHtml(
+            getString(R.string.wallet_payment_feedback_merchant_type_label)
+      ));
+      binding.incMerchant.tvMerchantNameTitle.setText(ProjectTextUtils.fromHtml(
+            getString(R.string.wallet_payment_feedback_merchant_name_label)
+      ));
    }
 
-   private void onNavigationBack() {
-      getPresenter().goBack();
-      mediaPickerService.hidePicker();
-      getPresenter().clearAttachments();
+   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
+      @Override
+      public void onClosed() {
+         presenter.setupInputMode();
+      }
+
+      @Override
+      public void onOpened() {}
+   };
+
+   private void initToolbar() {
+      toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+
+      toolbar.inflateMenu(R.menu.menu_wallet_payment_feedback);
+      actionSendMenuItem = toolbar.getMenu().findItem(R.id.action_send);
+
+      toolbar.setOnMenuItemClickListener(item -> {
+         switch (item.getItemId()) {
+            case R.id.action_send:
+               getPresenter().sendFeedback();
+               break;
+         }
+         return true;
+      });
    }
 
    @Override
@@ -105,18 +137,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       if (isInEditMode()) return;
       initAttachments();
       getPresenter().fetchAttachments();
-   }
-
-   private void initItemMenu() {
-      toolbar.inflateMenu(R.menu.menu_wallet_settings_help);
-      actionSendMenuItem = toolbar.getMenu().findItem(R.id.action_send);
-      toolbar.setOnMenuItemClickListener(item -> {
-         switch (item.getItemId()) {
-            case R.id.action_send:
-               getPresenter().sendFeedback(getPath().getFeedbackType(), etFeedbackMessage.getText().toString());
-         }
-         return true;
-      });
    }
 
    private void initAttachments() {
@@ -150,26 +170,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
             .show();
    }
 
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         presenter.setupInputMode();
-      }
-
-      @Override
-      public void onOpened() {
-         clearMessageFocus();
-      }
-   };
-
-   private void clearMessageFocus() {
-      // because clearFocus() method does not work
-      etFeedbackMessage.setFocusable(false);
-      etFeedbackMessage.setFocusableInTouchMode(false);
-      etFeedbackMessage.setFocusable(true);
-      etFeedbackMessage.setFocusableInTouchMode(true);
-   }
-
    @OnClick(R.id.feedback_add_photos)
    public void onAddAttachments() {
       getPresenter().chosenAttachments();
@@ -185,11 +185,6 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
    }
 
-   @Override
-   public Observable<CharSequence> getTextFeedbackMessage() {
-      return textMessageObserver;
-   }
-
    public void showRetryUploadingUiForAttachment(EntityStateHolder<FeedbackImageAttachment> attachmentHolder) {
       new MaterialDialog.Builder(getContext())
             .items(R.array.wallet_settings_help_feedback_failed_uploading_attachment)
@@ -203,6 +198,12 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
                      break;
                }
             }).show();
+   }
+
+   @Override
+   public void removeAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
+      feedbackAttachments.removeItem(holder);
+      updateAttachmentsViewVisibility();
    }
 
    @Override
@@ -233,18 +234,45 @@ public class SendFeedbackScreen extends WalletLinearLayout<SendFeedbackPresenter
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_feedback_progress_send, false),
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_settings_help_feedback_has_been_sent),
-            new SimpleErrorDialogView<SendWalletFeedbackCommand>(getContext(), R.string.wallet_settings_help_feedback_sending_fail)
+            new SimpleErrorDialogView<>(getContext(), R.string.wallet_settings_help_feedback_sending_fail)
       );
    }
 
    @Override
-   public void removeAttachment(EntityStateHolder<FeedbackImageAttachment> image) {
-      feedbackAttachments.removeItem(image);
-      updateAttachmentsViewVisibility();
+   public Observable<CharSequence> observeMerchantName() {
+      return observerMerchantName;
+   }
+
+   @Override
+   public PaymentFeedbackViewModel getPaymentFeedbackViewModel() {
+      return paymentFeedbackView;
+   }
+
+   @Override
+   public void showBackConfirmDialog() {
+      new MaterialDialog.Builder(getContext()).content(R.string.wallet_settings_help_payment_feedback_dialog_discard_changes)
+            .positiveText(R.string.wallet_settings_help_payment_feedback_dialog_changes_positive)
+            .negativeText(R.string.cancel)
+            .onPositive((dialog, which) -> onNavigationBack())
+            .onNegative((dialog, which) -> dialog.cancel())
+            .show();
+   }
+
+   private void onNavigationBack() {
+      mediaPickerService.hidePicker();
+      getPresenter().clearAttachments();
+      getPresenter().back();
    }
 
    private void updateAttachmentsViewVisibility() {
       int itemsCount = feedbackAttachments.getItemCount();
       feedbackAttachments.setVisibility(itemsCount > 0 ? View.VISIBLE : View.GONE);
+   }
+
+   @OnItemSelected(R.id.s_merchant_type)
+   public void onMerchantTypeSelected(int position) {
+      paymentFeedbackView.getMerchantView().setMerchantType(binding.incMerchant.sMerchantType.getAdapter()
+            .getItem(position)
+            .toString());
    }
 }

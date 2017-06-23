@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -141,6 +142,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public void showDialog() {
+      SoftInputUtil.hideSoftInputMethod(this);
       photoActionDialog = new WalletPhotoProposalDialog(getContext());
       photoActionDialog.setOnChoosePhotoAction(this::onChoosePhotoClick);
       photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);

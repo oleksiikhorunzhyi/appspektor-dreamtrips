@@ -12,6 +12,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
@@ -141,6 +142,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
 
    @Override
    public void showDialog() {
+      SoftInputUtil.hideSoftInputMethod(this);
       photoActionDialog = new WalletPhotoProposalDialog(getContext());
       photoActionDialog.setOnChoosePhotoAction(this::onChoosePhotoClick);
       photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);

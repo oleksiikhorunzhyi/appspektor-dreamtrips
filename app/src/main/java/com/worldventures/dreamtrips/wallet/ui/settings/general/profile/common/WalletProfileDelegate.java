@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
@@ -75,6 +76,16 @@ public class WalletProfileDelegate {
          model.setChosenPhotoUri(user.getAvatar().getThumb());
       }
       return model;
+   }
+
+   public SmartCardUser createSmartCardUser(ProfileViewModel profile) {
+      return ImmutableSmartCardUser.builder()
+            .firstName(profile.getFirstName())
+            .middleName(profile.getMiddleName())
+            .lastName(profile.getLastName())
+            .phoneNumber(createPhone(profile))
+            .userPhoto(createPhoto(profile))
+            .build();
    }
 
    public String provideInitialPhotoUrl(User user) {

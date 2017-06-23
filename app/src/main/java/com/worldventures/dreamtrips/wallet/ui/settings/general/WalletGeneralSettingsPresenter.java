@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPath;
@@ -98,7 +99,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    void openDisplayOptionsScreen() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            navigator.go(new DisplayOptionsSettingsPath());
+            fetchSmartCardUser(scUser -> navigator.go(new DisplayOptionsSettingsPath(scUser, DisplayOptionsSource.SETTINGS)));
          } else {
             getView().showSCNonConnectionDialog();
          }
@@ -177,6 +178,15 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+            );
+   }
+
+   private void fetchSmartCardUser(Action1<SmartCardUser> userAction1) {
+      smartCardInteractor.smartCardUserPipe()
+            .createObservable(SmartCardUserCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
+                  .onSuccess(command -> userAction1.call(command.getResult()))
             );
    }
 

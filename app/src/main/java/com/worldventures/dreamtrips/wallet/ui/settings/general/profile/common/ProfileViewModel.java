@@ -140,4 +140,8 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
          return new ProfileViewModel[size];
       }
    };
+
+   public boolean isEmpty() {
+      return firstName.isEmpty() && lastName.isEmpty();
+   }
 }

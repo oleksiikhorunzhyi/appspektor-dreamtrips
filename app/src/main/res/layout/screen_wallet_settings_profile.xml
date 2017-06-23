@@ -23,9 +23,15 @@
             name="onEditTextFocusChange"
             type="View.OnFocusChangeListener"
             />
+
+      <variable
+            name="onDisplaySettingsClick"
+            type="View.OnClickListener"
+            />
    </data>
 
    <com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen
+         android:id="@+id/root_wallet_settings_profile_screen"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:background="@android:color/white"
@@ -52,6 +58,25 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                >
+
+            <TextView
+                  android:id="@+id/tv_display_settings"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="16dp"
+                  android:gravity="center"
+                  android:onClick="@{onDisplaySettingsClick}"
+                  android:text="@string/wallet_card_settings_profile_display_settings_label"
+                  android:textAlignment="center"
+                  android:textColor="@color/wallet_color_primary"
+                  android:textSize="18sp"
+                  android:textStyle="bold"
+                  app:layout_constraintTop_toBottomOf="@+id/view_edit_btn_overlay"
+                  android:layout_marginRight="8dp"
+                  app:layout_constraintRight_toRightOf="parent"
+                  android:layout_marginLeft="8dp"
+                  app:layout_constraintLeft_toLeftOf="parent"
+                  />
 
             <com.facebook.drawee.view.SimpleDraweeView
                   android:id="@+id/photo_preview"
@@ -129,7 +154,6 @@
                   android:layout_height="0dp"
                   android:layout_marginEnd="40dp"
                   android:layout_marginStart="40dp"
-                  android:layout_marginTop="20dp"
                   android:gravity="center_horizontal"
                   android:text="@string/wallet_card_settings_profile_warning"
                   android:textColor="@color/grey"
@@ -137,8 +161,10 @@
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintHeight_default="wrap"
                   app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@+id/photo_preview"
                   app:layout_constraintWidth_default="wrap"
+                  tools:layout_editor_absoluteX="64dp"
+                  android:layout_marginTop="16dp"
+                  app:layout_constraintTop_toBottomOf="@+id/tv_display_settings"
                   />
 
             <EditText

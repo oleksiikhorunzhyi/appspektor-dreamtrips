@@ -23,7 +23,6 @@ class DisplayOptionsPagerAdapter extends PagerAdapter {
          add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME);
          add(SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY);
          add(SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME);
-
       }
    };
 

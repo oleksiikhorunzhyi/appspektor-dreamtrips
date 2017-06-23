@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
@@ -12,7 +13,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -39,6 +39,8 @@ import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
+   public static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
+
    @Inject Activity activity;
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -56,12 +58,26 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    @Override
-   public void attachView(Screen view) {
-      super.attachView(view);
-      attachProfile(view);
-      observeSetupUserCommand(view);
+   public void onSaveInstanceState(Bundle bundle) {
+      super.onSaveInstanceState(bundle);
+      bundle.putParcelable(PROFILE_STATE_KEY, getView().getProfile());
+   }
 
-      delegate.observePickerAndCropper(view);
+   @Override
+   public void onRestoreInstanceState(Bundle instanceState) {
+      super.onRestoreInstanceState(instanceState);
+      getView().setProfile(instanceState.getParcelable(PROFILE_STATE_KEY));
+   }
+
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      if (getView().getProfile().isEmpty()) {
+         attachProfile(getView());
+      }
+      observeSetupUserCommand(getView());
+
+      delegate.observePickerAndCropper(getView());
       delegate.sendAnalytics(new SetupUserAction());
       delegate.setupInputMode(activity);
    }
@@ -114,16 +130,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    void onUserDataConfirmed() {
       // noinspection ConstantConditions
       final ProfileViewModel profile = getView().getProfile();
-      wizardInteractor.setupUserDataPipe()
-            .send(new SetupUserDataCommand(
-                  ImmutableSmartCardUser.builder()
-                        .firstName(profile.getFirstName())
-                        .middleName(profile.getMiddleName())
-                        .lastName(profile.getLastName())
-                        .phoneNumber(delegate.createPhone(profile))
-                        .userPhoto(delegate.createPhoto(profile))
-                        .build()
-            ));
+      final SmartCardUser smartCardUser = delegate.createSmartCardUser(profile);
+      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(smartCardUser));
       if (profile.isPhotoEmpty()) {
          smartCardInteractor.removeUserPhotoActionPipe()
                .send(new RemoveUserPhotoAction());

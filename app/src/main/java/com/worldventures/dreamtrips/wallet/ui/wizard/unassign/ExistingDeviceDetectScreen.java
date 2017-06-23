@@ -64,7 +64,7 @@ public class ExistingDeviceDetectScreen extends WalletLinearLayout<ExistingDevic
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_existing_device_detect_progress, false),
             ErrorViewFactory.<ReAssignCardCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> presenter.retryReAssigning(), command -> { /*nothing*/}))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), command -> presenter.retryReAssigning(), command -> { /*nothing*/}))
                   .build()
       );
    }

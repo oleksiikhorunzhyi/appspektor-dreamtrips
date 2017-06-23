@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -34,6 +35,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject Navigator navigator;
    @Inject WalletAccessValidator walletAccessValidator;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    public WalletStartPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -102,6 +104,10 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
 
    private void navigateToWizard() {
       navigator.single(new WizardWelcomePath(ProvisioningMode.STANDARD), Flow.Direction.REPLACE);
+   }
+
+   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen {

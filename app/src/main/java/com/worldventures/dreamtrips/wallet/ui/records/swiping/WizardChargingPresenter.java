@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
@@ -40,6 +41,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    public WizardChargingPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -111,7 +113,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private <T> ErrorHandler.Builder<T> createErrorHandlerBuilder(Class<T> clazz) {
-      return ErrorHandler.<T>builder(getContext())
+      return errorHandlerFactory.<T>builder()
             .handle(NotConnectedException.class, t -> {
                analyticsInteractor.walletAnalyticsCommandPipe()
                      .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));

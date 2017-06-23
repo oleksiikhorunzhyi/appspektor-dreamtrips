@@ -42,15 +42,15 @@ public class AppVersionNameBuilder {
       return String.format("%s.%s.%s", versionMajor, versionMinor, versionPatch);
    }
 
-   private boolean isCurrentFlavor(String flavor) {
+   private static boolean isCurrentFlavor(String flavor) {
       return FLAVOR.contains(flavor);
    }
 
-   private boolean isCurrentBuildType(String flavor) {
+   private static boolean isCurrentBuildType(String flavor) {
       return BUILD_TYPE.equals(flavor);
    }
 
-   private String generateName(String name) {
+   private static String generateName(String name) {
       String result = String.format("%s.%s.%s-%s", versionMajor, versionMinor, versionPatch, versionBuild);
       if (!android.text.TextUtils.isEmpty(name)) {
          result = String.format("%s-%s", result, name);

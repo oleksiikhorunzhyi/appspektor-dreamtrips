@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.api.feedback.model.Feedback;
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
-import com.worldventures.dreamtrips.api.feedback.model.ImmutableSmartCardMetadata;
+import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardMetadata;
+import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -57,14 +58,14 @@ public abstract class SendWalletFeedbackCommand extends CommandWithError<Void> i
       ImmutableFeedback.Builder builder = ImmutableFeedback.builder()
             .reasonId(0)
             .text(description)
-            .metadata(provideMetadata())
-            .smartCardMetadata(provideSmartCardMetadata());
+            .metadata(provideMetadata()); // todo It's broken by feature payment feedback
+//            .smartCardMetadata(provideSmartCardMetadata());
       builder.attachments(mappery.convert(imageAttachments, FeedbackAttachment.class));
 
       return builder.build();
    }
 
-   private Feedback.SmartCardMetadata provideSmartCardMetadata() {
+   private SmartCardMetadata provideSmartCardMetadata() {
       SmartCard smartCard = snappyRepository.getSmartCard();
       SmartCardDetails details = snappyRepository.getSmartCardDetails();
       SmartCardFirmware firmware = snappyRepository.getSmartCardFirmware();

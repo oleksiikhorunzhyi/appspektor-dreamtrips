@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCa
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
@@ -45,6 +46,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BackStackDelegate backStackDelegate;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private final WalletProfileDelegate delegate;
    private SmartCardUser user;

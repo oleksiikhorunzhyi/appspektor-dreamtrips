@@ -118,7 +118,7 @@ public class WalletHelpDocumentsScreen extends WalletLinearLayout<WalletHelpDocu
    public OperationView<GetDocumentsCommand> provideOperationGetDocuments() {
       return new ComposableOperationView<>(
             ErrorViewFactory.<GetDocumentsCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> presenter.refreshDocuments(),
                         command -> {}))
                   .build());

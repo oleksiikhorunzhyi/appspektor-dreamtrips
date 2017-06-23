@@ -10,14 +10,12 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.UserTimelineStorageCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.UserTimelineStorageDelegate;
-import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
@@ -35,7 +33,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -93,8 +90,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       userTimelineStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UserTimelineStorageCommand>()
-               .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
-               .onFail(this::handleError));
+                  .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+                  .onFail(this::handleError));
    }
 
    private void subscribeRefreshFeeds() {
@@ -126,11 +123,11 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       profileInteractor.publicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPublicProfileCommand>()
-            .onSuccess(command -> this.onProfileLoaded(command.getResult()))
-            .onFail((getPublicProfileCommand, throwable) -> {
-               view.finishLoading();
-               handleError(getPublicProfileCommand, throwable);
-            }));
+                  .onSuccess(command -> this.onProfileLoaded(command.getResult()))
+                  .onFail((getPublicProfileCommand, throwable) -> {
+                     view.finishLoading();
+                     handleError(getPublicProfileCommand, throwable);
+                  }));
    }
 
    public void onStartChatClicked() {

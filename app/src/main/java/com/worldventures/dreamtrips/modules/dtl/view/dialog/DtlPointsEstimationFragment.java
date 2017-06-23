@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -84,13 +83,24 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    }
 
    @Override
+   public void hideProgress() {
+      progressBar.setVisibility(View.INVISIBLE);
+      calculateButton.setVisibility(View.VISIBLE);
+   }
+
+   @Override
    public void showError(@StringRes int errorRes) {
       inputPoints.setError(getString(errorRes));
    }
 
    @Override
+   public void showError(String error) {
+      inputPoints.setError(error);
+   }
+
+   @Override
    public void showEstimatedPoints(int value) {
-      stopProgress();
+      hideProgress();
       pointsEstimated.setText(getString(R.string.dtl_dt_points, value));
    }
 
@@ -108,23 +118,5 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    @OnClick(R.id.button_cancel)
    void onCancel() {
       dialogNavigatorInteractor.closeDialogActionPipe().send(new CloseDialogCommand());
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
-         inputPoints.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
-      }
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-      stopProgress();
-   }
-
-   private void stopProgress() {
-      progressBar.setVisibility(View.INVISIBLE);
-      calculateButton.setVisibility(View.VISIBLE);
    }
 }

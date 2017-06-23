@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCom
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -78,7 +79,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
          navigateToPath(DtlMerchantsPath.getDefault());
          return;
       }
-      apiErrorPresenter.setView(getView());
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(getView(), () -> getView().hideProgress()));
 
       tryHideNearMeButton();
       // remember this observable - we will start listening to search below only after this fires
@@ -189,7 +190,10 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SearchLocationAction>().onStart(command -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+                  .onFail((action, exception) -> {
+                     getView().hideProgress();
+                     apiErrorViewAdapter.handleError(action, exception);
+                  })
                   .onSuccess(this::onSearchFinished));
    }
 

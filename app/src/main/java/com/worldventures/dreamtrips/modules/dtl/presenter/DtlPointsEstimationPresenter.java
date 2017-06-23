@@ -8,12 +8,14 @@ import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimati
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 
 import javax.inject.Inject;
 
@@ -27,6 +29,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    protected final Merchant merchant;
 
    @Inject DtlTransactionInteractor transactionInteractor;
+   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
 
    public DtlPointsEstimationPresenter(Merchant merchant) {
       this.merchant = merchant;
@@ -35,7 +38,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> view.hideProgress()));
       view.showCurrency(merchant.asMerchantAttributes().defaultCurrency());
       bindApiJob();
    }
@@ -45,7 +48,13 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>().onStart(action -> view.showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+                  .onFail((action, exception) -> {
+                     if (action.errorResponse() != null) {
+                        String reason = action.errorResponse().reasonFor(BILL_TOTAL);
+                        if (reason != null) view.showError(reason);
+                     }
+                     apiErrorViewAdapter.handleError(action, exception);
+                  })
                   .onSuccess(action -> view.showEstimatedPoints(action.estimatedPoints().points().intValue())));
    }
 
@@ -75,11 +84,15 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
       return true;
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView, InformView {
 
       void showProgress();
 
+      void hideProgress();
+
       void showError(@StringRes int errorRes);
+
+      void showError(String error);
 
       void showEstimatedPoints(int value);
 

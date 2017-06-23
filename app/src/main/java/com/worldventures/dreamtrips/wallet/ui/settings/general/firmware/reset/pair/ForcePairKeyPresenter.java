@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFi
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePath;
@@ -23,6 +24,7 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
 
    @Inject Navigator navigator;
    @Inject FirmwareInteractor firmwareInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    public ForcePairKeyPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -41,7 +43,7 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
             .compose(new ActionPipeCacheWiper<>(firmwareInteractor.connectForFirmwareUpdatePipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<ConnectForFirmwareUpdate>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardConnected())
-                  .onFail(ErrorHandler.<ConnectForFirmwareUpdate>builder(getContext())
+                  .onFail(errorHandlerFactory.<ConnectForFirmwareUpdate>builder()
                         .handle(SmartCardConnectException.class, R.string.wallet_smartcard_connection_error)
                         .defaultAction(command -> goBack())
                         .build())

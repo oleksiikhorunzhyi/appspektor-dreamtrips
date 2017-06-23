@@ -2,6 +2,7 @@ ext {
    moduleDependencies = [:]
    moduleDependencies.repos = [
          { o -> o.jcenter() },
+         { o -> o.mavenLocal() },
          { o -> o.maven { url 'https://maven.google.com' } },
          { o -> o.maven { url 'https://jitpack.io' } },
          { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
@@ -62,18 +63,22 @@ ext {
          dbflowCompiler     : [a: "com.raizlabs.android:DBFlow-Compiler:$dbflowVersion"],
    ]
    // networking
-   def janetHttpVersion = '1.2.3'
+   def janetHttpVersion = '1.3.1'
    def okhttp2Version = '2.7.5'
    def okhttp3Version = '3.5.0'
+   def mobileSdkVersion = '1.2.2'
    def smackVersion = '4.1.6'
    moduleDependencies.networking = [
          // API
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api:2.8.41-STAGE-SNAPSHOT'],
+         mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
+         mobileSdkCompiler        : [a: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
+         mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.2-SMART-CARD-DEV-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
          janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp:$janetHttpVersion"],
-         janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.0.2'],
+         janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.1.1'],
          // client & converter
          okhttpClient2            : [c: "com.squareup.okhttp:okhttp:$okhttp2Version"],
          okhttpUrlConnection2     : [c: "com.squareup.okhttp:okhttp-urlconnection:$okhttp2Version"],
@@ -213,7 +218,7 @@ ext {
 
          kotlinReflect        : [tc: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.languages.kotlin"],
          kotlinTest           : [tc: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.languages.kotlin"],
-         kotlinMockito        : [tc: 'com.nhaarman:mockito-kotlin:1.4.0'],
+         kotlinMockito        : [tc: 'com.nhaarman:mockito-kotlin:1.5.0'],
          kotlinRx             : [tc: 'io.reactivex:rxkotlin:0.55.0'],
 
          powermockJunit       : [tc: "org.powermock:powermock-module-junit4:$powerMockVersion"],

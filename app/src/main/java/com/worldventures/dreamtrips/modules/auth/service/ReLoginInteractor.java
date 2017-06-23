@@ -13,7 +13,7 @@ import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 
 /**
- * Delegate for low-level re-authorization (skipping command, just pure *HttpAction)
+ * Delegate for low-level re-authorization (skipping command, just plain *HttpAction)
  */
 public class ReLoginInteractor {
 

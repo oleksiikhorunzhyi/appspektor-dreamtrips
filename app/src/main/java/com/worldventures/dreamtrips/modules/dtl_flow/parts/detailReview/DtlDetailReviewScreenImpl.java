@@ -17,7 +17,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewImagesAdapter;
@@ -213,16 +212,6 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
     @Override
     public boolean isTabletLandscape() {
         return false;
-    }
-
-    @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
-        return false;
-    }
-
-    @Override
-    public void onApiCallFailed() {
-
     }
 
     @Override

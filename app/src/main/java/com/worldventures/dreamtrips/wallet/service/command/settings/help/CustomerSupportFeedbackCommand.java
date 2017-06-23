@@ -19,8 +19,10 @@ public class CustomerSupportFeedbackCommand extends SendWalletFeedbackCommand {
 
    @Override
    Observable<? extends AuthorizedHttpAction> provideHttpCommand(Feedback feedback) {
-      return janet.createPipe(SendFeedbackCustomerSupportHttpAction.class)
-            .createObservableResult(new SendFeedbackCustomerSupportHttpAction(feedback));
+      //todo It's broken by feature payment feedback
+//      return janet.createPipe(SendFeedbackCustomerSupportHttpAction.class)
+//            .createObservableResult(new SendFeedbackCustomerSupportHttpAction(feedback));
+      return Observable.empty();
    }
 
 }

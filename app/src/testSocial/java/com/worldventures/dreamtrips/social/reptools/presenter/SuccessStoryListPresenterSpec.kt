@@ -83,6 +83,8 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          injector.registerProvider(SuccessStoriesInteractor::class.java, { successStoriesInteractor })
          injector.inject(presenter)
          presenter.onInjected()
+
+         doReturn(true).whenever(presenter).isConnected
       }
 
       fun makeStubStories(): List<SuccessStory> = mutableListOf(makeStubStory(1), makeStubStory(2))

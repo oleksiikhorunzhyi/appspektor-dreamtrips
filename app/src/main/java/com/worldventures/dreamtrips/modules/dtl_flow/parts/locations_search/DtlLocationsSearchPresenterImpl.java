@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -38,7 +39,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
       getView().toggleDefaultCaptionVisibility(true);
 
       connectLocationsSearch();
-      apiErrorPresenter.setView(getView());
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(getView(), () -> getView().hideProgress()));
    }
 
    private void connectLocationsSearch() {
@@ -47,7 +48,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SearchLocationAction>()
                   .onStart(command -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+                  .onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(this::onSearchFinished));
    }
 

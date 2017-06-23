@@ -158,7 +158,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> {
                      DtlTransaction transaction = action.getResult();
                      if (transaction != null) {
@@ -182,7 +182,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          transactionInteractor.transactionActionPipe()
                .createObservable(DtlTransactionAction.delete(merchant))
                .compose(bindViewIoToMainComposer())
-               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                      .onSuccess(action -> getView().setTransaction(action.getResult())));
       }
    }
@@ -192,7 +192,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> {
                      if (action.getResult() != null) {
                         DtlTransaction dtlTransaction = action.getResult();

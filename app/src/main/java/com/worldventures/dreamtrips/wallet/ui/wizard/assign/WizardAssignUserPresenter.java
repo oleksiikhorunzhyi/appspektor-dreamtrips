@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
+
 public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
@@ -26,6 +28,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final WizardAssignDelegate wizardAssignDelegate;
 
@@ -56,6 +59,10 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> wizardAssignDelegate.onAssignUserSuccess(getView()))
                   .create());
+   }
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    interface Screen extends WalletScreen {

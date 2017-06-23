@@ -188,11 +188,6 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    }
 
    @Override
-   public void onApiCallFailed() {
-      hideProgress();
-   }
-
-   @Override
    public void locationResolutionRequired(Status status) {
       try {
          status.startResolutionForResult(getActivity(), DtlActivity.GPS_LOCATION_RESOLUTION_REQUEST);

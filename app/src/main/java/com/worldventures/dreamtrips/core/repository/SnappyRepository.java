@@ -308,7 +308,7 @@ public interface SnappyRepository {
 
    void deletePinOptionChoice();
 
-   int getSmartCardDisplayType();
+   int getSmartCardDisplayType(int defaultValue);
 
    void setSmartCardDisplayType(int displayType);
 

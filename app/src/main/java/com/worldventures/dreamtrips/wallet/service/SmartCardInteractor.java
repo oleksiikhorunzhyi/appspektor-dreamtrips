@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreO
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
@@ -102,6 +103,7 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<SaveDisplayTypeCommand> saveDisplayTypePipe;
    private final ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe;
+   private final ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -169,6 +171,8 @@ public final class SmartCardInteractor {
 
       saveDisplayTypePipe = sessionActionPipeCreator.createPipe(SaveDisplayTypeCommand.class, Schedulers.io());
       getDisplayTypePipe = sessionActionPipeCreator.createPipe(GetDisplayTypeCommand.class, Schedulers.io());
+      restoreDefaultDisplayTypePipe = sessionActionPipeCreator.createPipe(RestoreDefaultDisplayTypeCommand.class, Schedulers
+            .io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -337,6 +341,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe() {
       return getDisplayTypePipe;
+   }
+
+   public ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe() {
+      return restoreDefaultDisplayTypePipe;
    }
 
    public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {

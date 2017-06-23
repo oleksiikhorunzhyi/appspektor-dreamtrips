@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.general.dis
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,7 +35,7 @@ public class GetDisplayTypeCommand extends Command<Integer> implements Injectabl
                .doOnNext(displayType -> snappyRepository.setSmartCardDisplayType(displayType))
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
-         callback.onSuccess(snappyRepository.getSmartCardDisplayType());
+         callback.onSuccess(snappyRepository.getSmartCardDisplayType(WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE));
       }
    }
 }

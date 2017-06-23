@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
@@ -33,6 +34,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
    @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
+   @Inject DeviceInfoProvider deviceInfoProvider;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -56,7 +58,9 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
 
    @Override
    public void sendToReview(Merchant merchant) {
-      if (!isTabletLandscape()) Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
+      if (!deviceInfoProvider.isTablet()) {
+         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
+      }
    }
 
    @OnClick(R.id.share)

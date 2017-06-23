@@ -215,7 +215,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
          if (!action.getResult().reviews().total().isEmpty() && Integer.parseInt(action.getResult().reviews().total()) > 0) {
             navigateToRatingList(action.getResult());
          } else {
-            if(!deviceInfoProvider.isTablet()) navigateToCommentRating(action.getResult());
+            navigateToCommentRating(action.getResult());
          }
       }
    }

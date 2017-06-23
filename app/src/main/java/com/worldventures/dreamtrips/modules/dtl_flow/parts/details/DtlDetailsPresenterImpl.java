@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
@@ -71,7 +72,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
-
+   @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
    private final Merchant merchant;
@@ -309,17 +310,19 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickRatingsReview(Merchant merchant) {
-      if (isReviewCached()) {
-         if (userHasReviews()) {
-            goToReviewList();
+      if (!deviceInfoProvider.isTablet()) {
+         if (isReviewCached()) {
+            if (userHasReviews()) {
+               goToReviewList();
+            } else {
+               getView().userHasPendingReview();
+            }
          } else {
-            getView().userHasPendingReview();
-         }
-      } else {
-         if (userHasReviews()) {
-            goToReviewList();
-         } else {
-            goToCommentReview();
+            if (userHasReviews()) {
+               goToReviewList();
+            } else {
+               goToCommentReview();
+            }
          }
       }
    }

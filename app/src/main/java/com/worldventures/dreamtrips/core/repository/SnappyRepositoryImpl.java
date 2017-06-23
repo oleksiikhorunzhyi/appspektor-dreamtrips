@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
@@ -362,6 +363,21 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public void deletePinOptionChoice() {
       act(db -> db.del(WALLET_OPTIONAL_PIN));
+   }
+
+   @Override
+   public int getSmartCardDisplayType() {
+      return actWithResult(db -> db.getInt(WALLET_SMART_CARD_DISPLAY_TYPE)).or(WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE);
+   }
+
+   @Override
+   public void setSmartCardDisplayType(int displayType) {
+      act(db -> db.putInt(WALLET_SMART_CARD_DISPLAY_TYPE, displayType));
+   }
+
+   @Override
+   public void deleteSmartCardDisplayType() {
+      act(db -> db.del(WALLET_SMART_CARD_DISPLAY_TYPE));
    }
 
    ///////////////////////////////////////////////////////////////////////////

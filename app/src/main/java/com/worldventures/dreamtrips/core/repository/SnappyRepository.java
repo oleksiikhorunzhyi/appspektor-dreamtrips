@@ -92,6 +92,7 @@ public interface SnappyRepository {
    String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
    String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
    String WALLET_OPTIONAL_PIN = "WALLET_OPTIONAL_PIN";
+   String WALLET_SMART_CARD_DISPLAY_TYPE = "WALLET_SMART_CARD_DISPLAY_TYPE";
 
    void clearAll();
 
@@ -306,4 +307,10 @@ public interface SnappyRepository {
    boolean shouldAskForPin();
 
    void deletePinOptionChoice();
+
+   int getSmartCardDisplayType();
+
+   void setSmartCardDisplayType(int displayType);
+
+   void deleteSmartCardDisplayType();
 }

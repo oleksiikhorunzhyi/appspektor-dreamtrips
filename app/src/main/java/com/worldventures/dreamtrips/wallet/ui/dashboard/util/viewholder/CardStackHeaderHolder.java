@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder;
 
 import com.techery.spares.adapter.HeaderItem;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 
 import org.immutables.value.Value;
-
-import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
 @Value.Immutable
 public abstract class CardStackHeaderHolder implements HeaderItem {
@@ -64,6 +63,6 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
 
    @Value.Default
    public int displayType() {
-      return SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
+      return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
    }
 }

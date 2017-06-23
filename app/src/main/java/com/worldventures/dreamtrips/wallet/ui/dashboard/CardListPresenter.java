@@ -40,6 +40,7 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineM
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -105,6 +106,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().setDefaultSmartCard();
       checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
+      observeDisplayType();
       observeConnectionStatus();
       observeSmartCardSync();
       observeRecordsChanges();
@@ -167,6 +169,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+   }
+
+   private void observeDisplayType() {
+      smartCardInteractor.getDisplayTypePipe().observeSuccessWithReplay()
+            .map(Command::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::setDisplayType, throwable -> Timber.e("", throwable));
+      smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
    }
 
    private void handleSmartCardStatus(SmartCardStatus cardStatus) {
@@ -406,6 +416,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 
       void setCardsCount(int count);
+
+      void setDisplayType(int displayType);
 
       void showAddCardErrorDialog(@ErrorDialogType int errorDialogType);
 

@@ -23,6 +23,8 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineM
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
@@ -35,9 +37,7 @@ import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
 import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
-import io.techery.janet.smartcard.action.settings.GetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
-import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
 import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
@@ -100,8 +100,8 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
 
-   private final ActionPipe<SetHomeDisplayTypeAction> setHomeDisplayTypePipe;
-   private final ActionPipe<GetHomeDisplayTypeAction> getHomeDisplayTypePipe;
+   private final ActionPipe<SaveDisplayTypeCommand> saveDisplayTypePipe;
+   private final ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -163,12 +163,12 @@ public final class SmartCardInteractor {
       setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
       setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
       requestPinAuthActionPipe = sessionActionPipeCreator.createPipe(RequestPinAuthAction.class, Schedulers.io());
-      removeUserPhotoActionPipe= sessionActionPipeCreator.createPipe(RemoveUserPhotoAction.class, Schedulers.io());
+      removeUserPhotoActionPipe = sessionActionPipeCreator.createPipe(RemoveUserPhotoAction.class, Schedulers.io());
 
       getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
 
-      setHomeDisplayTypePipe = sessionActionPipeCreator.createPipe(SetHomeDisplayTypeAction.class, Schedulers.io());
-      getHomeDisplayTypePipe = sessionActionPipeCreator.createPipe(GetHomeDisplayTypeAction.class, Schedulers.io());
+      saveDisplayTypePipe = sessionActionPipeCreator.createPipe(SaveDisplayTypeCommand.class, Schedulers.io());
+      getDisplayTypePipe = sessionActionPipeCreator.createPipe(GetDisplayTypeCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -330,14 +330,14 @@ public final class SmartCardInteractor {
    public ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe() {
       return requestPinAuthActionPipe;
    }
-   public ActionPipe<SetHomeDisplayTypeAction> setHomeDisplayTypePipe() {
-      return setHomeDisplayTypePipe;
+
+   public ActionPipe<SaveDisplayTypeCommand> saveDisplayTypePipe() {
+      return saveDisplayTypePipe;
    }
 
-   public ActionPipe<GetHomeDisplayTypeAction> getHomeDisplayTypePipe() {
-      return getHomeDisplayTypePipe;
+   public ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe() {
+      return getDisplayTypePipe;
    }
-
 
    public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {
       return removeUserPhotoActionPipe;

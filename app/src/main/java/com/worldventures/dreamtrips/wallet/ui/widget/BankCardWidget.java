@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntegerRes;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -14,6 +12,7 @@ import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -36,6 +35,7 @@ public class BankCardWidget extends FrameLayout {
    @InjectView(R.id.tv_expire_date) TextView tvExpireDate;
    @InjectView(R.id.tv_default_card_label) TextView tvDefaultCardLabel;
    @InjectView(R.id.tv_short_card_number) TextView tvShortCardNumber;
+   @InjectView(R.id.iv_default_card_marker) ImageView ivDefaultCardMarker;
 
    private View bankCardHolder;
 
@@ -79,28 +79,19 @@ public class BankCardWidget extends FrameLayout {
       setBankCardHolder(drawableResId);
       ButterKnife.inject(this);
       tvShortCardNumber.setVisibility(GONE);
-
-       textViews = Arrays.asList(tvCardType, tvCardName, tvOwnerName, tvCardNumber, tvExpireDate);
+      textViews = Arrays.asList(tvCardType, tvCardName, tvOwnerName, tvCardNumber, tvExpireDate, tvDefaultCardLabel);
    }
 
-   final private ButterKnife.Setter<TextView, AnimationInfo> ANIMATE_TEXT_COLOR = (textView, animationInfo, index) -> {
-      ObjectAnimator animator = ObjectAnimator.ofInt(textView, "textColor",
-            animationInfo.colorFrom,
-            animationInfo.colorTo)
-            .setDuration(animationInfo.duration);
-      animator.setEvaluator(new ArgbEvaluator());
-      animator.start();
+   final private ButterKnife.Setter<TextView, Boolean> SET_TEXT_COLOR = (textView, isCardDefault, index) -> {
+      textView.setTextColor(isCardDefault
+            ? ContextCompat.getColor(textView.getContext(), R.color.wallet_default_card_text)
+      : ContextCompat.getColor(textView.getContext(), android.R.color.white));
    };
 
-   public void animateCardFromDefault(Drawable drawable, int duration) {
-      bankCardHolder.setBackground(drawable);
-      TransitionDrawable transition = (TransitionDrawable) bankCardHolder.getBackground();
-      transition.setCrossFadeEnabled(true);
-      transition.startTransition(duration);
-
-      ButterKnife.apply(textViews, ANIMATE_TEXT_COLOR,
-            new AnimationInfo(ContextCompat.getColor(bankCardHolder.getContext(), R.color.wallet_default_card_text),
-                           ContextCompat.getColor(bankCardHolder.getContext(), android.R.color.white), duration * 2));
+   public void setUpCardAppearance(@DrawableRes int backgroundResId, boolean isCardDefault) {
+      bankCardHolder.setBackground(ContextCompat.getDrawable(getContext(), backgroundResId));
+      ButterKnife.apply(textViews, SET_TEXT_COLOR, isCardDefault);
+      setAsDefault(isCardDefault);
    }
 
    public void setShowShortNumber(boolean show) {
@@ -131,6 +122,7 @@ public class BankCardWidget extends FrameLayout {
 
    public void setAsDefault(boolean isDefault) {
       tvDefaultCardLabel.setVisibility(isDefault ? VISIBLE : INVISIBLE);
+      ivDefaultCardMarker.setVisibility(isDefault ? VISIBLE : INVISIBLE);
    }
 
    public void setExpireDate(CharSequence expireDate) {
@@ -178,18 +170,6 @@ public class BankCardWidget extends FrameLayout {
             if (drawables.attrId == attrId) return drawables;
          }
          throw new IllegalArgumentException();
-      }
-   }
-
-   private class AnimationInfo{
-      int colorFrom;
-      int colorTo;
-      int duration;
-
-      AnimationInfo(int colorFrom, int colorTo, int duration) {
-         this.colorFrom = colorFrom;
-         this.colorTo = colorTo;
-         this.duration = duration;
       }
    }
 }

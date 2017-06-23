@@ -278,10 +278,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
          bankCardWidget.setVisibility(View.VISIBLE);
          controlsLayout.setAlpha(0);
 
-         if (transitionModel.isDefaultCard()) {
-            bankCardWidget.animateCardFromDefault(ContextCompat.getDrawable(getContext(),
-                  transitionModel.getBackground()), (int) CARD_TRANSITION_DURATION);
-         }
+         bankCardWidget.setUpCardAppearance(transitionModel.getBackground(), transitionModel.isDefaultCard());
 
          bankCardWidget
                .animate()

@@ -10,6 +10,7 @@
       android:paddingLeft="@dimen/spacing_normal"
       android:paddingRight="@dimen/spacing_normal"
       android:paddingTop="@dimen/spacing_medium"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       >
 
    <TextView
@@ -34,21 +35,40 @@
          tools:ignore="RelativeOverlap"
          >
 
-      <TextView
-            android:id="@+id/tv_default_card_label"
+      <LinearLayout
+            android:id="@+id/ll_default_card_block"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wallet_wizard_default_card_label"
-            android:textColor="@android:color/white"
-            android:textSize="9sp"
-            android:visibility="gone"
-            />
+            >
+
+         <ImageView
+               android:id="@+id/iv_default_card_marker"
+               android:layout_width="12dp"
+               android:layout_height="12dp"
+               android:layout_gravity="center_vertical"
+               app:srcCompat="@drawable/ic_vector_check_circle_green"
+               android:visibility="gone"
+               />
+
+         <TextView
+               android:id="@+id/tv_default_card_label"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="6dp"
+               android:layout_gravity="center_vertical"
+               android:text="@string/wallet_wizard_default_card_label"
+               android:textColor="@android:color/white"
+               android:textSize="@dimen/font_small"
+               android:visibility="gone"
+               />
+
+      </LinearLayout>
 
       <TextView
             android:id="@+id/tv_card_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_default_card_label"
+            android:layout_below="@+id/ll_default_card_block"
             android:importantForAccessibility="no"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_large"

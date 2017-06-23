@@ -120,7 +120,6 @@
                android:layout_width="@dimen/dtlMerchantCoverImageWidth"
                android:layout_height="wrap_content"
                android:orientation="vertical"
-               android:visibility="gone"
                android:layout_marginTop="@dimen/spacing_small"
                android:layout_marginBottom="@dimen/spacing_small">
 
@@ -157,6 +156,8 @@
                android:background="@drawable/background_badge_points"
                android:drawableLeft="@drawable/ic_points_dtl"
                android:drawablePadding="5dp"
+               android:layout_toEndOf="@+id/layout_rating_reviews"
+               android:layout_toRightOf="@+id/layout_rating_reviews"
                android:layout_centerVertical="true"
                android:text="@string/points"
                />

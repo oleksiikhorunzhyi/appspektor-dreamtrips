@@ -108,7 +108,6 @@
             android:layout_width="@dimen/dtl_item_map_width"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginBottom="@dimen/spacing_small">
 

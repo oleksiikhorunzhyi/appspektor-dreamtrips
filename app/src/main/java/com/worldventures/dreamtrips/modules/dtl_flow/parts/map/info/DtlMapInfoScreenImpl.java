@@ -7,17 +7,21 @@ import android.view.View;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
+import javax.inject.Inject;
+
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath> implements DtlMapInfoScreen {
 
+   @Inject DeviceInfoProvider deviceInfoProvider;
    MerchantDataInflater commonDataInflater, categoryDataInflater;
    SweetAlertDialog errorDialog;
 
@@ -73,16 +77,18 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
 
    @OnClick(R.id.layout_rating_reviews_map)
    public void onClickRatingReviews() {
-      if (getPresenter().hasPendingReview()) {
-         errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
-         errorDialog.setTitleText(getActivity().getString(R.string.app_name));
-         errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
-         errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
-         errorDialog.showCancelButton(true);
-         errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
-         errorDialog.show();
-      } else {
-         categoryDataInflater.notifyRatingsClickListeners();
+      if (!deviceInfoProvider.isTablet()) {
+         if (getPresenter().hasPendingReview()) {
+            errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+            errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+            errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+            errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+            errorDialog.showCancelButton(true);
+            errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+            errorDialog.show();
+         } else {
+            categoryDataInflater.notifyRatingsClickListeners();
+         }
       }
    }
 }

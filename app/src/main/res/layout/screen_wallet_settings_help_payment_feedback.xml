@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      >
+
+   <data>
+
+      <variable
+            name="paymentFeedbackViewModel"
+            type="com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel"
+            />
+   </data>
+
+   <com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@android:color/white"
+         android:orientation="vertical"
+         android:theme="@style/WalletTheme"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/wallet_settings_help_payment_feedback_title_screen"
+            />
+
+      <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               >
+
+            <include
+                  android:id="@+id/inc_attempts"
+                  layout="@layout/include_wallet_payment_feedback_success_attempt"
+                  app:attempts="@{paymentFeedbackViewModel.attemptsView}"
+                  />
+
+            <include
+                  android:id="@+id/inc_merchant"
+                  layout="@layout/include_wallet_payment_feedback_merchant_block"
+                  app:merchant="@{paymentFeedbackViewModel.merchantView}"
+                  />
+
+            <include
+                  android:id="@+id/inc_payment_terminal"
+                  layout="@layout/include_wallet_payment_feedback_payment_terminal_block"
+                  app:paymentTerminal="@{paymentFeedbackViewModel.terminalView}"
+                  />
+
+            <include
+                  android:id="@+id/inc_additional_info"
+                  layout="@layout/include_wallet_payment_feedback_additional_info"
+                  app:additionalInfo="@{paymentFeedbackViewModel.infoView}"
+                  />
+
+         </LinearLayout>
+
+      </ScrollView>
+
+   </com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen>
+</layout>

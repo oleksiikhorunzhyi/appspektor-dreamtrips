@@ -4,9 +4,9 @@ import android.os.Build;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
+import com.worldventures.dreamtrips.api.feedback.model.BaseFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.Feedback;
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
-import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
@@ -31,7 +31,7 @@ import io.techery.janet.smartcard.util.SmartCardSDK;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-public abstract class SendWalletFeedbackCommand extends CommandWithError<Void> implements InjectableAction {
+public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends CommandWithError<Void> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
@@ -39,8 +39,8 @@ public abstract class SendWalletFeedbackCommand extends CommandWithError<Void> i
    @Inject SnappyRepository snappyRepository;
    @Inject MapperyContext mappery;
 
-   private final String description;
-   private final List<FeedbackImageAttachment> imageAttachments;
+   protected final String description;
+   protected final List<FeedbackImageAttachment> imageAttachments;
 
    SendWalletFeedbackCommand(String description, List<FeedbackImageAttachment> imageAttachments) {
       this.description = description;
@@ -52,20 +52,15 @@ public abstract class SendWalletFeedbackCommand extends CommandWithError<Void> i
       provideHttpCommand(provideFeedbackBody()).subscribe(action -> callback.onSuccess(null), callback::onFail);
    }
 
-   abstract Observable<? extends AuthorizedHttpAction> provideHttpCommand(Feedback feedback);
+   abstract Observable<? extends AuthorizedHttpAction> provideHttpCommand(F feedback);
 
-   private Feedback provideFeedbackBody() {
-      ImmutableFeedback.Builder builder = ImmutableFeedback.builder()
-            .reasonId(0)
-            .text(description)
-            .metadata(provideMetadata()); // todo It's broken by feature payment feedback
-//            .smartCardMetadata(provideSmartCardMetadata());
-      builder.attachments(mappery.convert(imageAttachments, FeedbackAttachment.class));
+   abstract F provideFeedbackBody();
 
-      return builder.build();
+   protected List<FeedbackAttachment> provideAttachments() {
+      return mappery.convert(imageAttachments, FeedbackAttachment.class);
    }
 
-   private SmartCardMetadata provideSmartCardMetadata() {
+   protected SmartCardMetadata provideSmartCardMetadata() {
       SmartCard smartCard = snappyRepository.getSmartCard();
       SmartCardDetails details = snappyRepository.getSmartCardDetails();
       SmartCardFirmware firmware = snappyRepository.getSmartCardFirmware();
@@ -80,7 +75,7 @@ public abstract class SendWalletFeedbackCommand extends CommandWithError<Void> i
             .build();
    }
 
-   private Feedback.Metadata provideMetadata() {
+   protected BaseFeedback.Metadata provideMetadata() {
       String osVersion = String.format(Locale.US, "android-%d", Build.VERSION.SDK_INT);
       String appVersion = appVersionNameBuilder.getSemanticVersionName();
       String deviceModel = String.format("%s:%s", Build.MANUFACTURER, Build.MODEL);

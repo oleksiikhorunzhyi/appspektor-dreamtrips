@@ -2,7 +2,6 @@ ext {
    moduleDependencies = [:]
    moduleDependencies.repos = [
          { o -> o.jcenter() },
-         { o -> o.mavenLocal() },
          { o -> o.maven { url 'https://maven.google.com' } },
          { o -> o.maven { url 'https://jitpack.io' } },
          { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },

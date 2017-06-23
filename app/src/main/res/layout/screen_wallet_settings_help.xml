@@ -14,11 +14,6 @@
          app:title="@string/wallet_card_settings_help"
          />
 
-   <android.support.design.widget.CoordinatorLayout
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         >
-
       <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -107,7 +102,5 @@
          </LinearLayout>
 
       </android.support.v4.widget.NestedScrollView>
-
-   </android.support.design.widget.CoordinatorLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsScreen>

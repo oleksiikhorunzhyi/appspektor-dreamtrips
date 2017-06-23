@@ -240,19 +240,17 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
 
    @OnClick(R.id.layout_rating_reviews)
    void onClickRateView() {
-      if (!deviceInfoProvider.isTablet()) {
-         if (isReviewCached()) {
-            if (userHasReviews()) {
-               cellDelegate.sendToRatingReview(getModelObject());
-            } else {
-               cellDelegate.userHasPendingReview();
-            }
+      if (isReviewCached()) {
+         if (userHasReviews()) {
+            cellDelegate.sendToRatingReview(getModelObject());
          } else {
-            if (!userHasPendingReview() || userHasReviews()) {
-               cellDelegate.sendToRatingReview(getModelObject());
-            } else {
-               cellDelegate.userHasPendingReview();
-            }
+            cellDelegate.userHasPendingReview();
+         }
+      } else {
+         if (!userHasPendingReview() || userHasReviews()) {
+            cellDelegate.sendToRatingReview(getModelObject());
+         } else {
+            cellDelegate.userHasPendingReview();
          }
       }
    }

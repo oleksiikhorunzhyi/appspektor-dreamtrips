@@ -56,7 +56,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
 
    @Override
    public void sendToReview(Merchant merchant) {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
+      if (!isTabletLandscape()) Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
    }
 
    @OnClick(R.id.share)

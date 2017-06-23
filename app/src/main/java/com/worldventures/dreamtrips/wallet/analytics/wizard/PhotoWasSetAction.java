@@ -18,7 +18,7 @@ public class PhotoWasSetAction extends WalletAnalyticsAction {
 
    private PhotoWasSetAction(String photoMethod, boolean photoAdded) {
       this.photoMethod = photoMethod;
-      displayPhotoSet = photoAdded ? "1" : "0";
+      displayPhotoSet = photoAdded ? "1" : null;
    }
 
    public static PhotoWasSetAction methodDefault() {

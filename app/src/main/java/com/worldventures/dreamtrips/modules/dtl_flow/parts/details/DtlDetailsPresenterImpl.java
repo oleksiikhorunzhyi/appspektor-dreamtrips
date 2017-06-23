@@ -95,8 +95,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       validateTablet();
    }
 
-   @Override
-   public void validateTablet() {
+   protected void validateTablet() {
       if(getView().isTablet()){
          getView().hideReviewViewsOnTablets();
       }
@@ -324,7 +323,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       }
    }
 
-   public boolean userHasReviews() {
+   protected boolean userHasReviews() {
       if (merchant.reviews() == null) {
          return false;
       }
@@ -343,7 +342,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       return appSessionHolder.get().get().getUser();
    }
 
-   public boolean isReviewCached() {
+   protected boolean isReviewCached() {
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 

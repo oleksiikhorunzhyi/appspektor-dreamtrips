@@ -187,7 +187,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
-      getPresenter().onClickRatingsReview(merchant);
+      if (!deviceInfoProvider.isTablet()) getPresenter().onClickRatingsReview(merchant);
    }
 
    @Override

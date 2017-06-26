@@ -78,7 +78,7 @@ internal fun createPostBodyWithScheduledVideo() =
             .state(PostBody.State.SCHEDULED)
             .build()
 
-internal fun createPostBodyWithUploadedVideo() =
+internal fun createPostBodyWithUploadedVideo(uploadId: String = "fsdafsdfsfdsadf", videoUid: String? = null) =
       ImmutablePostWithVideoAttachmentBody.builder()
             .text("testText")
             .location(Location(20.0, 20.0))
@@ -86,7 +86,8 @@ internal fun createPostBodyWithUploadedVideo() =
             .videoPath("file://blabla")
             .size(1000L)
             .durationInSeconds(100)
-            .uploadId("fsdafsdfsfdsadf")
+            .uploadId(uploadId)
+            .videoUid(videoUid)
             .state(PostBody.State.UPLOADED)
             .build()
 

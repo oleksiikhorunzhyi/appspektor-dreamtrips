@@ -22,12 +22,14 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import javax.inject.Inject;
 
@@ -87,12 +89,12 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    void back() {
-      getView().hidePhotoPicker();
       navigator.goBack();
    }
 
+   @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
-      getView().pickPhoto();
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser(), getView().getProfile()));
    }
 
    void setupInputMode() {
@@ -128,9 +130,14 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       }
    }
 
+   @SuppressWarnings("ConstantConditions")
    public void dontAdd() {
-      getView().hidePhotoPicker();
       getView().dropPhoto();
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   public void handlePickedPhoto(BasePickerViewModel model) {
+      getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
    }
 
    public interface Screen extends WalletScreen, WalletProfilePhotoView {

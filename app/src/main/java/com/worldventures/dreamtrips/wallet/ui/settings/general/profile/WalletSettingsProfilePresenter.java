@@ -23,9 +23,11 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import javax.inject.Inject;
 
@@ -152,7 +154,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       if (isDataChanged()) {
          getView().showRevertChangesDialog();
       } else {
-         getView().hidePhotoPicker();
          goBack();
       }
    }
@@ -171,19 +172,23 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
-      getView().pickPhoto();
-   }
-
-   @SuppressWarnings("ConstantConditions")
-   void doNotAdd() {
-      getView().hidePhotoPicker();
-      getView().dropPhoto();
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(user, getView().getUser()));
    }
 
    @Override
    public void detachView(boolean retainInstance) {
       backStackDelegate.removeListener(systemBackPressedListener);
       super.detachView(retainInstance);
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   public void dontAdd() {
+      getView().dropPhoto();
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   public void handlePickedPhoto(BasePickerViewModel model) {
+      getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
    }
 
    public interface Screen extends WalletScreen, WalletProfilePhotoView {

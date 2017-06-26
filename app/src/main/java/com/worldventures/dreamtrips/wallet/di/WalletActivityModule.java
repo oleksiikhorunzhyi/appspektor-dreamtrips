@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageServiceImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -79,6 +81,7 @@ import dagger.Provides;
 
 @Module(
       includes = {
+            WalletPickerModule.class
       },
       injects = {
             WalletActivityPresenter.class,
@@ -168,5 +171,11 @@ public class WalletActivityModule {
    @Provides
    Navigator provideNavigator(Activity activity) {
       return new FlowNavigator(activity);
+   }
+
+   @Provides
+   @Singleton
+   WalletCropImageService provideWalletCropImageDelegate(Activity activity) {
+      return new WalletCropImageServiceImpl(activity);
    }
 }

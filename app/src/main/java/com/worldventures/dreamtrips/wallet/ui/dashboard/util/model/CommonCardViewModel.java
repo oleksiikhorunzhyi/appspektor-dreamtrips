@@ -9,9 +9,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.HolderTypeFactory;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
-public class CommonCardViewModel extends BaseViewModel implements Parcelable{
+public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
    private String recordId;
    private CharSequence cardName;
@@ -113,7 +113,7 @@ public class CommonCardViewModel extends BaseViewModel implements Parcelable{
    }
 
    @Override
-   public int type(HolderTypeFactory typeFactory) {
+   public int type(DashboardHolderTypeFactory typeFactory) {
       return typeFactory.type(this);
    }
 

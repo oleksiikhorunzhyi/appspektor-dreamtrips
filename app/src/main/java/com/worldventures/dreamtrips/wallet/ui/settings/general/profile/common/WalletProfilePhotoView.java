@@ -10,13 +10,9 @@ import rx.Observable;
 
 public interface WalletProfilePhotoView extends RxLifecycleView{
 
-   void pickPhoto();
-
-   void hidePhotoPicker();
+   void pickPhoto(String initialPhotoUrl);
 
    void cropPhoto(Uri photoPath);
-
-   Observable<Uri> observePickPhoto();
 
    Observable<File> observeCropper();
 

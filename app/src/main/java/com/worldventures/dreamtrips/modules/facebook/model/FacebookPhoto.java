@@ -13,6 +13,13 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
    private boolean checked;
    private long pickedTime;
 
+   public FacebookPhoto(String id, List<ImageSource> images, boolean checked, long pickedTime) {
+      this.id = id;
+      this.images = images;
+      this.checked = checked;
+      this.pickedTime = pickedTime;
+   }
+
    public String getId() {
       return id;
    }
@@ -46,6 +53,10 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
 
    public boolean isChecked() {
       return checked;
+   }
+
+   public List<ImageSource> getImages() {
+      return images;
    }
 
    public static class ImageSource implements Serializable {

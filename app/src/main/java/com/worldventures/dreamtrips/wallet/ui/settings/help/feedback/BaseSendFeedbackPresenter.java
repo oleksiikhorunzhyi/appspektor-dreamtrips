@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.view.WindowManager;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -14,7 +15,9 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.modules.common.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
@@ -24,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettin
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 
 import java.util.List;
 
@@ -33,7 +37,7 @@ import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import rx.Observable;
+import timber.log.Timber;
 
 public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresenter.Screen> extends WalletPresenter<S, Parcelable> {
 
@@ -42,9 +46,11 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
    @Inject protected Activity activity;
    @Inject FeedbackInteractor feedbackInteractor;
    @Inject WalletSettingsInteractor settingsInteractor;
+   @Inject MediaInteractor mediaInteractor;
    @Inject Router router;
 
    protected final CancelableFeedbackAttachmentsManager attachmentsManager;
+   private int attachmentsCount;
 
    public BaseSendFeedbackPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -54,25 +60,33 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      observeAttachmentsPreparation();
       observeAttachments();
-      observePicker();
    }
 
    public void fetchAttachments() {
       getView().setAttachments(attachmentsManager.getAttachments());
    }
 
-   private void observePicker() {
-      getView().observePickPhoto()
-            .compose(bindView())
-            .subscribe(this::uploadImageAttachment);
+   private void observeAttachmentsPreparation() {
+      mediaInteractor.mediaAttachmentPreparePipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<MediaAttachmentPrepareCommand>()
+                  .onSuccess(command -> {
+                     for(Uri attachmentUri : command.getResult()) {
+                        uploadImageAttachment(attachmentUri);
+                     }
+                  })
+                  .onFail((command, throwable) -> Timber.e("Cannot process attachments", throwable)));
+
    }
 
    private void observeAttachments() {
       attachmentsManager.getAttachmentsObservable()
             .compose(bindView())
             .subscribe(holder -> {
-               int attachmentsCount = attachmentsManager.getAttachments().size();
+               this.attachmentsCount = attachmentsManager.getAttachments().size();
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
             });
 
@@ -168,6 +182,14 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
             );
    }
 
+   public void handleAttachedImages(List<BasePickerViewModel> models) {
+      mediaInteractor.mediaAttachmentPreparePipe().send(new MediaAttachmentPrepareCommand(models));
+   }
+
+   public int getAttachmentsCount() {
+      return attachmentsCount;
+   }
+
    protected abstract void handleFailSentFeedback(SendWalletFeedbackCommand command, Throwable throwable);
 
    @Override
@@ -187,8 +209,6 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
       void setAttachments(List<EntityStateHolder<FeedbackImageAttachment>> attachments);
 
       void updateAttachment(EntityStateHolder<FeedbackImageAttachment> updatedHolder);
-
-      Observable<Uri> observePickPhoto();
 
       void pickPhoto();
 

@@ -13,14 +13,14 @@ import java.util.concurrent.Executors;
 
 public class MultiHolderAdapter<T extends BaseViewModel> extends RecyclerView.Adapter<BaseHolder> {
 
-   private List<T> items;
+   protected List<T> items;
    private HolderTypeFactory factory;
    private final ExecutorService exService = Executors.newSingleThreadExecutor();
    private Handler handler = new Handler(Looper.getMainLooper());
 
-   public MultiHolderAdapter(List<T> items) {
+   public MultiHolderAdapter(List<T> items, HolderTypeFactory holderTypeFactory) {
       this.items = items;
-      this.factory = new HolderFactoryImpl();
+      this.factory = holderTypeFactory;
    }
 
    @Override

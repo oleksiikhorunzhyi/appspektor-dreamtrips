@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter;
 
 import android.os.Parcelable;
 
-public abstract class BaseViewModel implements Parcelable {
+public abstract class BaseViewModel<T extends HolderTypeFactory> implements Parcelable {
 
    protected String modelId;
 
-   public abstract int type(HolderTypeFactory typeFactory);
+   public abstract int type(T typeFactory);
 
    @Override
    public boolean equals(Object o) {

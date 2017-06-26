@@ -171,6 +171,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void attachMedia(MediaAttachment mediaAttachment) {
+      if (!mediaAttachment.hasImages() && !mediaAttachment.hasVideo()) return;
       view.disableImagePicker();
       if (mediaAttachment.hasImages()) {
          attachImages(mediaAttachment.chosenImages, mediaAttachment.source);

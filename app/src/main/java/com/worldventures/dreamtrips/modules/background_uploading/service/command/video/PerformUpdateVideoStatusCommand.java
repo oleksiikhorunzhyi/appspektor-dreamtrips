@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class PerformUpdateVideoStatusCommand extends Command<Void> implements InjectableAction {
@@ -24,6 +25,7 @@ public class PerformUpdateVideoStatusCommand extends Command<Void> implements In
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    private CommandCallback callback;
+   private int delay = DELAY_START_UPDATE_COMMAND;
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
@@ -46,8 +48,12 @@ public class PerformUpdateVideoStatusCommand extends Command<Void> implements In
             });
    }
 
+   public void setDelayToStartUpdateCommand(int delay) {
+      this.delay = delay;
+   }
+
    private void launchUpdateProcess() {
-      Observable.timer(DELAY_START_UPDATE_COMMAND, TimeUnit.SECONDS)
+      Observable.timer(delay, TimeUnit.SECONDS)
             .flatMap(v -> pingAssetStatusInteractor.updateVideoProcessStatusPipe()
                   .createObservableResult(new UpdateVideoProcessStatusCommand()))
             .subscribe(v -> tryUpdateVideoStatus(), callback::onFail);

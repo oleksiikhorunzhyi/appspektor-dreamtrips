@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompo
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
@@ -41,13 +42,14 @@ public class FeedItemsVideoProcessingStatusCommand extends Command<Void> impleme
             .map(feedEntity -> feedEntity.getUid())
             .toList();
       Observable<List<PostCompoundOperationModel>> processingVideoModels = compoundOperationsInteractor.compoundOperationsPipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .flatMap(compoundOperationsCommand -> Observable.from(compoundOperationsCommand.getResult())
-                  .filter(model -> model.state() == CompoundOperationState.PROCESSING)
-                  .filter(postCompoundOperationModel
-                        -> postCompoundOperationModel.body() instanceof PostWithVideoAttachmentBody)
-            .toList());
+            .createObservableResult(new QueryCompoundOperationsCommand())
+            .flatMap(compoundOperationsCommand -> {
+               return Observable.from(compoundOperationsCommand.getResult())
+                     .filter(model -> model.state() == CompoundOperationState.PROCESSING)
+                     .filter(postCompoundOperationModel
+                           -> postCompoundOperationModel.body() instanceof PostWithVideoAttachmentBody)
+                     .toList();
+            });
       Observable.zip(videoFromFeedItemsIds, processingVideoModels,
             (videoFeedIds, processingModels) -> {
                for (PostCompoundOperationModel model : processingModels) {
@@ -59,6 +61,6 @@ public class FeedItemsVideoProcessingStatusCommand extends Command<Void> impleme
                }
                return processingModels;
             })
-            .subscribe();
+            .subscribe(models -> commandCallback.onSuccess(null), commandCallback::onFail);
    }
 }

@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompo
 import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoProcessBunchStatus
 import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoProcessStatus
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor
-import com.worldventures.dreamtrips.modules.background_uploading.service.FeedItemsVideoProcessingStatusInteractor
 import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.DeleteCompoundOperationsCommand
@@ -106,7 +105,7 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
 
          val feedItemsVideoProcessingSubscriber = makeFeedItemsWithVideo(VIDEO_UID)
          val feedItemsSubscriber = TestSubscriber<ActionState<FeedItemsVideoProcessingStatusCommand>>()
-         videoProcessingStatusInteractor.videosProcessingPipe()
+         assetStatusInteractor.feedItemsVideoProcessingPipe()
                .createObservable(FeedItemsVideoProcessingStatusCommand(feedItemsVideoProcessingSubscriber))
                .subscribe(feedItemsSubscriber)
 
@@ -120,7 +119,6 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
       const val VIDEO_UID = "1fab63"
       lateinit var assetStatusInteractor: PingAssetStatusInteractor
       lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
-      lateinit var videoProcessingStatusInteractor: FeedItemsVideoProcessingStatusInteractor
 
       fun initJanet(contracts: List<Contract>, videoProcessStatus: String) {
          val daggerCommandActionService = CommandActionService().wrapDagger()
@@ -143,7 +141,6 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
 
          assetStatusInteractor = PingAssetStatusInteractor(sessionPipeCreator)
          compoundOperationsInteractor = CompoundOperationsInteractor(sessionPipeCreator, Schedulers.immediate())
-         videoProcessingStatusInteractor = FeedItemsVideoProcessingStatusInteractor(sessionPipeCreator)
       }
 
       fun mockActionService(service: ActionService, mockContracts: List<Contract>) = MockCommandActionService.Builder()

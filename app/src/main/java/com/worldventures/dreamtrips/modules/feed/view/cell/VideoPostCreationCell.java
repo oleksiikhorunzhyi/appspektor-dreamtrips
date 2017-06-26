@@ -65,12 +65,14 @@ public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationMod
       ViewGroup.LayoutParams params = videoThumbnail.getLayoutParams();
       params.width = previewWidth;
       params.height = previewHeight;
+      videoThumbnail.setLayoutParams(params);
    }
 
    public void assignDefaultLayoutParams() {
       ViewGroup.LayoutParams params = videoThumbnail.getLayoutParams();
       params.width = ViewGroup.LayoutParams.MATCH_PARENT;
       params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+      videoThumbnail.setLayoutParams(params);
    }
 
    @OnClick(R.id.remove)

@@ -50,10 +50,13 @@ import java.util.List;
 public class FragmentWithFeedDelegate {
 
    private Router router;
+   private FeedAspectRatioHelper feedAspectRatioHelper;
+
    private BaseDelegateAdapter adapter;
 
-   public FragmentWithFeedDelegate(Router router) {
+   public FragmentWithFeedDelegate(Router router, FeedAspectRatioHelper feedAspectRatioHelper) {
       this.router = router;
+      this.feedAspectRatioHelper = feedAspectRatioHelper;
    }
 
    public void init(BaseDelegateAdapter adapter) {
@@ -74,6 +77,7 @@ public class FragmentWithFeedDelegate {
    }
 
    public void updateItems(final List items, RecyclerView recyclerView) {
+      feedAspectRatioHelper.correctAspectRatio(items, (double) recyclerView.getWidth() / recyclerView.getHeight());
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
          @Override
          public int getOldListSize() {

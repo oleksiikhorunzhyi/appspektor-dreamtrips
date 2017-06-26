@@ -78,6 +78,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditiona
 import com.worldventures.dreamtrips.modules.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
+import com.worldventures.dreamtrips.modules.feed.view.util.FeedAspectRatioHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -200,8 +201,8 @@ public class FeedModule {
    }
 
    @Provides
-   FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router) {
-      return new FragmentWithFeedDelegate(router);
+   FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router, FeedAspectRatioHelper feedAspectRatioHelper) {
+      return new FragmentWithFeedDelegate(router, feedAspectRatioHelper);
    }
 
    @Provides
@@ -233,5 +234,10 @@ public class FeedModule {
    @Singleton
    FeedEntityHolderDelegate provideFeedItemsUpdateDelegate(@ForApplication Injector injector) {
       return new FeedEntityHolderDelegate(injector);
+   }
+
+   @Provides
+   FeedAspectRatioHelper provideFeedAspectRatioHelper() {
+      return new FeedAspectRatioHelper();
    }
 }

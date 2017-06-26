@@ -60,8 +60,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @InjectView(R.id.profile_user_status) TextView profileToolbarUserStatus;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-
    @Inject FeedListWidthInteractor feedListWidthInteractor;
+
    private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    private int scrollArea;

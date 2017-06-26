@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.FeedItemsVideoProcessingStatusInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -37,6 +36,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
@@ -69,7 +69,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberI
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
 import javax.inject.Singleton;
@@ -408,12 +407,6 @@ public class ManagerModule {
    @Singleton
    FeedListWidthInteractor provideFeedListWidthInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FeedListWidthInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
-   FeedItemsVideoProcessingStatusInteractor provideFeedItemsVideoProcessingStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new FeedItemsVideoProcessingStatusInteractor(sessionActionPipeCreator);
    }
 
    @Provides

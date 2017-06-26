@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.FeedItemsVideoProcessingStatusInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -90,7 +90,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
-   @Inject FeedItemsVideoProcessingStatusInteractor feedItemsVideoProcessingStatusInteractor;
+   @Inject PingAssetStatusInteractor assetStatusInteractor;
 
    private Circle filterCircle;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
@@ -206,8 +206,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedItems = new ArrayList<>(items);
       refreshFeedItems();
       view.dataSetChanged();
-      feedItemsVideoProcessingStatusInteractor.videosProcessingPipe()
-            .send(new FeedItemsVideoProcessingStatusCommand(items));
+      assetStatusInteractor.feedItemsVideoProcessingPipe().send(new FeedItemsVideoProcessingStatusCommand(items));
    }
 
    private void subscribeRefreshFeeds() {

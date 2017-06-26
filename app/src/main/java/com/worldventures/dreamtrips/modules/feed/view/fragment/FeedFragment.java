@@ -76,11 +76,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       FeedEntityEditingView {
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject FeedListWidthInteractor feedListWidthInteractor;
 
    @InjectView(R.id.posting_header) View postingHeader;
    @InjectView(R.id.additional_info_container) View additionalInfoContainer;
 
-   @Inject FeedListWidthInteractor feedListWidthInteractor;
    private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    private BadgeImageView friendsBadge;

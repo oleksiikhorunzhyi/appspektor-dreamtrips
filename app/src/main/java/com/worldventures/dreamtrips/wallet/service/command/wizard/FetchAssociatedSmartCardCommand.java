@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    @Inject SystemPropertiesProvider propertiesProvider;
    @Inject SnappyRepository snappyRepository;
    @Inject MapperyContext mappery;
+   @Inject WalletFeatureHelper featureHelper;
 
    @Override
    protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
@@ -50,6 +52,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
                if (result.exist()) {
                   janetWallet.createPipe(ConnectSmartCardCommand.class)
                         .send(new ConnectSmartCardCommand(result.smartCard().smartCardId(), true));
+                  featureHelper.onUserFetchedFromServer(snappyRepository.getSmartCardUser());
                }
             })
             .subscribe(callback::onSuccess, callback::onFail);

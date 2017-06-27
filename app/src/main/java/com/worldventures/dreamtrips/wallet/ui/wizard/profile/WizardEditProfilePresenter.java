@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -32,10 +33,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
@@ -55,6 +55,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject ErrorHandlerFactory errorHandlerFactory;
+   @Inject WalletFeatureHelper featureHelper;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;
 
@@ -112,14 +113,14 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onSuccess(command -> onUserSetupSuccess())
+                  .onSuccess(command -> onUserSetupSuccess(command.getResult()))
                   .create());
    }
 
-   private void onUserSetupSuccess() {
+   private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
-      navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
+      featureHelper.navigateFromSetupUserScreen(navigator, user);
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {

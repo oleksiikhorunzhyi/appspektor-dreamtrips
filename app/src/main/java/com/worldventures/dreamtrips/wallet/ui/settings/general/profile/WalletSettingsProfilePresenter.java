@@ -186,7 +186,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    @SuppressWarnings("ConstantConditions")
    void doNotAdd() {
-      getView().hidePhotoPicker();
       getView().dropPhoto();
    }
 

@@ -52,7 +52,8 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
     * Add ability to change 1 item independently
     * notify other streams that it's ok
     */
-   public static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
+   private static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
+
    private WalletCropImageService cropImageService;
    private ScreenWalletSettingsProfileBinding binding;
    private ProfileViewModel profileViewModel = new ProfileViewModel();
@@ -136,11 +137,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       }
    }
 
-   void onDontAddClick() {
-      hideDialog();
-      presenter.dontAdd();
-   }
-
    @Override
    public void dropPhoto() {
       profileViewModel.setChosenPhotoUri(null);
@@ -151,9 +147,14 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       SoftInputUtil.hideSoftInputMethod(this);
       photoActionDialog = new WalletPhotoProposalDialog(getContext());
       photoActionDialog.setOnChoosePhotoAction(() -> getPresenter().choosePhoto());
-      photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
+      photoActionDialog.setOnDoNotAddPhotoAction(this::onDoNotAddClick);
       photoActionDialog.setOnCancelAction(this::hideDialog);
       photoActionDialog.show();
+   }
+
+   void onDoNotAddClick() {
+      hideDialog();
+      presenter.doNotAdd();
    }
 
    @Override

@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -38,6 +40,8 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
+
+   private static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
 
    private ScreenWalletWizardPersonalInfoBinding binding;
    private ProfileViewModel viewModel = new ProfileViewModel();
@@ -77,8 +81,10 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
       binding.toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
-      binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
-      binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy()
+            .setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy()
+            .setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.setProfile(viewModel);
    }
 
@@ -124,7 +130,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
 
    void onDontAddClick() {
       hideDialog();
-      presenter.dontAdd();
+      presenter.doNotAdd();
    }
 
    private void observeNewAvatar() {

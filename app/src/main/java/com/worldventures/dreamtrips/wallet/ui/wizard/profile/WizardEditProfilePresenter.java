@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
@@ -39,8 +38,6 @@ import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
-   public static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
-
    @Inject Activity activity;
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -55,18 +52,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    public WizardEditProfilePresenter(Context context, Injector injector) {
       super(context, injector);
       this.delegate = new WalletProfileDelegate(analyticsInteractor);
-   }
-
-   @Override
-   public void onSaveInstanceState(Bundle bundle) {
-      super.onSaveInstanceState(bundle);
-      bundle.putParcelable(PROFILE_STATE_KEY, getView().getProfile());
-   }
-
-   @Override
-   public void onRestoreInstanceState(Bundle instanceState) {
-      super.onRestoreInstanceState(instanceState);
-      getView().setProfile(instanceState.getParcelable(PROFILE_STATE_KEY));
    }
 
    @Override
@@ -139,12 +124,12 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    @SuppressWarnings("ConstantConditions")
-   public void dontAdd() {
+   void doNotAdd() {
       getView().dropPhoto();
    }
 
    @SuppressWarnings("ConstantConditions")
-   public void handlePickedPhoto(BasePickerViewModel model) {
+   void handlePickedPhoto(BasePickerViewModel model) {
       getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
    }
 

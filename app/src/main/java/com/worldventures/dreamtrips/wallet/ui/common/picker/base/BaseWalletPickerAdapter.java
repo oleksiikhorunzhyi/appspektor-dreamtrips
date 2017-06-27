@@ -78,7 +78,7 @@ public class BaseWalletPickerAdapter<M extends BasePickerViewModel> extends Recy
    }
 
    public List<M> getChosenPhotos(int staticItemsCount) {
-      return Queryable.from(items.subList(staticItemsCount, items.size() - 1)).filter(M::isChecked).toList();
+      return Queryable.from(items.subList(staticItemsCount, items.size())).filter(M::isChecked).toList();
    }
 
    public List<M> getChosenPhotos() {

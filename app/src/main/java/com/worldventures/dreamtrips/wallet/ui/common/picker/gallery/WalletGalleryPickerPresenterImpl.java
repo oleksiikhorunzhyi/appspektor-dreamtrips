@@ -51,14 +51,12 @@ public class WalletGalleryPickerPresenterImpl extends BaseWalletPickerPresenterI
 
    private List<WalletGalleryPickerModel> populateItems(List<PhotoGalleryModel> commandResult) {
       final List<WalletGalleryPickerModel> appendedList = new ArrayList<>();
+      appendedList.addAll(getView().provideStaticItems());
       final List<WalletGalleryPhotoModel> galleryPhotoModels = Queryable
             .from(commandResult)
             .map(photoGalleryModel ->
                   new WalletGalleryPhotoModel(photoGalleryModel.getAbsolutePath(), photoGalleryModel.getDateTaken()))
             .toList();
-      if (getView().isExtraItemAvailable()) {
-         appendedList.add(getView().getExtraItem());
-      }
       appendedList.addAll(galleryPhotoModels);
       return appendedList;
    }

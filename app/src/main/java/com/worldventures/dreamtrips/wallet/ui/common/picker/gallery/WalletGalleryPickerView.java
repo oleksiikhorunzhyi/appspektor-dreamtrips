@@ -16,9 +16,7 @@ public interface WalletGalleryPickerView extends BaseWalletPickerView<WalletGall
 
    void showDeniedForCamera();
 
-   boolean isExtraItemAvailable();
-
-   WalletGalleryPhotoModel getExtraItem();
+   List<WalletGalleryPickerModel> provideStaticItems();
 
    OperationView<GetPhotosFromGalleryCommand> provideGalleryOperationView();
 

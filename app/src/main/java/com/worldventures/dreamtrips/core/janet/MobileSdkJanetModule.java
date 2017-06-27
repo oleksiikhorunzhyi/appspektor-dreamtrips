@@ -8,8 +8,10 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeDeserializer;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeSerializer;
+import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
 import com.worldventures.dreamtrips.api.api_common.converter.SerializedNameExclusionStrategy;
 import com.worldventures.dreamtrips.api.api_common.converter.SmartEnumTypeAdapterFactory;
+import com.worldventures.dreamtrips.api.api_common.service.MonolithHttpService;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.janet.api_lib.AuthStorage;
 import com.worldventures.dreamtrips.core.janet.api_lib.CredentialsProvider;
@@ -22,6 +24,7 @@ import com.worldventures.dreamtrips.mobilesdk.AuthRefresher;
 import com.worldventures.dreamtrips.mobilesdk.ConfigProviders;
 import com.worldventures.dreamtrips.mobilesdk.DreamTripsErrorParser;
 import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
+import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
@@ -123,6 +126,15 @@ public class MobileSdkJanetModule {
    AuthRefresher provideDreamTripsAuthRefresher(ReLoginInteractor reLoginInteractor,
          CredentialsProvider credentialsProvider, AuthStorage authStorage, MapperyContext mapperyContext) {
       return new DreamTripsAuthRefresher(reLoginInteractor, credentialsProvider, authStorage, mapperyContext);
+   }
+
+   @Singleton
+   @Provides
+   ReLoginInteractor provideReLoginInteractor(ConfigProviders configProviders, @Named(QUALIFIER) HttpClient httpClient) {
+      MonolithHttpService authService = new MonolithHttpService(configProviders.monolithConfig(), () -> (AuthData) () -> null,
+            httpClient, new GsonConverter(new GsonProvider().provideGson())
+      );
+      return new ReLoginInteractor(authService);
    }
 
    @Singleton

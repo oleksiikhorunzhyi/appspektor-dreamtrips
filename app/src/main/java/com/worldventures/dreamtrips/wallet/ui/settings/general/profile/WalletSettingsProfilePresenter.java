@@ -88,7 +88,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    private void observeChangeFields(Screen view) {
       view.setDoneButtonEnabled(isDataChanged());
-      view.observeChangesProfileFields().subscribe(changed -> view.setDoneButtonEnabled(isDataChanged()));
+      view.observeChangesProfileFields()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(changed -> view.setDoneButtonEnabled(isDataChanged()));
    }
 
    private void fetchProfile() {

@@ -32,6 +32,13 @@
          android:textColor="@android:color/black"
          />
 
+   <com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView
+         android:id="@+id/videoAttachment"
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/video_creation_cell_height"
+         android:visibility="gone"
+         />
+
    <android.support.v7.widget.RecyclerView
          android:id="@+id/imagesList"
          android:layout_width="match_parent"

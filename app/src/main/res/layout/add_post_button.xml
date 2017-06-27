@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/share_post"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/grey_lighter"
+      tools:showIn="@layout/layout_feed_user_info"
+      >
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:drawableLeft="@drawable/ic_profile_post_normal"
+         android:drawablePadding="@dimen/spacing_small"
+         android:layout_gravity="center"
+         android:padding="@dimen/spacing_medium"
+         android:textSize="@dimen/font_normal"
+         android:text="@string/feed_share_post_button"
+         />
+
+</FrameLayout>

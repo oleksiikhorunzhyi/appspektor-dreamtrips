@@ -20,9 +20,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
-import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.GalleryBundle;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 
 import java.util.List;
 
@@ -46,18 +47,16 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
    @State boolean isShown;
    @State boolean multiPickEnabled;
+   @State boolean videoPickingEnabled;
+   @State int videoLengthLimit;
    @State int pickLimit;
 
    private WeakHandler handler = new WeakHandler();
 
    private InputMethodManager inputMethodManager;
-
    private View draggableView;
-
    private FragmentManager fragmentManager;
-
    private PhotoPickerListener photoPickerListener;
-
    private View transparentView;
 
    public PhotoPickerLayout(Context context) {
@@ -99,7 +98,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
       post(() -> {
          if (isShown) {
-            this.showPanel(multiPickEnabled, pickLimit);
+            this.showPanel(multiPickEnabled, pickLimit, videoLengthLimit, videoPickingEnabled);
          } else {
             this.hidePanel();
          }
@@ -157,6 +156,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
                   .fragmentManager(fragmentManager)
                   .backStackEnabled(true)
                   .containerId(container.getId())
+                  .data(new GalleryBundle(videoPickingEnabled, videoLengthLimit))
                   .build());
          }
       });
@@ -188,10 +188,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       } else {
          selectedCount.setText(String.format(getResources().getString(R.string.photos_selected), pickedCount));
       }
-   }
-
-   public boolean isShowsFacebookAlbumFragment() {
-      return fragmentManager.findFragmentById(container.getId()) instanceof FacebookAlbumFragment;
    }
 
    public boolean isMultiPickEnabled() {
@@ -227,17 +223,15 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       else cancel.setText(R.string.back);
    }
 
-   public void showPanel() {
-      showPanel(false, 0);
+   public void showPanel(boolean photoMultipickEnabled, int photoPickLimit) {
+      showPanel(photoMultipickEnabled, photoPickLimit, 0, false);
    }
 
-   public void showPanel(boolean multiPickEnabled) {
-      showPanel(multiPickEnabled, Integer.MAX_VALUE);
-   }
-
-   public void showPanel(boolean multiPickEnabled, int pickLimit) {
-      this.multiPickEnabled = multiPickEnabled;
-      this.pickLimit = pickLimit;
+   public void showPanel(boolean photoMultipickEnabled, int photoPickLimit, int videoLengthLimit, boolean videoPickingEnabled) {
+      this.multiPickEnabled = photoMultipickEnabled;
+      this.pickLimit = photoPickLimit;
+      this.videoPickingEnabled = videoPickingEnabled;
+      this.videoLengthLimit = videoLengthLimit;
 
       if (photoPickerListener != null) photoPickerListener.onOpened();
       photoPickerDelegate.onOpened();
@@ -285,7 +279,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    }
 
    public interface OnDoneClickListener {
-      void onDone(List<BasePhotoPickerModel> chosenImages, int type);
+      void onDone(List<MediaPickerModel> chosenImages, VideoPickerModel videoPickerModel, int type);
    }
 
    private void clearAllBackStack() {

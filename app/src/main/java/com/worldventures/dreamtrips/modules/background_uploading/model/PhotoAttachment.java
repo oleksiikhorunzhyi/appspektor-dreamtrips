@@ -10,13 +10,10 @@ import org.immutables.value.Value;
 public interface PhotoAttachment {
 
    int id();
-   State state();
+   PostBody.State state();
    int progress();
-   @Nullable String originUrl();
+   @Nullable
+   String originUrl();
 
    SelectedPhoto selectedPhoto();
-
-   enum State {
-      SCHEDULED, STARTED, UPLOADED, FAILED
-   }
 }

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -7,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,15 +25,19 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.bundle.DescriptionBundle;
+import com.worldventures.dreamtrips.modules.feed.model.ImmutableVideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
+import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -48,9 +55,11 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
-public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
+public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P>
+      implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
    @Inject BackStackDelegate backStackDelegate;
+   @Inject ConfigurationInteractor configurationInteractor;
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
    @InjectView(R.id.avatar) protected SmartAvatarView avatar;
@@ -59,19 +68,20 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    @InjectView(R.id.image) protected ImageView image;
    @InjectView(R.id.location) protected ImageView locationBtn;
    @InjectView(R.id.photos) protected RecyclerView photosList;
+   @InjectView(R.id.post_container) ViewGroup postContainer;
 
-   BaseDelegateAdapter adapter;
-   SweetAlertDialog dialog;
-   PostDescription description = new PostDescription();
+   protected BaseDelegateAdapter adapter;
+   protected SweetAlertDialog dialog;
+   protected PostDescription description = new PostDescription();
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       postButton.setText(getPostButtonText());
-      //
       adapter = new BaseDelegateAdapter(getContext(), this);
       adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);//Tag
       adapter.registerCell(PostDescription.class, PostCreationTextCell.class);//hashtag
+      adapter.registerCell(ImmutableVideoCreationModel.class, VideoPostCreationCell.class);
       adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {//desc photo
          @Override
          public void onCellClicked(PostDescription model) {
@@ -81,10 +91,26 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
          }
       });
       adapter.registerDelegate(PhotoCreationItem.class, this);
-      LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-      photosList.setLayoutManager(layout);
+
+      photosList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
       photosList.setAdapter(adapter);
+
+      configurationInteractor.configurationActionPipe()
+            .observe()
+            .compose(bindUntilDropViewComposer())
+            .map(state -> state.action.getResult())
+            .subscribe(this::updateContainerOnOrientationChange);
+   }
+
+   private void updateContainerOnOrientationChange(Configuration configuration) {
+      Resources res = postContainer.getContext().getResources();
+      ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) postContainer.getLayoutParams();
+      params.bottomMargin = res.getDimensionPixelSize(R.dimen.post_spacing_vertical_bottom);
+      int marginLeftRight = res.getDimensionPixelSize(R.dimen.post_spacing_horizontal);
+      params.leftMargin = marginLeftRight;
+      params.rightMargin = marginLeftRight;
+      params.topMargin = res.getDimensionPixelSize(R.dimen.post_spacing_vertical_top);
    }
 
    @Override
@@ -243,8 +269,20 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    }
 
    @Override
-   public void updateItem(PhotoCreationItem item) {
+   public void updatePhoto(PhotoCreationItem item) {
       adapter.notifyItemChanged(adapter.getItems().indexOf(item));
+   }
+
+   @Override
+   public void attachVideo(VideoCreationModel model) {
+      adapter.addItem(model);
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void removeVideo(VideoCreationModel model) {
+      adapter.remove(model);
+      adapter.notifyDataSetChanged();
    }
 
    //////////////////////////////////////////
@@ -252,9 +290,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    //////////////////////////////////////////
 
    @Override
-   public void onCellClicked(PhotoCreationItem model) {
-      // nothing to do
-   }
+   public void onCellClicked(PhotoCreationItem model) { }
 
    @Override
    public void onTagIconClicked(PhotoCreationItem item) {
@@ -285,9 +321,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    }
 
    @Override
-   public void onRemoveClicked(PhotoCreationItem uploadTask) {
-
-   }
+   public void onRemoveClicked(PhotoCreationItem uploadTask) { }
 
    @Override
    public void onPhotoTitleFocusChanged(boolean hasFocus) {
@@ -299,16 +333,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       getPresenter().invalidateDynamicViews();
    }
 
-   ///////////////////////////////////////////////////////////////
-
-   protected void onTitleFocusChanged(boolean hasFocus) {
-
-   }
-
    @Override
    public void onPhotoTitleChanged(String title) {
       getPresenter().invalidateDynamicViews();
    }
+
+   protected void onTitleFocusChanged(boolean hasFocus) { }
 
    protected abstract int getPostButtonText();
 

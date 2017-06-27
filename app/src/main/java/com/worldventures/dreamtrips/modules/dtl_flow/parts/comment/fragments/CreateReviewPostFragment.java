@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
@@ -36,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 
 import javax.inject.Inject;
 
@@ -108,11 +108,16 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    protected void showMediaPicker() {
+      PickerBundle pickerBundle = new PickerBundle.Builder()
+            .setRequestId(0)
+            .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
+            .build();
+
       router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
+            .data(pickerBundle)
             .build());
    }
 

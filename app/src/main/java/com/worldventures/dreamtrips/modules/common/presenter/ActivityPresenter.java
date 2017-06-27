@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
-import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdateDelegate;
-import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
-import com.worldventures.dreamtrips.modules.version_check.service.command.VersionCheckCommand;
+import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
+import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 
 import javax.inject.Inject;
 
@@ -32,7 +32,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
    @Inject VersionUpdateDelegate versionUpdateDelegate;
-   @Inject VersionCheckInteractor versionCheckInteractor;
+   @Inject AppConfigurationInteractor appConfigurationInteractor;
 
    @State boolean isTermsShown;
 
@@ -58,11 +58,12 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    private void subscribeToAppVersionUpdates() {
-      versionCheckInteractor.versionCheckPipe().observeWithReplay()
+      appConfigurationInteractor.configurationCommandActionPipe()
+            .observeWithReplay()
             .compose(bindUntilPauseIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<VersionCheckCommand>()
-                  .onProgress((command, integer) -> processUpdateRequirement(command.getUpdateRequirement()))
-                  .onSuccess(command -> processUpdateRequirement(command.getUpdateRequirement()))
+            .subscribe(new ActionStateSubscriber<ConfigurationCommand>()
+                  .onProgress((command, integer) -> processUpdateRequirement(command.getResult().getUpdateRequirement()))
+                  .onSuccess(command -> processUpdateRequirement(command.getResult().getUpdateRequirement()))
                   .onFail((versionCheckAction, throwable) ->
                         Timber.w(throwable, "Could not check latest app version")));
    }

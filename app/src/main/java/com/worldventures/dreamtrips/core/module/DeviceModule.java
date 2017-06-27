@@ -6,6 +6,7 @@ import com.jaredrummler.android.device.DeviceName;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.api.session.model.ImmutableDevice;
+import com.worldventures.dreamtrips.modules.background_uploading.util.FileSplitter;
 
 import javax.inject.Singleton;
 
@@ -34,4 +35,8 @@ public class DeviceModule {
       );
    }
 
+   @Provides
+   FileSplitter provideDevice(Context context) {
+      return new FileSplitter(context.getExternalCacheDir());
+   }
 }

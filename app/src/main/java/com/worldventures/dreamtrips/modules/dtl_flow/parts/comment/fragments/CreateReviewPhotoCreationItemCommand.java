@@ -2,14 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v4.util.Pair;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import javax.inject.Inject;
@@ -23,23 +21,23 @@ public class CreateReviewPhotoCreationItemCommand extends Command<PhotoReviewCre
 
    @Inject Context context;
 
-   private PhotoGalleryModel photoGalleryModel;
+   private PhotoPickerModel photoGalleryModel;
    private MediaAttachment.Source source;
 
-   public CreateReviewPhotoCreationItemCommand(PhotoGalleryModel photoGalleryModel, MediaAttachment.Source source) {
+   public CreateReviewPhotoCreationItemCommand(PhotoPickerModel photoGalleryModel, MediaAttachment.Source source) {
       this.photoGalleryModel = photoGalleryModel;
       this.source = source;
    }
 
    @Override
    protected void run(CommandCallback<PhotoReviewCreationItem> callback) throws Throwable {
-      ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getImageUri()), 300, 300)
+      ImageUtils.getBitmap(context, photoGalleryModel.getUri(), 300, 300)
             .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable),
                   bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoReviewCreationItem item = new PhotoReviewCreationItem();
-               item.setId(photoGalleryModel.getImageUri().hashCode());
-               item.setFileUri(photoGalleryModel.getImageUri());
+               item.setId(photoGalleryModel.getUri().getPath().hashCode());
+               item.setFileUri(photoGalleryModel.getUri().getPath());
                item.setFilePath(photoGalleryModel.getAbsolutePath());
                Size imageSize = photoGalleryModel.getSize();
                item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());

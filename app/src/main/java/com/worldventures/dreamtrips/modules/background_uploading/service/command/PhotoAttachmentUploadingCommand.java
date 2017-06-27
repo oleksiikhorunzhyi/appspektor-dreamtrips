@@ -5,8 +5,10 @@ import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
 
 import java.util.concurrent.TimeUnit;
@@ -20,20 +22,20 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 @CommandAction
-public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperationModel> implements InjectableAction {
+public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
    @Inject UploadTimeEstimator uploadTimeEstimator;
 
-   private PostCompoundOperationModel postCompoundOperationModel;
+   private PostCompoundOperationModel<PostWithPhotoAttachmentBody> postCompoundOperationModel;
    private PhotoAttachment photoAttachment;
 
    private double totalUploadedSize;
    private double totalSize;
    private int attachmentIndex;
 
-   public PhotoAttachmentUploadingCommand(PostCompoundOperationModel postCompoundOperationModel,
+   public PhotoAttachmentUploadingCommand(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postCompoundOperationModel,
          PhotoAttachment photoAttachment) {
       this.postCompoundOperationModel = postCompoundOperationModel;
       this.photoAttachment = photoAttachment;
@@ -43,7 +45,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
 
    private void calculateSize() {
       Queryable<PhotoAttachment> uploadedQueryable = Queryable.from(postCompoundOperationModel.body().attachments())
-            .filter(element -> element.state() == PhotoAttachment.State.UPLOADED);
+            .filter(element -> element.state() == PostBody.State.UPLOADED);
       if (uploadedQueryable != null && uploadedQueryable.count() != 0) {
          totalUploadedSize = uploadedQueryable.map(item -> item.selectedPhoto().size()).sum();
       }
@@ -52,7 +54,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
    }
 
    @Override
-   protected void run(CommandCallback<PostCompoundOperationModel> callback) throws Throwable {
+   protected void run(CommandCallback<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> callback) throws Throwable {
       janet.createPipe(SimpleUploaderyCommand.class)
             .createObservable(new SimpleUploaderyCommand("file://" + photoAttachment.selectedPhoto().path()))
             .throttleLast(10, TimeUnit.MILLISECONDS)
@@ -66,7 +68,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                      uploadTimeEstimator.onUploadingStarted(System.currentTimeMillis());
                      Timber.d("[New Photo Attachment Creation] Uploading photo %s", photoAttachment.selectedPhoto()
                            .title());
-                     builder.state(PhotoAttachment.State.STARTED);
+                     builder.state(PostBody.State.STARTED);
                      break;
                   case PROGRESS:
                      Timber.d("[New Photo Attachment Creation] In progress %d", actionState.progress);
@@ -77,11 +79,11 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                      Timber.d("[New Photo Attachment Creation] Succeed %s", originUrl);
                      builder.originUrl(originUrl);
                      builder.progress(100);
-                     builder.state(PhotoAttachment.State.UPLOADED);
+                     builder.state(PostBody.State.UPLOADED);
                      break;
                   case FAIL:
                      Timber.e(actionState.exception, "[New Photo Attachment Creation] Upload failed");
-                     builder.state(PhotoAttachment.State.FAILED);
+                     builder.state(PostBody.State.FAILED);
                      break;
                }
                photoAttachmentUpdated(builder.build());

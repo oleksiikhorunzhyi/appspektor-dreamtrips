@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
@@ -22,7 +23,6 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentableBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -63,16 +63,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    //
    private LikersPanelHelper likersPanelHelper;
    private NavigationWrapper likersNavigationWrapper;
-
-   private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-         super.onTextChanged(s, start, before, count);
-         String text = s.toString().trim();
-         getPresenter().setDraftCommentText(text);
-         post.setEnabled(text.length() > 0);
-      }
-   };
 
    @Override
    protected T createPresenter(Bundle savedInstanceState) {
@@ -151,6 +141,16 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
       showHeaderIfNeeded();
    }
 
+   @Override
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+      RxTextView.afterTextChangeEvents(input)
+            .compose(bindUntilDropViewComposer())
+            .map(event -> event.editable().toString())
+            .startWith(getCommentText())
+            .subscribe(getPresenter()::onCommentTextChanged);
+   }
+
    private void showHeaderIfNeeded() {
       if (header != null && isTabletLandscape()) {
          header.setVisibility(View.VISIBLE);
@@ -170,15 +170,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    }
 
    @Override
-   public void onResume() {
-      super.onResume();
-      input.addTextChangedListener(inputWatcher);
-   }
-
-   @Override
    public void onPause() {
       super.onPause();
-      input.removeTextChangedListener(inputWatcher);
       SoftInputUtil.hideSoftInputMethod(getActivity());
    }
 
@@ -202,6 +195,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
       if (commentsEmpty && getArgs().shouldOpenKeyboard()) {
          showKeyboard();
       }
+   }
+
+   @Override
+   public void enablePostButton(boolean enable) {
+      post.setEnabled(enable);
    }
 
    @Override
@@ -264,14 +262,13 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @OnClick(R.id.post)
    void onPost() {
-      getPresenter().createComment();
+      getPresenter().createComment(getCommentText());
       post.setEnabled(false);
       input.setFocusable(false);
    }
 
-   @Override
-   public void setDraftComment(String comment) {
-      input.setText(comment);
+   private String getCommentText() {
+      return input.getText().toString().trim();
    }
 
    @Override

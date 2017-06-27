@@ -43,4 +43,6 @@ public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
 
    @Nullable
    String getLanguage();
+
+   boolean contentSame(FeedEntity feedEntity);
 }

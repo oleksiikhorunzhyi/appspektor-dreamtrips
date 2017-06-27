@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.background_uploading.storage;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
 import java.util.ArrayList;
@@ -21,18 +20,17 @@ public class CompoundOperationRepositoryImpl implements CompoundOperationReposit
    }
 
    @Override
-   public List<CompoundOperationModel> readCompoundOperations() {
-      List<CompoundOperationModel> compoundOperationModels = new ArrayList<>();
+   public List<PostCompoundOperationModel> readCompoundOperations() {
+      List<PostCompoundOperationModel> compoundOperationModels = new ArrayList<>();
       compoundOperationModels.addAll(snappyRepository.readList(COMPOUND_OBJECT_POSTS, PostCompoundOperationModel.class));
       Timber.d("Reading compound operations, %s", compoundOperationModels.toString());
       return compoundOperationModels;
    }
 
    @Override
-   public void saveCompoundOperations(List<CompoundOperationModel> compoundOperations) {
+   public void saveCompoundOperations(List<PostCompoundOperationModel> compoundOperations) {
       Timber.d("Saving compound operations, %s", compoundOperations.toString());
       snappyRepository.putList(COMPOUND_OBJECT_POSTS, Queryable.from(compoundOperations)
-            .filter(item -> item instanceof PostCompoundOperationModel)
             .cast(PostCompoundOperationModel.class).toList());
    }
 }

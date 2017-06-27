@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.view.popup;
 
 import android.content.Context;
 import android.support.annotation.MenuRes;
-import android.support.v7.widget.PopupMenu;
 import android.view.View;
+import android.widget.PopupMenu;
 
 import com.worldventures.dreamtrips.R;
 

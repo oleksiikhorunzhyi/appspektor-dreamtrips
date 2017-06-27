@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,17 +33,18 @@ public abstract class BasePhotoAttachmentsPreviewView extends BasePhotoAttachmen
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+   public void showPreview(List<Uri> attachments, boolean animate) {
       super.showPreview(attachments, animate);
       int attachmentsLastElementIndex = attachments.size() - 1;
       for (int i = 0; i < previewViews.size(); i++) {
          if (i > attachmentsLastElementIndex) {
             break;
          }
-         PhotoAttachment photoAttachment = attachments.get(i);
-         previewViews.get(i).setImageURI(Uri.fromFile(new File(photoAttachment.selectedPhoto().path())));
+
+         previewViews.get(i).setImageURI(attachments.get(i));
       }
    }
+
 
    protected void onViewCreated() {
    }

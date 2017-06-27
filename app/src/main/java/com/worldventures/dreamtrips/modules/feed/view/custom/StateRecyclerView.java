@@ -17,7 +17,6 @@ public class StateRecyclerView extends EmptyRecyclerView {
 
    private RecyclerViewStateDelegate stateDelegate;
    private OffsetYListener offsetYListener;
-   private LinearLayoutManager layoutManager;
 
    public StateRecyclerView(Context context) {
       this(context, null);
@@ -46,10 +45,6 @@ public class StateRecyclerView extends EmptyRecyclerView {
       stateDelegate = new RecyclerViewStateDelegate();
       stateDelegate.onCreate(savedInstanceState);
       stateDelegate.setRecyclerView(this);
-      //
-      layoutManager = linearLayoutManager;
-      layoutManager.setAutoMeasureEnabled(true);
-      setLayoutManager(layoutManager);
       //
       addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
@@ -83,10 +78,5 @@ public class StateRecyclerView extends EmptyRecyclerView {
 
    public interface OffsetYListener {
       void onScroll(int yOffset);
-   }
-
-   @Override
-   public LinearLayoutManager getLayoutManager() {
-      return layoutManager;
    }
 }

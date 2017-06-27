@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -17,9 +16,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
-import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
@@ -29,7 +26,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +48,6 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    private Subscription storageSubscription;
 
    @Inject HashtagInteractor interactor;
-   @Inject BucketInteractor bucketInteractor;
-   @Inject FeedInteractor feedInteractor;
-   @Inject TripImagesInteractor tripImagesInteractor;
-   @Inject PostsInteractor postsInteractor;
 
    @Inject TranslationDelegate translationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
@@ -74,7 +66,6 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
-      subscribeToLikesChanges();
       translationDelegate.onTakeView(view, feedItems);
    }
 
@@ -111,7 +102,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       storageSubscription = hashtagFeedStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<HashtagFeedStorageCommand>()
-                  .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
+                  .onSuccess(feedStorageCommand -> feedUpdated(feedStorageCommand.getResult()))
                   .onFail(this::handleError));
    }
 
@@ -130,10 +121,11 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       return true;
    }
 
-   private void refreshFeed(List<FeedItem> newFeedItems) {
+   private void feedUpdated(List<FeedItem> newFeedItems) {
       feedItems.clear();
       feedItems.addAll(newFeedItems);
       refreshFeedItems();
+      view.dataSetChanged();
    }
 
    private void subscribeRefreshFeeds() {
@@ -209,15 +201,6 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    @Override
    public void onLikeItem(FeedItem feedItem) {
       feedActionHandlerDelegate.onLikeItem(feedItem);
-   }
-
-   private void subscribeToLikesChanges() {
-      feedInteractor.changeFeedEntityLikedStatusPipe()
-            .observe()
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(this::itemLiked)
-                  .onFail(this::handleError));
    }
 
    @Override
@@ -309,5 +292,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       void hideSuggestionProgress();
 
       void showComments(FeedItem feedItem);
+
+      void dataSetChanged();
    }
 }

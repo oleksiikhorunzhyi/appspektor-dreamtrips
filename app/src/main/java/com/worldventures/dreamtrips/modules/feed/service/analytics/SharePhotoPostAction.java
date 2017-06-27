@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -41,7 +41,7 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
    private SharePhotoPostAction() {
    }
 
-   public static SharePhotoPostAction createPostAction(PostWithAttachmentBody postWithAttachmentBody) {
+   public static SharePhotoPostAction createPostAction(PostWithPhotoAttachmentBody postWithAttachmentBody) {
       final SharePhotoPostAction sharePostAction = getSharePhotoPostAction(postWithAttachmentBody.origin());
       final TextualPost textualPost = postWithAttachmentBody.createdPost();
       final List<PhotoAttachment> photos = postWithAttachmentBody.attachments();

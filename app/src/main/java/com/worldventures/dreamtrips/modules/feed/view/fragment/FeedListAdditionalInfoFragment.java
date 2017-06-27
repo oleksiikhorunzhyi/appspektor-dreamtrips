@@ -175,20 +175,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
             .build());
    }
 
-   private void openSharePhoto() {
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
-            .containerId(R.id.container_details_floating)
-            .fragmentManager(getActivity().getSupportFragmentManager())
-            .build());
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getActivity().getSupportFragmentManager())
-            .containerId(R.id.container_details_floating)
-            .data(new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED))
-            .build());
-
-   }
-
    protected void openSearch() {
       router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
             .data(new FriendGlobalSearchBundle(""))
@@ -198,11 +184,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    @OnClick(R.id.share_post)
    protected void onPostClicked() {
       openPost();
-   }
-
-   @OnClick(R.id.share_photo)
-   protected void onSharePhotoClick() {
-      openSharePhoto();
    }
 
    @OnClick(R.id.global)

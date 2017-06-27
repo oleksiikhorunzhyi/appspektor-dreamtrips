@@ -2,6 +2,35 @@ package com.worldventures.dreamtrips.modules.background_uploading.model;
 
 import org.immutables.value.Value;
 
+import java.util.Date;
+
 @Value.Immutable
-public interface PostCompoundOperationModel extends CompoundOperationModel<PostWithAttachmentBody> {
+public abstract class PostCompoundOperationModel<T extends PostBody> {
+
+   public static final int TIME_LEFT_INITIAL_VALUE = -1;
+
+   public abstract int id();
+
+   public abstract CompoundOperationState state();
+
+   @Value.Default
+   public int progress() {
+      return 0;
+   }
+
+   @Value.Default
+   public long millisLeft() {
+      return TIME_LEFT_INITIAL_VALUE;
+   }
+
+   @Value.Default
+   public double averageUploadSpeed() {
+      return 0.0d;
+   }
+
+   public abstract Date creationDate();
+
+   public abstract PostBody.Type type();
+
+   public abstract T body();
 }

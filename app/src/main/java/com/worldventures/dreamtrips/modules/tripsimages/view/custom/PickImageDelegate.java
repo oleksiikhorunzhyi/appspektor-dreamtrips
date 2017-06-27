@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.command.ImageCapturedCommand;
+import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 
 import icepick.Icepick;
@@ -37,10 +38,19 @@ public class PickImageDelegate {
       filePath = activityRouter.openCamera(FOLDERNAME);
    }
 
+   public void recordVideo(int durationLimitSecs) {
+      filePath = activityRouter.openCameraForVideoRecording(FOLDERNAME, durationLimitSecs);
+   }
+
    public void onActivityResult(int requestCode, int resultCode, Intent data) {
       if (resultCode == Activity.RESULT_OK) {
-         if (requestCode == ActivityRouter.CAPTURE_PICTURE_REQUEST_TYPE) {
-            mediaInteractor.imageCapturedPipe().send(new ImageCapturedCommand(filePath));
+         switch (requestCode) {
+            case ActivityRouter.CAPTURE_PICTURE_REQUEST_TYPE:
+               mediaInteractor.imageCapturedPipe().send(new ImageCapturedCommand(filePath));
+               break;
+            case ActivityRouter.CAPTURE_VIDEO_REQUEST_TYPE:
+               mediaInteractor.videoCapturedPipe().send(new VideoCapturedCommand(filePath));
+               break;
          }
       }
    }

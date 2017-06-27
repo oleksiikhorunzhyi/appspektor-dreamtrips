@@ -1,27 +1,29 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.util.FeedListWidth;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
+import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.FeedListWidthCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
@@ -36,16 +38,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import io.techery.janet.Command;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_feed_post_event)
-public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>> {
+public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>>
+      implements Focusable {
 
    @InjectView(R.id.post) HashtagTextView post;
    @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
@@ -53,9 +60,12 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @InjectView(R.id.translate) View translateButton;
    @Optional @InjectView(R.id.collage) CollageView collageView;
    @Optional @InjectView(R.id.tag) ImageView tag;
+   @Optional @InjectView(R.id.videoAttachment) VideoAttachmentView videoAttachmentView;
 
-   @Inject FragmentManager fragmentManager;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject FeedListWidthInteractor feedListWidthInteractor;
+   private Subscription listWidthSubscription;
+
+   private FeedListWidth feedListWidth;
 
    public PostFeedItemCell(View view) {
       super(view);
@@ -64,26 +74,49 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      PostFeedItem obj = getModelObject();
       ViewUtils.runTaskAfterMeasure(itemView, () -> {
-         processAttachments(obj.getItem().getAttachments());
-         processPostText(obj.getItem());
-         processTranslations();
+         if (feedListWidth == null) {
+            feedListWidthInteractor.feedListWidthPipe().send(new FeedListWidthCommand(itemView.getWidth()));
+         }
+         feedListWidthInteractor.feedListWidthPipe()
+               .observeSuccessWithReplay().take(1).subscribe(command -> {
+            feedListWidth = command.getResult();
+            refreshUi();
+         });
       });
+
+      if (listWidthSubscription != null && !listWidthSubscription.isUnsubscribed()) {
+         listWidthSubscription.unsubscribe();
+      }
+      listWidthSubscription = feedListWidthInteractor.feedListWidthPipe().observeSuccess()
+            .map(Command::getResult)
+            .delay(50, TimeUnit.MILLISECONDS)
+            .onBackpressureLatest()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(feedListWidth -> {
+               this.feedListWidth = feedListWidth;
+               processPhotoAttachments();
+            }, throwable -> Timber.w("Could not get list width"));
+   }
+
+   private void refreshUi() {
+      processAttachments(getModelObject().getItem().getAttachments());
+      processPostText(getModelObject().getItem());
+      processTranslations();
    }
 
    private void processTranslations() {
       PostFeedItem postFeedItem = getModelObject();
       TextualPost textualPost = postFeedItem.getItem();
 
-      if (!appSessionHolder.get().isPresent()) {
+      if (!sessionHolder.get().isPresent()) {
          hideTranslationUi();
          return;
       }
 
-      boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownPost = textualPost.getOwner().getId() == sessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
-      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguage());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(sessionHolder, textualPost.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguage());
 
       if (!ownPost && !emptyPostText && !ownLanguage && !emptyPostLanguage) {
@@ -126,26 +159,51 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       }
    }
 
-   protected void processAttachments(List<FeedEntityHolder> attachments) {
-      if (collageView == null) return;
-      //
+   private void processAttachments(List<FeedEntityHolder> attachments) {
       if (attachments != null && !attachments.isEmpty()) {
-         collageView.setItemClickListener(new CollageView.ItemClickListener() {
-            @Override
-            public void itemClicked(int position) {
-               openFullscreenPhotoList(position);
-            }
-
-            @Override
-            public void moreClicked() {
-               openFeedItemDetails();
-            }
-         });
-         collageView.setItems(attachmentsToCollageItems(attachments), cardViewWrapper.getWidth());
+         if (attachments.get(0).getItem() instanceof Photo) {
+            videoAttachmentView.hide();
+            processPhotos();
+         } else if (attachments.get(0).getItem() instanceof Video) {
+            clearImages();
+            processVideo((Video) attachments.get(0).getItem());
+         }
       } else {
-         collageView.clear();
+         videoAttachmentView.hide();
+         clearImages();
       }
       processTags(attachments);
+   }
+
+   protected void clearImages() {
+      collageView.clear();
+   }
+
+   private void processPhotoAttachments() {
+      List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+      if (attachments != null && !attachments.isEmpty()) {
+         if (attachments.get(0).getItem() instanceof Photo) {
+            videoAttachmentView.hide();
+            processPhotos();
+         }
+      }
+   }
+
+   protected void processPhotos() {
+      collageView.setItemClickListener(new CollageView.ItemClickListener() {
+         @Override
+         public void itemClicked(int position) {
+            openFullscreenPhotoList(position);
+         }
+
+         @Override
+         public void moreClicked() {
+            openFeedItemDetails();
+         }
+      });
+      boolean landscapeOrientation = ViewUtils.isLandscapeOrientation(itemView.getContext());
+      collageView.setItems(attachmentsToCollageItems(getModelObject().getItem().getAttachments()),
+            landscapeOrientation ? feedListWidth.getWidthInLandscape() : feedListWidth.getWidthInPortrait());
    }
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
@@ -186,6 +244,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void openFeedItemDetails() {
       router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
    }
@@ -195,6 +254,20 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
             .data(new HashtagFeedBundle(hashtag))
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
+   }
+
+   private void processVideo(Video video) {
+      videoAttachmentView.setup(video);
+   }
+
+   @Override
+   public void onFocused() {
+      videoAttachmentView.onFocused();
+   }
+
+   @Override
+   public boolean canFocus() {
+      return videoAttachmentView.getVisibility() == View.VISIBLE;
    }
 
    @OnClick(R.id.translate)
@@ -218,5 +291,16 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Override
    protected void onMore() {
       showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+   }
+
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      if (videoAttachmentView != null) {
+         videoAttachmentView.clearResources();
+      }
+      if (listWidthSubscription != null && !listWidthSubscription.isUnsubscribed()) {
+         listWidthSubscription.unsubscribe();
+      }
    }
 }

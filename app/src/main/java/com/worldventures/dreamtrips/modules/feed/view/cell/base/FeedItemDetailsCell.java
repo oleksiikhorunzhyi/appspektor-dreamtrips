@@ -66,17 +66,18 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
       trackOpened();
    }
 
-   protected void onOpenItemDetails() {
+   private void onOpenItemDetails() {
       Route detailsRoute = Route.FEED_ITEM_DETAILS;
       FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder().feedItem(getModelObject())
             .showAdditionalInfo(true);
       if (tabletAnalytic.isTabletLandscape()) {
          bundleBuilder.slave(true);
       }
-      router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().data(bundleBuilder.build()).build());
+      router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+            .data(bundleBuilder.build()).build());
    }
 
-   public final void openEntityDetails() {
+   protected final void openEntityDetails() {
       onOpenEntityDetails();
       trackOpened();
    }

@@ -33,7 +33,7 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
          }
 
          it("Compound operations should be updated 4 times") {
-            AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 4)
+            AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 5)
          }
       }
 

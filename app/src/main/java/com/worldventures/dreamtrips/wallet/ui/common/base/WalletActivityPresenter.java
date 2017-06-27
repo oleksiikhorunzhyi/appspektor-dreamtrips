@@ -36,8 +36,8 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
             .compose(bindView())
             .filter(command -> command.getResult().cardStatus().isActive())
             .flatMap(command -> interactor.connectActionPipe()
-                  .createObservable(new ConnectSmartCardCommand(command.getResult().smartCardId(), false)))
-            .subscribe(connectAction -> Timber.i("Success connection to smart card"), throwable -> {
+                  .createObservable(new ConnectSmartCardCommand(command.getResult().smartCardId())))
+            .subscribe(connectAction -> Timber.i("Success connection to Smart Card"), throwable -> {
             });
    }
 

@@ -20,12 +20,8 @@ public class ConnectSmartCardCommand extends Command<Void> implements Injectable
 
    private final String smartCardId;
 
-   public ConnectSmartCardCommand(String smartCardId, boolean waitForParing) {
-      this.smartCardId = smartCardId;
-   }
-
    public ConnectSmartCardCommand(String smartCardId) {
-      this(smartCardId, false);
+      this.smartCardId = smartCardId;
    }
 
    @Override

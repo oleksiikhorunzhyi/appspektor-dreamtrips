@@ -31,7 +31,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
-import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.FixedListPhotosPresenter;
 
 import dagger.Module;
@@ -55,7 +54,6 @@ import dagger.Provides;
             AutoCompleteAdapter.class,
             BucketItemAdapter.class,
             IgnoreFirstItemAdapter.class,
-            IgnoreFirstExpandedItemAdapter.class,
             AddPhotoCell.class,
             BucketPhotoCell.class,
             FixedListPhotosPresenter.class,
@@ -79,6 +77,12 @@ public class BucketListModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideBucketListComponent() {
-      return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
+      return new ComponentDescription.Builder()
+            .key(BUCKETLIST)
+            .navMenuTitle(R.string.bucket_list)
+            .toolbarTitle(R.string.bucket_list)
+            .icon(R.drawable.ic_bucket_lists)
+            .fragmentClass(BucketTabsFragment.class)
+            .build();
    }
 }

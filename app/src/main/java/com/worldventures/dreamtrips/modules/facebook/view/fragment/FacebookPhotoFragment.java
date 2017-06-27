@@ -4,13 +4,14 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.worldventures.dreamtrips.modules.common.view.fragment.BasePickerFragment;
+import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.BasePickerFragment;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
 
-public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPresenter> implements FacebookPhotoPresenter.View {
+public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPresenter, Bundle> implements FacebookPhotoPresenter.View {
 
    public static final int PHOTOS_TYPE_FACEBOOK = 346;
    public static final String BUNDLE_ALBUM_ID = "BUNDLE_ALBUM_ID";
@@ -32,6 +33,12 @@ public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPrese
    @Override
    protected void registerCells() {
       adapter.registerCell(FacebookPhoto.class, FacebookPhotoCell.class);
+      adapter.registerDelegate(FacebookPhoto.class, new CellDelegate<FacebookPhoto>(){
+         @Override
+         public void onCellClicked(FacebookPhoto model) {
+            getPresenter().onPhotoPickerModelSelected(model);
+         }
+      });
    }
 
    @Override

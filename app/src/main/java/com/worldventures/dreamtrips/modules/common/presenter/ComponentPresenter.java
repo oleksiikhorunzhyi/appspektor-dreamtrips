@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 
@@ -18,12 +17,17 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
    public static final String EXTRA_DATA = "EXTRA_DATA";
    public static final String DIALOG_GRAVITY = "DIALOG_GRAVITY";
 
-   private Bundle args;
+   private Parcelable args;
    private Route route;
 
    private boolean needMove;
 
    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
+
+   public ComponentPresenter(Bundle bundle) {
+      route = (Route) bundle.getSerializable(ROUTE);
+      this.args = bundle.getParcelable(EXTRA_DATA);
+   }
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -37,13 +41,7 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
    public void takeView(View view) {
       super.takeView(view);
       podcastPlayerDelegate.stop();
-      if (needMove) view.moveTo(route, args.getParcelable(EXTRA_DATA));
-   }
-
-   @Override
-   public void onConfigurationChanged(Configuration configuration) {
-      super.onConfigurationChanged(configuration);
-      activity.recreate();
+      if (needMove) view.moveTo(route, args);
    }
 
    public int getTitle() {
@@ -52,11 +50,6 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
       } else {
          return 0;
       }
-   }
-
-   public ComponentPresenter(Bundle args) {
-      route = (Route) args.getSerializable(ROUTE);
-      this.args = args;
    }
 
    public interface View extends ActivityPresenter.View {

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor
+import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost
@@ -54,6 +55,7 @@ abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : Base
          val analyticsInteractor = spy(AnalyticsInteractor(sessionPipeCreator))
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(PostsInteractor::class.java) { PostsInteractor(SessionActionPipeCreator(janet)) }
+         daggerCommandActionService.registerProvider(PingAssetStatusInteractor::class.java) { PingAssetStatusInteractor(SessionActionPipeCreator(janet)) }
          daggerCommandActionService.registerProvider(BackgroundUploadingInteractor::class.java) { backgroundUploadingInteractor }
          daggerCommandActionService.registerProvider(CompoundOperationsInteractor::class.java) { compoundOperationsInteractor }
          daggerCommandActionService.registerProvider(AnalyticsInteractor::class.java) { analyticsInteractor }

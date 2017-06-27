@@ -174,6 +174,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
       this.notifyDataSetChanged();
    }
 
+   public void setItemsNoNotify(List<BaseItemClass> baseItemClasses) {
+      this.items = baseItemClasses;
+   }
+
    public void updateItem(BaseItemClass changedItem) {
       Queryable.from(items).forEachR(item -> {
          if (!item.equals(changedItem)) return;

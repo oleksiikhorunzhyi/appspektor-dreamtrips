@@ -10,12 +10,12 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_suggestion_photo)
-public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
+public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoPickerModel, CellDelegate<PhotoPickerModel>> {
 
    @InjectView(R.id.iv_photo) SimpleDraweeView photo;
    @InjectView(R.id.pick) ImageView pick;
@@ -27,7 +27,7 @@ public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoGalleryModel,
 
    @Override
    protected void syncUIStateWithModel() {
-      setImage(Uri.parse(getModelObject().getImageUri()), photo);
+      setImage(getModelObject().getUri(), photo);
       //
       pick.setImageResource(getModelObject().isChecked() ? R.drawable.add_photo_icon_selected : R.drawable.add_photo_icon);
       darkenedView.setVisibility(getModelObject().isChecked() ? View.VISIBLE : View.GONE);

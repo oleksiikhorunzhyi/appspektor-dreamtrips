@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.DeleteCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.UpdateCompoundOperationCommand;
@@ -18,9 +18,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class CompoundOperationStorage implements MultipleActionStorage<List<CompoundOperationModel>> {
+public class CompoundOperationStorage implements MultipleActionStorage<List<PostCompoundOperationModel>> {
 
-   private static final Comparator<CompoundOperationModel> CELLS_COMPARATOR = new PostCompoundOperationModelComparator();
+   private static final Comparator<PostCompoundOperationModel> CELLS_COMPARATOR = new PostCompoundOperationModelComparator();
 
    private CompoundOperationRepository compoundOperationRepository;
 
@@ -28,7 +28,7 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Comp
       this.compoundOperationRepository = compoundOperationRepository;
    }
 
-   private MemoryStorage<List<CompoundOperationModel>> memoryStorage = new MemoryStorage<>();
+   private MemoryStorage<List<PostCompoundOperationModel>> memoryStorage = new MemoryStorage<>();
 
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
@@ -40,20 +40,20 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Comp
    }
 
    @Override
-   public void save(@Nullable CacheBundle params, List<CompoundOperationModel> data) {
+   public void save(@Nullable CacheBundle params, List<PostCompoundOperationModel> data) {
       memoryStorage.save(params, data);
       compoundOperationRepository.saveCompoundOperations(data);
    }
 
    @Override
-   public List<CompoundOperationModel> get(@Nullable CacheBundle action) {
-      List<CompoundOperationModel> models = getInternal(action);
+   public List<PostCompoundOperationModel> get(@Nullable CacheBundle action) {
+      List<PostCompoundOperationModel> models = getInternal(action);
       if (models != null) Collections.sort(models, CELLS_COMPARATOR);
       return models;
    }
 
-   private List<CompoundOperationModel> getInternal(@Nullable CacheBundle action) {
-      List<CompoundOperationModel> compoundOperationModels = memoryStorage.get(action);
+   private List<PostCompoundOperationModel> getInternal(@Nullable CacheBundle action) {
+      List<PostCompoundOperationModel> compoundOperationModels = memoryStorage.get(action);
       return compoundOperationModels != null ? compoundOperationModels : compoundOperationRepository.readCompoundOperations();
    }
 }

@@ -11,10 +11,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.feed.view.util.blur.BlurPostprocessor;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -46,12 +44,13 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+   public void showPreview(List<Uri> attachments, boolean animate) {
+      super.showPreview(attachments, animate);
       refreshPreviewImages(attachments);
       refreshUploadsLeftCount(attachments);
    }
 
-   protected void refreshPreviewImages(List<PhotoAttachment> attachments) {
+   private void refreshPreviewImages(List<Uri> attachments) {
       int attachmentsLastElementIndex = attachments.size() - 1;
       for (int i = 0; i < previewViews.size(); i++) {
          if (i > attachmentsLastElementIndex) {
@@ -61,9 +60,8 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
       }
    }
 
-   private void refreshPreviewImage(int index, List<PhotoAttachment> attachments) {
-      PhotoAttachment photoAttachment = attachments.get(index);
-      Uri uri = Uri.fromFile(new File(photoAttachment.selectedPhoto().path()));
+   private void refreshPreviewImage(int index, List<Uri> attachments) {
+      Uri uri = attachments.get(index);
       SimpleDraweeView view = previewViews.get(index);
 
       ImageRequestBuilder imageRequest = ImageRequestBuilder.newBuilderWithSource(uri);
@@ -95,7 +93,7 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
       view.setController(controller.build());
    }
 
-   protected void refreshUploadsLeftCount(List<PhotoAttachment> attachments) {
+   private void refreshUploadsLeftCount(List<Uri> attachments) {
       if (attachments.size() > MAX_DISPLAY_COUNT) {
          // blurred image does not contribute to images left to upload counter
          additionalCountTextView.setText(String.format("+%d", attachments.size() - MAX_DISPLAY_COUNT + 1));

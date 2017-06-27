@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.util.DiffUtil;
+import android.support.v7.util.ListUpdateCallback;
+import android.support.v7.widget.RecyclerView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
@@ -12,11 +15,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
@@ -33,7 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -47,12 +49,14 @@ import java.util.List;
 
 public class FragmentWithFeedDelegate {
 
-   Router router;
+   private Router router;
+   private FeedAspectRatioHelper feedAspectRatioHelper;
 
    private BaseDelegateAdapter adapter;
 
-   public FragmentWithFeedDelegate(Router router) {
+   public FragmentWithFeedDelegate(Router router, FeedAspectRatioHelper feedAspectRatioHelper) {
       this.router = router;
+      this.feedAspectRatioHelper = feedAspectRatioHelper;
    }
 
    public void init(BaseDelegateAdapter adapter) {
@@ -72,28 +76,53 @@ public class FragmentWithFeedDelegate {
       adapter.addItem(item);
    }
 
-   public void addItem(int position, Object item) {
-      adapter.addItem(position, item);
-   }
+   public void updateItems(final List items, RecyclerView recyclerView) {
+      feedAspectRatioHelper.correctAspectRatio(items, (double) recyclerView.getWidth() / recyclerView.getHeight());
+      DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+         @Override
+         public int getOldListSize() {
+            return adapter.getItems().size();
+         }
 
-   public void addItems(List items) {
-      adapter.addItems(items);
-   }
+         @Override
+         public int getNewListSize() {
+            return items.size();
+         }
 
-   public void updateItem(Object item) {
-      adapter.updateItem(item);
-   }
+         @Override
+         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof MediaAttachment &&
+                  items.get(newItemPosition) instanceof MediaAttachment) {
+               return true;
+            }
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&
+                  items.get(newItemPosition) instanceof UploadingPostsList) {
+               return true;
+            }
+            return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
+         }
 
-   public Object getItem(int position) {
-      return adapter.getItem(position);
+         @Override
+         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof FeedItem &&
+                  items.get(newItemPosition) instanceof FeedItem) {
+               FeedItem oldItem = (FeedItem) adapter.getItem(oldItemPosition);
+               FeedItem newItem = (FeedItem) items.get(newItemPosition);
+               return oldItem.contentSame(newItem);
+            }
+            return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
+         }
+      });
+      adapter.setItemsNoNotify(items);
+      UpdateCallback updateCallback = new UpdateCallback();
+      diffResult.dispatchUpdatesTo(updateCallback);
+      if (updateCallback.firstInsertPosition == 0) {
+         recyclerView.scrollToPosition(updateCallback.firstInsertPosition);
+      }
    }
 
    public List getItems() {
       return adapter.getItems();
-   }
-
-   public int getItemsCount() {
-      return adapter.getCount();
    }
 
    public void notifyDataSetChanged() {
@@ -104,11 +133,12 @@ public class FragmentWithFeedDelegate {
       adapter.notifyItemInserted(position);
    }
 
+   public void notifyItemChanged(int index) {
+      adapter.notifyItemChanged(index);
+   }
+
    public void notifyItemChanged(FeedItem feedItem) {
-      if (feedItem == null) {
-         adapter.notifyDataSetChanged();
-         return;
-      }
+      if (feedItem == null) return;
       int size = adapter.getItems().size();
       for (int i = 0; i < size; i++) {
          Object object = adapter.getItems().get(i);
@@ -130,10 +160,6 @@ public class FragmentWithFeedDelegate {
       notifyDataSetChanged();
    }
 
-   public void clearItems() {
-      adapter.clear();
-   }
-
    private void registerBaseFeedCells() {
       adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
       adapter.registerCell(PhotoFeedItem.class, FeedItemCell.class);
@@ -141,7 +167,7 @@ public class FragmentWithFeedDelegate {
       adapter.registerCell(BucketFeedItem.class, FeedItemCell.class);
       adapter.registerCell(PostFeedItem.class, FeedItemCell.class);
       adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
-      adapter.registerCell(UploadingPostsList.class, UploadingPhotoPostsSectionCell.class);
+      adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
    }
 
@@ -220,7 +246,8 @@ public class FragmentWithFeedDelegate {
          if (isTabletLandscape) {
             bundleBuilder.slave(true);
          }
-         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().data(bundleBuilder.build()).build());
+         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+               .data(bundleBuilder.build()).build());
       }
    }
 
@@ -265,10 +292,49 @@ public class FragmentWithFeedDelegate {
             .build());
    }
 
+   public void hideAdditonalInfo(FragmentManager fragmentManager) {
+      router.moveTo(Route.FEED_LIST_ADDITIONAL_INFO, NavigationConfigBuilder.forRemoval()
+            .fragmentManager(fragmentManager)
+            .containerId(R.id.additional_info_container)
+            .build());
+   }
+
    public void openHashtagSearch() {
       router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
             .data(null)
+            .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
+   }
+
+   /*
+    * Copy of default DiffUtil implementation with ability
+    * to track and save insert position
+    */
+   private class UpdateCallback implements ListUpdateCallback {
+      private int firstInsertPosition = -1;
+
+      @Override
+      public void onInserted(int position, int count) {
+         if (firstInsertPosition < position) {
+            firstInsertPosition = position;
+         }
+         adapter.notifyItemRangeInserted(position, count);
+      }
+
+      @Override
+      public void onRemoved(int position, int count) {
+         adapter.notifyItemRangeRemoved(position, count);
+      }
+
+      @Override
+      public void onMoved(int fromPosition, int toPosition) {
+         adapter.notifyItemMoved(fromPosition, toPosition);
+      }
+
+      @Override
+      public void onChanged(int position, int count, Object payload) {
+         adapter.notifyItemRangeChanged(position, count, payload);
+      }
    }
 }

@@ -8,12 +8,13 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
+import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPostPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.layout_post)
-public class EditPostFragment extends ActionEntityFragment<EditPostPresenter, EditPostBundle> implements EditPostPresenter.View {
+public class EditPostFragment extends ActionEntityFragment<EditPostPresenter, EditPostBundle> implements ActionEntityPresenter.View {
 
    @InjectView(R.id.image) ImageView image;
 

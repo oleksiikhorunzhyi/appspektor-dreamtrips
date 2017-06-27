@@ -10,8 +10,10 @@ import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 
@@ -27,6 +29,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
    private boolean isPaused;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   @Inject ConfigurationInteractor configurationInteractor;
 
    public PM getPresentationModel() {
       return presenter;
@@ -152,6 +155,8 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
       presenter.onConfigurationChanged(newConfig);
+      getResources().updateConfiguration(newConfig, getResources().getDisplayMetrics());
+      configurationInteractor.configurationActionPipe().send(new ConfigurationCommand(newConfig));
    }
 
    @Override

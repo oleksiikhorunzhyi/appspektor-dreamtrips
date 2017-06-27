@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,6 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -40,6 +40,7 @@ import com.worldventures.dreamtrips.modules.feed.model.cell.EmptyFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
+import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.EmptyFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
@@ -47,10 +48,12 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDele
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
+import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -73,9 +76,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       FeedEntityEditingView {
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject FeedListWidthInteractor feedListWidthInteractor;
 
-   @Optional
    @InjectView(R.id.posting_header) View postingHeader;
+   @InjectView(R.id.additional_info_container) View additionalInfoContainer;
+
+   private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    private BadgeImageView friendsBadge;
    private BadgeImageView unreadConversationBadge;
@@ -85,7 +91,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    private ContentObserver contentObserver;
    private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
 
-   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private StatePaginatedRecyclerViewManager recyclerViewManager;
    private Bundle savedInstanceState;
 
    private MaterialDialog blockingProgressDialog;
@@ -94,6 +100,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.savedInstanceState = savedInstanceState;
+   }
+
+   @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      setupUi();
    }
 
    @Override
@@ -122,22 +134,46 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
       // TODO: 2/23/17 put pagination logic into common set of presenter interfaces and view delegates
       // when feed storage refactoring is merged
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
-      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
+      recyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      recyclerViewManager.init(adapter, savedInstanceState);
+      recyclerViewManager.setOnRefreshListener(this);
+      recyclerViewManager.setPaginationListener(() -> {
+         if (!recyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyDataSetChanged();
+            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
-      if (isTabletLandscape()) {
-         fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(), getPresenter().getAccount());
-      }
+      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
+            recyclerViewManager.stateRecyclerView);
+      feedWidthOrientationHelper.startReportingListWidth();
+
+      setupUi();
 
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();
       registerCellDelegates();
+   }
+
+   private void setupUi() {
+      if (isTabletLandscape()) {
+         additionalInfoContainer.setVisibility(View.VISIBLE);
+         postingHeader.setVisibility(View.GONE);
+         fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(), getPresenter().getAccount());
+      } else {
+         additionalInfoContainer.setVisibility(View.GONE);
+         postingHeader.setVisibility(View.VISIBLE);
+         fragmentWithFeedDelegate.hideAdditonalInfo(getChildFragmentManager());
+      }
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      startAutoplayVideos();
+   }
+
+   private void startAutoplayVideos() {
+      recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }
 
    @Override
@@ -187,13 +223,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.openPost(getActivity().getSupportFragmentManager());
    }
 
-   @Optional
-   @OnClick(R.id.share_photo)
-   protected void onSharePhotoClick() {
-      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
-            new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED));
-   }
-
    @Override
    public void onAttachClicked() {
       fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(false,
@@ -225,12 +254,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model) {
+   public void onPreloadSuggestionPhotos(@NonNull PhotoPickerModel model) {
       getPresenter().preloadSuggestionChunk(model);
    }
 
    @Override
-   public void onSelectPhoto(@NonNull PhotoGalleryModel model) {
+   public void onSelectPhoto(@NonNull PhotoPickerModel model) {
       getPresenter().selectPhoto(model);
    }
 
@@ -270,17 +299,21 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList,
-         List<PhotoGalleryModel> suggestedPhotos) {
+         List<PhotoPickerModel> suggestedPhotos) {
       List feedModels = new ArrayList();
       processSuggestedPhotosItems(suggestedPhotos, feedModels);
       processUploadsInProgressItems(uploadingPostsList, feedModels);
       processFeedItems(feedItems, feedModels);
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(feedModels);
+      fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
+      startAutoplayVideos();
+   }
+
+   @Override
+   public void dataSetChanged() {
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
-   private void processSuggestedPhotosItems(List<PhotoGalleryModel> suggestedPhotos, List feedModels) {
+   private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {
       int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
       if (suggestedPhotosSize > 0) {
          feedModels.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
@@ -309,12 +342,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void startLoading() {
-      statePaginatedRecyclerViewManager.startLoading();
+      recyclerViewManager.startLoading();
    }
 
    @Override
    public void finishLoading() {
-      statePaginatedRecyclerViewManager.finishLoading();
+      recyclerViewManager.finishLoading();
    }
 
    @Override
@@ -348,7 +381,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
-      statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+      recyclerViewManager.updateLoadingStatus(loading, noMoreElements);
    }
 
    @Override

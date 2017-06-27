@@ -5,9 +5,7 @@ import android.net.Uri;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 
-import java.io.File;
 import java.util.List;
 
 public class SinglePhotoAttachmentPreviewView extends BasePhotoAttachmentPreviewView {
@@ -25,9 +23,9 @@ public class SinglePhotoAttachmentPreviewView extends BasePhotoAttachmentPreview
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+   public void showPreview(List<Uri> attachments, boolean animate) {
       super.showPreview(attachments, animate);
       if (simpleDraweeView.getParent() == null) throw new IllegalStateException("Must call attachView() first");
-      simpleDraweeView.setImageURI(Uri.fromFile(new File(attachments.get(0).selectedPhoto().path())));
+      simpleDraweeView.setImageURI(attachments.get(0));
    }
 }

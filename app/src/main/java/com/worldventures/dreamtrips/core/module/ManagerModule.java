@@ -29,12 +29,14 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoPro
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProviderImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
@@ -49,6 +51,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceIn
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.AccountTimelineStorageInteractor;
@@ -57,6 +60,7 @@ import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedS
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
@@ -65,11 +69,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberI
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.version_check.VersionCheckModule;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -349,8 +350,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   VersionCheckInteractor provideVersionCheckInteractor(@Named(VersionCheckModule.JANET_QUALIFIER) Janet janet) {
-      return new VersionCheckInteractor(janet);
+   AppConfigurationInteractor provideVersionCheckInteractor(Janet janet) {
+      return new AppConfigurationInteractor(janet);
    }
 
    @Provides
@@ -394,5 +395,23 @@ public class ManagerModule {
    @Singleton
    UploadingFileManager provideUploadingFileManager(Context context) {
       return new UploadingFileManager(context.getFilesDir());
+   }
+
+   @Provides
+   @Singleton
+   ConfigurationInteractor provideConfigurationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ConfigurationInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   FeedListWidthInteractor provideFeedListWidthInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedListWidthInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   MediaMetadataInteractor provideMediaMetadataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new MediaMetadataInteractor(sessionActionPipeCreator);
    }
 }

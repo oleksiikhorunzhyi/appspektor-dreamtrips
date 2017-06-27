@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -50,6 +51,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       } else if (item instanceof BucketItem) {
          feedItem = new BucketFeedItem();
          type = Type.BUCKET_LIST_ITEM;
+      } else if (item instanceof Video) {
+         feedItem = new VideoFeedItem();
+         type = Type.VIDEO;
       } else if (item instanceof TripModel) {
          feedItem = new TripFeedItem();
          type = Type.TRIP;
@@ -64,6 +68,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    public FeedItem(int id) {
       super();
       this.id = id;
+   }
+
+   public FeedItem() {
+      super();
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -143,23 +151,27 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
       FeedItem<?> that = (FeedItem<?>) o;
 
-      if (item == null && super.equals(that)) return true;
-      return !(item != null ? !item.equals(that.item) : that.item != null);
+      return item == null && super.equals(that) || equalsWith(that);
    }
 
    @Override
    public int hashCode() {
       if (item == null) return super.hashCode();
-      return item != null ? item.hashCode() : 0;
+      return item.hashCode();
    }
 
    public boolean equalsWith(@Nullable FeedItem feedItem) {
-      if (feedItem == null) return false;
-      return getItem().getUid().equals(feedItem.getItem().getUid()) && getAction().equals(feedItem.getAction());
+      return feedItem != null && getItem().equals(feedItem.getItem());
    }
 
-   public FeedItem() {
-      super();
+   public boolean contentSame(@Nullable FeedItem feedItem) {
+      if (feedItem == null) return false;
+
+      FeedEntity feedEntity = getItem();
+      FeedEntity otherFeedEntity = feedItem.getItem();
+
+      if (feedEntity == null) return false;
+      return feedEntity.contentSame(otherFeedEntity);
    }
 
    ///////////////////////////////////////////////////////////////////////////

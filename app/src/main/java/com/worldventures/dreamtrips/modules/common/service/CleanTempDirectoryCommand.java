@@ -8,9 +8,10 @@ import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
@@ -37,18 +38,14 @@ public class CleanTempDirectoryCommand extends Command implements InjectableActi
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
-      Observable.combineLatest(compoundOperationsInteractor.compoundOperationsPipe()
+      Observable.combineLatest(
+            compoundOperationsInteractor.compoundOperationsPipe()
                   .createObservableResult(new QueryCompoundOperationsCommand()),
-            photoDAO.getErrorAttachments().take(1), ((queryCompoundOperationsCommand, dataPhotoAttachments) -> {
+            photoDAO.getErrorAttachments().take(1),
+            ((queryCompoundOperationsCommand, dataPhotoAttachments) -> {
                List<String> exceptFilePaths = new ArrayList<>();
                exceptFilePaths.addAll(Queryable.from(dataPhotoAttachments).map(DataPhotoAttachment::getUrl).toList());
-               for (CompoundOperationModel compoundOperationModel : queryCompoundOperationsCommand.getResult()) {
-                  if (compoundOperationModel instanceof PostCompoundOperationModel) {
-                     exceptFilePaths.addAll(Queryable.from(((PostCompoundOperationModel) compoundOperationModel).body()
-                           .attachments())
-                           .map(attachment -> attachment.selectedPhoto().path()).toList());
-                  }
-               }
+               exceptFilePaths.addAll(obtainMediaFilesPaths(queryCompoundOperationsCommand.getResult()));
                return exceptFilePaths;
             }))
             .subscribe(exceptFilePaths -> {
@@ -67,4 +64,20 @@ public class CleanTempDirectoryCommand extends Command implements InjectableActi
                drawableUtil.removeCacheImages(exceptFilePaths);
             }, callback::onFail);
    }
+
+   private List<String> obtainMediaFilesPaths(List<PostCompoundOperationModel> compoundOperationModels) {
+      List<String> mediaFilePaths = new ArrayList<>();
+      for (PostCompoundOperationModel compoundOperationModel : compoundOperationModels) {
+         if (compoundOperationModel.type() == PostBody.Type.PHOTO) {
+            mediaFilePaths.addAll(Queryable.from(((PostWithPhotoAttachmentBody) compoundOperationModel.body()).attachments())
+                  .map(attachment -> attachment.selectedPhoto().path()).toList());
+         }
+
+         if (compoundOperationModel.type() == PostBody.Type.VIDEO) {
+            mediaFilePaths.add(((PostWithVideoAttachmentBody) compoundOperationModel.body()).videoPath());
+         }
+      }
+      return mediaFilePaths;
+   }
+
 }

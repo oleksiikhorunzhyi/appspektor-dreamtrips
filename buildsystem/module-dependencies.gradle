@@ -11,6 +11,7 @@ ext {
          { o -> o.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } },
+         { o -> o.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
          { o -> o.maven { url 'http://nexus.idamob.ru/content/groups/public' } },
          { o -> o.maven { url 'https://github.com/shaubert/maven-repo/raw/master/snapshots' } },
          { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
@@ -72,7 +73,7 @@ ext {
          mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkCompiler        : [a: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.3-DEV-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.3-SOCIAL-DEV-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -174,6 +175,8 @@ ext {
          materialRangeBar      : [c: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [c: 'me.leolin:ShortcutBadger:1.1.3@aar'],
          circleindicator       : [c: 'me.relex:circleindicator:1.2.2@aar'],
+         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:2.7.3+19'],
+         jwPlayerCore          : [c: 'com.longtailvideo.jwplayer:jwplayer-common:2.7.3+19'],
    ]
    //
    def leakCanaryVersion = '1.3.1'

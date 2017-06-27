@@ -21,7 +21,7 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
@@ -38,7 +38,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_suggested_photos)
-public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate> implements CellDelegate<PhotoGalleryModel>, SuggestedPhotoCellPresenterHelper.View {
+public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate> implements CellDelegate<PhotoPickerModel>, SuggestedPhotoCellPresenterHelper.View {
 
    private static final int OFFSET = 5;
    private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
@@ -78,7 +78,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
                int position = layoutManager.findLastVisibleItemPosition();
 
                if (position >= count - OFFSET) {
-                  PhotoGalleryModel model = (PhotoGalleryModel) suggestionAdapter.getItem(layoutManager.getItemCount() - 1);
+                  PhotoPickerModel model = (PhotoPickerModel) suggestionAdapter.getItem(layoutManager.getItemCount() - 1);
                   if (model.getDateTaken() < cellDelegate.lastSyncTimestamp()) {
                      cellDelegate.onPreloadSuggestionPhotos(model);
                   }
@@ -87,8 +87,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
          };
 
          suggestionAdapter = new BaseDelegateAdapter(itemView.getContext(), injectorProvider.get());
-         suggestionAdapter.registerCell(PhotoGalleryModel.class, SuggestionPhotoCell.class);
-         suggestionAdapter.registerDelegate(PhotoGalleryModel.class, this);
+         suggestionAdapter.registerCell(PhotoPickerModel.class, SuggestionPhotoCell.class);
+         suggestionAdapter.registerDelegate(PhotoPickerModel.class, this);
 
          suggestedList.setLayoutManager(layoutManager);
          suggestedList.setAdapter(suggestionAdapter);
@@ -120,18 +120,18 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
    }
 
    @Override
-   public void onCellClicked(PhotoGalleryModel model) {
+   public void onCellClicked(PhotoPickerModel model) {
       cellDelegate.onSelectPhoto(model);
       suggestionAdapter.notifyDataSetChanged();
    }
 
    @Override
-   public void appendPhotoSuggestions(List<PhotoGalleryModel> items) {
+   public void appendPhotoSuggestions(List<PhotoPickerModel> items) {
       suggestionAdapter.addItems(items);
    }
 
    @Override
-   public void replacePhotoSuggestions(List<PhotoGalleryModel> items) {
+   public void replacePhotoSuggestions(List<PhotoPickerModel> items) {
       suggestionAdapter.clearAndUpdateItems(items);
    }
 

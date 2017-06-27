@@ -4,7 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
@@ -103,8 +103,8 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
    }
 
    private void initPhotoPicker() {
-      photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> onImagesPicked(Queryable.from(chosenImages)
-            .map(BasePhotoPickerModel::getAbsolutePath)
+      photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, video, type) -> onImagesPicked(Queryable.from(chosenImages)
+            .map(MediaPickerModel::getAbsolutePath)
             .toList()));
    }
 

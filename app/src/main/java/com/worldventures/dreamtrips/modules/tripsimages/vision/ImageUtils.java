@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.vision;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -287,5 +289,10 @@ public class ImageUtils {
 
    public static String getParametrizedUrl(String url, int width, int height) {
       return String.format(PATTERN, url, width, height);
+   }
+
+   public static Bitmap getVideoThumbnail(Context context, long videoGalleryId) {
+      return MediaStore.Video.Thumbnails.getThumbnail(context.getContentResolver(), videoGalleryId,
+            MediaStore.Video.Thumbnails.MICRO_KIND, new BitmapFactory.Options());
    }
 }

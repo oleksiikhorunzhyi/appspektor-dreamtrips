@@ -345,8 +345,6 @@
    <string name="no_feed">Itt fogja látni barátjának tevékenységét.\n Barátok kereséséhez kattintson az alábbi hivatkozásra</string>
    <string name="search_friends">Barátok keresése</string>
 
-   <string name="feed_share_post">Poszt megosztása</string>
-   <string name="feed_share_photos">Fénykép megosztása</string>
    <string name="feed_view_profile_btn">Profil megtekintése</string>
    <string name="start_searching">Kezdje el a beírást a keresés elkezdéséhez</string>
 

@@ -5,18 +5,17 @@ import android.view.View;
 import android.widget.Button;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.Observable;
 
 @Layout(R.layout.fragment_account_images_list)
 public class MembersImagesListFragment<P extends MembersImagesBasePresenter> extends TripImagesListFragment<P> implements MembersImagesPresenter.View {
@@ -57,7 +55,7 @@ public class MembersImagesListFragment<P extends MembersImagesBasePresenter> ext
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, MEDIA_PICKER_ITEMS_COUNT))
+            .data(new PickerBundle.Builder().setPhotoPickLimit(MEDIA_PICKER_ITEMS_COUNT).build())
             .build());
    }
 
@@ -105,7 +103,7 @@ public class MembersImagesListFragment<P extends MembersImagesBasePresenter> ext
    @Override
    protected void registerCellsAndDelegates() {
       super.registerCellsAndDelegates();
-      adapter.registerCell(UploadingPostsList.class, UploadingPhotoPostsSectionCell.class);
+      adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(), getContext()));
    }
 

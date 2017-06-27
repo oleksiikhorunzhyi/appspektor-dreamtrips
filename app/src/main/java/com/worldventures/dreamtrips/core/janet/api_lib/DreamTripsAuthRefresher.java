@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import com.worldventures.dreamtrips.api.session.LoginHttpAction;
+import com.worldventures.dreamtrips.core.janet.ResultStateOnlyComposer;
 import com.worldventures.dreamtrips.mobilesdk.AuthRefresher;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 
@@ -27,16 +28,16 @@ public class DreamTripsAuthRefresher implements AuthRefresher {
    @Override
    public Observable<Boolean> refresh() {
       CredentialsStorage credentialsStorage = credentialsProvider.provideCredentials();
-      LoginHttpAction loginAction = new LoginHttpAction(credentialsStorage.userName, credentialsStorage.password,
-            credentialsStorage.device);
-      ActionState<LoginHttpAction> loginState = reLoginInteractor.loginHttpActionPipe()
-            .createObservable(loginAction).toBlocking().last();
-      boolean reAuthSuccess = loginState.status == ActionState.Status.SUCCESS;
-      if (reAuthSuccess) {
-         authStorage.storeAuth(mapperyContext.convert(loginState.action.response(), authStorage.getAuthType()));
-      } else {
-         Timber.w(loginState.exception, "Login error");
-      }
-      return Observable.just(reAuthSuccess);
+      return reLoginInteractor.loginHttpActionPipe()
+            .createObservable(new LoginHttpAction(credentialsStorage.userName, credentialsStorage.password, credentialsStorage.device))
+            .compose(new ResultStateOnlyComposer<>())
+            .doOnNext(result -> {
+               if (result.status == ActionState.Status.SUCCESS) {
+                  authStorage.storeAuth(mapperyContext.convert(result.action.response(), authStorage.getAuthType()));
+               } else {
+                  Timber.w(result.exception, "Can't refresh auth data");
+               }
+            })
+            .map(result -> result.status == ActionState.Status.SUCCESS);
    }
 }

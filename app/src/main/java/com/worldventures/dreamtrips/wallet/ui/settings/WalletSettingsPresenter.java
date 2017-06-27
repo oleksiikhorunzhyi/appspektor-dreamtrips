@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +37,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletFeatureHelper featureHelper;
 
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -44,6 +46,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      featureHelper.prepareSettingsScreen(view);
       trackScreen();
 
       observeSmartCardChanges();
@@ -104,6 +107,5 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void smartCardGeneralStatus(@Nullable SmartCardFirmware version, int batteryLevel, Date lastSync);
 
       void firmwareUpdateCount(int count);
-
    }
 }

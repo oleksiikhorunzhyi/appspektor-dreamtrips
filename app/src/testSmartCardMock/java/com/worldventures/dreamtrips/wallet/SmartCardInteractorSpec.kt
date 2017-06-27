@@ -40,6 +40,8 @@ import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleRecordsCommand
 import com.worldventures.dreamtrips.wallet.util.FormatException
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -73,7 +75,6 @@ class SmartCardInteractorSpec : BaseSpec({
          analyticsInteractor = createAnalyticsInteractor(janet)
          nxtSessionHolder = mock()
          networkService = mock()
-
          janet.connectToSmartCardSdk()
       }
 
@@ -315,6 +316,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var nxtSessionHolder: NxtSessionHolder
       lateinit var analyticsInteractor: AnalyticsInteractor
       lateinit var networkService: WalletNetworkService
+      val featureHelper: WalletFeatureHelper = WalletFeatureHelperFull()
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultRecordIdStorage(cardStorage), SmartCardActionStorage(mockDb))
@@ -330,7 +332,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createAnalyticsInteractor(janet: Janet) = AnalyticsInteractor(SessionActionPipeCreator(janet))
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -357,7 +359,7 @@ class SmartCardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(AnalyticsInteractor::class.java, { analyticsInteractor })
          daggerCommandActionService.registerProvider(NxtSessionHolder::class.java, { nxtSessionHolder })
          daggerCommandActionService.registerProvider(WalletNetworkService::class.java, { networkService })
-
+         daggerCommandActionService.registerProvider(WalletFeatureHelper::class.java, { featureHelper })
          return janet
       }
 

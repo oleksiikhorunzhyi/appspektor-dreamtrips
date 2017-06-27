@@ -43,6 +43,10 @@ public class WalletSecuritySettingsScreen extends WalletLinearLayout<WalletSecur
    @InjectViews({R.id.item_reset_pin, R.id.item_reset_pin_label, R.id.item_reset_pin_sub_label})
    List<View> resetPinItemViews;
 
+   @InjectViews({R.id.item_stealth_mode, R.id.item_offline_mode, R.id.item_disable_default_payment_card,
+                      R.id.item_auto_delete_cards, R.id.item_reset_pin, R.id.item_add_remove_pin})
+   public List<View> toggleableItems;
+
    private Observable<Boolean> lockSwitcherObservable;
    private Observable<Boolean> stealthModeSwitcherObservable;
 

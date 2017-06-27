@@ -5,8 +5,10 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
@@ -48,6 +50,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BackStackDelegate backStackDelegate;
+   @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private final WalletProfileDelegate delegate;
@@ -172,7 +175,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(user, getView().getUser()));
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
    }
 
    @Override

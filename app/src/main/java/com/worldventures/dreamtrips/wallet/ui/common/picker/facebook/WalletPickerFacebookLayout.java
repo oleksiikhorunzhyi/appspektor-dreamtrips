@@ -47,4 +47,11 @@ public abstract class WalletPickerFacebookLayout<T extends WalletPickerFacebookP
          loading = true;
       }
    }
+
+   @Override
+   public void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      this.loading = false;
+      this.previousTotal = 0;
+   }
 }

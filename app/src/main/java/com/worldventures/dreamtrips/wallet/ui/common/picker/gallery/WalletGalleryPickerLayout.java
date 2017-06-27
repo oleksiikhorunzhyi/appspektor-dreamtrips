@@ -5,8 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -42,12 +40,6 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
       super(context, attrs);
       this.walletStaticItemsStrategy = walletStaticItemsStrategy;
       this.walletPickLimitStrategy = pickLimitStrategy;
-   }
-
-   @Override
-   public void onInflateFinished(View view, int resid, ViewGroup parent) {
-      super.onInflateFinished(view, resid, parent);
-      getAdapter().updateItems(walletStaticItemsStrategy.provideStaticItems());
    }
 
    @Override
@@ -135,13 +127,8 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
    }
 
    @Override
-   public boolean isExtraItemAvailable() {
-      return walletStaticItemsStrategy.isExtraItemAvailable();
-   }
-
-   @Override
-   public WalletGalleryPhotoModel getExtraItem() {
-      return walletStaticItemsStrategy.provideExtraItem();
+   public List<WalletGalleryPickerModel> provideStaticItems() {
+      return walletStaticItemsStrategy.provideStaticItems();
    }
 
    @Override
@@ -156,6 +143,6 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
 
    @Override
    public void clearItems() {
-      getAdapter().clear(walletStaticItemsStrategy.provideStaticItems().size());
+      getAdapter().clear();
    }
 }

@@ -94,7 +94,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser(), getView().getProfile()));
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
    }
 
    void setupInputMode() {

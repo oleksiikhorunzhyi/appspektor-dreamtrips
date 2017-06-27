@@ -77,18 +77,9 @@ public class WalletProfileDelegate {
       return model;
    }
 
-   public String provideInitialPhotoUrl(SmartCardUser user, ProfileViewModel profileViewModel) {
-      final SmartCardUserPhoto userPhoto = user.userPhoto();
-      return (userPhoto != null && !WalletProfileUtils.isPhotoEmpty(userPhoto.uri())
-            && WalletProfileUtils.isPhotoEmpty(profileViewModel.getChosenPhotoUri()) )
-            ? userPhoto.uri()
-            : null;
-   }
-
-   public String provideInitialPhotoUrl(User user, ProfileViewModel profileViewModel) {
+   public String provideInitialPhotoUrl(User user) {
       final User.Avatar userPhoto = user.getAvatar();
-      return (userPhoto != null && !WalletProfileUtils.isPhotoEmpty(userPhoto.getThumb())
-            && WalletProfileUtils.isPhotoEmpty(profileViewModel.getChosenPhotoUri()) )
+      return (userPhoto != null && !WalletProfileUtils.isPhotoEmpty(userPhoto.getThumb()))
             ? userPhoto.getThumb()
             : null;
    }

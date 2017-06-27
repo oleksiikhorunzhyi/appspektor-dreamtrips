@@ -49,7 +49,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
             .doOnNext(result -> {
                if (result.exist()) {
                   janetWallet.createPipe(ConnectSmartCardCommand.class)
-                        .send(new ConnectSmartCardCommand(result.smartCard().smartCardId(), true));
+                        .send(new ConnectSmartCardCommand(result.smartCard().smartCardId()));
                }
             })
             .subscribe(callback::onSuccess, callback::onFail);

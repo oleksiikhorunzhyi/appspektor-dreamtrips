@@ -21,16 +21,10 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
    @Inject SystemPropertiesProvider propertiesProvider;
    @Inject SmartCardInteractor interactor;
 
-   private final boolean waitForParing;
    private final String barcode;
 
    public CreateAndConnectToCardCommand(String barcode) {
-      this(barcode, true);
-   }
-
-   public CreateAndConnectToCardCommand(String barcode, boolean waitForParing) {
       this.barcode = barcode;
-      this.waitForParing = waitForParing;
    }
 
    @Override
@@ -38,7 +32,7 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
       final String smartCardId = String.valueOf(Long.valueOf(barcode)); //remove zeros from start
 
       janet.createPipe(ConnectSmartCardCommand.class)
-            .createObservableResult(new ConnectSmartCardCommand(smartCardId, waitForParing))
+            .createObservableResult(new ConnectSmartCardCommand(smartCardId))
             .flatMap(command -> interactor.activeSmartCardPipe()
                   .createObservableResult(new ActiveSmartCardCommand(createSmartCard(smartCardId))))
             .subscribe(command -> callback.onSuccess(command.getResult()), callback::onFail);

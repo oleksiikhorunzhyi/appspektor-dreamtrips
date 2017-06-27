@@ -72,7 +72,7 @@ class WizardInteractorSpec : BaseSpec({
          it("should be to save of SmartCard") {
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand(MOCK_BARCODE, false))
+                  .createObservable(CreateAndConnectToCardCommand(MOCK_BARCODE))
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })

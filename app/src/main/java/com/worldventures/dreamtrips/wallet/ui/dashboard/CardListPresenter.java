@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.View;
 
@@ -107,7 +106,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
       observeConnectionStatus();
-      observeChanges();
+      observeSmartCardSync();
+      observeRecordsChanges();
       observeFirmwareInfo();
 
       observeSyncRecordsStatus();
@@ -308,7 +308,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
    }
 
-   private void observeChanges() {
+   private void observeRecordsChanges() {
       Observable.combineLatest(
             recordInteractor.cardsListPipe()
                   .observeWithReplay()
@@ -326,13 +326,19 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .distinct()
             .compose(bindViewIoToMainComposer())
             .subscribe(this::cardsLoaded, throwable -> Timber.e(throwable, ""));
+   }
 
-      //noinspection ConstantConditions
+   @SuppressWarnings("ConstantConditions")
+   private void observeSmartCardSync() {
+      final OperationView<SyncSmartCardCommand> operationView = getView().provideOperationSyncSmartCard();
       smartCardInteractor.smartCardSyncPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.smartCardSyncPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncSmartCard()).create());
+            .doOnCompleted(() -> {
+               if (operationView.isProgressVisible()) operationView.hideProgress();
+            })
+            .subscribe(OperationActionSubscriber.forView(operationView).create());
    }
 
    private void cardsLoaded(ArrayList<BaseViewModel> cardModels) {

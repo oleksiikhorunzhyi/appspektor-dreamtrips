@@ -154,10 +154,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       final ProfileViewModel profile = getView().getUser();
       return user != null &&
             !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
-            profile.getFirstName().equals(user.firstName()) &&
-            profile.getMiddleName().equals(user.middleName()) &&
-            profile.getLastName().equals(user.lastName()) &&
-            equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
+                  profile.getFirstName().equals(user.firstName()) &&
+                  profile.getMiddleName().equals(user.middleName()) &&
+                  profile.getLastName().equals(user.lastName()) &&
+                  equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
    @SuppressWarnings("ConstantConditions")
@@ -192,7 +192,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    @SuppressWarnings("ConstantConditions")
-   public void handlePickedPhoto(BasePickerViewModel model) {
+   void handlePickedPhoto(BasePickerViewModel model) {
       getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
    }
 
@@ -205,9 +205,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    void openDisplaySettings() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            navigator.go(new DisplayOptionsSettingsPath(
-                  delegate.createSmartCardUser(getView().getUser()),
-                  DisplayOptionsSource.PROFILE));
+            navigator.go(new DisplayOptionsSettingsPath(DisplayOptionsSource.PROFILE,
+                  delegate.createSmartCardUser(getView().getUser())));
          } else {
             getView().showSCNonConnectionDialog();
          }

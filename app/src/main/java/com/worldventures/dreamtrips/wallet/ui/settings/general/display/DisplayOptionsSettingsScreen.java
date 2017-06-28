@@ -56,8 +56,8 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
    @NonNull
    @Override
    public DisplayOptionsSettingsPresenter createPresenter() {
-      return new DisplayOptionsSettingsPresenter(getContext(), getInjector(), getPath().smartCardUser(),
-            getPath().displayOptionsSource());
+      return new DisplayOptionsSettingsPresenter(getContext(), getInjector(), getPath().displayOptionsSource(),
+            getPath().smartCardUser());
    }
 
    @Override

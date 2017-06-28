@@ -107,7 +107,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    void openDisplayOptionsScreen() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            fetchSmartCardUser(scUser -> navigator.go(new DisplayOptionsSettingsPath(scUser, DisplayOptionsSource.SETTINGS)));
+            navigator.go(new DisplayOptionsSettingsPath(DisplayOptionsSource.SETTINGS));
          } else {
             getView().showSCNonConnectionDialog();
          }
@@ -186,15 +186,6 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> action.call(command.getResult().connectionStatus()))
-            );
-   }
-
-   private void fetchSmartCardUser(Action1<SmartCardUser> userAction1) {
-      smartCardInteractor.smartCardUserPipe()
-            .createObservable(SmartCardUserCommand.fetch())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(command -> userAction1.call(command.getResult()))
             );
    }
 

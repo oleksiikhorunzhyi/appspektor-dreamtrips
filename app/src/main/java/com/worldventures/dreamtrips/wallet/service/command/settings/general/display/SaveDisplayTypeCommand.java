@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings.general.display;
 
+import android.support.annotation.NonNull;
+
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -16,8 +18,8 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
-import rx.schedulers.Schedulers;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
@@ -32,16 +34,16 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
 
    @SetHomeDisplayTypeAction.HomeDisplayType
    private final int displayType;
-   private final SmartCardUser smartCardUser;
+   private final SmartCardUser user;
 
-   public SaveDisplayTypeCommand(SmartCardUser smartCardUser, @SetHomeDisplayTypeAction.HomeDisplayType int type) {
-      this.smartCardUser = smartCardUser;
+   public SaveDisplayTypeCommand(@SetHomeDisplayTypeAction.HomeDisplayType int type, @NonNull SmartCardUser user) {
       this.displayType = type;
+      this.user = user;
    }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      Observable.just(smartCardUser)
+      Observable.just(user)
             .doOnNext(smartCardUser -> {
                if (smartCardUser == null) throw new NullPointerException("User cannot be null at this point");
 

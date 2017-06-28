@@ -55,11 +55,12 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
 
       if (throwable instanceof HttpException) {
          final Response response = ((HttpException) throwable).getResponse();
-         if (response != null && response.getStatus() == 500) {
+         if (response != null && response.getStatus() >= 500) {
             return new SimpleErrorView<>(context, cancelAction, context.getString(R.string.error_internal_server));
+         } else if (throwable.getCause() != null) {
+            // if there is no response at all - it might be connection exception, try to handle cause
+            throwable = throwable.getCause();
          }
-         // if there is no response at all - it might be connection exception, try to handle cause
-         throwable = throwable.getCause();
       }
 
       if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {

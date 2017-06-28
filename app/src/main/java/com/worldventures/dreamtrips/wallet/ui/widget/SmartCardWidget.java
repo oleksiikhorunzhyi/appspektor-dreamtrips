@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
 
 import java.util.Locale;
@@ -75,7 +76,7 @@ public class SmartCardWidget extends ConstraintLayout {
 
    @SuppressLint("SetTextI18n")
    public void bindCard(CardStackHeaderHolder holder) {
-      final int type = holder.displayType();
+      final int type = getNormalizedType(holder);
 
       final StringBuilder fullNameBuilder = new StringBuilder(holder.firstName());
       if (!holder.middleName().isEmpty()) fullNameBuilder.append("\n").append(holder.middleName());
@@ -90,10 +91,10 @@ public class SmartCardWidget extends ConstraintLayout {
 
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
-            if (!ProjectTextUtils.isEmpty(holder.photoUrl())) scAvatar.setImageURI(holder.photoUrl());
+            scAvatar.setImageURI(holder.photoUrl());
             break;
          case DISPLAY_PICTURE_AND_NAME:
-            if (!ProjectTextUtils.isEmpty(holder.photoUrl())) scAvatar.setImageURI(holder.photoUrl());
+            scAvatar.setImageURI(holder.photoUrl());
             tvPhotoFirstName.setText(holder.firstName());
             break;
          case DISPLAY_NAME_ONLY:
@@ -116,6 +117,19 @@ public class SmartCardWidget extends ConstraintLayout {
       bindBatteryIndicator(holder.batteryLevel());
 
       setVisibility(VISIBLE);
+   }
+
+   /**
+    * Fallback to default type if there is not enough user information.
+    */
+   private int getNormalizedType(CardStackHeaderHolder holder) {
+      final int displayType = holder.displayType();
+      if (((displayType == DISPLAY_PICTURE_ONLY || displayType == DISPLAY_PICTURE_AND_NAME)
+            && ProjectTextUtils.isEmpty(holder.photoUrl()))
+            || ((displayType == DISPLAY_PHONE_AND_NAME) && ProjectTextUtils.isEmpty(holder.phoneNumber()))) {
+         return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
+      }
+      return displayType;
    }
 
    private void bindConnectionIndicator(boolean connected) {

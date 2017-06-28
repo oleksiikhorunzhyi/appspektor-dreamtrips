@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.wallet.service.impl.WalletBluetoothServiceMo
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -140,8 +141,8 @@ public class WalletServiceModule {
    @Singleton
    @Provides
    SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor,
-         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor) {
-      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor);
+         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor, WalletFeatureHelper featureHelper) {
+      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper);
    }
 
    @Singleton

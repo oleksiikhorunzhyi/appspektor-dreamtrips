@@ -58,6 +58,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDel
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject WalletNetworkService networkService;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final CardListStackConverter cardListStackConverter;
    private final CheckPinDelegate checkPinDelegate;
@@ -103,6 +105,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      featureHelper.prepareDashboardScreen(getView());
       getView().setDefaultSmartCard();
       checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
@@ -145,6 +148,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
+      if (featureHelper.addingCardIsNotSupported()) return;
       if (status.isFailAfterProvision()) {
          //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
@@ -269,6 +273,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
          Record record = Queryable.from(this.records).first(card -> card.id() != null && card.id().equals(recId));
          navigator.go(new CardDetailsPath(record, transitionModel));
       }
+   }
+
+   public boolean isCardDetailSupported() {
+      return featureHelper.isCardDetailSupported();
    }
 
    void navigationClick() {

@@ -32,9 +32,8 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
 
-public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View,
-      C extends CommandWithTripImages> extends Presenter<VT>
-      implements FeedEntityHolder {
+public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View, C extends CommandWithTripImages>
+      extends Presenter<VT> implements FeedEntityHolder {
 
    private static final int PER_PAGE = 15;
    private static final int VISIBLE_THRESHOLD = 5;
@@ -50,6 +49,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    private int previousTotal = 0;
    protected boolean loading = true;
    private int currentPhotoPosition = 0;
+   boolean lastPageReached = false;
 
    protected List<IFullScreenObject> photos = new ArrayList<>();
    protected int userId;
@@ -120,8 +120,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + getVisibleThreshold())
-            && totalItemCount % getPageSize() == 0) {
+      if (!lastPageReached && !loading && photos.size() > 0
+            && (totalItemCount - visibleItemCount) <= (firstVisibleItem + getVisibleThreshold())) {
          loadNext();
       }
    }
@@ -150,7 +150,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    public void loadNext() {
       loading = true;
       currentPage++;
-      load(getLoadMoreCommand(photos.size()), this::savePhotosAndUpdateView);
+      load(getLoadMoreCommand(photos.size()), newPhotos -> {
+         if (newPhotos.size() == 0) {
+            lastPageReached = true;
+         }
+         savePhotosAndUpdateView(newPhotos);
+      });
    }
 
    private void load(C command, Action1<List<IFullScreenObject>> successAction) {
@@ -179,6 +184,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       view.finishLoading();
       photos.clear();
       previousTotal = 0;
+      lastPageReached = false;
       loading = false;
    }
 

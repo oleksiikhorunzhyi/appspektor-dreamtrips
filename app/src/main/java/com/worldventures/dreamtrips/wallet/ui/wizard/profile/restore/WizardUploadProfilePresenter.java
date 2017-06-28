@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    @Inject WizardInteractor wizardInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletFeatureHelper featureHelper;
 
    public WizardUploadProfilePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -77,7 +79,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      navigator.withoutLast(new PinProposalPath(PinProposalAction.WIZARD));
+      featureHelper.navigateFromSetupUserScreen(navigator, user);
    }
 
    public interface Screen extends WalletScreen {

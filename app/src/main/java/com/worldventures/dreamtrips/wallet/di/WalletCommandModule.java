@@ -60,6 +60,7 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.help.Custome
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
@@ -134,7 +135,8 @@ import dagger.Module;
             SwitchOfflineModeCommand.class,
             SetPinEnabledCommand.class,
             GetDocumentsCommand.class,
-            PaymentFeedbackCommand.class
+            PaymentFeedbackCommand.class,
+            AddDummyRecordCommand.class,
       },
       complete = false, library = true)
 public class WalletCommandModule {}

@@ -12,6 +12,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -29,6 +33,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Wa
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
@@ -46,6 +54,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject ErrorHandlerFactory errorHandlerFactory;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final WalletProfileDelegate delegate;
 
@@ -82,7 +91,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
+      featureHelper.navigateFromSetupUserScreen(navigator, user);
    }
 
    private void attachProfile(Screen view) {

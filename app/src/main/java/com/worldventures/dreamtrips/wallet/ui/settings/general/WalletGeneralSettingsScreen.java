@@ -21,7 +21,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
 
+import java.util.List;
+
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -33,6 +36,8 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
    @InjectView(R.id.profile_photo) SimpleDraweeView profilePhoto;
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
+
+   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc}) public List<View> toggleableItems;
 
    private MaterialDialog confirmFactoryResetDialog = null;
    private MaterialDialog noConnectionDialog = null;

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,6 +35,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    @Inject SmartCardInteractor interactor;
    @Inject SnappyRepository snappyRepository;
    @Inject MapperyContext mapperyContext;
+   @Inject WalletFeatureHelper featureHelper;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -43,7 +45,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .flatMap(user ->
                   walletJanet.createPipe(AssociateCardUserCommand.class)
                         .createObservableResult(new AssociateCardUserCommand(smartCard.smartCardId(), createRequestData(user)))
-                        .map(associateCardUserCommand -> (Void) null))
+                        .flatMap(command -> featureHelper.onUserAssigned(user)))
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 

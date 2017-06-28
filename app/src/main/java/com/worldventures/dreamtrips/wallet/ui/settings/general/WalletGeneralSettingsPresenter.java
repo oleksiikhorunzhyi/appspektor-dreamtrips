@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSet
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
 
@@ -49,6 +50,8 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletFeatureHelper featureHelper;
+
    private final CheckPinDelegate checkPinDelegate;
 
    private Path firmwareUpdatePath = new WalletUpToDateFirmwarePath();
@@ -62,6 +65,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      featureHelper.prepareSettingsGeneralScreen(view);
       trackScreen();
 
       observeSmartCardUserChanges();
@@ -77,6 +81,10 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    void openProfileScreen() {
+      featureHelper.openEditProfile(getContext(), this::openProfileAvailable);
+   }
+
+   private void openProfileAvailable() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
             navigator.go(new WalletSettingsProfilePath());

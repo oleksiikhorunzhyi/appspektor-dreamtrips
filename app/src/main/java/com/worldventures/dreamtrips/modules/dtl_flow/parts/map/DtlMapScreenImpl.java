@@ -446,8 +446,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
-      getPresenter().onLoadMerchantsType(merchantType);
       updateFiltersView(stringResource);
+      getPresenter().setMerchantType(merchantType, getActivity().getString(stringResource));
       getPresenter().loadAmenities(merchantType);
    }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.storage.security.crypto;
 
 import android.content.Context;
+import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 
 import java.io.ByteArrayInputStream;
@@ -181,17 +182,19 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
       Calendar start = Calendar.getInstance();
       Calendar end = Calendar.getInstance();
       end.add(Calendar.YEAR, 5);
-      KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
+      KeyPairGeneratorSpec.Builder builder = new KeyPairGeneratorSpec.Builder(context)
             .setAlias(keyAlias)
-            .setKeySize(asymmetricParams.size)
             .setSubject(new X500Principal(asymmetricParams.subject))
             .setSerialNumber(BigInteger.ONE)
             .setStartDate(start.getTime())
-            .setEndDate(end.getTime())
-            .build();
+            .setEndDate(end.getTime());
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+         builder.setKeySize(asymmetricParams.size);
+      }
+
       KeyPairGenerator generator = KeyPairGenerator.getInstance(asymmetricParams.algorithm, "AndroidKeyStore");
 
-      generator.initialize(spec);
+      generator.initialize(builder.build());
       generator.generateKeyPair();
    }
 

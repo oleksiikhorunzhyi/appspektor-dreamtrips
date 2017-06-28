@@ -20,23 +20,27 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.*
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
+import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
 import com.worldventures.dreamtrips.modules.mapping.converter.*
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
-import org.jetbrains.spek.api.DescribeBody
+import org.jetbrains.spek.api.dsl.SpecBody
+import org.junit.rules.TemporaryFolder
 import java.util.*
 
-abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
+abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSpec(speckBody) {
    companion object BaseCompanion {
       val MOCK_USER_ID = 1
 
-      val mockMemoryStorage: BucketMemoryStorage = spy()
-      val mockDb: SnappyRepository = spy()
+      val TEST_IMAGE_PATH = TemporaryFolder().createFileAndGetPath("TestPhoto.jpeg")
+
+
 
       val mockSessionHolder: SessionHolder<UserSession> = mock()
       val userSession: UserSession = mock()
@@ -44,7 +48,9 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
 
       lateinit var bucketInteractor: BucketInteractor
 
-      fun setup(storageSet: () -> Set<ActionStorage<*>>, httpService: () -> MockHttpActionService) {
+      fun setup(storageSet: () -> Set<ActionStorage<*>>,
+                mockDb: SnappyRepository,
+                httpService: () -> MockHttpActionService) {
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(storageSet())
@@ -62,6 +68,13 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
          daggerCommandActionService.registerProvider(UploaderyInteractor::class.java) { UploaderyInteractor(janet) }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider })
+
+         val uploadingFileManager: UploadingFileManager = mock()
+         daggerCommandActionService.registerProvider(UploadingFileManager::class.java, { uploadingFileManager })
+         whenever(uploadingFileManager.copyFileIfNeed(anyString())).thenReturn(TEST_IMAGE_PATH)
+
+         val uriPathProvider: UriPathProvider = UriPathProvider { TEST_IMAGE_PATH }
+         daggerCommandActionService.registerProvider(UriPathProvider::class.java, { uriPathProvider })
 
          bucketInteractor = BucketInteractor(SessionActionPipeCreator(janet))
 
@@ -115,6 +128,11 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
                .tags(emptyList())
                .friends(emptyList())
                .build()
+      }
+
+      fun TemporaryFolder.createFileAndGetPath(fileName: String): String {
+         this.create()
+         return this.newFile(fileName).path
       }
    }
 }

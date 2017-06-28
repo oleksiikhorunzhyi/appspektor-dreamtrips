@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
-import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
@@ -88,11 +87,6 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideViewServerInitializer() {
       return new ViewServerInitializer();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   public AppInitializer provideRxLogInitializer() {
-      return new RxJavaLoggingInitializer();
    }
 
    @Provides(type = Provides.Type.SET)

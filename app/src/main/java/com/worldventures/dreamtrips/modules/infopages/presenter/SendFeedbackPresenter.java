@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
@@ -28,14 +29,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View> {
 
-   public static final int PICKER_REQUEST_ID = SendFeedbackPresenter.class.getSimpleName().hashCode();
-   public static final int PICKER_MAX_IMAGES = 5;
+   private static final int PICKER_REQUEST_ID = SendFeedbackPresenter.class.getSimpleName().hashCode();
+   private static final int PICKER_MAX_IMAGES = 5;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SnappyRepository db;
@@ -51,6 +53,12 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
       subscribeToFormValidation();
       subscribeToMediaPicker();
       subscribeToAttachments();
+   }
+
+   @Override
+   public void onStart() {
+      super.onStart();
+      subscribeToUploadingAttachments();
    }
 
    @Override
@@ -93,7 +101,8 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    }
 
    public void sendFeedback(int feedbackType, String text) {
-      analyticsInteractor.analyticsActionPipe().send(new SendFeedbackAnalyticAction(feedbackType, getImageAttachments().size()));
+      analyticsInteractor.analyticsActionPipe()
+            .send(new SendFeedbackAnalyticAction(feedbackType, getImageAttachments().size()));
       view.changeDoneButtonState(false);
 
       feedbackInteractor.sendFeedbackPipe()
@@ -207,14 +216,15 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
             .compose(bindView())
             .subscribe(holder -> {
                int attachmentsCount = attachmentsManager.getAttachments().size();
-               view.changeAddPhotosButtonState(attachmentsCount < PICKER_MAX_IMAGES ? true : false);
+               view.changeAddPhotosButtonState(attachmentsCount < PICKER_MAX_IMAGES);
             });
 
       feedbackInteractor.attachmentsRemovedPipe()
-            .observeSuccessWithReplay()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(feedbackInteractor.attachmentsRemovedPipe()))
+            .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+            .map(actionState -> actionState.action.getResult())
             .compose(bindViewToMainComposer())
-            .map(Command::getResult)
-            .doOnNext(result -> feedbackInteractor.attachmentsRemovedPipe().clearReplays())
             .subscribe(removedAttachments -> {
                Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                   if (removedAttachments.contains(holder.entity())) {
@@ -223,13 +233,17 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                   }
                });
             });
+   }
 
+   private void subscribeToUploadingAttachments() {
       feedbackInteractor.uploadAttachmentPipe()
-            .observe()
-            .compose(bindViewToMainComposer())
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(feedbackInteractor.uploadAttachmentPipe()))
+            .compose(bindUntilStop())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<UploadFeedbackAttachmentCommand>()
                   .onProgress((commandInProgress, progress) -> updateImageAttachment(commandInProgress))
-                  .onSuccess(successCommand -> updateImageAttachment(successCommand))
+                  .onSuccess(this::updateImageAttachment)
                   .onFail((failedCommand, throwable) -> {
                      updateImageAttachment(failedCommand);
                      handleError(failedCommand, throwable);

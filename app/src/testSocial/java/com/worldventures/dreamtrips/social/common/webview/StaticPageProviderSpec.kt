@@ -4,19 +4,20 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
+import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
-import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import java.util.*
 import kotlin.test.assertEquals
 
-class StaticPageProviderSpec: Spek({
+class StaticPageProviderSpec: BaseSpec({
 
    describe("StaticPageProvider") {
-      setup()
 
       it("should provide correct enroll member url") {
          val expectedUrl = "$API_URL/gateway/enroll_member?username=$USERNAME&deviceId=$DEVICE_ID"
@@ -24,22 +25,22 @@ class StaticPageProviderSpec: Spek({
       }
 
       it ("should provide correct enroll rep url") {
-         val expectedUrl = API_URL + "/gateway/enroll_rep?username=" + USERNAME
+         val expectedUrl = "$API_URL/gateway/enroll_rep?username=$USERNAME&deviceId=$DEVICE_ID"
          assertEquals(expectedUrl, provider.enrollRepUrl)
       }
 
       it ("should provide correct enroll upgrade url") {
-         val expectedUrl = API_URL + "/gateway/enroll_upgrade"
+         val expectedUrl = "$API_URL/gateway/enroll_upgrade"
          assertEquals(expectedUrl, provider.enrollUpgradeUrl)
       }
 
       it ("should provide correct trip booking url") {
-         val expectedUrl = API_URL + "/gateway/booking_page/" + TRIP_ID
+         val expectedUrl = "$API_URL/gateway/booking_page/$TRIP_ID"
          assertEquals(expectedUrl, provider.getBookingPageUrl(TRIP_ID))
       }
 
       it ("should provide correct ota page url") {
-         val expectedUrl = API_URL + "/gateway/ota_page"
+         val expectedUrl = "$API_URL/gateway/ota_page"
          assertEquals(expectedUrl, provider.otaPageUrl)
       }
 
@@ -48,22 +49,22 @@ class StaticPageProviderSpec: Spek({
       }
 
       it ("should provide correct faq url") {
-         val expectedUrl = API_URL + "/gateway/faq";
+         val expectedUrl = "$API_URL/gateway/faq";
          assertEquals(expectedUrl, provider.faqUrl)
       }
 
       it ("should provide correct terms of service url") {
-         val expectedUrl = API_URL + "/gateway/terms_of_use";
+         val expectedUrl = "$API_URL/gateway/terms_of_use"
          assertEquals(expectedUrl, provider.termsOfServiceUrl)
       }
 
       it ("should provide correct cookies policy url") {
-         val expectedUrl = API_URL + "/gateway/cookies_policy";
+         val expectedUrl = "$API_URL/gateway/cookies_policy"
          assertEquals(expectedUrl, provider.cookiesPolicyUrl)
       }
 
       it ("should provide correct privacy policy url") {
-         val expectedUrl = API_URL + "/gateway/privacy_policy";
+         val expectedUrl = "$API_URL/gateway/privacy_policy"
          assertEquals(expectedUrl, provider.privacyPolicyUrl)
       }
 
@@ -89,8 +90,8 @@ class StaticPageProviderSpec: Spek({
 
       val USERNAME = "515661"
       val TRIP_ID = "12410101"
-      val DEVICE_ID = "fsadfas"
-      val LEGACY_API_TOKEN = "asdb11a"
+      val DEVICE_ID = "Pixel"
+      val LEGACY_API_TOKEN = "272c463069"
       val LOCALE = "en-us"
       val MERCHANT_ID = "10191"
 
@@ -99,7 +100,7 @@ class StaticPageProviderSpec: Spek({
       val provider = StaticPageProvider(mockSessionHolder, deviceInfoProvider, API_URL, UPLOADERY_URL)
       val userSession: UserSession = mock()
 
-      fun setup() {
+      init {
          val mockUser = mock<User>()
 
          whenever(mockUser.username).thenReturn(USERNAME)

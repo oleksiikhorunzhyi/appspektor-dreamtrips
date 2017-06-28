@@ -21,9 +21,9 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction{
          case MEMBERS_IMAGES:
             return new TripImagesTabViewAnalyticsEvent("member_images");
          case YOU_SHOULD_BE_HERE:
-            return new TripImagesTabViewAnalyticsEvent("inspire_me_images");
-         case INSPIRE_ME:
             return new TripImagesTabViewAnalyticsEvent("ysbh_images");
+         case INSPIRE_ME:
+            return new TripImagesTabViewAnalyticsEvent("inspire_me_images");
          default:
             return new TripImagesTabViewAnalyticsEvent("my_images");
       }

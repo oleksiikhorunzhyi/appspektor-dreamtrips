@@ -1,0 +1,241 @@
+ext {
+   moduleDependencies = [:]
+   moduleDependencies.repos = [
+         { o -> o.jcenter() },
+         { o -> o.maven { url 'https://maven.google.com' } },
+         { o -> o.maven { url 'https://jitpack.io' } },
+         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
+         { o -> o.maven { url 'http://dl.bintray.com/techery/android' } },
+         { o -> o.maven { url 'http://dl.bintray.com/populov/maven' } },
+         { o -> o.maven { url 'http://dl.bintray.com/amulyakhare/maven' } },
+         { o -> o.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
+         { o -> o.maven { url 'https://maven.fabric.io/public' } },
+         { o -> o.maven { url 'https://clojars.org/repo/' } },
+         { o -> o.maven { url 'http://nexus.idamob.ru/content/groups/public' } },
+         { o -> o.maven { url 'https://github.com/shaubert/maven-repo/raw/master/snapshots' } },
+         { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
+         { o -> o.flatDir { dirs 'libs' } }
+   ]
+
+   // domain
+   moduleDependencies.lang = [
+         kotlin: [c: "org.jetbrains.kotlin:kotlin-stdlib:$project.ext.pluginDependencies.languages.kotlin"],
+   ]
+   moduleDependencies.domain = [
+         janetCore   : [c: 'com.github.techery:janet:1.0.7'],
+         janetCommand: [c: 'com.github.techery:janet-command:1.0.5'],
+         jobExecutor : [c: 'com.github.techery:job-executor:0.1.1'],
+         eventbus    : [c: 'de.greenrobot:eventbus:2.4.0'],
+   ]
+   // rx
+   def rxjavaVersion = '1.2.3'
+   moduleDependencies.rx = [
+         rxjava               : [c: "io.reactivex:rxjava:$rxjavaVersion"],
+         rxandroid            : [c: 'io.reactivex:rxandroid:1.1.0'],
+         rxbinding            : [c: 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'],
+         rxlifecycle          : [c: 'com.trello:rxlifecycle:0.4.0'],
+         rxlifecycleComponents: [c: 'com.trello:rxlifecycle-components:0.4.0'],
+   ]
+   // di
+   def daggerVersion = '1.2.2'
+   moduleDependencies.di = [
+         dagger           : [c: "com.squareup.dagger:dagger:$daggerVersion"],
+         daggerProcessor  : [a: "com.squareup.dagger:dagger-compiler:$daggerVersion"],
+         daggerAnnotations: [c: 'javax.annotation:jsr250-api:1.0'],
+         daggerProguard   : [a: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+   ]
+   // data
+   def immutablesVersion = '2.2.6'
+   def dbflowVersion = '2.2.1'
+   moduleDependencies.data = [
+         immutables         : [p: "org.immutables:value:$immutablesVersion"],
+         immutablesProcessor: [a: "org.immutables:value:$immutablesVersion"],
+         immutablesBuilder  : [p: "org.immutables:builder:$immutablesVersion"],
+         immutablesGson     : [p: "org.immutables:gson:$immutablesVersion"],
+         snappydb           : [c: 'com.snappydb:snappydb-lib:0.5.2'],
+         kryo               : [c: 'com.esotericsoftware.kryo:kryo:2.24.0'],
+         objenesis          : [c: 'org.objenesis:objenesis:2.5'],
+         icepick            : [c: 'frankiesardo:icepick:3.2.0'],
+         icepickProcessor   : [a: 'frankiesardo:icepick-processor:3.2.0'],
+         dbflow             : [c: "com.raizlabs.android:DBFlow:$dbflowVersion"],
+         dbflowCore         : [c: "com.raizlabs.android:DBFlow-Core:$dbflowVersion"],
+         dbflowCompiler     : [a: "com.raizlabs.android:DBFlow-Compiler:$dbflowVersion"],
+   ]
+   // networking
+   def janetHttpVersion = '1.2.3'
+   def okhttp2Version = '2.7.5'
+   def okhttp3Version = '3.5.0'
+   def smackVersion = '4.1.6'
+   moduleDependencies.networking = [
+         // API
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api:2.8.41-STAGE-SNAPSHOT'],
+         // janet
+         janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
+         janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
+         janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp:$janetHttpVersion"],
+         janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.0.2'],
+         // client & converter
+         okhttpClient2            : [c: "com.squareup.okhttp:okhttp:$okhttp2Version"],
+         okhttpUrlConnection2     : [c: "com.squareup.okhttp:okhttp-urlconnection:$okhttp2Version"],
+         okhttpLoggingInterceptor2: [c: "com.squareup.okhttp:logging-interceptor:$okhttp2Version"],
+         okhttpUrlConnection3     : [c: "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3Version"],
+         okhttpLoggingInterceptor3: [c: "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"],
+         gson                     : [c: 'com.google.code.gson:gson:2.7'],
+         // util
+         reactivenetwork          : [c: 'com.github.pwittchen:reactivenetwork:0.5.2'],
+         networkevents            : [c: 'com.github.pwittchen:networkevents:2.1.2'], //deprecated], use reactive network lib above
+         // smack / xmpp
+         smackAndroid             : [c: "org.igniterealtime.smack:smack-android-extensions:$smackVersion"],
+         smackTcp                 : [c: "org.igniterealtime.smack:smack-tcp:$smackVersion"],
+   ]
+   // smartcard
+   moduleDependencies.smartcard = [
+         service: [c: 'io.techery.janet:smartcard:0.21.3-SNAPSHOT'],
+   ]
+   // services
+   def googleServicesVersion = '10.2.0'
+   moduleDependencies.services = [
+         // amazon
+         amazonCore    : [c: 'com.amazonaws:aws-android-sdk-core:2.2.6'],
+         amazonS3      : [c: 'com.amazonaws:aws-android-sdk-s3:2.2.6'],
+         // google
+         googleGcm     : [c: "com.google.android.gms:play-services-gcm:${googleServicesVersion}"],
+         googleMaps    : [c: "com.google.android.gms:play-services-maps:${googleServicesVersion}"],
+         googleLocation: [c: "com.google.android.gms:play-services-location:${googleServicesVersion}"],
+         googleVision  : [c: "com.google.android.gms:play-services-vision:${googleServicesVersion}"],
+
+         facebook      : [c: 'com.facebook.android:facebook-android-sdk:4.18.0'],
+         twitter       : [ct: 'com.twitter.sdk.android:twitter:1.9.1@aar'],
+         crashlytics   : [ct: 'com.crashlytics.sdk.android:crashlytics:2.5.5@aar'],
+         newrelic      : [c: 'com.newrelic.agent.android:android-agent:5.8.4'],
+         apptentive    : [c: 'com.apptentive:apptentive-android:3.4.0@aar'],
+   ]
+   // presentation frameworks
+   def mosbyVersion = '2.0.0'
+   def flowVersion = '0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+   moduleDependencies.presentation = [
+         mosbyMvp      : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
+         mosbyCommon   : [c: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],
+         mosbyViewstate: [c: "com.hannesdorfmann.mosby:viewstate:$mosbyVersion"],
+         flow          : [c: "com.github.almozavr.flow:flow:$flowVersion"],
+         flowPath      : [c: "com.github.almozavr.flow:flow-path:$flowVersion"],
+         butterknife   : [c: 'com.jakewharton:butterknife:6.1.0'],
+   ]
+   // media
+   moduleDependencies.media = [
+         ijkPlayer     : [c: 'io.techery:ijkmediaplayer:0.4.0@aar'],
+         ijkWidget     : [c: 'io.techery:ijkmediawidget:0.4.0@aar'],
+         barcodescanner: [c: 'me.dm7.barcodescanner:zxing:1.9'],
+         fresco        : [c: 'com.facebook.fresco:fresco:1.1.0'],
+         frescoOkhttp  : [c: 'com.facebook.fresco:imagepipeline-okhttp:1.1.0'],
+         picasso       : [c: 'com.squareup.picasso:picasso:2.5.2'],
+   ]
+   // ui (views/layouts/widgets)
+   def googleLibrariesVersion = '25.2.0'
+   moduleDependencies.ui = [
+         googleAppcompat7      : [c: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
+         googleDesign          : [c: "com.android.support:design:${googleLibrariesVersion}"],
+         googleRecyclerView    : [c: "com.android.support:recyclerview-v7:${googleLibrariesVersion}"],
+         googleCardView        : [c: "com.android.support:cardview-v7:${googleLibrariesVersion}"],
+         googlePercent         : [c: "com.android.support:percent:${googleLibrariesVersion}"],
+         // RecyclerView
+         advrecyclerview       : [c: 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'],
+         linearlistview        : [c: 'com.github.frankiesardo:linearlistview:1.0.1@aar'],
+         recyclerviewsticky    : [c: 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'],
+         // Dialogs
+         androidUi             : [c: 'com.github.markushi:android-ui:1.2'],
+         sweetAlertDialog      : [c: 'com.github.techery:sweet-alert-dialog:d82b5e4764'],
+         dialogPlus            : [c: 'com.orhanobut:dialogplus:1.10@aar'],
+         materialDialogsCore   : [c: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],
+         materialDialogsCommons: [c: 'com.github.afollestad.material-dialogs:commons:0.8.6.2'],
+         // FAB
+         floatingactionbutton  : [c: 'com.getbase:floatingactionbutton:1.10.0'],
+         fabbutton             : [c: 'mbanje.kurt:fabbutton:1.2.1'],
+         // Layouts
+         expandablelayout      : [c: 'com.github.traex.expandablelayout:library:1.3'],
+         shadowlayout          : [c: 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'],
+         slidinguppanel        : [c: 'com.sothree.slidinguppanel:library:3.2.1'],
+         swipelayout           : [c: 'com.daimajia.swipelayout:library:1.2.0@aar'],
+         constraintlayout      : [c: 'com.android.support.constraint:constraint-layout:1.0.2'],
+         // Text
+         materialedittext      : [c: 'com.rengwuxian.materialedittext:library:2.1.4'],
+         expandableTextView    : [c: 'com.ms-square:expandableTextView:0.1.4'],
+         // Pickers
+         ucrop                 : [c: 'com.yalantis:ucrop:2.2.0'],
+         datetimepicker        : [c: 'com.github.flavienlaurent.datetimepicker:library:0.0.2'],
+         polyPicker            : [c: 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'],
+         // Other
+         textdrawable          : [c: 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'],
+         properratingbar       : [c: 'com.github.techery:properratingbar:0.0.5'],
+         materialRangeBar      : [c: 'com.github.techery:material-range-bar:db6fec9fdd'],
+         shortuctbadger        : [c: 'me.leolin:ShortcutBadger:1.1.3@aar'],
+         circleindicator       : [c: 'me.relex:circleindicator:1.2.2@aar'],
+   ]
+   //
+   def leakCanaryVersion = '1.3.1'
+   def jodaTimeVersion = '2.9.9'
+   def dataBindingCompilerVersion = '2.2.3'
+   moduleDependencies.util = [
+         googleAnnotations        : [c: "com.android.support:support-annotations:${googleLibrariesVersion}"],
+         multidex                 : [c: 'com.android.support:multidex:1.0.1'],
+         timber                   : [c: 'com.jakewharton.timber:timber:4.0.1'],
+         jodaTimeAndroid          : [c: "net.danlew:android.joda:$jodaTimeVersion"],
+         androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
+         androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],
+         operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.0'],
+         collectionsQuery         : [c: 'com.innahema:collections-query:0.2.9'],
+         weakHandler              : [c: 'com.badoo.mobile:android-weak-handler:1.1'],
+         mappery                  : [c: 'com.github.techery:mappery:0.0.2'],
+         deviceNames              : [c: 'com.jaredrummler:android-device-names:1.1.2'],
+         deviceprint              : [c: [name: 'deviceprint-lib-release-2.3.3', ext: 'aar']],
+         leakcanary               : [c: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"],
+         leakcanaryNoOp           : [c: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"],
+         databindingcompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
+   ]
+   // tests
+   def spekVersion = '1.1.1'
+   def roboelectricVersion = '3.1.2'
+   def powerMockVersion = '1.7.0RC4'
+   moduleDependencies.test = [
+         spekApi              : [tc: "org.jetbrains.spek:spek-api:$spekVersion"],
+         spekEngine           : [tc: "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"],
+
+         junit                : [tc: 'junit:junit:4.12'],
+         junitRunner          : [tc: 'org.junit.platform:junit-platform-runner:1.0.0-M4'],
+
+         robolectric          : [tc: "org.robolectric:robolectric:$roboelectricVersion"],
+         robolectricMultidex  : [tc: "org.robolectric:shadows-multidex:$roboelectricVersion"],
+
+         assertj              : [tc: 'org.assertj:assertj-core:1.7.1'],
+         mockito              : [tc: 'org.mockito:mockito-core:2.7.22'],
+
+         leakcanaryNoOp       : [tc: "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"],
+
+         kotlinReflect        : [tc: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.languages.kotlin"],
+         kotlinTest           : [tc: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.languages.kotlin"],
+         kotlinMockito        : [tc: 'com.nhaarman:mockito-kotlin:1.4.0'],
+         kotlinRx             : [tc: 'io.reactivex:rxkotlin:0.55.0'],
+
+         powermockJunit       : [tc: "org.powermock:powermock-module-junit4:$powerMockVersion"],
+         powermockJunitRule   : [tc: "org.powermock:powermock-module-junit4-rule:$powerMockVersion"],
+         powermockMockito     : [tc: "org.powermock:powermock-api-mockito2:$powerMockVersion"],
+         powermockJunitXstream: [tc: "org.powermock:powermock-classloading-xstream:$powerMockVersion"],
+
+         jodaTime             : [tc: "joda-time:joda-time:$jodaTimeVersion"],
+   ]
+
+   moduleDependencies.applyAll = { o, deps ->
+      deps.each {
+         def entry = it.value.entrySet().first()
+         if (entry.key == 'c') o.compile entry.value
+         if (entry.key == 'ct') o.compile(entry.value) { transitive = true }
+         if (entry.key == 'a') o.annotationProcessor entry.value
+         if (entry.key == 'p') o.provided entry.value
+         if (entry.key == 'tc') o.testCompile entry.value
+      }
+   }
+
+   moduleDependencies.provide = { bundle ->
+      return bundle.entrySet().first().value
+   }
+}

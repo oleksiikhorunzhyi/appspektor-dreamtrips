@@ -24,9 +24,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -99,7 +99,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       ValidateReviewUtil.setUpRating(itemView.getContext(), getModelObject().reviewSummary(), mRatingBar, textViewRating);
 
       /**This must be removed once we start optimizing for tablets **/
-      if(deviceInfoProvider.isTablet()){
+      if (deviceInfoProvider.isTablet()) {
          layoutRatingsReview.setVisibility(View.GONE);
       } else {
          layoutRatingsReview.setVisibility(View.VISIBLE);
@@ -248,16 +248,44 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
 
    @OnClick(R.id.layout_rating_reviews)
    void onClickRateView() {
-      User user = appSessionHolder.get().get().getUser();
-      if (!ReviewStorage.exists(itemView.getContext(), String.valueOf(user.getId()), getModelObject().id())) {
-         if (getModelObject().reviewSummary()
-               .userHasPendingReview() && Integer.parseInt(getModelObject().reviewSummary().total()) < 1) {
-            cellDelegate.userHasPendingReview();
-         } else {
+      if (isReviewCached()) {
+         if (userHasReviews()) {
             cellDelegate.sendToRatingReview(getModelObject());
+         } else {
+            cellDelegate.userHasPendingReview();
          }
       } else {
-         cellDelegate.sendToRatingReview(getModelObject());
+         if (!userHasPendingReview() || userHasReviews()) {
+            cellDelegate.sendToRatingReview(getModelObject());
+         } else {
+            cellDelegate.userHasPendingReview();
+         }
       }
+   }
+
+   private User getUser() {
+      return appSessionHolder.get().get().getUser();
+   }
+
+   private boolean isReviewCached() {
+      return ReviewStorage.exists(itemView.getContext(), String.valueOf(getUser().getId()), getModelObject().id());
+   }
+
+   private boolean userHasReviews() {
+      if (getModelObject().reviewSummary() == null) {
+         return false;
+      }
+
+      try {
+         return Integer.parseInt(getModelObject().reviewSummary().total()) > 0;
+      } catch (NumberFormatException e) {
+         // nothing to do, default value is false
+      }
+
+      return false;
+   }
+
+   private boolean userHasPendingReview() {
+      return getModelObject().reviewSummary() != null && getModelObject().reviewSummary().userHasPendingReview();
    }
 }

@@ -4,16 +4,22 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperRelease;
 
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.techery.janet.Janet;
 import io.techery.janet.smartcard.client.NxtSmartCardClient;
 import io.techery.janet.smartcard.client.SmartCardClient;
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
@@ -21,7 +27,8 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
 @Module(
       includes = {
             WalletServiceModule.class,
-            StorageModule.class
+            StorageModule.class,
+            JanetNxtModule.class
       },
       complete = false, library = true
 )
@@ -45,8 +52,8 @@ public class SmartCardModule {
 
    @Singleton
    @Provides
-   WizardMemoryStorage provideWizardMemoryStorage() {
-      return new WizardMemoryStorage();
+   WalletFeatureHelper featureHelper(@Named(JanetModule.JANET_WALLET)Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
+      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
+//      return new WalletFeatureHelperFull();
    }
-
 }

@@ -65,11 +65,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
 
    @Override
    protected void run(CommandCallback<Merchant> callback) throws Throwable {
-      if (cache == null || needToForce()) {
-         requestMerchant(callback);
-      } else {
-         callback.onSuccess(cache);
-      }
+      requestMerchant(callback);
    }
 
    private boolean needToForce() {

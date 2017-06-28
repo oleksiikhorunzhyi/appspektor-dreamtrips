@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CommandWithTripImages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,12 +32,11 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
 
-public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View,
-      C extends TripImagesCommand<? extends IFullScreenObject>> extends Presenter<VT>
-      implements FeedEntityHolder {
+public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View, C extends CommandWithTripImages>
+      extends Presenter<VT> implements FeedEntityHolder {
 
-   public static final int PER_PAGE = 15;
-   public final static int VISIBLE_TRESHOLD = 5;
+   private static final int PER_PAGE = 15;
+   private static final int VISIBLE_THRESHOLD = 5;
 
    @Inject SnappyRepository db;
    @Inject TripImagesInteractor tripImagesInteractor;
@@ -48,8 +47,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    protected TripImagesType type;
 
    private int previousTotal = 0;
-   private boolean loading = true;
+   protected boolean loading = true;
    private int currentPhotoPosition = 0;
+   boolean lastPageReached = false;
 
    protected List<IFullScreenObject> photos = new ArrayList<>();
    protected int userId;
@@ -120,11 +120,18 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
-            && totalItemCount % PER_PAGE == 0) {
+      if (!lastPageReached && !loading && photos.size() > 0
+            && (totalItemCount - visibleItemCount) <= (firstVisibleItem + getVisibleThreshold())) {
          loadNext();
-         loading = true;
       }
+   }
+
+   protected int getPageSize() {
+      return PER_PAGE;
+   }
+
+   protected int getVisibleThreshold() {
+      return VISIBLE_THRESHOLD;
    }
 
    protected abstract ActionPipe<C> getLoadingPipe();
@@ -134,37 +141,50 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    protected abstract C getLoadMoreCommand(int currentCount);
 
    public void reload(boolean userInitiated) {
+      loading = true;
       view.startLoading();
       currentPage = 1;
       load(getReloadCommand(), this::onFullDataLoaded);
    }
 
    public void loadNext() {
+      loading = true;
       currentPage++;
-      load(getLoadMoreCommand(photos.size()), this::savePhotosAndUpdateView);
+      load(getLoadMoreCommand(photos.size()), newPhotos -> {
+         if (newPhotos.size() == 0) {
+            lastPageReached = true;
+         }
+         savePhotosAndUpdateView(newPhotos);
+      });
    }
 
    private void load(C command, Action1<List<IFullScreenObject>> successAction) {
       getLoadingPipe().createObservable(command)
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<C>()
-                  .onSuccess(c -> successAction.call((List<IFullScreenObject>) c.getResult()))
+                  .onSuccess(c -> {
+                     loading = false;
+                     successAction.call(c.getImages());
+                  })
                   .onFail((failedCommand, throwable) -> {
+                     loading = false;
                      view.finishLoading();
                      if (currentPage != 1) currentPage--;
                      super.handleError(failedCommand, throwable);
                   }));
    }
 
-   private void onFullDataLoaded(List<IFullScreenObject> items) {
+   protected void onFullDataLoaded(List<IFullScreenObject> items) {
       resetCurrentPhotosAndLoadingState();
       savePhotosAndUpdateView(items);
+      view.setSelection(0);
    }
 
    private void resetCurrentPhotosAndLoadingState() {
       view.finishLoading();
       photos.clear();
       previousTotal = 0;
+      lastPageReached = false;
       loading = false;
    }
 
@@ -290,21 +310,38 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             .subscribe(this::onFeedItemAdded);
    }
 
-   public void onFeedItemAdded(FeedItem feedItem) {
+   protected void onFeedItemAdded(FeedItem feedItem) {
+      List<Photo> photosToAdd = new ArrayList<>();
+
       if (feedItem.getItem() instanceof Photo) {
          Photo photo = (Photo) feedItem.getItem();
-         photos.add(0, photo);
-         db.savePhotoEntityList(type, userId, photos);
-         view.add(0, photo);
+         if (!photos.contains(photo)) {
+            photosToAdd.add(photo);
+         }
       } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
             .getItem()).getAttachments().size() > 0) {
-         List<Photo> addedPhotos = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
+         List<Photo> feedItemPhotos = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
                .map(holder -> (Photo) holder.getItem())
+               .filter(photo -> !photos.contains(photo))
                .toList();
-         Collections.reverse(addedPhotos);
-         photos.addAll(0, addedPhotos);
+         boolean allPhotosHavePublishAt = Queryable.from(feedItemPhotos)
+               .count(element -> element.getCreatedAt() == null) == 0;
+         if (allPhotosHavePublishAt) {
+            Collections.sort(feedItemPhotos, (p1, p2) -> p1.getCreatedAt().before(p2.getCreatedAt()) ? 1 : -1);
+         } else {
+            Collections.reverse(photos);
+         }
+         photosToAdd.addAll(feedItemPhotos);
+      }
+
+      if (!photosToAdd.isEmpty()) {
+         photos.addAll(0, photosToAdd);
          db.savePhotoEntityList(type, userId, photos);
-         view.addAll(0, addedPhotos);
+         if (photosToAdd.size() == 1) {
+            view.add(0, photosToAdd.get(0));
+         } else {
+            view.addAll(0, photosToAdd);
+         }
       }
    }
 

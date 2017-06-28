@@ -4,6 +4,9 @@ import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand
 import io.techery.janet.ActionState
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 
 class ScheduleCompoundOperationSpec : BaseUploadingInteractorSpec({
@@ -11,7 +14,7 @@ class ScheduleCompoundOperationSpec : BaseUploadingInteractorSpec({
       context("Queue is empty") {
          initJanet(compoundOperationsEmptyContract())
 
-         on("Scheduling compound operation") {
+         context("Scheduling compound operation") {
             val testSubscriber = TestSubscriber<ActionState<StartNextCompoundOperationCommand>>()
 
             backgroundUploadingInteractor.startNextCompoundPipe().observe().subscribe(testSubscriber)
@@ -26,7 +29,7 @@ class ScheduleCompoundOperationSpec : BaseUploadingInteractorSpec({
       context("Queue is not empty") {
          initJanet(compoundOperationsNotEmptyContract())
 
-         on("Scheduling compound operation") {
+         context("Scheduling compound operation") {
             val testSubscriber = TestSubscriber<ActionState<StartNextCompoundOperationCommand>>()
 
             backgroundUploadingInteractor.startNextCompoundPipe().observe().subscribe(testSubscriber)

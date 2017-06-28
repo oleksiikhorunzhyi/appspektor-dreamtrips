@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.model
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware
 
-class TestFirmware : SmartCardFirmware {
+class TestFirmware : SmartCardFirmware() {
 
    override fun firmwareBundleVersion() = null
 

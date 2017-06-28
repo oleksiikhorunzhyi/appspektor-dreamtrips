@@ -2,63 +2,62 @@ package com.worldventures.dreamtrips.modules.infopages.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.documents.GetDocumentsHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValueStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import io.techery.janet.ActionHolder;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class GetDocumentsCommand extends CommandWithError<List<Document>> implements InjectableAction,
-      CachedAction<List<Document>> {
+public class GetDocumentsCommand extends MappableApiActionCommand<GetDocumentsHttpAction,
+      List<Document>, Document> implements CachedAction<List<Document>> {
 
-   private static final int PER_PAGE = 10;
+   protected static final int PER_PAGE = 10;
 
-   @Inject Janet janet;
-   @Inject MapperyContext mappery;
-
-   private List<Document> cachedDocuments;
+   protected List<Document> cachedDocuments;
 
    private boolean refresh;
+   private DocumentType documentType;
 
-   public GetDocumentsCommand() {
-      this.refresh = false;
+   public GetDocumentsCommand(DocumentType documentType) {
+      this(documentType, false);
    }
 
-   public GetDocumentsCommand(boolean refresh) {
+   public GetDocumentsCommand(DocumentType documentType, boolean refresh) {
       this.refresh = refresh;
+      this.documentType = documentType;
    }
 
    @Override
-   protected void run(CommandCallback<List<Document>> callback) throws Throwable {
-      janet.createPipe(GetDocumentsHttpAction.class)
-            .createObservableResult(new GetDocumentsHttpAction(getPage(), PER_PAGE))
-            .map(action -> mappery.convert(action.response(), Document.class))
-            .doOnNext(list -> clearCacheIfNeeded())
-            .subscribe(callback::onSuccess, callback::onFail);
+   protected Object mapHttpActionResult(GetDocumentsHttpAction httpAction) {
+      return httpAction.response();
    }
 
-   public List<Document> items() {
-      List<Document> documents = new ArrayList<>();
-      if (cachedDocuments != null) documents.addAll(cachedDocuments);
-      if (getResult() != null) documents.addAll(getResult());
-      return documents;
+   @Override
+   protected GetDocumentsHttpAction getHttpAction() {
+      com.worldventures.dreamtrips.api.documents.model.DocumentType type =
+         mapperyContext.convert(documentType, com.worldventures.dreamtrips.api.documents.model.DocumentType.class);
+      return new GetDocumentsHttpAction(type, getPage(), PER_PAGE);
+   }
+
+   @Override
+   protected Class<GetDocumentsHttpAction> getHttpActionClass() {
+      return GetDocumentsHttpAction.class;
+   }
+
+   @Override
+   protected Class<Document> getMappingTargetClass() {
+      return Document.class;
    }
 
    @Override
@@ -80,7 +79,14 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
    public CacheOptions getCacheOptions() {
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, refresh);
+      cacheBundle.put(KeyValueStorage.BUNDLE_KEY_VALUE, documentType.toString());
       return ImmutableCacheOptions.builder().params(cacheBundle).build();
+   }
+
+   @Override
+   protected void onSuccess(CommandCallback<List<Document>> callback, List<Document> documents) {
+      clearCacheIfNeeded();
+      super.onSuccess(callback, documents);
    }
 
    public boolean isNoMoreElements() {
@@ -95,10 +101,23 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
       if (refresh) cachedDocuments = null;
    }
 
-   private int getPage() {
+   protected int getPage() {
       if (refresh || cachedDocuments == null || cachedDocuments.isEmpty()) {
          return 1;
       }
       return cachedDocuments.size() / PER_PAGE + 1;
+   }
+
+   public List<Document> items() {
+      List<Document> documents = new ArrayList<>();
+      if (cachedDocuments != null) documents.addAll(cachedDocuments);
+      if (getResult() != null) documents.addAll(getResult());
+      return documents;
+   }
+
+   public enum DocumentType {
+      HELP,
+      LEGAL,
+      SMARTCARD
    }
 }

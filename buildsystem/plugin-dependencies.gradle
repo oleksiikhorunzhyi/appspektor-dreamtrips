@@ -1,0 +1,37 @@
+ext {
+   pluginDependencies = [:]
+   pluginDependencies.languages = [
+         java  : '1.8',
+         kotlin: '1.1.1'
+   ]
+   pluginDependencies.repos = [
+         { o -> o.jcenter() },
+         { o -> o.maven { url 'https://maven.fabric.io/public' } }
+   ]
+   pluginDependencies << [
+         androidDefault: '2.2.3',
+         kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginDependencies.languages.kotlin",
+
+         apt           : 'com.neenbedankt.gradle.plugins:android-apt:1.8',
+         retrolambda   : 'me.tatarka:gradle-retrolambda:3.6.1',
+
+         newrelic      : 'com.newrelic.agent.android:agent-gradle-plugin:5.8.4',
+         fabric        : 'io.fabric.tools:gradle:1.21.6',
+
+         versionChecker: 'com.github.ben-manes:gradle-versions-plugin:0.14.0',
+   ]
+
+   pluginDependencies.android = {
+      androidPluginVersion = pluginDependencies.androidDefault
+      def propsFile = rootProject.file('./buildscript.properties')
+      if (propsFile.exists()) {
+         Properties props = new Properties()
+         props.load(new FileInputStream(propsFile))
+         if (props.androidPluginVersion) {
+            androidPluginVersion = props.androidPluginVersion
+         }
+      }
+      logger.lifecycle("Android Plugin version: $androidPluginVersion")
+      return "com.android.tools.build:gradle:$androidPluginVersion"
+   }()
+}

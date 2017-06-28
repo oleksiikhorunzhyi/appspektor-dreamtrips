@@ -14,12 +14,12 @@ public class DocumentFragment extends StaticInfoFragment<DocumentPresenter, Docu
 
    @Override
    protected String getURL() {
-      return getArgs().getUrl();
+      return getArgs().getDocument().getUrl();
    }
 
    @Override
    public void afterCreateView(View rootView) {
-      ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArgs().getTitle());
+      ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArgs().getDocument().getName());
 
       webView.getSettings().setDomStorageEnabled(true);
       super.afterCreateView(rootView);
@@ -27,7 +27,7 @@ public class DocumentFragment extends StaticInfoFragment<DocumentPresenter, Docu
 
    @Override
    protected DocumentPresenter createPresenter(Bundle savedInstanceState) {
-      return new DocumentPresenter(getURL());
+      return new DocumentPresenter(getArgs().getDocument(), getArgs().getAnalyticsAction());
    }
 
 }

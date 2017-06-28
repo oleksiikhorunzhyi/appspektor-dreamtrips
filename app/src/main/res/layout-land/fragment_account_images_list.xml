@@ -41,6 +41,8 @@
          fab:fab_icon="@drawable/ic_menu_add_item"
          />
 
+   <include layout="@layout/layout_new_trip_images_button"/>
+
    <FrameLayout
          android:id="@+id/picker_container"
          android:layout_width="match_parent"

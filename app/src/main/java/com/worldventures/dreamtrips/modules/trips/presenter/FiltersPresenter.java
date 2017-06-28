@@ -149,7 +149,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       setThemesChecked(true);
       view.dataSetChanged();
       //
-      tripFilterData = new TripsFilterData();
+      tripFilterData.reset();
       tripFilterEventDelegate.post(tripFilterData);
       TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
    }

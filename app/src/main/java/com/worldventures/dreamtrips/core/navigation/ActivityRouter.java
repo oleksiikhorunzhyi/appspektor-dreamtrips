@@ -81,9 +81,10 @@ public class ActivityRouter extends ActivityBoundRouter {
       super.startService(clazz);
    }
 
-   public void openPodcastPlayer(String url) {
+   public void openPodcastPlayer(String url, String name) {
       Intent intent = new Intent(getContext(), PodcastPlayerActivity.class);
       intent.setData(Uri.parse(url));
+      intent.putExtra(PodcastPlayerActivity.PODCAST_NAME_KEY, name);
       startActivityIntent(intent);
    }
 

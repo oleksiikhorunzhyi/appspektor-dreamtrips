@@ -10,6 +10,7 @@ import rx.functions.Action1;
 import rx.functions.Action2;
 import rx.functions.Func1;
 
+@Deprecated
 public final class OperationActionStateSubscriberWrapper<T> {
 
    private OperationScreen view;

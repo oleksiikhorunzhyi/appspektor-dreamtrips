@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.view.cell.delegate.PodcastCellDelegate;
 import com.worldventures.dreamtrips.modules.video.cell.ProgressVideoCellHelper;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
 import javax.inject.Inject;
 
@@ -36,12 +37,18 @@ public class PodcastCell extends AbstractDelegateCell<Podcast, PodcastCellDelega
    @InjectView(R.id.download_progress) PinProgressButton downloadProgress;
 
    @Inject Context context;
+   @Inject CachedModelHelper cachedModelHelper;
 
    private ProgressVideoCellHelper progressVideoCellHelper;
 
    public PodcastCell(View view) {
       super(view);
-      progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress);
+   }
+
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      progressVideoCellHelper = new ProgressVideoCellHelper(downloadProgress, cachedModelHelper);
    }
 
    @Override

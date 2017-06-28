@@ -72,8 +72,11 @@ public class DtlToolbar extends LinearLayout {
    }
 
    protected void updateToolbarCaptions() {
+      merchantSearchInput.setText("");
       if (TextUtils.isEmpty(searchQuery)) {
          merchantSearchInput.setHint(defaultEmptySearchCaption);
+      } else {
+         merchantSearchInput.setHint(searchQuery);
       }
       locationSearchInput.setText(locationTitle);
       locationSearchInput.selectAll();

@@ -205,6 +205,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
+      ReviewStorage.updateReviewsPosted(getContext(),
+            String.valueOf(appSessionHolder.get().get().getUser().getId()),
+            action.getMerchantId(),
+            action.getResult().reviews().userHasPendingReview());
       if (!action.getFromRating()) {
          navigateToDetails(action.getResult(), action.getOfferId());
       } else {
@@ -248,8 +252,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void setMerchantType(List<String> merchantType) {
-      filterDataInteractor.searchMerchantType(merchantType);
+   public void setMerchantType(List<String> merchantType, String searchQuery) {
+      filterDataInteractor.searchMerchantType(merchantType, searchQuery);
    }
 
    @Override

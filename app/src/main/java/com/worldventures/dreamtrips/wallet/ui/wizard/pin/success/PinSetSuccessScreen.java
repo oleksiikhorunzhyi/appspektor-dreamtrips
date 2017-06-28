@@ -56,11 +56,6 @@ public class PinSetSuccessScreen extends WalletLinearLayout<PinSetSuccessPresent
    }
 
    @Override
-   protected boolean hasToolbar() {
-      return true;
-   }
-
-   @Override
    public void showMode(Action mode) {
       if (mode == Action.RESET) {
          nextButton.setText(R.string.wallet_continue_label);

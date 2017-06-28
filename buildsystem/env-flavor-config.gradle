@@ -1,0 +1,106 @@
+ext {
+   flavors = [:]
+   flavors.codes = [
+         dev   : 'dev', devpremarshmallow: 'devpremarshmallow', external: 'external',
+         stable: 'stable', social: 'social', messenger: 'messenger', dtl: 'dtl', smartcardmock: 'smartcardmock', smartcardnxtid: 'smartcardnxtid',
+         stage : 'stage', preprod: 'preprod', perf: 'perf', integration: 'integration', prod: 'prod'
+   ]
+   flavors.types = [
+         build : [flavors.codes.dev, flavors.codes.devpremarshmallow, flavors.codes.external],
+         stream: [flavors.codes.stable, flavors.codes.social, flavors.codes.dtl, flavors.codes.messenger, flavors.codes.smartcardmock, flavors.codes.smartcardnxtid],
+         config: [flavors.codes.stage, flavors.codes.preprod, flavors.codes.perf, flavors.codes.integration, flavors.codes.prod]
+   ]
+   flavors.configs = [
+         // by build
+         "${flavors.codes.external}"                                            : [
+               appParams: [
+                     feature: [
+                           CRASHLYTICS_DISABLED : [boolean: 'false'],
+                           ANALYTICS_LOG_ENABLED: [boolean: 'true'],
+                           NEWRELIC_ENABLED     : [boolean: 'true'],
+                     ],
+                     util   : [
+                           NEWRELIC_API_KEY: [String: '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"'],
+                     ]
+               ]
+         ],
+         // by stream
+         "$flavors.codes.smartcardmock"                                         : [
+               appParams: [
+                     feature: [
+                           SMART_CARD_SDK_CLIENT: [String: '"mock"'],
+                     ]
+               ]
+         ],
+         "$flavors.codes.smartcardnxtid"                                        : [
+               appParams: [
+                     feature: [
+                           SMART_CARD_SDK_CLIENT: [String: '"nxtid"'],
+                     ]
+               ]
+         ],
+         // by config
+         "$flavors.codes.preprod"                                               : [
+               appParams: [
+                     api      : [
+                           DreamTripsApi    : [String: '"http://dtapp-qa.worldventures.biz/"'],
+                           UPLOADERY_API_URL: [String: '"http://dtapp-qa.worldventures.biz/uploadery"'],
+                     ],
+                     messenger: [
+                           MESSENGER_API_URL: [String: '"dtmsgapp-qa.worldventures.biz"'],
+                     ]
+               ]
+         ],
+         "$flavors.codes.perf"                                                  : [
+               appParams: [
+                     api : [
+                           DreamTripsApi    : [String: '"http://dtapp-perf.worldventures.biz"'],
+                           UPLOADERY_API_URL: [String: '"dtappupload-perf.wvholdings.com"'],
+                     ],
+                     util: [
+                           NEWRELIC_API_KEY: [String: '"AA8998d2de5c99adddd3668515e76b5d501271a04b"'],
+                     ]
+               ]
+         ],
+         "$flavors.codes.integration"                                           : [
+               appParams: [
+                     api: [
+                           DreamTripsApi    : [String: (project.hasProperty('api_endpoint') ? "\"${project.getProperties().get('api_endpoint')}\""
+                                 : '"http://techery-dt-integration.techery.io/"')
+                           ],
+                           UPLOADERY_API_URL: [String: (project.hasProperty('api_uploadery') ? "\"${project.getProperties().get('api_uploadery')}\""
+                                 : '"http://techery-dt-integration-uploadery.techery.io"')
+                           ],
+                     ],
+               ]
+         ],
+         "$flavors.codes.prod"                                                  : [
+               appParams: [
+                     api      : [
+                           DreamTripsApi    : [String: '"https://dtapp.worldventures.biz"'],
+                           UPLOADERY_API_URL: [String: '"http://dtappuploads.wvholdings.com"'],
+                           API_TIMEOUT_SEC  : [long: '15'],
+                           NXT_API          : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
+                     ],
+                     messenger: [
+                           MESSENGER_API_URL: [String: '"dtmsgapp.worldventures.biz"'],
+                     ],
+                     ads      : [
+                           SURVEY_API_TOKEN: [String: '"48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"'],
+                     ],
+                     util     : [
+                           NEWRELIC_API_KEY: [String: '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"'],
+                     ]
+               ],
+         ],
+         // merged flavors
+         "${flavors.codes.external}${flavors.codes.stable}${flavors.codes.prod}": [
+               manifestParams: [
+                     services: [
+                           mapsApiKey: 'AIzaSyBEAplf65kSFB7FZSB4xPbAdWktPPBNuXA',
+                     ]
+               ]
+         ]
+   ]
+
+}

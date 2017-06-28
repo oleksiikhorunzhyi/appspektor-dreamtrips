@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
@@ -41,19 +42,16 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
+import com.worldventures.dreamtrips.wallet.di.WalletActionStorageModule;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(complete = false, library = true)
+@Module(includes = {
+      WalletActionStorageModule.class
+}, complete = false, library = true)
 public class CacheActionStorageModule {
 
    @Singleton
@@ -160,36 +158,6 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
-      return new WalletCardsDiskStorage(cardListStorage);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
-      return new DefaultBankCardStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
-      return new SmartCardStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideSmartCardDetailsStorage(SnappyRepository snappyRepository) {
-      return new SmartCardDetailsStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideTermsAndConditionsStorage(SnappyRepository snappyRepository) {
-      return new TermsAndConditionsStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
    MultipleActionStorage provideCompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
       return new CompoundOperationStorage(compoundOperationRepository);
    }
@@ -215,7 +183,7 @@ public class CacheActionStorageModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {
-      return new DocumentsStorage(new PaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
+      return new DocumentsStorage(new KeyValuePaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
    }
 
    @Singleton

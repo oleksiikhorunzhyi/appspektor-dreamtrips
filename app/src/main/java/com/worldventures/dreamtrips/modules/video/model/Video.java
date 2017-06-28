@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.video.model;
 
 import android.text.TextUtils;
 
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
+
 public class Video {
    private static final String FEATURED = "Featured";
 
@@ -12,7 +14,7 @@ public class Video {
    private String duration;
    private String language;
 
-   private transient CachedEntity entity;
+   private transient CachedModel entity;
 
    public Video(String imageUrl, String videoUrl, String name, String category, String duration, String language) {
       this.imageUrl = imageUrl;
@@ -58,14 +60,15 @@ public class Video {
       return language;
    }
 
-   public CachedEntity getCacheEntity() {
+   public CachedModel getCacheEntity() {
       if (entity == null) {
-         entity = new CachedEntity(this.getVideoUrl(), this.getUid(), this.getVideoName());
+         entity = new CachedModel(getVideoUrl(), getUid(), getVideoName());
+         entity.setEntityClass(Video.class);
       }
       return entity;
    }
 
-   public void setCacheEntity(CachedEntity entity) {
+   public void setCacheEntity(CachedModel entity) {
       this.entity = entity;
    }
 

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.trips
 
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
@@ -24,7 +23,10 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.MapperyContext
-import org.mockito.internal.verification.VerificationModeFactory
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import rx.observers.TestSubscriber
 import kotlin.test.assertTrue
 
@@ -33,7 +35,7 @@ class TripInteractorSpec : BaseSpec({
       setup(mockHttpServiceForTrips())
 
       context("Refresh trips") {
-         on("Trips cache is empty") {
+         context("Trips cache is empty") {
             val testSubscriber = TestSubscriber<ActionState<GetTripsCommand>>()
 
             whenever(tripsMemoryStorage.get(any())).thenReturn(null)
@@ -52,7 +54,7 @@ class TripInteractorSpec : BaseSpec({
                AssertUtil.assertActionSuccess(testSubscriber) { it.items.containsAll(trips) }
             }
          }
-         on("Trips cache is not empty") {
+         context("Trips cache is not empty") {
             val testSubscriber = TestSubscriber<ActionState<GetTripsCommand>>()
 
             whenever(tripsMemoryStorage.get(any())).thenReturn(storedTrips)
@@ -73,7 +75,7 @@ class TripInteractorSpec : BaseSpec({
          }
       }
       context("Load more trips") {
-         on("Trips cache is not empty") {
+         context("Trips cache is not empty") {
             val testSubscriber = TestSubscriber<ActionState<GetTripsCommand>>()
 
             whenever(tripsMemoryStorage.get(any())).thenReturn(storedTrips)
@@ -123,8 +125,8 @@ class TripInteractorSpec : BaseSpec({
 }) {
    companion object {
       val apiTrips: List<Trip> = emptyList()
-      val apiDetailedResponse : EntityHolder<TripWithDetails> = mock()
-      val apiTrip: TripWithDetails = mock()
+      var apiDetailedResponse : EntityHolder<TripWithDetails> = mock()
+      var apiTrip: TripWithDetails = mock()
 
       val trip = generateTripModel("1")
       val cachedTrip = generateTripModel("1")
@@ -152,6 +154,8 @@ class TripInteractorSpec : BaseSpec({
                .addService(httpService)
                .build()
 
+         apiDetailedResponse = mock()
+         apiTrip = mock()
          whenever(apiDetailedResponse.entity()).thenReturn(apiTrip)
 
          whenever(mappery.convert(apiTrips, TripModel::class.java))

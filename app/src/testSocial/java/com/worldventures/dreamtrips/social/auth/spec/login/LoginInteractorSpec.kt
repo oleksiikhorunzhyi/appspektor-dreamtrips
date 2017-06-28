@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.auth.spec.login
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
@@ -21,6 +24,8 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.mockito.Mockito.`when`
 import org.mockito.internal.verification.VerificationModeFactory
 import rx.Observable
@@ -30,9 +35,7 @@ class LoginInteractorSpec : BaseSpec({
 
    describe("Test login action") {
 
-      setup { mockHttpServiceForLogin() }
-
-      context("Perform login request with username and password") {
+      it("Perform login request with username and password") {
          whenever(sessionHolderMock.get()).thenReturn(Optional.absent())
 
          val testSubscribe = login(USERNAME, PASSWORD)
@@ -42,7 +45,7 @@ class LoginInteractorSpec : BaseSpec({
          }
       }
 
-      context("Perform relogin request without username and password") {
+      it("Perform relogin request without username and password") {
          whenever(sessionHolderMock.get()).thenReturn(Optional.of(userSessionMock))
          whenever(userSessionMock.username).thenReturn(USERNAME)
          whenever(userSessionMock.userPassword).thenReturn(PASSWORD)
@@ -55,7 +58,7 @@ class LoginInteractorSpec : BaseSpec({
          }
       }
 
-      context("Perform login with null parameters") {
+      it("Perform login with null parameters") {
          whenever(sessionHolderMock.get()).thenReturn(Optional.absent())
 
          val testSubscribe = login(null, null)
@@ -65,11 +68,11 @@ class LoginInteractorSpec : BaseSpec({
          }
       }
 
-      context("Verify session saved to storage") {
+      it("Verify session saved to storage") {
          verify(sessionHolderMock, VerificationModeFactory.times(2)).put(any())
       }
 
-      context("Verify settings saved to DB") {
+      it("Verify settings saved to DB") {
          verify(mockDB, VerificationModeFactory.times(2)).saveSettings(any(), any())
       }
    }
@@ -92,6 +95,10 @@ class LoginInteractorSpec : BaseSpec({
       val deviceObservable: Observable<Device> = Observable.just(null)
 
       lateinit var loginInteractor: LoginInteractor
+
+      init {
+         setup { mockHttpServiceForLogin() }
+      }
 
       fun setup(httpService: () -> MockHttpActionService) {
          val daggerCommandActionService = CommandActionService()

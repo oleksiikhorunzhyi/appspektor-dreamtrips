@@ -97,6 +97,7 @@ def String convertToTestTask(Collection tasks) {
 
 @NonCPS
 def String testFolderFromTask(String testTask) {
-   def part = (testTask =~ /(?<=test).*/)[0]
-   return "${part.toLowerCase().charAt(0)}" + part.substring(1)
+   def wrapperFolder = testTask + (testTask.contains("UnitTest") ? "" : "UnitTest")
+   def taskFolder = "**"
+   return "${wrapperFolder}/${taskFolder}"
 }

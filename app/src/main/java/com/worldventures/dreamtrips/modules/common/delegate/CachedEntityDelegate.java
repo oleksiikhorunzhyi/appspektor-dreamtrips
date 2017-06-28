@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.delegate;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
+import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
+import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,39 +16,40 @@ public class CachedEntityDelegate {
 
    private CachedEntityInteractor cachedEntityInteractor;
 
-   private List<DownloadCachedEntityCommand> downloadFileCommandList = new ArrayList<>();
+   private List<DownloadCachedModelCommand> downloadFileCommandList = new ArrayList<>();
 
    public CachedEntityDelegate(CachedEntityInteractor cachedEntityInteractor) {
       this.cachedEntityInteractor = cachedEntityInteractor;
-      cachedEntityInteractor.getDownloadCachedEntityPipe()
+      cachedEntityInteractor.getDownloadCachedModelPipe()
             .observe()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new ActionStateSubscriber<DownloadCachedEntityCommand>()
+            .subscribe(new ActionStateSubscriber<DownloadCachedModelCommand>()
                .onStart(startedCommand -> downloadFileCommandList.add(startedCommand))
                .onSuccess(successCommand -> downloadFileCommandList.remove(successCommand))
                .onFail((failedCommand, throwable) -> downloadFileCommandList.remove(failedCommand)));
    }
 
-   public void cancelCaching(CachedEntity cachedEntity, String path) {
-      DownloadCachedEntityCommand command = Queryable.from(downloadFileCommandList).firstOrDefault(element
-            -> element.getCachedEntity().getUuid().equals(cachedEntity.getUuid()));
+   public void cancelCaching(CachedModel cachedModel, String path) {
+      DownloadCachedModelCommand command = Queryable.from(downloadFileCommandList).firstOrDefault(element
+            -> element.getCachedModel().getUuid().equals(cachedModel.getUuid()));
       if (command != null) {
-         cachedEntityInteractor.getDownloadCachedEntityPipe().cancel(command);
+         cachedEntityInteractor.getDownloadCachedModelPipe().cancel(command);
+         downloadFileCommandList.remove(command);
       }
-      deleteCache(cachedEntity, path);
+      deleteCache(cachedModel, path);
    }
 
-   public void deleteCache(CachedEntity cachedEntity, String path) {
-      cachedEntityInteractor.getDeleteCachedEntityPipe()
-            .send(new DeleteCachedEntityCommand(cachedEntity, new File(path)));
+   public void deleteCache(CachedModel cachedModel, String path) {
+      cachedEntityInteractor.getDeleteCachedModelPipe()
+            .send(new DeleteCachedModelCommand(cachedModel, new File(path)));
    }
 
-   public void startCaching(CachedEntity cachedEntity, String path) {
-      DownloadCachedEntityCommand command = Queryable.from(downloadFileCommandList).firstOrDefault(element
-            -> element.getCachedEntity().getUuid().equals(cachedEntity.getUuid()));
+   public void startCaching(CachedModel cachedModel, String path) {
+      DownloadCachedModelCommand command = Queryable.from(downloadFileCommandList).firstOrDefault(element
+            -> element.getCachedModel().getUuid().equals(cachedModel.getUuid()));
       if (command == null) {
-         cachedEntityInteractor.getDownloadCachedEntityPipe()
-               .send(new DownloadCachedEntityCommand(cachedEntity, new File(path)));
+         cachedEntityInteractor.getDownloadCachedModelPipe()
+               .send(new DownloadCachedModelCommand(cachedModel, new File(path)));
       }
    }
 }

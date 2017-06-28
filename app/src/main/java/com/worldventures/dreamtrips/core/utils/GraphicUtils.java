@@ -55,7 +55,7 @@ public class GraphicUtils {
    }
 
    @Nullable
-   private static Uri parseUri(@Nullable String uri) {
+   public static Uri parseUri(@Nullable String uri) {
       return isEmpty(uri) ? null : Uri.parse(uri);
    }
 

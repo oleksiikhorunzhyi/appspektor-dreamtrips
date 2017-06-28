@@ -4,9 +4,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMemberPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment.EnrollMerchantFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
@@ -32,6 +33,7 @@ import dagger.Provides;
             MembershipFragment.class,
             EnrollMemberFragment.class,
             EnrollMerchantFragment.class,
+            EnrollMerchantPresenter.class,
             InviteFragment.class,
             InvitePresenter.class,
             PodcastsFragment.class,

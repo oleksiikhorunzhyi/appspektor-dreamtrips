@@ -271,13 +271,39 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
-   public void enableLockUnlockCard(boolean enable) {
-      memoryStorage.enableLockUnlockCard(enable);
+   public void setPinEnabled(boolean enabled) {
+      memoryStorage.setPinEnabled(enabled);
       persistStorage();
    }
 
    @Override
-   public boolean isLockUnlockCardEnabled() {
-      return memoryStorage.isLockUnlockCardEnabled();
+   public boolean isPinEnabled() {
+      return memoryStorage.isPinEnabled();
+   }
+
+   @Override
+   public void setCardTime(long time) {
+      memoryStorage.setCardTime(time);
+      persistStorage();
+   }
+
+   @Override
+   public long getCardTime() {
+      return memoryStorage.getCardTime();
+   }
+
+   @Override
+   public void setHomeDisplayType(int type) {
+
+   }
+
+   @Override
+   public int getHomeDisplayType() {
+      return 0;
+   }
+
+   @Override
+   public void removeUserPhoto() {
+
    }
 }

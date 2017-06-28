@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_general"
+         />
+
+   <android.support.v4.widget.NestedScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider_horizontal_wallet_settings"
+            android:orientation="vertical"
+            android:showDividers="middle|end"
+            >
+
+         <!--Profile-->
+         <LinearLayout
+               android:id="@+id/item_smartcard_profile"
+               style="@style/SettingsMenuItem"
+               android:orientation="horizontal"
+               >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                  android:id="@+id/profile_photo"
+                  android:layout_width="35dp"
+                  android:layout_height="35dp"
+                  android:layout_marginEnd="@dimen/spacing_normal"
+                  android:src="@drawable/ic_dt_launcher"
+                  app:failureImage="@drawable/ic_avatar_placeholder"
+                  app:placeholderImage="@drawable/ic_avatar_placeholder"
+                  app:roundAsCircle="true"
+                  />
+
+            <TextView
+                  android:id="@+id/profile_name"
+                  style="@style/SettingsText.Primary"
+                  tools:text="John Doe"
+                  />
+
+         </LinearLayout>
+
+         <!--About-->
+         <LinearLayout
+               android:id="@+id/item_about"
+               style="@style/SettingsMenuItem"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_about"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:text="@string/wallet_card_settings_about_information_about_your_sc"
+                  />
+
+         </LinearLayout>
+
+         <!--Software Update-->
+         <RelativeLayout
+               android:id="@+id/item_firmware_updates"
+               style="@style/SettingsMenuItem"
+               >
+
+            <TextView
+                  android:id="@+id/update_title"
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_flye_sc_update"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:layout_below="@id/update_title"
+                  android:text="@string/wallet_card_settings_updates_to_sc_software"
+                  />
+
+            <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+                  android:id="@+id/badgeFirmwareUpdates"
+                  android:layout_width="28dp"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:layout_centerVertical="true"
+                  android:gravity="center"
+                  android:paddingTop="6dp"
+                  android:textAppearance="?android:attr/textAppearanceSmall"
+                  android:visibility="invisible"
+                  app:background_color="?attr/colorPrimaryDark"
+                  tools:text="1"
+                  />
+
+         </RelativeLayout>
+
+         <!--Reset-->
+         <LinearLayout
+               android:id="@+id/item_factory_reset"
+               style="@style/SettingsMenuItem"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_factory_reset_sc"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:text="@string/wallet_card_settings_return_sc_factory_settings"
+                  />
+
+         </LinearLayout>
+
+         <!--Set up new Smart Card-->
+         <TextView
+               android:id="@+id/item_setup_new_sc"
+               style="@style/SettingsMenuItem.Text"
+               android:text="@string/wallet_card_settings_set_up_new_sc"
+               />
+
+         <!--Restart-->
+         <LinearLayout
+               android:id="@+id/item_restart_sc"
+               style="@style/SettingsMenuItem"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_restart"
+                  />
+
+            <TextView
+                  style="@style/SettingsText.Secondary"
+                  android:text="@string/wallet_card_settings_restart_your_sc"
+                  />
+
+         </LinearLayout>
+
+      </LinearLayout>
+
+   </android.support.v4.widget.NestedScrollView>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen>

@@ -3,21 +3,16 @@ package com.worldventures.dreamtrips.modules.video.model;
 import android.content.Context;
 import android.os.Environment;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
 import java.io.File;
 import java.io.Serializable;
 
 /**
- * Note of what needs to be improved in this class:
- *
- * 1. Store progress state in actual variable, currently NOT in progress state is determined by when progress is 0,
- * which is wrong because download can be already initiated but progress is still zero
- * as connection hasn't established yet.
- * 2. This class should store link to actual cache file location as it's initiated each time with a new download
- *
- * In order to do this we should :
- * 1. Refactor related commands and presenters
- * 2. Migrate it from using default Kryo's FieldSerializer which does not support adding new fields to entities.
+ * Use {@link CachedModel}, {@link CachedEntity} doesn't support adding new fields
  */
+@Deprecated
 public class CachedEntity implements Serializable {
 
    protected static final long serialVersionUID = 12332;

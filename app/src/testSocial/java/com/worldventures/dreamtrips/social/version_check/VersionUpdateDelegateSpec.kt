@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.version_check
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
@@ -14,41 +15,41 @@ import com.worldventures.dreamtrips.modules.version_check.delegate.VersionUpdate
 import com.worldventures.dreamtrips.modules.version_check.model.UpdateRequirement
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
 import io.techery.janet.Janet
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.mockito.Mockito.*
 
-class VersionUpdateDelegateSpec : BaseSpec ({
+class VersionUpdateDelegateSpec : BaseSpec({
 
    describe("Version update delegate") {
 
-      setupForSuite()
-
-      beforeEach {
-         setupForTest();
+      beforeEachTest {
+         setupForTest()
       }
 
-      it ("should show optional update dialog") {
+      it("should show optional update dialog") {
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInFuture()))
          verify(versionUpdateUiDelegate, times(1)).showOptionalUpdateDialog(anyLong())
       }
 
-      it ("should show force update dialog") {
+      it("should show force update dialog") {
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, times(1)).showForceUpdateDialog()
       }
 
-      it ("should not show any dialogs when suggested version same as current") {
+      it("should not show any dialogs when suggested version same as current") {
          processRequirement(UpdateRequirement(CURRENT_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, never()).showForceUpdateDialog()
          verify(versionUpdateUiDelegate, never()).showOptionalUpdateDialog(anyLong())
       }
 
-      it ("should not show any dialogs when suggested version is older") {
+      it("should not show any dialogs when suggested version is older") {
          processRequirement(UpdateRequirement(OLDER_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, never()).showForceUpdateDialog()
          verify(versionUpdateUiDelegate, never()).showForceUpdateDialog()
       }
 
-      it ("should show dialog only once per session") {
+      it("should show dialog only once per session") {
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInThePast()))
          verify(versionUpdateUiDelegate, times(1)).showForceUpdateDialog()
          processRequirement(UpdateRequirement(NEWER_VERSION, getTimeInThePast()))
@@ -64,12 +65,12 @@ class VersionUpdateDelegateSpec : BaseSpec ({
       val mockDb: SnappyRepository = spy()
       val versionComparator = VersionComparator()
       lateinit var versionUpdateUiDelegate: VersionUpdateUiDelegate
-      val appInfoProvider = mock<AppInfoProvider>()
+      val appInfoProvider: AppInfoProvider = mock()
 
       lateinit var versionUpdateDelegate: VersionUpdateDelegate
 
-      fun setupForSuite() {
-         `when`(appInfoProvider.appVersion).thenReturn(CURRENT_VERSION)
+      init {
+         whenever(appInfoProvider.appVersion).thenReturn(CURRENT_VERSION)
       }
 
       fun setupForTest() {

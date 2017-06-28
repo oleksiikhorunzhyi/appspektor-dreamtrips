@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
+import com.techery.spares.session.NxtSessionHolder;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -17,6 +18,12 @@ public class HolderModule {
    @Singleton
    public SessionHolder<UserSession> provideSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
       return new SessionHolder<UserSession>(simpleKeyValueStorage);
+   }
+
+   @Provides
+   @Singleton
+   public NxtSessionHolder provideNxtSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
+      return new NxtSessionHolder(simpleKeyValueStorage);
    }
 
    @Provides

@@ -18,10 +18,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 
@@ -99,6 +100,18 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    private void connectFilterToggle() {
       filterDataInteractor.filterDataPipe()
+            .observe()
+            .map(filterDataActionActionState -> filterDataActionActionState)
+            .subscribe(filterDataActionActionState -> filterDataInteractor.filterDataPipe()
+                        .observeSuccessWithReplay()
+                        .take(1)
+                        .map(this::getMerchantType)
+                        .compose(bindViewIoToMainComposer())
+                        .subscribe(this::updateToolbarTitle, throwable -> {
+                        }),
+                  throwable -> {
+                  });
+      filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
             .take(1)
             .compose(bindViewIoToMainComposer())
@@ -106,6 +119,20 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             .map(FilterData::isOffersOnly)
             .doOnCompleted(getView()::connectToggleUpdate)
             .subscribe(getView()::toggleOffersOnly);
+   }
+
+   private String getMerchantType(FilterDataAction filterDataAction) {
+      return filterDataAction
+            .getResult()
+            .getMerchantType()
+            .get(filterDataAction.getResult()
+                  .getMerchantType()
+                  .size() - 1);
+   }
+
+   private void updateToolbarTitle(String type) {
+      getView().updateToolbarSearchCaption(getContext().getString(MerchantTypeUtil
+            .getStringResource(type)));
    }
 
    private void connectFilterDataChanges() {
@@ -286,7 +313,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if(throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) return;
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }

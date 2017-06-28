@@ -2,20 +2,22 @@ package com.worldventures.dreamtrips.social.version_check
 
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class VersionComparatorSpec : BaseSpec ({
 
    describe("Compare versions of app tests") {
-      context("check if comparing is calculated normally") {
+      it("check if comparing is calculated normally") {
          assertTrue { versionComparator.currentVersionIsOlderThanSuggested(stable1_7_3, suggestedVersion1_18_1) }
          assertFalse { versionComparator.currentVersionIsOlderThanSuggested(stable1_0_0, suggestedVersion1_0_0) }
          assertFalse { versionComparator.currentVersionIsOlderThanSuggested(stable1_7_3, suggestedVersion0_8_1) }
          assertTrue { versionComparator.currentVersionIsOlderThanSuggested(stable1_0_0, suggestedVersion1_18_0) }
       }
 
-      context("check that comparator performs normally even if build types of current versions are different ") {
+      it("check that comparator performs normally even if build types of current versions are different ") {
          assertFalse { versionComparator.currentVersionIsOlderThanSuggested(socialDebug1_18_0, suggestedVersion1_18_0) }
          assertFalse { versionComparator.currentVersionIsOlderThanSuggested(socialRelease1_18_1, suggestedVersion1_18_0) }
          assertTrue { versionComparator.currentVersionIsOlderThanSuggested(stablePreprod1_17_0, suggestedVersion1_18_0) }

@@ -1,33 +1,32 @@
 package com.worldventures.dreamtrips.social.bucket
 
 import com.google.gson.JsonObject
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSimple
-import com.worldventures.dreamtrips.api.bucketlist.model.BucketStatus
-import com.worldventures.dreamtrips.api.bucketlist.model.BucketType
-import com.worldventures.dreamtrips.api.bucketlist.model.ImmutableBucketItemSimple
+import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import io.techery.janet.ActionState
 import io.techery.janet.http.annotations.HttpAction
 import io.techery.janet.http.test.MockHttpActionService
-import org.junit.Assert
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.mockito.internal.verification.VerificationModeFactory
 import rx.observers.TestSubscriber
-import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class BucketListInteractorSpec : BucketInteractorBaseSpec({
    describe("bucket list actions") {
-      setup({ setOf(BucketListDiskStorage(mockMemoryStorage, mockDb)) }) { mockHttpService() }
 
       context("memory storage is not empty") {
          it("should fetch bucket list from memory") {
+            setup({ setOf(BucketListDiskStorage(mockMemoryStorage, mockDb)) }, mockDb, { mockHttpService() })
+
             doReturn(testListOfBucketsFromMemory)
                   .whenever(mockMemoryStorage).get(any())
             whenever(mockDb.readBucketList(any()))
@@ -117,7 +116,11 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
       val testListOfBucketsFromDisk: List<BucketItem> = mutableListOf(testBucketItem1)
       val testListOfBucketsFromNetwork: List<BucketItemSimple> = mutableListOf(testNetworkBucketItem1, testNetworkBucketItem2)
 
+      var mockMemoryStorage: BucketMemoryStorage = spy()
+      val mockDb: SnappyRepository = spy()
+
       init {
+
          whenever(testBucketItem1.uid).thenReturn("1")
          whenever(testBucketItem2.uid).thenReturn("2")
 
@@ -148,7 +151,7 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
 
       fun validateResponse(localBucketItems: List<BucketItem>,
                            apiBucketItems: List<com.worldventures.dreamtrips.api.bucketlist.model.BucketItem>): Boolean {
-         Assert.assertTrue(localBucketItems.size == apiBucketItems.size)
+         assertTrue(localBucketItems.size == apiBucketItems.size)
          for (i in 0..localBucketItems.size - 1) {
             val bucketItem = localBucketItems[i]
             val apiBucketItem = apiBucketItems[i]

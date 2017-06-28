@@ -33,10 +33,6 @@ public class TrackingHelper {
    public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
    public static final String ACTION_PHOTOS_MINE = "photos-mine";
    public static final String ACTION_ENROLL_MERCHANT = "membership-enroll-merchant";
-   public static final String ACTION_FAQ = "FAQ";
-   public static final String ACTION_PRIVACY = "terms-privacy";
-   public static final String ACTION_COOKIE = "terms-cookie";
-   public static final String ACTION_SERVICE = "terms-service";
 
    public static final String ACTION_PHOTOS_INSPR = "photos-inspireme";
    public static final String ACTION_INSPR_DETAILS = "inspireme_details";
@@ -65,7 +61,6 @@ public class TrackingHelper {
    public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "profile_photo_upload_finish";
 
    public static final String ACTION_MEMBERSHIP_VIDEOS = "membership:videos";
-   public static final String ACTION_MEMBERSHIP_PODCASTS = "membership:podcasts";
    public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play";
    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
    public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
@@ -229,22 +224,6 @@ public class TrackingHelper {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE);
    }
 
-   public static void faq(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_FAQ);
-   }
-
-   public static void privacy(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PRIVACY);
-   }
-
-   public static void cookie(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_COOKIE);
-   }
-
-   public static void service(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_SERVICE);
-   }
-
    public static void memberVideos(String memberId) {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
       trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
@@ -280,11 +259,6 @@ public class TrackingHelper {
 
    public static void likeSS(String memberId, int id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_LIKE, String.valueOf(id));
-   }
-
-   public static void podcasts(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
    }
 
    public static void inviteShareContacts(String memberId) {
@@ -343,9 +317,6 @@ public class TrackingHelper {
    public static final String ACTION_360_VIDEOS = "360_videos";
    public static final String ACTION_MEMBERSHIP = "membership";
    public static final String ACTION_MEMBERSHIP_ENROLL = "membership:enroll-member";
-   public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
-   public static final String ACTION_TERMS_SERVICE = "terms_service";
-   public static final String ACTION_TERMS_COOKIE = "terms-cookie";
    public static final String ACTION_REP_TOOLS_SUCCESS_STORY = "rep_tools:success_story";
    public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
    public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
@@ -721,17 +692,5 @@ public class TrackingHelper {
 
    public static void actionRepToolsInviteShare(String eventType) {
       sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_INVITE_SHARE, eventType);
-   }
-
-   // ---------------- FAQ
-
-   public static void actionFaq() {
-      sendSimpleAttributetoAdobeTracker(ACTION_FAQ, null);
-   }
-
-   // ---------------- Terms
-
-   public static void actionTermsTab(String tab, String eventType) {
-      sendSimpleAttributetoAdobeTracker(tab, eventType);
    }
 }

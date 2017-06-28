@@ -20,6 +20,8 @@ import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
@@ -27,7 +29,7 @@ class SendFeedbackInteractorSpec : BaseSpec({
    describe("Send feedback command") {
       setup(makeSendFeedbackHttpService())
 
-      context("Should finish successfully") {
+      it("Should finish successfully") {
          val testSub = TestSubscriber<ActionState<SendFeedbackCommand>>()
          val command = SendFeedbackCommand(1, "text", emptyList())
          feedbackInteractor.sendFeedbackPipe().createObservable(command).subscribe(testSub)
@@ -45,7 +47,7 @@ class SendFeedbackInteractorSpec : BaseSpec({
                   .addContract(BaseContract.of(ActiveSmartCardCommand::class.java).result(smartCard))
                   .build())
             .build()
-      val smartCardInteractor = SmartCardInteractor(smartcardJanet, SessionActionPipeCreator(smartcardJanet), { Schedulers.immediate() })
+      val smartCardInteractor = SmartCardInteractor(SessionActionPipeCreator(smartcardJanet))
 
       lateinit var feedbackInteractor: FeedbackInteractor
 

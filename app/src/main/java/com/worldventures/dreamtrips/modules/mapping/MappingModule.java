@@ -28,9 +28,10 @@ import com.worldventures.dreamtrips.modules.feed.converter.ReversePostDataConver
 import com.worldventures.dreamtrips.modules.feed.converter.SimplePostConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.ApiUserToUserConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfileToUserConverter;
-import com.worldventures.dreamtrips.modules.friends.model.converter.FriendСandidateToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.FriendCandidateToUserConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
+import com.worldventures.dreamtrips.modules.infopages.model.converter.DocumentTypeReverseConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.AccountToUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -478,8 +479,8 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter provideFriendСandidateToUserConverter() {
-      return new FriendСandidateToUserConverter();
+   Converter provideFriendCandidateToUserConverter() {
+      return new FriendCandidateToUserConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -564,5 +565,11 @@ public class MappingModule {
    @Singleton
    Converter provideDocumentsConverter() {
       return new DocumentsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideDocumentsTypeReverseConverter() {
+      return new DocumentTypeReverseConverter();
    }
 }

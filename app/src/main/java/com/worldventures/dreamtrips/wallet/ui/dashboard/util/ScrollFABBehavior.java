@@ -10,7 +10,7 @@ import android.view.View;
 import com.worldventures.dreamtrips.R;
 
 /**
- *  Behavior is used in {@link R.layout.screen_wallet_cardlist}
+ * Behavior is used in {@link R.layout.screen_wallet_cardlist}
  */
 @SuppressWarnings("unused")
 public class ScrollFABBehavior extends FloatingActionButton.Behavior {

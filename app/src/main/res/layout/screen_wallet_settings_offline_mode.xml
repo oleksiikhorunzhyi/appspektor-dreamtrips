@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_offline_mode"
+         />
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingBottom="@dimen/spacing_tiny"
+         android:paddingLeft="@dimen/spacing_normal"
+         android:paddingTop="@dimen/spacing_tiny"
+         >
+
+      <TextView
+            style="@style/SettingsText.Primary"
+            android:layout_centerVertical="true"
+            android:text="@string/wallet_offline_mode_enable_label"
+            />
+
+      <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher
+            android:id="@+id/offline_mode_switcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:padding="@dimen/spacing_normal"
+            tools:checked="true"
+            />
+
+   </RelativeLayout>
+
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@color/light_grey_background"
+         >
+
+      <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_gravity="top"
+            android:background="@drawable/square_shadow"
+            android:elevation="@dimen/spacing_tiniest"
+            android:translationZ="@dimen/spacing_tiniest"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginBottom="@dimen/spacing_large"
+               android:src="@drawable/offline_mode_wifi"
+               />
+
+         <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginBottom="@dimen/spacing_medium"
+               android:gravity="center"
+               android:paddingLeft="@dimen/wallet_settings_offline_mode_spacing_side"
+               android:paddingRight="@dimen/wallet_settings_offline_mode_spacing_side"
+               android:text="@string/wallet_offline_mode_explain_message"
+               android:textSize="@dimen/font_medium"
+               />
+
+         <TextView
+               android:id="@+id/offline_mode_please_note_label"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:gravity="center"
+               android:paddingLeft="@dimen/wallet_settings_offline_mode_spacing_side"
+               android:paddingRight="@dimen/wallet_settings_offline_mode_spacing_side"
+               android:textSize="@dimen/font_medium"
+               tools:text="@string/wallet_offline_mode_please_note_message"
+               />
+
+      </LinearLayout>
+
+   </FrameLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsScreen>

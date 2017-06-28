@@ -29,6 +29,9 @@
    <string name="smth_went_wrong">Valamilyen hiba történt =(</string>
    <string name="inspire_me">Ösztönzést kérek</string>
    <string name="three_sixty">360 élmény</string>
+   <string name="member_images_new_item">%1$s Új Tétel</string>
+   <string name="member_images_new_items">%1$s Új Tételek</string>
+   <string name="member_images_new_items_plus">%1$s+ Új Tételek</string>
    <string name="book_it">Foglalja le!</string>
    <string name="reload_trip_details">Út részletes adatainak újbóli betöltése</string>
    <string name="user_id_hint">WV-tag azonosítója</string>
@@ -581,6 +584,7 @@
    <string name="show_original">Eredeti mutatása</string>
    <string name="error_fail_to_translate_bucket_item">Bakancslista tétel fordítása sikertelen</string>
 
-   
+   <string name="n_friends_accepted">%1$d ismerős elfogadva.</string>
+   <string name="friends_will_appear_momentarily">Rövid ideig az Ismerőseim között fognak megjelenni.</string>
 
 </resources>

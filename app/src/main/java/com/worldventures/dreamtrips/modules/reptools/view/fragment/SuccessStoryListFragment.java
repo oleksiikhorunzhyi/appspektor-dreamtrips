@@ -15,6 +15,7 @@ import android.widget.PopupMenu;
 import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -27,6 +28,8 @@ import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
+
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -157,8 +160,25 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    }
 
    @Override
-   public FilterableArrayListAdapter getAdapter() {
-      return adapter;
+   public void setItems(List<SuccessStory> items) {
+      adapter.clear();
+      adapter.addItems(items);
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void updateItem(SuccessStory successStory) {
+      List<SuccessStory> items = adapter.getItems();
+      SuccessStory updatedStory = Queryable.from(items)
+            .filter(story -> story.getUrl().equals(successStory.getUrl())).firstOrDefault();
+      int storyIndex = items.indexOf(updatedStory);
+      items.set(storyIndex, successStory);
+      adapter.notifyItemChanged(storyIndex);
+   }
+
+   @Override
+   public int getItemsCount() {
+      return adapter.getCount();
    }
 
    @Override

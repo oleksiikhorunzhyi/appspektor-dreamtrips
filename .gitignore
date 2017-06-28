@@ -48,6 +48,7 @@ log*.txt
 *.ipr
 *~
 *.swp
+captures/*
 
 # OS specific
 .DS_Store

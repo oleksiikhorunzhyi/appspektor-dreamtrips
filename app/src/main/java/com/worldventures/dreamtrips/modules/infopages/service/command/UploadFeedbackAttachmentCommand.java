@@ -8,9 +8,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.uploadery.UploadFeedbackImageHttpAction;
 import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
@@ -20,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
@@ -30,10 +29,12 @@ import rx.Observable;
 public class UploadFeedbackAttachmentCommand extends CommandWithError implements InjectableAction {
 
    @Inject Janet janet;
-   @Inject @ForApplication Context context;
+   @Inject UploadingFileManager uploadingFileManager;
    @Inject StaticPageProvider staticPageProvider;
+   @Inject UriPathProvider uriPathProvider;
 
    private EntityStateHolder<FeedbackImageAttachment> entityStateHolder;
+   private ActionPipe<UploadFeedbackImageHttpAction> actionActionPipe;
 
    public UploadFeedbackAttachmentCommand(FeedbackImageAttachment imageAttachment) {
       this.entityStateHolder = EntityStateHolder.create(imageAttachment,
@@ -42,6 +43,7 @@ public class UploadFeedbackAttachmentCommand extends CommandWithError implements
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
+      actionActionPipe = janet.createPipe(UploadFeedbackImageHttpAction.class);
       String originalPath = entityStateHolder.entity().getOriginalFilePath();
       entityStateHolder.entity().setUrl(originalPath);
       callback.onProgress(0);
@@ -59,7 +61,7 @@ public class UploadFeedbackAttachmentCommand extends CommandWithError implements
 
    private Observable<UploaderyImageResponse> uploadFile(File file) {
       try {
-         return janet.createPipe(UploadFeedbackImageHttpAction.class)
+         return actionActionPipe
                .createObservableResult(new UploadFeedbackImageHttpAction(staticPageProvider.getUploaderyUrl(), file))
                .map(UploadFeedbackImageHttpAction::response);
       } catch (IOException ex) {
@@ -69,8 +71,8 @@ public class UploadFeedbackAttachmentCommand extends CommandWithError implements
 
    private Observable<File> copyFileIfNeeded(String filePath) {
       return Observable.fromCallable(() -> {
-         String path = UploadingFileManager.copyFileIfNeed(filePath, context);
-         return new File(FileUtils.getPath(context, Uri.parse(path)));
+         String path = uploadingFileManager.copyFileIfNeed(filePath);
+         return new File(uriPathProvider.getPath(Uri.parse(path)));
       });
    }
 
@@ -81,5 +83,10 @@ public class UploadFeedbackAttachmentCommand extends CommandWithError implements
    @Override
    public int getFallbackErrorMessage() {
       return R.string.feedback_could_not_load_attachment;
+   }
+
+   @Override
+   protected void cancel() {
+      actionActionPipe.cancelLatest();
    }
 }

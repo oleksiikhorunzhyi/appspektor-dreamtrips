@@ -34,4 +34,6 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
    void onLoadMerchantsType(List<String> merchantType);
 
    void loadAmenities(List<String> merchantType);
+
+   void setMerchantType(List<String> merchantType, String searchQuery);
 }

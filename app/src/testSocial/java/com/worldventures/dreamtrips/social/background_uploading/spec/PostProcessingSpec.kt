@@ -5,14 +5,20 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundO
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand
 import io.techery.janet.ActionState
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class PostProcessingSpec : BaseUploadingInteractorSpec({
    describe("Post processing command") {
       context("Result is success") {
+
          initJanet()
 
-         on("Creating post without attachment") {
+         context("Creating post without attachment") {
+
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
             val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 
@@ -33,13 +39,11 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
                AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 4)
             }
          }
-      }
 
-
-      context("Result is success") {
          initJanet()
 
-         on("Creating post with attachments") {
+         context("Creating post with attachments") {
+
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
             val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 
@@ -67,7 +71,7 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
       context("Result is not success, photo uploading fails") {
          initJanet(photoUploadingFailsContract())
 
-         on("Creating post with attachments") {
+         context("Creating post with attachments") {
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
 
             val postProcessingCommand = PostProcessingCommand(createPostCompoundOperationModel(createPostBodyWithScheduledAttachments()))
@@ -88,7 +92,7 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
       context("Result is not success, photo creation fails") {
          initJanet(photoCreatingFailsContract())
 
-         on("Creating post with attachments") {
+         context("Creating post with attachments") {
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
 
             backgroundUploadingInteractor.postProcessingPipe()
@@ -107,7 +111,7 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
       context("Result is not success, post creation fails") {
          initJanet(postCreatingFailsContract())
 
-         on("Creating post with attachments") {
+         context("Creating post with attachments") {
             val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
 
             backgroundUploadingInteractor.postProcessingPipe()

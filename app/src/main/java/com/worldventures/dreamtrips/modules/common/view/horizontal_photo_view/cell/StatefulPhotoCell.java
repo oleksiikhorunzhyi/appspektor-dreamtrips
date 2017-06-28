@@ -2,13 +2,17 @@ package com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.c
 
 import android.graphics.PointF;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
@@ -37,21 +41,26 @@ public class StatefulPhotoCell<Photo extends IFullScreenObject, Delegate extends
       Photo model = getModelObject().entity();
       EntityStateHolder.State state = getModelObject().state();
 
-      ivPhoto.setImageURI(Uri.parse(model.getImagePath()));
+      final Uri uri = model.getImagePath() == null ? null : Uri.parse(model.getImagePath());
+      final int size = ivPhoto.getResources().getDimensionPixelSize(R.dimen.size_normal);
+      final DraweeController controller = Fresco.newDraweeControllerBuilder()
+            .setOldController(ivPhoto.getController())
+            .setLowResImageRequest(GraphicUtils.createResizeImageRequest(uri, size, size))
+            .build();
+
+      ivPhoto.setController(controller);
       switch (state) {
          case PROGRESS: {
             fabProgress.setVisibility(View.VISIBLE);
             fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
             fabProgress.setIndeterminate(true);
-            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
+            int color = ContextCompat.getColor(fabProgress.getContext(), R.color.bucket_blue);
             circleView.setColor(color);
             fabProgress.showProgress(true);
          }
          break;
          case DONE: {
             ivPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0.0f, 0.0f));
-            ivPhoto.setImageURI(Uri.parse(model.getFSImage().getThumbUrl(itemView.getResources())));
-
             fabProgress.setVisibility(View.GONE);
             fabProgress.showProgress(false);
          }
@@ -59,7 +68,7 @@ public class StatefulPhotoCell<Photo extends IFullScreenObject, Delegate extends
          case FAIL: {
             fabProgress.showProgress(false);
             fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-            int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
+            int color = ContextCompat.getColor(fabProgress.getContext(), R.color.bucket_red);
             circleView.setColor(color);
          }
          break;

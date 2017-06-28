@@ -1,0 +1,60 @@
+ext {
+   envConfig = [:]
+   envConfig.appParams = [
+         api      : [
+               DreamTripsApi        : [String: '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"'],
+               UPLOADERY_API_URL    : [String: '"http://techery-dt-staging-uploadery.techery.io"'],
+               VERSION_CHECK_API_URL: [String: '"http://qafortius-ucservices.wvhservices.com/"'],
+               API_VERSION          : [String: '"2"'],
+               API_TIMEOUT_SEC      : [long: '60'],
+               NXT_API              : [String: '"https://demo.nxt-security.com/api/services/evtservice/v2"'],
+         ],
+         messenger: [
+               MESSENGER_API_URL : [String: '"dtmsgapp-dev.worldventures.biz"'],
+               MESSENGER_API_PORT: [int: '5222'],
+         ],
+         amazon   : [
+               AWS_ACCOUNT_ID     : [String: '"503446126408"'],
+               COGNITO_POOL_ID    : [String: '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'],
+               COGNITO_ROLE_AUTH  : [String: '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolAuth_DefaultRole"'],
+               COGNITO_ROLE_UNAUTH: [String: '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'],
+               BUCKET_NAME        : [String: '"dtappprd"'],
+               BUCKET_ROOT_PATH   : [String: '"dtuploads/"'],
+         ],
+         ads      : [
+               SURVEY_API_TOKEN: [String: '"7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"'],
+         ],
+         util     : [
+               NEWRELIC_API_KEY: [String: '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"'],
+
+         ],
+         //
+         package  : [
+               APPLICATION_PACKAGE_PROD: [String: "\"$appConfig.applicationId\""],
+               versionMajor            : [String: "\"$appConfig.versionMajor\""],
+               versionMinor            : [String: "\"$appConfig.versionMinor\""],
+               versionPatch            : [String: "\"$appConfig.versionPatch\""],
+               versionBuild            : [String: "\"$appConfig.versionBuild\""],
+         ],
+         feature  : [
+               SMART_CARD_SDK_CLIENT     : [String: '"nxtid"'],
+               CRASHLYTICS_DISABLED      : [boolean: 'true'],
+               ANALYTICS_LOG_ENABLED     : [boolean: 'false'],
+               NEWRELIC_ENABLED          : [boolean: 'false'],
+               QA_AUTOMATION_MODE_ENABLED: [boolean: "${project.hasProperty("qa_automation_mode") ? project.getProperties().get("qa_automation_mode") : false}"],
+         ],
+   ]
+   envConfig.resParams = [
+         facebook: [
+               facebook_app_id         : [string: '761062457321921'],
+               fb_login_protocol_scheme: [string: 'fb761062457321921'],
+         ]
+   ]
+   envConfig.manifestParams = [
+         services: [
+               mapsApiKey       : 'AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU',
+               fabricApiKey     : '21da61424102fe8cf2f861fa914442a098312625',
+               crashlyticsApiKey: '0335b8ecdc78ddc687fb4d90b2cdceab4329482f',
+         ],
+   ]
+}

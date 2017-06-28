@@ -15,6 +15,8 @@ import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert
 import rx.observers.TestSubscriber
 import java.util.*
@@ -62,10 +64,10 @@ class FlagsInteractorSpek : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
 
-         var mapperyBuilder = Mappery.Builder();
-         var converter = FlagConverter();
+         val mapperyBuilder = Mappery.Builder();
+         val converter = FlagConverter();
          mapperyBuilder.map(converter.sourceClass()).to(converter.targetClass(), converter)
-         var mappery = mapperyBuilder.build();
+         val mappery = mapperyBuilder.build();
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
 
          flagsInteractor = FlagsInteractor(SessionActionPipeCreator(janet))

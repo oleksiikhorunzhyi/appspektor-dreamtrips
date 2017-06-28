@@ -3,22 +3,24 @@ package com.worldventures.dreamtrips.modules.infopages.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
+
 public class DocumentBundle implements Parcelable {
 
-   private String url;
-   private String title;
+   private Document document;
+   private String analyticsAction;
 
-   public DocumentBundle(String url, String title) {
-      this.url = url;
-      this.title = title;
+   public DocumentBundle(Document document, String analyticsAction) {
+      this.document = document;
+      this.analyticsAction = analyticsAction;
    }
 
-   public String getUrl() {
-      return url;
+   public Document getDocument() {
+      return document;
    }
 
-   public String getTitle() {
-      return title;
+   public String getAnalyticsAction() {
+      return analyticsAction;
    }
 
    @Override
@@ -26,13 +28,13 @@ public class DocumentBundle implements Parcelable {
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeString(this.url);
-      dest.writeString(this.title);
+      dest.writeParcelable(this.document, flags);
+      dest.writeString(analyticsAction);
    }
 
    protected DocumentBundle(Parcel in) {
-      this.url = in.readString();
-      this.title = in.readString();
+      this.document = in.readParcelable(Document.class.getClassLoader());
+      this.analyticsAction = in.readString();
    }
 
    public static final Creator<DocumentBundle> CREATOR = new Creator<DocumentBundle>() {

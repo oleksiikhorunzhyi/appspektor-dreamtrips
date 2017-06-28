@@ -13,9 +13,9 @@ import rx.schedulers.Schedulers;
 public class FeedbackInteractor {
 
    private final ActionPipe<GetFeedbackCommand> getFeedbackPipe;
-   private ActionPipe<SendFeedbackCommand> sendFeedbackPipe;
-   private ActionPipe<UploadFeedbackAttachmentCommand> uploadAttachmentPipe;
-   private ActionPipe<AttachmentsRemovedCommand> attachmentsRemovedPipe;
+   private final ActionPipe<SendFeedbackCommand> sendFeedbackPipe;
+   private final ActionPipe<UploadFeedbackAttachmentCommand> uploadAttachmentPipe;
+   private final ActionPipe<AttachmentsRemovedCommand> attachmentsRemovedPipe;
 
    public FeedbackInteractor(SessionActionPipeCreator actionPipeCreator) {
       sendFeedbackPipe = actionPipeCreator.createPipe(SendFeedbackCommand.class, Schedulers.io());

@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand;
@@ -32,12 +30,13 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      storyLikedEventDelegate.getObservable().compose(bindViewToMainComposer()).subscribe(this::onSuccessStoryLiked);
+      storyLikedEventDelegate.getObservable().compose(bindViewToMainComposer())
+            .subscribe(view::updateItem);
    }
 
    @Override
    public void onResume() {
-      if (view.getAdapter().getCount() == 0) reload();
+      if (view.getItemsCount() == 0) reload();
    }
 
    public void reload() {
@@ -48,10 +47,7 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
             .subscribe(new ActionStateSubscriber<GetSuccessStoriesCommand>()
                .onSuccess(command -> {
                   view.finishLoading();
-                  //
-                  view.getAdapter().clear();
-                  view.getAdapter().addItems(performFiltering(command.getResult()));
-                  view.getAdapter().notifyDataSetChanged();
+                  view.setItems(performFiltering(command.getResult()));
                })
                .onFail((command, throwable) -> {
                   view.finishLoading();
@@ -68,14 +64,6 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
    public void onSuccessStoryCellClick(SuccessStory successStory, int position) {
       handleListItemClick(successStory, position);
       view.onStoryClicked();
-   }
-
-   private void onSuccessStoryLiked(SuccessStory successStory) {
-      List<SuccessStory> stories = view.getAdapter().getItems();
-      Queryable.from(stories).filter(story -> story.getUrl().equals(successStory.getUrl())).forEachR(story -> {
-         story.setLiked(successStory.isLiked());
-         view.getAdapter().notifyItemChanged(stories.indexOf(story));
-      });
    }
 
    public void openFirst(SuccessStory successStory) {
@@ -127,7 +115,11 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
 
    public interface View extends Presenter.View {
 
-      FilterableArrayListAdapter getAdapter();
+      void setItems(List<SuccessStory> items);
+
+      void updateItem(SuccessStory item);
+
+      int getItemsCount();
 
       void finishLoading();
 

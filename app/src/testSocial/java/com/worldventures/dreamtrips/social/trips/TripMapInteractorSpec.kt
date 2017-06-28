@@ -20,9 +20,11 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.MapperyContext
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import kotlin.test.assertTrue
-
 
 class TripMapInteractorSpec : BaseSpec({
    describe("Test getting locations objects") {

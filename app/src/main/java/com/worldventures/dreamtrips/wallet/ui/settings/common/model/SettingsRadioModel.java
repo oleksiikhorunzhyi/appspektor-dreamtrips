@@ -1,19 +1,17 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.common.model;
 
-import android.support.annotation.StringRes;
-
 public class SettingsRadioModel {
 
-   private final @StringRes int stringId;
+   private final String text;
    private final long value;
 
-   public SettingsRadioModel(@StringRes int stringId, long value) {
-      this.stringId = stringId;
+   public SettingsRadioModel(String text, long value) {
+      this.text = text;
       this.value = value;
    }
 
-   public int getStringId() {
-      return stringId;
+   public String getText() {
+      return text;
    }
 
    public long getValue() {

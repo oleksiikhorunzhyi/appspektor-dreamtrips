@@ -11,12 +11,17 @@ import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class RequestsInteractorSpec : BaseSpec({
-   describe("Getting requests list") {
+   // TODO this spec is just a stub, temporarily ignore it
+   // until actual implementation is written
+   xdescribe("Getting requests list") {
       context("Refresh requests") {
-         on("Cache is empty") {
+         it("Cache is empty") {
             val testSubscriber = TestSubscriber<ActionState<GetRequestsCommand>>()
 
             friendsInteractor.requestsPipe

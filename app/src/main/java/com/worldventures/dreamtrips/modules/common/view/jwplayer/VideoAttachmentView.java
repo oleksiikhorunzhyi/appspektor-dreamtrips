@@ -139,6 +139,8 @@ public class VideoAttachmentView extends FrameLayout {
    }
 
    private void setupVideoPlayer() {
+      clearResources();
+
       playerView = new JWPlayerView(getContext(), new PlayerConfig.Builder()
             .mute(true)
             .playlist(preparePlaylist())

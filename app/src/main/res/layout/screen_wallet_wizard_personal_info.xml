@@ -59,13 +59,14 @@
                   style="@style/WalletTheme.HeaderTextStyle"
                   android:layout_width="0dp"
                   android:layout_height="0dp"
+                  android:layout_marginTop="24dp"
                   android:text="@string/wallet_edit_profile_subtitle"
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintHeight_default="wrap"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toTopOf="parent"
                   app:layout_constraintWidth_default="wrap"
-                  tools:layout_editor_absoluteX="0dp"
+                  tools:layout_editor_absoluteX="24dp"
                   />
 
             <com.facebook.drawee.view.SimpleDraweeView
@@ -80,7 +81,7 @@
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/text_description"
-                  tools:layout_editor_absoluteX="100dp"
+                  tools:layout_editor_absoluteX="124dp"
                   />
 
             <TextView
@@ -97,7 +98,7 @@
                   app:layout_constraintStart_toStartOf="@+id/photo_preview"
                   app:layout_constraintTop_toTopOf="@+id/photo_preview"
                   app:layout_constraintWidth_default="wrap"
-                  tools:layout_editor_absoluteX="124dp"
+                  tools:layout_editor_absoluteX="148dp"
                   />
 
             <View
@@ -108,7 +109,7 @@
                   app:layout_constraintBottom_toBottomOf="@+id/photo_preview"
                   app:layout_constraintEnd_toEndOf="@+id/photo_preview"
                   app:layout_constraintStart_toStartOf="@+id/photo_preview"
-                  tools:layout_editor_absoluteX="100dp"
+                  tools:layout_editor_absoluteX="124dp"
                   />
 
             <ImageView
@@ -123,7 +124,7 @@
                   app:layout_constraintTop_toTopOf="@+id/view_edit_btn_overlay"
                   app:layout_constraintWidth_default="wrap"
                   tools:ignore="ContentDescription"
-                  tools:layout_editor_absoluteX="104dp"
+                  tools:layout_editor_absoluteX="124dp"
                   />
 
             <TextView
@@ -138,14 +139,14 @@
                   app:layout_constraintStart_toEndOf="@+id/img_edit_photo"
                   app:layout_constraintTop_toTopOf="@+id/view_edit_btn_overlay"
                   app:layout_constraintWidth_default="wrap"
-                  tools:layout_editor_absoluteX="136dp"
+                  tools:layout_editor_absoluteX="148dp"
                   />
 
             <TextView
                   android:id="@+id/text_description2"
                   android:layout_width="0dp"
                   android:layout_height="0dp"
-                  android:layout_marginTop="20dp"
+                  android:layout_marginTop="13dp"
                   android:gravity="center_horizontal"
                   android:text="@string/wallet_card_settings_profile_warning"
                   android:textColor="@color/grey"
@@ -155,7 +156,7 @@
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/photo_preview"
                   app:layout_constraintWidth_default="wrap"
-                  tools:layout_editor_absoluteX="0dp"
+                  tools:layout_editor_absoluteX="24dp"
                   />
 
             <EditText
@@ -163,11 +164,11 @@
                   style="@style/WalletTheme.ProfileField"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="20dp"
+                  android:layout_marginTop="33dp"
                   android:drawableEnd="@drawable/ic_wallet_pencil"
                   android:hint="@string/wallet_card_settings_profile_firstname_hint"
                   android:text="@={profile.firstName}"
-                  app:layout_constraintBottom_toTopOf="@+id/middle_name"
+                  app:layout_constraintLeft_toLeftOf="parent"
                   app:layout_constraintRight_toRightOf="parent"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/text_description2"
@@ -181,10 +182,10 @@
                   style="@style/WalletTheme.ProfileField"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/spacing_tiniest"
                   android:drawableEnd="@drawable/ic_wallet_pencil"
                   android:hint="@string/wallet_card_settings_profile_middle_hint"
                   android:text="@={profile.middleName}"
-                  app:layout_constraintBottom_toTopOf="@+id/last_name"
                   app:layout_constraintRight_toRightOf="parent"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/first_name"
@@ -197,10 +198,12 @@
                   style="@style/WalletTheme.ProfileField"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/spacing_tiniest"
                   android:drawableEnd="@drawable/ic_wallet_pencil"
                   android:hint="@string/wallet_card_settings_profile_lastname_hint"
                   android:text="@={profile.lastName}"
-                  app:layout_constraintBottom_toTopOf="@+id/phone_number"
+                  app:layout_constraintHorizontal_bias="0.2"
+                  app:layout_constraintLeft_toLeftOf="parent"
                   app:layout_constraintRight_toRightOf="parent"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/middle_name"
@@ -213,7 +216,7 @@
                   layout="@layout/wallet_enter_user_phone"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
-                  app:layout_constraintBottom_toTopOf="@+id/next_button"
+                  android:layout_marginTop="@dimen/spacing_tiniest"
                   app:layout_constraintRight_toRightOf="parent"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/last_name"
@@ -228,11 +231,11 @@
                   android:layout_marginTop="15dp"
                   android:onClick="@{onNextClick}"
                   android:text="@string/wallet_next_label"
-                  app:layout_constraintBottom_toBottomOf="parent"
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintHeight_default="wrap"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintTop_toBottomOf="@+id/phone_number"
+                  tools:layout_editor_absoluteX="24dp"
                   />
 
          </android.support.constraint.ConstraintLayout>

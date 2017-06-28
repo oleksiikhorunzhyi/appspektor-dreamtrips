@@ -57,14 +57,14 @@ public class WalletFilesUtils {
    }
 
    public static Uri convertPickedPhotoToUri(BasePickerViewModel photoModel) {
-      Uri uri = Uri.parse(photoModel.getImageUri());
+      Uri uri = photoModel.getUri();
       if (uri.getScheme() == null) {
          //check if is local file path
-         final File localFile = new File(photoModel.getImageUri());
+         final File localFile = new File(photoModel.getUri().getPath());
          if (localFile.exists()) {
             uri = Uri.fromFile(localFile);
          } else {
-            Timber.e("Cannot parse path into Uri : %s", photoModel.getImageUri());
+            Timber.e("Cannot parse path into Uri : %s", photoModel.getUri().getPath());
          }
       }
       return uri;

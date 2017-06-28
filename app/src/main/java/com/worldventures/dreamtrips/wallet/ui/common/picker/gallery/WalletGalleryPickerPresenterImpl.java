@@ -7,9 +7,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.modules.common.command.GetPhotosFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BaseWalletPickerPresenterImpl;
@@ -49,7 +49,7 @@ public class WalletGalleryPickerPresenterImpl extends BaseWalletPickerPresenterI
       loadItems();
    }
 
-   private List<WalletGalleryPickerModel> populateItems(List<PhotoGalleryModel> commandResult) {
+   private List<WalletGalleryPickerModel> populateItems(List<PhotoPickerModel> commandResult) {
       final List<WalletGalleryPickerModel> appendedList = new ArrayList<>();
       appendedList.addAll(getView().provideStaticItems());
       final List<WalletGalleryPhotoModel> galleryPhotoModels = Queryable
@@ -119,6 +119,6 @@ public class WalletGalleryPickerPresenterImpl extends BaseWalletPickerPresenterI
 
    @Override
    public void loadItems() {
-      mediaInteractor.getPhotosFromGalleryPipe().send(new GetPhotosFromGalleryCommand(getContext()));
+      mediaInteractor.getPhotosFromGalleryPipe().send(new GetPhotosFromGalleryCommand());
    }
 }

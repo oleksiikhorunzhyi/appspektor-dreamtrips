@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.albums;
 
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,6 +28,6 @@ public class WalletFacebookAlbumHolder extends BaseHolder<WalletFacebookAlbumMod
       this.model = data;
       tvTitle.setText(model.getName());
       tvCount.setText(String.valueOf(model.getCount()));
-      ivBg.setImageURI(Uri.parse(model.getImageUri()));
+      ivBg.setImageURI(model.getUri());
    }
 }

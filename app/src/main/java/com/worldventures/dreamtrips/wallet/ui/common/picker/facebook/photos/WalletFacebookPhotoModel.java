@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos;
 
+import android.net.Uri;
+
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHolderFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.WalletFacebookPickerModel;
@@ -36,6 +38,11 @@ public class WalletFacebookPhotoModel extends WalletFacebookPickerModel {
    }
 
    @Override
+   public Type getType() {
+      return Type.PHOTO;
+   }
+
+   @Override
    public boolean isChecked() {
       return checked;
    }
@@ -46,8 +53,8 @@ public class WalletFacebookPhotoModel extends WalletFacebookPickerModel {
    }
 
    @Override
-   public String getImageUri() {
-      return imageUri;
+   public Uri getUri() {
+      return Uri.parse(imageUri);
    }
 
    @Override
@@ -58,6 +65,11 @@ public class WalletFacebookPhotoModel extends WalletFacebookPickerModel {
    @Override
    public long getPickedTime() {
       return pickedTime;
+   }
+
+   @Override
+   public long getDateTaken() {
+      throw new UnsupportedOperationException("WalletFacebookPhotoModel doesn't support taken date");
    }
 
    @Override

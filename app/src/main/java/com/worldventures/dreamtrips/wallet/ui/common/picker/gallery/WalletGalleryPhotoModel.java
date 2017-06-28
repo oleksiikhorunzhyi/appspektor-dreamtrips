@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.gallery;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHolderFactory;
 
@@ -36,6 +38,11 @@ public class WalletGalleryPhotoModel extends WalletGalleryPickerModel {
    }
 
    @Override
+   public Type getType() {
+      return Type.PHOTO;
+   }
+
+   @Override
    public boolean isChecked() {
       return checked;
    }
@@ -46,8 +53,8 @@ public class WalletGalleryPhotoModel extends WalletGalleryPickerModel {
    }
 
    @Override
-   public String getImageUri() {
-      return imageUri;
+   public Uri getUri() {
+      return Uri.parse(imageUri);
    }
 
    @Override

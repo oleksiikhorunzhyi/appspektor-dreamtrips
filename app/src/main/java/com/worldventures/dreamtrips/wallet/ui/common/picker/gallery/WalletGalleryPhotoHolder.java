@@ -27,7 +27,7 @@ public class WalletGalleryPhotoHolder extends BaseHolder<WalletGalleryPhotoModel
    @Override
    public void setData(WalletGalleryPhotoModel data) {
       this.model = data;
-      setImage(Uri.parse(model.getImageUri()), photo);
+      setImage(model.getUri(), photo);
       updatePickState();
    }
 

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.base;
 
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 
 
-public abstract class BasePickerViewModel implements BasePhotoPickerModel {
+public abstract class BasePickerViewModel implements MediaPickerModel {
 
    public  abstract int type(WalletPickerHolderFactory typeFactory);
 

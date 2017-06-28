@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletPickLimitStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletStaticItemsStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BaseWalletPickerLayout;
@@ -59,9 +59,9 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
 
    private void handleAlternateSourcesClick(int position) {
       final WalletIrregularPhotoModel item = (WalletIrregularPhotoModel) getAdapter().getItem(position);
-      if (item.getType() == WalletIrregularPhotoModel.CAMERA) {
+      if (item.getAttachType() == WalletIrregularPhotoModel.CAMERA) {
          presenter.tryOpenCamera();
-      } else if (item.getType() == WalletIrregularPhotoModel.FACEBOOK) {
+      } else if (item.getAttachType() == WalletIrregularPhotoModel.FACEBOOK) {
          if (getOnNextClickListener() != null) {
             getOnNextClickListener().onNextClick(null);
          }

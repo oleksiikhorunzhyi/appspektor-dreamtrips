@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.albums;
 
+import android.net.Uri;
+
 import com.facebook.AccessToken;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookCoverPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHolderFactory;
@@ -40,6 +42,11 @@ public class WalletFacebookAlbumModel extends WalletFacebookPickerModel {
    }
 
    @Override
+   public Type getType() {
+      throw new UnsupportedOperationException("WalletFacebookAlbumModel doesn't support type");
+   }
+
+   @Override
    public boolean isChecked() {
       throw new UnsupportedOperationException("WalletFacebookAlbumModel doesn't support check");
    }
@@ -50,12 +57,12 @@ public class WalletFacebookAlbumModel extends WalletFacebookPickerModel {
    }
 
    @Override
-   public String getImageUri() {
-      return GRAPH_URL +
+   public Uri getUri() {
+      return Uri.parse(GRAPH_URL +
             (coverPhoto == null ? "" : coverPhoto.getId()) +
             COVER_URL +
             AccessToken.getCurrentAccessToken().getToken() +
-            PARAMS;
+            PARAMS);
    }
 
    @Override
@@ -66,6 +73,11 @@ public class WalletFacebookAlbumModel extends WalletFacebookPickerModel {
    @Override
    public long getPickedTime() {
       throw new UnsupportedOperationException("WalletFacebookAlbumModel doesn't support pick");
+   }
+
+   @Override
+   public long getDateTaken() {
+      throw new UnsupportedOperationException("WalletFacebookAlbumModel doesn't support taken date");
    }
 
    @Override

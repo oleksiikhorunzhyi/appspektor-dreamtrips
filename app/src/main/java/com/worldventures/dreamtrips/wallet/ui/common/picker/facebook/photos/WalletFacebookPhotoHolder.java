@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos;
 
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -26,7 +25,7 @@ public class WalletFacebookPhotoHolder extends BaseHolder<WalletFacebookPhotoMod
    @Override
    public void setData(WalletFacebookPhotoModel data) {
       this.model = data;
-      ivBg.setImageURI(Uri.parse(model.getImageUri()));
+      ivBg.setImageURI(model.getUri());
       updatePickState();
    }
 

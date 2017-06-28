@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.tripsimages.vision;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PointF;
@@ -10,7 +10,6 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.util.SparseArray;
 

@@ -23,6 +23,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
    private CharSequence cardLastDigitsLong;
    private CharSequence goodThrough;
    private @DrawableRes int cardBackGround;
+   private boolean sampleCard = false;
 
    public CommonCardViewModel(String recordId, CharSequence cardName, StackType cardType, String cardTypeName,
          boolean defaultCard, CharSequence cardLastDigitsShort, String cardHolderName,
@@ -107,6 +108,10 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return cardBackGround;
    }
 
+   public boolean isSampleCard() {
+      return sampleCard;
+   }
+
    @BindingAdapter({"bind:cardBackground"})
    public static void getCardBackground(View view, @DrawableRes int backGround) {
       view.setBackgroundResource(backGround);
@@ -120,7 +125,6 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
    public enum StackType {
       PAYMENT, LOYALTY
    }
-
 
    @Override
    public int describeContents() {

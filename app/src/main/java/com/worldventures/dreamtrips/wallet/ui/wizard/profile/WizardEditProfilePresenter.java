@@ -12,10 +12,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -30,13 +26,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Pr
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
-import com.worldventures.dreamtrips.wallet.util.FormatException;
-import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
-import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import javax.inject.Inject;
 

@@ -12,10 +12,12 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
@@ -26,6 +28,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
@@ -33,9 +37,11 @@ import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -82,7 +88,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    private void observeChangeFields(Screen view) {
       view.setDoneButtonEnabled(isDataChanged());
-      view.observeChangesProfileFields().subscribe(changed -> view.setDoneButtonEnabled(isDataChanged()));
+      view.observeChangesProfileFields()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(changed -> view.setDoneButtonEnabled(isDataChanged()));
    }
 
    private void fetchProfile() {
@@ -178,20 +186,41 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
    }
 
-   @Override
-   public void detachView(boolean retainInstance) {
-      backStackDelegate.removeListener(systemBackPressedListener);
-      super.detachView(retainInstance);
-   }
-
    @SuppressWarnings("ConstantConditions")
-   public void dontAdd() {
+   void doNotAdd() {
       getView().dropPhoto();
    }
 
    @SuppressWarnings("ConstantConditions")
    public void handlePickedPhoto(BasePickerViewModel model) {
       getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
+   }
+
+   @Override
+   public void detachView(boolean retainInstance) {
+      backStackDelegate.removeListener(systemBackPressedListener);
+      super.detachView(retainInstance);
+   }
+
+   void openDisplaySettings() {
+      fetchConnectionStatus(connectionStatus -> {
+         if (connectionStatus.isConnected()) {
+            navigator.go(new DisplayOptionsSettingsPath(
+                  delegate.createSmartCardUser(getView().getUser()),
+                  DisplayOptionsSource.PROFILE));
+         } else {
+            getView().showSCNonConnectionDialog();
+         }
+      });
+   }
+
+   private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
+      smartCardInteractor.deviceStatePipe()
+            .createObservable(DeviceStateCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
+                  .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+            );
    }
 
    public interface Screen extends WalletScreen, WalletProfilePhotoView {
@@ -209,5 +238,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       void setDoneButtonEnabled(boolean enable);
 
       PublishSubject<ProfileViewModel> observeChangesProfileFields();
+
+      void showSCNonConnectionDialog();
    }
 }

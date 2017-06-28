@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -102,6 +103,7 @@ public class SmartCardSyncManager {
       interactor.setSmartCardTimePipe().send(new SetSmartCardTimeCommand());
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
       interactor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
+      interactor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();

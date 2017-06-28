@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
+import android.support.annotation.Nullable;
+
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -10,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserPhotoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -48,24 +51,10 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
       validateUserData()
             .flatMap(aVoid -> createUserForSmartCard())
             .flatMap(this::uploadOnSmartCard)
-            .flatMap(user -> smartCardInteractor.smartCardUserPipe()
-                  .createObservableResult(SmartCardUserCommand.save(userData)))
+            .flatMap(aVoid -> restoreSmartCardDisplayType())
+            .flatMap(aVoid -> cacheSmartCardUser())
             .map(Command::getResult)
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private Observable<Void> uploadOnSmartCard(User user) {
-      return janetWallet
-            .createPipe(AssignUserAction.class).createObservableResult(new AssignUserAction(user))
-            .flatMap(action -> uploadUserPhoto()).map(action -> null);
-   }
-
-   private Observable<Void> uploadUserPhoto() {
-      final SmartCardUserPhoto photo = userData.userPhoto();
-      if (photo == null) return Observable.just(null);
-      return janetWallet.createPipe(UpdateSmartCardUserPhotoCommand.class)
-            .createObservableResult(new UpdateSmartCardUserPhotoCommand(photo.uri()))
-            .map(a -> null);
    }
 
    private Observable<Void> validateUserData() {
@@ -88,15 +77,40 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
                   .firstName(userData.firstName())
                   .lastName(userData.lastName())
                   .middleName(userData.middleName())
-                  .phoneNum(fetchPhone())
+                  .phoneNum(fetchPhone(userData))
                   .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
                   .memberId(userSessionHolder.get().get().getUser().getId())
                   .barcodeId(Long.valueOf(command.getResult().smartCardId()))
                   .build());
    }
 
-   private String fetchPhone() {
-      final SmartCardUserPhone photo = userData.phoneNumber();
-      return photo != null ? photo.fullPhoneNumber() : null;
+   @Nullable
+   private String fetchPhone(SmartCardUser userData) {
+      final SmartCardUserPhone phone = userData.phoneNumber();
+      return phone != null ? phone.fullPhoneNumber() : null;
+   }
+
+   private Observable<Void> uploadOnSmartCard(User user) {
+      return janetWallet.createPipe(AssignUserAction.class)
+            .createObservableResult(new AssignUserAction(user))
+            .flatMap(action -> uploadUserPhoto()).map(action -> null);
+   }
+
+   private Observable<Void> uploadUserPhoto() {
+      final SmartCardUserPhoto photo = userData.userPhoto();
+      if (photo == null) return Observable.just(null);
+      return janetWallet.createPipe(UpdateSmartCardUserPhotoCommand.class)
+            .createObservableResult(new UpdateSmartCardUserPhotoCommand(photo.uri()))
+            .map(a -> null);
+   }
+
+   private Observable<RestoreDefaultDisplayTypeCommand> restoreSmartCardDisplayType() {
+      return smartCardInteractor.restoreDefaultDisplayTypePipe()
+            .createObservableResult(new RestoreDefaultDisplayTypeCommand(userData));
+   }
+
+   private Observable<SmartCardUserCommand> cacheSmartCardUser() {
+      return smartCardInteractor.smartCardUserPipe()
+            .createObservableResult(SmartCardUserCommand.save(userData));
    }
 }

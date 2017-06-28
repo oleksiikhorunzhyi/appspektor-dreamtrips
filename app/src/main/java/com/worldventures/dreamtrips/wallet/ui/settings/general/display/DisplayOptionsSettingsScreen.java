@@ -14,7 +14,8 @@ import android.view.WindowManager;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveHomeDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.DialogErrorView;
@@ -33,7 +34,6 @@ import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import io.techery.janet.smartcard.action.settings.GetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import me.relex.circleindicator.CircleIndicator;
@@ -56,7 +56,8 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
    @NonNull
    @Override
    public DisplayOptionsSettingsPresenter createPresenter() {
-      return new DisplayOptionsSettingsPresenter(getContext(), getInjector());
+      return new DisplayOptionsSettingsPresenter(getContext(), getInjector(), getPath().smartCardUser(),
+            getPath().displayOptionsSource());
    }
 
    @Override
@@ -119,9 +120,9 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
    }
 
    @Override
-   public OperationView<GetHomeDisplayTypeAction> provideGetDisplayTypeOperationView() {
+   public OperationView<GetDisplayTypeCommand> provideGetDisplayTypeOperationView() {
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_general_display_loading, false),
-            ErrorViewFactory.<GetHomeDisplayTypeAction>builder()
+            ErrorViewFactory.<GetDisplayTypeCommand>builder()
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(),
                         retryAction -> getPresenter().fetchDisplayType(), cancelAction -> getPresenter().goBack()))
                   .addProvider(new RetryDialogErrorViewProvider<>(getContext(), NotConnectedException.class, R.string.wallet_smart_card_is_disconnected,
@@ -133,16 +134,16 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
    }
 
    @Override
-   public OperationView<SaveHomeDisplayTypeCommand> provideSaveDisplayTypeOperationView() {
+   public OperationView<SaveDisplayTypeCommand> provideSaveDisplayTypeOperationView() {
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_general_display_updating, false),
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_settings_general_display_changes_saved),
-            ErrorViewFactory.<SaveHomeDisplayTypeCommand>builder()
+            ErrorViewFactory.<SaveDisplayTypeCommand>builder()
                   .addProvider(getUserRequiredInfoMissingDialogProvider(
-                        SaveHomeDisplayTypeCommand.MissingUserPhoneException.class,
+                        SaveDisplayTypeCommand.MissingUserPhoneException.class,
                         R.string.wallet_settings_general_display_phone_required_title,
                         R.string.wallet_settings_general_display_phone_required_message))
                   .addProvider(getUserRequiredInfoMissingDialogProvider(
-                        SaveHomeDisplayTypeCommand.MissingUserPhotoException.class,
+                        SaveDisplayTypeCommand.MissingUserPhotoException.class,
                         R.string.wallet_settings_general_display_photo_required_title,
                         R.string.wallet_settings_general_display_photo_required_message))
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
@@ -153,9 +154,9 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
    }
 
    @NonNull
-   private ErrorViewProvider<SaveHomeDisplayTypeCommand>
+   private ErrorViewProvider<SaveDisplayTypeCommand>
    getUserRequiredInfoMissingDialogProvider(Class<? extends Throwable> error, @StringRes int title, @StringRes int message) {
-      return new ErrorViewProvider<SaveHomeDisplayTypeCommand>() {
+      return new ErrorViewProvider<SaveDisplayTypeCommand>() {
          @Override
          public Class<? extends Throwable> forThrowable() {
             return error;
@@ -163,10 +164,10 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
 
          @Nullable
          @Override
-         public ErrorView<SaveHomeDisplayTypeCommand> create(SaveHomeDisplayTypeCommand command, Throwable throwable) {
-            return new DialogErrorView<SaveHomeDisplayTypeCommand>(getContext()) {
+         public ErrorView<SaveDisplayTypeCommand> create(SaveDisplayTypeCommand command, Throwable throwable) {
+            return new DialogErrorView<SaveDisplayTypeCommand>(getContext()) {
                @Override
-               protected MaterialDialog createDialog(SaveHomeDisplayTypeCommand command, Throwable throwable, Context context) {
+               protected MaterialDialog createDialog(SaveDisplayTypeCommand command, Throwable throwable, Context context) {
                   return new MaterialDialog.Builder(getContext())
                         .title(title)
                         .content(message)

@@ -31,6 +31,7 @@
    </data>
 
    <com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen
+         android:id="@+id/root_wizard_edit_profile_screen"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:theme="@style/WalletTheme"

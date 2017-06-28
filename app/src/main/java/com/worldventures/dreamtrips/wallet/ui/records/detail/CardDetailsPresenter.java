@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -131,7 +132,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(recordInteractor.deleteRecordPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationDeleteRecord())
-                  .onSuccess(deleteRecordAction -> navigator.goBack())
+                  .onSuccess(deleteRecordAction -> navigator.single(new CardListPath()))
                   .create());
    }
 

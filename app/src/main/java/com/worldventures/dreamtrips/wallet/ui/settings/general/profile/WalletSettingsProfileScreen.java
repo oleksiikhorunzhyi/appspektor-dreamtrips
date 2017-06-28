@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -51,11 +52,13 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
     * Add ability to change 1 item independently
     * notify other streams that it's ok
     */
-   public static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
+   private static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
+
    private WalletCropImageService cropImageService;
    private ScreenWalletSettingsProfileBinding binding;
    private ProfileViewModel profileViewModel = new ProfileViewModel();
    private WalletPhotoProposalDialog photoActionDialog;
+   private Dialog scNonConnectionDialog;
    private WalletPickerDialog walletPickerDialog;
 
    private PublishSubject<ProfileViewModel> observeProfileViewModel = PublishSubject.create();
@@ -73,6 +76,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      if (isInEditMode()) return;
       binding = DataBindingUtil.bind(this);
       binding.setOnAvatarClick(v -> showDialog());
       binding.setProfile(profileViewModel);
@@ -84,6 +88,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       });
       binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
+      binding.setOnDisplaySettingsClick(v -> presenter.openDisplaySettings());
       actionDoneMenuItem = binding.toolbar.getMenu().findItem(R.id.done);
       binding.toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
@@ -101,8 +106,10 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       //noinspection all
       cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
       ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
-      binding.photoPreview.getHierarchy().setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
-      binding.photoPreview.getHierarchy().setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy()
+            .setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy()
+            .setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
    }
 
    @NonNull
@@ -130,11 +137,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       }
    }
 
-   void onDontAddClick() {
-      hideDialog();
-      presenter.dontAdd();
-   }
-
    @Override
    public void dropPhoto() {
       profileViewModel.setChosenPhotoUri(null);
@@ -145,9 +147,14 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       SoftInputUtil.hideSoftInputMethod(this);
       photoActionDialog = new WalletPhotoProposalDialog(getContext());
       photoActionDialog.setOnChoosePhotoAction(() -> getPresenter().choosePhoto());
-      photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
+      photoActionDialog.setOnDoNotAddPhotoAction(this::onDoNotAddClick);
       photoActionDialog.setOnCancelAction(this::hideDialog);
       photoActionDialog.show();
+   }
+
+   void onDoNotAddClick() {
+      hideDialog();
+      presenter.doNotAdd();
    }
 
    @Override
@@ -171,6 +178,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
+      if (isInEditMode()) return;
       observeNewAvatar();
    }
 
@@ -237,6 +245,18 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
+   public void showSCNonConnectionDialog() {
+      if (scNonConnectionDialog == null) {
+         scNonConnectionDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_card_settings_cant_connected)
+               .content(R.string.wallet_card_settings_message_cant_connected)
+               .positiveText(R.string.ok)
+               .build();
+      }
+      if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
+   }
+
+   @Override
    public OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
@@ -280,5 +300,11 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    public PublishSubject<ProfileViewModel> observeChangesProfileFields() {
       return observeProfileViewModel;
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      if (scNonConnectionDialog != null) scNonConnectionDialog.dismiss();
+      super.onDetachedFromWindow();
    }
 }

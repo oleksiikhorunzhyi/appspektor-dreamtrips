@@ -364,6 +364,21 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
       act(db -> db.del(WALLET_OPTIONAL_PIN));
    }
 
+   @Override
+   public int getSmartCardDisplayType(int defaultValue) {
+      return actWithResult(db -> db.getInt(WALLET_SMART_CARD_DISPLAY_TYPE)).or(defaultValue);
+   }
+
+   @Override
+   public void setSmartCardDisplayType(int displayType) {
+      act(db -> db.putInt(WALLET_SMART_CARD_DISPLAY_TYPE, displayType));
+   }
+
+   @Override
+   public void deleteSmartCardDisplayType() {
+      act(db -> db.del(WALLET_SMART_CARD_DISPLAY_TYPE));
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Settings
    ///////////////////////////////////////////////////////////////////////////

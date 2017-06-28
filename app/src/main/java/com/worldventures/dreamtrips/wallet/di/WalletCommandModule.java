@@ -53,7 +53,9 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveHomeDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
@@ -98,7 +100,9 @@ import dagger.Module;
             GetCustomerSupportContactCommand.class,
             SmartCardFeedbackCommand.class,
             CustomerSupportFeedbackCommand.class,
-            SaveHomeDisplayTypeCommand.class,
+            SaveDisplayTypeCommand.class,
+            GetDisplayTypeCommand.class,
+            RestoreDefaultDisplayTypeCommand.class,
             CreateRecordCommand.class,
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,

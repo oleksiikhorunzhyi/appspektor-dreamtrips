@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
-
 import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -112,7 +111,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return sampleCard;
    }
 
-   @BindingAdapter({"bind:cardBackground"})
+   @BindingAdapter({"cardBackground"})
    public static void getCardBackground(View view, @DrawableRes int backGround) {
       view.setBackgroundResource(backGround);
    }

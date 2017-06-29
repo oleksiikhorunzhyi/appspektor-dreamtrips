@@ -25,7 +25,7 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
 
    public ProfileViewModel() {}
 
-   @BindingAdapter("app:imageUrl")
+   @BindingAdapter("imageUrl")
    public static void setImageUrl(SimpleDraweeView view, String imageUrl) {
       view.setImageURI(imageUrl);
    }

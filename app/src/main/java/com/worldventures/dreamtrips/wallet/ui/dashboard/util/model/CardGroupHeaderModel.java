@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
-
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.os.Parcel;
@@ -11,7 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
-public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable{
+public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
    private CommonCardViewModel.StackType name;
 
@@ -29,7 +28,7 @@ public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFacto
       return typeFactory.type(this);
    }
 
-   @BindingAdapter({"binding:cardType"})
+   @BindingAdapter({"cardType"})
    public static void setCardType(TextView view, CommonCardViewModel.StackType type) {
       Context context = view.getContext();
       view.setText(context.getString(type.equals(CommonCardViewModel.StackType.LOYALTY)

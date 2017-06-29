@@ -293,12 +293,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
                //If list size is major or equals 3, must be show read all message button
                getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
-               getView().showButtonAllRateAndReview();
                getView().setTextRateAndReviewButton(countReview);
             } else {
                //if it doesn't, only show the comment in the same screen
                getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
-               getView().hideButtonAllRateAndReview();
             }
          } else {
             getView().addNoCommentsAndReviews();

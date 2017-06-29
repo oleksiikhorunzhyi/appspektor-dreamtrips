@@ -56,10 +56,6 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);
 
-   void showButtonAllRateAndReview();
-
-   void hideButtonAllRateAndReview();
-
    void setTextRateAndReviewButton(int size);
 
    void userHasPendingReview();

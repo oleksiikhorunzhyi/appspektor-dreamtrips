@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.BR;
 public class MerchantViewModel extends BaseObservable {
 
    private int selectedTypeIndex = 0;
-   private String merchantType = MerchantType.RETAIL.type();
+   private String merchantType;
    private String merchantName;
    private String addressLine1;
    private String addressLine2;
@@ -111,19 +111,5 @@ public class MerchantViewModel extends BaseObservable {
       result = 31 * result + (state != null ? state.hashCode() : 0);
       result = 31 * result + (zip != null ? zip.hashCode() : 0);
       return result;
-   }
-
-   enum MerchantType {
-      RETAIL("retail");
-
-      private String type;
-
-      MerchantType(String type) {
-         this.type = type;
-      }
-
-      public String type() {
-         return type;
-      }
    }
 }

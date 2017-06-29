@@ -3,11 +3,10 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.AdapterView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -15,9 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsHelpPaymentFeedbackBinding;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
@@ -28,19 +25,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.mod
 
 import java.util.List;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPresenter.Screen, PaymentFeedbackPresenter, PaymentFeedbackPath> implements PaymentFeedbackPresenter.Screen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.feedback_add_photos) View addPhotosButton;
-   @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView feedbackAttachments;
-   @InjectView(R.id.et_merchant_name) EditText tvMerchantName;
 
    private PaymentFeedbackViewModel paymentFeedbackView = new PaymentFeedbackViewModel();
 
@@ -75,13 +64,23 @@ public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPre
       supportHttpConnectionStatusLabel(true);
       if (isInEditMode()) return;
 
-      initToolbar();
-
       binding = DataBindingUtil.bind(this);
       binding.setPaymentFeedbackViewModel(paymentFeedbackView);
+      initToolbar();
       setupAsteriskColor();
 
-      observerMerchantName = RxTextView.textChanges(tvMerchantName);
+      observerMerchantName = RxTextView.textChanges(binding.incMerchant.etMerchantName);
+      binding.incAdditionalInfo.feedbackAddPhotos.setOnClickListener(v -> getPresenter().chosenAttachments());
+      binding.incMerchant.sMerchantType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            onMerchantTypeSelected(parent.getAdapter().getItem(position).toString());
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent) {
+         }
+      });
    }
 
    private void setupAsteriskColor() {
@@ -96,23 +95,13 @@ public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPre
       ));
    }
 
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         presenter.setupInputMode();
-      }
-
-      @Override
-      public void onOpened() {}
-   };
-
    private void initToolbar() {
-      toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      binding.toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
 
-      toolbar.inflateMenu(R.menu.menu_wallet_payment_feedback);
-      actionSendMenuItem = toolbar.getMenu().findItem(R.id.action_send);
+      binding.toolbar.inflateMenu(R.menu.menu_wallet_payment_feedback);
+      actionSendMenuItem = binding.toolbar.getMenu().findItem(R.id.action_send);
 
-      toolbar.setOnMenuItemClickListener(item -> {
+      binding.toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.action_send:
                getPresenter().sendFeedback();
@@ -131,8 +120,8 @@ public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPre
    }
 
    private void initAttachments() {
-      feedbackAttachments.setPhotoCellDelegate(this::onFeedbackAttachmentClicked);
-      feedbackAttachments.init(getInjector());
+      binding.incAdditionalInfo.feedbackAttachments.setPhotoCellDelegate(this::onFeedbackAttachmentClicked);
+      binding.incAdditionalInfo.feedbackAttachments.init(getInjector());
    }
 
    private void onFeedbackAttachmentClicked(EntityStateHolder<FeedbackImageAttachment> holder) {
@@ -161,11 +150,6 @@ public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPre
             .show();
    }
 
-   @OnClick(R.id.feedback_add_photos)
-   public void onAddAttachments() {
-      getPresenter().chosenAttachments();
-   }
-
    @Override
    public void changeActionSendMenuItemEnabled(boolean enable) {
       if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
@@ -188,25 +172,25 @@ public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPre
 
    @Override
    public void removeAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
-      feedbackAttachments.removeItem(holder);
+      binding.incAdditionalInfo.feedbackAttachments.removeItem(holder);
       updateAttachmentsViewVisibility();
    }
 
    @Override
    public void changeAddPhotosButtonEnabled(boolean enable) {
-      addPhotosButton.setAlpha(enable ? 1f : 0.5f);
-      addPhotosButton.setEnabled(enable);
+      binding.incAdditionalInfo.feedbackAddPhotos.setAlpha(enable ? 1f : 0.5f);
+      binding.incAdditionalInfo.feedbackAddPhotos.setEnabled(enable);
    }
 
    @Override
    public void setAttachments(List<EntityStateHolder<FeedbackImageAttachment>> attachments) {
-      feedbackAttachments.setImages(attachments);
+      binding.incAdditionalInfo.feedbackAttachments.setImages(attachments);
       updateAttachmentsViewVisibility();
    }
 
    @Override
    public void updateAttachment(EntityStateHolder<FeedbackImageAttachment> image) {
-      feedbackAttachments.changeItemState(image);
+      binding.incAdditionalInfo.feedbackAttachments.changeItemState(image);
       updateAttachmentsViewVisibility();
    }
 
@@ -245,14 +229,11 @@ public class PaymentFeedbackScreen extends BaseFeedbackScreen<PaymentFeedbackPre
    }
 
    private void updateAttachmentsViewVisibility() {
-      int itemsCount = feedbackAttachments.getItemCount();
-      feedbackAttachments.setVisibility(itemsCount > 0 ? View.VISIBLE : View.GONE);
+      int itemsCount = binding.incAdditionalInfo.feedbackAttachments.getItemCount();
+      binding.incAdditionalInfo.feedbackAttachments.setVisibility(itemsCount > 0 ? View.VISIBLE : View.GONE);
    }
 
-   @OnItemSelected(R.id.s_merchant_type)
-   public void onMerchantTypeSelected(int position) {
-      paymentFeedbackView.getMerchantView().setMerchantType(binding.incMerchant.sMerchantType.getAdapter()
-            .getItem(position)
-            .toString());
+   public void onMerchantTypeSelected(String merchantType) {
+      paymentFeedbackView.getMerchantView().setMerchantType(merchantType);
    }
 }

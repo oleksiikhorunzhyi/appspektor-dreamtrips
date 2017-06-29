@@ -598,6 +598,13 @@
    <string name="wallet_payment_feedback_notes_hint">Enter Notes (Optional)</string>
    <string-array name="wallet_payment_feedback_merchant">
       <item>Retail</item>
+      <item>Gas Station</item>
+      <item>Convenience Store</item>
+      <item>Restaurant</item>
+      <item>Grocery Store</item>
+      <item>Vending Machine</item>
+      <item>Entertainment</item>
+      <item>Other</item>
    </string-array>
    <string name="wallet_settings_help_payment_feedback_dialog_discard_changes">Discard changes?</string>
    <string name="wallet_settings_help_payment_feedback_dialog_changes_positive">Discard</string>

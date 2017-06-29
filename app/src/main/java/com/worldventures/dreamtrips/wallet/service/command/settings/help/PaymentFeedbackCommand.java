@@ -33,7 +33,6 @@ public class PaymentFeedbackCommand extends SendWalletFeedbackCommand<PaymentFee
             .reasonId(0)
             .metadata(provideMetadata())
             .attachments(provideAttachments())
-            .smartCardMetadata(provideSmartCardMetadata())
             .build();
    }
 }

@@ -75,20 +75,19 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
       categoryDataInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
    }
 
+   @Override
+   public void showPendingReviewError() {
+      errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
    @OnClick(R.id.layout_rating_reviews_map)
    public void onClickRatingReviews() {
-      if (!deviceInfoProvider.isTablet()) {
-         if (getPresenter().hasPendingReview()) {
-            errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
-            errorDialog.setTitleText(getActivity().getString(R.string.app_name));
-            errorDialog.setContentText(getContext().getString(R.string.text_awaiting_approval_review));
-            errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
-            errorDialog.showCancelButton(true);
-            errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
-            errorDialog.show();
-         } else {
-            categoryDataInflater.notifyRatingsClickListeners();
-         }
-      }
+      categoryDataInflater.notifyRatingsClickListeners();
    }
 }

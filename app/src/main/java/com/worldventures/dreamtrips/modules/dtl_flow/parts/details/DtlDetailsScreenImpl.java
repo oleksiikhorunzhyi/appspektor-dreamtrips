@@ -146,21 +146,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void showButtonAllRateAndReview() {
-      mTvReadAllReviews.setVisibility(isTablet() ? View.GONE : View.VISIBLE);
-   }
-
-   @Override
-   public void hideButtonAllRateAndReview() {
-
-      /** Remove if statement when optimizing for tablets **/
-      if(isTablet()){
-         mTvReadAllReviews.setVisibility(View.GONE);
-      }
-
-   }
-
-   @Override
    public void setTextRateAndReviewButton(int size) {
       mTvReadAllReviews.setText(String.format(getContext().getResources()
             .getString(R.string.total_reviews_text), size));
@@ -488,7 +473,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void hideReviewViewsOnTablets(){
       rateAndReviewBtn.setVisibility(View.GONE);
-      hideButtonAllRateAndReview();
    }
 
    /**

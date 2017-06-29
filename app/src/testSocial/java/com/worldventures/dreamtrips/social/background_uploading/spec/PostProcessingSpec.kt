@@ -1,112 +1,110 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.dreamtrips.AssertUtil
-import com.worldventures.dreamtrips.modules.background_uploading.model.*
+import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand
 import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class PostProcessingSpec : BaseUploadingInteractorSpec({
    describe("Post processing command") {
       context("Creating post without attachment") {
-         initJanet()
+         it("Result should contain created post and compound operations should be updated 4 times") {
+            initJanet()
 
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-         val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+            val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 
-         compoundOperationsInteractor.compoundOperationsPipe().observe().subscribe(testSubscriberCompoundOperations)
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(
-                     createPostBodyWithoutAttachments())))
-               .subscribe(testSubscriber)
+            compoundOperationsInteractor.compoundOperationsPipe().observe().subscribe(testSubscriberCompoundOperations)
+            val command = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(
+                  createPostBodyWithoutAttachments()))
+            command.setCompoundOperationDeletionDelay(0)
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(command)
+                  .subscribe(testSubscriber)
 
-         it("Result should contain created post") {
             AssertUtil.assertActionSuccess(testSubscriber) {
                it.getResult().state() == CompoundOperationState.FINISHED
                it.getResult().body().createdPost() == mockCreatedPost
             }
-         }
 
-         it("Compound operations should be updated 4 times") {
-            AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 5)
+            AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 4)
          }
       }
 
       context("Creating post with photo attachments") {
-         initJanet()
+         it("Result should contain list of uploaded photos and created post and compound operations should be updated 7 times") {
+            initJanet()
 
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-         val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+            val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 
-         compoundOperationsInteractor.compoundOperationsPipe().observe().subscribe(testSubscriberCompoundOperations)
-         val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(
-               createPostBodyWithScheduledPhotos()))
+            compoundOperationsInteractor.compoundOperationsPipe().observe().subscribe(testSubscriberCompoundOperations)
+            val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(
+                  createPostBodyWithScheduledPhotos()))
 
-         postProcessingCommand.setCompoundOperationDeletionDelay(0)
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(postProcessingCommand)
-               .subscribe(testSubscriber)
+            postProcessingCommand.setCompoundOperationDeletionDelay(0)
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(postProcessingCommand)
+                  .subscribe(testSubscriber)
 
-         it("Result should contain list of uploaded photos and created post") {
             AssertUtil.assertActionSuccess(testSubscriber) {
                it.result.state() == CompoundOperationState.FINISHED
                it.result.body() is PostWithPhotoAttachmentBody
                (it.result.body() as PostWithPhotoAttachmentBody).uploadedPhotos() == listOfMockPhotos
                it.result.body().createdPost() == mockCreatedPost
             }
-         }
 
-         it("Compound operations should be updated 7 times") {
             AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 7)
          }
       }
 
       context("Creating post with video attachment") {
-         initJanet()
+         it("State should be PROCESSING and Result should contains video uid and compound operations should be updated 6 times") {
+            initJanet()
 
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-         val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+            val testSubscriberCompoundOperations = TestSubscriber<ActionState<CompoundOperationsCommand>>()
 
-         compoundOperationsInteractor.compoundOperationsPipe().observe().subscribe(testSubscriberCompoundOperations)
+            compoundOperationsInteractor.compoundOperationsPipe().observe().subscribe(testSubscriberCompoundOperations)
 
-         val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(
-               createPostBodyWithScheduledVideo()))
-         postProcessingCommand.setCompoundOperationDeletionDelay(0)
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(postProcessingCommand)
-               .subscribe(testSubscriber)
+            val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(
+                  createPostBodyWithScheduledVideo()))
+            postProcessingCommand.setCompoundOperationDeletionDelay(0)
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(postProcessingCommand)
+                  .subscribe(testSubscriber)
 
-         it("State should be PROCESSING and Result should contains video uid") {
             AssertUtil.assertActionSuccess(testSubscriber) {
                it.result.state() == CompoundOperationState.PROCESSING
                it.result.body() is PostWithVideoAttachmentBody
                val uid = (it.result.body() as PostWithVideoAttachmentBody).videoUid()
                uid != null
             }
-         }
 
-         it("Compound operations should be updated 6 times") {
             AssertUtil.assertStatusCount(testSubscriberCompoundOperations, ActionState.Status.SUCCESS, 6)
          }
       }
 
       context("Creating post with photo attachments, photo uploading fails") {
-         initJanet(mediaUploadingFailsContract())
-
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-
-         val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledPhotos()))
-         postProcessingCommand.setCompoundOperationDeletionDelay(0)
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(postProcessingCommand)
-               .subscribe(testSubscriber)
-
          it("Command should fail and compound operation should not contain photos and/or created post") {
+            initJanet(mediaUploadingFailsContract())
+
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+
+            val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledPhotos()))
+            postProcessingCommand.setCompoundOperationDeletionDelay(0)
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(postProcessingCommand)
+                  .subscribe(testSubscriber)
+
             AssertUtil.assertActionStateFail(testSubscriber) {
                it.action.postCompoundOperationModel.body() is PostWithPhotoAttachmentBody
                (it.action.postCompoundOperationModel.body() as PostWithPhotoAttachmentBody).attachments() == null
@@ -116,17 +114,17 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
       }
 
       context("Creating post with video attachment, video uploading fails") {
-         initJanet(mediaUploadingFailsContract())
-
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-
-         val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledVideo()))
-         postProcessingCommand.setCompoundOperationDeletionDelay(0)
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(postProcessingCommand)
-               .subscribe(testSubscriber)
-
          it("Command should fail and compound operation should contain url and no created post") {
+            initJanet(mediaUploadingFailsContract())
+
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+
+            val postProcessingCommand = PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledVideo()))
+            postProcessingCommand.setCompoundOperationDeletionDelay(0)
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(postProcessingCommand)
+                  .subscribe(testSubscriber)
+
             AssertUtil.assertActionStateFail(testSubscriber) {
                val body = it.action.postCompoundOperationModel.body() as PostWithVideoAttachmentBody
                body.state() == PostBody.State.FAILED
@@ -137,15 +135,15 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
       }
 
       context("Creating post with photo attachments, photo creation fails") {
-         initJanet(photoCreatingFailsContract())
-
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledPhotos())))
-               .subscribe(testSubscriber)
-
          it("Command should fail and compound operation should not contain photos and/or created post") {
+            initJanet(photoCreatingFailsContract())
+
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledPhotos())))
+                  .subscribe(testSubscriber)
+
             AssertUtil.assertActionStateFail(testSubscriber) {
                it.action.postCompoundOperationModel.body() is PostWithPhotoAttachmentBody
                (it.action.postCompoundOperationModel.body() as PostWithPhotoAttachmentBody).uploadedPhotos() == null
@@ -155,15 +153,15 @@ class PostProcessingSpec : BaseUploadingInteractorSpec({
       }
 
       context("Creating post with photo attachments, post creation fails") {
-         initJanet(postCreatingFailsContract())
-
-         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
-
-         backgroundUploadingInteractor.postProcessingPipe()
-               .createObservable(PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledPhotos())))
-               .subscribe(testSubscriber)
-
          it("Command should fail, compound operation should contain photos and should not contain created post") {
+            initJanet(postCreatingFailsContract())
+
+            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
+
+            backgroundUploadingInteractor.postProcessingPipe()
+                  .createObservable(PostProcessingCommand.createPostProcessing(createPostCompoundOperationModel(createPostBodyWithScheduledPhotos())))
+                  .subscribe(testSubscriber)
+
             AssertUtil.assertActionStateFail(testSubscriber) {
                it.action.postCompoundOperationModel.body() is PostWithPhotoAttachmentBody
                (it.action.postCompoundOperationModel.body() as PostWithPhotoAttachmentBody).uploadedPhotos() == listOfMockPhotos

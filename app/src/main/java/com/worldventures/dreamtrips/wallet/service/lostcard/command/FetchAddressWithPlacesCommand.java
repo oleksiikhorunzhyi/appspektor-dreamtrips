@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.AddressHttpAction;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.PlacesNearbyHttpAction;
 
 import java.util.List;
@@ -49,8 +50,9 @@ public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlace
             janet.createPipe(PlacesNearbyHttpAction.class)
                   .createObservableResult(new PlacesNearbyHttpAction(coordinates))
                   .map(httpAction -> mapperyContext.convert(httpAction.response().locationPlaces(), WalletPlace.class)),
-            locationService.obtainAddressByGeoposition(coordinates.lat(), coordinates.lng())
-                  .map(address -> mapperyContext.convert(address, WalletAddress.class)),
+            janet.createPipe(AddressHttpAction.class)
+                  .createObservableResult(new AddressHttpAction(coordinates))
+                  .map(addressAction -> mapperyContext.convert(addressAction.response(), WalletAddress.class)),
             (locationPlaces, address) -> new PlacesWithAddress(address, locationPlaces)
       )
             .subscribe(callback::onSuccess, callback::onFail);

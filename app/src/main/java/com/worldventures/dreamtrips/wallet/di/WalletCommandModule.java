@@ -56,6 +56,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDa
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
@@ -104,6 +105,7 @@ import dagger.Module;
             SaveDisplayTypeCommand.class,
             GetDisplayTypeCommand.class,
             RestoreDefaultDisplayTypeCommand.class,
+            ValidateDisplayTypeDataCommand.class,
             CreateRecordCommand.class,
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,

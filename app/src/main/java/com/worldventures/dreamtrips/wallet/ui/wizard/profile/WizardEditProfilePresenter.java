@@ -64,7 +64,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       delegate.observePickerAndCropper(getView());
       delegate.sendAnalytics(new SetupUserAction());
-      delegate.setupInputMode(activity);
    }
 
    private void observeSetupUserCommand(Screen view) {
@@ -96,10 +95,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
       getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
-   }
-
-   void setupInputMode() {
-      delegate.setupInputMode(activity);
    }
 
    void setupUserData() {

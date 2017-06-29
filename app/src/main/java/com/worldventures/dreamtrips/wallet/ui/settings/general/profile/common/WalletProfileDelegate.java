@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
-import android.app.Activity;
 import android.support.annotation.Nullable;
-import android.view.WindowManager;
 
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -21,10 +19,6 @@ public class WalletProfileDelegate {
    public WalletProfileDelegate(
          AnalyticsInteractor analyticsInteractor) {
       this.analyticsInteractor = analyticsInteractor;
-   }
-
-   public void setupInputMode(Activity activity) {
-      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
    }
 
    public void sendAnalytics(WalletAnalyticsAction action) {

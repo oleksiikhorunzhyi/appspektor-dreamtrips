@@ -31,7 +31,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Wa
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
-import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 
 import java.io.File;
 
@@ -174,7 +173,6 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen))
                   .build()
       );
    }

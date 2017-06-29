@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDa
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
@@ -104,6 +105,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<SaveDisplayTypeCommand> saveDisplayTypePipe;
    private final ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe;
    private final ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe;
+   private final ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -172,6 +174,8 @@ public final class SmartCardInteractor {
       saveDisplayTypePipe = sessionActionPipeCreator.createPipe(SaveDisplayTypeCommand.class, Schedulers.io());
       getDisplayTypePipe = sessionActionPipeCreator.createPipe(GetDisplayTypeCommand.class, Schedulers.io());
       restoreDefaultDisplayTypePipe = sessionActionPipeCreator.createPipe(RestoreDefaultDisplayTypeCommand.class, Schedulers
+            .io());
+      validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
             .io());
    }
 
@@ -345,6 +349,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe() {
       return restoreDefaultDisplayTypePipe;
+   }
+
+   public ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe() {
+      return validateDisplayTypeDataPipe;
    }
 
    public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {

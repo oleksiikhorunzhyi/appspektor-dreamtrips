@@ -74,7 +74,7 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
-import rx.functions.Action1;
+import rx.functions.Action0;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
@@ -288,13 +288,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @SuppressWarnings("ConstantConditions")
    void onProfileChosen() {
-      fetchConnectionStatus(connectionStatus -> {
-         if (connectionStatus.isConnected()) {
-            navigator.go(new WalletSettingsProfilePath());
-         } else {
-            getView().showSCNonConnectionDialog();
-         }
-      });
+      assertSmartCardConnected(() -> navigator.go(new WalletSettingsProfilePath()));
    }
 
    void navigateBack() {
@@ -386,12 +380,16 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
-   private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
+   @SuppressWarnings("ConstantConditions")
+   private void assertSmartCardConnected(Action0 onConnected) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
+                     else getView().showSCNonConnectionDialog();
+                  })
             );
    }
 

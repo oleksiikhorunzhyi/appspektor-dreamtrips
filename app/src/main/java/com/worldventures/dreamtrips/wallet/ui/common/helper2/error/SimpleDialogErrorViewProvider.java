@@ -39,7 +39,11 @@ public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
       return errorView;
    }
 
-   public void setPositiveText(@StringRes int positiveResIdLabel) {
-      errorView.setPositiveText(positiveResIdLabel);
+   public void setPositiveText(@StringRes int positiveResId) {
+      errorView.setPositiveText(positiveResId);
+   }
+
+   public void setNegativeText(@StringRes int negativeResId) {
+      errorView.setNegativeText(negativeResId);
    }
 }

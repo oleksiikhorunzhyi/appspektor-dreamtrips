@@ -9,27 +9,18 @@ import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.WalletFaceb
 import java.util.List;
 
 
-public class WalletFacebookPhotoModel extends WalletFacebookPickerModel {
+public class WalletFacebookPhotoModel extends WalletFacebookPickerModel<List<FacebookPhoto.ImageSource>> {
 
    private List<FacebookPhoto.ImageSource> images;
 
    private boolean checked;
    private long pickedTime;
-   private String imageUri;
 
    public WalletFacebookPhotoModel(List<FacebookPhoto.ImageSource> images, boolean checked, long pickedTime) {
+      super(images);
       this.images = images;
       this.checked = checked;
       this.pickedTime = pickedTime;
-      if (images.size() > 2) {
-         imageUri = images.get(images.size() / 2 + 1).getSource();
-      } else {
-         imageUri = images.get(0).getSource();
-      }
-   }
-
-   public WalletFacebookPhotoModel(String imageUri) {
-      this.imageUri = imageUri;
    }
 
    @Override
@@ -53,11 +44,6 @@ public class WalletFacebookPhotoModel extends WalletFacebookPickerModel {
    }
 
    @Override
-   public Uri getUri() {
-      return Uri.parse(imageUri);
-   }
-
-   @Override
    public String getAbsolutePath() {
       return images.get(0).getSource();
    }
@@ -75,5 +61,13 @@ public class WalletFacebookPhotoModel extends WalletFacebookPickerModel {
    @Override
    public void setPickedTime(long pickedTime) {
       this.pickedTime = pickedTime;
+   }
+
+   @Override
+   public Uri getUriFromSource(List<FacebookPhoto.ImageSource> source) {
+      String imageUrl = (source.size() > 2)
+            ? source.get(source.size() / 2 + 1).getSource()
+            : source.get(0).getSource();
+      return Uri.parse(imageUrl);
    }
 }

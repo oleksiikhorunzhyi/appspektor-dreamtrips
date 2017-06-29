@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.AsyncLayoutInflater;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -31,23 +32,21 @@ import io.techery.janet.operationsubscriber.view.ProgressView;
 import rx.Observable;
 
 
-public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter, M extends BasePickerViewModel, A extends BaseWalletPickerAdapter> extends FrameLayout
+public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter, M extends BasePickerViewModel> extends FrameLayout
       implements BaseWalletPickerView<M>, AsyncLayoutInflater.OnInflateFinishedListener, ProgressView, ErrorView {
 
-   @InjectView(R.id.picker_recycler_view) RecyclerView pickerRecyclerView;
+   @InjectView(R.id.picker_recycler_view) PickerGridRecyclerView pickerRecyclerView;
    @InjectView(R.id.picker_progress) ProgressBar progressBar;
    @InjectView(R.id.picker_error_view) FrameLayout pickerErrorLayout;
    @InjectView(R.id.tv_picker_error) TextView tvPickerError;
-   private AsyncLayoutInflater asyncLayoutInflater;
-   private A adapter;
+   private BaseWalletPickerAdapter<M> adapter;
    private GridAutofitLayoutManager layoutManager;
    private OnNextClickListener onNextClickListener;
    private OnBackClickListener onBackClickListener;
    private Bundle arguments;
 
    public BaseWalletPickerLayout(@NonNull Context context) {
-      super(context);
-      init();
+      this(context, null);
    }
 
    public BaseWalletPickerLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -56,7 +55,7 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
    }
 
    private void init() {
-      asyncLayoutInflater = new AsyncLayoutInflater(getContext());
+      final AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
       asyncLayoutInflater.inflate(R.layout.wallet_picker_layout, this, this);
    }
 
@@ -65,11 +64,14 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
       parent.addView(view);
       ButterKnife.inject(this, view);
       tvPickerError.setText(getContext().getString(R.string.wallet_picker_error_contents, getFailedActionText()));
-      adapter = createAdapter(new ArrayList<>(), new WalletPickerHolderFactoryImpl());
+      adapter = new BaseWalletPickerAdapter<>(new ArrayList<>(), new WalletPickerHolderFactoryImpl());
       layoutManager = new GridAutofitLayoutManager(getContext(), getContext().getResources()
             .getDimension(R.dimen.photo_picker_size));
       pickerRecyclerView.setLayoutManager(layoutManager);
       pickerRecyclerView.setAdapter(adapter);
+      final DefaultItemAnimator gridAnimator = new DefaultItemAnimator();
+      gridAnimator.setSupportsChangeAnimations(false);
+      pickerRecyclerView.setItemAnimator(gridAnimator);
       pickerRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
             new RecyclerItemClickListener.OnItemClickListener() {
                @Override
@@ -89,7 +91,7 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
       getPresenter().loadItems();
    }
 
-   public A getAdapter() {
+   public BaseWalletPickerAdapter<M> getAdapter() {
       return adapter;
    }
 
@@ -103,6 +105,7 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
 
    @Override
    public void addItems(List<M> items) {
+      pickerRecyclerView.scheduleLayoutAnimation();
       adapter.updateItems(items);
    }
 
@@ -183,8 +186,6 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
    public void hideProgress() {
       progressBar.setVisibility(GONE);
    }
-
-   public abstract A createAdapter(List<M> items, WalletPickerHolderFactory holderFactory);
 
    public abstract void handleItemClick(int position);
 

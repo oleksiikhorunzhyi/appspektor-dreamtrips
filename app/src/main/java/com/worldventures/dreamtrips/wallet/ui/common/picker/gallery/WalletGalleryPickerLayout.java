@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhot
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletPickLimitStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletStaticItemsStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BaseWalletPickerLayout;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHolderFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerStep;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGalleryPickerPresenter, WalletGalleryPickerModel, WalletPickerGalleryAdapter> implements WalletGalleryPickerView {
+public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGalleryPickerPresenter, WalletGalleryPickerModel> implements WalletGalleryPickerView {
 
    @Inject WalletGalleryPickerPresenter presenter;
 
@@ -43,16 +42,11 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
    }
 
    @Override
-   public WalletPickerGalleryAdapter createAdapter(List<WalletGalleryPickerModel> items, WalletPickerHolderFactory holderFactory) {
-      return new WalletPickerGalleryAdapter(items, holderFactory);
-   }
-
-   @Override
    public void handleItemClick(int position) {
-      if (getAdapter().getItemViewType(position) == R.layout.adapter_item_photo_pick) {
+      if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_photo_gallery) {
          updateItem(position);
          presenter.attachImages();
-      } else if (getAdapter().getItemViewType(position) == R.layout.adapter_item_attach_photo) {
+      } else if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_static) {
          handleAlternateSourcesClick(position);
       }
    }

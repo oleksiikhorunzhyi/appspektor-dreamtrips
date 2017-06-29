@@ -9,6 +9,7 @@ import android.databinding.InverseBindingListener;
 import android.databinding.InverseBindingMethod;
 import android.databinding.InverseBindingMethods;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -27,7 +28,7 @@ import com.worldventures.dreamtrips.databinding.ViewCounterBinding;
 @InverseBindingMethods(value = {
       @InverseBindingMethod(
             type = CounterView.class,
-            attribute = "bind:counter_value"
+            attribute = "counter_value"
       )
 })
 public class CounterView extends LinearLayout implements TextSwitcher.ViewFactory {
@@ -185,7 +186,9 @@ public class CounterView extends LinearLayout implements TextSwitcher.ViewFactor
             getResources().getDimensionPixelSize(R.dimen.spacing_small),
             0
       );
-      textView.setForegroundGravity(Gravity.CENTER);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+         textView.setForegroundGravity(Gravity.CENTER);
+      }
       textView.setTextSize(getResources().getDimension(R.dimen.font_tiny) / 2);
       textView.setTextColor(Color.BLACK);
       return textView;

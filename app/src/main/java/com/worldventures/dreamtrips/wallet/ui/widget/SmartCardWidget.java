@@ -86,8 +86,6 @@ public class SmartCardWidget extends ConstraintLayout {
       final String fullName = photoFullName.replace("\n", " ");
 
       tvFullName.setText(fullName);
-      tvPhotoFirstName.setVisibility(type == DISPLAY_PICTURE_AND_NAME ? View.VISIBLE : View.GONE);
-      tvPhotoFullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_AND_NAME) ? View.VISIBLE : View.GONE);
 
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
@@ -107,6 +105,10 @@ public class SmartCardWidget extends ConstraintLayout {
             tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
             break;
       }
+
+      tvPhotoFirstName.setVisibility(type == DISPLAY_PICTURE_AND_NAME ? View.VISIBLE : View.GONE);
+      tvPhotoFullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_AND_NAME) ? View.VISIBLE : View.GONE);
+      scAvatar.setVisibility((type == DISPLAY_PICTURE_AND_NAME || type == DISPLAY_PICTURE_ONLY) ? View.VISIBLE : View.GONE);
 
       bindBadge(holder.firmwareUpdateAvailable());
       bindCardLoadedCount(holder.cardCount());

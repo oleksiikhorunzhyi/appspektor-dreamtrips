@@ -259,7 +259,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
     * @param defaultCard         true if card is default
     * @return {@see TransitionModel}
     */
-   public TransitionModel getCardPosition(View view, int overlap, @DrawableRes int cardBackGroundResId,
+   TransitionModel getCardPosition(View view, int overlap, @DrawableRes int cardBackGroundResId,
          boolean defaultCard) {
       int[] position = new int[2];
       view.getLocationOnScreen(position);
@@ -274,7 +274,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       }
    }
 
-   public boolean isCardDetailSupported() {
+   boolean isCardDetailSupported() {
       return featureHelper.isCardDetailSupported();
    }
 

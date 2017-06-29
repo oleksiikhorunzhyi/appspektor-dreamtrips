@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
@@ -48,10 +49,11 @@ public class OfferWithReviewView extends LinearLayout {
          new RecyclerClickListener() {
             @Override
             public void onClick(View view, int position) {
-               if (isTablet) return;
-               Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo
+               DtlDetailReviewPath path = new DtlDetailReviewPath(FlowUtil.currentMaster(getContext()), mMerchantName, mArrayInfo
+                     .get(position), mArrayInfo
                      .get(position)
-                     .getReviewId(), mIsFromListReview));
+                     .getReviewId(), mIsFromListReview);
+               Flow.get(getContext()).set(path);
             }
 
             @Override
@@ -101,7 +103,6 @@ public class OfferWithReviewView extends LinearLayout {
       mMerchantName = bundle.getString(MERCHANT_NAME, "");
       mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
       isTablet = bundle.getBoolean(IS_TABLET, false);
-
       mAdapter.setTablet(isTablet);
 
       setUpInfo();
@@ -135,9 +136,7 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void setUpRating() {
-      if (null != ratingBar2 && mRatingMerchant > 0) {
-         ratingBar2.setRating(mRatingMerchant);
-      }
+      ratingBar2.setRating(mRatingMerchant);
    }
 
    private void initRecycler() {

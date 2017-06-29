@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -537,7 +538,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")) {
          navigateToDetail(getContext().getString(R.string.snack_review_success));
       } else {
-         Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+         Path path = new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, getContext().getString(R.string.snack_review_success));
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
          historyBuilder.pop();

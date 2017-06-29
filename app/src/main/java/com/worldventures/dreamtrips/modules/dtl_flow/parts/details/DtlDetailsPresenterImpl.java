@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
@@ -43,6 +44,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -70,7 +72,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
-
+   @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
    private final Merchant merchant;
@@ -273,7 +275,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void showAllReviews() {
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()),merchant, ""));
    }
 
    @Override
@@ -308,17 +310,19 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickRatingsReview(Merchant merchant) {
-      if (isReviewCached()) {
-         if (userHasReviews()) {
-            goToReviewList();
+      if (!deviceInfoProvider.isTablet()) {
+         if (isReviewCached()) {
+            if (userHasReviews()) {
+               goToReviewList();
+            } else {
+               getView().userHasPendingReview();
+            }
          } else {
-            getView().userHasPendingReview();
-         }
-      } else {
-         if (userHasReviews()) {
-            goToReviewList();
-         } else {
-            goToCommentReview();
+            if (userHasReviews()) {
+               goToReviewList();
+            } else {
+               goToCommentReview();
+            }
          }
       }
    }
@@ -347,7 +351,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void goToReviewList(){
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
    private void goToCommentReview(){

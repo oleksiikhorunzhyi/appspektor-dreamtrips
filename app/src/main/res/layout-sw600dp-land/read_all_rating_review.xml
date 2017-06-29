@@ -7,7 +7,6 @@
       android:textColor="@color/rating_background_button"
       android:gravity="center"
       android:textStyle="bold"
-      android:visibility="gone"
       android:layout_marginTop="@dimen/dtl_all_reviews_margin"
       android:layout_marginBottom="@dimen/dtl_all_reviews_margin">
 

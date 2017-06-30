@@ -7,8 +7,6 @@ import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhot
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.common.command.ImageCapturedCommand;
-import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
-import com.worldventures.dreamtrips.modules.common.command.MediaAttachmentPrepareCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -10,13 +10,13 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
@@ -50,6 +50,7 @@ public class Presenter<VT extends Presenter.View> {
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject protected OfflineErrorInteractor offlineErrorInteractor;
+   @Inject ConnectionInfoProvider connectionInfoProvider;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    protected int priorityEventBus = 0;
@@ -156,7 +157,7 @@ public class Presenter<VT extends Presenter.View> {
    }
 
    public boolean isConnected() {
-      return Utils.isConnected(context);
+      return connectionInfoProvider.isConnected();
    }
 
    public void handleError(Throwable error) {

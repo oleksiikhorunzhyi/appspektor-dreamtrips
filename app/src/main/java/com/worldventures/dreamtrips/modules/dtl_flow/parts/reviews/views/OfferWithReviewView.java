@@ -39,24 +39,6 @@ public class OfferWithReviewView extends LinearLayout {
    public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
 
    private ArrayList<ReviewObject> mArrayInfo = new ArrayList<>();
-
-   private RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerAdapter,
-         new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-               DtlDetailReviewPath path = new DtlDetailReviewPath(FlowUtil.currentMaster(getContext()), mMerchantName, mArrayInfo
-                     .get(position), mArrayInfo
-                     .get(position)
-                     .getReviewId(), mIsFromListReview);
-               Flow.get(getContext()).set(path);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-         });
-
    private float mRatingMerchant;
    private int mCountReview;
    private String mMerchantName;
@@ -104,6 +86,22 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void initListener() {
+      RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerAdapter,
+            new RecyclerClickListener() {
+               @Override
+               public void onClick(View view, int position) {
+                  DtlDetailReviewPath path = new DtlDetailReviewPath(FlowUtil.currentMaster(getContext()), mMerchantName, mArrayInfo
+                        .get(position), mArrayInfo
+                        .get(position)
+                        .getReviewId(), mIsFromListReview);
+                  Flow.get(getContext()).set(path);
+               }
+
+               @Override
+               public void onLongClick(View view, int position) {
+
+               }
+            });
       recyclerAdapter.addOnItemTouchListener(onItemTouchListener);
    }
 

@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,15 +72,4 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   public static class MissingUserPhoneException extends NullPointerException {
-      MissingUserPhoneException() {
-         super("User must have a phone number in order to use chosen display option");
-      }
-   }
-
-   public static class MissingUserPhotoException extends NullPointerException {
-      MissingUserPhotoException() {
-         super("User must have a photo in order to use chosen display option");
-      }
-   }
 }

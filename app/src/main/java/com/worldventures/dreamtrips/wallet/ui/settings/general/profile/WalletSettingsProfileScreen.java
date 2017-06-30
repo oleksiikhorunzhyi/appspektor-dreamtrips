@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -35,7 +38,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Wa
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
-import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import java.io.File;
@@ -235,8 +237,9 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
+                  .addProvider(provideDisplayTypeExceptionHandler(MissingUserPhotoException.class, R.string.wallet_card_settings_profile_display_settings_exception_photo))
+                  .addProvider(provideDisplayTypeExceptionHandler(MissingUserPhoneException.class, R.string.wallet_card_settings_profile_display_settings_exception_phone))
                   .addProvider(provideUploadDataExceptionHandler())
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext()))
@@ -274,6 +277,16 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
             command -> getPresenter().retryUploadToServer(),
             command -> getPresenter().cancelUploadServerUserData());
       errorProvider.setPositiveText(R.string.retry);
+      return errorProvider;
+   }
+
+   private <T> ErrorViewProvider<T>
+   provideDisplayTypeExceptionHandler(Class<? extends Throwable> throwable, @StringRes int message) {
+      final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(
+            getContext(), throwable, message,
+            command -> getPresenter().confirmDisplayTypeChange(), t -> {
+      });
+      errorProvider.setPositiveText(R.string.wallet_continue_label);
       return errorProvider;
    }
 

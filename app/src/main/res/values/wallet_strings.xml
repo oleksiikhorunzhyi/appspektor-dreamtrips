@@ -48,7 +48,6 @@
    <string name="wallet_edit_profile_first_name_format_detail">First name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
-   <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
    <string name="wallet_edit_profile_confirmation_dialog_message" formatted="false">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s %s</b><br/>]]></string>
    <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
    <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
@@ -199,6 +198,8 @@
    <string name="wallet_card_settings_profile_dialog_error_network_unavailable">You don\'t have internet connection. Check it and try again.</string>
    <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Please make sure your Smart Card is on and Bluetooth is enabled on your phone.</string>
    <string name="wallet_card_settings_profile_display_settings_label">Display Settings</string>
+   <string name="wallet_card_settings_profile_display_settings_exception_photo">Removing your photo will reset your Smart Card\'s display setting. Would you like to continue?</string>
+   <string name="wallet_card_settings_profile_display_settings_exception_phone">Removing your phone number will reset your Smart Card\'s display setting. Would you like to continue?</string>
 
    <!--card list-->
    <string name="dashboard_default_card_stack_title">Default</string>

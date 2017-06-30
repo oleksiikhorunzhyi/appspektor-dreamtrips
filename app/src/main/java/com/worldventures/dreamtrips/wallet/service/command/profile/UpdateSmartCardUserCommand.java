@@ -13,9 +13,11 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
@@ -27,6 +29,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
 import io.techery.janet.smartcard.action.user.UpdateUserAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.mappery.MapperyContext;
@@ -39,6 +42,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject WalletNetworkService networkService;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject UpdateProfileManager updateProfileManager;
@@ -46,23 +50,28 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    @Inject CachedPhotoUtil cachedPhotoUtil;
 
    private final ChangedFields changedFields;
+   private final boolean forceUpdateDisplayType;
 
-   public UpdateSmartCardUserCommand(ChangedFields changedFields) {
+   public UpdateSmartCardUserCommand(ChangedFields changedFields, boolean forceUpdateDisplayType) {
       this.changedFields = changedFields;
+      this.forceUpdateDisplayType = forceUpdateDisplayType;
    }
 
    @Override
    protected void run(CommandCallback<SmartCardUser> callback) throws Throwable {
       validateData();
-      if (!networkService.isAvailable()) throw new NetworkUnavailableException();
-      updateProfileManager.attachChangedFields(changedFields);
+      validateNetwork();
 
-      Observable.zip(
-            janet.createPipe(ActiveSmartCardCommand.class)
-                  .createObservableResult(new ActiveSmartCardCommand()),
-            janet.createPipe(SmartCardUserCommand.class)
-                  .createObservableResult(SmartCardUserCommand.fetch()),
-            Pair::new)
+      smartCardInteractor.validateDisplayTypeDataPipe()
+            .createObservableResult(new ValidateDisplayTypeDataCommand(
+                  changedFields.photo() != null, changedFields.phone() != null, forceUpdateDisplayType))
+            .doOnNext(command -> updateProfileManager.attachChangedFields(changedFields))
+            .flatMap(command -> Observable.zip(
+                  smartCardInteractor.activeSmartCardPipe()
+                        .createObservableResult(new ActiveSmartCardCommand()),
+                  smartCardInteractor.smartCardUserPipe()
+                        .createObservableResult(SmartCardUserCommand.fetch()),
+                  Pair::new))
             .flatMap(pair -> uploadData(pair.first.getResult().smartCardId(), pair.second.getResult()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
@@ -73,6 +82,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
             changedFields.middleName(),
             changedFields.lastName());
    }
+
+   private void validateNetwork() {if (!networkService.isAvailable()) throw new NetworkUnavailableException();}
 
    private Observable<SmartCardUser> uploadData(String smartCardId, SmartCardUser user) {
       return pushToSmartCard(smartCardId, user)
@@ -144,7 +155,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                      .photoUrl(command.getResult().response().uploaderyPhoto().location())
                      .build());
       } else {
-         return Observable.just(updateUserData);
+         return smartCardInteractor.removeUserPhotoActionPipe()
+               .createObservableResult(new RemoveUserPhotoAction())
+               .map(action -> updateUserData);
       }
    }
 

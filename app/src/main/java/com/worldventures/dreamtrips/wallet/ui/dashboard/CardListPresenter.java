@@ -74,6 +74,7 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+import rx.functions.Action0;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
@@ -127,33 +128,31 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       recordInteractor.syncRecordStatusPipe().send(SyncRecordStatusCommand.fetch());
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void observeSyncRecordsStatus() {
       recordInteractor.syncRecordStatusPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> handleSyncRecordStatus(command.getResult()));
 
-      //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
                   .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
             );
-      //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideReSyncOperationView()).create());
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
       if (featureHelper.addingCardIsNotSupported()) return;
       if (status.isFailAfterProvision()) {
-         //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
       } else {
-         //noinspection ConstantConditions
          getView().modeAddCard();
       }
    }
@@ -260,7 +259,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
     * @param defaultCard         true if card is default
     * @return {@see TransitionModel}
     */
-   public TransitionModel getCardPosition(View view, int overlap, @DrawableRes int cardBackGroundResId,
+   TransitionModel getCardPosition(View view, int overlap, @DrawableRes int cardBackGroundResId,
          boolean defaultCard) {
       int[] position = new int[2];
       view.getLocationOnScreen(position);
@@ -275,7 +274,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       }
    }
 
-   public boolean isCardDetailSupported() {
+   boolean isCardDetailSupported() {
       return featureHelper.isCardDetailSupported();
    }
 
@@ -287,14 +286,16 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.go(new WalletSettingsPath());
    }
 
+   @SuppressWarnings("ConstantConditions")
    void onProfileChosen() {
-      navigator.go(new WalletSettingsProfilePath());
+      assertSmartCardConnected(() -> navigator.go(new WalletSettingsProfilePath()));
    }
 
    void navigateBack() {
       navigator.goBack();
    }
 
+   @SuppressWarnings("ConstantConditions")
    void addCardRequired(int cardLoadedCount) {
       if (cardLoadedCount >= WalletConstants.MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
@@ -347,6 +348,12 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    @SuppressWarnings("ConstantConditions")
+   private void cardsLoaded(ArrayList<BaseViewModel> cardModels) {
+      getView().setCardsCount(null != this.records ? this.records.size() : 0);
+      getView().showRecordsInfo(cardModels);
+   }
+
+   @SuppressWarnings("ConstantConditions")
    private void observeSmartCardSync() {
       final OperationView<SyncSmartCardCommand> operationView = getView().provideOperationSyncSmartCard();
       smartCardInteractor.smartCardSyncPipe()
@@ -359,11 +366,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(OperationActionSubscriber.forView(operationView).create());
    }
 
-   private void cardsLoaded(ArrayList<BaseViewModel> cardModels) {
-      getView().setCardsCount(null != this.records ? this.records.size() : 0);
-      getView().showRecordsInfo(cardModels);
-   }
-
    void retryFWU() {
       sendRetryAnalyticAction(true);
       navigator.go(new WalletInstallFirmwarePath());
@@ -374,13 +376,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigateBack();
    }
 
+   void navigateToFirmwareUpdate() {
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   private void assertSmartCardConnected(Action0 onConnected) {
+      smartCardInteractor.deviceStatePipe()
+            .createObservable(DeviceStateCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
+                     else getView().showSCNonConnectionDialog();
+                  })
+            );
+   }
+
    private void sendRetryAnalyticAction(boolean retry) {
       analyticsInteractor.walletFirmwareAnalyticsPipe()
             .send(new WalletFirmwareAnalyticsCommand(new RetryInstallUpdateAction(retry)));
-   }
-
-   public void navigateToFirmwareUpdate() {
-      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
    void confirmForceFirmwareUpdate() {

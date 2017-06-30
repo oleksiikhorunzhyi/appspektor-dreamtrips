@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -40,8 +39,7 @@ import javax.inject.Inject;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
-import rx.functions.Action1;
+import rx.functions.Action0;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -81,7 +79,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       observeUploading(view);
       observeChangeFields(view);
 
-      delegate.setupInputMode(activity);
       delegate.observePickerAndCropper(view);
       delegate.sendAnalytics(new SmartCardProfileAction());
    }
@@ -112,7 +109,11 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation())
-                  .onSuccess(setupUserDataCommand -> goBack())
+                  .onSuccess(setupUserDataCommand -> {
+                     delegate.sendAnalytics(new ProfileChangesSavedAction());
+                     goBack();
+                  })
+                  .onFail((command, throwable) -> view.setDoneButtonEnabled(isDataChanged()))
                   .create());
 
       smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
@@ -122,12 +123,16 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation()).create());
    }
 
-   void setupInputMode() {
-      delegate.setupInputMode(activity);
+   void handleDoneAction() {
+      assertSmartCardConnected(() -> saveUserProfile(false));
+   }
+
+   void confirmDisplayTypeChange() {
+      assertSmartCardConnected(() -> saveUserProfile(true));
    }
 
    @SuppressWarnings("ConstantConditions")
-   void handleDoneAction() {
+   private void saveUserProfile(boolean forceUpdateDisplayType) {
       if (isDataChanged()) {
          getView().setDoneButtonEnabled(false);
          final ProfileViewModel profile = getView().getUser();
@@ -140,12 +145,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
                .photo(delegate.createPhoto(profile))
                .build();
 
-         smartCardUserDataInteractor.updateSmartCardUserPipe().send(new UpdateSmartCardUserCommand(changedFields));
-
-         if (profile.isPhotoEmpty()) {
-            smartCardInteractor.removeUserPhotoActionPipe().send(new RemoveUserPhotoAction());
-         }
-         delegate.sendAnalytics(new ProfileChangesSavedAction());
+         smartCardUserDataInteractor.updateSmartCardUserPipe()
+               .send(new UpdateSmartCardUserCommand(changedFields, forceUpdateDisplayType));
       }
    }
 
@@ -202,23 +203,22 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       super.detachView(retainInstance);
    }
 
+   @SuppressWarnings("ConstantConditions")
    void openDisplaySettings() {
-      fetchConnectionStatus(connectionStatus -> {
-         if (connectionStatus.isConnected()) {
-            navigator.go(new DisplayOptionsSettingsPath(DisplayOptionsSource.PROFILE,
-                  delegate.createSmartCardUser(getView().getUser())));
-         } else {
-            getView().showSCNonConnectionDialog();
-         }
-      });
+      assertSmartCardConnected(() -> navigator.go(new DisplayOptionsSettingsPath(
+            DisplayOptionsSource.PROFILE, delegate.createSmartCardUser(getView().getUser()))));
    }
 
-   private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
+   @SuppressWarnings("ConstantConditions")
+   private void assertSmartCardConnected(Action0 onConnected) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
+                     else getView().showSCNonConnectionDialog();
+                  })
             );
    }
 

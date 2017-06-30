@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.DialogErrorView;
@@ -138,12 +140,10 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_general_display_updating, false),
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_settings_general_display_changes_saved),
             ErrorViewFactory.<SaveDisplayTypeCommand>builder()
-                  .addProvider(getUserRequiredInfoMissingDialogProvider(
-                        SaveDisplayTypeCommand.MissingUserPhoneException.class,
+                  .addProvider(getUserRequiredInfoMissingDialogProvider(MissingUserPhoneException.class,
                         R.string.wallet_settings_general_display_phone_required_title,
                         R.string.wallet_settings_general_display_phone_required_message))
-                  .addProvider(getUserRequiredInfoMissingDialogProvider(
-                        SaveDisplayTypeCommand.MissingUserPhotoException.class,
+                  .addProvider(getUserRequiredInfoMissingDialogProvider(MissingUserPhotoException.class,
                         R.string.wallet_settings_general_display_photo_required_title,
                         R.string.wallet_settings_general_display_photo_required_message))
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext()))

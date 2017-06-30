@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.service;
 
-
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.command.MediaAttachmentPrepareCommand;
+import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;

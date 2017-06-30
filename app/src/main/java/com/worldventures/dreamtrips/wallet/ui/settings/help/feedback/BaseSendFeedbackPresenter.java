@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachm
 import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -182,7 +183,7 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
             );
    }
 
-   public void handleAttachedImages(List<BasePickerViewModel> models) {
+   public void handleAttachedImages(List<PhotoPickerModel> models) {
       mediaInteractor.mediaAttachmentPreparePipe().send(new MediaAttachmentPrepareCommand(models));
    }
 

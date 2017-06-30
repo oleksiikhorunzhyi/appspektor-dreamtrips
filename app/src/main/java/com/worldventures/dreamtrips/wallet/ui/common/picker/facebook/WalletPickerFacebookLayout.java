@@ -25,8 +25,8 @@ public abstract class WalletPickerFacebookLayout<P extends WalletPickerFacebookP
    }
 
    @Override
-   public void onInflateFinished(View view, int resid, ViewGroup parent) {
-      super.onInflateFinished(view, resid, parent);
+   protected void initView() {
+      super.initView();
       getPickerRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

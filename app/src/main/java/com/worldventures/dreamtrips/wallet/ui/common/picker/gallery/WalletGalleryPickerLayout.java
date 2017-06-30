@@ -7,9 +7,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletPickLimitStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletStaticItemsStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BaseWalletPickerLayout;
@@ -43,9 +44,10 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
 
    @Override
    public void handleItemClick(int position) {
-      if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_photo_gallery) {
+      if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_photo_gallery
+            || getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_video_gallery) {
          updateItem(position);
-         presenter.attachImages();
+         presenter.attachMedia();
       } else if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_static) {
          handleAlternateSourcesClick(position);
       }
@@ -54,7 +56,7 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
    private void handleAlternateSourcesClick(int position) {
       final WalletIrregularPhotoModel item = (WalletIrregularPhotoModel) getAdapter().getItem(position);
       if (item.getAttachType() == WalletIrregularPhotoModel.CAMERA) {
-         presenter.tryOpenCamera();
+         presenter.handleCameraClick();
       } else if (item.getAttachType() == WalletIrregularPhotoModel.FACEBOOK) {
          if (getOnNextClickListener() != null) {
             getOnNextClickListener().onNextClick(null);
@@ -63,20 +65,20 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
    }
 
    private boolean isLimitReached(int count) {
-      return walletPickLimitStrategy.pickLimit() > 0 && count > walletPickLimitStrategy.pickLimit();
+      return walletPickLimitStrategy.photoPickLimit() > 0 && count > walletPickLimitStrategy.photoPickLimit();
    }
 
    private void updateItem(int position) {
       getAdapter().updateItem(position);
-      boolean isLimitReached = isLimitReached(getChosenPhotos().size());
+      boolean isLimitReached = isLimitReached(getChosenMedia().size());
       if (isLimitReached) {
-         if (walletPickLimitStrategy.pickLimit() > 1) {
+         if (walletPickLimitStrategy.photoPickLimit() > 1) {
             Toast.makeText(getContext(), getContext().getString(R.string.wallet_picker_limit_reached,
-                  String.valueOf(walletPickLimitStrategy.pickLimit())), Toast.LENGTH_SHORT).show();
+                  String.valueOf(walletPickLimitStrategy.photoPickLimit())), Toast.LENGTH_SHORT).show();
             getAdapter().updateItem(position);
          } else {
             WalletGalleryPickerModel modelToRevert =
-                  Queryable.from(getChosenPhotos())
+                  Queryable.from(getChosenMedia())
                         .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
             int modelToRevertPosition = getAdapter().getPositionFromItem(modelToRevert);
             getAdapter().updateItem(modelToRevertPosition);
@@ -106,8 +108,31 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
    }
 
    @Override
-   public void cameraPermissionGranted() {
-      presenter.openCamera();
+   public void showAttachmentTypeDialog() {
+      final String[] items = new String[]{getContext().getString(R.string.camera_take_a_picture),
+            getContext().getString(R.string.camera_record_a_video)};
+      new MaterialDialog.Builder(getContext())
+            .items(items)
+            .itemsCallback((dialog, itemView, which, text) -> {
+               switch (which) {
+                  case 0:
+                     presenter.tryOpenCameraForPhoto();
+                     break;
+                  case 1:
+                     presenter.tryOpenCameraForVideo();
+                     break;
+               }
+            }).show();
+   }
+
+   @Override
+   public void cameraPermissionGrantedPhoto() {
+      presenter.openCameraForPhoto();
+   }
+
+   @Override
+   public void cameraPermissionGrantedVideo() {
+      presenter.openCameraForVideo();
    }
 
    @Override
@@ -121,18 +146,33 @@ public class WalletGalleryPickerLayout extends BaseWalletPickerLayout<WalletGall
    }
 
    @Override
+   public void showVideoLimitReached(int limitLength) {
+      Toast.makeText(getContext(), getContext().getString(R.string.picker_video_duration_limit, limitLength), Toast.LENGTH_SHORT).show();
+   }
+
+   @Override
    public List<WalletGalleryPickerModel> provideStaticItems() {
       return walletStaticItemsStrategy.provideStaticItems();
    }
 
    @Override
-   public OperationView<GetPhotosFromGalleryCommand> provideGalleryOperationView() {
+   public OperationView<GetMediaFromGalleryCommand> provideGalleryOperationView() {
       return new ComposableOperationView<>(this, this);
    }
 
    @Override
-   public List<WalletGalleryPickerModel> getChosenPhotos() {
-      return getAdapter().getChosenPhotos(getAdapterOffset());
+   public List<WalletGalleryPickerModel> getChosenMedia() {
+      return getAdapter().getChosenMedia(getAdapterOffset());
+   }
+
+   @Override
+   public boolean isVideoEnabled() {
+      return walletPickLimitStrategy.videoDurationLimit() != 0;
+   }
+
+   @Override
+   public int getVideoLimit() {
+      return walletPickLimitStrategy.videoDurationLimit();
    }
 
    @Override

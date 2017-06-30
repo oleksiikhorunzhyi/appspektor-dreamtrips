@@ -117,9 +117,9 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
       walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
-      walletPickerDialog.setOnDoneListener(models -> {
-         if (!models.isEmpty()) {
-            presenter.handlePickedPhoto(models.get(0));
+      walletPickerDialog.setOnDoneListener(attachment -> {
+         if (!attachment.isEmpty()) {
+            presenter.handlePickedPhoto(attachment.getChosenImages().get(0));
          }
       });
       if (initialPhotoUrl != null) {

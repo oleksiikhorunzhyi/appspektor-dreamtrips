@@ -27,9 +27,9 @@ public abstract class BaseFeedbackScreen<S extends BaseSendFeedbackPresenter.Scr
       walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
       walletPickerDialog.setOnDoneListener(pickerResultAttachment -> {
          if (!pickerResultAttachment.isEmpty()) {
-            getPresenter().handleAttachedImages(pickerResultAttachment);
+            getPresenter().handleAttachedImages(pickerResultAttachment.getChosenImages());
          }
       });
-      walletPickerDialog.show(true, MAX_PHOTOS_ATTACHMENT - getPresenter().getAttachmentsCount());
+      walletPickerDialog.show(MAX_PHOTOS_ATTACHMENT - getPresenter().getAttachmentsCount());
    }
 }

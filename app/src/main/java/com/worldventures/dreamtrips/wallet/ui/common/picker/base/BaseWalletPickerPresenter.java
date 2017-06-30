@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.base;
 
 
+import java.util.List;
+
 import rx.Observable;
 
 public interface BaseWalletPickerPresenter<V extends BaseWalletPickerView> {
@@ -13,5 +15,5 @@ public interface BaseWalletPickerPresenter<V extends BaseWalletPickerView> {
 
    void performCleanup();
 
-   Observable<WalletPickerAttachment> attachedPhotos();
+   Observable<List<BasePickerViewModel>> attachedItems();
 }

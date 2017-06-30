@@ -11,12 +11,15 @@ import com.worldventures.dreamtrips.databinding.PickerAdapterItemAlbumFacebookBi
 import com.worldventures.dreamtrips.databinding.PickerAdapterItemPhotoFacebookBinding;
 import com.worldventures.dreamtrips.databinding.PickerAdapterItemPhotoGalleryBinding;
 import com.worldventures.dreamtrips.databinding.PickerAdapterItemStaticBinding;
+import com.worldventures.dreamtrips.databinding.PickerAdapterItemVideoGalleryBinding;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.albums.WalletFacebookAlbumHolder;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.albums.WalletFacebookAlbumModel;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos.WalletFacebookPhotoHolder;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos.WalletFacebookPhotoModel;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletGalleryPhotoHolder;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletGalleryPhotoModel;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletGalleryVideoHolder;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletGalleryVideoModel;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletIrregularPhotoHolder;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletIrregularPhotoModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseHolder;
@@ -25,6 +28,11 @@ public class WalletPickerHolderFactoryImpl implements WalletPickerHolderFactory 
    @Override
    public int type(WalletGalleryPhotoModel model) {
       return R.layout.picker_adapter_item_photo_gallery;
+   }
+
+   @Override
+   public int type(WalletGalleryVideoModel model) {
+      return R.layout.picker_adapter_item_video_gallery;
    }
 
    @Override
@@ -50,6 +58,9 @@ public class WalletPickerHolderFactoryImpl implements WalletPickerHolderFactory 
          case R.layout.picker_adapter_item_photo_gallery:
             final PickerAdapterItemPhotoGalleryBinding photoGalleryBinding = DataBindingUtil.bind(itemView);
             return new WalletGalleryPhotoHolder(photoGalleryBinding);
+         case R.layout.picker_adapter_item_video_gallery:
+            final PickerAdapterItemVideoGalleryBinding videoGalleryBinding = DataBindingUtil.bind(itemView);
+            return new WalletGalleryVideoHolder(videoGalleryBinding);
          case R.layout.picker_adapter_item_static:
             final PickerAdapterItemStaticBinding itemStaticBinding = DataBindingUtil.bind(itemView);
             return new WalletIrregularPhotoHolder(itemStaticBinding);

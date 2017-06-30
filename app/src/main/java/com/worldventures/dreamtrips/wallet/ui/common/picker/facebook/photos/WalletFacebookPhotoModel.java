@@ -55,7 +55,7 @@ public class WalletFacebookPhotoModel extends WalletFacebookPickerModel<List<Fac
 
    @Override
    public long getDateTaken() {
-      throw new UnsupportedOperationException("WalletFacebookPhotoModel doesn't support taken date");
+      return 0;
    }
 
    @Override

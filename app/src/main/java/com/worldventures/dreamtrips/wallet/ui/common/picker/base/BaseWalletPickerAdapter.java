@@ -77,11 +77,11 @@ public class BaseWalletPickerAdapter<M extends BasePickerViewModel> extends Recy
       return items.indexOf(item);
    }
 
-   public List<M> getChosenPhotos(int staticItemsCount) {
+   public List<M> getChosenMedia(int staticItemsCount) {
       return Queryable.from(items.subList(staticItemsCount, items.size())).filter(M::isChecked).toList();
    }
 
-   public List<M> getChosenPhotos() {
-      return getChosenPhotos(0);
+   public List<M> getChosenMedia() {
+      return getChosenMedia(0);
    }
 }

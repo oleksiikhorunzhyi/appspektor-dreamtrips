@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.service.picker.WalletPickerFacebookService;
 
 import java.util.List;
 
@@ -59,6 +60,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected Router router;
    @Inject protected ActivityRouter activityRouter;
+   @Inject WalletPickerFacebookService walletPickerFacebookService;
 
    // TODO Move here RX lifecycle composers from ActivityWithPresenter
    private Subscription logoutSubscription;
@@ -195,6 +197,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
+      if (walletPickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
       activityResultDelegate.onActivityResult(requestCode, resultCode, data);
       pickImageDelegate.onActivityResult(requestCode, resultCode, data);
    }

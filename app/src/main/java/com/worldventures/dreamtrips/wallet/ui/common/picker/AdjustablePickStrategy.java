@@ -3,18 +3,25 @@ package com.worldventures.dreamtrips.wallet.ui.common.picker;
 
 public class AdjustablePickStrategy implements WalletPickLimitStrategy {
 
-   private final int pickLimit;
+   private final int photoPickLimit;
+   private final int videoDurationLimit;
 
    public AdjustablePickStrategy() {
-      this.pickLimit = Integer.MAX_VALUE;
+      this(Integer.MAX_VALUE, 0);
    }
 
-   public AdjustablePickStrategy(int pickLimit) {
-      this.pickLimit = pickLimit;
+   public AdjustablePickStrategy(int photoPickLimit, int videoDurationLimit) {
+      this.photoPickLimit = photoPickLimit;
+      this.videoDurationLimit = videoDurationLimit;
    }
 
    @Override
-   public int pickLimit() {
-      return pickLimit;
+   public int photoPickLimit() {
+      return photoPickLimit;
+   }
+
+   @Override
+   public int videoDurationLimit() {
+      return videoDurationLimit;
    }
 }

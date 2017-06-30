@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -193,7 +194,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    @SuppressWarnings("ConstantConditions")
-   void handlePickedPhoto(BasePickerViewModel model) {
+   void handlePickedPhoto(PhotoPickerModel model) {
       getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
    }
 

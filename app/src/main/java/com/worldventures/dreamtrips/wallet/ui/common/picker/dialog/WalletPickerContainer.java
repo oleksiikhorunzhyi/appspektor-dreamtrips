@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 
 public class WalletPickerContainer extends FrameLayout {
-   private final AnimatorSet navigationAnimatorSet = new AnimatorSet();
+   private AnimatorSet navigationAnimatorSet;
    private TreeMap<WalletPickerStep, BaseWalletPickerLayout> screens;
    private WalletPickerStep currentStep;
 
@@ -48,6 +48,7 @@ public class WalletPickerContainer extends FrameLayout {
 
    public void setup(TreeMap<WalletPickerStep, BaseWalletPickerLayout> screens) {
       this.screens = screens;
+      this.navigationAnimatorSet = new AnimatorSet();
       goNext();
    }
 
@@ -95,7 +96,7 @@ public class WalletPickerContainer extends FrameLayout {
          @Override
          public void onAnimationEnd(Animator animation) {
             super.onAnimationEnd(animation);
-            animation.removeListener(this);
+            navigationAnimatorSet.removeListener(this);
             if (fadeOutScreen != null) {
                storeLayoutDimensionsForDummyView(fadeOutScreen.getWidth(), fadeOutScreen.getHeight());
                removeView(fadeOutScreen);
@@ -126,8 +127,8 @@ public class WalletPickerContainer extends FrameLayout {
       return fadeScreenCandidate;
    }
 
-   public WalletPickerStep getCurrentStep() {
-      return currentStep;
+   public boolean canGoBack() {
+      return currentStep != screens.firstKey();
    }
 
    public TreeMap<WalletPickerStep, BaseWalletPickerLayout> getScreens() {
@@ -139,5 +140,13 @@ public class WalletPickerContainer extends FrameLayout {
       dummyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
       dummyView.setBackgroundColor(Color.TRANSPARENT);
       return dummyView;
+   }
+
+   public void reset() {
+      navigationAnimatorSet.cancel();
+      navigationAnimatorSet = null;
+      screens.clear();
+      currentStep = null;
+      removeAllViews();
    }
 }

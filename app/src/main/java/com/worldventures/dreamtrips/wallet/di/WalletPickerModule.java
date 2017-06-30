@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.wallet.di;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -51,9 +49,9 @@ public class WalletPickerModule {
    }
 
    @Provides
-   WalletGalleryPickerPresenter provideWalletGalleryPickerPresenter(Context context, PickImageDelegate pickImageDelegate,
+   WalletGalleryPickerPresenter provideWalletGalleryPickerPresenter(PickImageDelegate pickImageDelegate,
          MediaInteractor mediaInteractor, PermissionDispatcher permissionDispatcher) {
-      return new WalletGalleryPickerPresenterImpl(context, pickImageDelegate, mediaInteractor, permissionDispatcher);
+      return new WalletGalleryPickerPresenterImpl(pickImageDelegate, mediaInteractor, permissionDispatcher);
    }
 
    @Provides

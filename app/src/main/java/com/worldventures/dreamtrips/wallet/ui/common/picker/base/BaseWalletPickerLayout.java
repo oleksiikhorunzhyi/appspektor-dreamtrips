@@ -5,12 +5,11 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.AsyncLayoutInflater;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerS
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.RecyclerItemClickListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -33,7 +33,7 @@ import rx.Observable;
 
 
 public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter, M extends BasePickerViewModel> extends FrameLayout
-      implements BaseWalletPickerView<M>, AsyncLayoutInflater.OnInflateFinishedListener, ProgressView, ErrorView {
+      implements BaseWalletPickerView<M>, ProgressView, ErrorView {
 
    @InjectView(R.id.picker_recycler_view) PickerGridRecyclerView pickerRecyclerView;
    @InjectView(R.id.picker_progress) ProgressBar progressBar;
@@ -51,18 +51,12 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
 
    public BaseWalletPickerLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
       super(context, attrs);
-      init();
+      initView();
    }
 
-   private void init() {
-      final AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
-      asyncLayoutInflater.inflate(R.layout.wallet_picker_layout, this, this);
-   }
-
-   @Override
-   public void onInflateFinished(View view, int resid, ViewGroup parent) {
-      parent.addView(view);
-      ButterKnife.inject(this, view);
+   protected void initView() {
+      LayoutInflater.from(getContext()).inflate(R.layout.wallet_picker_layout, this);
+      ButterKnife.inject(this);
       tvPickerError.setText(getContext().getString(R.string.wallet_picker_error_contents, getFailedActionText()));
       adapter = new BaseWalletPickerAdapter<>(new ArrayList<>(), new WalletPickerHolderFactoryImpl());
       layoutManager = new GridAutofitLayoutManager(getContext(), getContext().getResources()
@@ -122,8 +116,8 @@ public abstract class BaseWalletPickerLayout<P extends BaseWalletPickerPresenter
       getPresenter().detachView(true);
    }
 
-   public Observable<WalletPickerAttachment> attachedPhotos() {
-      return getPresenter().attachedPhotos();
+   public Observable<List<BasePickerViewModel>> attachedItems() {
+      return getPresenter().attachedItems().startWith(Observable.just(Collections.emptyList()));
    }
 
    public void setOnNextClickListener(OnNextClickListener onNextClickListener) {

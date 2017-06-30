@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos;
 
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetPhotosCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerAttachment;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.WalletPickerFacebookPresenterImpl;
 
 import java.util.List;
@@ -51,9 +51,12 @@ public class WalletPickerFacebookPhotosPresenterImpl extends WalletPickerFaceboo
    public void attachImages() {
       final List<BasePickerViewModel> result = Queryable
             .from(getView().getChosenPhotos())
-            .map(element -> (BasePickerViewModel) element)
+            .map(element -> {
+               element.setSource(MediaAttachment.Source.FACEBOOK);
+               return (BasePickerViewModel) element;
+            })
             .toList();
-      getResultPublishSubject().onNext(new WalletPickerAttachment(WalletPickerAttachment.WalletPickerSource.FACEBOOK, result));
+      getResultPublishSubject().onNext(result);
    }
 
    @Override

@@ -3,13 +3,11 @@ package com.worldventures.dreamtrips.wallet.ui.common.picker.dialog;
 
 import android.view.KeyEvent;
 
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
-
-import java.util.List;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 
 public interface WalletPickerDialogPresenter<V extends WalletPickerDialogView> {
 
-   List<BasePickerViewModel> providePickerResult();
+   MediaPickerAttachment providePickerResult();
 
    boolean handleKeyPress(int keyCode, KeyEvent event);
 

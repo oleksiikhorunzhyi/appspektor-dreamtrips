@@ -6,8 +6,8 @@ import android.util.Pair;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class MediaAttachmentPrepareCommand extends Command<List<Uri>> implements InjectableAction {
-   private final List<BasePickerViewModel> attachmentToPrepare;
+   private final List<PhotoPickerModel> attachmentToPrepare;
    @Inject DrawableUtil drawableUtil;
 
-   public MediaAttachmentPrepareCommand(List<BasePickerViewModel> attachmentToPrepare) {
+   public MediaAttachmentPrepareCommand(List<PhotoPickerModel> attachmentToPrepare) {
       this.attachmentToPrepare = attachmentToPrepare;
    }
 
@@ -31,7 +31,7 @@ public class MediaAttachmentPrepareCommand extends Command<List<Uri>> implements
    protected void run(CommandCallback<List<Uri>> callback) throws Throwable {
       try {
          final List<Uri> result = new ArrayList<>();
-         for (BasePickerViewModel model : attachmentToPrepare) {
+         for (PhotoPickerModel model : attachmentToPrepare) {
             Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, model.getAbsolutePath());
             result.add(convertPickedPhotoToUri(pair.first));
 

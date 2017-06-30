@@ -2,13 +2,15 @@ package com.worldventures.dreamtrips.wallet.ui.common.picker.base;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
+import java.util.List;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 
 public abstract class BaseWalletPickerPresenterImpl<V extends BaseWalletPickerView> extends MvpBasePresenter<V> implements BaseWalletPickerPresenter<V> {
 
-   private final PublishSubject<WalletPickerAttachment> resultPublishSubject = PublishSubject.create();
+   private final PublishSubject<List<BasePickerViewModel>> resultPublishSubject = PublishSubject.create();
 
    public void attachView(V view){
       super.attachView(view);
@@ -25,11 +27,11 @@ public abstract class BaseWalletPickerPresenterImpl<V extends BaseWalletPickerVi
    }
 
    @Override
-   public Observable<WalletPickerAttachment> attachedPhotos() {
+   public Observable<List<BasePickerViewModel>> attachedItems() {
       return resultPublishSubject.asObservable();
    }
 
-   public PublishSubject<WalletPickerAttachment> getResultPublishSubject() {
+   public PublishSubject<List<BasePickerViewModel>> getResultPublishSubject() {
       return resultPublishSubject;
    }
 }

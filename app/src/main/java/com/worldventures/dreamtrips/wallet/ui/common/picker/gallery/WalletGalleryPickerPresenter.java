@@ -5,9 +5,15 @@ import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BaseWalletPicke
 
 public interface WalletGalleryPickerPresenter extends BaseWalletPickerPresenter<WalletGalleryPickerView> {
 
-   void tryOpenCamera();
+   void tryOpenCameraForPhoto();
 
-   void openCamera();
+   void openCameraForPhoto();
 
-   void attachImages();
+   void tryOpenCameraForVideo();
+
+   void openCameraForVideo();
+
+   void attachMedia();
+
+   void handleCameraClick();
 }

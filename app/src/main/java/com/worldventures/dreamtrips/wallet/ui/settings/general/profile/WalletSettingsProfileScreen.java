@@ -127,9 +127,9 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
       walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
-      walletPickerDialog.setOnDoneListener(models -> {
-         if (!models.isEmpty()) {
-            presenter.handlePickedPhoto(models.get(0));
+      walletPickerDialog.setOnDoneListener(result -> {
+         if (!result.isEmpty()) {
+            presenter.handlePickedPhoto(result.getChosenImages().get(0));
          }
       });
       if (initialPhotoUrl != null) {

@@ -4,17 +4,23 @@ package com.worldventures.dreamtrips.wallet.ui.common.picker.dialog;
 import android.view.KeyEvent;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModelImpl;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerAttachment;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletGalleryVideoModel;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayList;
 
 import icepick.State;
 
 public class WalletPickerDialogPresenterImpl extends MvpBasePresenter<WalletPickerDialogView> implements WalletPickerDialogPresenter {
 
-   @State WalletPickerAttachment pickerAttachment;
+   @State ArrayList<BasePickerViewModel> pickerAttachment;
+   @State MediaPickerAttachment attachment;
 
    public WalletPickerDialogPresenterImpl() {
    }
@@ -22,19 +28,22 @@ public class WalletPickerDialogPresenterImpl extends MvpBasePresenter<WalletPick
    @Override
    public void attachView(WalletPickerDialogView view) {
       super.attachView(view);
+      pickerAttachment = new ArrayList<>();
+      attachment = new MediaPickerAttachment(getView().getRequestId());
       observeAttachedPhotos();
    }
 
    public void observeAttachedPhotos() {
       getView()
-            .attachedPhotos()
+            .attachedMedia()
             .compose(getView().lifecycle())
             .subscribe(attachment -> {
-               this.pickerAttachment = attachment;
+               pickerAttachment.clear();
+               pickerAttachment.addAll(attachment);
                if (getView().getPickLimit() > 1) {
-                  getView().updatePickedItemsCount(pickerAttachment.getChosenPhotos().size());
+                  getView().updatePickedItemsCount(pickerAttachment.size());
                }
-               if (pickerAttachment.getPickerSource() == WalletPickerAttachment.WalletPickerSource.CAMERA) {
+               if (getView().getPickLimit() == 1 && pickerAttachment.get(0).getSource() == MediaAttachment.Source.CAMERA) {
                   getView().onDone();
                }
             });
@@ -47,8 +56,17 @@ public class WalletPickerDialogPresenterImpl extends MvpBasePresenter<WalletPick
    }
 
    @Override
-   public List<BasePickerViewModel> providePickerResult() {
-      return pickerAttachment != null ? pickerAttachment.getChosenPhotos() : Collections.emptyList();
+   public MediaPickerAttachment providePickerResult() {
+      for (BasePickerViewModel model : pickerAttachment) {
+         MediaPickerModelImpl mediaPickerModel = null;
+         if (model.getType() == MediaPickerModel.Type.VIDEO) {
+            mediaPickerModel = new VideoPickerModel(model.getAbsolutePath(), ((WalletGalleryVideoModel) model).getDuration());
+         } else if (model.getType() == MediaPickerModel.Type.PHOTO){
+            mediaPickerModel = new PhotoPickerModel(model.getAbsolutePath(), model.getDateTaken());
+         }
+         attachment.addMedia(mediaPickerModel);
+      }
+      return attachment;
    }
 
    @Override
@@ -56,7 +74,7 @@ public class WalletPickerDialogPresenterImpl extends MvpBasePresenter<WalletPick
       boolean shouldConsume = false;
       if (keyCode == KeyEvent.KEYCODE_BACK
             && keyEvent.getAction() == KeyEvent.ACTION_DOWN
-            && getView().getCurrentStep() != WalletPickerStep.GALLERY) {
+            && getView().canGoBack()) {
          getView().goBack();
          shouldConsume = true;
       }
@@ -66,5 +84,6 @@ public class WalletPickerDialogPresenterImpl extends MvpBasePresenter<WalletPick
    @Override
    public void performCleanUp() {
       pickerAttachment = null;
+      attachment = null;
    }
 }

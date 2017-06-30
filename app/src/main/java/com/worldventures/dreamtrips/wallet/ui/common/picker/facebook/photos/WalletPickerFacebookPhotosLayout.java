@@ -69,12 +69,12 @@ public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout
 
    @Override
    public int getPickLimit() {
-      return walletPickLimitStrategy.pickLimit();
+      return walletPickLimitStrategy.photoPickLimit();
    }
 
    @Override
    public List<WalletFacebookPhotoModel> getChosenPhotos() {
-      return getAdapter().getChosenPhotos();
+      return getAdapter().getChosenMedia();
    }
 
    @Override
@@ -94,9 +94,9 @@ public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout
       getAdapter().updateItem(position);
       boolean isLimitReached = isLimitReached(getChosenPhotos().size());
       if (isLimitReached) {
-         if (walletPickLimitStrategy.pickLimit() > 1) {
+         if (walletPickLimitStrategy.photoPickLimit() > 1) {
             Toast.makeText(getContext(), getContext().getString(R.string.wallet_picker_limit_reached,
-                  String.valueOf(walletPickLimitStrategy.pickLimit())), Toast.LENGTH_SHORT).show();
+                  String.valueOf(walletPickLimitStrategy.photoPickLimit())), Toast.LENGTH_SHORT).show();
             getAdapter().updateItem(position);
          } else {
             WalletFacebookPhotoModel modelToRevert =
@@ -109,6 +109,6 @@ public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout
    }
 
    private boolean isLimitReached(int count) {
-      return walletPickLimitStrategy.pickLimit() > 0 && count > walletPickLimitStrategy.pickLimit();
+      return walletPickLimitStrategy.photoPickLimit() > 0 && count > walletPickLimitStrategy.photoPickLimit();
    }
 }

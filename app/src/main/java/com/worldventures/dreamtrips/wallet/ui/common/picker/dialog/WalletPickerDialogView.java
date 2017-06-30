@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.common.picker.dialog;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerAttachment;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -13,11 +15,13 @@ public interface WalletPickerDialogView extends MvpView, RxLifecycleView {
 
    void updatePickedItemsCount(int count);
 
-   WalletPickerStep getCurrentStep();
+   boolean canGoBack();
 
    void goBack();
 
-   Observable<WalletPickerAttachment> attachedPhotos();
+   Observable<List<BasePickerViewModel>> attachedMedia();
 
    int getPickLimit();
+
+   int getRequestId();
 }

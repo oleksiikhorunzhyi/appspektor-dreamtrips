@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHol
 
 public class WalletGalleryPhotoModel extends WalletGalleryPickerModel {
    private String absolutePath;
-   private String imageUri;
+   private Uri uri;
    private boolean checked;
    private long dateTaken;
    private Size size;
@@ -28,7 +28,7 @@ public class WalletGalleryPhotoModel extends WalletGalleryPickerModel {
 
    public WalletGalleryPhotoModel(String absolutePath, long dateTaken) {
       this.absolutePath = absolutePath;
-      this.imageUri = ValidationUtils.isUrl(absolutePath) ? this.absolutePath : "file://" + this.absolutePath;
+      this.uri = Uri.parse(ValidationUtils.isUrl(absolutePath) ? this.absolutePath : "file://" + this.absolutePath);
       this.dateTaken = dateTaken;
    }
 
@@ -54,7 +54,7 @@ public class WalletGalleryPhotoModel extends WalletGalleryPickerModel {
 
    @Override
    public Uri getUri() {
-      return Uri.parse(imageUri);
+      return uri;
    }
 
    @Override

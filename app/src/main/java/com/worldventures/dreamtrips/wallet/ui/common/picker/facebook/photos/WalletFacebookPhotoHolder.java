@@ -1,39 +1,17 @@
 package com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos;
 
 
-import android.view.View;
-import android.widget.ImageView;
+import com.worldventures.dreamtrips.databinding.PickerAdapterItemPhotoFacebookBinding;
+import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerHolder;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseHolder;
+public class WalletFacebookPhotoHolder extends BasePickerHolder<PickerAdapterItemPhotoFacebookBinding, WalletFacebookPhotoModel> {
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
-public class WalletFacebookPhotoHolder extends BaseHolder<WalletFacebookPhotoModel> {
-
-   @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivBg;
-   @InjectView(R.id.pick) ImageView pick;
-   private WalletFacebookPhotoModel model;
-
-   public WalletFacebookPhotoHolder(View itemView) {
-      super(itemView);
-      ButterKnife.inject(this, itemView);
+   public WalletFacebookPhotoHolder(PickerAdapterItemPhotoFacebookBinding photoFacebookBinding) {
+      super(photoFacebookBinding);
    }
 
    @Override
    public void setData(WalletFacebookPhotoModel data) {
-      this.model = data;
-      ivBg.setImageURI(model.getUri());
-      updatePickState();
-   }
-
-   private void updatePickState() {
-      if (model.isChecked()) {
-         pick.setImageResource(R.drawable.add_photo_icon_selected);
-      } else {
-         pick.setImageResource(R.drawable.add_photo_icon);
-      }
+      getDataBinding().setPhotoFacebookModel(data);
    }
 }

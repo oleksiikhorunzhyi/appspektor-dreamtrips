@@ -11,7 +11,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetPhotosCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.WalletPickLimitStrategy;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHolderFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerStep;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.WalletPickerFacebookLayout;
 
@@ -22,7 +21,7 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout<WalletPickerFacebookPhotosPresenter, WalletFacebookPhotoModel, WalletPickerFacebookPhotosAdapter> implements WalletPickerFacebookPhotosView {
+public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout<WalletPickerFacebookPhotosPresenter, WalletFacebookPhotoModel> implements WalletPickerFacebookPhotosView {
 
    public static final String FB_ALBUM_ID = "fb_album_id";
 
@@ -37,11 +36,6 @@ public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout
    public WalletPickerFacebookPhotosLayout(WalletPickLimitStrategy walletPickLimitStrategy, @NonNull Context context, @Nullable AttributeSet attrs) {
       super(context, attrs);
       this.walletPickLimitStrategy = walletPickLimitStrategy;
-   }
-
-   @Override
-   public WalletPickerFacebookPhotosAdapter createAdapter(List<WalletFacebookPhotoModel> items, WalletPickerHolderFactory holderFactory) {
-      return new WalletPickerFacebookPhotosAdapter(items, holderFactory);
    }
 
    @Override
@@ -90,7 +84,7 @@ public class WalletPickerFacebookPhotosLayout extends WalletPickerFacebookLayout
 
    @Override
    public void handleItemClick(int position) {
-      if (getAdapter().getItemViewType(position) == R.layout.adapter_item_photo_facebook) {
+      if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_photo_facebook) {
          updateItem(position);
          getPresenter().attachImages();
       }

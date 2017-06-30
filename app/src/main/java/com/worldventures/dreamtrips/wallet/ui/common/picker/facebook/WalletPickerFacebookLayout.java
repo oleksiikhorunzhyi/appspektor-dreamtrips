@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BaseWalletPickerLayout;
 
-public abstract class WalletPickerFacebookLayout<T extends WalletPickerFacebookPresenter, M extends WalletFacebookPickerModel, A extends WalletPickerFacebookAdapter> extends BaseWalletPickerLayout<T, M, A> {
+public abstract class WalletPickerFacebookLayout<P extends WalletPickerFacebookPresenter, M extends WalletFacebookPickerModel> extends BaseWalletPickerLayout<P, M> {
 
    private int previousTotal;
    private boolean loading;

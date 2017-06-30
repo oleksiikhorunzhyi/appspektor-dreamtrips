@@ -12,10 +12,11 @@
          android:visibility="gone"
          />
 
-   <android.support.v7.widget.RecyclerView
+   <com.worldventures.dreamtrips.wallet.ui.common.picker.base.PickerGridRecyclerView
          android:id="@+id/picker_recycler_view"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:layoutAnimation="@anim/bottom_to_top_anim_grid"
          android:padding="@dimen/spacing_tiniest"
          />
 

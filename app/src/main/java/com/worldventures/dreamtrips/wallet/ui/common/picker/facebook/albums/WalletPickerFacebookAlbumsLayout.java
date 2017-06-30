@@ -10,19 +10,16 @@ import android.util.AttributeSet;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.facebook.exception.FacebookAccessTokenException;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.WalletPickerHolderFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerStep;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.WalletPickerFacebookLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos.WalletPickerFacebookPhotosLayout;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class WalletPickerFacebookAlbumsLayout extends WalletPickerFacebookLayout<WalletPickerFacebookAlbumsPresenter, WalletFacebookAlbumModel, WalletPickerFacebookAlbumsAdapter> implements WalletPickerFacebookAlbumView {
+public class WalletPickerFacebookAlbumsLayout extends WalletPickerFacebookLayout<WalletPickerFacebookAlbumsPresenter, WalletFacebookAlbumModel> implements WalletPickerFacebookAlbumView {
 
    @Inject WalletPickerFacebookAlbumsPresenter presenter;
 
@@ -35,13 +32,8 @@ public class WalletPickerFacebookAlbumsLayout extends WalletPickerFacebookLayout
    }
 
    @Override
-   public WalletPickerFacebookAlbumsAdapter createAdapter(List<WalletFacebookAlbumModel> items, WalletPickerHolderFactory holderFactory) {
-      return new WalletPickerFacebookAlbumsAdapter(items, holderFactory);
-   }
-
-   @Override
    public void handleItemClick(int position) {
-      if (getAdapter().getItemViewType(position) == R.layout.adapter_item_facebook_album) {
+      if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_album_facebook) {
          final WalletFacebookAlbumModel model = getAdapter().getItem(position);
          if (getOnNextClickListener() != null) {
             final Bundle args = new Bundle();

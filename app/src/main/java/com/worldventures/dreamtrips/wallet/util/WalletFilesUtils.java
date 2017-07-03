@@ -14,7 +14,7 @@ import timber.log.Timber;
 
 public class WalletFilesUtils {
 
-   public static final String FIRMWARE_FILE_NAME = "flyee_firmware.zip";
+   private static final String FIRMWARE_FILE_NAME = "flyee_firmware.zip";
 
    private WalletFilesUtils() {}
 

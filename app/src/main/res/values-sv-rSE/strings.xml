@@ -189,7 +189,7 @@
    <string name="selected">Valt: %1$d</string>
    <string name="email_is_not_valid">Ogiltig e-postadress</string>
    <string name="invitation_deselect_all">Avmarkera alla</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det här.<br/>%3$s]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla här. <br/>%3$s]]></string>
    <string name="invite_add_photo">Lägg till foto</string>
    <string name="invite_select_first">Välj kontakter först</string>
    <string name="filters_show_favorite">VISA FAVORITRESOR</string>
@@ -345,6 +345,10 @@
    <string name="no_feed">Du kommer att se din väns aktivitet här.\n Klicka på länken nedan för att hitta dina vänner</string>
    <string name="search_friends">Sök efter vänner</string>
 
+<<<<<<< HEAD
+=======
+   <string name="feed_share_post_button">Dela ett foto, en video eller en idé</string>
+>>>>>>> 071a513... Add translations
    <string name="feed_view_profile_btn">Visa profil</string>
    <string name="start_searching">Skriv för att börja söka</string>
 
@@ -358,6 +362,8 @@
    <string name="terms_and_conditions_reject">Inte nu</string>
 
    <string name="camera">Kamera</string>
+   <string name="camera_take_a_picture">Ta en bild</string>
+   <string name="camera_record_a_video">Spela in en video</string>
    <string name="add_from_facebook">Lägg till från Facebook</string>
 
    <string name="photos_selected">Valt: %1$d</string>
@@ -372,6 +378,8 @@
    <string name="no_mutual_friends">Ni har inga gemensamma vänner</string>
 
    <string name="photo_limitation_message">Välj upp till %1$d foton</string>
+   <string name="picker_erros_photos_and_videos">Du kan inte välja bilder och videor</string>
+   <string name="picker_video_duration_limit">Du kan inte ladda upp en video som är mer än %1$d sekunder</string>
    <string name="pending">Väntar …</string>
 
    <string name="back">Tillbaka</string>
@@ -584,5 +592,10 @@
 
    <string name="n_friends_accepted">%1$d vänner accepterade.</string>
    <string name="friends_will_appear_momentarily">De kommer tillfälligt synas under Mina vänner.</string>
+
+   <string name="uploading_post_status_processing">Bearbetar</string>
+   <string name="uploading_post_status_progress_video"><b><i>Steg 1 av 2.</i></b> Laddar upp …</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Steg 2 av 2.</i></b> Bearbetar …</string>
+   <string name="uploading_post_status_progress_video_processing_failed">Bearbetningen misslyckades. Något är fel med videon</string>
 
 </resources>

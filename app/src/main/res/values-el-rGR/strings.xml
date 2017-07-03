@@ -189,7 +189,7 @@
    <string name="selected">Επιλέχθηκαν %1$d</string>
    <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
    <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το εδώ.<br/> %3$s]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια σου%1$s, %2$s <br/>Δες το εδώ. <br/>%3$s]]></string>
    <string name="invite_add_photo">Προσθήκη φωτογραφίας</string>
    <string name="invite_select_first">Επιλογή επαφών στην αρχή</string>
    <string name="filters_show_favorite">ΕΜΦΑΝΙΣΗ ΑΓΑΠΗΜΕΝΩΝ ΤΑΞΙΔΙΩΝ</string>
@@ -345,6 +345,7 @@
    <string name="no_feed">Εδώ θα βλέπετε τη δραστηριότητα των Φίλων σας.\n Κάντε κλικ στον παρακάτω σύνδεσμο για να βρείτε τους φίλους σας</string>
    <string name="search_friends">Αναζήτηση Φίλων</string>
 
+   <string name="feed_share_post_button">Μοιραστείτε μια φωτογραφία, ένα βίντεο ή μια ιδέα</string>
    <string name="feed_view_profile_btn">Προβολή προφίλ</string>
    <string name="start_searching">Πληκτρολογήστε για να ξεκινήσει η αναζήτηση</string>
 
@@ -358,6 +359,8 @@
    <string name="terms_and_conditions_reject">Όχι τώρα</string>
 
    <string name="camera">Κάμερα</string>
+   <string name="camera_take_a_picture">Τραβήξτε μια φωτογραφία</string>
+   <string name="camera_record_a_video">Τραβήξτε ένα βίντεο</string>
    <string name="add_from_facebook">Προσθήκη από το Facebook</string>
 
    <string name="photos_selected">Επιλέχθηκαν %1$d</string>
@@ -372,6 +375,8 @@
    <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
 
    <string name="photo_limitation_message">Επιλέξτε έως %1$d φωτογραφίες</string>
+   <string name="picker_erros_photos_and_videos">Δεν μπορείτε να επιλέξετε φωτογραφίες και βίντεο</string>
+   <string name="picker_video_duration_limit">Δεν μπορείτε να ανεβάσετε βίντεο περισσότερο από %1$d δευτερόλεπτα</string>
    <string name="pending">Σε εκκρεμότητα...</string>
 
    <string name="back">Πίσω</string>
@@ -584,5 +589,10 @@
 
    <string name="n_friends_accepted">%1$d φίλοι έγιναν αποδεκτοί.</string>
    <string name="friends_will_appear_momentarily">Θα εμφανιστούν στο Οι Φίλοι Μου άμεσα.</string>
+
+   <string name="uploading_post_status_processing">Γίνεται επεξεργασία</string>
+   <string name="uploading_post_status_progress_video"><b><i>Βήμα 1 από 2.</i></b> Φόρτωση…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Βήμα 2 από 2.</i></b> Επεξεργασία…</string>
+   <string name="uploading_post_status_progress_video_processing_failed">Αποτυχία επεξεργασίας Κάτι έγινε λάθος με το βίντεο</string>
 
 </resources>

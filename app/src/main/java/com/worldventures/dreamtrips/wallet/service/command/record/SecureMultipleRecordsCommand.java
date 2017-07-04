@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.nxt.BaseMultipleRecordsComman
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.TokenizeMultipleRecordsCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class SecureMultipleRecordsCommand extends Command<List<Record>> implemen
    @Inject NxtInteractor nxtInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final List<Record> records;
    private final boolean secureForLocalStorage;
@@ -53,7 +55,7 @@ public class SecureMultipleRecordsCommand extends Command<List<Record>> implemen
 
    @Override
    protected void run(CommandCallback<List<Record>> callback) throws Throwable {
-      boolean offlineModeEnabled = recordsStorage.readOfflineModeState();
+      boolean offlineModeEnabled = featureHelper.offlineModeState(recordsStorage.readOfflineModeState());
 
       if (offlineModeEnabled) {
          callback.onSuccess(records);

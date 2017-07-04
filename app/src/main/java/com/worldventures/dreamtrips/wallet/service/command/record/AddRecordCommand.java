@@ -19,6 +19,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
@@ -83,6 +84,7 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
    }
 
    private void saveRecordLocally(Record record) {
+      Timber.d("SC_ABS_LAYER give record: %s", record);
       recordInteractor.cardsListPipe()
             .send(RecordListCommand.add(record));
    }

@@ -1,1 +1,2 @@
 -dontwarn org.immutables.gson.**
+-dontwarn org.immutables.value.internal.**

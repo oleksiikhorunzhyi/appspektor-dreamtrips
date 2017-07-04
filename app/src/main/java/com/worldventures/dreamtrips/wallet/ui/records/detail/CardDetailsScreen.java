@@ -225,7 +225,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_card_details_success_save),
             ErrorViewFactory.<UpdateRecordCommand>builder()
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> getPresenter().updateNickName()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> getPresenter().updateNickName(), command -> {
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), command -> getPresenter().updateNickName(), command -> {
                   }))
                   .build()
       );

@@ -20,12 +20,12 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -39,11 +39,9 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.FeedStorageCommand;
@@ -52,8 +50,8 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -87,21 +85,19 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedStorageDelegate feedStorageDelegate;
 
-   @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
-   @Inject TripImagesInteractor tripImagesInteractor;
-   @Inject PostsInteractor postsInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
+   @Inject PingAssetStatusInteractor assetStatusInteractor;
 
    private Circle filterCircle;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
 
-   @State ArrayList<FeedItem> feedItems;
    private List<PostCompoundOperationModel> postUploads;
-   private List<PhotoGalleryModel> suggestedPhotos;
+   private List<PhotoPickerModel> suggestedPhotos;
+   @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
 
    @Override
@@ -123,20 +119,16 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       subscribePhotoGalleryCheck();
       subscribeUnreadConversationsCount();
       subscribeFriendsNotificationsCount();
-      subscribeToLikesChanges();
       subscribeToBackgroundUploadingOperations();
       translationDelegate.onTakeView(view, feedItems);
-
-      if (feedItems.size() != 0) {
-         refreshFeedItems();
-      }
+      if (feedItems.size() != 0) refreshFeedItems();
+      refreshFeed();
    }
 
    @Override
    public void onResume() {
       super.onResume();
       analyticsInteractor.analyticsActionPipe().send(new ViewFeedAction());
-      refreshFeed();
    }
 
    @Override
@@ -206,14 +198,15 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<FeedStorageCommand>()
-                  .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
+                  .onSuccess(feedStorageCommand -> feedChanged(feedStorageCommand.getResult()))
                   .onFail(this::handleError));
    }
 
-   private void refreshFeed(List<FeedItem> newFeedItems) {
-      feedItems.clear();
-      feedItems.addAll(newFeedItems);
+   private void feedChanged(List<FeedItem> items) {
+      feedItems = new ArrayList<>(items);
       refreshFeedItems();
+      view.dataSetChanged();
+      assetStatusInteractor.feedItemsVideoProcessingPipe().send(new FeedItemsVideoProcessingStatusCommand(items));
    }
 
    private void subscribeRefreshFeeds() {
@@ -298,9 +291,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
-                           .cast(PostCompoundOperationModel.class)
-                           .toList();
+                     postUploads = compoundOperationsCommand.getResult();
                      refreshFeedItems();
                   }));
    }
@@ -308,15 +299,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void onLikeItem(FeedItem feedItem) {
       feedActionHandlerDelegate.onLikeItem(feedItem);
-   }
-
-   private void subscribeToLikesChanges() {
-      feedInteractor.changeFeedEntityLikedStatusPipe()
-            .observe()
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(command -> itemLiked(command.getResult()))
-                  .onFail(this::handleError));
    }
 
    @Override
@@ -344,17 +326,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
    }
 
-   private void itemLiked(FeedEntity feedEntity) {
-      Queryable.from(feedItems).forEachR(feedItem -> {
-         FeedEntity item = feedItem.getItem();
-         if (item.getUid().equals(feedEntity.getUid())) {
-            item.syncLikeState(feedEntity);
-         }
-      });
-
-      refreshFeedItems();
-   }
-
    ///////////////////////////////////////////////////////////////////////////
    // Photo suggestions
    ///////////////////////////////////////////////////////////////////////////
@@ -372,7 +343,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             }).onFail((suggestedPhotoCommand, throwable) -> refreshFeedItems()));
    }
 
-   public boolean hasNewPhotos(List<PhotoGalleryModel> photos) {
+   public boolean hasNewPhotos(List<PhotoPickerModel> photos) {
       return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
    }
 
@@ -390,7 +361,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       suggestedPhotoHelper.subscribeNewPhotoNotifications(notificationObservable);
    }
 
-   public void preloadSuggestionChunk(@NonNull PhotoGalleryModel model) {
+   public void preloadSuggestionChunk(@NonNull PhotoPickerModel model) {
       suggestedPhotoHelper.preloadSuggestionPhotos(model);
    }
 
@@ -398,7 +369,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       suggestedPhotoHelper.sync();
    }
 
-   public void selectPhoto(@NonNull PhotoGalleryModel model) {
+   public void selectPhoto(@NonNull PhotoPickerModel model) {
       suggestedPhotoHelper.selectPhoto(model);
    }
 
@@ -406,10 +377,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       Observable.from(getSelectedSuggestionPhotos())
             .map(element -> {
                Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
-               return new PhotoGalleryModel(pair.first, pair.second);
+               return new PhotoPickerModel(pair.first, pair.second);
             })
             .map(photoGalleryModel -> {
-               ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
+               ArrayList<PhotoPickerModel> chosenImages = new ArrayList<>();
                chosenImages.add(photoGalleryModel);
                return new MediaAttachment(chosenImages, MediaAttachment.Source.GALLERY);
             })
@@ -417,7 +388,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment), error -> Timber.e(error, ""));
    }
 
-   public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {
+   public List<PhotoPickerModel> getSelectedSuggestionPhotos() {
       return suggestedPhotoHelper.selectedPhotos();
    }
 
@@ -500,8 +471,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View,
-         BlockingProgressView, FeedEntityEditingView {
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, BlockingProgressView,
+         FeedEntityEditingView {
 
       void setRequestsCount(int count);
 
@@ -509,7 +480,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
       void setUnreadConversationCount(int count);
 
-      void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList, List<PhotoGalleryModel> suggestedPhotos);
+      void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList, List<PhotoPickerModel> suggestedPhotos);
+
+      void dataSetChanged();
 
       void startLoading();
 

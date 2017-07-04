@@ -112,10 +112,10 @@ public class FeedEntityHolderDelegate {
                   .onFail(errorAction::call));
 
       commentsInteractor.createCommentPipe()
-            .observeWithReplay()
+            .observe()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<CreateCommentCommand>()
-                  .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
+                  .onSuccess(command -> feedEntityHolder.updateFeedEntity(command.getFeedEntity()))
                   .onFail(errorAction::call));
 
       commentsInteractor.editCommentPipe()

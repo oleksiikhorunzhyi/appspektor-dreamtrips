@@ -41,7 +41,6 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Inject MapperyContext mapperyContext;
    @Inject ReLoginInteractor reLoginInteractor;
    @Inject Observable<Device> deviceSource;
-   @Inject Set<ResponseListener> responseListeners;
 
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
    private final AuthRetryPolicy retryPolicy;
@@ -93,13 +92,6 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
-      if (holder.action() instanceof BaseHttpAction) {
-         if (responseListeners != null) {
-            for (ResponseListener responseListener : responseListeners) {
-               responseListener.onResponse((BaseHttpAction) holder.action());
-            }
-         }
-      }
       retriedActions.remove(holder.action());
    }
 
@@ -143,9 +135,5 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
          Timber.w(loginState.exception, "Login error");
       }
       return null;
-   }
-
-   public interface ResponseListener {
-      void onResponse(BaseHttpAction action);
    }
 }

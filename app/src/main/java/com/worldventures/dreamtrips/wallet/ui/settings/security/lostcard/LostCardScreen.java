@@ -129,7 +129,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    public OperationView<FetchAddressWithPlacesCommand> provideOperationView() {
       //noinspection unchecked cast
       return new ComposableOperationView<>(null, null, ErrorViewFactory.<FetchAddressWithPlacesCommand>builder()
-            .addProvider(new HttpErrorViewProvider<>(getContext(),
+            .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                   presenter::retryFetchAddressWithPlaces,
                   fetchAddressWithPlacesCommand -> {
                   }))

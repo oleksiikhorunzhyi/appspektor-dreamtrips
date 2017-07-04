@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -15,8 +16,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import java.util.Date;
+import java.util.List;
 
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 
 public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPresenter.Screen, WalletSettingsPresenter, WalletSettingsPath> implements WalletSettingsPresenter.Screen {
@@ -24,6 +27,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.status) TextView status;
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
+   @InjectViews({R.id.item_help, R.id.item_security}) public List<View> toggleableItems;
 
    public WalletSettingsScreen(Context context) {
       this(context, null);

@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenter;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenterImpl;
@@ -89,16 +88,6 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    }
 
    @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-      //
-   }
-
-   @Override
    public void informUser(@StringRes int stringId) {
       //
    }
@@ -106,11 +95,6 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    @Override
    public void informUser(String message) {
       //
-   }
-
-   @Override
-   public boolean isConnected() {
-      return false;
    }
 
    @Override

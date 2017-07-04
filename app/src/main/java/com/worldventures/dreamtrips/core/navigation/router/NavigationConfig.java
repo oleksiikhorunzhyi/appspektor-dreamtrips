@@ -20,6 +20,7 @@ public class NavigationConfig {
    int gravity = 0x0000;
    int flags = -1;
    Fragment targetFragment;
+   boolean manualOrientationActivity = false;
 
    NavigationConfig(NavigationType type) {
       navigationType = type;
@@ -45,6 +46,10 @@ public class NavigationConfig {
 
    public int getContainerId() {
       return containerId;
+   }
+
+   public boolean isManualOrientationActivity() {
+      return manualOrientationActivity;
    }
 
    public boolean isBackStackEnabled() {

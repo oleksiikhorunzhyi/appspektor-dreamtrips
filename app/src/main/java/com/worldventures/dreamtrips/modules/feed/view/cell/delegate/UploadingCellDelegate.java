@@ -7,9 +7,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 
-public class UploadingCellDelegate implements UploadingPhotoPostsSectionCell.Delegate {
+public class UploadingCellDelegate implements UploadingPostsSectionCell.Delegate {
 
    private UploadingListenerPresenter presenter;
    private Context context;

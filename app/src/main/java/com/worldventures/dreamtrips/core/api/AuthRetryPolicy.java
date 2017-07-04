@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbs
 import java.util.List;
 
 import io.techery.janet.http.exception.HttpException;
+import io.techery.janet.http.exception.HttpServiceException;
 import rx.functions.Func0;
 import timber.log.Timber;
 
@@ -37,7 +38,8 @@ public class AuthRetryPolicy {
 
    private boolean shouldRetry(Throwable error) {
       Timber.d("Check retry");
-      return isLoginError(error) && isCredentialExist(appSessionHolder);
+      boolean wrapperException = error instanceof HttpServiceException && error.getCause() != null;
+      return isLoginError(wrapperException? error.getCause() : error) && isCredentialExist(appSessionHolder);
    }
 
    private void handleSession(Session session) {

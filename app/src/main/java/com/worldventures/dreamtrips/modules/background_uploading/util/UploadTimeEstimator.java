@@ -82,7 +82,11 @@ public class UploadTimeEstimator {
     * @param uploadingSpeed the value of speed for current part of uploading in bytes/seconds
     */
    private void updateAverageSpeed(double uploadingSpeed) {
-      averageUploadSpeed = SMOOTHING_FACTOR * uploadingSpeed + (1 - SMOOTHING_FACTOR) * averageUploadSpeed;
+      if (averageUploadSpeed == 0) {
+         averageUploadSpeed = uploadingSpeed;
+      } else {
+         averageUploadSpeed = SMOOTHING_FACTOR * uploadingSpeed + (1 - SMOOTHING_FACTOR) * averageUploadSpeed;
+      }
    }
 
    /**

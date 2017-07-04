@@ -5,11 +5,8 @@ import android.content.Context;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
-import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
@@ -17,10 +14,11 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
+import com.worldventures.dreamtrips.modules.background_uploading.VideoMicroserviceModule;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
 import java.net.CookieManager;
@@ -37,7 +35,6 @@ import io.techery.janet.ActionService;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.SmartCardActionService;
-import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 import io.techery.janet.smartcard.client.SmartCardClient;
 
@@ -45,8 +42,10 @@ import io.techery.janet.smartcard.client.SmartCardClient;
       includes = {
             JanetCommandModule.class,
             JanetServiceModule.class,
+            VideoMicroserviceModule.class,
             CacheActionStorageModule.class,
-            SmartCardModule.class
+            SmartCardModule.class,
+            MobileSdkJanetModule.class,
       },
       complete = false, library = true)
 public class JanetModule {
@@ -56,24 +55,14 @@ public class JanetModule {
 
    @Singleton
    @Provides
-   DreamTripsCommandServiceWrapper provideCommandService(@ForApplication Context context) {
-      return new DreamTripsCommandServiceWrapper(context);
+   DreamTripsCommandServiceWrapper provideCommandService(@ForApplication Context context, HttpErrorHandlingUtil util) {
+      return new DreamTripsCommandServiceWrapper(context, util);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionService provideCommandService(DreamTripsCommandServiceWrapper serviceWrapper) {
       return serviceWrapper;
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionService provideHttpService(@ForApplication Injector injector, HttpClient httpClient) {
-      return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient,
-            new GsonConverter(new GsonProvider()
-                  .provideBuilder()
-                  .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
-                  .create()));
    }
 
    @Singleton
@@ -96,9 +85,12 @@ public class JanetModule {
 
    @Singleton
    @Provides
-   Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
-         Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
+   Janet provideJanet(@ForApplication Context context,
+         Set<ActionService> services,
+         Set<ActionStorage> cacheStorageSet,
+         Set<MultipleActionStorage> multipleActionStorageSet) {
       Janet.Builder builder = new Janet.Builder();
+
       for (ActionService service : services) {
          service = new TimberServiceWrapper(service);
          service = new CacheResultWrapper(service) {{
@@ -142,7 +134,7 @@ public class JanetModule {
    @Provides
    Interceptor interceptor() {
       HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-      logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+      logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
       return logging;
    }
 

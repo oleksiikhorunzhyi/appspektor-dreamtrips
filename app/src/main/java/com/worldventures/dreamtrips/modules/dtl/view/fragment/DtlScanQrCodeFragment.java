@@ -9,11 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.zxing.Result;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
@@ -34,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import rx.functions.Action0;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
@@ -74,6 +72,11 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
                   .onPermissionRationaleAction(this::showRationaleForCamera)
                   .onPermissionDeniedAction(this::showDeniedForCamera));
       scanner.setResultHandler(this);
+   }
+
+   @Override
+   public void setCamera() {
+      startCamera();
    }
 
    void startCamera() {
@@ -124,11 +127,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    @Override
-   public void hideProgress() {
-      if (progressDialog != null) progressDialog.dismissWithAnimation();
-   }
-
-   @Override
    public void showProgress(@StringRes int titleText) {
       if (progressDialog == null || !progressDialog.isShowing()) {
          scanner.stopCamera();
@@ -139,6 +137,24 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
          progressDialog.setCancelable(false);
          progressDialog.show();
       } else progressDialog.setTitle(getString(titleText));
+   }
+
+   @Override
+   public void hideProgress() {
+      if (progressDialog != null) progressDialog.dismissWithAnimation();
+   }
+
+   @Override
+   public void showError(String message, Action0 action) {
+      SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
+            .setContentText(message)
+            .setConfirmText(getString(R.string.ok))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismissWithAnimation();
+               action.call();
+            });
+      alertDialog.setCancelable(false);
+      alertDialog.show();
    }
 
    @Override
@@ -166,43 +182,5 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
             .setConfirmClickListener(onSweetClickListener);
       alertDialog.setCancelable(false);
       alertDialog.show();
-   }
-
-   @Override
-   public void onApiCallFailed() {
-      hideProgress();
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      FieldError fieldError = Queryable.from(errorResponse.getErrors()).firstOrDefault();
-      //
-      if (fieldError != null) {
-         SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
-               .setContentText(fieldError.getFirstMessage())
-               .setConfirmText(getString(R.string.ok))
-               .setConfirmClickListener(sweetAlertDialog -> {
-                  switch (fieldError.field) {
-                     case DtlTransaction.BILL_TOTAL:
-                     case DtlTransaction.RECEIPT_PHOTO_URL:
-                        getPresenter().photoUploadFailed();
-                        break;
-                     case DtlTransaction.LOCATION:
-                     case DtlTransaction.CHECKIN:
-                        getActivity().finish();
-                        break;
-                     case DtlTransaction.MERCHANT_TOKEN:
-                     default:
-                        sweetAlertDialog.dismissWithAnimation();
-                        scanner.startCamera();
-                        break;
-                  }
-               });
-         alertDialog.setCancelable(false);
-         alertDialog.show();
-         return true;
-      }
-      //
-      return false;
    }
 }

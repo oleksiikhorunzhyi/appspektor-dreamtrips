@@ -345,8 +345,7 @@
    <string name="no_feed">Verás la actividad de tu amigo aquí.\n Haz clic en el enlace siguiente para encontrar a tus amigos</string>
    <string name="search_friends">Buscar amigos</string>
 
-   <string name="feed_share_post">Compartir publicación</string>
-   <string name="feed_share_photos">Compartir foto</string>
+   <string name="feed_share_post_button">Comparte una foto, video o idea</string>
    <string name="feed_view_profile_btn">Ver perfil</string>
    <string name="start_searching">Escribe para empezar a buscar</string>
 
@@ -360,6 +359,8 @@
    <string name="terms_and_conditions_reject">No ahora</string>
 
    <string name="camera">Cámara</string>
+   <string name="camera_take_a_picture">Toma una foto</string>
+   <string name="camera_record_a_video">Graba un video</string>
    <string name="add_from_facebook">Agregar de Facebook</string>
 
    <string name="photos_selected">%1$d seleccionados</string>
@@ -374,6 +375,8 @@
    <string name="no_mutual_friends">No tenéis ningún amigo mutuo</string>
 
    <string name="photo_limitation_message">Elige hasta %1$d fotos</string>
+   <string name="picker_erros_photos_and_videos">No se puede seleccionar fotos y videos</string>
+   <string name="picker_video_duration_limit">No se puede subir un video de más de %1$d segundos</string>
    <string name="pending">Pendiente...</string>
 
    <string name="back">Volver</string>
@@ -586,5 +589,10 @@
 
    <string name="n_friends_accepted">%1$d amigos aceptados.</string>
    <string name="friends_will_appear_momentarily">Aparecerán en Mis amigos momentáneamente.</string>
+
+   <string name="uploading_post_status_processing">Procesando</string>
+   <string name="uploading_post_status_progress_video"><b><i>Paso 1 de 2.</i></b> Cargando…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Paso 2 de 2.</i></b> En proceso…</string>
+   <string name="uploading_post_status_progress_video_processing_failed">No se pudo procesar. Ocurrió un error con el video</string>
 
 </resources>

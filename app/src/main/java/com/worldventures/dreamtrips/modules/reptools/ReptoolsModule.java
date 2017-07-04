@@ -24,6 +24,12 @@ public class ReptoolsModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideRepToolsComponent() {
-      return new ComponentDescription(REP_TOOLS, R.string.rep_tools, R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
+      return new ComponentDescription.Builder()
+            .key(REP_TOOLS)
+            .navMenuTitle(R.string.rep_tools)
+            .toolbarTitle(R.string.rep_tools)
+            .icon(R.drawable.ic_rep_tools)
+            .fragmentClass(RepToolsFragment.class)
+            .build();
    }
 }

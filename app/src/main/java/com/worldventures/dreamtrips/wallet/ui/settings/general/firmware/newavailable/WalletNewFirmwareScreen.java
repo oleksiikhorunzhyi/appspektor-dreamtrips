@@ -126,7 +126,7 @@ public class WalletNewFirmwareScreen
                   .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.error_something_went_wrong,
                         command -> getPresenter().fetchFirmwareInfo(),
                         command -> getPresenter().goBack()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         command -> getPresenter().fetchFirmwareInfo(),
                         command -> getPresenter().goBack()))
                   .build()

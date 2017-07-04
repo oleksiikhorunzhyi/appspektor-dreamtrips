@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.modules.feed.api.response;
 
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
-import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
+import com.worldventures.dreamtrips.core.janet.api_lib.ResponseListener;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 
 import timber.log.Timber;
 
-public class RequestCountResponseListener implements NewDreamTripsHttpService.ResponseListener {
+public class RequestCountResponseListener implements ResponseListener {
 
    protected final SnappyRepository db;
 
@@ -36,5 +36,4 @@ public class RequestCountResponseListener implements NewDreamTripsHttpService.Re
          }
       }
    }
-
 }

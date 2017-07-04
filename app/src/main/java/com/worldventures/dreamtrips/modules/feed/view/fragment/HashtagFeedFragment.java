@@ -22,6 +22,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
@@ -35,10 +36,12 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
+import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -56,11 +59,16 @@ import butterknife.InjectView;
 public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPresenter, HashtagFeedBundle>
       implements HashtagFeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, FeedEntityEditingView {
 
+   private static final int LANDSCAPE_MARGIN_PERCENTAGE = 16;
+
    @InjectView(R.id.empty_view) ViewGroup emptyView;
    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+
+   @Inject FeedListWidthInteractor feedListWidthInteractor;
+   private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
    RecyclerViewStateDelegate stateDelegate;
@@ -91,12 +99,16 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
          if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyDataSetChanged();
+            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
-      if (isTabletLandscape()) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
+      if (ViewUtils.isTablet(getContext())) {
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, true));
       }
+      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
+            statePaginatedRecyclerViewManager.stateRecyclerView);
+      feedWidthOrientationHelper.startReportingListWidth();
+
       fragmentWithFeedDelegate.init(feedAdapter);
       BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());
       fragmentWithFeedDelegate.registerDelegate(PhotoFeedItem.class, delegate);
@@ -237,8 +249,11 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void refreshFeedItems(List feedItems) {
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(feedItems);
+      fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+   }
+
+   @Override
+   public void dataSetChanged() {
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 

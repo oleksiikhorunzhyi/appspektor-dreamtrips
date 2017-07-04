@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPath;
@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.Wal
 import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +49,8 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
+   @Inject WalletFeatureHelper featureHelper;
 
    public WalletSecuritySettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -56,7 +59,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-
+      featureHelper.prepareSettingsSecurityScreen(view);
       observeSmartCardChanges();
 
       observeStealthModeController(view);
@@ -76,7 +79,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> trackSmartCardStealthMode(action.stealthModeEnabled))
-                  .onFail(ErrorHandler.create(getContext(), command -> stealthModeFailed()))
+                  .onFail(errorHandlerFactory.errorHandler(command -> stealthModeFailed()))
                   .wrap()
             );
 
@@ -86,7 +89,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> trackSmartCardLock(action.isLock()))
-                  .onFail(ErrorHandler.<SetLockStateCommand>builder(getContext())
+                  .onFail(errorHandlerFactory.<SetLockStateCommand>builder()
                         .defaultMessage(R.string.wallet_smartcard_connection_error)
                         .defaultAction(a -> lockStatusFailed())
                         .build()
@@ -225,7 +228,7 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
 
    void openLostCardScreen() {
-      navigator.go(new LostCardPath());
+      featureHelper.openFindCard(getContext(), () -> navigator.go(new LostCardPath()));
    }
 
    void openOfflineModeScreen() {

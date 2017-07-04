@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
-import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
+import com.worldventures.dreamtrips.modules.media_picker.presenter.BasePickerPresenter;
 import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
@@ -36,7 +36,7 @@ public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPre
             .subscribe(new ActionStateSubscriber<GetPhotosCommand>()
                   .onSuccess(getPhotosCommand -> {
                      List<FacebookPhoto> photosList = getPhotosCommand.getResult();
-                     photos.addAll(photosList);
+                     mediaPickerModels.addAll(photosList);
                      view.addItems(new ArrayList<>(photosList));
                   })
                   .onFail((getPhotosCommand, throwable) -> {

@@ -41,6 +41,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStat
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
@@ -53,6 +54,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDel
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.io.File;
 import java.util.List;
@@ -80,9 +82,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject RecordInteractor recordInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
    @Inject WalletNetworkService networkService;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final CardListStackConverter cardListStackConverter;
    private final CheckPinDelegate checkPinDelegate;
@@ -98,6 +102,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      featureHelper.prepareDashboardScreen(getView());
       getView().setDefaultSmartCard();
       checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
@@ -138,6 +143,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
+      if (featureHelper.addingCardIsNotSupported()) return;
       if (status.isFailAfterProvision()) {
          //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
@@ -256,6 +262,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       }
    }
 
+   public boolean isCardDetailSupported() {
+      return featureHelper.isCardDetailSupported();
+   }
+
    void navigationClick() {
       navigationDrawerPresenter.openDrawer();
    }
@@ -311,7 +321,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> { /*ignore here*/ });
+            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> Timber.d(throwable, ""));
 
       //noinspection ConstantConditions
       smartCardInteractor.smartCardSyncPipe()

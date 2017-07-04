@@ -346,8 +346,7 @@
    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
    <string name="search_friends">Search Friends</string>
 
-   <string name="feed_share_post">Share Post</string>
-   <string name="feed_share_photos">Share Photo</string>
+   <string name="feed_share_post_button">Share a photo, video or idea</string>
    <string name="feed_view_profile_btn">View Profile</string>
    <string name="start_searching">Type to start searching</string>
 
@@ -361,6 +360,8 @@
    <string name="terms_and_conditions_reject">Not Now</string>
 
    <string name="camera">Camera</string>
+   <string name="camera_take_a_picture">Take a picture</string>
+   <string name="camera_record_a_video">Record a video</string>
    <string name="add_from_facebook">Add from Facebook</string>
 
    <string name="photos_selected">%d selected</string>
@@ -375,6 +376,8 @@
    <string name="no_mutual_friends">You don\'t have any mutual friends</string>
 
    <string name="photo_limitation_message">Please choose up to %d photos</string>
+   <string name="picker_erros_photos_and_videos">You can\'t select photos and videos</string>
+   <string name="picker_video_duration_limit">You can\'t upload video more than %d seconds</string>
    <string name="pending">Pending…</string>
 
    <string name="back">Back</string>
@@ -587,5 +590,10 @@
 
    <string name="n_friends_accepted">%d friends accepted</string>
    <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
+
+   <string name="uploading_post_status_processing">Processing</string>
+   <string name="uploading_post_status_progress_video"><b><i>Step 1 of 2.</i></b> Uploading…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
+   <string name="uploading_post_status_progress_video_processing_failed">Failed to process. Something wrong with video</string>
 
 </resources>

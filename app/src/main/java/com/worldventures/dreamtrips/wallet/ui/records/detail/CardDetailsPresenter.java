@@ -9,6 +9,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.ChangeDefaultCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
@@ -51,6 +52,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject RecordInteractor recordInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject WalletNetworkService networkService;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private Record record;
 
@@ -304,6 +306,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(action, throwable -> Timber.e(throwable, ""));
+   }
+
+   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen {

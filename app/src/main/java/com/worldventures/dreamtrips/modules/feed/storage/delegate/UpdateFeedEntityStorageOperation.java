@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.storage.delegate;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -17,11 +16,20 @@ public class UpdateFeedEntityStorageOperation implements ListStorageOperation<Fe
 
    @Override
    public List<FeedItem<FeedEntity>> perform(List<FeedItem<FeedEntity>> items) {
-      FeedItem<FeedEntity> itemToUpdate = Queryable.from(items)
-            .firstOrDefault(item -> item.getItem().getUid().equals(feedEntity.getUid()));
-
-      if (itemToUpdate != null) itemToUpdate.setItem(feedEntity);
-
+      for (int i = 0; i < items.size(); i++) {
+         FeedItem<FeedEntity> oldFeedItem = items.get(i);
+         if (oldFeedItem.getItem().getUid().equals(feedEntity.getUid())) {
+            FeedItem feedItem = FeedItem.create(feedEntity);
+            feedItem.setAction(oldFeedItem.getAction());
+            feedItem.setCreatedAt(oldFeedItem.getCreatedAt());
+            feedItem.setLinks(oldFeedItem.getLinks());
+            feedItem.setMetaData(oldFeedItem.getMetaData());
+            feedItem.setType(oldFeedItem.getType());
+            feedItem.setReadAt(oldFeedItem.getReadAt());
+            feedItem.setItem(feedEntity);
+            items.set(i, feedItem);
+         }
+      }
       return items;
    }
 }

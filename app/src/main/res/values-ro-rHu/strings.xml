@@ -189,7 +189,7 @@
    <string name="selected">%1$d selectate</string>
    <string name="email_is_not_valid">E-mailul nu este valid</string>
    <string name="invitation_deselect_all">Deselectați toate</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Bună ziua, %1$s, %2$s<br/>Puteți vedea aici.<br/>%3$s]]></string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Bună ziua, %1$s, %2$s<br/>Puteți vedea aici.<br />%3$s]]></string>
    <string name="invite_add_photo">Adăugați fotografie</string>
    <string name="invite_select_first">Selectați inițial persoane de contact </string>
    <string name="filters_show_favorite">AFIȘAȚI CĂLĂTORIILE FAVORITE</string>
@@ -345,8 +345,7 @@
    <string name="no_feed">Aici veți vedea activitatea prietenului dvs.\n Faceți clic pe linkul de mai jos pentru a vă găsi prietenii</string>
    <string name="search_friends">Căutați prieteni</string>
 
-   <string name="feed_share_post">Partajați postarea</string>
-   <string name="feed_share_photos">Partajați fotografia</string>
+   <string name="feed_share_post_button">Distribuiți o fotografie, un videoclip sau o idee</string>
    <string name="feed_view_profile_btn">Vedeți profilul</string>
    <string name="start_searching">Tastați pentru a începe căutarea</string>
 
@@ -360,6 +359,8 @@
    <string name="terms_and_conditions_reject">Nu acum</string>
 
    <string name="camera">Aparat foto</string>
+   <string name="camera_take_a_picture">Faceți o fotografie</string>
+   <string name="camera_record_a_video">Înregistrați un videoclip</string>
    <string name="add_from_facebook">Adăugați de pe Facebook</string>
 
    <string name="photos_selected">%1$d selectate</string>
@@ -374,13 +375,15 @@
    <string name="no_mutual_friends">Nu aveți niciun prieten comun</string>
 
    <string name="photo_limitation_message">Alegeți până la %1$d fotografii</string>
-   <string name="pending">În așteptare...</string>
+   <string name="picker_erros_photos_and_videos">Nu puteți selecta fotografii și videoclipuri</string>
+   <string name="picker_video_duration_limit">Nu puteți încărca videoclip mai lung de %1$d secunde</string>
+   <string name="pending">În așteptare…</string>
 
    <string name="back">Înapoi</string>
    <string name="logout_component">Deconectare</string>
    <string name="start_typing_name">Începeți să introduceți numele</string>
 
-   <string name="multiple_dates">Date multiple, %1$s...</string>
+   <string name="multiple_dates">Date multiple, %1$s…</string>
 
    <string name="tag_photo">v-a etichetat pe</string>
 
@@ -586,5 +589,10 @@
 
    <string name="n_friends_accepted">%1$d prieteni acceptați.</string>
    <string name="friends_will_appear_momentarily">Aceștia vor apărea în Prietenii mei imediat.</string>
+
+   <string name="uploading_post_status_processing">Se procesează</string>
+   <string name="uploading_post_status_progress_video"><b><i>Pasul 1 din 2.</i></b> Încărcare…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Pasul 2 din 2.</i></b> Procesare…</string>
+   <string name="uploading_post_status_progress_video_processing_failed">Procesarea a eșuat. A apărut o eroare cu videoclipul</string>
 
 </resources>

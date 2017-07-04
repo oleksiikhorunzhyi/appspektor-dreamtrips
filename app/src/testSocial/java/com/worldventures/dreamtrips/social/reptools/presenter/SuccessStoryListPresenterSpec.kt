@@ -52,7 +52,6 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          it ("should handle error") {
             init(BaseContract.of(GetSuccessStoriesCommand::class.java).exception(RuntimeException()))
             doReturn(0).whenever(view).itemsCount
-            doReturn(false).whenever(presenter).isConnected
             presenter.takeView(view)
             presenter.onResume()
             verify(presenter, VerificationModeFactory.times(1)).handleError(any(), any())
@@ -83,6 +82,8 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          injector.registerProvider(SuccessStoriesInteractor::class.java, { successStoriesInteractor })
          injector.inject(presenter)
          presenter.onInjected()
+
+         doReturn(true).whenever(presenter).isConnected
       }
 
       fun makeStubStories(): List<SuccessStory> = mutableListOf(makeStubStory(1), makeStubStory(2))

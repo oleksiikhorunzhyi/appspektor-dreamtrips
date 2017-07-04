@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.*
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.ApiPlace
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.NearbyResponse
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull
 import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -149,6 +151,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var recordInteractor: RecordInteractor
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var locationStorage: LostCardRepository
+      val featureHelper: WalletFeatureHelper = WalletFeatureHelperFull()
 
       val deviceStore: DeviceStorage = SimpleDeviceStorage()
       val cardClient: SmartCardClient
@@ -205,7 +208,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper)
 
       fun mockLostCardStorage(): LostCardRepository {
          val lostCardRepository: LostCardRepository = mock()

@@ -152,6 +152,19 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Misc
    ///////////////////////////////////////////////////////////////////////////
 
+
+   @Override
+   public boolean contentSame(FeedEntity feedEntity) {
+      if (feedEntity == null || getClass() != feedEntity.getClass()) return false;
+
+      BaseFeedEntity that = (BaseFeedEntity) feedEntity;
+
+      if (commentsCount != that.commentsCount) return false;
+      if (liked != that.liked) return false;
+      if (likesCount != that.likesCount) return false;
+      return comments != null ? comments.equals(that.comments) : that.comments == null;
+   }
+
    @Override
    public void syncLikeState(FeedEntity feedEntity) {
       this.setLiked(feedEntity.isLiked());

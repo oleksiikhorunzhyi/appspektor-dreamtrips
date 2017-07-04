@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -34,7 +35,7 @@ public abstract class BasePhotoAttachmentPreviewView implements PhotoAttachmentP
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+   public void showPreview(List<Uri> attachments, boolean animate) {
       if (animate) {
          if (pulseAnimationSet != null) return;
          showPulseAnimation();

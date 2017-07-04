@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V>
-   implements FeedEditEntityPresenter, FeedEntityHolder {
+      implements FeedEditEntityPresenter, FeedEntityHolder {
 
    protected FeedItem feedItem;
 

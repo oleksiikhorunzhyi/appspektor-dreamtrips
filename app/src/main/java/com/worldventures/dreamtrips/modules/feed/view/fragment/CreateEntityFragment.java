@@ -8,10 +8,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -39,7 +39,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
             if (isResumed()) backStackDelegate.setListener(() -> onBack());
          }
       });
-      //
+
       attachImages();
    }
 
@@ -90,19 +90,24 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
 
    @OnClick(R.id.image)
    void onImage() {
-      showMediaPicker();
+      getPresenter().showMediaPicker();
    }
 
    protected void updatePickerState() {
       image.setEnabled(!pickerDisabled);
    }
 
-   protected void showMediaPicker() {
+   @Override
+   public void showMediaPicker(boolean picturesSelected, int videoPickLimit) {
       router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
+            .data(new PickerBundle.Builder()
+                  .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
+                  .setVideoPickLimit(videoPickLimit)
+                  .setVideoPickingEnabled(!picturesSelected)
+                  .build())
             .build());
    }
 
@@ -115,7 +120,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
 
    protected void attachImages() {
       if (!imageFromArgsAlreadyAttached && getMediaAttachment() != null) {
-         getPresenter().attachImages(getMediaAttachment());
+         getPresenter().attachMedia(getMediaAttachment());
          imageFromArgsAlreadyAttached = true;
       }
    }

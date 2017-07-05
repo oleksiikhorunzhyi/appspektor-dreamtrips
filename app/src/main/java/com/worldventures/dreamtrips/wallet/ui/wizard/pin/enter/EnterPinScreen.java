@@ -11,16 +11,20 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen, EnterPinPresenter, EnterPinPath> implements EnterPinPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.header_text_view) TextView headerTextView;
-   @InjectView(R.id.button_next) TextView nextButton;
    @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
 
    private DialogOperationScreen dialogOperationScreen;
@@ -66,7 +70,7 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
                .positiveText(R.string.wallet_close)
                .build();
       }
-      if(!infoLockGesturesDialog.isShowing()) infoLockGesturesDialog.show();
+      if (!infoLockGesturesDialog.isShowing()) infoLockGesturesDialog.show();
    }
 
    private void onBackClick() {
@@ -79,11 +83,6 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
       return new EnterPinPresenter(getContext(), getInjector(), getPath().action);
    }
 
-   @OnClick(R.id.button_next)
-   public void nextClick() {
-      presenter.setupPIN();
-   }
-
    @Override
    public OperationScreen provideOperationDelegate() {
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
@@ -92,23 +91,29 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
 
    @Override
    protected void onDetachedFromWindow() {
-      if(infoLockGesturesDialog != null) infoLockGesturesDialog.dismiss();
+      if (infoLockGesturesDialog != null) infoLockGesturesDialog.dismiss();
       super.onDetachedFromWindow();
    }
 
    @Override
    public void addMode() {
-      nextButton.setText(R.string.wallet_continue_label);
    }
 
    @Override
    public void setupMode() {
-      nextButton.setText(R.string.wallet_got_it_label);
       supportConnectionStatusLabel(false);
    }
 
    @Override
    public void resetMode() {
-      nextButton.setText(R.string.wallet_continue_label);
+   }
+
+   @Override
+   public <T> OperationView<T> operationView() {
+      return new ComposableOperationView<>(ErrorViewFactory.<T>builder()
+            .addProvider(new SCConnectionErrorViewProvider<>(getContext(), t -> presenter.retry()))
+            .addProvider(new SmartCardErrorViewProvider<>(getContext(), t -> presenter.retry()))
+            .defaultErrorView(new SimpleErrorView<>(getContext(), t -> presenter.retry(), getString(R.string.wallet_wizard_setup_error)))
+            .build());
    }
 }

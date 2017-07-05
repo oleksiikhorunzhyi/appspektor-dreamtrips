@@ -4,18 +4,20 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.settings.CancelPinSetupAction;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 
@@ -24,7 +26,6 @@ public class EnterPinPresenter extends WalletPresenter<EnterPinPresenter.Screen,
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private final EnterPinDelegate enterPinDelegate;
 
@@ -42,6 +43,7 @@ public class EnterPinPresenter extends WalletPresenter<EnterPinPresenter.Screen,
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      setupPIN();
    }
 
    private void trackScreen() {
@@ -55,36 +57,41 @@ public class EnterPinPresenter extends WalletPresenter<EnterPinPresenter.Screen,
       observeSetupFinishedPipe();
    }
 
-   private void observeSetupFinishedPipe() {
-      wizardInteractor.pinSetupFinishedPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<PinSetupFinishedEvent>forView(getView().provideOperationDelegate())
-                  .onSuccess(action -> {
-                     enterPinDelegate.pinEntered();
-                     getView().provideOperationDelegate().hideProgress();
-                  })
-                  .onFail(errorHandlerFactory.<PinSetupFinishedEvent>builder()
-                        .defaultMessage(R.string.wallet_wizard_setup_error)
-                        .build())
-                  .wrap());
-
-      wizardInteractor.startPinSetupPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<StartPinSetupAction>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandlerFactory.<StartPinSetupAction>builder()
-                        .defaultMessage(R.string.wallet_wizard_setup_error)
-                        .build())
-                  .onStart(action -> getView().provideOperationDelegate().showProgress(null))
-                  .wrap()
-            );
+   @Override
+   public void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      cancelSetupPIN();
    }
 
-   void setupPIN() {
+   private void observeSetupFinishedPipe() {
+      wizardInteractor.pinSetupFinishedPipe()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.pinSetupFinishedPipe()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<PinSetupFinishedEvent>()
+                  .onSuccess(event -> enterPinDelegate.pinEntered()));
+
+      wizardInteractor.startPinSetupPipe()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.startPinSetupPipe()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().<StartPinSetupAction>operationView()).create());
+   }
+
+   void retry() {
+      setupPIN();
+   }
+
+   private void setupPIN() {
       wizardInteractor.startPinSetupPipe().send(new StartPinSetupAction());
    }
 
+   private void cancelSetupPIN() {
+      wizardInteractor.cancelPinSetupPipe().send(new CancelPinSetupAction());
+   }
+
    public interface Screen extends WalletScreen, EnterPinDelegate.PinView {
+
+      <T> OperationView<T> operationView();
    }
 }

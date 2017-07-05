@@ -5,7 +5,6 @@
    <string name="wallet_done_label">Done</string>
    <string name="wallet_cancel_label">Cancel</string>
    <string name="wallet_continue_label">Continue</string>
-   <string name="wallet_got_it_label">Got it!</string>
    <string name="wallet_error_label">Error</string>
    <string name="wallet_retry_label">Retry</string>
    <string name="wallet_label_yes">Yes</string>

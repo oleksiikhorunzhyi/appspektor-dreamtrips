@@ -48,7 +48,7 @@
    <string name="wallet_edit_profile_first_name_format_detail">First name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
-   <string name="wallet_edit_profile_confirmation_dialog_message" formatted="false">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s %s</b><br/>]]></string>
+   <string name="wallet_edit_profile_confirmation_dialog_message" formatted="false">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s</b><br/>]]></string>
    <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
    <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
    <string name="wallet_edit_profile_photo_choose">Choose Photo</string>

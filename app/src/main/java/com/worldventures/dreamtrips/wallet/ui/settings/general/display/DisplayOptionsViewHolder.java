@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
+import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
@@ -75,10 +76,10 @@ class DisplayOptionsViewHolder {
             firstName.setText(user.firstName());
             break;
          case DISPLAY_NAME_ONLY:
-            fullName.setText(user.fullName());
+            fullName.setText(userFullName(user));
             break;
          case DISPLAY_PHONE_AND_NAME:
-            fullName.setText(user.fullName() + "\n\n" + phone);
+            fullName.setText(userFullName(user) + "\n\n" + phone);
             break;
       }
    }

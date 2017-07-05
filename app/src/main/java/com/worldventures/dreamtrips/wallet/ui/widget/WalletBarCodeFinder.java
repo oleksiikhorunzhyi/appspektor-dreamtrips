@@ -7,7 +7,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.AttributeSet;
+import android.view.View;
 
 import com.worldventures.dreamtrips.R;
 
@@ -31,8 +34,20 @@ public class WalletBarCodeFinder extends ViewFinderView {
 
    private boolean enableLaserAnimation = true;
 
+   public WalletBarCodeFinder(Context context) {
+      this(context, null);
+   }
+
+   public WalletBarCodeFinder(Context context, @Nullable AttributeSet attrs) {
+      this(context, attrs, false);
+   }
+
    public WalletBarCodeFinder(Context context, boolean enableLaserAnimation) {
-      super(context);
+      this(context, null, enableLaserAnimation);
+   }
+
+   public WalletBarCodeFinder(Context context, @Nullable AttributeSet attrs, boolean enableLaserAnimation) {
+      super(context, attrs);
       this.enableLaserAnimation = enableLaserAnimation;
       init();
    }
@@ -84,8 +99,8 @@ public class WalletBarCodeFinder extends ViewFinderView {
          scannerAlpha = (this.scannerAlpha + 1) % SCANNER_ALPHA.length;
       }
       int middle = framingRect.height() / 2 + framingRect.top;
-      canvas.drawLine((float)(framingRect.left + 4), middle,
-            (float)(framingRect.right - 4), middle, laserPaint);
+      canvas.drawLine((float) (framingRect.left + 4), middle,
+            (float) (framingRect.right - 4), middle, laserPaint);
       postInvalidateDelayed(80L, framingRect.left, framingRect.top - borderWidth,
             framingRect.right, framingRect.bottom + borderWidth);
    }

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeFinder;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeScanner;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -27,7 +29,10 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.scanner_view) ZXingScannerView scanner;
+   @InjectView(R.id.scanner_view) WalletBarCodeScanner scanner;
+   @InjectView(R.id.scanner_view_finder) WalletBarCodeFinder finder;
+   @InjectView(R.id.content) View contentView;
+   private int visibility;
 
    public WizardScanBarcodeScreen(Context context) {
       super(context);
@@ -43,7 +48,16 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       supportConnectionStatusLabel(false);
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+      scanner.setBarCodeFinder(finder);
       scanner.setResultHandler(this);
+   }
+
+   public void onPostEnterAnimation() {
+      presenter.requestCamera();
+   }
+
+   public void onPreExitAnimation() {
+      scanner.stopCamera();
    }
 
    @Override
@@ -51,10 +65,11 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       super.onWindowVisibilityChanged(visibility);
       if (isInEditMode()) return;
       if (visibility == VISIBLE) {
-         getPresenter().requestCamera();
+         if (this.visibility == GONE) presenter.requestCamera();
       } else {
          scanner.stopCamera();
       }
+      this.visibility = visibility;
    }
 
    @NonNull
@@ -86,7 +101,8 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), c -> presenter.retry(c.barcode), c -> { /*nothing*/ }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), c -> presenter
+                        .retry(c.barcode), c -> { /*nothing*/ }))
                   .build()
       );
    }

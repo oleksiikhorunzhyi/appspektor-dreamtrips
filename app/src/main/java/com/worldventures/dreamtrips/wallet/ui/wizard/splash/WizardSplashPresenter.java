@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode.WizardScanBarcodePath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodePath;
 
 import javax.inject.Inject;
 

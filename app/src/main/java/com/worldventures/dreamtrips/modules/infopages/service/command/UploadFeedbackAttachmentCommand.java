@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages.service.command;
 
-import android.content.Context;
 import android.net.Uri;
 
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.uploadery.UploadFeedbackImageHttpAction;
 import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse;

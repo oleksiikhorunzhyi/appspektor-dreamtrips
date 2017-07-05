@@ -438,12 +438,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
                         .brandId(BRAND_ID)
                         .productId(getMerchantId())
                         .build(),
-                  user.getEmail(),
-                  user.getFullName(),
                   getDescription(),
                   String.valueOf(getRatingBar()),
                   isVerified(),
-                  String.valueOf(user.getId()),
                   getFingerprintId(),
                   getIpAddress(), getPresenter().getSelectedImagesList()))
             .observeOn(AndroidSchedulers.mainThread())

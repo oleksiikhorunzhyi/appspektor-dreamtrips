@@ -169,23 +169,23 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                   .onFail(this::onMerchantsLoadingError));
    }
 
-   private void onStartMerchantsLoad(MerchantsAction action) {
+   void onStartMerchantsLoad(MerchantsAction action) {
       if (action.isRefresh()) getView().clearMerchants();
    }
 
-   private void onMerchantsLoaded(MerchantsAction action) {
+   void onMerchantsLoaded(MerchantsAction action) {
       if (action.isRefresh()) getView().onRefreshSuccess();
       else getView().onLoadNextSuccess();
 
       setItemsOrRedirect(action.merchants());
    }
 
-   private void onMerchantsLoading(MerchantsAction action, Integer progress){
+   void onMerchantsLoading(MerchantsAction action, Integer progress){
       if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }
 
-   private void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
+   void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
       if (!action.isRefresh()) getView().setRefreshedItems(action.merchants());
       if (action.isRefresh()) getView().onRefreshError(action.getErrorMessage());
       else getView().onLoadNextError();

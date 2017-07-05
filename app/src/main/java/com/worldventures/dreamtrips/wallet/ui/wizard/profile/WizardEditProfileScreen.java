@@ -14,7 +14,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -37,6 +36,9 @@ import java.io.File;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+
+import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.fromHtml;
+import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
 
 public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
 
@@ -204,9 +206,10 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void showConfirmationDialog(String firstName, String lastName) {
+   public void showConfirmationDialog(ProfileViewModel profileViewModel) {
       new MaterialDialog.Builder(getContext())
-            .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message, firstName, lastName)))
+            .content(fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message,
+                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName()))))
             .contentGravity(GravityEnum.CENTER)
             .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
             .onPositive((dialog, which) -> presenter.onUserDataConfirmed())

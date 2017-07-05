@@ -81,7 +81,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      featureHelper.navigateFromSetupUserScreen(navigator, user);
+      featureHelper.navigateFromSetupUserScreen(navigator, user, false);
    }
 
    private void attachProfile(Screen view) {
@@ -103,7 +103,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       final ProfileViewModel profile = view.getProfile();
       //noinspection ConstantConditions
       WalletProfileUtils.checkUserNameValidation(profile.getFirstName(), profile.getMiddleName(), profile.getLastName(),
-            () -> view.showConfirmationDialog(profile.getFirstName(), profile.getLastName()),
+            () -> view.showConfirmationDialog(profile),
             e -> view.provideOperationView().showError(null, e));
    }
 
@@ -136,6 +136,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       ProfileViewModel getProfile();
 
-      void showConfirmationDialog(String firstName, String lastName);
+      void showConfirmationDialog(ProfileViewModel profileViewModel);
    }
 }

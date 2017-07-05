@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
@@ -46,6 +47,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    private void observeSetupUserSmartCardData() {
       wizardInteractor.setupUserDataPipe()
             .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetupUserData())
                   .onSuccess(command -> onUserSetupSuccess(command.getResult()))
@@ -77,7 +79,7 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      featureHelper.navigateFromSetupUserScreen(navigator, user);
+      featureHelper.navigateFromSetupUserScreen(navigator, user, true);
    }
 
    public interface Screen extends WalletScreen {

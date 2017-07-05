@@ -24,11 +24,4 @@ public abstract class SmartCardUser {
 
    @Nullable
    public abstract SmartCardUserPhoto userPhoto();
-
-   public String fullName() {
-      return
-            firstName() +
-                  (middleName().isEmpty() ? "" : " ") + middleName()
-                  + (lastName().isEmpty() ? "" : " ") + lastName();
-   }
 }

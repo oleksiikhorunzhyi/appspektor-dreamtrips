@@ -60,20 +60,6 @@ public class DtlDetailsPresenterImplTest {
    }
 
    @Test
-   public void itShouldShowButtonToSeeAllReviews() throws Exception {
-      initMerchant(true, 4);
-      mPresenterDetail.addNewComments(getMerchant());
-      Mockito.verify(view).showButtonAllRateAndReview();
-   }
-
-   @Test
-   public void itShouldShowMinimumAllowedReviews() throws Exception {
-      initMerchant(true, 2);
-      mPresenterDetail.addNewComments(getMerchant());
-      Mockito.verify(view).hideButtonAllRateAndReview();
-   }
-
-   @Test
    public void itMustShowUserHasPendingReview() throws Exception {
       initMerchant(false);
       mPresenterDetail.setReviewCached(true);

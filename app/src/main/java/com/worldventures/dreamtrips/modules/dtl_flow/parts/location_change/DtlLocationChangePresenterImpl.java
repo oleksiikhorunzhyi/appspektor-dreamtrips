@@ -7,7 +7,6 @@ import android.util.Pair;
 import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -19,11 +18,11 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -229,7 +228,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
          locationRequestNoFallback.unsubscribe();
 
       gpsLocationDelegate.requestLocationUpdate()
-            .compose(new IoToMainComposer<>())
+            .compose(bindViewIoToMainComposer())
             .subscribe(this::onLocationObtained, this::onLocationError);
    }
 

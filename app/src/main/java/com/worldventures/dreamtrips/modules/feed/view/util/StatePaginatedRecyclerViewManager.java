@@ -48,8 +48,6 @@ public class StatePaginatedRecyclerViewManager {
    public void init(BaseArrayListAdapter adapter, Bundle savedInstanceState, LinearLayoutManager linearLayoutManager) {
       layoutManager = linearLayoutManager;
       swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
-      layoutManager = new LinearLayoutManager(stateRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-      layoutManager.setAutoMeasureEnabled(true);
 
       RecyclerView.ItemAnimator animator = stateRecyclerView.getItemAnimator();
       if (animator instanceof SimpleItemAnimator) {

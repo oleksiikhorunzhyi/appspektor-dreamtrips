@@ -5,6 +5,7 @@ import android.content.Context;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableMerchant;
@@ -36,12 +37,14 @@ public class DtlDetailsPresenterImplTest {
    @Mock DtlDetailsScreen view;
    @Mock Reviews review;
    @Mock User user;
+   @Mock DeviceInfoProvider deviceInfoProviderMock;
 
    @Before
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
       mPresenterDetail = new MockDetailPresenter(context, injector, getMerchant(), null);
       mPresenterDetail.attachView(view);
+      mPresenterDetail.deviceInfoProvider = deviceInfoProviderMock;
    }
 
    @Test

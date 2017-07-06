@@ -5,6 +5,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@android:color/white"
       android:orientation="vertical"
       android:theme="@style/WalletTheme"
       >
@@ -16,31 +17,23 @@
          app:title="@string/wallet_wizard_setup_pin_title"
          />
 
-   <RelativeLayout
+   <TextView
+         android:id="@+id/header_text_view"
+         style="@style/WalletTheme.HeaderTextStyle"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingBottom="@dimen/spacing_small"
+         android:paddingEnd="@dimen/spacing_normal"
+         android:paddingStart="@dimen/spacing_normal"
+         android:paddingTop="@dimen/spacing_small"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         tools:text="@string/wallet_wizard_setup_pin_header"
+         />
+
+   <com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView
+         android:id="@+id/wizard_video_view"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="@color/white"
-         >
+         />
 
-      <TextView
-            android:id="@+id/header_text_view"
-            style="@style/WalletTheme.HeaderTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/wizard_video_view"
-            android:layout_alignParentTop="true"
-            android:paddingLeft="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_normal"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:text="@string/wallet_wizard_setup_pin_header"
-            />
-
-      <com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView
-            android:id="@+id/wizard_video_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            />
-
-   </RelativeLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen>

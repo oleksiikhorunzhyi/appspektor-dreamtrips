@@ -103,7 +103,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
          }
       });
       if (ViewUtils.isTablet(getContext())) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, true));
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, false));
       }
       feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
             statePaginatedRecyclerViewManager.stateRecyclerView);

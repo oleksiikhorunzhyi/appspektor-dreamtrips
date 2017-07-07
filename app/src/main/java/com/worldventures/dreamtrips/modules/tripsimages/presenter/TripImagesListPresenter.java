@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View, C extends CommandWithTripImages>
       extends Presenter<VT> implements FeedEntityHolder {
@@ -110,9 +111,13 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    private void fillWithItems() {
-      photos.addAll(db.readPhotoEntityList(type, userId));
+      photos.addAll(readPhotoEntityList());
       refreshImagesInView();
       view.setSelection(currentPhotoPosition);
+   }
+
+   public List<IFullScreenObject> readPhotoEntityList() {
+      return db.readPhotoEntityList(type, userId);
    }
 
    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {

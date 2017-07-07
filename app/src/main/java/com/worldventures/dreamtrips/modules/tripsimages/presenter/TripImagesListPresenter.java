@@ -143,7 +143,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    protected abstract C getReloadCommand();
 
-   protected abstract C getLoadMoreCommand(int currentCount);
+   protected abstract C getLoadMoreCommand(int page);
 
    public void reload(boolean userInitiated) {
       loading = true;
@@ -155,7 +155,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    public void loadNext() {
       loading = true;
       currentPage++;
-      load(getLoadMoreCommand(photos.size()), newPhotos -> {
+      load(getLoadMoreCommand(currentPage), newPhotos -> {
          if (newPhotos.size() == 0) {
             lastPageReached = true;
          }

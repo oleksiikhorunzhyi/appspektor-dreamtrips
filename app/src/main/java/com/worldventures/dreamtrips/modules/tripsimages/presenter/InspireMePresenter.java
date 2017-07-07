@@ -67,8 +67,8 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
    }
 
    @Override
-   protected GetInspireMePhotosCommand getLoadMoreCommand(int currentCount) {
-      return new GetInspireMePhotosCommand(randomSeed, currentCount / getPageSize() + 1, getPageSize());
+   protected GetInspireMePhotosCommand getLoadMoreCommand(int page) {
+      return new GetInspireMePhotosCommand(randomSeed, page, getPageSize());
    }
 
    @Override

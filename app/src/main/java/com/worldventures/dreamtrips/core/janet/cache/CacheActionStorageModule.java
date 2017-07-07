@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesSto
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.AccountTimelineStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedStorage;
-import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedWidthStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
@@ -233,11 +232,5 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideTripsFiltersStorage(SnappyRepository snappyRepository) {
       return new TripsFiltersStorage(snappyRepository);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   FeedWidthStorage provideFeedWidthStorage() {
-      return new FeedWidthStorage();
    }
 }

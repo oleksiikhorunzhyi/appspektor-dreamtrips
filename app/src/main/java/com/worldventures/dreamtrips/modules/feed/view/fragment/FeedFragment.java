@@ -40,7 +40,6 @@ import com.worldventures.dreamtrips.modules.feed.model.cell.EmptyFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
-import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.EmptyFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
@@ -48,7 +47,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDele
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
@@ -76,12 +74,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       FeedEntityEditingView {
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-   @Inject FeedListWidthInteractor feedListWidthInteractor;
 
    @InjectView(R.id.posting_header) View postingHeader;
    @InjectView(R.id.additional_info_container) View additionalInfoContainer;
-
-   private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    private BadgeImageView friendsBadge;
    private BadgeImageView unreadConversationBadge;
@@ -143,9 +138,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
             fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
-      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
-            recyclerViewManager.stateRecyclerView);
-      feedWidthOrientationHelper.startReportingListWidth();
 
       setupUi();
 

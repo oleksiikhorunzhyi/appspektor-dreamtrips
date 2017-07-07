@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
@@ -48,7 +49,6 @@ import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostComma
 import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.FeedListWidthCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
@@ -122,7 +122,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.Paginate
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
-import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
@@ -261,7 +260,6 @@ import dagger.Module;
       GetMediaFromGalleryCommand.class,
       UploadVideoFileCommand.class,
       MigrateFromCachedEntity.class,
-      FeedListWidthCommand.class,
       CreateVideoCommand.class,
       MigrateFromCachedEntity.class,
       FeedItemsVideoProcessingStatusCommand.class,

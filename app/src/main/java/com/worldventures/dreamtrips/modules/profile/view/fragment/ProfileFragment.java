@@ -25,12 +25,10 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
-import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -60,9 +58,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @InjectView(R.id.profile_user_status) TextView profileToolbarUserStatus;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-   @Inject FeedListWidthInteractor feedListWidthInteractor;
-
-   private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    private int scrollArea;
 
@@ -130,9 +125,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
             profileToolbarUserStatus.setVisibility(View.INVISIBLE);
          }
       });
-      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
-            statePaginatedRecyclerViewManager.stateRecyclerView);
-      feedWidthOrientationHelper.startReportingListWidth();
 
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();

@@ -36,12 +36,10 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
-import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -66,9 +64,6 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-
-   @Inject FeedListWidthInteractor feedListWidthInteractor;
-   private FeedWidthOrientationHelper feedWidthOrientationHelper;
 
    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
    RecyclerViewStateDelegate stateDelegate;
@@ -105,9 +100,6 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       if (ViewUtils.isTablet(getContext())) {
          statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, false));
       }
-      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
-            statePaginatedRecyclerViewManager.stateRecyclerView);
-      feedWidthOrientationHelper.startReportingListWidth();
 
       fragmentWithFeedDelegate.init(feedAdapter);
       BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());

@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.NpaLinearLayoutManager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationHeader;
 
@@ -59,7 +60,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void init(Context context) {
       ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_navigation_drawer, this, true));
-      recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+      recyclerView.setLayoutManager(new NpaLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       setVersion();
       setupViews();
    }

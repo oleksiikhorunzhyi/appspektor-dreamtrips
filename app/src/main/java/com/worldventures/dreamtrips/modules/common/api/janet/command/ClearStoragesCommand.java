@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.common.api.janet.command;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.Storage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.util.Set;
@@ -17,10 +19,17 @@ public class ClearStoragesCommand extends Command<Void> implements InjectableAct
 
    @Inject Janet janet;
    @Inject Set<ActionStorage> storageSet;
+   @Inject Set<MultipleActionStorage> multipleActionStorageSet;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      for (ActionStorage storage : storageSet)
+      cleanStorageSet(storageSet);
+      cleanStorageSet(multipleActionStorageSet);
+   }
+
+   private void cleanStorageSet(Set<? extends Storage> storageSet) {
+      for (Storage storage : storageSet) {
          if (storage instanceof ClearableStorage) ((ClearableStorage) storage).clearMemory();
+      }
    }
 }

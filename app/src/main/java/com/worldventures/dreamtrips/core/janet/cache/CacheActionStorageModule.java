@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookAlbumsStorage;
 import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookPhotosStorage;
+import com.worldventures.dreamtrips.modules.feed.service.storage.ActiveFeedRouteStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
@@ -232,5 +233,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideTripsFiltersStorage(SnappyRepository snappyRepository) {
       return new TripsFiltersStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActiveFeedRouteStorage provideActiveFeedRouteStorage() {
+      return new ActiveFeedRouteStorage();
    }
 }

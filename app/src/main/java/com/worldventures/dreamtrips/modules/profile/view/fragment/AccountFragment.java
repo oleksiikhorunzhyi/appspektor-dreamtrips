@@ -169,4 +169,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    public void onUserPhotoClicked() {
       getPresenter().photoClicked();
    }
+
+   @Override
+   public Route getRoute() {
+      return Route.ACCOUNT_PROFILE;
+   }
 }

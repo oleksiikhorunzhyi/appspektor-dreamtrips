@@ -50,6 +50,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -406,5 +407,11 @@ public class ManagerModule {
    @Singleton
    MediaMetadataInteractor provideMediaMetadataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new MediaMetadataInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   ActiveFeedRouteInteractor provideActiveFeedRouteInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ActiveFeedRouteInteractor(sessionActionPipeCreator);
    }
 }

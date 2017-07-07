@@ -213,6 +213,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       setReviews();
       setRatingAndPerk();
       setOffersSection();
+      setThrstFlow();
    }
 
    @Override
@@ -304,6 +305,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private void setClicks() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
       View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
 
       if (earn != null)
@@ -311,6 +313,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (estimate != null) RxView.clicks(estimate)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> getPresenter().onEstimationClick());
+      if(pay!=null)
+         RxView.clicks(pay).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onClickPay());
    }
 
    private void setReviews() {
@@ -443,6 +447,18 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return false;
    }
 
+   @Override
+   public void showThrstFlowButton() {
+      View payBtn = ButterKnife.findById(this, R.id.merchant_details_pay);
+      payBtn.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void showEarnFlowButton() {
+      View earnBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      earnBtn.setVisibility(VISIBLE);
+   }
+
    private void setOffersSection() {
       if (!merchant.asMerchantAttributes().hasOffers()) {
          ViewUtils.setViewVisibility(this.perks, View.GONE);
@@ -463,6 +479,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
       if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+   }
+
+   private void setThrstFlow(){
+      getPresenter().setThrstFlow();
    }
 
    ///////////////////////////////////////////////////////////////////////////

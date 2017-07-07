@@ -8,11 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableThrstLocation;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableThrstParams;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
@@ -42,6 +45,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.ThrstTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -59,6 +63,7 @@ import de.greenrobot.event.EventBus;
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
+import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
@@ -360,6 +365,17 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       } else {
          Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
       }
+   }
+
+   @Override
+   public void setThrstFlow() {
+      if (merchant.useThrstFlow()) getView().showThrstFlowButton();
+      else getView().showEarnFlowButton();
+   }
+
+   @Override
+   public void onClickPay() {
+      //TODO: Sent Flow to Payment
    }
 
    private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {

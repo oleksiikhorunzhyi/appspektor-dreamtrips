@@ -61,6 +61,18 @@
                android:layout_weight="1"
                android:layout_marginRight="@dimen/spacing_tiny"
                android:text="@string/dtl_check_in"
+               android:visibility="gone"
+               android:theme="@style/DtlButtonGreenTheme"
+               />
+
+         <Button
+               android:id="@+id/merchant_details_pay"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_marginRight="@dimen/spacing_tiny"
+               android:text="@string/dtl_pay"
+               android:visibility="gone"
                android:theme="@style/DtlButtonGreenTheme"
                />
 

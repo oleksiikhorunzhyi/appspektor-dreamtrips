@@ -111,9 +111,9 @@ public class EnterPinScreen extends WalletLinearLayout<EnterPinPresenter.Screen,
    @Override
    public <T> OperationView<T> operationView() {
       return new ComposableOperationView<>(ErrorViewFactory.<T>builder()
-            .addProvider(new SCConnectionErrorViewProvider<>(getContext(), t -> presenter.retry()))
-            .addProvider(new SmartCardErrorViewProvider<>(getContext(), t -> presenter.retry()))
-            .defaultErrorView(new SimpleErrorView<>(getContext(), t -> presenter.retry(), getString(R.string.wallet_wizard_setup_error)))
+            .addProvider(new SCConnectionErrorViewProvider<>(getContext(), t -> presenter.retry(), t -> presenter.goBack()))
+            .addProvider(new SmartCardErrorViewProvider<>(getContext(), t -> presenter.goBack()))
+            .defaultErrorView(new SimpleErrorView<>(getContext(), getString(R.string.wallet_wizard_setup_error), t -> presenter.goBack()))
             .build());
    }
 }

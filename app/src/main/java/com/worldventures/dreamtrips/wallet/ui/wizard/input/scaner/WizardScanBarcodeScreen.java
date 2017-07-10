@@ -65,7 +65,7 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       super.onWindowVisibilityChanged(visibility);
       if (isInEditMode()) return;
       if (visibility == VISIBLE) {
-         if (this.visibility == GONE) presenter.requestCamera();
+         if (this.visibility == GONE || this.visibility == INVISIBLE) presenter.requestCamera();
       } else {
          scanner.stopCamera();
       }

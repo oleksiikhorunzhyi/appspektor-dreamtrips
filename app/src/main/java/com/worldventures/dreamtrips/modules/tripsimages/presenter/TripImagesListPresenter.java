@@ -258,7 +258,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                tripImagesInteractor.deletePhotoPipe().clearReplays();
                for (int i = 0; i < photos.size(); i++) {
                   IFullScreenObject o = photos.get(i);
-                  if (o.getFSId().equals(deletePhotoCommand.getResult())) {
+                  if (o.getFSId().equals(deletePhotoCommand.getResult().getUid())) {
                      photos.remove(i);
                      view.remove(i);
                      db.savePhotoEntityList(type, userId, photos);

@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
@@ -66,7 +65,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
-      translationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems, bindView());
    }
 
    @Override
@@ -210,7 +209,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
 
    @Override
    public void onTranslateFeedEntity(FeedEntity translatableItem) {
-      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
+      translationDelegate.translate(translatableItem);
    }
 
    @Override
@@ -224,8 +223,8 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    }
 
    @Override
-   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
-      feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
+   public void onFlagItem(String uid, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(uid, flagReasonId, reason, view, this::handleError);
    }
 
    private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {

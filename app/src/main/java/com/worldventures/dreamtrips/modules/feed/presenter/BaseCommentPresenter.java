@@ -171,8 +171,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    @Override
-   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
-      flag(feedItem.getItem().getUid(), flagReasonId, reason);
+   public void onFlagItem(String uid, int flagReasonId, String reason) {
+      flag(uid, flagReasonId, reason);
    }
 
    public void onFlagComment(String uid, int flagReasonId, String reason) {

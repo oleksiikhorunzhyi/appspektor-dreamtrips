@@ -1,46 +1,49 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 
-public final class TranslationDelegate<V extends RxView & TranslationDelegate.View> {
+public class TranslationDelegate {
 
-   private V view;
+   private TranslationDelegate.View view;
    private List<FeedItem> feedItems;
 
    private TranslationFeedInteractor translationFeedInteractor;
+   private Observable.Transformer stopper;
 
    public TranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
       this.translationFeedInteractor = translationFeedInteractor;
    }
 
-   public void onTakeView(V view, List<FeedItem> feedItems) {
+   public void onTakeView(TranslationDelegate.View view, List<FeedItem> feedItems, Observable.Transformer stopper) {
       this.view = view;
       this.feedItems = feedItems;
+      this.stopper = stopper;
       subscribeToPostTranslation();
    }
 
-   public void onTakeView(V view, FeedItem feedItem) {
-      onTakeView(view, Queryable.from(feedItem).toList());
+   public void onTakeView(TranslationDelegate.View view, FeedItem feedItem, Observable.Transformer stopper) {
+      onTakeView(view, Collections.singletonList(feedItem), stopper);
    }
 
    public void onDropView() {
       view = null;
    }
 
-   public void translate(FeedEntity translatableItem, String languageTo) {
+   public void translate(FeedEntity translatableItem) {
       translationFeedInteractor.translateFeedEntityPipe()
-            .send(new TranslateUidItemCommand.TranslateFeedEntityCommand(translatableItem, languageTo));
+            .send(new TranslateUidItemCommand.TranslateFeedEntityCommand(translatableItem, LocaleHelper.getDefaultLocaleFormatted()));
    }
 
    public void showOriginal(FeedEntity translatableItem) {
@@ -57,9 +60,10 @@ public final class TranslationDelegate<V extends RxView & TranslationDelegate.Vi
    }
 
    private void subscribeToPostTranslation() {
-      view.bindUntilDropView(translationFeedInteractor.translateFeedEntityPipe()
+      translationFeedInteractor.translateFeedEntityPipe()
             .observe()
-            .compose(new IoToMainComposer<>()))
+            .compose(new IoToMainComposer<>())
+            .compose(stopper)
             .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateFeedEntityCommand>()
                   .onSuccess(translatePostCommand -> translateSuccess(translatePostCommand.getResult()))
                   .onFail(this::translateFail));
@@ -85,5 +89,7 @@ public final class TranslationDelegate<V extends RxView & TranslationDelegate.Vi
 
    public interface View {
       void updateItem(FeedItem feedItem);
+
+      void informUser(String errorMessage);
    }
 }

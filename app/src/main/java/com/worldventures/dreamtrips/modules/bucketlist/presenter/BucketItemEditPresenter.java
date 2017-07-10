@@ -54,7 +54,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    @Override
    public void takeView(View view) {
-      priorityEventBus = 1;
       super.takeView(view);
       bindObservables(view);
    }

@@ -9,11 +9,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -239,5 +241,11 @@ public class FeedModule {
    @Provides
    FeedAspectRatioHelper provideFeedAspectRatioHelper() {
       return new FeedAspectRatioHelper();
+   }
+
+   @Provides
+   SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(@ForApplication Context context,
+         SnappyRepository db, SessionHolder<UserSession> appSessionHolder, DrawableUtil drawableUtil) {
+      return new SuggestedPhotoCellPresenterHelper(context, db, appSessionHolder, drawableUtil);
    }
 }

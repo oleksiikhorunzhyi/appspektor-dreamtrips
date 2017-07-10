@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -71,7 +70,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       attachUserToView(user);
       loadProfile();
-      translationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems, bindView());
    }
 
    @Override
@@ -127,8 +126,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    @Override
-   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
-      feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
+   public void onFlagItem(String uid, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(uid, flagReasonId, reason, view, this::handleError);
    }
 
    @Override
@@ -143,7 +142,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    @Override
    public void onTranslateFeedEntity(FeedEntity translatableItem) {
-      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
+      translationDelegate.translate(translatableItem);
    }
 
    @Override

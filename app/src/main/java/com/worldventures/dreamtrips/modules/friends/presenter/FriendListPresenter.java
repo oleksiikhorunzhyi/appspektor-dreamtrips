@@ -44,7 +44,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
 
    private void onCirclesFilterSuccess(List<Circle> circles) {
       onCirclesSuccess(circles);
-      circles.add(0, Circle.all(context.getString(R.string.show_all)));
+      circles.add(0, Circle.withTitle(context.getString(R.string.show_all)));
       view.showFilters(circles, position);
    }
 

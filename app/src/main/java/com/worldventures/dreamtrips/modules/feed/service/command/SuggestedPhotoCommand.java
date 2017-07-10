@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
@@ -22,11 +23,14 @@ import timber.log.Timber;
 @CommandAction
 public class SuggestedPhotoCommand extends Command<List<PhotoPickerModel>> implements InjectableAction {
 
+   private static final int SUGGESTION_ITEM_CHUNK = 15;
+
    @Inject @ForApplication Context context;
 
    @Override
    protected void run(CommandCallback<List<PhotoPickerModel>> callback) throws Throwable {
-      Observable.just(getGalleryPhotos()).subscribe(callback::onSuccess, callback::onFail);
+      Observable.just(Queryable.from(getGalleryPhotos())
+            .take(SUGGESTION_ITEM_CHUNK).toList()).subscribe(callback::onSuccess, callback::onFail);
    }
 
    private ArrayList<PhotoPickerModel> getGalleryPhotos() {

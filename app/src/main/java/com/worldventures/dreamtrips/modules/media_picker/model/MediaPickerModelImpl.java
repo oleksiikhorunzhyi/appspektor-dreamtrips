@@ -34,6 +34,10 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       return absolutePath;
    }
 
+   public void setAbsolutePath(String absolutePath) {
+      this.absolutePath = absolutePath;
+   }
+
    @Override
    public Uri getUri() {
       return uri;
@@ -52,6 +56,10 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
    @Override
    public long getDateTaken() {
       return dateTaken;
+   }
+
+   public void setDateTaken(long dateTaken) {
+      this.dateTaken = dateTaken;
    }
 
    @Override

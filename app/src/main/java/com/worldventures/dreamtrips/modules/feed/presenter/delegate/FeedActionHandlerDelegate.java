@@ -69,6 +69,10 @@ public class FeedActionHandlerDelegate {
       flagDelegate.flagItem(new FlagData(uid, flagReasonId, reason), view, errorAction);
    }
 
+   public void onFlagItem(FlagData flagData, FlagDelegate.View view, Action2<Command, Throwable> errorAction) {
+      flagDelegate.flagItem(flagData, view, errorAction);
+   }
+
    public void onDownloadImage(String url, Observable.Transformer stopper, Action2<Command, Throwable> errorAction) {
       tripImagesInteractor.downloadImageActionPipe()
             .createObservable(new DownloadImageCommand(url))

@@ -152,6 +152,13 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                   .createObservable(createCommand(listStorageOperation)));
    }
 
+   public Observable<COMMAND> observeStorageCommand() {
+      return getListStorageOperationObservable()
+            .flatMap(listStorageOperation
+                  -> feedStorageInteractor.getFeedItemsStoragePipe()
+                  .createObservableResult(createCommand(listStorageOperation)));
+   }
+
    protected abstract COMMAND createCommand(ListStorageOperation listStorageOperation);
 
    public class DeleteFeedItemStorageOperation implements ListStorageOperation<FeedItem<FeedEntity>> {

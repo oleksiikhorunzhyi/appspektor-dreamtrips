@@ -53,7 +53,7 @@ public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEnt
 
    @Override
    public void onFlagChosen(FeedItem feedItem, int flagReasonId, String reason) {
-      presenter.onFlagItem(feedItem, flagReasonId, reason);
+      presenter.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason);
    }
 
    @Override

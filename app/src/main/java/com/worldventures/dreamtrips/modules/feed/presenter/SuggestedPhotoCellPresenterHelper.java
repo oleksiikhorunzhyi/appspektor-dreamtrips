@@ -6,23 +6,23 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import icepick.Icepick;
 import icepick.State;
@@ -30,28 +30,36 @@ import rx.Observable;
 import rx.Subscriber;
 import timber.log.Timber;
 
-public final class SuggestedPhotoCellPresenterHelper {
+public class SuggestedPhotoCellPresenterHelper {
 
    public static final int MAX_SELECTION_SIZE = 15;
    private static final int SUGGESTION_ITEM_CHUNK = 20;
    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
-   @Inject SnappyRepository db;
-   @Inject Router router;
-   @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject @ForApplication Context context;
+   private Context context;
+   private SnappyRepository db;
+   private SessionHolder<UserSession> appSessionHolder;
+   private DrawableUtil drawableUtil;
 
    @State ArrayList<PhotoPickerModel> suggestionItems;
    @State ArrayList<PhotoPickerModel> selectedPhotos;
    @State long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
 
    private View view;
-   private OutViewBinder binder;
+   private Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper;
 
-   public void takeView(View view, OutViewBinder binder, Bundle bundle) {
+   public SuggestedPhotoCellPresenterHelper(Context context, SnappyRepository db, SessionHolder<UserSession> appSessionHolder,
+         DrawableUtil drawableUtil) {
+      this.context = context;
+      this.db = db;
+      this.appSessionHolder = appSessionHolder;
+      this.drawableUtil = drawableUtil;
+   }
+
+   public void takeView(View view, Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper, Bundle bundle) {
       checkView(view);
       this.view = view;
-      this.binder = binder;
+      this.stopper = stopper;
 
       restoreInstanceState(bundle);
 
@@ -72,26 +80,24 @@ public final class SuggestedPhotoCellPresenterHelper {
    public void preloadSuggestionPhotos(@Nullable PhotoPickerModel model) {
       syncTimestampLast = getLastSyncOrDefault(model);
 
-      binder.bindOutLifecycle(getSuggestionObservable(syncTimestampLast)).subscribe(photoGalleryModels -> {
-         suggestionItems.addAll(photoGalleryModels);
-         view.appendPhotoSuggestions(photoGalleryModels);
-      }, throwable -> {
-         Timber.e(throwable, "Cannot prefetch suggestions");
-      });
+      getSuggestionObservable(syncTimestampLast)
+            .compose(stopper)
+            .subscribe(photoGalleryModels -> {
+               suggestionItems.addAll(photoGalleryModels);
+               view.appendPhotoSuggestions(photoGalleryModels);
+            }, throwable -> Timber.e(throwable, "Cannot prefetch suggestions"));
    }
 
    public void subscribeNewPhotoNotifications(Observable<Void> notificationObservable) {
-      binder.bindOutLifecycle(notificationObservable.concatMap(aVoid -> getSuggestionObservable(DEFAULT_START_SYNC_TIMESTAMP)))
+      notificationObservable.concatMap(aVoid -> getSuggestionObservable(DEFAULT_START_SYNC_TIMESTAMP))
+            .compose(stopper)
             .subscribe(photoGalleryModels -> {
                clearCache();
                resetSyncTimestamp();
                sync();
-
                suggestionItems.addAll(photoGalleryModels);
                view.replacePhotoSuggestions(photoGalleryModels);
-            }, throwable -> {
-               Timber.e(throwable, "Cannot fetch new suggestion items");
-            });
+            }, throwable -> Timber.e(throwable, "Cannot fetch new suggestion items"));
    }
 
    public void sync() {
@@ -131,9 +137,17 @@ public final class SuggestedPhotoCellPresenterHelper {
       setSuggestionTitle();
    }
 
-   @NonNull
-   public List<PhotoPickerModel> selectedPhotos() {
-      return new ArrayList<>(selectedPhotos);
+   public Observable<MediaAttachment> mediaAttachmentObservable() {
+      return Observable.from(selectedPhotos)
+            .map(element -> {
+               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
+               return new PhotoPickerModel(pair.first, pair.second);
+            })
+            .map(photoGalleryModel -> {
+               List<PhotoPickerModel> chosenImages = new ArrayList<>();
+               chosenImages.add(photoGalleryModel);
+               return new MediaAttachment(chosenImages, MediaAttachment.Source.GALLERY);
+            });
    }
 
    void saveInstanceState(Bundle bundle) {
@@ -224,10 +238,6 @@ public final class SuggestedPhotoCellPresenterHelper {
 
    private void resetSyncTimestamp() {
       syncTimestampLast = Long.MAX_VALUE;
-   }
-
-   public interface OutViewBinder {
-      <T> Observable<T> bindOutLifecycle(Observable<T> observable);
    }
 
    public interface View {

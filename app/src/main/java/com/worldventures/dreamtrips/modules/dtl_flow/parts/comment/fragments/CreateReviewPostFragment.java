@@ -532,7 +532,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")) {
          navigateToDetail(getContext().getString(R.string.snack_review_success));
       } else {
-         Path path = new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, getContext().getString(R.string.snack_review_success));
+         Path path = new DtlReviewsPath(Flow.get(getContext()).getHistory().top(), merchant, getContext().getString(R.string.snack_review_success));
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
          historyBuilder.pop();

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -8,6 +9,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.PaginatedTripImagesCommand;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,6 +41,12 @@ public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImages
 
    @Override
    public void loadNext() {
+   }
+
+   @Override
+   public List<IFullScreenObject> readPhotoEntityList() {
+      // workaround for prod issue
+      return Collections.emptyList();
    }
 
    @Override

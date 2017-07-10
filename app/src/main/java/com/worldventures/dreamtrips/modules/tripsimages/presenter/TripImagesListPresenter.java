@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
-import timber.log.Timber;
 
 public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View, C extends CommandWithTripImages>
       extends Presenter<VT> implements FeedEntityHolder {
@@ -57,6 +56,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    private int currentPage;
 
+   //TODO pagination logic is broken in fullscreen, it will be removed during 1.22 refactoring
+   private boolean fullscreen = false;
+
    protected TripImagesListPresenter(TripImagesType type, int userId) {
       super();
       this.type = type;
@@ -64,7 +66,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos,
-         int currentPhotosPosition, int notificationId) {
+         int currentPhotosPosition, int notificationId, boolean fullscreen) {
       TripImagesListPresenter presenter;
       switch (type) {
          case MEMBERS_IMAGES:
@@ -87,6 +89,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             throw new RuntimeException("Trip image type is not found");
       }
 
+      presenter.fullscreen = fullscreen;
       presenter.setCurrentPhotoPosition(currentPhotosPosition);
       return presenter;
    }
@@ -111,7 +114,13 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    private void fillWithItems() {
-      photos.addAll(readPhotoEntityList());
+      List<IFullScreenObject> cachedPhotos = readPhotoEntityList();
+      //correct currentPage number in fullscreen to avoid items duplication
+      if (fullscreen) {
+         if (cachedPhotos.size() < getPageSize()) lastPageReached = true;
+         currentPage = cachedPhotos.size() / getPageSize();
+      }
+      photos.addAll(cachedPhotos);
       refreshImagesInView();
       view.setSelection(currentPhotoPosition);
    }

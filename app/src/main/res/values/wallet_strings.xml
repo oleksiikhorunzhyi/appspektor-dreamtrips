@@ -88,7 +88,7 @@
    <string name="wallet_wizard_scan_title">Scan Smart Card</string>
    <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
-   <string name="wallet_wizard_scan_barcode_header">Align the flye\u2122 smart card bar code within the frame.</string>
+   <string name="wallet_wizard_scan_barcode_header">Align the Smart Card barcode within the frame.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
    <string name="waller_wizard_scan_barcode_progress_label">Connecting to Smart Card…</string>

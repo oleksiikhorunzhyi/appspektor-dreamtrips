@@ -46,7 +46,7 @@ public class FeedCellListWidthProvider {
       putToConfigMap(new Config(FeedType.TIMELINE, Device.PHONE, Orientation.PORTRAIT), screenWidthFunc);
       putToConfigMap(new Config(FeedType.TIMELINE, Device.PHONE, Orientation.LANDSCAPE), phoneLandscapeFunc);
       putToConfigMap(new Config(FeedType.TIMELINE, Device.TABLET, Orientation.PORTRAIT), tabletTimelineFunc);
-      putToConfigMap(new Config(FeedType.TIMELINE, Device.TABLET, Orientation.LANDSCAPE),tabletTimelineFunc);
+      putToConfigMap(new Config(FeedType.TIMELINE, Device.TABLET, Orientation.LANDSCAPE), tabletTimelineFunc);
    }
 
    public int getScreenWidth() {

@@ -79,10 +79,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
                .observeSuccess().subscribe(configurationCommand -> {
                   // happens when there is another feed opened on the top of this one
                   if (getCurrentRoute() != activeCellRoute) return;
-                  int width = getCellListWidth();
-                  if (itemView.getMeasuredWidth() != getCellListWidth()) {
-                     itemView.getLayoutParams().width = width;
-                     refreshUi();
+                  List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+                  if (attachments != null && attachments.size() > 0 && attachments.get(0).getItem() instanceof Photo) {
+                     processPhotos();
                   }
                });
       }

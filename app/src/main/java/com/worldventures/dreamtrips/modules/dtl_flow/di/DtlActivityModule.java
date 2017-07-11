@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
-import com.techery.spares.adapter.expandable.BaseExpandableAdapter;
-import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
@@ -118,8 +116,6 @@ import dagger.Provides;
             DtlVerifyAmountPresenter.class,
             MerchantWorkingHoursAdapter.class,
             ThinMerchantsAdapter.class,
-            BaseExpandableAdapter.class,
-            BaseExpandableDelegateAdapter.class,
             DtlReviewsPresenterImpl.class,
             DtlReviewsScreenImpl.class,
             DtlCommentReviewScreenImpl.class,

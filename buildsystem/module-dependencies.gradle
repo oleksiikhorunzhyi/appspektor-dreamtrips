@@ -149,7 +149,6 @@ ext {
          // Dialogs
          androidUi             : [c: 'com.github.markushi:android-ui:1.2'],
          sweetAlertDialog      : [c: 'com.github.techery:sweet-alert-dialog:d82b5e4764'],
-         dialogPlus            : [c: 'com.orhanobut:dialogplus:1.10@aar'],
          materialDialogsCore   : [c: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],
          materialDialogsCommons: [c: 'com.github.afollestad.material-dialogs:commons:0.8.6.2'],
          // FAB
@@ -167,7 +166,6 @@ ext {
          // Pickers
          ucrop                 : [c: 'com.yalantis:ucrop:2.2.0'],
          datetimepicker        : [c: 'com.github.flavienlaurent.datetimepicker:library:0.0.2'],
-         polyPicker            : [c: 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'],
          // Other
          textdrawable          : [c: 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'],
          properratingbar       : [c: 'com.github.techery:properratingbar:0.0.5'],

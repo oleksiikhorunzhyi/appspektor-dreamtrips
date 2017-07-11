@@ -15,7 +15,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -25,7 +24,6 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.friends.bundle.BaseUsersBundle;
@@ -79,7 +77,7 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       stateDelegate.setRecyclerView(recyclerView);
-      adapter = new LoaderRecycleAdapter<>(getActivity(), this);
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
       adapter.registerCell(User.class, FriendCell.class);
 
       recyclerView.setEmptyView(emptyView);

@@ -10,7 +10,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 

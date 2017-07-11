@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;

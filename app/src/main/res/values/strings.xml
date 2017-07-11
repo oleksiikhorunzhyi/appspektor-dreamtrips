@@ -316,6 +316,7 @@
    <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
 
    <string name="retry">Retry</string>
+   <string name="cancel">Cancel</string>
 
    <string name="no_notifications">You have no notifications yet</string>
    <string name="notification_message_friend_accepted">%s accepted your friend request</string>

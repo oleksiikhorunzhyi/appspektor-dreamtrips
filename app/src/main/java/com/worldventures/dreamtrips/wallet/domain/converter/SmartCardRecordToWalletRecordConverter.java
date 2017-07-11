@@ -10,8 +10,6 @@ import java.util.Map;
 
 import io.techery.mappery.MapperyContext;
 
-import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_NAME_FIELD;
-
 public class SmartCardRecordToWalletRecordConverter implements Converter<io.techery.janet.smartcard.model.Record, Record> {
 
    @Override
@@ -28,7 +26,7 @@ public class SmartCardRecordToWalletRecordConverter implements Converter<io.tech
    public Record convert(MapperyContext mapperyContext, io.techery.janet.smartcard.model.Record record) {
       final Map<String, String> metadata = record.metadata();
       //no use getOrDefault, for support < Java 8
-      final String bankName = metadata.get(BANK_NAME_FIELD);
+      final String bankName = metadata.get(WalletRecordToSmartCardRecordConverter.BANK_NAME_FIELD);
 
       final Integer recordId = record.id();
       return ImmutableRecord.builder()

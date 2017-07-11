@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFrag
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstFlowFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
@@ -50,8 +51,8 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImag
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpDocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.LegalTermsFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
@@ -173,6 +174,7 @@ public enum Route {
 
    // <dtl_legasy_routes>
    // TODO :: 4/24/16 re-write the rest of DTL to Flow-powered views
+   DTL_THRST_FLOW(DtlThrstFlowFragment.class, R.string.dtl_thrst_flow_title),
    DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
    DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
    DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_scan_receipt_screen_title),

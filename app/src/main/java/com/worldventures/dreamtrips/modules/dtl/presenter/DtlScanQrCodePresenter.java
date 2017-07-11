@@ -116,8 +116,20 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .map(Command::getResult)
             .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
-            .subscribe(dtlTransaction -> transactionInteractor.earnPointsActionPipe()
-                  .send(new DtlEarnPointsAction(merchant, dtlTransaction)), apiErrorPresenter::handleError);
+            .subscribe(
+                  dtlTransaction -> {
+                     //TODO: REPLACE THIS WITH USER-THRST-ENABLED VALUE
+                     if (true) {
+                        view.hideProgress();
+                        view.openThrstFlow(merchant, dtlTransaction);
+                     } else {
+                        transactionInteractor
+                              .earnPointsActionPipe()
+                              .send(new DtlEarnPointsAction(merchant, dtlTransaction));
+                     }
+                  },
+                  apiErrorPresenter::handleError
+            );
 
    }
 
@@ -160,7 +172,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .flatMap(transaction -> transactionInteractor.transactionActionPipe()
                   .createObservableResult(DtlTransactionAction.save(merchant, transaction)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {}, apiErrorPresenter::handleError);
+            .subscribe(action -> {
+            }, apiErrorPresenter::handleError);
    }
    ///////////////////////////////////////////////////////////////////////////
    // Receipt uploading
@@ -253,5 +266,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       void setMerchant(Merchant merchant);
 
       void openScanReceipt(DtlTransaction dtlTransaction);
+
+      void openThrstFlow(Merchant merchant, ImmutableDtlTransaction dtlTransaction);
    }
 }

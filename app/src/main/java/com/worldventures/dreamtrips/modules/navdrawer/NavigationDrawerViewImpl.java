@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
@@ -105,7 +106,8 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void setVersion() {
       try {
-         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName);
+         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName
+               + "-" + BuildConfig.versionBuild);
       } catch (PackageManager.NameNotFoundException e) {
          e.printStackTrace();
       }

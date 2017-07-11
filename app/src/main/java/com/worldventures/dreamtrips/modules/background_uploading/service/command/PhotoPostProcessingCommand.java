@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
@@ -21,6 +22,8 @@ import timber.log.Timber;
 public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPhotoAttachmentBody> {
 
    private PostCompoundOperationModel<PostWithPhotoAttachmentBody> tempOperationModel;
+
+   private ActionPipe<PhotoAttachmentUploadingCommand> actionPipe;
 
    public PhotoPostProcessingCommand(PostCompoundOperationModel postCompoundOperationModel) {
       super(postCompoundOperationModel);
@@ -32,6 +35,7 @@ public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPh
    }
 
    private Observable<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> createPhotos(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postOperationModel) {
+      actionPipe = janet.createPipe(PhotoAttachmentUploadingCommand.class);
       if (Queryable.from(postOperationModel.body().attachments())
             .all(attachment -> attachment.state() == PostBody.State.UPLOADED)) {
          return Observable.just(postOperationModel)
@@ -40,7 +44,7 @@ public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPh
       tempOperationModel = postOperationModel;
       return Observable.from(tempOperationModel.body().attachments())
             .filter(attachment -> attachment.state() != PostBody.State.UPLOADED)
-            .concatMap(attachment -> janet.createPipe(PhotoAttachmentUploadingCommand.class)
+            .concatMap(attachment -> actionPipe
                   .createObservable(new PhotoAttachmentUploadingCommand(tempOperationModel, attachment))
                   .flatMap(state -> {
                      notifyCompoundCommandChanged(state.action.getPostCompoundOperationModel());
@@ -58,6 +62,12 @@ public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPh
             )
             .last()
             .flatMap(this::createPhotosEntities);
+   }
+
+   @Override
+   protected void cancel() {
+      super.cancel();
+      if (actionPipe != null) actionPipe.cancelLatest();
    }
 
    private Observable<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> createPhotosEntities(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postOperationModel) {

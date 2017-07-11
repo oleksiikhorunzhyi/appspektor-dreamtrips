@@ -22,8 +22,8 @@ public class AccountImagesPresenter extends MembersImagesBasePresenter<GetUserPh
    }
 
    @Override
-   protected GetUserPhotosCommand getLoadMoreCommand(int currentCount) {
-      return new GetUserPhotosCommand(userId, currentCount / getPageSize() + 1, getPageSize());
+   protected GetUserPhotosCommand getLoadMoreCommand(int page) {
+      return new GetUserPhotosCommand(userId, page, getPageSize());
    }
 
    @Override

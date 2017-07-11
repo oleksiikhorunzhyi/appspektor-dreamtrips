@@ -25,12 +25,12 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
-import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -53,16 +53,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener, ProfileCellDelegate,
       FeedEntityEditingView {
 
-   private static final int LANDSCAPE_MARGIN_PERCENTAGE = 16;
-
    @InjectView(R.id.profile_toolbar) Toolbar profileToolbar;
    @InjectView(R.id.profile_toolbar_title) TextView profileToolbarTitle;
    @InjectView(R.id.profile_user_status) TextView profileToolbarUserStatus;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-   @Inject FeedListWidthInteractor feedListWidthInteractor;
-
-   private FeedWidthOrientationHelper feedWidthOrientationHelper;
+   @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
 
    private int scrollArea;
 
@@ -85,6 +81,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
          setToolbarAlpha(percent);
       }
       startAutoplayVideos();
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(getRoute()));
    }
 
    protected void startAutoplayVideos() {
@@ -117,7 +114,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
          }
       });
       if (ViewUtils.isTablet(getContext())) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, true));
+         int margin = getResources().getInteger(R.integer.feed_landscape_horizontal_margin);
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(margin, true));
       }
       statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
          float percent = calculateOffset();
@@ -130,9 +128,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
             profileToolbarUserStatus.setVisibility(View.INVISIBLE);
          }
       });
-      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
-            statePaginatedRecyclerViewManager.stateRecyclerView);
-      feedWidthOrientationHelper.startReportingListWidth();
 
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();
@@ -307,4 +302,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    @Override
    public void onCellClicked(User model) { }
+
+   public abstract Route getRoute();
 }

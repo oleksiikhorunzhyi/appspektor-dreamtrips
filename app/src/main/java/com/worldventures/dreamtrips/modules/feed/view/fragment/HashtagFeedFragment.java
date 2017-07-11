@@ -21,6 +21,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -36,12 +37,12 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
-import com.worldventures.dreamtrips.modules.feed.service.FeedListWidthInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedWidthOrientationHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -59,16 +60,12 @@ import butterknife.InjectView;
 public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPresenter, HashtagFeedBundle>
       implements HashtagFeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, FeedEntityEditingView {
 
-   private static final int LANDSCAPE_MARGIN_PERCENTAGE = 16;
-
    @InjectView(R.id.empty_view) ViewGroup emptyView;
    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
-
-   @Inject FeedListWidthInteractor feedListWidthInteractor;
-   private FeedWidthOrientationHelper feedWidthOrientationHelper;
+   @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
 
    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
    RecyclerViewStateDelegate stateDelegate;
@@ -103,11 +100,9 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
          }
       });
       if (ViewUtils.isTablet(getContext())) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(LANDSCAPE_MARGIN_PERCENTAGE, false));
+         int margin = getResources().getInteger(R.integer.feed_landscape_horizontal_margin);
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(margin, false));
       }
-      feedWidthOrientationHelper = new FeedWidthOrientationHelper(feedListWidthInteractor,
-            statePaginatedRecyclerViewManager.stateRecyclerView);
-      feedWidthOrientationHelper.startReportingListWidth();
 
       fragmentWithFeedDelegate.init(feedAdapter);
       BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());
@@ -176,6 +171,8 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       if (args != null && args.getHashtag() != null) {
          getPresenter().onRefresh();
       }
+
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED_HASHTAG));
    }
 
    @Override

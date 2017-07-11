@@ -60,7 +60,7 @@ public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImages
    }
 
    @Override
-   protected PaginatedTripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int currentPage) {
+   protected PaginatedTripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int page) {
       return null;
    }
 }

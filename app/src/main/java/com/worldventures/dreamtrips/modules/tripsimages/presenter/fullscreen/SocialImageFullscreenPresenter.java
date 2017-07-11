@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View>
-   implements com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder {
+      implements com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder {
 
    @Inject Router router;
    @Inject FragmentManager fm;
@@ -217,6 +217,8 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
          photo.syncLikeState(photoFeedEntity);
          photo.setCommentsCount(photoFeedEntity.getCommentsCount());
          photo.setComments(photoFeedEntity.getComments());
+         photo.setTitle(photoFeedEntity.getTitle());
+         photo.setLocation(photoFeedEntity.getLocation());
          photo.setPhotoTags(photoFeedEntity.getPhotoTags());
          photo.setPhotoTagsCount(photoFeedEntity.getPhotoTagsCount());
       } else {

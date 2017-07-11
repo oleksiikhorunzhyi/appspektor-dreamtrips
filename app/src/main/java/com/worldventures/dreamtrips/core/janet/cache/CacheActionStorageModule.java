@@ -18,13 +18,13 @@ import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookAlbumsStorage;
 import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookPhotosStorage;
+import com.worldventures.dreamtrips.modules.feed.service.storage.ActiveFeedRouteStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.AccountTimelineStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedStorage;
-import com.worldventures.dreamtrips.modules.feed.storage.storage.FeedWidthStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.HashtagFeedStorage;
 import com.worldventures.dreamtrips.modules.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
@@ -237,7 +237,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   FeedWidthStorage provideFeedWidthStorage() {
-      return new FeedWidthStorage();
+   ActiveFeedRouteStorage provideActiveFeedRouteStorage() {
+      return new ActiveFeedRouteStorage();
    }
 }

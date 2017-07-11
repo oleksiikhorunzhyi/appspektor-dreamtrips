@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoComm
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
@@ -19,6 +20,8 @@ import timber.log.Timber;
 public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVideoAttachmentBody> {
 
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
+
+   private ActionPipe<UploadVideoFileCommand> uploadVideoFileCommandActionPipe;
 
    public VideoPostProcessingCommand(PostCompoundOperationModel postCompoundOperationModel) {
       super(postCompoundOperationModel);
@@ -39,7 +42,8 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
    }
 
    private Observable<PostCompoundOperationModel<PostWithVideoAttachmentBody>> uploadVideoToMicrosevice(PostCompoundOperationModel<PostWithVideoAttachmentBody> postOperationModel) {
-      return janet.createPipe(UploadVideoFileCommand.class)
+      uploadVideoFileCommandActionPipe = janet.createPipe(UploadVideoFileCommand.class);
+      return uploadVideoFileCommandActionPipe
             .createObservable(new UploadVideoFileCommand(postOperationModel))
             .flatMap(state -> {
                notifyCompoundCommandChanged(state.action.getPostCompoundOperationModel());
@@ -64,6 +68,12 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
             .map(Command::getResult)
             .map(uid -> compoundOperationObjectMutator.videoCreated(postOperationModel, uid))
             .doOnNext(this::notifyCompoundCommandChanged);
+   }
+
+   @Override
+   protected void cancel() {
+      super.cancel();
+      if (uploadVideoFileCommandActionPipe != null) uploadVideoFileCommandActionPipe.cancelLatest();
    }
 
    @Override

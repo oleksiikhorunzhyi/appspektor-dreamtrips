@@ -128,6 +128,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                      handleError(command, e);
                      user.setAvatarUploadInProgress(false);
                      refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
             );
    }
@@ -142,6 +143,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                      handleError(command, e);
                      user.setCoverUploadInProgress(false);
                      refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
             );
    }
@@ -226,6 +228,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       this.user.setAvatar(currentUser.getAvatar());
       this.user.setAvatarUploadInProgress(false);
       refreshFeedItems();
+      view.notifyDataSetChanged();
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
@@ -237,6 +240,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
       this.user.setCoverUploadInProgress(false);
       refreshFeedItems();
+      view.notifyDataSetChanged();
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
@@ -283,6 +287,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       profileInteractor.uploadAvatarPipe().send(new UploadAvatarCommand(fileThumbnail));
       user.setAvatarUploadInProgress(true);
       refreshFeedItems();
+      view.notifyDataSetChanged();
    }
 
    private void onCoverCropped(File croppedFile, String errorMsg) {
@@ -291,6 +296,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
          profileInteractor.uploadBackgroundPipe().send(new UploadBackgroundCommand(croppedFile.getPath()));
          user.setCoverUploadInProgress(true);
          refreshFeedItems();
+         view.notifyDataSetChanged();
       } else {
          view.informUser(errorMsg);
       }
@@ -406,5 +412,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       void cropImage(SocialCropImageManager socialCropImageManager, String path);
 
       void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user);
+
+      void notifyDataSetChanged();
    }
 }

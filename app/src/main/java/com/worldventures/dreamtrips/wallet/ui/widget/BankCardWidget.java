@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.IntegerRes;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -83,9 +81,7 @@ public class BankCardWidget extends FrameLayout {
    }
 
    final private ButterKnife.Setter<TextView, Boolean> SET_TEXT_COLOR = (textView, isCardDefault, index) -> {
-      textView.setTextColor(isCardDefault
-            ? ContextCompat.getColor(textView.getContext(), R.color.wallet_default_card_text)
-      : ContextCompat.getColor(textView.getContext(), android.R.color.white));
+      textView.setTextColor(ContextCompat.getColor(textView.getContext(), android.R.color.white));
    };
 
    public void setUpCardAppearance(@DrawableRes int backgroundResId, boolean isCardDefault) {

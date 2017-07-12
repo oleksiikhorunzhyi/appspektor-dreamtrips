@@ -188,7 +188,7 @@ public class SmartCardSyncManager {
             .doOnNext(aLong -> Timber.d("setupBatteryObserver = %s", aLong))
             .subscribe(value ->
                         interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
-                  throwable -> Timber.e("", throwable));
+                  throwable -> Timber.e(throwable, ""));
    }
 
    private void setupChargerEventObserver() {
@@ -216,7 +216,7 @@ public class SmartCardSyncManager {
                   .createObservableResult(new SyncSmartCardCommand()))
             .retry(1)
             .subscribe(command -> {
-            }, throwable -> Timber.e("", throwable));
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

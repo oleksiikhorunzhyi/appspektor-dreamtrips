@@ -1,7 +1,9 @@
 package com.messenger.ui.viewstate;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 
+@SuppressLint("ParcelCreator")
 public class LceViewState<C> extends BaseRestorableViewState {
 
    public enum LoadingState {

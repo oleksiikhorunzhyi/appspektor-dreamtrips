@@ -227,8 +227,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
          return "";
       }
       String companyName = TextUtils.isEmpty(user.getCompany()) ? "" : " - " + user.getCompany();
-      String result = resources.getString(R.string.feed_header, user.getFullName(), companyName, action, type);
-      return result;
+      return resources.getString(R.string.feed_header, user.getFullName(), companyName, action, type);
    }
 
 

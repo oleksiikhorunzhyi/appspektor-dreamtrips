@@ -79,7 +79,7 @@
    <string name="perks">好處</string>
    <string name="everyday">每天</string>
    <string name="perks_terms">條款和條件</string>
-   <string name="perks_formatted" formatted="false">%1$d優惠</string>
+   <string name="perks_formatted">%1$d優惠</string>
    <string name="dtl_coming_soon_offers">報價即將推出</string>
    <string name="dtl_show_offers_only">只顯示優惠</string>
    <string name="dtl_earn_points">賺取DreamTrips點數</string>

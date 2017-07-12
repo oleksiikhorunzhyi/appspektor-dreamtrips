@@ -76,15 +76,15 @@
 
    <!-- system messages-->
    <string name="system_message_you">Ön</string>
-   <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
-   <string name="system_message_added" formatted="false">%1$s &lt;b&gt;hozzáadva&lt;/b&gt; %2$s</string>
-   <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;hozzá lett adva&lt;/b&gt;</string>
+   <string name="system_message_admin">%1$s(Admin)</string>
+   <string name="system_message_added">%1$s &lt;b&gt;hozzáadva&lt;/b&gt; %2$s</string>
+   <string name="system_message_is_added">%1$s &lt;b&gt;hozzá lett adva&lt;/b&gt;</string>
    <string name="system_message_you_are_added" formatted="false">Te &lt;b&gt;hozzá lettél adva&lt;/b&gt;</string>
-   <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;eltávolítva&lt;/b&gt; %2$s a beszélgetésből</string>
-   <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;törölve&lt;/b&gt;</string>
+   <string name="system_message_removed">%1$s &lt;b&gt;eltávolítva&lt;/b&gt; %2$s a beszélgetésből</string>
+   <string name="system_message_is_removed">%1$s &lt;b&gt;törölve&lt;/b&gt;</string>
    <string name="system_message_you_are_removed" formatted="false">Te &lt;b&gt;törölve vagy&lt;/b&gt;</string>
    <string name="system_message_you_left_the_chat" formatted="false">Te &lt;b&gt;maradtál&lt;/b&gt; a beszélgetésben</string>
-   <string name="system_message_left" formatted="false">%1$s &lt;b&gt;kilépett&lt;b&gt;</string>
+   <string name="system_message_left">%1$s &lt;b&gt;kilépett&lt;b&gt;</string>
 
    <!-- flagging related -->
    <string name="chat_flag_dialog_progress_loading_flags">Betöltés…</string>

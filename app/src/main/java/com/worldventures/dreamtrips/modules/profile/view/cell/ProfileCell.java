@@ -294,7 +294,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    }
 
    private void showFriendRequest(String name) {
-      friendRequestCaption.setText(String.format(context.getString(R.string.profile_friend_request), name));
+      friendRequestCaption.setText(context.getString(R.string.profile_friend_request, name));
       friendRequest.setVisibility(View.VISIBLE);
    }
 

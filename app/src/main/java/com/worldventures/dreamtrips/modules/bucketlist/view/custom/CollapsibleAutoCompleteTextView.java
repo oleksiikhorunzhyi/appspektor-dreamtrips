@@ -2,12 +2,13 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.custom;
 
 import android.content.Context;
 import android.support.v7.view.CollapsibleActionView;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.widget.AutoCompleteTextView;
 
 import com.techery.spares.utils.ui.SoftInputUtil;
 
-public class CollapsibleAutoCompleteTextView extends AutoCompleteTextView implements CollapsibleActionView {
+public class CollapsibleAutoCompleteTextView extends AppCompatAutoCompleteTextView implements CollapsibleActionView {
 
    public CollapsibleAutoCompleteTextView(Context context) {
       super(context);

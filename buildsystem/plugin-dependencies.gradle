@@ -14,6 +14,7 @@ ext {
 
          apt           : 'com.neenbedankt.gradle.plugins:android-apt:1.8',
          retrolambda   : 'me.tatarka:gradle-retrolambda:3.6.1',
+         retrolambdaAst: 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2',
 
          newrelic      : 'com.newrelic.agent.android:agent-gradle-plugin:5.8.4',
          fabric        : 'io.fabric.tools:gradle:1.21.6',

@@ -35,8 +35,7 @@ public class CardListStackConverter {
       List<CommonCardViewModel> commonCardViewModels =
             Queryable.from(loadedCards)
                   .sort((o1, o2) -> o1.recordType().compareTo(o2.recordType()))
-                  .sort((o1, o2) ->
-                        Boolean.compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
+                  .sort((o1, o2) -> compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
                   .map(loadedCard -> {
                      CommonCardViewModel model = createCommonCardViewModel(defaultCardId, loadedCard);
                      index++;
@@ -56,20 +55,25 @@ public class CardListStackConverter {
       return viewModels;
    }
 
+   // Boolean.compare is added in API 19
+   private int compare(boolean x, boolean y) {
+      return (x == y) ? 0 : (x ? 1 : -1);
+   }
+
    @NonNull
    private CommonCardViewModel createCommonCardViewModel(String defaultCardId, Record loadedCard) {
       return new CommonCardViewModel(
-                              loadedCard.id(),
-                              utils.toBoldSpannable(loadedCard.nickName()),
-                              setCardType(loadedCard.recordType().name()),
-                              loadedCard.recordType().name(),
-                              isCardDefault(defaultCardId, loadedCard),
-                              utils.obtainShortCardNumber(loadedCard.numberLastFourDigits()),
-                              WalletRecordUtil.fetchFullName(loadedCard),
-                              utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
-                              utils.goodThrough(loadedCard.expDate()),
-                              index % 2 == 0
-                        );
+            loadedCard.id(),
+            utils.toBoldSpannable(loadedCard.nickName()),
+            setCardType(loadedCard.recordType().name()),
+            loadedCard.recordType().name(),
+            isCardDefault(defaultCardId, loadedCard),
+            utils.obtainShortCardNumber(loadedCard.numberLastFourDigits()),
+            WalletRecordUtil.fetchFullName(loadedCard),
+            utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
+            utils.goodThrough(loadedCard.expDate()),
+            index % 2 == 0
+      );
    }
 
    private CommonCardViewModel.StackType setCardType(String name) {

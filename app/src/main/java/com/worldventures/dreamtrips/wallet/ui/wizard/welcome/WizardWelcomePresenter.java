@@ -67,7 +67,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
                      .onSuccess(command -> getView().userPhoto(command.getResult().photoUrl()))
-                     .onFail((command, throwable) -> Timber.e("", throwable)));
+                     .onFail((command, throwable) -> Timber.e(throwable, "")));
 
          smartCardUserDataInteractor.smartCardAvatarPipe().send(SmartCardAvatarCommand.fromUrl(avatarPath));
       }

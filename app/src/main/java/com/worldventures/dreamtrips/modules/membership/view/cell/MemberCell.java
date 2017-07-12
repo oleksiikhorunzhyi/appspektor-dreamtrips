@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.view.cell;
 
-import android.telephony.PhoneNumberUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -13,6 +12,7 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import butterknife.InjectView;
@@ -44,7 +44,7 @@ public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member
       if (getModelObject().isEmailMain()) {
          subtitle = getModelObject().getSubtitle();
       } else {
-         subtitle = PhoneNumberUtils.formatNumber(getModelObject().getSubtitle(), country);
+         subtitle = ProjectPhoneNumberUtils.formatNumber(getModelObject().getSubtitle(), country);
       }
       tvSubtitle.setText(subtitle);
       ivPhone.setVisibility(View.GONE);

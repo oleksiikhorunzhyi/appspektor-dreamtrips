@@ -79,7 +79,7 @@
    <string name="perks">Extraförmåner</string>
    <string name="everyday">Varje dag</string>
    <string name="perks_terms">Användarvillkor</string>
-   <string name="perks_formatted" formatted="false">%1$d Förmåner</string>
+   <string name="perks_formatted">%1$d Förmåner</string>
    <string name="dtl_coming_soon_offers">Erbjudanden kommer snart</string>
    <string name="dtl_show_offers_only">Visa endast erbjudanden</string>
    <string name="dtl_earn_points">Tjäna DreamTrips points</string>

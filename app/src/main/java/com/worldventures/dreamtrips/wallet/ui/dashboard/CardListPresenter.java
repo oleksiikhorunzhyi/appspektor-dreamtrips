@@ -158,12 +158,12 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .map(Command::getResult)
             .throttleLast(300, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e("", throwable));
+            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::handleSmartCardUser, throwable -> Timber.e("", throwable));
+            .subscribe(this::handleSmartCardUser, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());

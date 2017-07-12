@@ -60,7 +60,8 @@ import timber.log.Timber;
 public class MobileSdkJanetModule {
 
    private static final String QUALIFIER = "MobileSdkJanetModule";
-   private static final String LOGGING_TAG = "DreamTrips MobileSDK API";
+   //The logging tag can be at most 23 characters
+   private static final String LOGGING_TAG = "DT MobileSDK API";
 
    @Provides(type = Provides.Type.SET)
    ActionService provideApiService(DreamtripsApiProvider dreamtripsApiProvider) {

@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
 
@@ -17,7 +15,7 @@ import com.worldventures.dreamtrips.R;
  * - delay for start listening hold HoldableButton#holdInitialDelay
  * - delay between hold events HoldableButton#holdRepeatDelay
  */
-public class HoldableButton extends Button {
+public class HoldableButton extends AppCompatButton {
 
    private static final int DEFAULT_HOLD_INITIAL_DELAY = 500;   //in milliseconds
    private static final int DEFAULT_HOLD_REPEAT_DELAY = 100;    //in milliseconds
@@ -54,12 +52,6 @@ public class HoldableButton extends Button {
 
    public HoldableButton(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
-      initializeWithAttrs(attrs);
-   }
-
-   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-   public HoldableButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-      super(context, attrs, defStyleAttr, defStyleRes);
       initializeWithAttrs(attrs);
    }
 

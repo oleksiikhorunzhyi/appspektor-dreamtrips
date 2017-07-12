@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -21,12 +22,13 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 
-public class ShowMoreTextView extends TextView {
+import static android.support.v4.content.ContextCompat.getColor;
+
+public class ShowMoreTextView extends AppCompatTextView {
 
    private static final int DEF_SYMBOLS_LIMIT = 100;
    private static final String DEF_CAPTION_COLLAPSED = "Show more"; // TODO : move to res as string?
    private static final String DEF_CAPTION_EXPANDED = "Show less"; // TODO : move to res as string?
-   private static final int DEF_CAPTION_COLOR = android.R.color.holo_blue_dark;
    private static final String DEF_SEPARATOR_EXPANDED = " "; // TODO : move to res as string?
    private static final String DEF_SEPARATOR_COLLAPSED = "... "; // TODO : move to res as string?
    //
@@ -103,7 +105,7 @@ public class ShowMoreTextView extends TextView {
       symbolsLimit = a.getInt(R.styleable.ShowMoreTextView_smtv_symbolsLimit, DEF_SYMBOLS_LIMIT);
       captionCollapsed = a.getString(R.styleable.ShowMoreTextView_smtv_captionCollapsed);
       captionExpanded = a.getString(R.styleable.ShowMoreTextView_smtv_captionExpanded);
-      captionColor = a.getColor(R.styleable.ShowMoreTextView_smtv_captionColor, android.R.color.holo_blue_dark);
+      captionColor = a.getColor(R.styleable.ShowMoreTextView_smtv_captionColor, getColor(context, android.R.color.holo_blue_dark));
       separatorExpanded = a.getString(R.styleable.ShowMoreTextView_smtv_separatorExpanded);
       separatorCollapsed = a.getString(R.styleable.ShowMoreTextView_smtv_separatorCollapsed);
       extendClickableArea = a.getBoolean(R.styleable.ShowMoreTextView_smtv_extendClickableArea, false);

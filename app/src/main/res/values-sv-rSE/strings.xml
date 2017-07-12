@@ -189,12 +189,12 @@
    <string name="selected">Valt: %1$d</string>
    <string name="email_is_not_valid">Ogiltig e-postadress</string>
    <string name="invitation_deselect_all">Avmarkera alla</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det här.<br/>%3$s]]></string>
+   <string name="invitation_text_template"><![CDATA[ Hej%1$s! %2$s <br/>Kolla in det här.<br/>%3$s]]></string>
    <string name="invite_add_photo">Lägg till foto</string>
    <string name="invite_select_first">Välj kontakter först</string>
    <string name="filters_show_favorite">VISA FAVORITRESOR</string>
    <string name="filter_recently_added">NYLIGEN TILLAGDA</string>
-   <string name="bucketlist_share" formatted="false">Bland mina drömresmål: %1$s</string>
+   <string name="bucketlist_share">Bland mina drömresmål: %1$s</string>
    <string name="last_sent">Senast skickade</string>
    <string name="search_trips">Sök efter resor</string>
    <string name="search">Sök</string>
@@ -211,7 +211,7 @@
 
    <string name="action_add_to_bucket">Lägg till bland drömresmål</string>
    <string name="profile_add_friend">Lägg till vän</string>
-   <string name="profile_friend_request" formatted="false">%1$s har skickat en vänförfrågan</string>
+   <string name="profile_friend_request">%1$s har skickat en vänförfrågan</string>
    <string name="profile_respond">Svara</string>
    <string name="profile_waiting">Väntar</string>
    <string name="social_my_friends">Mina vänner</string>
@@ -232,7 +232,7 @@
    <string name="bucket_current_cover">Aktuellt omslagsfoto</string>
    <string name="bucket_item_edit_completed">Markera som färdig!</string>
    <string name="reload_feed">Uppdatera flödet</string>
-   <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
+   <string name="feed_header">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
    <string name="added">har lagt till en</string>
    <string name="booked">har bokat en</string>
    <string name="shared">har delat en</string>
@@ -281,8 +281,8 @@
    <string name="post_cancel_message">Är du säker på att du vill kasta bort ändringarna?</string>
    <string name="bucket_list_foreign_message">Den här användaren har inga drömresmål för närvarande</string>
 
-   <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
-   <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
+   <string name="user_name">&lt;b&gt;%1$s&lt;/b&gt;</string>
+   <string name="user_name_with_company">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
    <string name="email_app_choose_dialog_title">Välj program</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; gillar detta</string>
@@ -308,8 +308,8 @@
    <string name="bucket_delete">Ta bort drömresmål</string>
    <string name="bucket_delete_caption">Är du säker på att du vill ta bort drömresmålet?</string>
 
-   <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
-   <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s av dina vänner&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
+   <string name="feed_header_two">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
+   <string name="feed_header_many">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s av dina vänner&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
 
    <string name="player_error_header">Fel vid uppspelning</string>
    <string name="player_error">Tyvärr. Vi kunde inte spela upp videon just nu. Kontrollera din anslutning och försök igen.</string>
@@ -574,7 +574,7 @@
    <string name="offline_warning_dialog_message">Din tillgång kommer att vara begränsad </string>
    <string name="offline_indicator_description">Ingen internetanslutning</string>
 
-   <string name="merchant_message_text" formatted="false">Grattis! Du har tjänat %1$s DreamTrips Points @%2$s, %3$s</string>
+   <string name="merchant_message_text">Grattis! Du har tjänat %1$s DreamTrips Points @%2$s, %3$s</string>
 
    <string name="beta_label">Beta</string>
 

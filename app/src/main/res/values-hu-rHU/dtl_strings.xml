@@ -79,7 +79,7 @@
    <string name="perks">Előnyök</string>
    <string name="everyday">Mindennap</string>
    <string name="perks_terms">Használati feltételek</string>
-   <string name="perks_formatted" formatted="false">%1$d Bónusz</string>
+   <string name="perks_formatted">%1$d Bónusz</string>
    <string name="dtl_coming_soon_offers">Hamarosan elérhető ajánlatok</string>
    <string name="dtl_show_offers_only">Csak az ajánlatok mutatása</string>
    <string name="dtl_earn_points">DreamTrips pont szerzés</string>

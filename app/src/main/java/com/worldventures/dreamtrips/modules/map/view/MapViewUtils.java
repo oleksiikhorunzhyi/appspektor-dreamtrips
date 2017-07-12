@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.map.view;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.View;
@@ -21,6 +22,8 @@ public class MapViewUtils {
     * @param margin             - margin button
     * @param relativeDirections - array with RelativeLayout rules for adjusting button inside map
     */
+   @SuppressLint("ResourceType")
+   @SuppressWarnings("ResourceType")
    public static void setLocationButtonGravity(@Nullable View mapView, int margin, int... relativeDirections) {
       if (mapView == null) return;
 

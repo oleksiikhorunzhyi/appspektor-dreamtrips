@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import com.worldventures.dreamtrips.R;
 
-public class WalletProgressWidget extends ImageView {
+public class WalletProgressWidget extends AppCompatImageView {
 
    private static final int ANIM_DURATION_MILLIS = 1000;
 

@@ -66,7 +66,7 @@ public class ActionPanelViewShareHandler {
          case BUCKET_LIST_ITEM:
             BucketItem bucketItem = (BucketItem) feedItem.getItem();
             shareUrl = bucketItem.getUrl();
-            text = String.format(context.getString(R.string.bucketlist_share), bucketItem.getName());
+            text = context.getString(R.string.bucketlist_share, bucketItem.getName());
             TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_SHARE, bucketItem.getUid());
 
             break;

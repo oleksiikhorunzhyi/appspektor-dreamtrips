@@ -79,7 +79,7 @@
    <string name="perks">Ventajas</string>
    <string name="everyday">Todos los días</string>
    <string name="perks_terms">Términos y condiciones</string>
-   <string name="perks_formatted" formatted="false">%1$d Ventajas</string>
+   <string name="perks_formatted">%1$d Ventajas</string>
    <string name="dtl_coming_soon_offers">Ofertas próximamente</string>
    <string name="dtl_show_offers_only">Mostrar sólo ofertas</string>
    <string name="dtl_earn_points">Ganar DreamTrips Points</string>

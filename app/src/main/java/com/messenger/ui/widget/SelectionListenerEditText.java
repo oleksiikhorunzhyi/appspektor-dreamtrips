@@ -1,10 +1,10 @@
 package com.messenger.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
-import android.widget.EditText;
 
-public class SelectionListenerEditText extends EditText {
+public class SelectionListenerEditText extends AppCompatEditText {
 
    public interface SelectionListener {
       void onSelectionChange(int selStart, int selEnd);

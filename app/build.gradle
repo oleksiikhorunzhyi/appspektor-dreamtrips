@@ -145,10 +145,7 @@ android {
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
-      disable 'MissingTranslation' // otherwise generated strings fucks you up
-      abortOnError false
-      checkReleaseBuilds false
-      // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
+      disable 'MissingTranslation', 'GradleCompatible'
    }
    packagingOptions {
       exclude 'LICENSE.txt'

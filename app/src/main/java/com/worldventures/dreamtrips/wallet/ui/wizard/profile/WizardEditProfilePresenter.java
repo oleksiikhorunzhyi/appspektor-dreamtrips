@@ -103,7 +103,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                  .onFail((command, throwable) -> Timber.e("", throwable))
+                  .onFail((command, throwable) -> Timber.e(throwable, ""))
                   .onSuccess(command -> photoPrepared(command.getResult())));
    }
 

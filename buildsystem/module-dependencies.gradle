@@ -180,7 +180,7 @@ ext {
    moduleDependencies.util = [
          googleAnnotations        : [c: "com.android.support:support-annotations:${googleLibrariesVersion}"],
          multidex                 : [c: 'com.android.support:multidex:1.0.1'],
-         timber                   : [c: 'com.jakewharton.timber:timber:4.0.1'],
+         timber                   : [c: 'com.jakewharton.timber:timber:4.5.1'],
          jodaTimeAndroid          : [c: "net.danlew:android.joda:$jodaTimeVersion"],
          androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
          androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],

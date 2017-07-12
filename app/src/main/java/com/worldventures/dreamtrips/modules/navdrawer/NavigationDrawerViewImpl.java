@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.navdrawer;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -51,6 +53,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
       init(context);
    }
 
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
    public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
       super(context, attrs, defStyleAttr, defStyleRes);
       init(context);

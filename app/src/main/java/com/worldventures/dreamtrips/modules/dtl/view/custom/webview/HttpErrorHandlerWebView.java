@@ -10,14 +10,10 @@ import android.view.KeyEvent;
 import android.webkit.WebView;
 
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.client.HttpErrorHandlerWebViewClient;
-import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.javascript.JavaScriptInterface;
-
-import static com.worldventures.dreamtrips.modules.dtl.view.custom.webview.javascript.JavaScriptInterface.JAVASCRIPT_INTERFACE;
 
 public class HttpErrorHandlerWebView extends WebView {
    private Handler handler = new Handler();
    private HttpStatusErrorCallback httpStatusErrorCallback;
-   private JavascriptCallback javascriptCallback;
 
    public HttpErrorHandlerWebView(Context context) {
       super(context);
@@ -52,14 +48,6 @@ public class HttpErrorHandlerWebView extends WebView {
             }
          }
       });
-      addJavascriptInterface(new JavaScriptInterface() {
-         @Override
-         public void thrstCallback(String message) {
-            if (javascriptCallback != null) {
-               javascriptCallback.onThrstCallback(message);
-            }
-         }
-      }, JAVASCRIPT_INTERFACE);
 
       setOnKeyListener((view, keyCode, keyEvent) -> {
          if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
@@ -76,15 +64,7 @@ public class HttpErrorHandlerWebView extends WebView {
       this.httpStatusErrorCallback = httpStatusErrorCallback;
    }
 
-   public void setJavascriptCallback(JavascriptCallback javascriptCallback) {
-      this.javascriptCallback = javascriptCallback;
-   }
-
    public interface HttpStatusErrorCallback {
       void onHttpStatusError(String url, int statusCode);
-   }
-
-   public interface JavascriptCallback {
-      void onThrstCallback(String message);
    }
 }

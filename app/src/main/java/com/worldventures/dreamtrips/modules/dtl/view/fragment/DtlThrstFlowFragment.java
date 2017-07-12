@@ -53,9 +53,6 @@ public class DtlThrstFlowFragment extends RxBaseFragment<DtlThrstFlowPresenter> 
       webView.setHttpStatusErrorCallback((url, statusCode) ->
             Toast.makeText(getContext(), "URL:" + url + "\nStatus code=" + statusCode, Toast.LENGTH_SHORT).show()
       );
-      webView.setJavascriptCallback(message ->
-            Toast.makeText(getContext(), "Callback message=" + message, Toast.LENGTH_SHORT).show()
-      );
    }
 
    @Override

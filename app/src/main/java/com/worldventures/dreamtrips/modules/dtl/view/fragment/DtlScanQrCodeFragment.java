@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
 
 import javax.inject.Inject;
@@ -122,14 +121,8 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    @Override
-   public void openThrstFlow(Merchant merchant, ImmutableDtlTransaction dtlTransaction) {
-      router.moveTo(
-            Route.DTL_THRST_FLOW, NavigationConfigBuilder.forFragment()
-                  .containerId(R.id.container_main)
-                  .backStackEnabled(true)
-                  .fragmentManager(getFragmentManager())
-                  .build()
-      );
+   public void openThrstFlow() {
+      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().build());
    }
 
    @Override

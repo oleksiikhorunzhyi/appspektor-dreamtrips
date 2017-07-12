@@ -28,7 +28,7 @@ public class DtlThrstFlowFragment extends RxBaseFragment<DtlThrstFlowPresenter> 
          "            var transaction = $('#txButton');\n" +
          "            function call_native () {\n" +
          "                var prop = 'transaction_id';\n" +
-         "                window.mobileTHRSTContext.thrstCallback('whatever');\n" +
+         "                window.mobileTHRSTContext.sendMessage('whatever');\n" +
          "            }\n" +
          "            setTimeout(call_native, 1000);\n" +
          "            transaction.on('click', call_native);\n" +
@@ -52,6 +52,9 @@ public class DtlThrstFlowFragment extends RxBaseFragment<DtlThrstFlowPresenter> 
       webView.loadDataWithBaseURL("", HTML, "text/html", "UTF-8", "");
       webView.setHttpStatusErrorCallback((url, statusCode) ->
             Toast.makeText(getContext(), "URL:" + url + "\nStatus code=" + statusCode, Toast.LENGTH_SHORT).show()
+      );
+      webView.setJavascriptCallback(message ->
+            Toast.makeText(getContext(), "Callback message=" + message, Toast.LENGTH_SHORT).show()
       );
    }
 

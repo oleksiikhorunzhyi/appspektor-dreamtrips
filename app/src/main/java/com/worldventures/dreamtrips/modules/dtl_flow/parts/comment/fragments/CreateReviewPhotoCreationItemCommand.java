@@ -36,8 +36,8 @@ public class CreateReviewPhotoCreationItemCommand extends Command<PhotoReviewCre
                   bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoReviewCreationItem item = new PhotoReviewCreationItem();
-               item.setId(photoGalleryModel.getUri().getPath().hashCode());
-               item.setFileUri(photoGalleryModel.getUri().getPath());
+               item.setId(photoGalleryModel.getUri().hashCode());
+               item.setFileUri(photoGalleryModel.getUri().toString());
                item.setFilePath(photoGalleryModel.getAbsolutePath());
                Size imageSize = photoGalleryModel.getSize();
                item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());

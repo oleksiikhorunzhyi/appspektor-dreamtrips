@@ -121,7 +121,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                      //TODO: REPLACE THIS WITH USER-THRST-ENABLED VALUE
                      if (true) {
                         view.hideProgress();
-                        view.openThrstFlow(merchant, dtlTransaction);
+                        view.openThrstFlow();
                      } else {
                         transactionInteractor
                               .earnPointsActionPipe()
@@ -267,6 +267,6 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
       void openScanReceipt(DtlTransaction dtlTransaction);
 
-      void openThrstFlow(Merchant merchant, ImmutableDtlTransaction dtlTransaction);
+      void openThrstFlow();
    }
 }

@@ -110,7 +110,7 @@ def Map generateParams() {
    buildParams.TEST_REPORT_FOLDER = 'app/build/test-results'
    buildParams.TEST_REPORT_PATTERN = '**/*.xml'
 
-   buildParams.LINT_REPORT_FOLDER = 'app/build/outputs'
+   buildParams.LINT_REPORT_FOLDER = 'app/build/reports'
    buildParams.LINT_REPORT_FILE = "lint-results-${lintReportName}.html"
 
    return buildParams

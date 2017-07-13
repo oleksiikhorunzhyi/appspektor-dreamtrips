@@ -10,6 +10,8 @@ ext {
    ]
    pluginDependencies << [
          androidDefault: '2.3.3',
+         // gradle 2.3.3 uses proguard v5.3.2 (https://sourceforge.net/p/proguard/bugs/638/)
+         proguard      : 'net.sf.proguard:proguard-gradle:5.2',
          kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginDependencies.languages.kotlin",
 
          apt           : 'com.neenbedankt.gradle.plugins:android-apt:1.8',

@@ -41,6 +41,8 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    //
    private final Merchant merchant;
 
+   private UploadTask uploadTask;
+
    public DtlScanReceiptPresenter(Merchant merchant) {
       this.merchant = merchant;
    }
@@ -134,11 +136,12 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(
                         action -> {
+                           DtlTransaction dtlTransaction = action.getResult();
                            //TODO: REPLACE THIS WITH USER-THRST-ENABLED VALUE
                            if (true) {
-                              view.openThrstFlow(merchant);
+                              view.openThrstFlow(merchant, photoUploadingManagerS3.getResultUrl(uploadTask));
                            } else {
-                              view.openVerify(action.getResult());
+                              view.openVerify(dtlTransaction);
                            }
                         }
                   )
@@ -175,7 +178,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
 
-      UploadTask uploadTask = new UploadTask();
+      uploadTask = new UploadTask();
       uploadTask.setFilePath(filePath);
       TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
       uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
@@ -204,6 +207,6 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
       void showCurrency(Currency currency);
 
-      void openThrstFlow(Merchant merchant);
+      void openThrstFlow(Merchant merchant, String dtlTransaction);
    }
 }

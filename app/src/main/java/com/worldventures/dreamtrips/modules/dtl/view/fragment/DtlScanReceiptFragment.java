@@ -174,9 +174,15 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    }
 
    @Override
-   public void openThrstFlow(Merchant merchant) {
+   public void openThrstFlow(Merchant merchant, String receiptUrl) {
       progressDialog.dismiss();
       router.back();
-      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().data(new ThrstFlowBundle(merchant)).build());
+      router.moveTo(
+            Route.DTL_THRST_FLOW,
+            NavigationConfigBuilder
+                  .forActivity()
+                  .data(new ThrstFlowBundle(merchant, receiptUrl))
+                  .build()
+      );
    }
 }

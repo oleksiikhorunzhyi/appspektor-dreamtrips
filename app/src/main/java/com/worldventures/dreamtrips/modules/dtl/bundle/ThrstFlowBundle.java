@@ -8,13 +8,19 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 public class ThrstFlowBundle implements Parcelable {
 
    private final Merchant merchant;
+   private final String receiptUrl;
 
-   public ThrstFlowBundle(Merchant merchant) {
+   public ThrstFlowBundle(Merchant merchant, String receiptUrl) {
       this.merchant = merchant;
+      this.receiptUrl = receiptUrl;
    }
 
    public Merchant getMerchant() {
       return merchant;
+   }
+
+   public String getReceiptUrl() {
+      return receiptUrl;
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -23,11 +29,13 @@ public class ThrstFlowBundle implements Parcelable {
 
    protected ThrstFlowBundle(Parcel in) {
       merchant = (Merchant) in.readSerializable();
+      receiptUrl = in.readString();
    }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeSerializable(merchant);
+      dest.writeString(receiptUrl);
    }
 
    public static final Creator<ThrstFlowBundle> CREATOR = new Creator<ThrstFlowBundle>() {

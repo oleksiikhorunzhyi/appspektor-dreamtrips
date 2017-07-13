@@ -5,9 +5,6 @@
    <string name="trip_images">Trip Images</string>
    <string name="bucket_list">Bucket List</string>
    <string name="my_profile">My Profile</string>
-   <string name="terms_of_service">Terms of Service</string>
-   <string name="privacy">Privacy Policy</string>
-   <string name="cookie">Cookie Policy</string>
    <string name="action_quick_input">Quick Add</string>
    <string name="action_popular_string">Add From Popular</string>
    <string name="action_done">Done</string>
@@ -592,7 +589,6 @@
    <string name="n_friends_accepted">%d friends accepted</string>
    <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
 
-   <string name="uploading_post_status_processing">Processing</string>
    <string name="uploading_post_status_progress_video"><b><i>Step 1 of 2.</i></b> Uploading…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Failed to process. Something wrong with video</string>

@@ -5,9 +5,6 @@
    <string name="trip_images">Imej Perjalanan</string>
    <string name="bucket_list">Senarai Baldi</string>
    <string name="my_profile">Profil Saya</string>
-   <string name="terms_of_service">Syarat Perkhidmatan</string>
-   <string name="privacy">Polisi Privasi</string>
-   <string name="cookie">Polisi Cookie</string>
    <string name="action_quick_input">Tambah Cepat</string>
    <string name="action_popular_string">Tambah Daripada Popular</string>
    <string name="action_done">Selesai</string>
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d kawan-kawan diterima.</string>
    <string name="friends_will_appear_momentarily">Mereka akan muncul dalam Rakan Saya sebentar lagi.</string>
 
-   <string name="uploading_post_status_processing">Sedang memproses</string>
    <string name="uploading_post_status_progress_video"><b><i>Langkah 1 dari 2.</i></b> Memuat naik …</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Langkah 2 dari 2.</i></b> Memproses …</string>
    <string name="uploading_post_status_progress_video_processing_failed">Gagal memproses. Sesuatu masalah dengan video</string>

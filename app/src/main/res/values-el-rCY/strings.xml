@@ -5,9 +5,6 @@
    <string name="trip_images">Εικόνες από Ταξίδια</string>
    <string name="bucket_list">Καλάθι Αγορών</string>
    <string name="my_profile">Το προφίλ μου</string>
-   <string name="terms_of_service">Όροι υπηρεσίας</string>
-   <string name="privacy">Πολιτική Προστασίας Προσωπικών Δεδομένων</string>
-   <string name="cookie">Πολιτική για τα Cookies</string>
    <string name="action_quick_input">Γρήγορη προσθήκη</string>
    <string name="action_popular_string">Προσθήκη από τα Δημοφιλή</string>
    <string name="action_done">Ολοκληρώθηκε</string>
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d φίλοι έγιναν αποδεκτοί.</string>
    <string name="friends_will_appear_momentarily">Θα εμφανιστούν στο Οι Φίλοι Μου άμεσα.</string>
 
-   <string name="uploading_post_status_processing">Γίνεται επεξεργασία</string>
    <string name="uploading_post_status_progress_video"><b><i>Βήμα 1 από 2.</i></b> Φόρτωση…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Βήμα 2 από 2.</i></b> Επεξεργασία…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Αποτυχία επεξεργασίας Κάτι έγινε λάθος με το βίντεο</string>

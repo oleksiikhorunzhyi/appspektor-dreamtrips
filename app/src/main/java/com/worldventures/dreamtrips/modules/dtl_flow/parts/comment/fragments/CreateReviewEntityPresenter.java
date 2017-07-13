@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Backgro
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
@@ -110,7 +110,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
                         .send(new CreatePostCompoundOperationCommand(cachedText, getSelectionPhotos(creationItems),
-                              location, origin))
+                              origin, location))
             );
    }
 
@@ -188,7 +188,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
       }
    }
 
-   private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel,
+   private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoPickerModel photoGalleryModel,
          MediaAttachment.Source source) {
       return tripImagesInteractor.createReviewPhotoCreationItemPipe()
             .createObservableResult(new CreateReviewPhotoCreationItemCommand(photoGalleryModel, source))

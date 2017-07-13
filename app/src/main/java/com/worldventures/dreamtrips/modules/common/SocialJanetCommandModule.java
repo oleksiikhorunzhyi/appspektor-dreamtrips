@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.UploadVideoFileCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -29,16 +31,19 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilter
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
+import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
@@ -73,6 +78,10 @@ import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumen
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
@@ -245,6 +254,16 @@ import dagger.Module;
       SendVideoAnalyticsIfNeedAction.class,
       SendPodcastAnalyticsIfNeedAction.class,
       GetAlbumsCommand.class,
-      MigrateFromCachedEntity.class
+      GetPhotosFromGalleryCommand.class,
+      GetVideosFromGalleryCommand.class,
+      GetVideoDurationCommand.class,
+      GetMediaFromGalleryCommand.class,
+      UploadVideoFileCommand.class,
+      MigrateFromCachedEntity.class,
+      CreateVideoCommand.class,
+      MigrateFromCachedEntity.class,
+      FeedItemsVideoProcessingStatusCommand.class,
+      GetVideoMetadataCommand.class,
+      LoadConfigurationCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

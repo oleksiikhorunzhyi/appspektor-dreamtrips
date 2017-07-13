@@ -26,9 +26,10 @@ import com.worldventures.dreamtrips.modules.feed.converter.PostSocializedConvert
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostAttachmentsConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostDataConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.SimplePostConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.VideoAttachmentConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.ApiUserToUserConverter;
-import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfileToUserConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.FriendCandidateToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfileToUserConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.converter.DocumentTypeReverseConverter;
@@ -74,6 +75,7 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.modules.config.model.converter.ConfigurationConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
@@ -571,5 +573,17 @@ public class MappingModule {
    @Singleton
    Converter provideDocumentsTypeReverseConverter() {
       return new DocumentTypeReverseConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideVideoAttachmentConverter() {
+      return new VideoAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideConfigurationConverter() {
+      return new ConfigurationConverter();
    }
 }

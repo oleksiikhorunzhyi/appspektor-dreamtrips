@@ -29,11 +29,11 @@
       <Button
             android:id="@+id/post"
             style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="@color/post_comment_button_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/comment_post_btn_title"
-            android:textColor="@color/theme_main_darker"
             />
    </LinearLayout>
 

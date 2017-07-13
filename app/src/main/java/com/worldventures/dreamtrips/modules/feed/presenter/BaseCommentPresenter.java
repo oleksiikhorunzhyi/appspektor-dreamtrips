@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.text.TextUtils;
+
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -51,7 +52,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    @State FeedEntity feedEntity;
-   @State String draftCommentText;
 
    private int page = 1;
    private boolean loadInitiated;
@@ -63,7 +63,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      view.setDraftComment(draftCommentText);
       view.setLikePanel(feedEntity);
 
       if (isNeedCheckCommentsWhenStart()) checkCommentsAndLikesToLoad();
@@ -71,12 +70,15 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       subscribeToCommentDeletion();
       subscribeToCommentCreation();
       subscribeToCommentChanges();
-      subscribeToCommentsLoading();
       subscribeToCommentTranslation();
    }
 
-   private void subscribeToCommentsLoading() {
-      view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
+   @Override
+   public void onResume() {
+      super.onResume();
+      commentsInteractor.commentsPipe()
+            .observe()
+            .compose(bindUntilPauseIoToMainComposer())
             .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
                   .onSuccess(this::onCommentsLoaded)
                   .onFail(this::handleError));
@@ -142,10 +144,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                   .onFail(this::handleError));
    }
 
-   public void setDraftCommentText(String commentText) {
-      this.draftCommentText = commentText;
-   }
-
    @Override
    public void onLikeItem(FeedItem feedItem) {}
 
@@ -161,6 +159,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void onCommentItem(FeedItem feedItem) {
       view.openInput();
+   }
+
+   public void onCommentTextChanged(String comment) {
+      view.enablePostButton(!TextUtils.isEmpty(comment));
    }
 
    @Override
@@ -209,8 +211,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
    }
 
-   public void createComment() {
-      commentsInteractor.createCommentPipe().send(new CreateCommentCommand(feedEntity, draftCommentText));
+   public void createComment(String comment) {
+      commentsInteractor.createCommentPipe().send(new CreateCommentCommand(feedEntity, comment));
    }
 
    private void subscribeToCommentCreation() {
@@ -288,7 +290,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
       void updateComment(Comment comment);
 
-      void setDraftComment(String comment);
+      void enablePostButton(boolean enable);
 
       void openInput();
 

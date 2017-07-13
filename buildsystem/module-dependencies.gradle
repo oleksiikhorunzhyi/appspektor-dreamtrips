@@ -11,6 +11,7 @@ ext {
          { o -> o.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } },
+         { o -> o.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
          { o -> o.maven { url 'http://nexus.idamob.ru/content/groups/public' } },
          { o -> o.maven { url 'https://github.com/shaubert/maven-repo/raw/master/snapshots' } },
          { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
@@ -65,14 +66,14 @@ ext {
    def janetHttpVersion = '1.3.1'
    def okhttp2Version = '2.7.5'
    def okhttp3Version = '3.5.0'
-   def mobileSdkVersion = '1.2.2'
+   def mobileSdkVersion = '1.2.4'
    def smackVersion = '4.1.6'
    moduleDependencies.networking = [
          // API
          mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkCompiler        : [a: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.3-DEV-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.5-RELEASE-1.21-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -172,6 +173,8 @@ ext {
          materialRangeBar      : [c: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [c: 'me.leolin:ShortcutBadger:1.1.3@aar'],
          circleindicator       : [c: 'me.relex:circleindicator:1.2.2@aar'],
+         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:2.7.0+15'],
+         jwPlayerCore          : [c: 'com.longtailvideo.jwplayer:jwplayer-common:2.7.0+15'],
    ]
    //
    def leakCanaryVersion = '1.3.1'
@@ -195,7 +198,7 @@ ext {
          databindingcompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
    ]
    // tests
-   def spekVersion = '1.1.1'
+   def spekVersion = '1.1.2'
    def roboelectricVersion = '3.1.2'
    def powerMockVersion = '1.7.0RC4'
    moduleDependencies.test = [

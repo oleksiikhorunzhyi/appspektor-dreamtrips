@@ -11,14 +11,11 @@ public interface FeedEntityHolder<T extends FeedEntity> extends Parcelable {
    T getItem();
 
    enum Type {
-      @SerializedName("Trip")
       TRIP,
-      @SerializedName("Photo")
       PHOTO,
-      @SerializedName("BucketListItem")
       BUCKET_LIST_ITEM,
-      @SerializedName("Post")
       POST,
+      VIDEO,
       UNDEFINED
    }
 }

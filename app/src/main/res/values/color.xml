@@ -15,6 +15,8 @@
    <color name="grey">#A0A0A0</color>
    <color name="grey_lighter">#e6e6e6</color>
 
+   <color name="comment_button_disabled">#858585</color>
+
    <color name="bg_tablet_menu">#0F2639</color>
 
    <color name="tripPlaceColor">#025E93</color>

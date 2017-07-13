@@ -8,4 +8,6 @@ public interface DtlMapInfoScreen extends DtlScreen {
    void visibleLayout(boolean show);
 
    void setMerchant(ThinMerchant merchant);
+
+   void showPendingReviewError();
 }

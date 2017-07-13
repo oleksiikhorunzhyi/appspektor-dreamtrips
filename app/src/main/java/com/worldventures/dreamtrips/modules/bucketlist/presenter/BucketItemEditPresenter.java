@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteIte
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 
@@ -169,11 +169,11 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       }
    }
 
-   private void attachImages(List<PhotoGalleryModel> chosenImages) {
+   private void attachImages(List<PhotoPickerModel> chosenImages) {
       if (chosenImages.size() == 0) {
          return;
       }
-      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(Uri.parse(choseImage.getImageUri())));
+      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(choseImage.getUri()));
    }
 
    private void imageSelected(Uri uri) {

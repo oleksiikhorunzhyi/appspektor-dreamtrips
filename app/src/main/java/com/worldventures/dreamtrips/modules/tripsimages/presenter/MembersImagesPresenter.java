@@ -136,7 +136,7 @@ public class MembersImagesPresenter extends MembersImagesBasePresenter<GetMember
    }
 
    @Override
-   protected GetMembersPhotosCommand getLoadMoreCommand(int currentCount) {
+   protected GetMembersPhotosCommand getLoadMoreCommand(int page) {
       Photo photo = (Photo) photos.get(photos.size() - 1);
       return new GetMembersPhotosCommand(ImmutablePaginationParams.builder()
             .perPage(getPageSize()).before(photo.getCreatedAt()).build());

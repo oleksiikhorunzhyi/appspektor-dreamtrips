@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
@@ -232,7 +232,7 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(requestId, maxImages, true))
+            .data(new PickerBundle.Builder().setRequestId(requestId).setPhotoPickLimit(maxImages).build())
             .build());
    }
 

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.background_uploading.service.comman
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
@@ -39,7 +38,7 @@ public class ScheduleCompoundOperationCommand extends Command<Void> implements I
             });
    }
 
-   private boolean hasStartedUploads(List<CompoundOperationModel> existingUploads) {
+   private boolean hasStartedUploads(List<PostCompoundOperationModel> existingUploads) {
       return Queryable.from(existingUploads)
             .firstOrDefault(element -> element.state() == CompoundOperationState.STARTED) != null;
    }

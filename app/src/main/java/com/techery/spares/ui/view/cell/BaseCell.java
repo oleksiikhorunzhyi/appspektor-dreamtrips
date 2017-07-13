@@ -13,10 +13,6 @@ public interface BaseCell<T> {
 
    void setEventBus(EventBus eventBus);
 
-   void saveState(Bundle b);
-
-   void restoreState(Bundle bundle);
-
    void clearResources();
 
    interface CellBuilder<T> {

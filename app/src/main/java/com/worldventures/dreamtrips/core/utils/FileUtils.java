@@ -118,5 +118,8 @@ public class FileUtils {
       return displaySize;
    }
 
-
+   public static String bytesToMB(long bytes) {
+      float megabytes = ((float) bytes) / (1024 * 1024f);
+      return String.format("%.2f MB", megabytes);
+   }
 }

@@ -1,0 +1,2 @@
+-keep class android.databinding.tool.** { *; }
+-dontwarn android.databinding.tool.**

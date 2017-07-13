@@ -14,21 +14,20 @@ import java.util.List;
 
 public class PhotoCreationItem implements Parcelable {
 
-   long id;
-   @NotNull String fileUri;
-   @NotNull String filePath;
-   @NotNull String originUrl = "";
-   @NotNull String location;
-   @NotNull ArrayList<PhotoTag> basePhotoTags = new ArrayList<>();
-   @NotNull ArrayList<PhotoTag> cachedAddedPhotoTags = new ArrayList<>();
-   @NotNull ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
-   @NotNull String mediaAttachmentType;
-   String title;
+   private long id;
+   @NotNull private String fileUri;
+   @NotNull private String filePath;
+   @NotNull private String originUrl = "";
+   @NotNull private String location;
+   @NotNull private ArrayList<PhotoTag> basePhotoTags = new ArrayList<>();
+   @NotNull private ArrayList<PhotoTag> cachedAddedPhotoTags = new ArrayList<>();
+   @NotNull private ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
+   private String title;
 
-   boolean canEdit;
-   boolean canDelete;
+   private boolean canEdit;
+   private boolean canDelete;
 
-   List<PhotoTag> suggestions = new ArrayList<>();
+   private List<PhotoTag> suggestions = new ArrayList<>();
    private int width;
    private int height;
 
@@ -168,9 +167,9 @@ public class PhotoCreationItem implements Parcelable {
       dest.writeTypedList(basePhotoTags);
       dest.writeTypedList(cachedAddedPhotoTags);
       dest.writeTypedList(cachedRemovedPhotoTags);
-      dest.writeString(this.mediaAttachmentType);
       dest.writeTypedList(suggestions);
       dest.writeString(title);
+      dest.writeString(location);
       dest.writeParcelable(locationFromExif, flags);
       dest.writeInt(source != null ? source.ordinal() : MediaAttachment.Source.UNKNOWN.ordinal());
    }
@@ -181,14 +180,13 @@ public class PhotoCreationItem implements Parcelable {
       this.fileUri = in.readString();
       this.originUrl = in.readString();
       this.location = in.readString();
-      int tmpStatus = in.readInt();
       this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
-      this.mediaAttachmentType = in.readString();
       this.suggestions = in.createTypedArrayList(PhotoTag.CREATOR);
       this.title = in.readString();
-      this.location = in.readParcelable(Location.class.getClassLoader());
+      this.location = in.readString();
+      this.locationFromExif = in.readParcelable(Location.class.getClassLoader());
       this.source = MediaAttachment.Source.values()[in.readInt()];
    }
 

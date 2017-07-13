@@ -95,6 +95,7 @@
             android:textSize="@dimen/dtl_item_reviews_number_pics_text_size" />
 
       <ImageView
+            android:id="@+id/pics_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
@@ -103,7 +104,7 @@
    </LinearLayout>
 
    <TextView
-         android:id="@+id/tvReadMore"
+         android:id="@+id/tv_read_more"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignLeft="@+id/tvComment"

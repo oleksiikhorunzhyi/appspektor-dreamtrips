@@ -34,8 +34,6 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.profile.adapters.Expandable;
-import com.worldventures.dreamtrips.modules.profile.adapters.OnExpandedListener;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
@@ -51,7 +49,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_profile)
-public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate> implements Expandable {
+public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate> {
 
    @InjectView(R.id.user_cover) SimpleDraweeView userCover;
    @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
@@ -90,7 +88,6 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
    private Context context;
-   private OnExpandedListener onExpandedListener;
    private DecimalFormat df = new DecimalFormat("#0.00");
    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", LocaleHelper.getDefaultLocale());
    private boolean isExpandEnabled = true;
@@ -377,28 +374,10 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
          if (info.isOpened()) {
             info.hide();
             more.setVisibility(View.VISIBLE);
-            if (onExpandedListener != null) onExpandedListener.onItemExpanded(false);
          } else {
             info.show();
             more.setVisibility(View.INVISIBLE);
-            if (onExpandedListener != null) onExpandedListener.onItemExpanded(true);
          }
-      }
-   }
-
-   @Override
-   public void setListener(OnExpandedListener expandedListener) {
-      this.onExpandedListener = expandedListener;
-   }
-
-   @Override
-   public void setExpanded(boolean expanded) {
-      if (expanded) {
-         info.showWithoutAnimation();
-         more.setVisibility(View.INVISIBLE);
-      } else {
-         info.hideWithoutAnimation();
-         more.setVisibility(View.VISIBLE);
       }
    }
 

@@ -11,14 +11,10 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-@Singleton
 public class MessengerConnector {
 
    private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
@@ -26,8 +22,7 @@ public class MessengerConnector {
    private final SessionHolder<UserSession> appSessionHolder;
    private final MessengerSyncDelegate messengerSyncDelegate;
 
-   @Inject
-   MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder<UserSession> appSessionHolder,
+   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder<UserSession> appSessionHolder,
          MessengerServerFacade messengerServerFacade, MessengerSyncDelegate messengerSyncDelegate) {
       this.appSessionHolder = appSessionHolder;
       this.messengerServerFacade = messengerServerFacade;

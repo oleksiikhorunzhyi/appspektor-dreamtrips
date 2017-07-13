@@ -203,7 +203,6 @@ tasks.whenTaskAdded { task ->
 tasks.withType(JavaCompile) {
    options.compilerArgs << "-Xmaxerrs" << "400"
 }
-
 // configuration & dependencies
 
 def deps = project.ext.moduleDependencies
@@ -248,7 +247,6 @@ dependencies {
    deps.applyAll(owner, deps.test)
 
    // customized dependencies
-
    devCompile deps.provide(deps.util.leakcanary)
    devpremarshmallowCompile deps.provide(deps.util.leakcanary)
    externalCompile deps.provide(deps.util.leakcanaryNoOp)

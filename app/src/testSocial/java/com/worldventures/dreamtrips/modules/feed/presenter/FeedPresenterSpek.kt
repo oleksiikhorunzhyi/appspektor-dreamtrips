@@ -90,6 +90,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
          it("Should update feed items, call refresh feed, notify data set changed and send FeedItemsVideoProcessingStatusCommand") {
             val testSubscriber = TestSubscriber<ActionState<FeedItemsVideoProcessingStatusCommand>>()
             assetStatusInteractor.feedItemsVideoProcessingPipe().observe().subscribe(testSubscriber)
+            presenter.feedItems = ArrayList()
 
             val command = FeedStorageCommand.dummyCommand()
             command.result = listOf(FeedItem.create(TextualPost()))
@@ -97,7 +98,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
             presenter.subscribeToStorage()
 
-            assert(presenter.feedItems == command.result)
+            assert(presenter.feedItems.containsAll(command.result))
             verify(view, VerificationModeFactory.times(1)).refreshFeedItems(command.result, null, null)
             verify(view, VerificationModeFactory.times(1)).dataSetChanged()
             AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)

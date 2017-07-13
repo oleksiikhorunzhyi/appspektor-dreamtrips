@@ -5,9 +5,6 @@
    <string name="trip_images">Resebilder</string>
    <string name="bucket_list">Drömresmål</string>
    <string name="my_profile">Min profil</string>
-   <string name="terms_of_service">Användarvillkor</string>
-   <string name="privacy">Sekretesspolicy</string>
-   <string name="cookie">POLICY FÖR COOKIEFILER</string>
    <string name="action_quick_input">Lägg till snabbt</string>
    <string name="action_popular_string">Lägg till från populära</string>
    <string name="action_done">Klar</string>
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d vänner accepterade.</string>
    <string name="friends_will_appear_momentarily">De kommer tillfälligt synas under Mina vänner.</string>
 
-   <string name="uploading_post_status_processing">Bearbetar</string>
    <string name="uploading_post_status_progress_video"><b><i>Steg 1 av 2.</i></b> Laddar upp …</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Steg 2 av 2.</i></b> Bearbetar …</string>
    <string name="uploading_post_status_progress_video_processing_failed">Bearbetningen misslyckades. Något är fel med videon</string>

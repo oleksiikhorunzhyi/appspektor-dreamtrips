@@ -5,9 +5,6 @@
    <string name="trip_images">Imagini din călătorie</string>
    <string name="bucket_list">Listă de dorințe</string>
    <string name="my_profile">Profilul meu</string>
-   <string name="terms_of_service">Termeni și condiții</string>
-   <string name="privacy">Politică de confidențialitate</string>
-   <string name="cookie">Politica privind cookie-urile</string>
    <string name="action_quick_input">Adăugați rapid</string>
    <string name="action_popular_string">Adăugați din Populare</string>
    <string name="action_done">Terminat</string>
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d prieteni acceptați.</string>
    <string name="friends_will_appear_momentarily">Aceștia vor apărea în Prietenii mei imediat.</string>
 
-   <string name="uploading_post_status_processing">Se procesează</string>
    <string name="uploading_post_status_progress_video"><b><i>Pasul 1 din 2.</i></b> Încărcare…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Pasul 2 din 2.</i></b> Procesare…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Procesarea a eșuat. A apărut o eroare cu videoclipul</string>

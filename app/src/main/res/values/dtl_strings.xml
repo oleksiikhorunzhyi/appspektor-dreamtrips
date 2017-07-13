@@ -52,6 +52,7 @@
    <string name="dtl_total_amount">Total amount:</string>
    <string name="dtl_verify_earn_hint">You could earn </string>
    <string name="dtl_check_in">Check in &amp; earn</string>
+   <string name="dtl_pay">Pay in &amp; earn</string>
    <string name="dtl_earn">Earn</string>
    <string name="dtl_dt_points">%d DreamTrips Points</string>
    <string name="suggest_merchant">Suggest Merchant</string>

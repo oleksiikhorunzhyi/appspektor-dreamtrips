@@ -165,7 +165,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         checkSucceedEvent(transaction);
                         checkTransactionOutOfDate(transaction);
                      }
-                     getView().setTransaction(transaction);
+                     getView().setTransaction(transaction, merchant.useThrstFlow());
                   }));
    }
 
@@ -183,7 +183,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                .createObservable(DtlTransactionAction.delete(merchant))
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
-                     .onSuccess(action -> getView().setTransaction(action.getResult())));
+                     .onSuccess(action -> getView().setTransaction(action.getResult(), merchant.useThrstFlow())));
       }
    }
 
@@ -234,7 +234,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .build();
       transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
 
-      getView().setTransaction(dtlTransaction);
+      getView().setTransaction(dtlTransaction, merchant.useThrstFlow());
 
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
@@ -341,11 +341,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 
-   private void goToReviewList(){
+   private void goToReviewList() {
       Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
    }
 
-   private void goToCommentReview(){
+   private void goToCommentReview() {
       Path path = new DtlCommentReviewPath(merchant);
       History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
       historyBuilder.push(path);
@@ -360,6 +360,17 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       } else {
          Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
       }
+   }
+
+   @Override
+   public void setThrstFlow() {
+      if (merchant.useThrstFlow()) getView().showThrstFlowButton();
+      else getView().showEarnFlowButton();
+   }
+
+   @Override
+   public void onClickPay() {
+      onCheckInClicked();
    }
 
    private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {

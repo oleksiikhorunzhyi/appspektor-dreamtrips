@@ -24,7 +24,7 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showSucceed(Merchant merchant, DtlTransaction dtlTransaction);
 
-   void setTransaction(DtlTransaction dtlTransaction);
+   void setTransaction(DtlTransaction dtlTransaction, boolean isThrstTransaction);
 
    void setSuggestMerchantButtonAvailable(boolean available);
 
@@ -63,4 +63,8 @@ public interface DtlDetailsScreen extends DtlScreen {
    void setTextRateAndReviewButton(int size);
 
    void userHasPendingReview();
+
+   void showThrstFlowButton();
+
+   void showEarnFlowButton();
 }

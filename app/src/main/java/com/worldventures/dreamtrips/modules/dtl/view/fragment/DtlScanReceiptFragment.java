@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
@@ -176,6 +177,6 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    public void openThrstFlow(Merchant merchant) {
       progressDialog.dismiss();
       router.back();
-      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().data(new MerchantBundle(merchant)).build());
+      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().data(new ThrstFlowBundle(merchant)).build());
    }
 }

@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Observable;
 
 public class NavigationDrawerViewImpl extends LinearLayout implements NavigationDrawerView, NavigationDrawerListener {
 
@@ -82,11 +80,6 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
    @Override
    public void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter) {
       this.navigationDrawerPresenter = navigationDrawerPresenter;
-   }
-
-   @Override
-   public <T> Observable<T> bind(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindView(this));
    }
 
    @Override

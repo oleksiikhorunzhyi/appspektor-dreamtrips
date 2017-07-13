@@ -132,7 +132,17 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .withPoints(points)))
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
-                  .onSuccess(action -> view.openVerify(action.getResult())));
+                  .onSuccess(
+                        action -> {
+                           //TODO: REPLACE THIS WITH USER-THRST-ENABLED VALUE
+                           if (true) {
+                              view.openThrstFlow();
+                           } else {
+                              view.openVerify(action.getResult());
+                           }
+                        }
+                  )
+            );
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -193,5 +203,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       void preSetBillAmount(double amount);
 
       void showCurrency(Currency currency);
+
+      void openThrstFlow();
    }
 }

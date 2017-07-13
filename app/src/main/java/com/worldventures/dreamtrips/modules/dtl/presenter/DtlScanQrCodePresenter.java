@@ -116,8 +116,14 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .map(Command::getResult)
             .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
-            .subscribe(dtlTransaction -> transactionInteractor.earnPointsActionPipe()
-                  .send(new DtlEarnPointsAction(merchant, dtlTransaction)), apiErrorPresenter::handleError);
+            .subscribe(
+                  dtlTransaction ->
+                        transactionInteractor
+                              .earnPointsActionPipe()
+                              .send(new DtlEarnPointsAction(merchant, dtlTransaction))
+                  ,
+                  apiErrorPresenter::handleError
+            );
 
    }
 
@@ -160,7 +166,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .flatMap(transaction -> transactionInteractor.transactionActionPipe()
                   .createObservableResult(DtlTransactionAction.save(merchant, transaction)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {}, apiErrorPresenter::handleError);
+            .subscribe(action -> {
+            }, apiErrorPresenter::handleError);
    }
    ///////////////////////////////////////////////////////////////////////////
    // Receipt uploading

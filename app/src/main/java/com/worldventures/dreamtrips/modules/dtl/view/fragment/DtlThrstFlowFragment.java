@@ -82,6 +82,5 @@ public class DtlThrstFlowFragment extends RxBaseFragment<DtlThrstFlowPresenter> 
 
    @Override
    public void onApiCallFailed() {
-
    }
 }

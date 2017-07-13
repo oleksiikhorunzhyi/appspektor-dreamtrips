@@ -13,7 +13,9 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
@@ -130,7 +132,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void showCurrency(Currency currency) {
       final int padding = amountInput.getPaddingForCurrency(currency.prefix());
-      currencyHint.setPadding(0, padding, 0, 0);
+      currencyHint.setPadding(8, padding, 0, 0);
       currencyHint.setText(currency.getCurrencyHint());
       amountInput.setCurrencySymbol(currency.prefix());
    }
@@ -167,5 +169,11 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    public void openVerify(DtlTransaction dtlTransaction) {
       progressDialog.dismiss();
       dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
+   }
+
+   @Override
+   public void openThrstFlow() {
+      progressDialog.dismiss();
+      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().build());
    }
 }

@@ -117,17 +117,11 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
             .subscribe(
-                  dtlTransaction -> {
-                     //TODO: REPLACE THIS WITH USER-THRST-ENABLED VALUE
-                     if (true) {
-                        view.hideProgress();
-                        view.openThrstFlow();
-                     } else {
+                  dtlTransaction ->
                         transactionInteractor
                               .earnPointsActionPipe()
-                              .send(new DtlEarnPointsAction(merchant, dtlTransaction));
-                     }
-                  },
+                              .send(new DtlEarnPointsAction(merchant, dtlTransaction))
+                  ,
                   apiErrorPresenter::handleError
             );
 
@@ -266,7 +260,5 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       void setMerchant(Merchant merchant);
 
       void openScanReceipt(DtlTransaction dtlTransaction);
-
-      void openThrstFlow();
    }
 }

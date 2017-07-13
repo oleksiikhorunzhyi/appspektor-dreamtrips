@@ -8,14 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableThrstLocation;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableThrstParams;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
@@ -45,7 +42,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.ThrstTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -63,7 +59,6 @@ import de.greenrobot.event.EventBus;
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
-import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
@@ -170,7 +165,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         checkSucceedEvent(transaction);
                         checkTransactionOutOfDate(transaction);
                      }
-                     getView().setTransaction(transaction);
+                     getView().setTransaction(transaction, merchant.useThrstFlow());
                   }));
    }
 
@@ -188,7 +183,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                .createObservable(DtlTransactionAction.delete(merchant))
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
-                     .onSuccess(action -> getView().setTransaction(action.getResult())));
+                     .onSuccess(action -> getView().setTransaction(action.getResult(), merchant.useThrstFlow())));
       }
    }
 
@@ -239,7 +234,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .build();
       transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
 
-      getView().setTransaction(dtlTransaction);
+      getView().setTransaction(dtlTransaction, merchant.useThrstFlow());
 
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
@@ -346,11 +341,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 
-   private void goToReviewList(){
+   private void goToReviewList() {
       Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
    }
 
-   private void goToCommentReview(){
+   private void goToCommentReview() {
       Path path = new DtlCommentReviewPath(merchant);
       History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
       historyBuilder.push(path);
@@ -375,7 +370,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickPay() {
-      //TODO: Sent Flow to Payment
+      onCheckInClicked();
    }
 
    private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {

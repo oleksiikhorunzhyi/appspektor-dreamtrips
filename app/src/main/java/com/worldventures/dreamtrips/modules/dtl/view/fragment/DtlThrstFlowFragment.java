@@ -32,7 +32,6 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
          "                var prop = 'transaction_id';\n" +
          "                window.mobileTHRSTContext.sendMessage('whatever');\n" +
          "            }\n" +
-         "            setTimeout(call_native, 1000);\n" +
          "            transaction.on('click', call_native);\n" +
          "            // Expose that function globally\n" +
          "             window.call_native = call_native;\n" +

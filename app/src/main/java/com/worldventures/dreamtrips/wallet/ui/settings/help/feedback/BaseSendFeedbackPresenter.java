@@ -78,7 +78,7 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
                         uploadImageAttachment(attachmentUri);
                      }
                   })
-                  .onFail((command, throwable) -> Timber.e("Cannot process attachments", throwable)));
+                  .onFail((command, throwable) -> Timber.e(throwable, "Cannot process attachments")));
 
    }
 

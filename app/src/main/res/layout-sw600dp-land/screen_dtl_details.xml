@@ -45,7 +45,6 @@
                android:orientation="horizontal"
                android:padding="@dimen/spacing_normal"
                android:layout_gravity="center_vertical"
-               android:visibility="gone"
                >
 
             <LinearLayout
@@ -206,7 +205,6 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
-                  android:visibility="gone"
                   android:background="@color/white">
 
                <TextView
@@ -214,8 +212,7 @@
                      style="@style/DtlRateButton"
                      />
 
-               <include layout="@layout/read_all_rating_review"
-                     android:visibility="invisible"/>
+               <include layout="@layout/read_all_rating_review"/>
 
             </LinearLayout>
 

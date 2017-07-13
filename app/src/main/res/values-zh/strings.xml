@@ -189,12 +189,12 @@
    <string name="selected">%1$d已选</string>
    <string name="email_is_not_valid">电子邮件无效</string>
    <string name="invitation_deselect_all">全部取消</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[你好%1$s ， %2$s<br/>一探究竟这里 。<br/>%3$s]]></string>
+   <string name="invitation_text_template"><![CDATA[您好%1$s, %2$s <br/>请查看这里。 <br/>%3$s]]></string>
    <string name="invite_add_photo">添加照片</string>
    <string name="invite_select_first">首先选择联系人</string>
    <string name="filters_show_favorite">显示收藏的旅行</string>
    <string name="filter_recently_added">最近添加的</string>
-   <string name="bucketlist_share" formatted="false">在我的人生愿望清单上：%1$s</string>
+   <string name="bucketlist_share">在我的人生愿望清单上：%1$s</string>
    <string name="last_sent">最后发送</string>
    <string name="search_trips">搜索旅游</string>
    <string name="search">搜索</string>
@@ -211,7 +211,7 @@
 
    <string name="action_add_to_bucket">添加到人生愿望清单</string>
    <string name="profile_add_friend">添加好友</string>
-   <string name="profile_friend_request" formatted="false">%1$s发给您好友请求</string>
+   <string name="profile_friend_request">%1$s发给您好友请求</string>
    <string name="profile_respond">响应</string>
    <string name="profile_waiting">等候</string>
    <string name="social_my_friends">我的朋友</string>
@@ -232,7 +232,7 @@
    <string name="bucket_current_cover">本期封面</string>
    <string name="bucket_item_edit_completed">标为已完成！</string>
    <string name="reload_feed">刷新供稿</string>
-   <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
+   <string name="feed_header">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
    <string name="added">增加了一个</string>
    <string name="booked">预订了</string>
    <string name="shared">共享了一个</string>
@@ -281,8 +281,8 @@
    <string name="post_cancel_message">您确定要放弃更改吗？</string>
    <string name="bucket_list_foreign_message">目前，该用户没有人生愿望清单项目。</string>
 
-   <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
-   <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
+   <string name="user_name">&lt;b&gt;%1$s&lt;/b&gt;</string>
+   <string name="user_name_with_company">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
    <string name="email_app_choose_dialog_title">选择应用程序</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;点赞这个</string>
@@ -308,8 +308,8 @@
    <string name="bucket_delete">删除人生愿望清单项目</string>
    <string name="bucket_delete_caption">您确定要删除此人生愿望清单项目吗？</string>
 
-   <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt;和&lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
-   <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt;和&lt;b&gt;您的%3$s个朋友&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
+   <string name="feed_header_two">&lt;b&gt;%1$s%2$s&lt;/b&gt;和&lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
+   <string name="feed_header_many">&lt;b&gt;%1$s%2$s&lt;/b&gt;和&lt;b&gt;您的%3$s个朋友&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
 
    <string name="player_error_header">播放错误</string>
    <string name="player_error">很抱歉，我们现在不能播放这段视频，请检查您的连接或再试一次</string>
@@ -345,6 +345,7 @@
    <string name="no_feed">在这里您会看到您的朋友的活动。\n点击下面的链接找到您的朋友</string>
    <string name="search_friends">搜索朋友</string>
 
+   <string name="feed_share_post_button">分享一张照片，一个视频或者想法</string>
    <string name="feed_view_profile_btn">查看资料</string>
    <string name="start_searching">键入开始搜索</string>
 
@@ -358,6 +359,8 @@
    <string name="terms_and_conditions_reject">现在不行</string>
 
    <string name="camera">相机</string>
+   <string name="camera_take_a_picture">拍摄一张照片</string>
+   <string name="camera_record_a_video">录制一个视频</string>
    <string name="add_from_facebook">添加来自Facebook</string>
 
    <string name="photos_selected">%1$d已选</string>
@@ -372,6 +375,8 @@
    <string name="no_mutual_friends">您没有任何共同的朋友</string>
 
    <string name="photo_limitation_message">请选择最多%1$d张照片</string>
+   <string name="picker_erros_photos_and_videos">您不能选择照片及视频</string>
+   <string name="picker_video_duration_limit">您不能上传超过%1$d秒的视频</string>
    <string name="pending">待处理...</string>
 
    <string name="back">回去</string>
@@ -572,7 +577,7 @@
    <string name="offline_warning_dialog_message">您的使用将受到限制</string>
    <string name="offline_indicator_description">没有网络连接</string>
 
-   <string name="merchant_message_text" formatted="false">恭喜！您已赚取%1$sDreamTrips点数@%2$s，%3$s</string>
+   <string name="merchant_message_text">恭喜！您已赚取%1$sDreamTrips点数@%2$s，%3$s</string>
 
    <string name="beta_label">Beta版</string>
 
@@ -584,5 +589,10 @@
 
    <string name="n_friends_accepted">%1$d朋友请求已接受。</string>
    <string name="friends_will_appear_momentarily">他们马上将出现在我的朋友列表。</string>
+
+   <string name="uploading_post_status_processing">处理</string>
+   <string name="uploading_post_status_progress_video"><i><b>2步中的第1步.</b></i> 上传中…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>2步中的第2步.</i></b> 处理中…</string>
+   <string name="uploading_post_status_progress_video_processing_failed">处理失败视频出错了</string>
 
 </resources>

@@ -128,4 +128,9 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
    public void hideBlockingProgress() {
       if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
    }
+
+   @Override
+   public Route getRoute() {
+      return Route.FOREIGN_PROFILE;
+   }
 }

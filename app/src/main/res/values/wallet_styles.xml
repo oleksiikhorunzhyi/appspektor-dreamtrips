@@ -57,7 +57,6 @@
    <style name="WalletTheme.SpinnerStyle" parent="Widget.AppCompat.Spinner">
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
       <item name="android:textColor">@color/wallet_button_text_colors</item>
-      <item name="android:backgroundTint">#cccccc</item>
 
       <item name="backgroundTint">#cccccc</item>
    </style>

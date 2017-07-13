@@ -7,11 +7,6 @@ public class ValidationUtils {
    private ValidationUtils() {
    }
 
-   public static boolean isPhotoTitleValid(String title) {
-      return !title.trim().isEmpty();
-   }
-
-
    public static class VResult {
       protected boolean valid;
       protected int messageRes;

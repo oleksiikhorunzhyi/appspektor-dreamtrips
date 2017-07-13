@@ -93,7 +93,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
    }
 
    private String getBody() {
-      return String.format(context.getString(R.string.invitation_text_template), getUsername(), getMessage(), template.getLink());
+      return context.getString(R.string.invitation_text_template, getUsername(), getMessage(), template.getLink());
    }
 
    private String getSmsBody() {

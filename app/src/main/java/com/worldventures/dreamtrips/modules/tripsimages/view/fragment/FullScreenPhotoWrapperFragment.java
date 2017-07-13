@@ -38,7 +38,7 @@ import butterknife.InjectView;
 import rx.Observable;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+   public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
       implements MembersImagesBasePresenter.View {
 
    @InjectView(R.id.pager) protected ViewPager pager;
@@ -56,7 +56,7 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
       int notificationId = getArgs().getNotificationId();
       this.route = getArgs().getRoute();
       ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-      return TripImagesListPresenter.create(type, userId, fixedList, position, notificationId);
+      return TripImagesListPresenter.create(type, userId, fixedList, position, notificationId, true);
    }
 
    @Override

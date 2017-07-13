@@ -203,7 +203,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    private void feedChanged(List<FeedItem> items) {
-      feedItems = new ArrayList<>(items);
+      feedItems.clear();
+      feedItems.addAll(items);
       refreshFeedItems();
       view.dataSetChanged();
       assetStatusInteractor.feedItemsVideoProcessingPipe().send(new FeedItemsVideoProcessingStatusCommand(items));

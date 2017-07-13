@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
+import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
@@ -18,7 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class CompoundOperationStorage implements MultipleActionStorage<List<PostCompoundOperationModel>> {
+public class CompoundOperationStorage implements MultipleActionStorage<List<PostCompoundOperationModel>>, ClearableStorage {
 
    private static final Comparator<PostCompoundOperationModel> CELLS_COMPARATOR = new PostCompoundOperationModelComparator();
 
@@ -55,5 +56,10 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Post
    private List<PostCompoundOperationModel> getInternal(@Nullable CacheBundle action) {
       List<PostCompoundOperationModel> compoundOperationModels = memoryStorage.get(action);
       return compoundOperationModels != null ? compoundOperationModels : compoundOperationRepository.readCompoundOperations();
+   }
+
+   @Override
+   public void clearMemory() {
+      memoryStorage.clearMemory();
    }
 }

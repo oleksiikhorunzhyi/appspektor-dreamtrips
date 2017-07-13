@@ -57,11 +57,9 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.merchant_details_cover) SimpleDraweeView cover;
    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
    @InjectView(R.id.perk_divider) View perkDivider;
-   @InjectView(R.id.rating_header)
-   LinearLayout ratingHeader;
+   @InjectView(R.id.rating_header) LinearLayout ratingHeader;
 
    @Inject protected SessionHolder<UserSession> sessionHolder;
-   @Inject DeviceInfoProvider deviceInfoProvider;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<String, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
@@ -76,11 +74,6 @@ public class MerchantOffersInflater extends MerchantDataInflater {
 
    @Override
    protected void onMerchantAttributesApply() {
-      /** below if statement to be removed when tablet optimization starts **/
-      if(deviceInfoProvider.isTablet()){
-         ratingHeader.setVisibility(View.GONE);
-      }
-
       setType();
       setImage();
       setDescriptions();

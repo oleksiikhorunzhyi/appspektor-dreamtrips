@@ -30,6 +30,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -50,8 +51,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -66,6 +67,7 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
+import flow.History;
 import timber.log.Timber;
 
 public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
@@ -76,6 +78,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public static final String MAP_TAG = "MAP_DETAILS_TAG";
 
    @Inject ActivityResultDelegate activityResultDelegate;
+   @Inject BackStackDelegate backStackDelegate;
    @Inject Router router;
    @Inject DeviceInfoProvider deviceInfoProvider;
 
@@ -109,9 +112,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       inflateToolbarMenu(toolbar);
 
       toolbar.setNavigationIcon(R.drawable.back_icon);
-      toolbar.setNavigationOnClickListener(view -> {
-         Flow.get(getContext()).goBack();
-      });
+      toolbar.setNavigationOnClickListener(view -> back());
+      backStackDelegate.setListener(() -> back());
 
       activityResultDelegate.addListener(this);
 
@@ -124,10 +126,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       showMessage();
-
-      if(deviceInfoProvider.isTablet()){
-         hideReviewViewsOnTablets();
-      }
    }
 
    @Override
@@ -143,23 +141,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, merchant.displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, false);
-      bundle.putBoolean(OfferWithReviewView.IS_TABLET, deviceInfoProvider.isTablet());
       mContainerComments.addBundle(bundle);
-   }
-
-   @Override
-   public void showButtonAllRateAndReview() {
-      mTvReadAllReviews.setVisibility(deviceInfoProvider.isTablet() ? View.GONE : View.VISIBLE);
-   }
-
-   @Override
-   public void hideButtonAllRateAndReview() {
-
-      /** Remove if statement when optimizing for tablets **/
-      if(deviceInfoProvider.isTablet()){
-         mTvReadAllReviews.setVisibility(View.GONE);
-      }
-
    }
 
    @Override
@@ -179,6 +161,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       errorDialog.show();
    }
 
+   @Override
+   public boolean isTablet() {
+      return deviceInfoProvider.isTablet();
+   }
+
    @OnClick(R.id.tv_read_all_review)
    public void onClickReadAllReviews() {
       getPresenter().showAllReviews();
@@ -186,7 +173,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
-      getPresenter().onClickRatingsReview(merchant);
+      if (!deviceInfoProvider.isTablet()) getPresenter().onClickRatingsReview(merchant);
    }
 
    @Override
@@ -195,6 +182,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (merchantInfoInflater != null) merchantInfoInflater.release();
       if (merchantHoursInflater != null) merchantHoursInflater.release();
       activityResultDelegate.removeListener(this);
+      backStackDelegate.clearListener();
       super.onDetachedFromWindow();
    }
 
@@ -481,9 +469,26 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public void showAllReviews() {
    }
 
-   private void hideReviewViewsOnTablets(){
+   @Override
+   public void hideReviewViewsOnTablets(){
       rateAndReviewBtn.setVisibility(View.GONE);
-      hideButtonAllRateAndReview();
+   }
+
+   /**
+    * Allows to manage back preventing multiple instances of this screen,
+    * when going back we only need 1 item in the story so we can remove other elements
+    *
+    * @return
+    */
+   private boolean back() {
+      History history = Flow.get(getContext()).getHistory();
+      History.Builder builder = history.buildUpon();
+      int screensToDelete = history.size() > 1 ? history.size() - 1 : 0;
+      for (int i = 0; i < screensToDelete; i++) {
+         builder.pop();
+      }
+      Flow.get(getContext()).setHistory(builder.build(), Flow.Direction.BACKWARD);
+      return true;
    }
 
 }

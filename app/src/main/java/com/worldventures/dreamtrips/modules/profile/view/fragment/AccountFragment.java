@@ -77,6 +77,11 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
+   public void notifyDataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
+
+   @Override
    public void openAvatarPicker() {
       if (isVisibleOnScreen()) {
          getPresenter().onAvatarClicked();
@@ -168,5 +173,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    @Override
    public void onUserPhotoClicked() {
       getPresenter().photoClicked();
+   }
+
+   @Override
+   public Route getRoute() {
+      return Route.ACCOUNT_PROFILE;
    }
 }

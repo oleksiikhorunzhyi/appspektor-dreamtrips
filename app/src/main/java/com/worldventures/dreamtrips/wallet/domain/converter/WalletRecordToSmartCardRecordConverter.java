@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
@@ -8,9 +9,9 @@ import java.util.HashMap;
 import io.techery.janet.smartcard.model.ImmutableRecord;
 import io.techery.mappery.MapperyContext;
 
-import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_NAME_FIELD;
-
 public class WalletRecordToSmartCardRecordConverter implements Converter<Record, io.techery.janet.smartcard.model.Record> {
+
+   public static final String BANK_NAME_FIELD = "bank_name";
 
    @Override
    public Class<Record> sourceClass() {
@@ -35,9 +36,9 @@ public class WalletRecordToSmartCardRecordConverter implements Converter<Record,
             .expDate(card.expDate())
             .financialService(mapperyContext.convert(card.financialService(),
                   io.techery.janet.smartcard.model.Record.FinancialService.class))
-            .t1(card.track1() != null ? card.track1() : "")
-            .t2(card.track2() != null ? card.track2() : "")
-            .t3(card.track3() != null ? card.track3() : "")
+            .t1(ProjectTextUtils.defaultIfEmpty(card.track1(), ""))
+            .t2(ProjectTextUtils.defaultIfEmpty(card.track2(), ""))
+            .t3(ProjectTextUtils.defaultIfEmpty(card.track3(), ""))
             .lastName(card.cardHolderLastName())
             .firstName(card.cardHolderFirstName())
             .middleName(card.cardHolderMiddleName())

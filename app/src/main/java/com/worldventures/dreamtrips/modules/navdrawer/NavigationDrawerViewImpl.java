@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.navdrawer;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.NpaLinearLayoutManager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationHeader;
 
@@ -52,6 +56,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
       init(context);
    }
 
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
    public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
       super(context, attrs, defStyleAttr, defStyleRes);
       init(context);
@@ -59,7 +64,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void init(Context context) {
       ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_navigation_drawer, this, true));
-      recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+      recyclerView.setLayoutManager(new NpaLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       setVersion();
       setupViews();
    }
@@ -70,7 +75,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
          version.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
       } else {
          recyclerView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-         version.setTextColor(ContextCompat.getColor(getContext(), R.color.black_overlay));
+         version.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
       }
    }
 
@@ -104,7 +109,8 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void setVersion() {
       try {
-         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName);
+         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName
+               + "-" + BuildConfig.versionBuild);
       } catch (PackageManager.NameNotFoundException e) {
          e.printStackTrace();
       }

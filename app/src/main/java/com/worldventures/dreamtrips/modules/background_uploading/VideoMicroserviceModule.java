@@ -36,8 +36,8 @@ public class VideoMicroserviceModule {
       Janet.Builder builder = new Janet.Builder();
       Gson gson = new GsonBuilder().create();
 
-      builder.addService(new VideoHttpService(injector,
-            "http://dev-assetuploadersrv-114966274.us-east-1.elb.amazonaws.com/", httpClient, new GsonConverter(gson)));
+      builder.addService(new VideoHttpService(injector, BuildConfig.VIDEO_MICROSERVICE_URL, httpClient,
+            new GsonConverter(gson)));
 
       return builder.build();
    }

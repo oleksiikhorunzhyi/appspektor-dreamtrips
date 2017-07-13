@@ -37,8 +37,7 @@ public class CardListStackConverter {
       List<CommonCardViewModel> commonCardViewModels =
             Queryable.from(loadedCards)
                   .sort((o1, o2) -> o1.recordType().compareTo(o2.recordType()))
-                  .sort((o1, o2) ->
-                        Boolean.compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
+                  .sort((o1, o2) -> compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
                   .map(loadedCard -> {
                      CommonCardViewModel model = createCommonCardViewModel(loadedCard, isCardDefault(defaultCardId, loadedCard));
                      index++;
@@ -56,6 +55,11 @@ public class CardListStackConverter {
          viewModels.add(commonCardViewModels.get(i));
       }
       return viewModels;
+   }
+
+   // Boolean.compare is added in API 19
+   private int compare(boolean x, boolean y) {
+      return (x == y) ? 0 : (x ? 1 : -1);
    }
 
    @NonNull

@@ -56,7 +56,7 @@ public class FilterDataInteractor implements Initializable {
             .map(filterData -> ImmutableFilterData.builder()
                   .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
                   .isOffersOnly(filterData.isOffersOnly())
-                  .merchantType(DtlMerchantsScreenImpl.getFilterType())
+                  .merchantType(filterData.getMerchantType())
                   .build())
             .subscribe(this::send);
    }

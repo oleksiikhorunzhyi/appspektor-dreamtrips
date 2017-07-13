@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.FlowActivityHelper;
 import com.worldventures.dreamtrips.core.flow.util.GsonParceler;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
@@ -41,7 +40,6 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
    @InjectView(R.id.drawer_layout) protected NavigationDrawerViewImpl navDrawer;
    @InjectView(R.id.root_container) protected PathContainerView container;
 
-   @Inject protected BackStackDelegate backStackDelegate;
    @Inject protected RootComponentsProvider rootComponentsProvider;
    @Inject protected Gson gson;
    @Inject protected NavigationDrawerPresenter navigationDrawerPresenter;

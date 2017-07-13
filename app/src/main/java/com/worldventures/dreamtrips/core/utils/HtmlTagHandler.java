@@ -16,6 +16,7 @@
  */
 package com.worldventures.dreamtrips.core.utils;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -98,6 +99,7 @@ public class HtmlTagHandler implements Html.TagHandler {
    }
 
    @Override
+   @SuppressLint("TimberArgCount")
    public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
       if (UL.equalsIgnoreCase(tag)) {
          if (opening) {

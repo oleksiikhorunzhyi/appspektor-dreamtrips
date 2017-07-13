@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.janet;
 
 import io.techery.janet.Command;
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscriber;
 
 public final class CommandActionBaseHelper extends Command {
@@ -10,20 +9,6 @@ public final class CommandActionBaseHelper extends Command {
 
    @Override
    protected void run(CommandCallback callback) {
-   }
-
-   public static class ActionStateCommandSubscriber<A> extends ActionStateSubscriber<A> {
-
-      private ActionStateCommandSubscriber(CommandCallback<A> callback) {
-         this
-               .onProgress((a, progress) -> callback.onProgress(progress))
-               .onSuccess(a -> callback.onSuccess(a))
-               .onFail((a, e) -> callback.onFail(e));
-      }
-
-      public static <U> ActionStateCommandSubscriber<U> wrap(CommandCallback<U> callback) {
-         return new ActionStateCommandSubscriber<>(callback);
-      }
    }
 
    public static class ActionCommandSubscriber<A> extends Subscriber<A> {

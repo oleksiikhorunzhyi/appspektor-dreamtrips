@@ -63,8 +63,9 @@ ext {
          "$flavors.codes.perf"                                                  : [
                appParams: [
                      api : [
-                           DreamTripsApi    : [String: '"http://dtapp-perf.worldventures.biz"'],
-                           UPLOADERY_API_URL: [String: '"dtappupload-perf.wvholdings.com"'],
+                           DreamTripsApi          : [String: '"http://dtapp-perf.worldventures.biz"'],
+                           UPLOADERY_API_URL      : [String: '"dtappupload-perf.wvholdings.com"'],
+                           VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader-perf.dreamtrips.com"'],
                      ],
                      util: [
                            NEWRELIC_API_KEY: [String: '"AA8998d2de5c99adddd3668515e76b5d501271a04b"'],
@@ -86,10 +87,11 @@ ext {
          "$flavors.codes.prod"                                                  : [
                appParams: [
                      api      : [
-                           DreamTripsApi    : [String: '"https://dtapp.worldventures.biz"'],
-                           UPLOADERY_API_URL: [String: '"http://dtappuploads.wvholdings.com"'],
-                           API_TIMEOUT_SEC  : [long: '15'],
-                           NXT_API          : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
+                           DreamTripsApi          : [String: '"https://dtapp.worldventures.biz"'],
+                           UPLOADERY_API_URL      : [String: '"http://dtappuploads.wvholdings.com"'],
+                           VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.dreamtrips.com"'],
+                           API_TIMEOUT_SEC        : [long: '15'],
+                           NXT_API                : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
                      ],
                      messenger: [
                            MESSENGER_API_URL: [String: '"dtmsgapp.worldventures.biz"'],

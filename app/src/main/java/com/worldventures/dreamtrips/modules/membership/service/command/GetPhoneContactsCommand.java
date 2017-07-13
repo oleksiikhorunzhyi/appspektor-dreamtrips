@@ -1,16 +1,14 @@
 package com.worldventures.dreamtrips.modules.membership.service.command;
 
-
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
@@ -24,7 +22,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class GetPhoneContactsCommand extends Command<List<Member>> implements InjectableAction{
+public class GetPhoneContactsCommand extends Command<List<Member>> implements InjectableAction {
 
    @Inject Context context;
 
@@ -79,7 +77,7 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
                break;
             case SMS:
                String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-               member.setPhone(PhoneNumberUtils.normalizeNumber(phone));
+               member.setPhone(ProjectPhoneNumberUtils.normalizeNumber(phone));
                if (TextUtils.isEmpty(phone)) break;
                if (TextUtils.isEmpty(member.getName())) break;
                member.setEmailIsMain(false);
@@ -91,6 +89,5 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
 
       return Queryable.from(result).distinct().toList();
    }
-
 }
 

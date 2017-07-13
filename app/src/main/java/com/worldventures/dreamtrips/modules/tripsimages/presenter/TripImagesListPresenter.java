@@ -56,6 +56,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    private int currentPage;
 
+   //TODO pagination logic is broken in fullscreen, it will be removed during 1.22 refactoring
+   private boolean fullscreen = false;
+
    protected TripImagesListPresenter(TripImagesType type, int userId) {
       super();
       this.type = type;
@@ -63,7 +66,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos,
-         int currentPhotosPosition, int notificationId) {
+         int currentPhotosPosition, int notificationId, boolean fullscreen) {
       TripImagesListPresenter presenter;
       switch (type) {
          case MEMBERS_IMAGES:
@@ -86,6 +89,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             throw new RuntimeException("Trip image type is not found");
       }
 
+      presenter.fullscreen = fullscreen;
       presenter.setCurrentPhotoPosition(currentPhotosPosition);
       return presenter;
    }
@@ -110,9 +114,19 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    private void fillWithItems() {
-      photos.addAll(db.readPhotoEntityList(type, userId));
+      List<IFullScreenObject> cachedPhotos = readPhotoEntityList();
+      //correct currentPage number in fullscreen to avoid items duplication
+      if (fullscreen) {
+         if (cachedPhotos.size() < getPageSize()) lastPageReached = true;
+         currentPage = cachedPhotos.size() / getPageSize();
+      }
+      photos.addAll(cachedPhotos);
       refreshImagesInView();
       view.setSelection(currentPhotoPosition);
+   }
+
+   public List<IFullScreenObject> readPhotoEntityList() {
+      return db.readPhotoEntityList(type, userId);
    }
 
    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
@@ -138,7 +152,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    protected abstract C getReloadCommand();
 
-   protected abstract C getLoadMoreCommand(int currentCount);
+   protected abstract C getLoadMoreCommand(int page);
 
    public void reload(boolean userInitiated) {
       loading = true;
@@ -150,7 +164,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    public void loadNext() {
       loading = true;
       currentPage++;
-      load(getLoadMoreCommand(photos.size()), newPhotos -> {
+      load(getLoadMoreCommand(currentPage), newPhotos -> {
          if (newPhotos.size() == 0) {
             lastPageReached = true;
          }
@@ -258,7 +272,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                tripImagesInteractor.deletePhotoPipe().clearReplays();
                for (int i = 0; i < photos.size(); i++) {
                   IFullScreenObject o = photos.get(i);
-                  if (o.getFSId().equals(deletePhotoCommand.getResult())) {
+                  if (o.getFSId().equals(deletePhotoCommand.getResult().getUid())) {
                      photos.remove(i);
                      view.remove(i);
                      db.savePhotoEntityList(type, userId, photos);

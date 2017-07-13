@@ -179,7 +179,7 @@
       <item name="android:textColorPrimary">@android:color/black</item>
    </style>
 
-   <style name="DtlToolbarInput">
+   <style name="BaseDtlToolbarInput">
       <item name="android:inputType">textCapWords</item>
       <item name="android:selectAllOnFocus">true</item>
       <item name="android:singleLine">true</item>
@@ -193,10 +193,10 @@
       <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
       <item name="android:background">@drawable/bg_edittext_white</item>
       <item name="android:clipToPadding">false</item>
-      <item name="android:elevation">@dimen/dtlt_input_elevation</item>
-      <item name="android:outlineProvider">background</item>
       <item name="android:drawablePadding">@dimen/dtlt_input_drawable_padding</item>
    </style>
+
+   <style name="DtlToolbarInput" parent="BaseDtlToolbarInput" />
 
    <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
       <item name="colorButtonNormal">@color/white</item>

@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.mobilesdk.ConfigProviders;
 import com.worldventures.dreamtrips.mobilesdk.DreamTripsErrorParser;
 import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
 import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
+import com.worldventures.dreamtrips.mobilesdk.util.HttpErrorReasonParser;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersAddressRestResponse;
@@ -60,8 +61,9 @@ import timber.log.Timber;
       complete = false, library = true)
 public class MobileSdkJanetModule {
 
-   private static final String QUALIFIER = "MobileSdkJanetModule";
-   private static final String LOGGING_TAG = "DreamTrips MobileSDK API";
+   private static final String API_QUALIFIER = "MobileSdkJanetModule";
+   private static final String NON_API_QUALIFIER = "NonApiMobileSdkJanetModule";
+   private static final String LOGGING_TAG = "DT MobileSDK API";
 
    @Provides(type = Provides.Type.SET)
    ActionService provideApiService(DreamtripsApiProvider dreamtripsApiProvider) {
@@ -71,18 +73,21 @@ public class MobileSdkJanetModule {
    @Provides
    DreamtripsApiProvider provideDreamTripsApiProvider(
          AuthProviders authProviders, ConfigProviders configProviders,
-         AuthRefresher authRefresher, @Named(QUALIFIER) HttpClient httpClient,
-         @Named(QUALIFIER) HttpActionService nonApiService) {
+         AuthRefresher authRefresher, @Named(API_QUALIFIER) HttpClient httpClient,
+         @Named(NON_API_QUALIFIER) HttpActionService nonApiService) {
       return new DreamtripsApiProvider(authProviders, configProviders, authRefresher)
             .httpClient(httpClient)
             .nonApiService(nonApiService);
    }
 
    @Provides
-   @Named(QUALIFIER)
-   HttpActionService provideNonApiService() {
+   @Named(NON_API_QUALIFIER)
+   HttpActionService provideNonApiService(@Named(API_QUALIFIER) HttpLoggingInterceptor loggingInterceptor) {
       return new HttpActionService("http://dreamtrips-nonexisting-api.com",
-            new OkClient(),
+            new OkClient(new OkHttpClient.Builder()
+                  .addNetworkInterceptor(loggingInterceptor)
+                  .build()
+            ),
             new GsonConverter(new GsonBuilder()
                   .setExclusionStrategies(new SerializedNameExclusionStrategy())
                   //
@@ -97,8 +102,8 @@ public class MobileSdkJanetModule {
    }
 
    @Provides
-   @Named(QUALIFIER)
-   HttpClient provideHttpClient(CookieManager cookieManager, @Named(QUALIFIER) HttpLoggingInterceptor loggingInterceptor) {
+   @Named(API_QUALIFIER)
+   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) HttpLoggingInterceptor loggingInterceptor) {
       OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .cookieJar(new JavaNetCookieJar(cookieManager))
             .addNetworkInterceptor(chain -> {
@@ -116,7 +121,7 @@ public class MobileSdkJanetModule {
    }
 
    @Provides
-   @Named(QUALIFIER)
+   @Named(API_QUALIFIER)
    HttpLoggingInterceptor provideLoggingInterceptor() {
       HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> Timber.tag(LOGGING_TAG).d(message));
       interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -132,7 +137,7 @@ public class MobileSdkJanetModule {
 
    @Singleton
    @Provides
-   ReLoginInteractor provideReLoginInteractor(ConfigProviders configProviders, @Named(QUALIFIER) HttpClient httpClient) {
+   ReLoginInteractor provideReLoginInteractor(ConfigProviders configProviders, @Named(API_QUALIFIER) HttpClient httpClient) {
       MonolithHttpService authService = new MonolithHttpService(configProviders.monolithConfig(), () -> (AuthData) () -> null,
             httpClient, new GsonConverter(new GsonProvider().provideGson())
       );
@@ -152,8 +157,14 @@ public class MobileSdkJanetModule {
    }
 
    @Provides
-   DreamTripsErrorParser provideDreamTripsErrorParser() {
-      return new DreamTripsErrorParser();
+   DreamTripsErrorParser provideDreamTripsErrorParser(@Named(NON_API_QUALIFIER) HttpErrorReasonParser nonApiErrorParser) {
+      return new DreamTripsErrorParser(nonApiErrorParser);
+   }
+
+   @Provides
+   @Named(NON_API_QUALIFIER)
+   HttpErrorReasonParser provideNonApiErrorParser() {
+      return action -> null;
    }
 
    @Singleton

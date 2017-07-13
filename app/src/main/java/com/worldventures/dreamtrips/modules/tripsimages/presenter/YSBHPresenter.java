@@ -23,8 +23,8 @@ public class YSBHPresenter extends TripImagesListPresenter<TripImagesListPresent
    }
 
    @Override
-   protected GetYSBHPhotosCommand getLoadMoreCommand(int currentCount) {
-      return new GetYSBHPhotosCommand(currentCount / getPageSize() + 1, getPageSize());
+   protected GetYSBHPhotosCommand getLoadMoreCommand(int page) {
+      return new GetYSBHPhotosCommand(page, getPageSize());
    }
 
    @Override

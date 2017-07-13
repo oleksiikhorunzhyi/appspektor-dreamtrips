@@ -65,6 +65,9 @@
 
    <dimen name="feed_item_height">250dp</dimen>
    <dimen name="feed_video_attachment">100dp</dimen>
+   <integer name="feed_landscape_tablet_weight">2</integer>
+   <integer name="feed_landscape_tablet_additional_info_weight">1</integer>
+   <integer name="feed_landscape_horizontal_margin">16</integer>
 
    <dimen name="locale_flag_size_width">38dp</dimen>
    <dimen name="locale_flag_size_height">22dp</dimen>

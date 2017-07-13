@@ -79,7 +79,7 @@
    <string name="perks">Προνόμια</string>
    <string name="everyday">Καθημερινά</string>
    <string name="perks_terms">Όροι &amp; Προϋποθέσεις</string>
-   <string name="perks_formatted" formatted="false">%1$d Δώρα</string>
+   <string name="perks_formatted">%1$d Δώρα</string>
    <string name="dtl_coming_soon_offers">Προσφορές που ξεκινούν προσεχώς</string>
    <string name="dtl_show_offers_only">Δείξε μόνο προσφορές</string>
    <string name="dtl_earn_points">Κερδίστε DreamTrips Πόντους</string>

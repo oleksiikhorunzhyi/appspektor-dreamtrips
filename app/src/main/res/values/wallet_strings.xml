@@ -23,7 +23,7 @@
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
-   <string name="wallet_sc_operation_could_not_be_completed" formatted="false">This operation could not be completed\n(%s)</string>
+   <string name="wallet_sc_operation_could_not_be_completed">This operation could not be completed\n(%1$s)</string>
    <string name="wallet_picker_error_contents">Loading of %s failed.</string>
    <string name="wallet_picker_gallery_action">gallery photos</string>
    <string name="wallet_picker_fb_albums_actions">facebook albums</string>
@@ -47,7 +47,8 @@
    <string name="wallet_edit_profile_first_name_format_detail">First name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
-   <string name="wallet_edit_profile_confirmation_dialog_message" formatted="false">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s</b><br/>]]></string>
+   <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
+   <string name="wallet_edit_profile_confirmation_dialog_message">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%1$s</b><br/>]]></string>
    <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
    <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
    <string name="wallet_edit_profile_photo_choose">Choose Photo</string>
@@ -113,7 +114,7 @@
    <string name="wallet_card_details_label_card_nickname">Card Nickname</string>
    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
    <string name="wallet_card_details_button_delete_card">Delete card</string>
-   <string name="wallet_card_details_progress_delete">Deleting %s…</string>
+   <string name="wallet_card_details_progress_delete">Deleting %1$s…</string>
    <string name="wallet_card_details_delete_card_dialog_title">Delete payment card</string>
    <string name="wallet_card_details_delete_card_dialog_content">Are you sure?</string>
    <string name="wallet_card_details_button_pay_with_this">Pay with this card</string>
@@ -124,7 +125,7 @@
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
    <string name="wallet_card_settings_flye_sc">Smart Card</string>
-   <string name="wallet_card_settings_version">Version %s</string>
+   <string name="wallet_card_settings_version">Version %1$s</string>
    <string name="wallet_card_settings_battery_level">Battery level: %d%%</string>
    <string name="wallet_card_settings_last_sync">Last synced %s</string>
    <string name="wallet_card_settings_sc_profile">Smart Card Profile</string>
@@ -377,7 +378,7 @@
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the Smart Card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the Smart Card</string>
-   <string name="wallet_firmware_pre_installation_charging">Make sure your Smart Card is 10% charged</string>
+   <string name="wallet_firmware_pre_installation_charging" formatted="false">Make sure your Smart Card is 10% charged</string>
    <string name="wallet_firmware_pre_installation_insert_smart_card_to_charger">Insert Smart Card into the charger</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>

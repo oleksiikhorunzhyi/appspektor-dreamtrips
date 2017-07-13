@@ -136,7 +136,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                         action -> {
                            //TODO: REPLACE THIS WITH USER-THRST-ENABLED VALUE
                            if (true) {
-                              view.openThrstFlow();
+                              view.openThrstFlow(merchant);
                            } else {
                               view.openVerify(action.getResult());
                            }
@@ -204,6 +204,6 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
       void showCurrency(Currency currency);
 
-      void openThrstFlow();
+      void openThrstFlow(Merchant merchant);
    }
 }

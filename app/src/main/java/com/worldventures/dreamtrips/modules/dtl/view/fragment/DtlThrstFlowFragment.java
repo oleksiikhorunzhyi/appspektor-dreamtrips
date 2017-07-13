@@ -7,14 +7,16 @@ import android.widget.Toast;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_thrst_webview)
-public class DtlThrstFlowFragment extends RxBaseFragment<DtlThrstFlowPresenter> implements DtlThrstFlowPresenter.View {
+public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, MerchantBundle> implements DtlThrstFlowPresenter.View {
 
    private static final String HTML = "<!DOCTYPE html>\n" +
          "<html>\n" +
@@ -56,6 +58,9 @@ public class DtlThrstFlowFragment extends RxBaseFragment<DtlThrstFlowPresenter> 
       webView.setJavascriptCallback(message ->
             Toast.makeText(getContext(), "Callback message=" + message, Toast.LENGTH_SHORT).show()
       );
+      MerchantBundle merchantBundle = getArgs();
+      String merchantName = merchantBundle.getMerchant().displayName();
+      ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
    }
 
    @Override

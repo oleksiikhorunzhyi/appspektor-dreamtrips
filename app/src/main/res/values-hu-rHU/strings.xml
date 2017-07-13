@@ -5,9 +5,6 @@
    <string name="trip_images">Úti képek</string>
    <string name="bucket_list">Bakancslista</string>
    <string name="my_profile">Saját profil</string>
-   <string name="terms_of_service">Szolgáltatási feltételek</string>
-   <string name="privacy">Adatvédelmi irányelvek</string>
-   <string name="cookie">Cookie-kra vonatkozó irányelv</string>
    <string name="action_quick_input">Gyors hozzáadás</string>
    <string name="action_popular_string">Hozzáadás a népszerűek közül</string>
    <string name="action_done">Kész</string>
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d ismerős elfogadva.</string>
    <string name="friends_will_appear_momentarily">Rövid ideig az Ismerőseim között fognak megjelenni.</string>
 
-   <string name="uploading_post_status_processing">Feldolgozás</string>
    <string name="uploading_post_status_progress_video"><b><i>1. lépés a 2-ből</i></b> Feltöltés…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>2. lépés a 2-ből</i></b> Feldolgozás…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Sikertelen feldolgozás. Valami gond van a videóval</string>

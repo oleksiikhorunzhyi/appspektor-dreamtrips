@@ -5,9 +5,6 @@
    <string name="trip_images">Imágenes del viaje</string>
    <string name="bucket_list">Lista de pendientes</string>
    <string name="my_profile">Mi perfil</string>
-   <string name="terms_of_service">Términos de servicio</string>
-   <string name="privacy">Política de privacidad</string>
-   <string name="cookie">Política de Cookies</string>
    <string name="action_quick_input">Agregar rápido</string>
    <string name="action_popular_string">Agregar de Populares</string>
    <string name="action_done">Listo</string>
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d amigos aceptados.</string>
    <string name="friends_will_appear_momentarily">Aparecerán en Mis amigos momentáneamente.</string>
 
-   <string name="uploading_post_status_processing">Procesando</string>
    <string name="uploading_post_status_progress_video"><b><i>Paso 1 de 2.</i></b> Cargando…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Paso 2 de 2.</i></b> En proceso…</string>
    <string name="uploading_post_status_progress_video_processing_failed">No se pudo procesar. Ocurrió un error con el video</string>

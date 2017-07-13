@@ -121,6 +121,11 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    @Override
+   public void openThrstFlow() {
+      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().build());
+   }
+
+   @Override
    public void finish() {
       getActivity().finish();
    }

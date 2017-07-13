@@ -260,5 +260,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       void setMerchant(Merchant merchant);
 
       void openScanReceipt(DtlTransaction dtlTransaction);
+
+      void openThrstFlow();
    }
 }

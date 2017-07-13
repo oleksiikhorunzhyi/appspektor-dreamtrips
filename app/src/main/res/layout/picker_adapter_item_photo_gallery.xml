@@ -8,7 +8,7 @@
 
       <variable
             name="photoGalleryModel"
-            type="com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletGalleryPhotoModel"
+            type="com.worldventures.dreamtrips.modules.picker.model.GalleryPhotoPickerViewModel"
             />
    </data>
 

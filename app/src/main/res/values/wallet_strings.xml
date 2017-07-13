@@ -23,11 +23,6 @@
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
    <string name="wallet_sc_operation_could_not_be_completed">This operation could not be completed\n(%1$s)</string>
-   <string name="wallet_picker_error_contents">Loading of %s failed.</string>
-   <string name="wallet_picker_gallery_action">gallery media</string>
-   <string name="wallet_picker_fb_albums_actions">facebook albums</string>
-   <string name="wallet_picker_fb_photos_actions">facebook photos</string>
-   <string name="wallet_picker_limit_reached">You can choose only up to %s photos</string>
 
    <!--card alias-->
 

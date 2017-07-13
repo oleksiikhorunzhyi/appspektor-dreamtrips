@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
 import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsServiceImpl;
-import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
-import com.worldventures.dreamtrips.wallet.service.picker.WalletPickerFacebookService;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
+import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
 
@@ -36,7 +36,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
 
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject WalletCropImageService cropImageDelegate;
-   @Inject WalletPickerFacebookService walletPickerFacebookService;
+   @Inject MediaPickerFacebookService walletPickerFacebookService;
 
    private GoogleApiClient googleApiClient;
 

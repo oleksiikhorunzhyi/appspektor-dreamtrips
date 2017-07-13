@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelComm
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
-import com.worldventures.dreamtrips.modules.common.command.MediaAttachmentPrepareCommand;
+import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;

@@ -8,7 +8,7 @@
 
       <variable
             name="staticModel"
-            type="com.worldventures.dreamtrips.wallet.ui.common.picker.gallery.WalletIrregularPhotoModel"
+            type="com.worldventures.dreamtrips.modules.picker.model.IrregularPhotoPickerViewModel"
             />
    </data>
 

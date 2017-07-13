@@ -17,14 +17,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerDialog;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
@@ -48,7 +48,6 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    private ProfileViewModel viewModel = new ProfileViewModel();
    private WalletCropImageService cropImageService;
    private WalletPhotoProposalDialog photoActionDialog;
-   private WalletPickerDialog walletPickerDialog;
 
    public WizardEditProfileScreen(Context context) {
       super(context);
@@ -116,16 +115,16 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
 
    void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
-      walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
-      walletPickerDialog.setOnDoneListener(attachment -> {
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(attachment -> {
          if (!attachment.isEmpty()) {
             presenter.handlePickedPhoto(attachment.getChosenImages().get(0));
          }
       });
       if (initialPhotoUrl != null) {
-         walletPickerDialog.show(initialPhotoUrl);
+         mediaPickerDialog.show(initialPhotoUrl);
       } else {
-         walletPickerDialog.show();
+         mediaPickerDialog.show();
       }
    }
 

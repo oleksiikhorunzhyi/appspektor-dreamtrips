@@ -39,7 +39,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
-import com.worldventures.dreamtrips.wallet.service.picker.WalletPickerFacebookService;
+import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected Router router;
    @Inject protected ActivityRouter activityRouter;
-   @Inject WalletPickerFacebookService walletPickerFacebookService;
+   @Inject MediaPickerFacebookService walletPickerFacebookService;
 
    // TODO Move here RX lifecycle composers from ActivityWithPresenter
    private Subscription logoutSubscription;

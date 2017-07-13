@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
 
+import android.annotation.Nullable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -33,7 +34,7 @@ public class MediaPickerAttachment implements Parcelable {
       this(null, Collections.singletonList(chosenVideo), requestId);
    }
 
-   private MediaPickerAttachment(List<PhotoPickerModel> chosenImages, List<VideoPickerModel> chosenVideos, int requestId) {
+   private MediaPickerAttachment(@Nullable List<PhotoPickerModel> chosenImages, @Nullable List<VideoPickerModel> chosenVideos, int requestId) {
       this.requestId = requestId;
       if (chosenImages != null) {
          chosenMedia.addAll(chosenImages);

@@ -7,7 +7,6 @@ import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 
 import java.io.File;
 

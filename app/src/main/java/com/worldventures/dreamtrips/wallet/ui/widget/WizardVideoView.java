@@ -123,6 +123,7 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
          int marginTop = containerHeight - textureHeight;
          ((MarginLayoutParams) textureView.getLayoutParams()).topMargin = marginTop;
          ((MarginLayoutParams) crossfadeView.getLayoutParams()).topMargin = marginTop;
+         requestLayout();
       });
    }
 

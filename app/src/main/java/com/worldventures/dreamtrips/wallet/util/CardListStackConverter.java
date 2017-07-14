@@ -74,14 +74,11 @@ public class CardListStackConverter {
             WalletRecordUtil.fetchFullName(loadedCard),
             utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
             utils.goodThrough(loadedCard.expDate()),
-            getCardBackGroundResId(isDefault)
+            getCardBackGroundResId()
       );
    }
 
-   private int getCardBackGroundResId(boolean isDefault) {
-      if (isDefault) {
-         return R.drawable.background_default_card;
-      }
+   private int getCardBackGroundResId() {
       return index % 2 == 0 ? R.drawable.background_card_dark_blue : R.drawable.background_card_blue;
    }
 

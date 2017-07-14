@@ -30,7 +30,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
          "            var transaction = $('#txButton');\n" +
          "            function call_native () {\n" +
          "                var prop = 'transaction_id';\n" +
-         "                window.mobileTHRSTContext.sendMessage('whatever');\n" +
+         "                window.mobileTHRSTContext.sendMessage($('#message').val());\n" +
          "            }\n" +
          "            transaction.on('click', call_native);\n" +
          "            // Expose that function globally\n" +
@@ -40,7 +40,9 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
          "</head>\n" +
          "<body>\n" +
          "    <h2 id='headline'>Test javascript callback</h2>\n" +
+         "    <p><input type='text' id='message' placeholder='Message to Android'/></p>\n" +
          "    <button id='txButton'>Finished transaction</button>\n" +
+         "    <p><img src='$RECEIPT_URL$'/></p>\n" +
          "</body>\n" +
          "</html>";
 
@@ -49,17 +51,20 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
+      ThrstFlowBundle thrstFlowBundle = getArgs();
+      String receiptUrl = thrstFlowBundle.getReceiptUrl();
+      String merchantName = thrstFlowBundle.getMerchant().displayName();
+      ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
 
-      webView.loadDataWithBaseURL("", HTML, "text/html", "UTF-8", "");
+      String htmlValue = HTML.replace("$RECEIPT_URL$", receiptUrl);
+
+      webView.loadDataWithBaseURL("", htmlValue, "text/html", "UTF-8", "");
       webView.setHttpStatusErrorCallback((url, statusCode) ->
             Toast.makeText(getContext(), "URL:" + url + "\nStatus code=" + statusCode, Toast.LENGTH_SHORT).show()
       );
       webView.setJavascriptCallback(message ->
             Toast.makeText(getContext(), "Callback message=" + message, Toast.LENGTH_SHORT).show()
       );
-      ThrstFlowBundle thrstFlowBundle = getArgs();
-      String merchantName = thrstFlowBundle.getMerchant().displayName();
-      ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
    }
 
    @Override

@@ -13,17 +13,13 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
@@ -171,12 +167,5 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    public void openVerify(DtlTransaction dtlTransaction) {
       progressDialog.dismiss();
       dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
-   }
-
-   @Override
-   public void openThrstFlow(Merchant merchant) {
-      progressDialog.dismiss();
-      router.back();
-      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().data(new ThrstFlowBundle(merchant)).build());
    }
 }

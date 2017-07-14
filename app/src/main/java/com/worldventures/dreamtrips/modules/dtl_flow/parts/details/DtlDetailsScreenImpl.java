@@ -350,9 +350,12 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void openTransaction(Merchant merchant, DtlTransaction dtlTransaction) {
-      router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
-            .data(new MerchantBundle(merchant))
-            .build());
+      router.moveTo(
+            merchant.useThrstFlow() ? Route.DTL_THRST_SCAN_RECEIPT : Route.DTL_SCAN_RECEIPT,
+            NavigationConfigBuilder.forActivity()
+                  .data(new MerchantBundle(merchant))
+                  .build()
+      );
    }
 
    @Override

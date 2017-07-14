@@ -30,7 +30,7 @@ public class CardListStackConverter {
    public ArrayList<BaseViewModel> mapToViewModel(List<Record> loadedCards, @Nullable String defaultCardId) {
 
       if (loadedCards == null) {
-         new ArrayList<>();
+         return new ArrayList<>();
       }
 
       index = 0;

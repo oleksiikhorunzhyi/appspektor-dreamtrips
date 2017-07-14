@@ -342,7 +342,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                records = loadedRecords.first;
                return cardListStackConverter.mapToViewModel(loadedRecords.first, loadedRecords.second);
             })
-            .distinct()
+            .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(this::cardsLoaded, throwable -> Timber.e(throwable, ""));
    }

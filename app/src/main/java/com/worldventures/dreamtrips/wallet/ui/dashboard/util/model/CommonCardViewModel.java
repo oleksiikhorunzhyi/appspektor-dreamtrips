@@ -143,4 +143,45 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       TextUtils.writeToParcel(goodThrough, dest, 0);
       dest.writeInt(cardBackGround);
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      if (!super.equals(o)) return false;
+
+      CommonCardViewModel that = (CommonCardViewModel) o;
+
+      if (defaultCard != that.defaultCard) return false;
+      if (cardBackGround != that.cardBackGround) return false;
+      if (sampleCard != that.sampleCard) return false;
+      if (recordId != null ? !recordId.equals(that.recordId) : that.recordId != null) return false;
+      if (cardName != null ? !cardName.equals(that.cardName) : that.cardName != null) return false;
+      if (cardType != that.cardType) return false;
+      if (cardTypeName != null ? !cardTypeName.equals(that.cardTypeName) : that.cardTypeName != null) return false;
+      if (cardLastDigitsShort != null ? !cardLastDigitsShort.equals(that.cardLastDigitsShort) : that.cardLastDigitsShort != null)
+         return false;
+      if (cardHolderName != null ? !cardHolderName.equals(that.cardHolderName) : that.cardHolderName != null)
+         return false;
+      if (cardLastDigitsLong != null ? !cardLastDigitsLong.equals(that.cardLastDigitsLong) : that.cardLastDigitsLong != null)
+         return false;
+      return goodThrough != null ? goodThrough.equals(that.goodThrough) : that.goodThrough == null;
+   }
+
+   @Override
+   public int hashCode() {
+      int result = super.hashCode();
+      result = 31 * result + (recordId != null ? recordId.hashCode() : 0);
+      result = 31 * result + (cardName != null ? cardName.hashCode() : 0);
+      result = 31 * result + (cardType != null ? cardType.hashCode() : 0);
+      result = 31 * result + (cardTypeName != null ? cardTypeName.hashCode() : 0);
+      result = 31 * result + (defaultCard ? 1 : 0);
+      result = 31 * result + (cardLastDigitsShort != null ? cardLastDigitsShort.hashCode() : 0);
+      result = 31 * result + (cardHolderName != null ? cardHolderName.hashCode() : 0);
+      result = 31 * result + (cardLastDigitsLong != null ? cardLastDigitsLong.hashCode() : 0);
+      result = 31 * result + (goodThrough != null ? goodThrough.hashCode() : 0);
+      result = 31 * result + cardBackGround;
+      result = 31 * result + (sampleCard ? 1 : 0);
+      return result;
+   }
 }

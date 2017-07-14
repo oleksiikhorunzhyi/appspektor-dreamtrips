@@ -3,10 +3,14 @@ package com.worldventures.dreamtrips.modules.dtl.view.custom.webview;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.client.HttpErrorHandlerWebViewClient;
@@ -18,6 +22,7 @@ public class HttpErrorHandlerWebView extends WebView {
    private Handler handler = new Handler();
    private HttpStatusErrorCallback httpStatusErrorCallback;
    private JavascriptCallback javascriptCallback;
+   private PageStateCallback pageStateCallback;
 
    public HttpErrorHandlerWebView(Context context) {
       super(context);
@@ -42,13 +47,31 @@ public class HttpErrorHandlerWebView extends WebView {
 
    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
    private void init() {
+      setLayerType(Build.VERSION.SDK_INT >= 19 ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE, null);
       getSettings().setJavaScriptEnabled(true);
       getSettings().setDefaultTextEncodingName("utf-8");
+      setWebChromeClient(new WebChromeClient());
       setWebViewClient(new HttpErrorHandlerWebViewClient() {
          @Override
          protected void onHttpStatusError(final String url, final int statusCode) {
             if (httpStatusErrorCallback != null) {
                handler.post(() -> httpStatusErrorCallback.onHttpStatusError(url, statusCode));
+            }
+         }
+
+         @Override
+         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            if (pageStateCallback != null) {
+               pageStateCallback.onPageStarted();
+            }
+         }
+
+         @Override
+         public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            if (pageStateCallback != null) {
+               pageStateCallback.onPageFinished();
             }
          }
       });
@@ -72,12 +95,16 @@ public class HttpErrorHandlerWebView extends WebView {
       });
    }
 
-   public void setHttpStatusErrorCallback(HttpStatusErrorCallback httpStatusErrorCallback) {
+   public void setHttpStatusErrorCallbackListener(HttpStatusErrorCallback httpStatusErrorCallback) {
       this.httpStatusErrorCallback = httpStatusErrorCallback;
    }
 
-   public void setJavascriptCallback(JavascriptCallback javascriptCallback) {
+   public void setJavascriptCallbackListener(JavascriptCallback javascriptCallback) {
       this.javascriptCallback = javascriptCallback;
+   }
+
+   public void setPageStateCallbackListener(PageStateCallback pageStateCallback) {
+      this.pageStateCallback = pageStateCallback;
    }
 
    public interface HttpStatusErrorCallback {
@@ -86,5 +113,10 @@ public class HttpErrorHandlerWebView extends WebView {
 
    public interface JavascriptCallback {
       void onThrstCallback(String message);
+   }
+
+   public interface PageStateCallback {
+      void onPageStarted();
+      void onPageFinished();
    }
 }

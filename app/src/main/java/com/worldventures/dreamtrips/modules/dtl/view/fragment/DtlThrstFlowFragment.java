@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.techery.spares.annotations.Layout;
@@ -17,36 +18,8 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_thrst_webview)
 public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, ThrstFlowBundle> implements DtlThrstFlowPresenter.View {
-
-   private static final String HTML = "<!DOCTYPE html>\n" +
-         "<html>\n" +
-         "<head>\n" +
-         "<script src='http://code.jquery.com/jquery-2.1.1.min.js'></script>\n" +
-         "    <meta charset='utf-8'>\n" +
-         "    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />\n" +
-         "    <title>javascript callback</title>\n" +
-         "    <script type='text/javascript'>\n" +
-         "        $(function () {\n" +
-         "            var transaction = $('#txButton');\n" +
-         "            function call_native () {\n" +
-         "                var prop = 'transaction_id';\n" +
-         "                window.mobileTHRSTContext.sendMessage($('#message').val());\n" +
-         "            }\n" +
-         "            transaction.on('click', call_native);\n" +
-         "            // Expose that function globally\n" +
-         "             window.call_native = call_native;\n" +
-         "        });\n" +
-         "    </script>\n" +
-         "</head>\n" +
-         "<body>\n" +
-         "    <h2 id='headline'>Test javascript callback</h2>\n" +
-         "    <p><input type='text' id='message' placeholder='Message to Android'/></p>\n" +
-         "    <button id='txButton'>Finished transaction</button>\n" +
-         "    <p><img src='$RECEIPT_URL$'/></p>\n" +
-         "</body>\n" +
-         "</html>";
-
    @InjectView(R.id.web_view) HttpErrorHandlerWebView webView;
+   @InjectView(R.id.page_progress) ProgressBar pageProgress;
 
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
@@ -56,13 +29,22 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       String merchantName = thrstFlowBundle.getMerchant().displayName();
       ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
 
-      String htmlValue = HTML.replace("$RECEIPT_URL$", receiptUrl);
+      webView.loadUrl("http://dev.thrst.com/#/thrst");
+      webView.setPageStateCallbackListener(new HttpErrorHandlerWebView.PageStateCallback() {
+         @Override
+         public void onPageStarted() {
+            pageProgress.setVisibility(View.VISIBLE);
+         }
 
-      webView.loadDataWithBaseURL("", htmlValue, "text/html", "UTF-8", "");
-      webView.setHttpStatusErrorCallback((url, statusCode) ->
+         @Override
+         public void onPageFinished() {
+            pageProgress.setVisibility(View.INVISIBLE);
+         }
+      });
+      webView.setHttpStatusErrorCallbackListener((url, statusCode) ->
             Toast.makeText(getContext(), "URL:" + url + "\nStatus code=" + statusCode, Toast.LENGTH_SHORT).show()
       );
-      webView.setJavascriptCallback(message ->
+      webView.setJavascriptCallbackListener(message ->
             Toast.makeText(getContext(), "Callback message=" + message, Toast.LENGTH_SHORT).show()
       );
    }

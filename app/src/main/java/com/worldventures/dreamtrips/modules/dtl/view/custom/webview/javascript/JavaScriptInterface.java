@@ -7,7 +7,7 @@ public abstract class JavaScriptInterface {
 
    @JavascriptInterface
    @SuppressWarnings("unused")
-   public void sendMessage(String message) {
+   public void thrstTransactionCompleted(String message) {
       thrstCallback(message);
    }
 

@@ -11,6 +11,7 @@
          android:layout_width="@dimen/wallet_settings_display_options_page_size"
          android:layout_height="0dp"
          android:paddingTop="20dp"
+         app:actualImageScaleType="centerCrop"
          app:backgroundImage="@color/wallet_card_display_default_background"
          app:layout_constraintBottom_toBottomOf="parent"
          app:layout_constraintDimensionRatio="h,1:1"

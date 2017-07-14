@@ -208,7 +208,7 @@
       <item name="android:inputType">textPersonName</item>
       <item name="android:maxLines">1</item>
       <item name="android:textColor">#666666</item>
-      <item name="android:backgroundTint">@color/wallet_bottom_line_fields_payment_feedback</item>
+      <item name="backgroundTint">@color/wallet_bottom_line_fields_payment_feedback</item>
       <item name="android:textColorHint">@color/grey</item>
       <item name="android:textSize">@dimen/font_normal</item>
    </style>

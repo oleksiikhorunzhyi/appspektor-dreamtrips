@@ -178,7 +178,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       smartCardInteractor.getDisplayTypePipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setDisplayType, throwable -> Timber.e("", throwable));
+            .subscribe(getView()::setDisplayType, throwable -> Timber.e(throwable, ""));
       smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
    }
 

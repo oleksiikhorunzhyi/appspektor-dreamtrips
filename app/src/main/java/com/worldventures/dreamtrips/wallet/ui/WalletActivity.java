@@ -5,7 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.Conductor;
+import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -16,7 +22,8 @@ import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
-import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartScreenImpl;
 
 import javax.inject.Inject;
 
@@ -34,10 +41,17 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject WalletCropImageService cropImageDelegate;
    @Inject MediaPickerFacebookService walletPickerFacebookService;
+   @Inject NavigatorConductor navigatorConductor;
+
+   private Router router;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      router = Conductor.attachRouter(this, (ViewGroup) findViewById(android.R.id.content),savedInstanceState);
+      if (!router.hasRootController()) {
+         router.setRoot(RouterTransaction.with(new WalletStartScreenImpl()));
+      }
       navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
    }
 
@@ -54,7 +68,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
 
    @Override
    protected History provideDefaultHistory() {
-      return History.single(new WalletStartPath());
+      return History.emptyBuilder().build();
    }
 
    @Override
@@ -87,5 +101,13 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
       if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) return;
       if (walletPickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
       super.onActivityResult(requestCode, resultCode, data);
+   }
+
+   public Router getRouter() {
+      return router;
+   }
+
+   @Override
+   protected void initFlow() {
    }
 }

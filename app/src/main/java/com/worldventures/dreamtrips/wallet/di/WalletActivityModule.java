@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.app.Activity;
 
+import com.bluelinelabs.conductor.Router;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
@@ -10,6 +11,8 @@ import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
@@ -77,6 +80,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresen
 
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -172,6 +176,13 @@ public class WalletActivityModule {
    @Provides
    Navigator provideNavigator(Activity activity) {
       return new FlowNavigator(activity);
+   }
+
+
+   @Singleton
+   @Provides
+   NavigatorConductor provideConductorNavigator(Lazy<Router> router) {
+      return new NavigatorImpl(router);
    }
 
    @Provides

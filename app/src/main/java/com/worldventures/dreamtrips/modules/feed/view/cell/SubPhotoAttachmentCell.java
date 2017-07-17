@@ -38,7 +38,7 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
          }
       });
 
-      setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
+      setImage(Uri.parse(getModelObject().getFSImage().getUrl()), photo);
       tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags()
             .isEmpty() ? View.VISIBLE : View.GONE);
    }

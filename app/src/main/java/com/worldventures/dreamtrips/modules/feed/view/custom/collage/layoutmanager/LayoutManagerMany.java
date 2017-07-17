@@ -17,7 +17,6 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
 import com.worldventures.dreamtrips.modules.feed.view.util.blur.BlurPostprocessor;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,7 @@ class LayoutManagerMany extends LayoutManager {
       });
 
       //blur view
-      String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
+      String url = items.get(position).url();
       ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
             .setPostprocessor(new BlurPostprocessor(context, BLUR_RADIUS, BLUR_SAMPLING))
             .build();

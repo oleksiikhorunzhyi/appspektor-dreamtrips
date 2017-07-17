@@ -188,7 +188,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
       return Queryable.from(attachments).map(element -> (Photo) element.getItem()).map(photo -> {
-         return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
+         return new CollageItem(photo.getFSImage().getThumbUrl(itemView.getResources()),
+               photo.getFSImage().getUrl(itemView.getWidth(), itemView.getHeight()),
+         photo.getWidth(), photo.getHeight());
       }).toList();
    }
 
@@ -204,7 +206,12 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    private void openFullscreenPhotoList(int position) {
       List<IFullScreenObject> items = Queryable.from(getModelObject().getItem().getAttachments())
             .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
-            .map(element -> (IFullScreenObject) element.getItem())
+            .map(element -> {
+               Photo photo = (Photo) element.getItem();
+               photo.setUser(getModelObject().getItem().getOwner());
+               return photo;
+            })
+            .map(element -> (IFullScreenObject) element)
             .toList();
       FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(position)
             .userId(getModelObject().getItem().getOwner().getId())

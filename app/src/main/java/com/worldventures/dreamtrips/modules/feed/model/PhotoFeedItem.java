@@ -22,8 +22,8 @@ public class PhotoFeedItem extends FeedItem<Photo> {
    public String previewImage(Resources res) {
       int width = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_w);
       int height = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_h);
-      if (getItem().getImages() != null) {
-         return getItem().getImages().getUrl(width, height);
+      if (getItem().getFSImage() != null) {
+         return getItem().getFSImage().getUrl(width, height);
       } else return null;
    }
 

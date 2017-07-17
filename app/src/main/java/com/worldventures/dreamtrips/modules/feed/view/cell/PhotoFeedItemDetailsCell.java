@@ -130,9 +130,8 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
    }
 
    private void loadPhoto(Photo photoObj) {
-      int size = itemView.getResources().getDimensionPixelSize(R.dimen.feed_item_height);
-      photoImageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(photoObj.getImages()
-            .getUrl(size, size)), photoImageView.getController()));
+      photoImageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(photoObj.getFSImage()
+            .getThumbUrl(itemView.getResources())), photoImageView.getController()));
    }
 
    @OnClick(R.id.tag)

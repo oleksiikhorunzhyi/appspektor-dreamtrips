@@ -90,10 +90,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       this.title = title;
    }
 
-   public Image getImages() {
-      return images;
-   }
-
    public void setImages(Image images) {
       this.images = images;
    }

@@ -6,14 +6,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +41,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
-   private final ActionPipe<AddRecordAction> addRecordActionPipe;
-
    private int localOnlyRecordsCount = 0;
-
-   public SyncRecordsCommand() {
-      addRecordActionPipe = janet.createPipe(AddRecordAction.class);
-   }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -92,31 +84,34 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    private Observable<Void> sync(SyncBundle bundle, CommandCallback<Void> callback) {
       final List<Observable<Void>> operations = new ArrayList<>();
 
-      // All SmartCard records -> prepare for local storage -> save (override) to local storage
-      if (!bundle.deviceRecords.isEmpty()) {
-         operations.add(prepareRecordsForLocalStorage(Queryable.from(bundle.deviceRecords)
-               .map(deviceOnlyRecord -> ImmutableRecord.copyOf(deviceOnlyRecord).withNumberLastFourDigits(
-                     WalletRecordUtil.obtainLastCardDigits(deviceOnlyRecord.number())))
-               .toList())
-               .flatMap(records -> saveRecords(records, true)));
-      }
+      // All SmartCard records -> prepare for local storage
+      Observable<Record> smartCardToApp = bundle.deviceRecords.isEmpty() ?
+            Observable.empty() : prepareRecordsForLocalStorage(bundle.deviceRecords);
 
-      // Local only records -> prepare for SmartCard -> send to SmartCard -> save (add) to local storage
-      List<Record> localOnlyRecords = Queryable.from(bundle.localRecords)
+      // Local only records -> prepare for SmartCard -> send to SmartCard
+      Observable<Record> appToSmartCard = Observable.empty();
+
+      final List<Record> localOnlyRecords = Queryable.from(bundle.localRecords)
             .filter(localRecord -> !bundle.deviceRecords.contains(localRecord))
             .toList();
       if (!localOnlyRecords.isEmpty()) {
          localOnlyRecordsCount = localOnlyRecords.size();
          callback.onProgress(0);
 
-         operations.add(prepareRecordsForSmartCard(localOnlyRecords)
-               .concatMap(indexRecordPair -> sendRecordToSmartCard(indexRecordPair.second)
+         final ActionPipe<AddRecordAction> addRecordActionPipe = janet.createPipe(AddRecordAction.class);
+         appToSmartCard = prepareRecordsForSmartCard(localOnlyRecords)
+               .concatMap(indexRecordPair -> addRecordActionPipe
+                     .createObservableResult(new AddRecordAction(indexRecordPair.second))
+                     .map(action -> mapperyContext.convert(action.record, Record.class))
                      .doOnSubscribe(() -> callback.onProgress(indexRecordPair.first)))
                .toList()
-               .flatMap(this::prepareRecordsForLocalStorage)
-               .flatMap(records -> saveRecords(records, false))
-         );
+               .flatMap(this::prepareRecordsForLocalStorage);
       }
+
+      // Save records to local storage
+      operations.add(Observable.concat(smartCardToApp, appToSmartCard)
+            .toList()
+            .flatMap(this::saveRecords));
 
       // Sync default record id
       if (bundle.deviceDefaultRecordId != null && bundle.localDefaultRecordId == null) {
@@ -135,12 +130,13 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
             .map(voids -> null);
    }
 
-   private Observable<List<Record>> prepareRecordsForLocalStorage(List<? extends Record> records) {
+   private Observable<Record> prepareRecordsForLocalStorage(List<Record> records) {
       return recordInteractor.secureMultipleRecordsPipe()
             .createObservableResult(SecureMultipleRecordsCommand.Builder.prepareRecordForLocalStorage(records)
                   .skipTokenizationErrors(true)
                   .create())
-            .map(Command::getResult);
+            .map(Command::getResult)
+            .flatMap(Observable::from);
    }
 
    private Observable<Pair<Integer, io.techery.janet.smartcard.model.Record>> prepareRecordsForSmartCard(List<Record> records) {
@@ -156,16 +152,9 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
             .flatMap(Observable::from);
    }
 
-   private Observable<ImmutableRecord> sendRecordToSmartCard(io.techery.janet.smartcard.model.Record recordForSmartCard) {
-      return addRecordActionPipe.createObservableResult(new AddRecordAction(recordForSmartCard))
-            .map(action -> mapperyContext.convert(action.record, Record.class))
-            .map(recordFromSmartCard -> ImmutableRecord.copyOf(recordFromSmartCard).withNumberLastFourDigits(
-                  WalletRecordUtil.obtainLastCardDigits(recordFromSmartCard.number())));
-   }
-
-   private Observable<Void> saveRecords(List<Record> records, boolean replace) {
+   private Observable<Void> saveRecords(List<Record> records) {
       return recordInteractor.cardsListPipe()
-            .createObservableResult(replace ? RecordListCommand.replace(records) : RecordListCommand.addAll(records))
+            .createObservableResult(RecordListCommand.replace(records))
             .map(o -> null);
    }
 

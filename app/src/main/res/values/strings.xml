@@ -377,6 +377,11 @@
    <string name="picker_erros_photos_and_videos">You can\'t select photos and videos</string>
    <string name="picker_video_duration_limit">You can\'t upload video more than %1$d seconds</string>
    <string name="pending">Pending…</string>
+   <string name="media_picker_error_contents">Loading of %s failed.</string>
+   <string name="media_picker_gallery_action">gallery media</string>
+   <string name="media_picker_fb_albums_actions">facebook albums</string>
+   <string name="media_picker_fb_photos_actions">facebook photos</string>
+   <string name="media_picker_limit_reached">You can choose only up to %s photos</string>
 
    <string name="back">Back</string>
    <string name="logout_component">Logout</string>

@@ -8,7 +8,7 @@
 
       <variable
             name="photoFacebookModel"
-            type="com.worldventures.dreamtrips.wallet.ui.common.picker.facebook.photos.WalletFacebookPhotoModel"
+            type="com.worldventures.dreamtrips.modules.picker.model.FacebookPhotoPickerViewModel"
             />
    </data>
 

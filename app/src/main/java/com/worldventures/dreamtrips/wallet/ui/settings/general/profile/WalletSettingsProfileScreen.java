@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCa
 import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
-import com.worldventures.dreamtrips.wallet.service.picker.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -32,7 +32,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionE
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.dialog.WalletPickerDialog;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
@@ -61,7 +61,6 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    private ProfileViewModel profileViewModel = new ProfileViewModel();
    private WalletPhotoProposalDialog photoActionDialog;
    private Dialog scNonConnectionDialog;
-   private WalletPickerDialog walletPickerDialog;
 
    private PublishSubject<ProfileViewModel> observeProfileViewModel = PublishSubject.create();
 
@@ -126,16 +125,16 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
-      walletPickerDialog = new WalletPickerDialog(getContext(), getInjector());
-      walletPickerDialog.setOnDoneListener(models -> {
-         if (!models.isEmpty()) {
-            presenter.handlePickedPhoto(models.get(0));
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(result -> {
+         if (!result.isEmpty()) {
+            presenter.handlePickedPhoto(result.getChosenImages().get(0));
          }
       });
       if (initialPhotoUrl != null) {
-         walletPickerDialog.show(initialPhotoUrl);
+         mediaPickerDialog.show(initialPhotoUrl);
       } else {
-         walletPickerDialog.show();
+         mediaPickerDialog.show();
       }
    }
 

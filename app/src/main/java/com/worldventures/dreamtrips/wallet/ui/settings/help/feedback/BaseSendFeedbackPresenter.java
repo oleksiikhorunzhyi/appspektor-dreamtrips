@@ -7,7 +7,6 @@ import android.os.Parcelable;
 import android.view.WindowManager;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -15,7 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.common.command.MediaAttachmentPrepareCommand;
+import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
@@ -23,11 +22,11 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachm
 import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.picker.base.BasePickerViewModel;
 
 import java.util.List;
 
@@ -182,7 +181,7 @@ public abstract class BaseSendFeedbackPresenter<S extends BaseSendFeedbackPresen
             );
    }
 
-   public void handleAttachedImages(List<BasePickerViewModel> models) {
+   public void handleAttachedImages(List<PhotoPickerModel> models) {
       mediaInteractor.mediaAttachmentPreparePipe().send(new MediaAttachmentPrepareCommand(models));
    }
 

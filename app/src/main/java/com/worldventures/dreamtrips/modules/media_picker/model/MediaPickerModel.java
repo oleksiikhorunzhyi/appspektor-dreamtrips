@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.media_picker.model;
 
 import android.net.Uri;
 
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+
 public interface MediaPickerModel {
 
    enum Type {
@@ -10,6 +12,8 @@ public interface MediaPickerModel {
    }
 
    Type getType();
+
+   MediaAttachment.Source getSource();
 
    boolean isChecked();
 

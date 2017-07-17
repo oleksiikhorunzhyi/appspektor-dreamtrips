@@ -32,14 +32,9 @@ public class CreateRecordCommand extends Command<Record> implements InjectableAc
    }
 
    private Record withExtraInfo(Record record) {
-      final ImmutableRecord.Builder builder = ImmutableRecord.builder()
-            .from(record)
-            .numberLastFourDigits(WalletRecordUtil.obtainLastCardDigits(record.number()));
-
       if (WalletRecordUtil.isAmexBank(record.number())) {
-         builder.financialService(FinancialService.AMEX);
+         return ImmutableRecord.builder().from(record).financialService(FinancialService.AMEX).build();
       }
-      return builder.build();
+      return record;
    }
-
 }

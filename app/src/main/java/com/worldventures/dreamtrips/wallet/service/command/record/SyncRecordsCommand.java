@@ -43,7 +43,13 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
+   private final ActionPipe<AddRecordAction> addRecordActionPipe;
+
    private int localOnlyRecordsCount = 0;
+
+   public SyncRecordsCommand() {
+      addRecordActionPipe = janet.createPipe(AddRecordAction.class);
+   }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -86,16 +92,16 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    private Observable<Void> sync(SyncBundle bundle, CommandCallback<Void> callback) {
       final List<Observable<Void>> operations = new ArrayList<>();
 
-      // All SmartCard records -> prepare for local storage -> save (override) local storage
+      // All SmartCard records -> prepare for local storage -> save (override) to local storage
       if (!bundle.deviceRecords.isEmpty()) {
          operations.add(prepareRecordsForLocalStorage(Queryable.from(bundle.deviceRecords)
                .map(deviceOnlyRecord -> ImmutableRecord.copyOf(deviceOnlyRecord).withNumberLastFourDigits(
                      WalletRecordUtil.obtainLastCardDigits(deviceOnlyRecord.number())))
                .toList())
-               .flatMap(this::saveRecords));
+               .flatMap(records -> saveRecords(records, true)));
       }
 
-      // Local only records -> prepare for SmartCard -> push to SmartCard
+      // Local only records -> prepare for SmartCard -> send to SmartCard -> save (add) to local storage
       List<Record> localOnlyRecords = Queryable.from(bundle.localRecords)
             .filter(localRecord -> !bundle.deviceRecords.contains(localRecord))
             .toList();
@@ -103,13 +109,12 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
          localOnlyRecordsCount = localOnlyRecords.size();
          callback.onProgress(0);
 
-         final ActionPipe<AddRecordAction> addRecordActionActionPipe = janet.createPipe(AddRecordAction.class);
-
          operations.add(prepareRecordsForSmartCard(localOnlyRecords)
-               .concatMap(indexRecordPair -> addRecordActionActionPipe
-                     .createObservableResult(new AddRecordAction(indexRecordPair.second))
+               .concatMap(indexRecordPair -> sendRecordToSmartCard(indexRecordPair.second)
                      .doOnSubscribe(() -> callback.onProgress(indexRecordPair.first)))
-               .map(r -> null)
+               .toList()
+               .flatMap(this::prepareRecordsForLocalStorage)
+               .flatMap(records -> saveRecords(records, false))
          );
       }
 
@@ -151,9 +156,16 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
             .flatMap(Observable::from);
    }
 
-   private Observable<Void> saveRecords(List<Record> records) {
+   private Observable<ImmutableRecord> sendRecordToSmartCard(io.techery.janet.smartcard.model.Record recordForSmartCard) {
+      return addRecordActionPipe.createObservableResult(new AddRecordAction(recordForSmartCard))
+            .map(action -> mapperyContext.convert(action.record, Record.class))
+            .map(recordFromSmartCard -> ImmutableRecord.copyOf(recordFromSmartCard).withNumberLastFourDigits(
+                  WalletRecordUtil.obtainLastCardDigits(recordFromSmartCard.number())));
+   }
+
+   private Observable<Void> saveRecords(List<Record> records, boolean replace) {
       return recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.replace(records))
+            .createObservableResult(replace ? RecordListCommand.replace(records) : RecordListCommand.addAll(records))
             .map(o -> null);
    }
 

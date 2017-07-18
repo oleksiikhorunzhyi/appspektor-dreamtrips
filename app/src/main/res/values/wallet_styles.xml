@@ -15,7 +15,7 @@
    <color name="wallet_number_edit_text_pin_line_color">#666666</color>
    <color name="wallet_menu_item_pressed_background">#ececec</color>
 
-   <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+   <style name="WalletTheme" parent="Theme.AppCompat.Light.NoActionBar">
       <item name="colorPrimary">@color/wallet_color_primary</item>
       <item name="colorPrimaryDark">@color/wallet_color_primary_dark</item>
       <item name="android:textColorPrimary">@color/wallet_text_color_primary</item>

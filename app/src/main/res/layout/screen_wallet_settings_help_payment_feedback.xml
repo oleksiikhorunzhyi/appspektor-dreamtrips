@@ -14,7 +14,6 @@
    <com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="@android:color/white"
          android:orientation="vertical"
          android:theme="@style/WalletTheme"
          >

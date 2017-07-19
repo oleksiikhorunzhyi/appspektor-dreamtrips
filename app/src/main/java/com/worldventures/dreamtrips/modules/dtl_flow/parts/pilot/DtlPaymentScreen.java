@@ -4,25 +4,37 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlPaymentScreen extends DtlScreen {
 
-    void hideThankYouText();
+    void setChargeMoney(String money);
 
-    void showThankYouText();
+    void thankYouSuccessfulText();
+
+    void thankYouFailureText();
 
     void setSuccessPaymentText();
 
     void setFailurePaymentText();
 
-    void setPaymentValue(String value);
-
     void showTotalChargedText();
 
     void hideTotalChargedText();
 
-    void setSuccessResume(String points);
+    void setSuccessResume();
 
     void setFailureResume();
 
     void setPaymentSuccessImage();
 
     void setPaymentFailureImage();
+
+    void setShowScreenSuccessMessage();
+
+    void setShowScreenFailureMessage();
+
+    void showSubThankYouMessage();
+
+    void hideSubThankYouMessage();
+
+    void initToolbar();
+
+    void goBack();
 }

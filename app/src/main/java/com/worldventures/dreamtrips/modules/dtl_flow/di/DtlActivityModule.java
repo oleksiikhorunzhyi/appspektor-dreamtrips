@@ -63,6 +63,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
@@ -141,7 +143,10 @@ import dagger.Provides;
             ActionReviewEntityFragment.class,
             CreateReviewPostFragment.class,
             CreateReviewEntityFragment.class,
-            OfferWithReviewView.class
+            OfferWithReviewView.class,
+            DtlPaymentPresenterImpl.class,
+            DtlPaymentScreenImpl.class
+
       },
       complete = false, library = true)
 public class DtlActivityModule {

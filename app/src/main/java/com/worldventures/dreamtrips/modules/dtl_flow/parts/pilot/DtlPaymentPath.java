@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 
 import flow.path.Path;
 
@@ -13,10 +12,14 @@ import flow.path.Path;
 public class DtlPaymentPath extends DtlMasterPath {
 
     private final boolean isPaid;
+    private final String totalAmount;
+    private final String merchantName;
 
-    public DtlPaymentPath(boolean isPaid) {
+    public DtlPaymentPath(boolean isPaid, String totalAmount, String merchantName) {
         super();
         this.isPaid = isPaid;
+        this.totalAmount = totalAmount;
+        this.merchantName = merchantName;
     }
 
     @Override
@@ -31,5 +34,13 @@ public class DtlPaymentPath extends DtlMasterPath {
 
     public boolean isPaid() {
         return isPaid;
+    }
+
+    public String getTotalAmount() {
+        return totalAmount;
+    }
+
+    public String getMerchantName() {
+        return merchantName;
     }
 }

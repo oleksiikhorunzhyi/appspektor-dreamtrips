@@ -345,7 +345,7 @@
    <string name="no_feed">Du kommer att se din väns aktivitet här.\n Klicka på länken nedan för att hitta dina vänner</string>
    <string name="search_friends">Sök efter vänner</string>
 
-   <string name="feed_share_post_button">Dela ett foto, en video eller en idé</string>
+   <string name="feed_share_photo_or_idea">Dela ett foto eller en idé</string>
    <string name="feed_view_profile_btn">Visa profil</string>
    <string name="start_searching">Skriv för att börja söka</string>
 

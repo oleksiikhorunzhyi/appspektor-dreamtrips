@@ -346,7 +346,7 @@
    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
    <string name="search_friends">Search Friends</string>
 
-   <string name="feed_share_post_button">Share a photo, video or idea</string>
+   <string name="feed_share_photo_or_idea">Share a photo or idea</string>
    <string name="feed_view_profile_btn">View Profile</string>
    <string name="start_searching">Type to start searching</string>
 

@@ -345,7 +345,7 @@
    <string name="no_feed">Anda akan melihat aktiviti Kawan anda di sini.\n Klik pautan di bawah untuk mencari kawan anda</string>
    <string name="search_friends">Cari Kawan</string>
 
-   <string name="feed_share_post_button">Berkongsi foto, video atau idea</string>
+   <string name="feed_share_photo_or_idea">Berkongsi foto atau idea</string>
    <string name="feed_view_profile_btn">Lihat Profil</string>
    <string name="start_searching">Taip untuk mula mencari</string>
 
@@ -377,7 +377,7 @@
    <string name="photo_limitation_message">Sila pilih sehingga %1$d gambar</string>
    <string name="picker_erros_photos_and_videos">Anda Tidak boleh memilih foto dan video</string>
    <string name="picker_video_duration_limit">Anda tidak boleh memuat naik video lebih daripada %1$d saat</string>
-   <string name="pending">Sedang menunggu…</string>
+   <string name="pending">Sedang menunggu...</string>
 
    <string name="back">กลับไป</string>
    <string name="logout_component">Log keluar</string>
@@ -591,8 +591,8 @@
    <string name="friends_will_appear_momentarily">Mereka akan muncul dalam Rakan Saya sebentar lagi.</string>
 
    <string name="uploading_post_status_processing">Sedang memproses</string>
-   <string name="uploading_post_status_progress_video"><b><i>Langkah 1 dari 2.</i></b> Memuat naik …</string>
-   <string name="uploading_post_status_progress_video_processing"><b><i>Langkah 2 dari 2.</i></b> Memproses …</string>
+   <string name="uploading_post_status_progress_video"><b><i>Langkah 1 dari 2.</i></b> Memuat naik ...</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Langkah 2 dari 2.</i></b> Memproses ...</string>
    <string name="uploading_post_status_progress_video_processing_failed">Gagal memproses. Sesuatu masalah dengan video</string>
 
 </resources>

@@ -345,7 +345,7 @@
    <string name="no_feed">在这里您会看到您的朋友的活动。\n点击下面的链接找到您的朋友</string>
    <string name="search_friends">搜索朋友</string>
 
-   <string name="feed_share_post_button">分享一张照片，一个视频或者想法</string>
+   <string name="feed_share_photo_or_idea">分享一张照片或一个想法</string>
    <string name="feed_view_profile_btn">查看资料</string>
    <string name="start_searching">键入开始搜索</string>
 
@@ -591,8 +591,8 @@
    <string name="friends_will_appear_momentarily">他们马上将出现在我的朋友列表。</string>
 
    <string name="uploading_post_status_processing">处理</string>
-   <string name="uploading_post_status_progress_video"><i><b>2步中的第1步.</b></i> 上传中…</string>
-   <string name="uploading_post_status_progress_video_processing"><b><i>2步中的第2步.</i></b> 处理中…</string>
+   <string name="uploading_post_status_progress_video"><i><b>2步中的第1步.</b></i> 上传中...</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>2步中的第2步.</i></b> 处理中...</string>
    <string name="uploading_post_status_progress_video_processing_failed">处理失败视频出错了</string>
 
 </resources>

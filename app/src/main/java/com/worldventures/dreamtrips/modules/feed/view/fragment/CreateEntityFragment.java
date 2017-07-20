@@ -106,7 +106,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
             .data(new PickerBundle.Builder()
                   .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
                   .setVideoPickLimit(videoPickLimit)
-                  .setVideoPickingEnabled(!picturesSelected)
+                  .setVideoPickingEnabled(false)
                   .build())
             .build());
    }

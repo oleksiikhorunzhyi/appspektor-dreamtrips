@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <color name="comment_button_disabled">#858585</color>
+
+   <color name="filters_retry_text">#005E92</color>
+   <color name="filters_error_text">#929292</color>
+
+   <color name="bg_item_dragging_state">#e1f0fb</color>
+   <color name="bg_item_dragging_active_state">#c0e2fb</color>
+
+   <color name="pin_progress_default_circle_color">#80ffffff</color>
+
+   <color name="bucket_button_selected">#005E92</color>
+   <color name="bucket_button_default">#404040</color>
+   <color name="bucket_detailed_text_color">#54BDFF</color>
+   <color name="bucket_green">#3fec5b</color>
+   <color name="bucket_red">#fe5353</color>
+   <color name="bucket_blue">#ff6e9cff</color>
+
+   <color name="golden_user">#E3BC57</color>
+   <color name="platinum_user">#9BA8CB</color>
+
+   <color name="load_more_color">#e5eff4</color>
+
+   <color name="user_status_text_shadow">#AA000000</color>
+
+   <color name="pin_progress_bg_for_white_holder">#A5A5A5</color>
+
+   <color name="hashtag_text_color">#005E92</color>
+   <color name="highlight_hashtag_bg">#4C53B5FE</color>
+
+   <color name="background_translate_btn_stroke">#979797</color>
+   <color name="translate_from_color">#929292</color>
+   <color name="translate_vertical_line_color">#929292</color>
+
+   <color name="dt_filter_apply_reset">#025E93</color>
+
+   <color name="tag_view_background">#73000000</color>
+   <color name="tag_view_background_border">#73ffffff</color>
+
+   <color name="hashtag_suggestion_count_color">#88343434</color>
+
+   <color name="comments_action_color">#2977b2</color>
+
+   <color name="uploading_cell_title">#222222</color>
+   <color name="uploading_cell_status_label_uploading">#53b5fe</color>
+   <color name="uploading_cell_status_label_failure">#ff5454</color>
+   <color name="uploading_cell_status_label_paused">#929292</color>
+   <color name="uploading_cell_time_left">#9b9b9b</color>
+   <color name="uploading_cell_progress_bar_active_current">@color/uploading_cell_status_label_uploading</color>
+   <color name="uploading_cell_progress_bar_active_total">#cde9fe</color>
+   <color name="uploading_cell_progress_bar_paused_current">@color/uploading_cell_status_label_paused</color>
+   <color name="uploading_cell_progress_bar_paused_total">#dfdfdf</color>
+
+   <color name="dim_foreground_dark">#bebebe</color>
+
+</resources>

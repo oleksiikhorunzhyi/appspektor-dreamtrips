@@ -4,34 +4,13 @@
       <attr name="hintColor" format="color" />
       <attr name="requestFocusOnValidationFail" format="boolean" />
    </declare-styleable>
-   <declare-styleable name="PinProgressButton">
-      <attr name="pinned" format="boolean" />
-      <attr name="progress" format="integer" />
-      <attr name="max" format="integer" />
-      <attr name="circleColor" format="color" />
-      <attr name="progressColor" format="color" />
-   </declare-styleable>
    <declare-styleable name="FlagView">
       <attr name="icon" />
-   </declare-styleable>
-   <declare-styleable name="SquareLayout">
-      <attr name="side_priority" format="enum">
-         <enum name="height" value="0" />
-         <enum name="width" value="1" />
-      </attr>
-   </declare-styleable>
-   <declare-styleable name="OverlappingViewsLayout">
-      <attr name="ovl_overlap_part" format="float|reference" />
-   </declare-styleable>
-   <declare-styleable name="GroupAvatarsView">
-      <attr name="gav_avatar_size" format="dimension|reference" />
-      <attr name="gav_avatar_spacing" format="dimension|reference" />
    </declare-styleable>
    <declare-styleable name="HoldableButton">
       <attr name="holdInitialDelay" format="integer" />
       <attr name="holdRepeatDelay" format="integer" />
    </declare-styleable>
-
    <declare-styleable name="ShowMoreTextView">
       <!-- 'smtv_' prefix to prevent any possible duplication -->
       <attr name="smtv_symbolsLimit" format="integer" />
@@ -72,22 +51,6 @@
       <attr name="dtlfb_show_separator" format="boolean" />
    </declare-styleable>
 
-   <declare-styleable name="CollageView">
-      <attr name="padding" format="dimension" />
-      <attr name="moreTextSize" format="dimension" />
-      <attr name="moreIcon" format="reference" />
-   </declare-styleable>
-
-   <declare-styleable name="RoundedCornersLayout">
-      <attr name="rcl_radius" format="dimension|reference" />
-   </declare-styleable>
-
-   <declare-styleable name="ChatItemFrameLayout">
-      <attr name="background_following" format="reference" />
-      <attr name="background_initial" format="reference" />
-      <attr name="own" format="boolean" />
-   </declare-styleable>
-
    <declare-styleable name="BadgeView">
       <attr name="background_color" format="color" />
    </declare-styleable>
@@ -125,17 +88,5 @@
    <declare-styleable name="DirectionInfoView">
       <attr name="infoViewTitle" format="integer|string"/>
       <attr name="infoViewImage" format="reference"/>
-   </declare-styleable>
-
-   <declare-styleable name="TranslateView">
-      <attr name="translatedTextColor" format="reference"/>
-   </declare-styleable>
-   
-   <declare-styleable name="PhotoStripView">
-      <attr name="errorPlankHeight" format="dimension"/>
-      <attr name="errorTextSize" format="dimension"/>
-      <attr name="errorPlankColor" format="color"/>
-      <attr name="errorTextColor" format="color"/>
-      <attr name="stripColor" format="color"/>
    </declare-styleable>
 </resources>

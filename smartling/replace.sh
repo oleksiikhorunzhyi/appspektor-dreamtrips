@@ -9,19 +9,26 @@
 
 # ATTENTION! strings (1).xml would be replaced too. Just delete it
 
-readonly socialFile="strings.xml"
+readonly commonFile="strings.xml"
+readonly socialFile="social_strings.xml"
 readonly dtlFile="dtl_strings.xml"
 readonly messengerFile="messenger_strings.xml"
 readonly walletFile="wallet_strings.xml"
 
+readonly commonExclude=" --exclude=$commonFile"
 readonly socialExclude=" --exclude=$socialFile"
 readonly dtlExclude=" --exclude=$dtlFile"
 readonly messengerExclude=" --exclude=$messengerFile"
 readonly walletExclude=" --exclude=$walletFile"
 
-readonly fullExcludeParams=" $socialExclude $dtlExclude $messengerExclude $walletExclude"
+readonly fullExcludeParams=" $commonExclude $socialExclude $dtlExclude $messengerExclude $walletExclude"
 
-excludeParams=" $socialExclude $dtlExclude $messengerExclude"
+excludeParams=" $commonExclude $socialExclude $dtlExclude $messengerExclude"
+
+if [[ $* == *" common"* ]];
+then
+    excludeParams=${excludeParams/$commonExclude/""}
+fi
 
 if [[ $* == *" social"* ]];
 then

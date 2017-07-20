@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="user_password_hint">WV會員密碼</string>
+   <string name="log_in">登錄</string>
+   <string name="user_id_hint">WV會員號碼</string>
+   <string name="error_fail_to_login">無法登錄</string>
+   <string name="logout_dialog_title">退出</string>
+   <string name="logout_dialog_message">您確定要退出？</string>
+   <string name="logout_dialog_positive_btn">退出</string>
+   <string name="logout_dialog_negative_btn">取消</string>
+</resources>

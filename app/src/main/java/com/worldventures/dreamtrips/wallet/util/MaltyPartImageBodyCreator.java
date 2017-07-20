@@ -4,8 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,12 +26,12 @@ public class MaltyPartImageBodyCreator {
    private static final String FILE_SCHEME = "file";
 
    private final Context context;
-   private final SessionHolder<UserSession> userSessionHolder;
+   private final WalletSocialInfoProvider socialInfoProvider;
 
    @Inject
-   public MaltyPartImageBodyCreator(Context context, SessionHolder<UserSession> userSessionHolder) {
+   public MaltyPartImageBodyCreator(Context context, WalletSocialInfoProvider socialInfoProvider) {
       this.context = context;
-      this.userSessionHolder = userSessionHolder;
+      this.socialInfoProvider = socialInfoProvider;
    }
 
    private PartBody toPartBody(Bitmap source) throws IOException {
@@ -69,6 +68,6 @@ public class MaltyPartImageBodyCreator {
    }
 
    private String createFakeFileName() {
-      return userSessionHolder.get().get().getUsername() + "_social_avatar";
+      return socialInfoProvider.username() + "_social_avatar";
    }
 }

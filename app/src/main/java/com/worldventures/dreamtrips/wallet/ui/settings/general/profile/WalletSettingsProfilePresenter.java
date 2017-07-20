@@ -5,10 +5,8 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
@@ -16,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAc
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
@@ -54,7 +53,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BackStackDelegate backStackDelegate;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
    @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private final WalletProfileDelegate delegate;
@@ -184,7 +183,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    @SuppressWarnings("ConstantConditions")
    void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()));
    }
 
    @SuppressWarnings("ConstantConditions")

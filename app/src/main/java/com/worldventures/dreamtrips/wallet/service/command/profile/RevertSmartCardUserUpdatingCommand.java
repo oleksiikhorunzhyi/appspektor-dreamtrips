@@ -2,11 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 
 import android.support.v4.util.Pair;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 
@@ -28,7 +27,7 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    @Inject UpdateDataHolder updateDataHolder;
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -76,9 +75,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
             .middleName(user.middleName())
             .lastName(user.lastName())
             .isUserAssigned(true)
-            .memberId(userSessionHolder.get().get().getUser().getId())
+            .memberId(socialInfoProvider.userId())
             .barcodeId(Long.parseLong(smartCardId))
-            .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
+            .memberStatus(socialInfoProvider.memberStatus())
             .build();
    }
 }

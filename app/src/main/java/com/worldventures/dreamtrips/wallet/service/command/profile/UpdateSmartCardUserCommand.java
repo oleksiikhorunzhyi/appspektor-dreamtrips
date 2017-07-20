@@ -3,18 +3,17 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
@@ -44,7 +43,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject WalletNetworkService networkService;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
    @Inject UpdateProfileManager updateProfileManager;
    @Inject MapperyContext mapperyContext;
    @Inject CachedPhotoUtil cachedPhotoUtil;
@@ -117,9 +116,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
                      .lastName(changedFields.lastName())
                      .phoneNum(phone != null ? phone.fullPhoneNumber() : null)
                      .isUserAssigned(true)
-                     .memberId(userSessionHolder.get().get().getUser().getId())
+                     .memberId(socialInfoProvider.userId())
                      .barcodeId(Long.parseLong(scId))
-                     .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
+                     .memberStatus(socialInfoProvider.memberStatus())
                      .build()))
                .map(action -> userData);
       } else {

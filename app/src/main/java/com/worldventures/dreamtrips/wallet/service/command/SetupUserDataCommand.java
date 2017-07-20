@@ -2,16 +2,14 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import android.support.annotation.Nullable;
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserPhotoCommand;
-import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
@@ -36,7 +34,7 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
    @Inject Janet janetGeneric;
    @Inject @Named(JANET_WALLET) Janet janetWallet;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
    @Inject MapperyContext mappery;
 
@@ -78,8 +76,8 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
                   .lastName(userData.lastName())
                   .middleName(userData.middleName())
                   .phoneNum(fetchPhone(userData))
-                  .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
-                  .memberId(userSessionHolder.get().get().getUser().getId())
+                  .memberStatus(socialInfoProvider.memberStatus())
+                  .memberId(socialInfoProvider.userId())
                   .barcodeId(Long.valueOf(command.getResult().smartCardId()))
                   .build());
    }

@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
@@ -62,12 +61,12 @@ public class WalletProfileDelegate {
       return model;
    }
 
-   public ProfileViewModel toViewModel(User user) {
+   public ProfileViewModel toViewModel(String firstName, String lastName, String photoUri) {
       final ProfileViewModel model = new ProfileViewModel();
-      model.setFirstName(user.getFirstName());
-      model.setLastName(user.getLastName());
-      if (user.getAvatar() != null) {
-         model.setChosenPhotoUri(user.getAvatar().getThumb());
+      model.setFirstName(firstName);
+      model.setLastName(lastName);
+      if (photoUri != null) {
+         model.setChosenPhotoUri(photoUri);
       }
       return model;
    }
@@ -82,10 +81,7 @@ public class WalletProfileDelegate {
             .build();
    }
 
-   public String provideInitialPhotoUrl(User user) {
-      final User.Avatar userPhoto = user.getAvatar();
-      return (userPhoto != null && !WalletProfileUtils.isPhotoEmpty(userPhoto.getThumb()))
-            ? userPhoto.getThumb()
-            : null;
+   public String provideInitialPhotoUrl(String userPhotoUrl) {
+      return (userPhotoUrl != null && !WalletProfileUtils.isPhotoEmpty(userPhotoUrl)) ? userPhotoUrl : null;
    }
 }

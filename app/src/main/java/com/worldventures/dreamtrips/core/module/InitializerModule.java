@@ -19,10 +19,11 @@ import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.Initializable;
-import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.wallet.di.WalletInitializerModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,7 +43,8 @@ import dagger.Provides;
             FacebookInitializer.class,
       },
       includes = {
-            MessengerInitializerModule.class
+            MessengerInitializerModule.class,
+            WalletInitializerModule.class,
       },
       library = true, complete = false)
 public class InitializerModule {

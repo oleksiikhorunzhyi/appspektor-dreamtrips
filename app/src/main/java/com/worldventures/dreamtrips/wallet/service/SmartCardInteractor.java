@@ -72,10 +72,10 @@ public final class SmartCardInteractor {
    private final ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe;
    private final ActionPipe<SmartCardUserCommand> smartCardUserPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
-   private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
+   private final ActionPipe<RestartSmartCardCommand> restartSmartCardPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
    private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
-   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataOnBackedCommandActionPipe;
+   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataPipe;
 
    private final ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe;
    private final ActionPipe<OfflineModeStatusCommand> offlineModeStatusPipe;
@@ -141,8 +141,8 @@ public final class SmartCardInteractor {
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
-      restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
-      wipeSmartCardDataOnBackedCommandActionPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
+      restartSmartCardPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
+      wipeSmartCardDataPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
             .io());
 
       switchOfflineModePipe = sessionActionPipeCreator.createPipe(SwitchOfflineModeCommand.class, Schedulers.io());
@@ -271,12 +271,12 @@ public final class SmartCardInteractor {
       return disconnectPipe;
    }
 
-   public ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe() {
-      return restartSmartCardCommandActionPipe;
+   public ActionPipe<RestartSmartCardCommand> restartSmartCardPipe() {
+      return restartSmartCardPipe;
    }
 
-   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataCommandActionPipe() {
-      return wipeSmartCardDataOnBackedCommandActionPipe;
+   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataPipe() {
+      return wipeSmartCardDataPipe;
    }
 
    public ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe() {

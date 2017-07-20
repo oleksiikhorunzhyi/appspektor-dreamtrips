@@ -4,13 +4,13 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
-import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
+import com.worldventures.dreamtrips.wallet.service.beacon.BeaconClient;
+import com.worldventures.dreamtrips.wallet.service.beacon.WalletBeaconClient;
 import com.worldventures.dreamtrips.wallet.service.location.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
@@ -59,17 +59,21 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   LostCardManager locationManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         LocationSyncManager jobScheduler, WalletNetworkService networkService) {
-      return new LostCardManager(smartCardInteractor, locationInteractor, jobScheduler, networkService);
+   BeaconClient walletBeaconClient(@ForApplication Context appContext) {
+      return new WalletBeaconClient(appContext);
    }
 
    @Singleton
    @Provides
-   LocationTrackingManager trackingManager(SmartCardLocationInteractor locationInteractor,
-         LostCardManager lostCardManager, SmartCardInteractor smartCardInteractor,
-         LoginInteractor loginInteractor, LogoutInteractor logoutInteractor, WalletSocialInfoProvider walletSocialInfoProvider) {
-      return new LocationTrackingManager(locationInteractor, lostCardManager,
-            smartCardInteractor, loginInteractor, logoutInteractor, walletSocialInfoProvider);
+   LostCardManager locationManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
+         LocationSyncManager jobScheduler, WalletNetworkService networkService, BeaconClient beaconClient) {
+      return new LostCardManager(smartCardInteractor, locationInteractor, jobScheduler, networkService, beaconClient);
+   }
+
+   @Singleton
+   @Provides
+   LocationTrackingManager trackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
+         LogoutInteractor logoutInteractor, WalletDetectLocationService locationService, LostCardManager lostCardManager) {
+      return new LocationTrackingManager(smartCardInteractor, locationInteractor, logoutInteractor, locationService, lostCardManager);
    }
 }

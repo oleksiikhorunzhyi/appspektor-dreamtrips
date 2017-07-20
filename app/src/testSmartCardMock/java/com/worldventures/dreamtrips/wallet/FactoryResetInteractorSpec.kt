@@ -134,7 +134,7 @@ class FactoryResetInteractorSpec : BaseSpec({
          it("Wipe Smart Card Data with delete payment cards") {
             val testSubscriber = TestSubscriber<ActionState<WipeSmartCardDataCommand>>()
 
-            smartCardInteractor.wipeSmartCardDataCommandActionPipe()
+            smartCardInteractor.wipeSmartCardDataPipe()
                   .createObservable(WipeSmartCardDataCommand())
                   .subscribe(testSubscriber)
 

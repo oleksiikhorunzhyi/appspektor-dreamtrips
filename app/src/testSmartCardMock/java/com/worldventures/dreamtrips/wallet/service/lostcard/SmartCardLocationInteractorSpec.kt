@@ -270,7 +270,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          val walletDetectLocationService: WalletDetectLocationService = mock()
          whenever(walletDetectLocationService.isPermissionGranted).thenReturn(true)
          whenever(walletDetectLocationService.detectLastKnownLocation()).thenReturn(Observable.just(location))
-         whenever(walletDetectLocationService.obtainAddressByGeoposition(any(), any())).thenReturn(Observable.just(address))
          return walletDetectLocationService
       }
 

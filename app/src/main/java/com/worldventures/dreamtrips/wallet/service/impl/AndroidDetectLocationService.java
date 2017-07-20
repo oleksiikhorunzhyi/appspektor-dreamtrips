@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
-import android.provider.Settings;
 import android.support.v4.content.PermissionChecker;
 
 import com.google.android.gms.common.api.Status;
@@ -59,11 +57,6 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
    @Override
    public Observable<Location> detectLastKnownLocation() {
       return locationProvider.getLastKnownLocation().switchIfEmpty(requestUpdatedLocation());
-   }
-
-   @Override
-   public Observable<Address> obtainAddressByGeoposition(double latitude, double longitude) {
-      return locationProvider.getReverseGeocodeObservable(latitude, longitude, 1).map(addresses -> addresses.get(0));
    }
 
    private Observable<Location> requestUpdatedLocation() {

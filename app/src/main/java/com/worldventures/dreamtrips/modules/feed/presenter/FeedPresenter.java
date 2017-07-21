@@ -122,9 +122,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void saveInstanceState(Bundle outState) {
       super.saveInstanceState(outState);
-      if (suggestedPhotoHelper != null) {
-         suggestedPhotoHelper.saveInstanceState(outState);
-      }
+      suggestedPhotoHelper.saveInstanceState(outState);
    }
 
    @Override

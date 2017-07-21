@@ -152,7 +152,8 @@ public class SuggestedPhotoCellPresenterHelper {
 
    void saveInstanceState(Bundle bundle) {
       Icepick.saveInstanceState(this, bundle);
-      view.saveInstanceState(bundle);
+      // can happen if it hasn't taken view yet
+      if (view != null) view.saveInstanceState(bundle);
    }
 
    private void restoreInstanceState(Bundle bundle) {

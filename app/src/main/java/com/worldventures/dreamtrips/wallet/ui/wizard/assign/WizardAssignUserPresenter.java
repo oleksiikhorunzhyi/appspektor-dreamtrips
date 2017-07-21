@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
@@ -65,7 +66,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
       return httpErrorHandlingUtil;
    }
 
-   interface Screen extends WalletScreen {
+   interface Screen extends WalletScreen, RxLifecycleView {
 
       OperationView<WizardCompleteCommand> provideOperationView();
    }

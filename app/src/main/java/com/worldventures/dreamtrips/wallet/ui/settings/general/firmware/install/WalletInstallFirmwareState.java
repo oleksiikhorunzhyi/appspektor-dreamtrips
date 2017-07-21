@@ -4,9 +4,9 @@ import android.os.Parcel;
 
 import com.worldventures.dreamtrips.wallet.ui.common.viewstate.WalletViewState;
 
-class WalletInstallFirmwareState extends WalletViewState<WalletInstallFirmwarePresenter.Screen> {
+public class WalletInstallFirmwareState extends WalletViewState<WalletInstallFirmwareScreen> {
 
-   boolean started;
+   public boolean started;
 
    public WalletInstallFirmwareState() {
    }

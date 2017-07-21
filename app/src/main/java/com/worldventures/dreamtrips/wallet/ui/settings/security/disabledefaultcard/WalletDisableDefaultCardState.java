@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.worldventures.dreamtrips.wallet.ui.common.viewstate.WalletViewState;
 
-public class WalletDisableDefaultCardState extends WalletViewState<WalletDisableDefaultCardPresenter.Screen> {
+public class WalletDisableDefaultCardState extends WalletViewState<WalletDisableDefaultCardScreen> {
    private boolean delayWasChanged = false;
    private long newDisableDelay;
 

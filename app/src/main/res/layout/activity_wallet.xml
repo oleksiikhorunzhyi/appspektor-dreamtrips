@@ -7,13 +7,6 @@
       android:layout_height="match_parent"
       >
 
-   <com.worldventures.dreamtrips.core.flow.container.FramePathContainerView
-         android:id="@+id/root_container"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:clickable="false"
-         />
-
    <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
          android:id="@+id/drawer_layout"
          android:layout_width="@dimen/navigation_drawer_width"

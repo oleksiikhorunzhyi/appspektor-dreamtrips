@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion;
 
-class FirmwareChecksState {
-   final boolean bluetoothEnable;
-   final boolean cardConnected;
-   final boolean charged;
-   final boolean cardInCharger;
-   final boolean cardInChargerRequired;
+public class FirmwareChecksState {
+   public final boolean bluetoothEnable;
+   public final boolean cardConnected;
+   public final boolean charged;
+   public final boolean cardInCharger;
+   public final boolean cardInChargerRequired;
 
-   FirmwareChecksState(boolean bluetoothEnable, boolean cardConnected, boolean charged, boolean cardInChargerRequired, boolean cardInCharger) {
+   public FirmwareChecksState(boolean bluetoothEnable, boolean cardConnected, boolean charged, boolean cardInChargerRequired, boolean cardInCharger) {
       this.bluetoothEnable = bluetoothEnable;
       this.cardConnected = cardConnected;
       this.charged = charged;

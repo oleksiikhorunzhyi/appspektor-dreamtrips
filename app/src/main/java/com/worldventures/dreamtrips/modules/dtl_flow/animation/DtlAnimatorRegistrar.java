@@ -5,9 +5,6 @@ import android.util.Pair;
 import com.worldventures.dreamtrips.core.flow.animation.BaseAnimatorRegistrar;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
-import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScannerEnterAnimFactory;
@@ -28,8 +25,7 @@ public class DtlAnimatorRegistrar extends BaseAnimatorRegistrar {
       //temporary workaround to do custom anim for Wallet stream needs
       animators.put(new Pair<>(WizardSplashPath.class, WizardTermsPath.class), new FadeAnimatorFactory());
       animators.put(new Pair<>(WizardTermsPath.class, WizardSplashPath.class), new FadeAnimatorFactory());
-      animators.put(new Pair<>(WalletStartPath.class, CardListPath.class), null);
-      animators.put(new Pair<>(CardListPath.class, CardDetailsPath.class), null);
+//      animators.put(new Pair<>(CardListPath.class, CardDetailsPath.class), null);
 
       animators.put(new Pair<>(WizardSplashPath.class, WizardScanBarcodePath.class), new WizardScannerEnterAnimFactory());
       animators.put(new Pair<>(WizardScanBarcodePath.class, WizardSplashPath.class), new WizardScannerEnterAnimFactory());

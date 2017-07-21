@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+//import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 
 import javax.inject.Inject;
 
@@ -35,7 +35,7 @@ public class PaymentSyncFinishPresenter extends WalletPresenter<PaymentSyncFinis
       finishProvisioning();
       sendAnalytic(new NewCardSetupCompleteAction());
 
-      navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+//      navigator.single(new CardListPath(), Flow.Direction.REPLACE);
    }
 
    private void activateSmartCard() {

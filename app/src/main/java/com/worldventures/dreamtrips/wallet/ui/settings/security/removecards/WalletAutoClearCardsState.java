@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.worldventures.dreamtrips.wallet.ui.common.viewstate.WalletViewState;
 
-public class WalletAutoClearCardsState extends WalletViewState<WalletAutoClearCardsPresenter.Screen> {
+public class WalletAutoClearCardsState extends WalletViewState<WalletAutoClearCardsScreen> {
 
    private boolean autoClearWasChanged = false;
    private long newAutoClearDelay;

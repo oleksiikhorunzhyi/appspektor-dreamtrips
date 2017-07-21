@@ -64,7 +64,7 @@ public class BankCardWidget extends FrameLayout {
       } finally {
          a.recycle();
       }
-      walletRecordUtil = new WalletRecordUtil(context);
+      walletRecordUtil = new WalletRecordUtil();
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
    }
@@ -137,7 +137,7 @@ public class BankCardWidget extends FrameLayout {
    }
 
    public void setRecordType(RecordType recordType) {
-      tvCardType.setText(walletRecordUtil.obtainRecordType(recordType));
+      tvCardType.setText(walletRecordUtil.obtainRecordType(getContext(), recordType));
    }
 
    public enum BankCardResource {

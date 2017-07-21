@@ -77,7 +77,7 @@ public class WalletProfileDelegate {
    }
 
    public void observePickerAndCropper(WalletProfilePhotoView view) {
-      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
+//      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
    }
 
    @Nullable

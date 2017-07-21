@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.display;
 
-interface DisplayOptionsClickListener {
+public interface DisplayOptionsClickListener {
 
    void onAddInfoClicked();
 }

@@ -2,16 +2,16 @@ package com.worldventures.dreamtrips.wallet.ui.settings.common.model;
 
 public class SettingsRadioModel {
 
-   private final String text;
+   private final int textResId;
    private final long value;
 
-   public SettingsRadioModel(String text, long value) {
-      this.text = text;
+   public SettingsRadioModel(int textResId, long value) {
+      this.textResId = textResId;
       this.value = value;
    }
 
-   public String getText() {
-      return text;
+   public int getTextResId() {
+      return textResId;
    }
 
    public long getValue() {

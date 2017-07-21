@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -151,4 +151,4 @@
       <include layout="@layout/empty_location_lost_card" />
    </FrameLayout>
 
-</com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen>
+</LinearLayout>

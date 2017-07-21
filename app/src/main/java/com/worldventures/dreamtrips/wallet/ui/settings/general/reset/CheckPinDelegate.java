@@ -5,7 +5,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
@@ -15,12 +15,12 @@ public class CheckPinDelegate {
    private final SmartCardInteractor smartCardInteractor;
    private final FactoryResetInteractor factoryResetInteractor;
    private final AnalyticsInteractor analyticsInteractor;
-   private final Navigator navigator;
+   private final NavigatorConductor navigator;
    private final FactoryResetAction factoryResetAction;
    private FactoryResetDelegate factoryResetDelegate;
 
    public CheckPinDelegate(SmartCardInteractor smartCardInteractor, FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action) {
+         AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator, FactoryResetAction action) {
       this.smartCardInteractor = smartCardInteractor;
       this.factoryResetInteractor = factoryResetInteractor;
       this.analyticsInteractor = analyticsInteractor;

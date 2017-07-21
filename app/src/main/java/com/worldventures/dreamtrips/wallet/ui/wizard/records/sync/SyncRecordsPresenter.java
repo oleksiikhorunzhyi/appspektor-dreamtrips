@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+//import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
 import javax.inject.Inject;
@@ -44,7 +44,7 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
    }
 
    void navigateToWallet() {
-      navigator.single(new CardListPath());
+//      navigator.single(new CardListPath());
    }
 
    private void trackScreen() {

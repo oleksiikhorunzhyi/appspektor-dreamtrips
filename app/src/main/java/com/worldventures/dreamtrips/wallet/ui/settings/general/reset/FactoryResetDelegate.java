@@ -10,12 +10,8 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAss
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 
-import flow.path.Path;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -23,10 +19,10 @@ public abstract class FactoryResetDelegate {
    private final FactoryResetInteractor factoryResetInteractor;
    private final AnalyticsInteractor analyticsInteractor;
    private final PinMode pinMode;
-   protected final Navigator navigator;
+   protected final NavigatorConductor navigator;
 
    private FactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
+         AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator, PinMode pinMode) {
       this.factoryResetInteractor = factoryResetInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.navigator = navigator;
@@ -34,12 +30,12 @@ public abstract class FactoryResetDelegate {
    }
 
    public static FactoryResetDelegate create(FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action) {
+         AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator, FactoryResetAction action) {
       return FactoryResetDelegate.create(factoryResetInteractor, analyticsInteractor, navigator, action, PinMode.ENABLED);
    }
 
    public static FactoryResetDelegate create(FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action, PinMode pinMode) {
+         AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator, FactoryResetAction action, PinMode pinMode) {
       if (action == FactoryResetAction.GENERAL) {
          return new GeneralFactoryResetDelegate(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
       } else {
@@ -64,13 +60,9 @@ public abstract class FactoryResetDelegate {
       factoryReset();
    }
 
-   protected void handleSuccessResult() {
-      navigator.single(provideSuccessStep());
-   }
-
    public void setupDelegate(FactoryResetView view) {
       if (pinMode == PinMode.ENABLED) {
-         navigator.go(provideStartStep());
+         performStart();
       } else {
          bindView(view);
       }
@@ -96,15 +88,20 @@ public abstract class FactoryResetDelegate {
 
    protected abstract ResetOptions provideResetOptions();
 
-   protected abstract Path provideStartStep();
+   protected abstract void performStart();
 
-   protected abstract Path provideSuccessStep();
+   protected abstract void handleSuccessResult();
 
    private static class GeneralFactoryResetDelegate extends FactoryResetDelegate {
 
       private GeneralFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
-            AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
+            AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator, PinMode pinMode) {
          super(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
+      }
+
+      @Override
+      protected void handleSuccessResult() {
+         navigator.goFactoryResetSuccess();
       }
 
       @Override
@@ -130,20 +127,15 @@ public abstract class FactoryResetDelegate {
       }
 
       @Override
-      protected Path provideStartStep() {
-         return new FactoryResetPath();
-      }
-
-      @Override
-      protected Path provideSuccessStep() {
-         return new FactoryResetSuccessPath();
+      protected void performStart() {
+         navigator.goFactoryReset();
       }
    }
 
    private static class NewCardFactoryResetDelegate extends FactoryResetDelegate {
 
       private NewCardFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
-            AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
+            AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator, PinMode pinMode) {
          super(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
       }
 
@@ -173,19 +165,14 @@ public abstract class FactoryResetDelegate {
       }
 
       @Override
-      protected Path provideStartStep() {
-         return new EnterPinUnassignPath();
-      }
-
-      @Override
-      protected Path provideSuccessStep() {
-         return new UnassignSuccessPath();
+      protected void performStart() {
+         navigator.goEnterPinUnassign();
       }
 
       @Override
       protected void handleSuccessResult() {
          trackResetSuccess();
-         super.handleSuccessResult();
+         navigator.goUnassignSuccess();
       }
    }
 }

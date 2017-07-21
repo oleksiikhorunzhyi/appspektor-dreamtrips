@@ -1,23 +1,28 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.module.Injector;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import butterknife.ButterKnife;
+import dagger.ObjectGraph;
 
 public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenterI> extends PresentableController<V, P> implements WalletScreen {
-
-   private Injector injector;
+   private ObjectGraph objectGraph;
    private WalletScreenDelegate walletScreenDelegate;
 
    public WalletBaseController() {
+   }
+
+   public WalletBaseController(Bundle args) {
+      super(args);
    }
 
    @Override
@@ -28,9 +33,10 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
    }
 
    protected void onFinishInflate(View view) {
-      ButterKnife.inject(view);
-      this.injector = (Injector) getApplicationContext();
-      injector.inject(this);
+      ButterKnife.inject(this, view);
+      //noinspection all
+      this.objectGraph = (ObjectGraph) view.getContext().getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
+      objectGraph.inject(this);
       this.walletScreenDelegate = WalletScreenDelegate.create(view, supportConnectionStatusLabel(), supportHttpConnectionStatusLabel());
    }
 
@@ -42,10 +48,6 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
    @Override
    public void showHttpConnectionStatus(boolean connected) {
       walletScreenDelegate.showHttpConnectionStatus(connected);
-   }
-
-   public Injector getInjector() {
-      return injector;
    }
 
    protected String getString(@StringRes int stringId) {

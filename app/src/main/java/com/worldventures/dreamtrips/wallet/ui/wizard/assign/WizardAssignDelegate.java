@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+//import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPath;
 
@@ -79,7 +79,7 @@ abstract class WizardAssignDelegate {
       @Override
       protected void toNextScreen(RxLifecycleView view) {
          activateSmartCard();
-         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+//         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       }
    }
 
@@ -117,7 +117,7 @@ abstract class WizardAssignDelegate {
          restoreOfflineModeDefaultState();
          activateSmartCard();
 
-         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+//         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       }
 
       private void restoreOfflineModeDefaultState() {

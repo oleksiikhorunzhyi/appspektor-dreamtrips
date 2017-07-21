@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,14 @@ import com.bluelinelabs.conductor.rxlifecycle.RxController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 public abstract class PresentableController<V extends WalletScreen, P extends WalletPresenterI> extends RxController {
+
+   public PresentableController() {
+      super();
+   }
+
+   public PresentableController(Bundle args) {
+      super(args);
+   }
 
    @NonNull
    @Override
@@ -33,7 +42,7 @@ public abstract class PresentableController<V extends WalletScreen, P extends Wa
 
 
    public Context getContext() {
-      return getView().getContext();
+      return getActivity();
    }
 
    public abstract View createView(LayoutInflater layoutInflater, ViewGroup viewGroup);

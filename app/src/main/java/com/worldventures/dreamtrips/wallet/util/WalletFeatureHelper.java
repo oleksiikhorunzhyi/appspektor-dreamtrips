@@ -4,25 +4,25 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 
 import rx.Observable;
 import rx.functions.Action0;
 
 public interface WalletFeatureHelper {
 
-   void prepareSettingsScreen(WalletSettingsPresenter.Screen view);
+   void prepareSettingsScreen(WalletSettingsScreen view);
    //SettingsGeneral
-   void prepareSettingsGeneralScreen(WalletGeneralSettingsPresenter.Screen view);
+   void prepareSettingsGeneralScreen(WalletGeneralSettingsScreen view);
    void openEditProfile(Context context, Action0 action);
    //SettingsSecurity
-   void prepareSettingsSecurityScreen(WalletSecuritySettingsPresenter.Screen view);
+   void prepareSettingsSecurityScreen(WalletSecuritySettingsScreen view);
    void openFindCard(Context context, Action0 action);
    //Dashboard
-   void prepareDashboardScreen(CardListPresenter.Screen view);
+   void prepareDashboardScreen(CardListScreen view);
    boolean addingCardIsNotSupported();
    boolean offlineModeState(boolean isOfflineMode);
    Observable<Void> onUserAssigned(SmartCardUser user);

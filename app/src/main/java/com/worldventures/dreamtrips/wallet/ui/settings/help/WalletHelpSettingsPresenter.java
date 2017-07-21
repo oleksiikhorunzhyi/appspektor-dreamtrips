@@ -1,62 +1,19 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help;
 
-import android.content.Context;
-import android.os.Parcelable;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPath;
+public interface WalletHelpSettingsPresenter extends WalletPresenterI<WalletHelpSettingsScreen> {
 
-import javax.inject.Inject;
+   void goBack();
 
-public class WalletHelpSettingsPresenter extends WalletPresenter<WalletHelpSettingsPresenter.Screen, Parcelable> {
+   void openDocumentsScreen();
 
-   @Inject Navigator navigator;
+   void openPaymentFeedbackScreen();
+   void openVideoScreen();
 
-   WalletHelpSettingsPresenter(Context context, Injector injector) {
-      super(context, injector);
-   }
+   void handleVariantFeedback();
 
-   public void goBack() {
-      navigator.goBack();
-   }
+   void openCustomerSupportScreen();
 
-   public void openPaymentFeedbackScreen() {
-      getView().hideBottomFeedbackMenu();
-      navigator.go(new PaymentFeedbackPath());
-   }
-
-   void openVideoScreen() {
-      navigator.go(new WalletHelpVideoPath());
-   }
-
-   void openCustomerSupportScreen() {
-      navigator.go(new WalletCustomerSupportSettingsPath());
-   }
-
-   void openDocumentsScreen() {
-      navigator.go(new WalletHelpDocumentsPath());
-   }
-
-   void handleVariantFeedback() {
-      getView().showBottomFeedbackMenu();
-   }
-
-   public void openOtherFeedbackScreen() {
-      getView().hideBottomFeedbackMenu();
-      navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.SmartCardFeedback));
-   }
-
-   public interface Screen extends WalletScreen {
-
-      void showBottomFeedbackMenu();
-
-      void hideBottomFeedbackMenu();
-   }
+   void openOtherFeedbackScreen();
 }

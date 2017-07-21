@@ -6,11 +6,16 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.PinOptionalCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import javax.inject.Inject;
+
+import io.techery.janet.ActionState;
+import rx.Observable;
 
 
 public class PinProposalPresenter extends WalletPresenter<PinProposalPresenter.Screen, Parcelable> {
@@ -56,7 +61,7 @@ public class PinProposalPresenter extends WalletPresenter<PinProposalPresenter.S
       pinProposalDelegate.navigateSkipPin();
    }
 
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen, RxLifecycleView {
 
       void setLabel();
 

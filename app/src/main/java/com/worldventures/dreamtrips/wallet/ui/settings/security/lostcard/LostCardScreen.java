@@ -25,7 +25,6 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -75,14 +74,10 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       super(context, attrs);
    }
 
-
    @NonNull
    @Override
    public LostCardPresenter createPresenter() {
-      final Context context = getContext();
-      //noinspection all
-      final LocationSettingsService locationSettingsService = (LocationSettingsService) context.getSystemService(LocationSettingsService.SERVICE_NAME);
-      return new LostCardPresenter(context, locationSettingsService, getInjector());
+      return new LostCardPresenter(getContext(), getInjector());
    }
 
    @Override

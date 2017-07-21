@@ -6,18 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsServiceImpl;
-import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
 
@@ -32,29 +29,21 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
 
    private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
-   private LocationSettingsServiceImpl locationSettingsService;
+   private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
 
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject WalletCropImageService cropImageDelegate;
    @Inject MediaPickerFacebookService walletPickerFacebookService;
 
-   private GoogleApiClient googleApiClient;
-
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      googleApiClient = new GoogleApiClient.Builder(this)
-            .addApi(LocationServices.API)
-            .build();
-      locationSettingsService = new LocationSettingsServiceImpl(this, googleApiClient);
       navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
-      googleApiClient.connect();
    }
 
    @Override
    public void onDestroy() {
       cropImageDelegate.destroy();
-      googleApiClient.disconnect();
       super.onDestroy();
    }
 
@@ -81,7 +70,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
    public Object getSystemService(@NonNull String name) {
       if (WalletCropImageService.SERVICE_NAME.equals(name)) {
          return cropImageDelegate;
-      } else if (LocationSettingsService.SERVICE_NAME.equals(name)) {
+      } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
          return locationSettingsService;
       }
       return super.getSystemService(name);

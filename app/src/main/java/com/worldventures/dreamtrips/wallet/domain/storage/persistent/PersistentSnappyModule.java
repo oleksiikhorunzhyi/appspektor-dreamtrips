@@ -3,10 +3,11 @@ package com.worldventures.dreamtrips.wallet.domain.storage.persistent;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
+import com.worldventures.dreamtrips.wallet.service.StorageNameProvider;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
+import com.worldventures.dreamtrips.wallet.service.impl.StorageNameProviderImpl;
 
 import java.util.concurrent.ExecutorService;
 
@@ -25,10 +26,16 @@ public class PersistentSnappyModule {
 
    @Provides
    @Singleton
+   StorageNameProvider persistentInfoProvider(WalletSocialInfoProvider socialInfoProvider) {
+      return new StorageNameProviderImpl(socialInfoProvider);
+   }
+
+   @Provides
+   @Singleton
    PersistentSnappyRepositoryImpl persistentSnappyRepositoryImpl(@ForApplication Context appContext, SnappyCrypter snappyCrypter,
          @Named(SNAPPY_STORAGE_EXECUTOR_SERVICE) ExecutorService executorService,
-         SessionHolder<UserSession> sessionHolder) {
-      return new PersistentSnappyRepositoryImpl(appContext, snappyCrypter, executorService, sessionHolder);
+         StorageNameProvider persistentInfoProvider) {
+      return new PersistentSnappyRepositoryImpl(appContext, snappyCrypter, executorService, persistentInfoProvider);
    }
 
    @Provides

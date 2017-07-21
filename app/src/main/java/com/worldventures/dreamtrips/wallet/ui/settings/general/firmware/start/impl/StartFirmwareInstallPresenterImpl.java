@@ -69,7 +69,4 @@ public class StartFirmwareInstallPresenterImpl extends WalletPresenterImpl<Start
    public void finish() {
       getNavigator().finish();
    }
-
-   public interface Screen extends WalletScreen {
-   }
 }

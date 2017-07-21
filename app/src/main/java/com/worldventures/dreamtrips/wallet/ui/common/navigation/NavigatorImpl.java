@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavail
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.impl.WalletFirmwareChecksScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.impl.WalletPuckConnectionScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.impl.ForcePairKeyScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.impl.ForceUpdatePowerOnScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.impl.StartFirmwareInstallScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.impl.WalletUpToDateFirmwareScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.impl.WalletGeneralSettingsScreenImpl;
@@ -60,7 +61,27 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecur
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.impl.WalletAutoClearCardsScreenImpl;
-import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.impl.WizardScanBarcodeScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl.PairKeyScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.impl.WalletPinIsSetScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.impl.EnterPinScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.impl.PinProposalScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.impl.PinSetSuccessScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.impl.WizardPowerOnScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl.WizardEditProfileScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.impl.WizardUploadProfileScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.impl.PaymentSyncFinishScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.impl.SyncRecordsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl.WizardSplashScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.impl.WizardTermsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
 
 import dagger.Lazy;
 import timber.log.Timber;
@@ -101,7 +122,8 @@ public class NavigatorImpl implements NavigatorConductor {
 
    @Override
    public void goCardList() {
-      routerLazy.get().replaceTopController(constructTransaction(new CardListScreenImpl()));
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().pushController(constructTransaction(new CardListScreenImpl()));
    }
 
    @Override
@@ -121,8 +143,101 @@ public class NavigatorImpl implements NavigatorConductor {
 
    @Override
    public void goWizardWelcome(ProvisioningMode provisioningMode) {
-      //TODO : add WizardWelcome  controller
-      routerLazy.get().replaceTopController(constructTransaction(new WalletStartScreenImpl()));
+      routerLazy.get().pushController(constructTransaction(WizardWelcomeScreenImpl.create(provisioningMode)));
+   }
+
+   @Override
+   public void goWizardPowerOn() {
+      routerLazy.get().pushController(constructTransaction(new WizardPowerOnScreenImpl()));
+   }
+
+   @Override
+   public void goWizardChecks() {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().pushController(constructInvisibleTransaction(new WizardCheckingScreenImpl()));
+   }
+
+   @Override
+   public void goWizardTerms() {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().pushController(constructInvisibleTransaction(new WizardTermsScreenImpl()));
+   }
+
+   @Override
+   public void goWizardSplash() {
+      routerLazy.get().replaceTopController(constructTransaction(new WizardSplashScreenImpl()));
+   }
+
+   @Override
+   public void goWizardScanBarcode() {
+      routerLazy.get().pushController(constructTransaction(new WizardScanBarcodeScreenImpl()));
+   }
+
+   @Override
+   public void goWizardManualInput() {
+      routerLazy.get().pushController(constructTransaction(new WizardManualInputScreenImpl()));
+   }
+
+   @Override
+   public void goExistingDeviceDetected(String smartCardId) {
+      routerLazy.get().pushController(constructTransaction(ExistingDeviceDetectScreenImpl.create(smartCardId)));
+   }
+
+   @Override
+   public void goPairKey(ProvisioningMode provisioningMode, String smartCardId) {
+      routerLazy.get().pushController(constructTransaction(PairKeyScreenImpl.create(provisioningMode, smartCardId)));
+   }
+
+   @Override
+   public void goPairKeyExistingDevice(ProvisioningMode provisioningMode, String smartCardId) {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      goPairKey(provisioningMode, smartCardId);
+   }
+
+   @Override
+   public void goSyncRecordsPath(SyncAction syncAction) {
+      routerLazy.get().replaceTopController(constructTransaction(SyncRecordsScreenImpl.create(syncAction)));
+   }
+
+   @Override
+   public void goPinProposalUserSetup(PinProposalAction pinProposalAction) {
+      routerLazy.get().replaceTopController(constructTransaction(PinProposalScreenImpl.create(pinProposalAction)));
+   }
+
+   @Override
+   public void goWizardUploadProfile() {
+      routerLazy.get().replaceTopController(constructTransaction(new WizardUploadProfileScreenImpl()));
+   }
+
+   @Override
+   public void goWizardEditProfile() {
+      routerLazy.get().replaceTopController(constructTransaction(new WizardEditProfileScreenImpl()));
+   }
+
+   @Override
+   public void goWizardAssignUser(ProvisioningMode provisioningMode) {
+      routerLazy.get().replaceTopController(constructTransaction(WizardAssignUserScreenImpl.create(provisioningMode)));
+   }
+
+   @Override
+   public void goEnterPinProposal(Action pinAction) {
+      routerLazy.get().replaceTopController(constructTransaction(EnterPinScreenImpl.create(pinAction)));
+   }
+
+   @Override
+   public void goPinSetSuccess(Action pinSetAction) {
+      routerLazy.get().replaceTopController(constructTransaction(PinSetSuccessScreenImpl.create(pinSetAction)));
+   }
+
+   @Override
+   public void goWalletPinIsSet() {
+      routerLazy.get().replaceTopController(constructTransaction(new WalletPinIsSetScreenImpl()));
+   }
+
+   @Override
+   public void goPaymentSyncFinished() {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().pushController(constructInvisibleTransaction(new PaymentSyncFinishScreenImpl()));
    }
 
    @Override
@@ -249,9 +364,8 @@ public class NavigatorImpl implements NavigatorConductor {
    }
 
    @Override
-   public void goEnterPin() {
-      //TODO : add EnterPin controller
-      routerLazy.get().pushController(constructTransaction(new WalletGeneralSettingsScreenImpl()));
+   public void goEnterPinSettings(Action action) {
+      routerLazy.get().pushController(constructTransaction(EnterPinScreenImpl.create(action)));
    }
 
    @Override
@@ -276,8 +390,7 @@ public class NavigatorImpl implements NavigatorConductor {
 
    @Override
    public void goForceUpdatePowerOn() {
-      //TODO : add ForceUpdatePowerOn controller
-      routerLazy.get().replaceTopController(constructTransaction(new WalletGeneralSettingsScreenImpl()));
+      routerLazy.get().replaceTopController(constructTransaction(new ForceUpdatePowerOnScreenImpl()));
    }
 
    @Override
@@ -287,8 +400,7 @@ public class NavigatorImpl implements NavigatorConductor {
 
    @Override
    public void goPinProposalRecords(String cardNickname) {
-      //TODO : add PinProposal controller, pass PinProposalAction.RECORDS as arg
-      routerLazy.get().replaceTopController(constructTransaction(new WalletStartScreenImpl()));
+      routerLazy.get().replaceTopController(constructTransaction(PinProposalScreenImpl.create(PinProposalAction.RECORDS, cardNickname)));
    }
 
    @Override

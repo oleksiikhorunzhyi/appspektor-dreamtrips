@@ -3,13 +3,12 @@ package com.worldventures.dreamtrips.wallet.util;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 
 import rx.Observable;
 import rx.functions.Action0;
@@ -67,12 +66,8 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast) {
-      if (withoutLast) {
-         navigator.withoutLast(new PinProposalPath(PinProposalAction.WIZARD));
-      } else {
-         navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
-      }
+   public void navigateFromSetupUserScreen(NavigatorConductor navigator) {
+      navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
    }
 
    @Override

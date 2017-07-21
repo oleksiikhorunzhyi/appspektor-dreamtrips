@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -105,4 +105,4 @@
          android:layout_marginStart="@dimen/spacing_large"
          android:text="@string/wallet_existing_device_detect_unpair_button"
          />
-</com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen>
+</LinearLayout>

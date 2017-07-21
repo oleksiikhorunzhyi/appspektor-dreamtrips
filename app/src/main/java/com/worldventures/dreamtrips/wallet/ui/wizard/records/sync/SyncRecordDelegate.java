@@ -6,33 +6,35 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPath;
 
-import flow.Flow;
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-abstract class SyncRecordDelegate {
+public abstract class SyncRecordDelegate {
 
    protected final SmartCardInteractor smartCardInteractor;
    protected final RecordInteractor recordInteractor;
-   protected final Navigator navigator;
+   protected final NavigatorConductor navigator;
 
-   private SyncRecordDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
+   private SyncRecordDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
       this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.navigator = navigator;
+   }
+
+   protected final void performComplete() {
+      navigator.goPaymentSyncFinished();
    }
 
    public abstract void retry();
 
    public abstract void bindView(SyncView view);
 
-   public static SyncRecordDelegate create(SyncAction action, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
+   public static SyncRecordDelegate create(SyncAction action, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
       if (action == SyncAction.TO_DEVICE) {
          return new SyncToDeviceDelegate(smartCardInteractor, recordInteractor, navigator);
       } else {
@@ -42,7 +44,7 @@ abstract class SyncRecordDelegate {
 
    private static class SyncToDeviceDelegate extends SyncRecordDelegate {
 
-      private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
+      private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
          super(smartCardInteractor, recordInteractor, navigator);
       }
 
@@ -69,14 +71,14 @@ abstract class SyncRecordDelegate {
                .compose(RxLifecycle.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<SyncRecordOnNewDeviceCommand>provideOperationView())
-                     .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
+                     .onSuccess(command -> performComplete())
                      .create());
       }
    }
 
    private static class SyncToCardDelegate extends SyncRecordDelegate {
 
-      private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
+      private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
          super(smartCardInteractor, recordInteractor, navigator);
       }
 
@@ -116,7 +118,7 @@ abstract class SyncRecordDelegate {
                .compose(RxLifecycle.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<SyncRecordsCommand>provideOperationView())
-                     .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
+                     .onSuccess(command -> performComplete())
                      .create());
       }
 

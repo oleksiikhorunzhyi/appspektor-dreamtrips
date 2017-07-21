@@ -14,12 +14,11 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPath;
 
 import butterknife.ButterKnife;
 import io.techery.janet.Command;
@@ -110,13 +109,13 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast) {
+   public void navigateFromSetupUserScreen(NavigatorConductor navigator) {
       wizardInteractor.provisioningStatePipe()
             .createObservable(ProvisioningModeCommand.fetchState())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
                   .onSuccess(command ->
-                        navigator.withoutLast(new WizardAssignUserPath(command.getResult()))));
+                        navigator.goWizardAssignUser(command.getResult())));
    }
 
    @Override

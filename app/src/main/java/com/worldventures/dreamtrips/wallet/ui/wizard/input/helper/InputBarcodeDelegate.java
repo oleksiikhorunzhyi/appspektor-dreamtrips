@@ -4,9 +4,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectPath;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -14,13 +12,13 @@ import timber.log.Timber;
 
 public class InputBarcodeDelegate {
 
-   private final Navigator navigator;
+   private final NavigatorConductor navigator;
    private final InputAnalyticsDelegate analyticsDelegate;
    private final WizardInteractor wizardInteractor;
    private final InputDelegateView inputDelegateView;
 
    public InputBarcodeDelegate(
-         Navigator navigator,
+         NavigatorConductor navigator,
          WizardInteractor wizardInteractor,
          InputDelegateView inputDelegateView,
          InputAnalyticsDelegate analyticsDelegate) {
@@ -66,12 +64,12 @@ public class InputBarcodeDelegate {
    }
 
    private void cardAssignToAnotherDevice(String smartCardId) {
-      navigator.go(new ExistingDeviceDetectPath(smartCardId));
+      navigator.goExistingDeviceDetected(smartCardId);
    }
 
    private void cardIsUnassigned(String smartCardId) {
       sendAnalytics(smartCardId);
-      navigator.go(new PairKeyPath(ProvisioningMode.STANDARD, smartCardId));
+      navigator.goPairKey(ProvisioningMode.STANDARD, smartCardId);
    }
 
    private void sendAnalytics(String smartCardId) {

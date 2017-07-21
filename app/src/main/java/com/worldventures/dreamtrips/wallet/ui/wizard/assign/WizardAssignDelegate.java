@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.assign;
 
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -13,29 +14,25 @@ import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-//import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPath;
 
 import java.util.Collections;
 import java.util.List;
 
-import flow.Flow;
 import io.techery.janet.Command;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-abstract class WizardAssignDelegate {
+public abstract class WizardAssignDelegate {
 
    protected final WizardInteractor wizardInteractor;
    protected final RecordInteractor recordInteractor;
    protected final AnalyticsInteractor analyticsInteractor;
    protected final SmartCardInteractor smartCardInteractor;
-   protected final Navigator navigator;
+   protected final NavigatorConductor navigator;
 
-   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, NavigatorConductor navigator) {
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -44,7 +41,7 @@ abstract class WizardAssignDelegate {
    }
 
    public static WizardAssignDelegate create(ProvisioningMode mode, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-         AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+         AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, NavigatorConductor navigator) {
       if (mode == ProvisioningMode.STANDARD) {
          return new WizardAssignDelegateStandard(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
       } else {
@@ -52,9 +49,9 @@ abstract class WizardAssignDelegate {
       }
    }
 
-   protected abstract void toNextScreen(RxLifecycleView view);
+   protected abstract void toNextScreen(WizardAssignUserScreen view);
 
-   void onAssignUserSuccess(RxLifecycleView view) {
+   public void onAssignUserSuccess(WizardAssignUserScreen view) {
       sendAnalytic(new SetupCompleteAction());
       wizardInteractor.provisioningStatePipe().send(ProvisioningModeCommand.clear());
       toNextScreen(view);
@@ -72,42 +69,42 @@ abstract class WizardAssignDelegate {
    private static final class WizardAssignDelegateStandard extends WizardAssignDelegate {
 
       private WizardAssignDelegateStandard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-            AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+            AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, NavigatorConductor navigator) {
          super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
       }
 
       @Override
-      protected void toNextScreen(RxLifecycleView view) {
+      protected void toNextScreen(WizardAssignUserScreen view) {
          activateSmartCard();
-//         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+         navigator.goCardList();
       }
    }
 
    private static final class WizardAssignDelegateNewCard extends WizardAssignDelegate {
 
       private WizardAssignDelegateNewCard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-            AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+            AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, NavigatorConductor navigator) {
          super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
       }
 
       @Override
-      protected void toNextScreen(RxLifecycleView view) {
+      protected void toNextScreen(WizardAssignUserScreen view) {
          fetchRecordList(view)
                .subscribe(records -> navigateToNextScreen(!records.isEmpty()));
       }
 
-      private Observable<List<Record>> fetchRecordList(RxLifecycleView view) {
+      private Observable<List<Record>> fetchRecordList(WizardAssignUserScreen view) {
          return recordInteractor.cardsListPipe()
                .createObservableResult(new RecordListCommand())
                .map(Command::getResult)
                .onErrorReturn(throwable -> Collections.emptyList())
-               .compose(view.lifecycle())
+               .compose(RxLifecycle.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread());
       }
 
       private void navigateToNextScreen(boolean needToSyncPaymentCards) {
          if (needToSyncPaymentCards) {
-            navigator.go(new SyncRecordsPath(SyncAction.TO_CARD));
+            navigator.goSyncRecordsPath(SyncAction.TO_CARD);
          } else {
             finishSetupAndNavigateToDashboard();
          }
@@ -116,8 +113,7 @@ abstract class WizardAssignDelegate {
       private void finishSetupAndNavigateToDashboard() {
          restoreOfflineModeDefaultState();
          activateSmartCard();
-
-//         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+         navigator.goCardList();
       }
 
       private void restoreOfflineModeDefaultState() {

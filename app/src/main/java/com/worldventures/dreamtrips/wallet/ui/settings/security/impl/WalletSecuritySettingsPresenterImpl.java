@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.concurrent.TimeUnit;
@@ -104,8 +105,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    public void addPin() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            //TODO add Action.ADD to args
-            getNavigator().goEnterPin();
+            getNavigator().goEnterPinSettings(Action.ADD);
          } else {
             //noinspection ConstantConditions
             getView().showSCNonConnectionDialog();
@@ -190,8 +190,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    public void resetPin() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            //TODO : add Action.RESET to args
-            getNavigator().goEnterPin();
+            getNavigator().goEnterPinSettings(Action.RESET);
          } else {
             //noinspection ConstantConditions
             getView().showSCNonConnectionDialog();

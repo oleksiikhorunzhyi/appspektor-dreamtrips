@@ -5,21 +5,18 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePath;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPath;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-abstract class PairDelegate {
+public abstract class PairDelegate {
 
-   protected final Navigator navigator;
+   protected final NavigatorConductor navigator;
    protected final SmartCardInteractor smartCardInteractor;
 
-   private PairDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
+   private PairDelegate(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
       this.navigator = navigator;
       this.smartCardInteractor = smartCardInteractor;
    }
@@ -28,7 +25,7 @@ abstract class PairDelegate {
 
    public abstract void navigateOnNextScreen(PairView view);
 
-   public static PairDelegate create(ProvisioningMode mode, Navigator navigator, SmartCardInteractor smartCardInteractor) {
+   public static PairDelegate create(ProvisioningMode mode, NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
       if (mode == ProvisioningMode.SETUP_NEW_DEVICE) {
          return new NewDeviceDelegate(navigator, smartCardInteractor);
       } else { // ProvisioningMode.STANDARD or ProvisioningMode.SETUP_NEW_CARD
@@ -38,7 +35,7 @@ abstract class PairDelegate {
 
    private static class NewDeviceDelegate extends PairDelegate {
 
-      private NewDeviceDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
+      private NewDeviceDelegate(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
          super(navigator, smartCardInteractor);
       }
 
@@ -49,13 +46,13 @@ abstract class PairDelegate {
 
       @Override
       public void navigateOnNextScreen(PairView view) {
-         navigator.withoutLast(new SyncRecordsPath(SyncAction.TO_DEVICE));
+         navigator.goSyncRecordsPath(SyncAction.TO_DEVICE);
       }
    }
 
    private static class SetupDelegate extends PairDelegate {
 
-      private SetupDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
+      private SetupDelegate(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
          super(navigator, smartCardInteractor);
       }
 
@@ -77,9 +74,9 @@ abstract class PairDelegate {
 
       private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
          if (smartCardUser != null) {
-            navigator.withoutLast(new WizardUploadProfilePath());
+            navigator.goWizardUploadProfile();
          } else {
-            navigator.withoutLast(new WizardEditProfilePath());
+            navigator.goWizardEditProfile();
          }
       }
    }

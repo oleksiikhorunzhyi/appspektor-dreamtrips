@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.util;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
@@ -27,7 +27,7 @@ public interface WalletFeatureHelper {
    boolean offlineModeState(boolean isOfflineMode);
    Observable<Void> onUserAssigned(SmartCardUser user);
    void onUserFetchedFromServer(SmartCardUser user);
-   void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast);
+   void navigateFromSetupUserScreen(NavigatorConductor navigator);
    boolean isCardDetailSupported();
    boolean isCardSyncSupported();
 }

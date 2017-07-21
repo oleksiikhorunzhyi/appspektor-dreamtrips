@@ -1,57 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync;
 
-import android.content.Context;
-import android.os.Parcelable;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
-import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-//import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
-import javax.inject.Inject;
+public interface SyncRecordsPresenter extends WalletPresenterI<SyncRecordsScreen> {
 
-public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.Screen, Parcelable> {
+   void retrySync();
 
-   @Inject Navigator navigator;
-   @Inject SmartCardInteractor smartCardInteractor;
-   @Inject RecordInteractor recordInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   void navigateToWallet();
 
-   private final SyncRecordDelegate syncRecordDelegate;
-
-   SyncRecordsPresenter(Context context, Injector injector, SyncAction syncAction) {
-      super(context, injector);
-      syncRecordDelegate = SyncRecordDelegate.create(syncAction, smartCardInteractor, recordInteractor, navigator);
-   }
-
-   @Override
-   public void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      trackScreen();
-
-      syncRecordDelegate.bindView(getView());
-   }
-
-   void retrySync() {
-      syncRecordDelegate.retry();
-   }
-
-   void navigateToWallet() {
-//      navigator.single(new CardListPath());
-   }
-
-   private void trackScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new SyncPaymentCardAction()));
-   }
-
-   public interface Screen extends WalletScreen, SyncView {
-   }
 }

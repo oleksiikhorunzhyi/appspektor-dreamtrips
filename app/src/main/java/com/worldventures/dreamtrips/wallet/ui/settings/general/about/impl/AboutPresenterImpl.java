@@ -86,8 +86,4 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
    public void goBack() {
       getNavigator().goBack();
    }
-
-   public interface Screen extends WalletScreen {
-
-   }
 }

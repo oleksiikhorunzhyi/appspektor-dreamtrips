@@ -11,6 +11,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
 public interface NavigatorConductor {
 
@@ -33,6 +36,42 @@ public interface NavigatorConductor {
    void goNewFirmwareAvailable();
 
    void goWizardWelcome(ProvisioningMode provisioningMode);
+
+   void goWizardPowerOn();
+
+   void goWizardChecks();
+
+   void goWizardTerms();
+
+   void goWizardSplash();
+
+   void goWizardScanBarcode();
+
+   void goWizardManualInput();
+
+   void goExistingDeviceDetected(String smartCardId);
+
+   void goPairKey(ProvisioningMode provisioningMode, String smartCardId);
+
+   void goPairKeyExistingDevice(ProvisioningMode provisioningMode, String smartCardId);
+
+   void goSyncRecordsPath(SyncAction syncAction);
+
+   void goPinProposalUserSetup(PinProposalAction pinProposalAction);
+
+   void goWizardUploadProfile();
+
+   void goWizardEditProfile();
+
+   void goWizardAssignUser(ProvisioningMode provisioningMode);
+
+   void goEnterPinProposal(Action pinAction);
+
+   void goPinSetSuccess(Action pinSetAction);
+
+   void goWalletPinIsSet();
+
+   void goPaymentSyncFinished();
 
    void goCardDetails(Record record, TransitionModel transitionModel);
 
@@ -82,7 +121,7 @@ public interface NavigatorConductor {
 
    void goWalletDisableDefault();
 
-   void goEnterPin();
+   void goEnterPinSettings(Action action);
 
    void goPaymentFeedBack();
 
@@ -119,5 +158,4 @@ public interface NavigatorConductor {
    void goPLayStore(Context context);
 
    void goSettings(Context context);
-
 }

@@ -164,7 +164,7 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
 
          @Nullable
          @Override
-         public ErrorView<SaveDisplayTypeCommand> create(SaveDisplayTypeCommand command, Throwable throwable) {
+         public ErrorView<SaveDisplayTypeCommand> create(SaveDisplayTypeCommand command, Throwable parentThrowable, Throwable throwable) {
             return new DialogErrorView<SaveDisplayTypeCommand>(getContext()) {
                @Override
                protected MaterialDialog createDialog(SaveDisplayTypeCommand command, Throwable throwable, Context context) {

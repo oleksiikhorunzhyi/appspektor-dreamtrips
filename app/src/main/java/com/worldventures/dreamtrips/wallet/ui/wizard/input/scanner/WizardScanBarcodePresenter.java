@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner;
 
 import android.content.Context;
 import android.os.Parcelable;

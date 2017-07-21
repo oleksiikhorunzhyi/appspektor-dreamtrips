@@ -37,7 +37,7 @@ public class SmartCardErrorViewProvider<T> implements ErrorViewProvider<T> {
    }
 
    @Override
-   public ErrorView<T> create(Object o, Throwable throwable) {
+   public ErrorView<T> create(Object o, Throwable parentThrowable, Throwable throwable) {
       return new ErrorView<>(context, ((SmartCardRequestException) throwable).getRequestName(), retryAction, cancelAction);
    }
 

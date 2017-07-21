@@ -26,7 +26,7 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
 
    @Override
    public void showError(T t, Throwable throwable) {
-      currentErrorView = createErrorView(throwable, t);
+      currentErrorView = createErrorView(null, throwable, t);
       currentErrorView.show();
    }
 
@@ -46,16 +46,16 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
       return new Builder<>();
    }
 
-   private ErrorViewAdapter<T> createErrorView(Throwable throwable, T t) {
+   private ErrorViewAdapter<T> createErrorView(@Nullable Throwable parentThrowable, Throwable throwable, T t) {
 
       for (ErrorViewProvider<T> provider : errorViewFactories) {
          if (provider.forThrowable().isInstance(throwable)) {
-            return new ErrorViewAdapter<>(provider.create(t, throwable), throwable, t);
+            return new ErrorViewAdapter<>(provider.create(t, parentThrowable, throwable), throwable, t);
          }
       }
 
       if (throwable instanceof JanetException || throwable instanceof HttpUploaderyException) { // CommandServiceException, JanetActionException, SmartCardServiceException, HttpUploaderyException
-         return createErrorView(throwable.getCause(), t);
+         return createErrorView(throwable, throwable.getCause(), t);
       }
       // default values
       return new ErrorViewAdapter<>(defaultErrorView, throwable, t);

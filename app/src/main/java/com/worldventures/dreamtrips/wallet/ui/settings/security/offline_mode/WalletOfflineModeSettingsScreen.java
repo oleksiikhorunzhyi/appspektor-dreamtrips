@@ -130,7 +130,8 @@ public class WalletOfflineModeSettingsScreen extends WalletLinearLayout<WalletOf
 
          @Nullable
          @Override
-         public ErrorView<SwitchOfflineModeCommand> create(SwitchOfflineModeCommand switchOfflineModeCommand, Throwable throwable) {
+         public ErrorView<SwitchOfflineModeCommand> create(SwitchOfflineModeCommand switchOfflineModeCommand,
+               Throwable parentThrowable, Throwable throwable) {
             return new DialogErrorView<SwitchOfflineModeCommand>(getContext()) {
                @Override
                protected MaterialDialog createDialog(SwitchOfflineModeCommand command, Throwable throwable, Context context) {

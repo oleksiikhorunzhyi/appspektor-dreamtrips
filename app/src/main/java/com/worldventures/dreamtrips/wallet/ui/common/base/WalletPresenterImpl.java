@@ -6,23 +6,23 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public abstract class WalletPresenterImpl<V extends WalletScreen> extends MvpBasePresenter<V> implements WalletPresenterI<V> {
+public abstract class WalletPresenterImpl<V extends WalletScreen> extends MvpBasePresenter<V> implements WalletPresenter<V> {
 
    @SuppressWarnings("WeakerAccess")
-   private final NavigatorConductor navigator;
+   private final Navigator navigator;
    private final SmartCardInteractor smartCardInteractor;
    private final WalletNetworkService networkService;
 
    private final PublishSubject<Void> detachStopper = PublishSubject.create();
 
-   public WalletPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,  WalletNetworkService networkService) {
+   public WalletPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,  WalletNetworkService networkService) {
       this.navigator = navigator;
       this.smartCardInteractor = smartCardInteractor;
       this.networkService = networkService;
@@ -68,7 +68,7 @@ public abstract class WalletPresenterImpl<V extends WalletScreen> extends MvpBas
       return networkService;
    }
 
-   public NavigatorConductor getNavigator() {
+   public Navigator getNavigator() {
       return navigator;
    }
 

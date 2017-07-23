@@ -6,20 +6,20 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinSuccessAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetPinAction;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 public abstract class EnterPinDelegate {
 
    private final AnalyticsInteractor analyticsInteractor;
-   private final NavigatorConductor navigator;
+   private final Navigator navigator;
 
-   private EnterPinDelegate(AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator) {
+   private EnterPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
       this.analyticsInteractor = analyticsInteractor;
       this.navigator = navigator;
    }
 
-   public static EnterPinDelegate create(Action action, AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator) {
+   public static EnterPinDelegate create(Action action, AnalyticsInteractor analyticsInteractor, Navigator navigator) {
       if (action == Action.ADD) {
          return new AddPinDelegate(analyticsInteractor, navigator);
       } else if (action == Action.RESET) {
@@ -38,7 +38,7 @@ public abstract class EnterPinDelegate {
       return analyticsInteractor;
    }
 
-   public NavigatorConductor getNavigator() {
+   public Navigator getNavigator() {
       return navigator;
    }
 
@@ -50,7 +50,7 @@ public abstract class EnterPinDelegate {
 
    private static class AddPinDelegate extends EnterPinDelegate {
 
-      private AddPinDelegate(AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator) {
+      private AddPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
       }
 
@@ -73,7 +73,7 @@ public abstract class EnterPinDelegate {
 
    private static class ResetPinDelegate extends EnterPinDelegate {
 
-      private ResetPinDelegate(AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator) {
+      private ResetPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
       }
 
@@ -98,7 +98,7 @@ public abstract class EnterPinDelegate {
 
    private static class SetupPinDelegate extends EnterPinDelegate {
 
-      private SetupPinDelegate(AnalyticsInteractor analyticsInteractor, NavigatorConductor navigator) {
+      private SetupPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
       }
 

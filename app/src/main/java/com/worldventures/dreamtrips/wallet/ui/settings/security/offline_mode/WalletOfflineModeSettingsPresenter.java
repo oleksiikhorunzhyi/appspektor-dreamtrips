@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WalletOfflineModeSettingsPresenter extends WalletPresenterI<WalletOfflineModeSettingsScreen> {
+public interface WalletOfflineModeSettingsPresenter extends WalletPresenter<WalletOfflineModeSettingsScreen> {
 
    void goBack();
 

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual;
 
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WizardManualInputPresenter extends WalletPresenterI<WizardManualInputScreen> {
+public interface WizardManualInputPresenter extends WalletPresenter<WizardManualInputScreen> {
 
    void goBack();
 

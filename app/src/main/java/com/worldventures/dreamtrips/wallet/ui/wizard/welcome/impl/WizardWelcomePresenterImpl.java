@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen;
 
@@ -24,7 +24,7 @@ public class WizardWelcomePresenterImpl extends WalletPresenterImpl<WizardWelcom
    private final AnalyticsInteractor analyticsInteractor;
    private final WizardInteractor wizardInteractor;
 
-   public WizardWelcomePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public WizardWelcomePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          SessionHolder<UserSession> appSessionHolder, AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.appSessionHolder = appSessionHolder;

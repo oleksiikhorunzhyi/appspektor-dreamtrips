@@ -5,11 +5,11 @@ import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
 import java.util.List;
 
-public interface WalletHelpVideoPresenter extends WalletPresenterI<WalletHelpVideoScreen> {
+public interface WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoScreen> {
    void goBack();
 
    void refreshVideos();

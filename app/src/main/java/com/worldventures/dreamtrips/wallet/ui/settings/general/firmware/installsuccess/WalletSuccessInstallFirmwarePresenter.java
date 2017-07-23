@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WalletSuccessInstallFirmwarePresenter extends WalletPresenterI<WalletSuccessInstallFirmwareScreen> {
+public interface WalletSuccessInstallFirmwarePresenter extends WalletPresenter<WalletSuccessInstallFirmwareScreen> {
    void finishUpdateFlow();
 }

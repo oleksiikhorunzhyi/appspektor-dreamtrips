@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTracking
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.model.ImmutableLostCardPin;
@@ -48,7 +48,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    private final AnalyticsInteractor analyticsInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   public LostCardPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public LostCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, PermissionDispatcher permissionDispatcher,
          SmartCardLocationInteractor smartCardLocationInteractor, WalletDetectLocationService walletDetectLocationService,
          AnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {

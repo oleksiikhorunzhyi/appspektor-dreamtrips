@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
@@ -40,7 +40,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    private final ErrorHandlerFactory errorHandlerFactory;
    private final WalletFeatureHelper featureHelper;
 
-   public WalletSecuritySettingsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletSecuritySettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory,
          WalletFeatureHelper walletFeatureHelper) {
       super(navigator, smartCardInteractor, networkService);

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
@@ -29,7 +29,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    private DisplayOptionsSource source;
    private SmartCardUser user;
 
-   public DisplayOptionsSettingsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public DisplayOptionsSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService) {
       super(navigator, smartCardInteractor, networkService);
    }

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociate
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartScreen;
 
@@ -25,7 +25,7 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
 
-   public WalletStartPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public WalletStartPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);
       this.firmwareInteractor = firmwareInteractor;

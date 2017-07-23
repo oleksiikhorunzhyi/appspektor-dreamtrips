@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedScreen;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListModel;
@@ -22,7 +22,7 @@ public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<
 
    private final AnalyticsInteractor analyticsInteractor;
 
-   public WalletProvisioningBlockedPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletProvisioningBlockedPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;

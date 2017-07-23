@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
@@ -16,7 +16,7 @@ public class EnterPinUnassignPresenterImpl extends WalletPresenterImpl<EnterPinU
 
    private final FactoryResetDelegate factoryResetDelegate;
 
-   public EnterPinUnassignPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public EnterPinUnassignPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FactoryResetInteractor factoryResetInteractor, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.factoryResetDelegate = FactoryResetDelegate.create(factoryResetInteractor, analyticsInteractor,

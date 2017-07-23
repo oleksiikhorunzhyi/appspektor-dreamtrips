@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface AddCardDetailsPresenter extends WalletPresenterI<AddCardDetailsScreen> {
+public interface AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsScreen> {
 
    HttpErrorHandlingUtil httpErrorHandlingUtil();
 

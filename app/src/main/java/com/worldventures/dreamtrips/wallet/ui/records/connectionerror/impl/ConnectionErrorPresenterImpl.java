@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorScreen;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<ConnectionErrorScreen> implements ConnectionErrorPresenter {
 
-   public ConnectionErrorPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public ConnectionErrorPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService) {
       super(navigator, smartCardInteractor, networkService);
    }

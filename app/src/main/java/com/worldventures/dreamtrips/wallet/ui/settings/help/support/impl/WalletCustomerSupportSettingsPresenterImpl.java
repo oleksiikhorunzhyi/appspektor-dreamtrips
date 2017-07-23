@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsScreen;
 import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
@@ -20,7 +20,7 @@ public class WalletCustomerSupportSettingsPresenterImpl extends WalletPresenterI
    private final WalletSettingsInteractor walletSettingsInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   public WalletCustomerSupportSettingsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletCustomerSupportSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WalletSettingsInteractor walletSettingsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);
       this.walletSettingsInteractor = walletSettingsInteractor;

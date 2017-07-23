@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordComma
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.PinOptionalCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsScreen;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
@@ -45,7 +45,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private String cardNickname;
 
-   public AddCardDetailsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public AddCardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
          WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);

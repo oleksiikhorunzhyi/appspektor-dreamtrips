@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen;
@@ -37,7 +37,7 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
 
    private final WalletHelpVideoDelegate helpVideoDelegate;
 
-   public WalletHelpVideoPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletHelpVideoPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
          CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate,
          HttpErrorHandlingUtil httpErrorHandlingUtil) {

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyScreen;
@@ -25,7 +25,7 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
 
    private PairDelegate pairDelegate;
 
-   public PairKeyPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public PairKeyPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;

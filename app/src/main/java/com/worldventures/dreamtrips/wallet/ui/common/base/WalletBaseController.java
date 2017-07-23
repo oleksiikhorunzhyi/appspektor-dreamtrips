@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 
-public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenterI> extends PresentableController<V, P> implements WalletScreen {
+public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenter> extends PresentableController<V, P> implements WalletScreen {
    private ObjectGraph objectGraph;
    private WalletScreenDelegate walletScreenDelegate;
 

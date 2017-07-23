@@ -4,7 +4,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -12,13 +12,13 @@ import timber.log.Timber;
 
 public class InputBarcodeDelegate {
 
-   private final NavigatorConductor navigator;
+   private final Navigator navigator;
    private final InputAnalyticsDelegate analyticsDelegate;
    private final WizardInteractor wizardInteractor;
    private final InputDelegateView inputDelegateView;
 
    public InputBarcodeDelegate(
-         NavigatorConductor navigator,
+         Navigator navigator,
          WizardInteractor wizardInteractor,
          InputDelegateView inputDelegateView,
          InputAnalyticsDelegate analyticsDelegate) {

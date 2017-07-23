@@ -13,8 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutScreen;
 
@@ -27,7 +26,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
    private final RecordInteractor recordInteractor;
    private final AnalyticsInteractor analyticsInteractor;
 
-   public AboutPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public AboutPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;

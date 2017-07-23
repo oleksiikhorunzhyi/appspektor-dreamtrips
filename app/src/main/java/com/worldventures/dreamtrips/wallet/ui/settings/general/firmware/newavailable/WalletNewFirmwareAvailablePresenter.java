@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable;
 
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WalletNewFirmwareAvailablePresenter extends WalletPresenterI<WalletNewFirmwareAvailableScreen> {
+public interface WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletNewFirmwareAvailableScreen> {
 
    void goBack();
 

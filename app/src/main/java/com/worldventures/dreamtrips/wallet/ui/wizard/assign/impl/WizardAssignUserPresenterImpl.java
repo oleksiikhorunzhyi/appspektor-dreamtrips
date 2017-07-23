@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserScreen;
@@ -25,7 +25,7 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
 
    private WizardAssignDelegate wizardAssignDelegate;
 
-   public WizardAssignUserPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WizardAssignUserPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
          AnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);

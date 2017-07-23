@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsScreen;
 import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
@@ -25,7 +25,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
 
    private boolean waitingForNetwork = false;
 
-   public WalletOfflineModeSettingsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletOfflineModeSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;

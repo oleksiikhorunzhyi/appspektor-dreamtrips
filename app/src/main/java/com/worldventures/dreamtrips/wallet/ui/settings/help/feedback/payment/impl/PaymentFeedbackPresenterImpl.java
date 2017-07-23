@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl.BaseFeedbackPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
@@ -24,7 +24,7 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
    private PaymentFeedbackViewModel startViewModel = new PaymentFeedbackViewModel();
    private final PaymentFeedbackDelegate paymentFeedbackDelegate;
 
-   public PaymentFeedbackPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public PaymentFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
          WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor, Router router) {
       super(navigator, smartCardInteractor, networkService, feedbackInteractor, walletSettingsInteractor, mediaInteractor, router);

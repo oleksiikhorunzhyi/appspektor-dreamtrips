@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -13,10 +13,10 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class PairDelegate {
 
-   protected final NavigatorConductor navigator;
+   protected final Navigator navigator;
    protected final SmartCardInteractor smartCardInteractor;
 
-   private PairDelegate(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
+   private PairDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
       this.navigator = navigator;
       this.smartCardInteractor = smartCardInteractor;
    }
@@ -25,7 +25,7 @@ public abstract class PairDelegate {
 
    public abstract void navigateOnNextScreen(PairView view);
 
-   public static PairDelegate create(ProvisioningMode mode, NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
+   public static PairDelegate create(ProvisioningMode mode, Navigator navigator, SmartCardInteractor smartCardInteractor) {
       if (mode == ProvisioningMode.SETUP_NEW_DEVICE) {
          return new NewDeviceDelegate(navigator, smartCardInteractor);
       } else { // ProvisioningMode.STANDARD or ProvisioningMode.SETUP_NEW_CARD
@@ -35,7 +35,7 @@ public abstract class PairDelegate {
 
    private static class NewDeviceDelegate extends PairDelegate {
 
-      private NewDeviceDelegate(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
+      private NewDeviceDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
          super(navigator, smartCardInteractor);
       }
 
@@ -52,7 +52,7 @@ public abstract class PairDelegate {
 
    private static class SetupDelegate extends PairDelegate {
 
-      private SetupDelegate(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor) {
+      private SetupDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
          super(navigator, smartCardInteractor);
       }
 

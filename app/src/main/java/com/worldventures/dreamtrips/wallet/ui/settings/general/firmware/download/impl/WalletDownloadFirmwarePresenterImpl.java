@@ -10,10 +10,9 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwareScreen;
 
@@ -25,7 +24,7 @@ public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<Wal
 
    private DownloadFirmwareCommand action;
 
-   public WalletDownloadFirmwarePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletDownloadFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor,
          ErrorHandlerFactory errorHandlerFactory) {
       super(navigator, smartCardInteractor, networkService);

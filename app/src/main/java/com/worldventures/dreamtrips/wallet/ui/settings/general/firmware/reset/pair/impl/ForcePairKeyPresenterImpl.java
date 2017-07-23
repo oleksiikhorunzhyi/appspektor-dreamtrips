@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFi
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyScreen;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
@@ -20,7 +20,7 @@ public class ForcePairKeyPresenterImpl extends WalletPresenterImpl<ForcePairKeyS
    private final FirmwareInteractor firmwareInteractor;
    private final ErrorHandlerFactory errorHandlerFactory;
 
-   public ForcePairKeyPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public ForcePairKeyPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, ErrorHandlerFactory errorHandlerFactory) {
       super(navigator, smartCardInteractor, networkService);
       this.firmwareInteractor = firmwareInteractor;

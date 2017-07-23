@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfileScreen;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
@@ -27,7 +27,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private final AnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
 
-   public WizardUploadProfilePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public WizardUploadProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;

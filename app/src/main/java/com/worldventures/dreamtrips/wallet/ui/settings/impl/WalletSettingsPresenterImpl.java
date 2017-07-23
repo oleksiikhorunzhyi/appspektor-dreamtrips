@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
@@ -31,7 +31,7 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
    private final AnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
 
-   public WalletSettingsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);

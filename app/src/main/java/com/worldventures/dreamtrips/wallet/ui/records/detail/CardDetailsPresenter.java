@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.records.detail;
 
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface CardDetailsPresenter extends WalletPresenterI<CardDetailsScreen> {
+public interface CardDetailsPresenter extends WalletPresenter<CardDetailsScreen> {
 
    void goBack();
 

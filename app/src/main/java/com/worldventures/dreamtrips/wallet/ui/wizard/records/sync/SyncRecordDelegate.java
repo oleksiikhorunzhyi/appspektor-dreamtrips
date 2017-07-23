@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
 import io.techery.janet.ActionState;
@@ -18,9 +18,9 @@ public abstract class SyncRecordDelegate {
 
    protected final SmartCardInteractor smartCardInteractor;
    protected final RecordInteractor recordInteractor;
-   protected final NavigatorConductor navigator;
+   protected final Navigator navigator;
 
-   private SyncRecordDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
+   private SyncRecordDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
       this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.navigator = navigator;
@@ -34,7 +34,7 @@ public abstract class SyncRecordDelegate {
 
    public abstract void bindView(SyncView view);
 
-   public static SyncRecordDelegate create(SyncAction action, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
+   public static SyncRecordDelegate create(SyncAction action, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
       if (action == SyncAction.TO_DEVICE) {
          return new SyncToDeviceDelegate(smartCardInteractor, recordInteractor, navigator);
       } else {
@@ -44,7 +44,7 @@ public abstract class SyncRecordDelegate {
 
    private static class SyncToDeviceDelegate extends SyncRecordDelegate {
 
-      private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
+      private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
          super(smartCardInteractor, recordInteractor, navigator);
       }
 
@@ -78,7 +78,7 @@ public abstract class SyncRecordDelegate {
 
    private static class SyncToCardDelegate extends SyncRecordDelegate {
 
-      private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, NavigatorConductor navigator) {
+      private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
          super(smartCardInteractor, recordInteractor, navigator);
       }
 

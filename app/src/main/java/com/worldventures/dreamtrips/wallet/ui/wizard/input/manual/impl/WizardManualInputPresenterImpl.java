@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
@@ -21,7 +21,7 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
    private final InputBarcodeDelegate inputBarcodeDelegate;
 
-   public WizardManualInputPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WizardManualInputPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
          WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);

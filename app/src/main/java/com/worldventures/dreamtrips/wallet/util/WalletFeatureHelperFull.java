@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.util;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
@@ -66,7 +66,7 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(NavigatorConductor navigator) {
+   public void navigateFromSetupUserScreen(Navigator navigator) {
       navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
    }
 

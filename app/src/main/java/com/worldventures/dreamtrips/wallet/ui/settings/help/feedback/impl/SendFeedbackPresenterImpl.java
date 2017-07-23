@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettin
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.FeedbackType;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackScreen;
@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl.B
 
 public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFeedbackScreen> implements SendFeedbackPresenter {
 
-   public SendFeedbackPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public SendFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
          WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor, Router router) {
       super(navigator, smartCardInteractor, networkService, feedbackInteractor, walletSettingsInteractor,

@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen;
@@ -28,7 +28,7 @@ public class EnterPinPresenterImpl extends WalletPresenterImpl<EnterPinScreen> i
 
    private EnterPinDelegate enterPinDelegate;
 
-   public EnterPinPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public EnterPinPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor,
          AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);

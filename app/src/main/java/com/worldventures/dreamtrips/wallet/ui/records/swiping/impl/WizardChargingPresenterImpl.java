@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubs
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingScreen;
 
@@ -35,7 +35,7 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    private final AnalyticsInteractor analyticsInteractor;
    private final ErrorHandlerFactory errorHandlerFactory;
 
-   public WizardChargingPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WizardChargingPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor,
          ErrorHandlerFactory errorHandlerFactory) {
       super(navigator, smartCardInteractor, networkService);

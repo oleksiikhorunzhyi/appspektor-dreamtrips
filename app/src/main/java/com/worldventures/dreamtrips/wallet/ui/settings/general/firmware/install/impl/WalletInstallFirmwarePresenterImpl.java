@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmw
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareState;
@@ -27,7 +27,7 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
 
    private WalletInstallFirmwareState state;
 
-   public WalletInstallFirmwarePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletInstallFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
       super(navigator, smartCardInteractor, networkService);

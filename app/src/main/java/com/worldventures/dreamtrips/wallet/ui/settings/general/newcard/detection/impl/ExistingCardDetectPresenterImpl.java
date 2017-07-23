@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper.CardIdUtil;
@@ -34,7 +34,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    private final AnalyticsInteractor analyticsInteractor;
    private final CheckPinDelegate checkPinDelegate;
 
-   public ExistingCardDetectPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public ExistingCardDetectPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;

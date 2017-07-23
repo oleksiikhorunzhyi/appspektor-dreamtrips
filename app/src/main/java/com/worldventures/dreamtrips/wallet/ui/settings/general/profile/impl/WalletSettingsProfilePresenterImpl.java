@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUplo
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen;
@@ -44,7 +44,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
 
    private SmartCardUser user;
 
-   public WalletSettingsProfilePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletSettingsProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, SessionHolder<UserSession> appSessionHolder) {
       super(navigator, smartCardInteractor, networkService);

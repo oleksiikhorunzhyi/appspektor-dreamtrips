@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.power_on;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WizardPowerOnPresenter extends WalletPresenterI<WizardPowerOnScreen> {
+public interface WizardPowerOnPresenter extends WalletPresenter<WizardPowerOnScreen> {
 
    void onBack();
 

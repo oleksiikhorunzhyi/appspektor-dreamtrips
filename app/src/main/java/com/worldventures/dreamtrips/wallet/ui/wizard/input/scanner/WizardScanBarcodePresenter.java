@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner;
 
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WizardScanBarcodePresenter extends WalletPresenterI<WizardScanBarcodeScreen> {
+public interface WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodeScreen> {
 
    void goBack();
 

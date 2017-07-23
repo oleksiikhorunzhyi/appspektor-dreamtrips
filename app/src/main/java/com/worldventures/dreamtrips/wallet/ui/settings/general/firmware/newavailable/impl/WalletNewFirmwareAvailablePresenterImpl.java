@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailableScreen;
 import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
@@ -31,7 +31,7 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
    private final AnalyticsInteractor analyticsInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   public WalletNewFirmwareAvailablePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletNewFirmwareAvailablePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);

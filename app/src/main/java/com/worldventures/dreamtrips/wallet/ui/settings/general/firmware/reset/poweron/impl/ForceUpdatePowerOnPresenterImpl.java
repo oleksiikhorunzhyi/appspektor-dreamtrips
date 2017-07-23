@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnScreen;
 
@@ -20,7 +20,7 @@ public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUp
    private final WizardInteractor wizardInteractor;
    private final WalletBluetoothService bluetoothService;
 
-   public ForceUpdatePowerOnPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public ForceUpdatePowerOnPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, WalletBluetoothService bluetoothService) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;

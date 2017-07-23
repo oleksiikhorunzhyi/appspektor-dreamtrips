@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPresenter;
@@ -21,7 +21,7 @@ public class SyncRecordsPresenterImpl extends WalletPresenterImpl<SyncRecordsScr
 
    private SyncRecordDelegate syncRecordDelegate;
 
-   public SyncRecordsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public SyncRecordsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;

@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils;
@@ -36,7 +36,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
 
    private final WalletProfileDelegate delegate;
 
-   public WizardEditProfilePresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WizardEditProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor,
          SessionHolder<UserSession> appSessionHolder, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);

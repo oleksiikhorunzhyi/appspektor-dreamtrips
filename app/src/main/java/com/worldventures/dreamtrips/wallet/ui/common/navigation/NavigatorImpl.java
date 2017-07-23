@@ -86,7 +86,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomeS
 import dagger.Lazy;
 import timber.log.Timber;
 
-public class NavigatorImpl implements NavigatorConductor {
+public class NavigatorImpl implements Navigator {
    //TODO : double check all "single" routing!
 
    private final Lazy<Router> routerLazy;

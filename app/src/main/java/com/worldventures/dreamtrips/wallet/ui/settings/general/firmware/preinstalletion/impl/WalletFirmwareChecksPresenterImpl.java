@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelComm
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.FirmwareChecksState;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.WalletFirmwareChecksPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.WalletFirmwareChecksScreen;
@@ -36,7 +36,7 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;
 
-   public WalletFirmwareChecksPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletFirmwareChecksPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WalletBluetoothService bluetoothService, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);

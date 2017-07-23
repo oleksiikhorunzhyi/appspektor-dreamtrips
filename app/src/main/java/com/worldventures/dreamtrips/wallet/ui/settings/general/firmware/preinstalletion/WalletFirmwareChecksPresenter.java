@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WalletFirmwareChecksPresenter extends WalletPresenterI<WalletFirmwareChecksScreen> {
+public interface WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwareChecksScreen> {
 
    void goBack();
 

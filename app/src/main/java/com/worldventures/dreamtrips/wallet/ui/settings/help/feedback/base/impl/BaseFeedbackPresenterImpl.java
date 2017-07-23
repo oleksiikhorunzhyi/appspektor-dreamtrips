@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl;
 
 
-import android.app.Activity;
 import android.net.Uri;
-import android.view.WindowManager;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
@@ -26,7 +24,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.BaseFeedbackScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.BaseSendFeedbackPresenter;
 
@@ -49,7 +47,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    private int attachmentsCount;
 
-   public BaseFeedbackPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public BaseFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
          WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor, Router router) {
       super(navigator, smartCardInteractor, networkService);

@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 import android.support.annotation.DrawableRes;
 import android.view.View;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 
-public interface CardListPresenter extends WalletPresenterI<CardListScreen> {
+public interface CardListPresenter extends WalletPresenter<CardListScreen> {
 
    void navigationClick();
 

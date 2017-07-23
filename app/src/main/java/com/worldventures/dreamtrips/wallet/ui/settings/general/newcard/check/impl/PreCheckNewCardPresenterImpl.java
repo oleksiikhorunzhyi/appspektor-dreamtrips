@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
@@ -34,7 +34,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    private final AnalyticsInteractor analyticsInteractor;
    private final CheckPinDelegate checkPinDelegate;
 
-   public PreCheckNewCardPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public PreCheckNewCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
          FactoryResetInteractor factoryResetInteractor, WalletBluetoothService bluetoothService) {
       super(navigator, smartCardInteractor, networkService);

@@ -4,13 +4,13 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.impl;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsScreen;
 
 public class WalletHelpSettingsPresenterImpl extends WalletPresenterImpl<WalletHelpSettingsScreen> implements WalletHelpSettingsPresenter {
 
-   public WalletHelpSettingsPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public WalletHelpSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService) {
       super(navigator, smartCardInteractor, networkService);
    }

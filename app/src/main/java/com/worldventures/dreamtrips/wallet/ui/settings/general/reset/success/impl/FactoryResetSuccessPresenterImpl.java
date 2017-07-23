@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.FactoryResetAction
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessScreen;
 
@@ -15,7 +15,7 @@ public class FactoryResetSuccessPresenterImpl extends WalletPresenterImpl<Factor
 
    private final AnalyticsInteractor analyticsInteractor;
 
-   public FactoryResetSuccessPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public FactoryResetSuccessPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.support;
 
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterI;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
-public interface WalletCustomerSupportSettingsPresenter extends WalletPresenterI<WalletCustomerSupportSettingsScreen> {
+public interface WalletCustomerSupportSettingsPresenter extends WalletPresenter<WalletCustomerSupportSettingsScreen> {
 
    void goBack();
 

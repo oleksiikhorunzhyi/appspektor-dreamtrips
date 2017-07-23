@@ -7,13 +7,13 @@ import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailScreen;
 
 public class HelpDocumentDetailPresenterImpl extends WalletPresenterImpl<HelpDocumentDetailScreen> implements HelpDocumentDetailPresenter {
 
-   public HelpDocumentDetailPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public HelpDocumentDetailPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService) {
       super(navigator, smartCardInteractor, networkService);
    }

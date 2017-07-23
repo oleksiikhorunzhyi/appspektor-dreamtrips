@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.PinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.RecordsPinProposalDialog;
@@ -19,13 +19,13 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class PinProposalDelegate<T extends PinProposalDialog> {
-   private final NavigatorConductor navigator;
+   private final Navigator navigator;
 
-   private PinProposalDelegate(NavigatorConductor navigator) {
+   private PinProposalDelegate(Navigator navigator) {
       this.navigator = navigator;
    }
 
-   public static PinProposalDelegate create(NavigatorConductor navigator, PinProposalAction pinProposalAction,
+   public static PinProposalDelegate create(Navigator navigator, PinProposalAction pinProposalAction,
          String cardNickName, WizardInteractor wizardInteractor) {
       if (pinProposalAction == PinProposalAction.WIZARD) {
          return new WizardPinProposalDelegate(navigator, wizardInteractor);
@@ -40,7 +40,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       setTextLabel(pinProposalScreen);
    }
 
-   public NavigatorConductor getNavigator() {
+   public Navigator getNavigator() {
       return navigator;
    }
 
@@ -60,7 +60,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       private final WizardInteractor wizardInteractor;
       private ProvisioningMode provisioningMode;
 
-      private WizardPinProposalDelegate(NavigatorConductor navigator, WizardInteractor wizardInteractor) {
+      private WizardPinProposalDelegate(Navigator navigator, WizardInteractor wizardInteractor) {
          super(navigator);
          this.wizardInteractor = wizardInteractor;
       }
@@ -115,7 +115,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
    private static class RecordsPinProposalDelegate extends PinProposalDelegate<RecordsPinProposalDialog> {
       private final String cardNickname;
 
-      private RecordsPinProposalDelegate(NavigatorConductor navigator, String cardNickname) {
+      private RecordsPinProposalDelegate(Navigator navigator, String cardNickname) {
          super(navigator);
          this.cardNickname = cardNickname;
       }

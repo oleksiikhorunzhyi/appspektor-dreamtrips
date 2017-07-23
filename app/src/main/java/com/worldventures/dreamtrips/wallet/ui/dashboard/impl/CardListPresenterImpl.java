@@ -41,7 +41,7 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.general.disp
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
@@ -79,7 +79,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    private List<Record> records;
 
-   public CardListPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public CardListPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory,
          FactoryResetInteractor factoryResetInteractor, NavigationDrawerPresenter navigationDrawerPresenter,

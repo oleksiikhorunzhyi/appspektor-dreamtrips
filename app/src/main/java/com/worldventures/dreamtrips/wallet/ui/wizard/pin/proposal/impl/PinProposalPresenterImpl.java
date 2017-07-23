@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.PinOptionalCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorConductor;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
@@ -17,7 +17,7 @@ public class PinProposalPresenterImpl extends WalletPresenterImpl<PinProposalScr
    private final WizardInteractor wizardInteractor;
    private PinProposalDelegate pinProposalDelegate;
 
-   public PinProposalPresenterImpl(NavigatorConductor navigator, SmartCardInteractor smartCardInteractor,
+   public PinProposalPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;

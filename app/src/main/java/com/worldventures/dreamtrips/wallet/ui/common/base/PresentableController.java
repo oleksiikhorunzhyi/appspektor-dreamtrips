@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.bluelinelabs.conductor.rxlifecycle.RxController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-public abstract class PresentableController<V extends WalletScreen, P extends WalletPresenterI> extends RxController {
+public abstract class PresentableController<V extends WalletScreen, P extends WalletPresenter> extends RxController {
 
    public PresentableController() {
       super();

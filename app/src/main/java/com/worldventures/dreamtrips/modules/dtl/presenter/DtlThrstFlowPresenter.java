@@ -6,12 +6,23 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
 public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.View> {
 
+   private static final String SUCCESS_MESSAGE = "whatever";
+
    @Override
    public void takeView(View view) {
       super.takeView(view);
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public void onThrstCallback(String message) {
+      if (message.equals(SUCCESS_MESSAGE)) {
+      } else {
 
+      }
+   }
+
+   public interface View extends RxView, ApiErrorView {
+      void openThankYouScreen(String merchantName, String totalAmount);
+
+      void openPaymentFailedScreen(String merchantName, String totalAmount);
    }
 }

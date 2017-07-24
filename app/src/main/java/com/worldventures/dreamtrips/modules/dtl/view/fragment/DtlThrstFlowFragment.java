@@ -13,8 +13,12 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPath;
 
 import butterknife.InjectView;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 @Layout(R.layout.fragment_dtl_thrst_webview)
 public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, ThrstFlowBundle> implements DtlThrstFlowPresenter.View {
@@ -45,7 +49,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
             Toast.makeText(getContext(), "URL:" + url + "\nStatus code=" + statusCode, Toast.LENGTH_SHORT).show()
       );
       webView.setJavascriptCallbackListener(message ->
-            Toast.makeText(getContext(), "Callback message=" + message, Toast.LENGTH_SHORT).show()
+            getPresenter().onThrstCallback(message)
       );
    }
 
@@ -76,5 +80,22 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
 
    @Override
    public void onApiCallFailed() {
+   }
+
+   @Override
+   public void openThankYouScreen(String merchantName, String totalAmount) {
+      goToDtlPaymentPath(true, merchantName, totalAmount);
+   }
+
+   @Override
+   public void openPaymentFailedScreen(String merchantName, String totalAmount) {
+      goToDtlPaymentPath(false, merchantName, totalAmount);
+   }
+
+   private void goToDtlPaymentPath(boolean isPaid, String totalAmount, String merchantName) {
+      Path path = new DtlPaymentPath(isPaid, totalAmount, merchantName);
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      historyBuilder.push(path);
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
    }
 }

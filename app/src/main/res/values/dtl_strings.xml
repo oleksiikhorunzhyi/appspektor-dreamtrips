@@ -169,4 +169,18 @@
    <string name="input_major_limit">Your review has reached our limit. It has been shortened to fit.</string>
 
    <string name="text_add_photos_and_videos">Add photos</string>
+
+   <!-- Pilot -->
+   <string name="done_pilot_button">DONE</string>
+   <string name="thank_you_thrst_pilot">Thank you!</string>
+   <string name="first_failure_text_thrst_pilot">Thanks for trying,</string>
+   <string name="second_failure_text_thrst_pilot">but your payment was declined.</string>
+   <string name="payment_success_status_pilot">We have accepted your payment.</string>
+   <string name="payment_error_status_pilot">We were not successful in accepting your payment at this time.</string>
+   <string name="btn_payment_done_pilot">DONE</string>
+   <string name="payment_resume_success_pilot">Please show this screen to your server.</string>
+   <string name="payment_resume_failure_pilot">Please pay your server.</string>
+   <string name="total_amount_charged_pilot">Total Amount Paid</string>
+   <string name="payment_amount_due_pilot">Total Amount Due</string>
+   <string name="payment_money_charged">$ %1$s </string>
 </resources>

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStat
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeFinder;
@@ -101,6 +102,7 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NumberFormatException.class, R.string.wallet_wizard_scan_barcode_invalid_format))
                   .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
                         c -> presenter.retry(c.barcode), c -> { /*nothing*/ }))
                   .build()

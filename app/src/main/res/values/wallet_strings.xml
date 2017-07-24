@@ -72,7 +72,7 @@
    <string name="wallet_wizard_scan_barcode_header">Align the Smart Card barcode within the frame.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
-
+   <string name="wallet_wizard_scan_barcode_invalid_format">Invalid barcode</string>
    <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart Card is already assigned</string>
 
    <string name="wallet_payment_cards_title">Payment cards</string>

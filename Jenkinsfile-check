@@ -2,8 +2,8 @@
 
 def buildParams = [:]
 def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
-
-utils.runBuild('android', utils.notifiers.gitlab(this)) {
+def notifier = utils.notifiers.gitlab(this)
+utils.runBuild('android', notifier) {
    stage('prepare build') {
       buildParams = generateParams()
       println buildParams
@@ -32,13 +32,17 @@ utils.runBuild('android', utils.notifiers.gitlab(this)) {
    }
    stage('lint') {
       def error
+      def message
       try {
-         utils.scripts.gradlew buildParams.LINT_TASK
+         def outputs = utils.scripts.bash("./gradlew ${buildParams.LINT_TASK}")
+         def matcher = (outputs =~ /(Lint found .+\R)/)
+         message = matcher.find() ? "${matcher.group(0).trim()}." : "Lint checks successfully passed."
       } catch (e) {
          error = e
+         message = "Lint checks failed."
          println "${buildParams.LINT_TASK} was failed"
       }
-      def reportPath = buildParams.LINT_REPORT_FOLDER + '/' + buildParams.LINT_REPORT_FILE;
+      def reportPath = buildParams.LINT_REPORT_FOLDER + '/' + buildParams.LINT_REPORT_FILE_HTML;
       if (fileExists(reportPath)) {
          println "Try to publishHTML"
          publishHTML(target: [
@@ -46,10 +50,12 @@ utils.runBuild('android', utils.notifiers.gitlab(this)) {
                alwaysLinkToLastBuild: false,
                keepAll              : true,
                reportDir            : buildParams.LINT_REPORT_FOLDER,
-               reportFiles          : buildParams.LINT_REPORT_FILE,
+               reportFiles          : buildParams.LINT_REPORT_FILE_HTML,
                reportName           : "Lint Result"
          ])
+         androidLint pattern: "${buildParams.LINT_REPORT_FOLDER}/${buildParams.LINT_REPORT_FILE_XML}"
       }
+      notifier.comment(createLintComment(message))
       if (error != null) throw error
    }
    stage('tests') {
@@ -111,9 +117,15 @@ def Map generateParams() {
    buildParams.TEST_REPORT_PATTERN = '**/*.xml'
 
    buildParams.LINT_REPORT_FOLDER = 'app/build/reports'
-   buildParams.LINT_REPORT_FILE = "lint-results-${lintReportName}.html"
+   buildParams.LINT_REPORT_FILE_HTML = "lint-results-${lintReportName}.html"
+   buildParams.LINT_REPORT_FILE_XML = "lint-results-${lintReportName}.xml"
 
    return buildParams
+}
+
+@NonCPS
+def String createLintComment(String message) {
+   return "${message} [You can see Lint Report](${BUILD_URL}Lint_Result/)."
 }
 
 @NonCPS

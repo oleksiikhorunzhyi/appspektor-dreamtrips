@@ -37,7 +37,7 @@ public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGenera
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
 
-   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc}) public List<View> toggleableItems;
+   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc, R.id.item_display_options}) public List<View> toggleableItems;
 
    private MaterialDialog confirmFactoryResetDialog = null;
    private MaterialDialog noConnectionDialog = null;

@@ -288,7 +288,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @SuppressWarnings("ConstantConditions")
    void onProfileChosen() {
-      assertSmartCardConnected(() -> navigator.go(new WalletSettingsProfilePath()));
+      featureHelper.openEditProfile(getContext(),
+            () -> assertSmartCardConnected(() -> navigator.go(new WalletSettingsProfilePath())));
    }
 
    void navigateBack() {

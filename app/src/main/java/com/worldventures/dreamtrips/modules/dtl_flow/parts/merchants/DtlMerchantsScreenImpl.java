@@ -32,7 +32,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionMana
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
@@ -47,9 +46,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import flow.Flow;
-import flow.History;
-import flow.path.Path;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
       implements DtlMerchantsScreen, MerchantCellDelegate {
@@ -208,31 +204,23 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @OnClick(R.id.btn_filter_merchant_entertainment)
    @Override
    public void onClickEntertainment() {
-      /*if (!filterEntertainment.isSelected()) {
+      if (!filterEntertainment.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
 
          setStatusMerchantType(FilterData.ENTERTAINMENT);
-      }*/
-      Path path = new DtlPaymentPath(false, "42.78", "Scalini Fedeli");
-      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-      historyBuilder.push(path);
-      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      }
    }
 
    @OnClick(R.id.btn_filter_merchant_spa)
    @Override
    public void onClickSpa() {
-      /*if (!filterSpa.isSelected()) {
+      if (!filterSpa.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
 
          setStatusMerchantType(FilterData.SPAS);
-      }*/
-      Path path = new DtlPaymentPath(true, "42.78", "Scalini Fedeli");
-      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-      historyBuilder.push(path);
-      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      }
    }
 
    public static List<String> getFilterType() {

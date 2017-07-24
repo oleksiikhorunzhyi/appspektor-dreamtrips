@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl;
 
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
@@ -12,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
@@ -39,17 +38,17 @@ import static com.worldventures.dreamtrips.wallet.ui.settings.general.profile.co
 public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<WalletSettingsProfileScreen> implements WalletSettingsProfilePresenter {
 
    private final SmartCardUserDataInteractor smartCardUserDataInteractor;
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletProfileDelegate delegate;
 
    private SmartCardUser user;
 
    public WalletSettingsProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
-         SmartCardUserDataInteractor smartCardUserDataInteractor, SessionHolder<UserSession> appSessionHolder) {
+         SmartCardUserDataInteractor smartCardUserDataInteractor, WalletSocialInfoProvider socialInfoProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
-      this.appSessionHolder = appSessionHolder;
+      this.socialInfoProvider = socialInfoProvider;
       this.delegate = new WalletProfileDelegate(analyticsInteractor);
    }
 
@@ -175,7 +174,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @SuppressWarnings("ConstantConditions")
    @Override
    public void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()));
    }
 
    @SuppressWarnings("ConstantConditions")

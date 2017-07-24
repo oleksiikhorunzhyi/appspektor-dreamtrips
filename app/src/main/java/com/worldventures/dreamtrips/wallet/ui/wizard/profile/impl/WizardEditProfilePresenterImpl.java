@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl;
 
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -12,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
@@ -31,18 +30,18 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
 
    private final WizardInteractor wizardInteractor;
    private final AnalyticsInteractor analyticsInteractor;
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletFeatureHelper featureHelper;
 
    private final WalletProfileDelegate delegate;
 
    public WizardEditProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor,
-         SessionHolder<UserSession> appSessionHolder, WalletFeatureHelper featureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.appSessionHolder = appSessionHolder;
+      this.socialInfoProvider = socialInfoProvider;
       this.featureHelper = featureHelper;
       this.delegate = new WalletProfileDelegate(analyticsInteractor);
    }
@@ -78,7 +77,11 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    }
 
    private void attachProfile(WizardEditProfileScreen view) {
-      view.setProfile(delegate.toViewModel(appSessionHolder.get().get().getUser()));
+      view.setProfile(delegate.toViewModel(
+            socialInfoProvider.firstName(),
+            socialInfoProvider.lastName(),
+            socialInfoProvider.photoThumb()
+      ));
    }
 
    @Override
@@ -89,7 +92,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    @SuppressWarnings("ConstantConditions")
    @Override
    public void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(appSessionHolder.get().get().getUser()));
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()));
    }
 
    @Override

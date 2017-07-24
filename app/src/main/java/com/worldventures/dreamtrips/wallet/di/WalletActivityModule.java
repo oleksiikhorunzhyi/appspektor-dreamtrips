@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.app.Activity;
 
 import com.bluelinelabs.conductor.Router;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -30,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
 import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
@@ -353,9 +352,9 @@ public class WalletActivityModule {
 
    @Provides
    WizardWelcomePresenter provideWizardWelcomePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, SessionHolder<UserSession> sessionHolder,
+         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletSocialInfoProvider socialInfoProvider,
          AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
-      return new WizardWelcomePresenterImpl(navigator, smartCardInteractor, networkService, sessionHolder,
+      return new WizardWelcomePresenterImpl(navigator, smartCardInteractor, networkService, socialInfoProvider,
             analyticsInteractor, wizardInteractor);
    }
 
@@ -421,9 +420,9 @@ public class WalletActivityModule {
    WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
-         SessionHolder<UserSession> sessionHolder, WalletFeatureHelper walletFeatureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, WalletFeatureHelper walletFeatureHelper) {
       return new WizardEditProfilePresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
-            analyticsInteractor, sessionHolder, walletFeatureHelper);
+            analyticsInteractor, socialInfoProvider, walletFeatureHelper);
    }
 
    @Provides
@@ -588,9 +587,9 @@ public class WalletActivityModule {
    WalletSettingsProfilePresenter provideWalletSettingsProfilePresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          AnalyticsInteractor analyticsInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         SessionHolder<UserSession> sessionHolder) {
+         WalletSocialInfoProvider socialInfoProvider) {
       return new WalletSettingsProfilePresenterImpl(navigator, smartCardInteractor, networkService,
-            analyticsInteractor, smartCardUserDataInteractor, sessionHolder);
+            analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
    }
 
    @Provides

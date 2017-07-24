@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -26,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.smartcard.model.User;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -88,11 +88,11 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
    }
 
    @Override
-   public void welcomeMessage(User user) {
+   public void welcomeMessage(User.MemberStatus memberStatus) {
       final String welcomeText;
-      if (user.isGold()) {
+      if (memberStatus == User.MemberStatus.GOLD) {
          welcomeText = getString(R.string.wallet_wizard_welcome_gold_user);
-      } else if (user.isPlatinum()) {
+      } else if (memberStatus == User.MemberStatus.ACTIVE) {
          welcomeText = getString(R.string.wallet_wizard_welcome_platinum_user);
       } else {
          welcomeText = getString(R.string.wallet_wizard_welcome_simple_user);

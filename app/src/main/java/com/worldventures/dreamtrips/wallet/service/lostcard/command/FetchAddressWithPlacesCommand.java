@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
-import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.AddressHttpAction;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.PlacesNearbyHttpAction;
 

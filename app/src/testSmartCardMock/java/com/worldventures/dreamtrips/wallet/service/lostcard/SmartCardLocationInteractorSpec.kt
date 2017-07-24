@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.service.*
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.*
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.AddressRestResponse
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.ApiPlace
@@ -270,7 +271,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          val walletDetectLocationService: WalletDetectLocationService = mock()
          whenever(walletDetectLocationService.isPermissionGranted).thenReturn(true)
          whenever(walletDetectLocationService.detectLastKnownLocation()).thenReturn(Observable.just(location))
-         whenever(walletDetectLocationService.obtainAddressByGeoposition(any(), any())).thenReturn(Observable.just(address))
          return walletDetectLocationService
       }
 

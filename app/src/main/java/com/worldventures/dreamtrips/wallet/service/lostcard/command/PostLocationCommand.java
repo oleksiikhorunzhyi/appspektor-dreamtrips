@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.api.smart_card.location.model.ImmutableSmart
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationBody;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -29,7 +30,7 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 @CommandAction
-public class PostLocationCommand extends Command<Void> implements InjectableAction{
+public class PostLocationCommand extends Command<Void> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject LostCardRepository locationRepository;
@@ -43,38 +44,39 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      final WalletLocation walletLocation = WalletLocationsUtil.getLatestLocation(locationRepository.getWalletLocations());
-      if (walletLocation != null && walletLocation.postedAt() != null) {
+      final List<WalletLocation> savedLocations = Collections.unmodifiableList(locationRepository.getWalletLocations());
+      final WalletLocation walletLocation = WalletLocationsUtil.getLatestLocation(savedLocations);
+      if (walletLocation == null || walletLocation.postedAt() != null) {
          callback.onSuccess(null);
          return;
       }
-      Observable.merge(postLocations(), commandPublishSubject)
-            .flatMap(aVoid -> wipeRedundantLocations())
+      Observable.merge(postLocations(savedLocations), commandPublishSubject)
+            .flatMap(aVoid -> wipeRedundantLocations(savedLocations))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<Void> postLocations() {
+   private Observable<Void> postLocations(List<WalletLocation> locations) {
       return observeActiveSmartCard()
-            .flatMap(activeSmartCardCommand -> observeLocationsPost(activeSmartCardCommand.getResult().smartCardId()))
-            .map(createSmartCardLocationHttpAction -> (Void) null);
+            .flatMap(smartCard -> observeLocationsPost(locations, smartCard))
+            .map(action -> (Void) null);
    }
 
-   private Observable<ActiveSmartCardCommand> observeActiveSmartCard() {
+   private Observable<SmartCard> observeActiveSmartCard() {
       return smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new ActiveSmartCardCommand());
+            .createObservableResult(new ActiveSmartCardCommand())
+            .map(Command::getResult);
    }
 
-   private Observable<CreateSmartCardLocationHttpAction> observeLocationsPost(String smartCardId) {
+   private Observable<CreateSmartCardLocationHttpAction> observeLocationsPost(List<WalletLocation> locations, SmartCard smartCard) {
       return janet.createPipe(CreateSmartCardLocationHttpAction.class, Schedulers.io())
-            .createObservableResult(new CreateSmartCardLocationHttpAction(Long.parseLong(smartCardId),
-                  prepareRequestBody(locationRepository.getWalletLocations())));
+            .createObservableResult(new CreateSmartCardLocationHttpAction(Long.parseLong(smartCard.smartCardId()),
+                  prepareRequestBody(locations)));
 
    }
 
-   private Observable<Void> wipeRedundantLocations() {
-      final WalletLocation lastLocation = Queryable.from(locationRepository.getWalletLocations())
-            .sort((smartCardLocation1, smartCardLocation2)
-                  -> smartCardLocation1.createdAt().compareTo(smartCardLocation2.createdAt()))
+   private Observable<Void> wipeRedundantLocations(List<WalletLocation> locations) {
+      final WalletLocation lastLocation = Queryable.from(locations)
+            .sort((location1, location2) -> location1.createdAt().compareTo(location2.createdAt()))
             .last();
       final WalletLocation postedLocation = ImmutableWalletLocation.builder()
             .from(lastLocation)

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard;
 import android.content.Context;
 import android.os.Parcelable;
 
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
@@ -21,11 +22,11 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordina
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -55,12 +56,13 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    @Inject WalletDetectLocationService locationService;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
+   private final LocationScreenComponent locationScreenComponent;
 
-   private final LocationSettingsService locationSettingsService;
-
-   public LostCardPresenter(Context context, LocationSettingsService locationSettingsService, Injector injector) {
+   public LostCardPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.locationSettingsService = locationSettingsService;
+      // // TODO: 7/21/17 move to dagger provider method
+      //noinspection all
+      locationScreenComponent = (LocationScreenComponent) context.getSystemService(LocationScreenComponent.COMPONENT_NAME);
    }
 
    @Override
@@ -139,7 +141,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS, showRationale)
             .compose(bindView())
             .subscribe(new PermissionSubscriber()
-                  .onPermissionGrantedAction(this::checkLocationServiceEnabled)
+                  .onPermissionGrantedAction(this::checkLocationSettings)
                   .onPermissionRationaleAction(() -> {
                      getView().showRationaleForLocation();
                      applyTrackingStatus(false);
@@ -181,15 +183,20 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       fetchAddressWithPlaces(fetchAddressWithPlacesCommand.getCoordinates());
    }
 
-   private void checkLocationServiceEnabled() {
-      locationSettingsService.enableLocationApi()
+   private void checkLocationSettings() {
+      locationService.fetchLastKnownLocationSettings()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(this::checkLocationServiceResult, throwable -> Timber.d(throwable, ""));
+   }
+
+   private void checkLocationServiceResult(LocationSettingsResult result) {
+      locationScreenComponent.checkSettingsResult(result)
             .compose(bindView())
-            .take(1)
             .subscribe(this::onLocationSettingsResult);
    }
 
-   private void onLocationSettingsResult(LocationSettingsService.EnableResult result) {
-      applyTrackingStatus(result == LocationSettingsService.EnableResult.AVAILABLE);
+   private void onLocationSettingsResult(LocationScreenComponent.EnableResult result) {
+      applyTrackingStatus(result == LocationScreenComponent.EnableResult.AVAILABLE);
    }
 
    private void applyTrackingStatus(boolean enableTracking) {

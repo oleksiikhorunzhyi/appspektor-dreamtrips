@@ -1,7 +1,8 @@
-package com.worldventures.dreamtrips.wallet.service;
+package com.worldventures.dreamtrips.wallet.service.location;
 
-import android.location.Address;
 import android.location.Location;
+
+import com.google.android.gms.location.LocationSettingsResult;
 
 import rx.Observable;
 
@@ -11,9 +12,9 @@ public interface WalletDetectLocationService {
 
    boolean isEnabled();
 
+   Observable<LocationSettingsResult> fetchLastKnownLocationSettings();
+
    Observable<Boolean> observeLocationSettingState();
 
    Observable<Location> detectLastKnownLocation();
-
-   Observable<Address> obtainAddressByGeoposition(double latitude, double longitude);
 }

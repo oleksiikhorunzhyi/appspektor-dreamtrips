@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardAction;
@@ -15,7 +16,6 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCar
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -45,6 +45,7 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject WalletBluetoothService bluetoothService;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
    private final CheckPinDelegate checkPinDelegate;
 
    public ExistingCardDetectPresenter(Context context, Injector injector) {
@@ -149,8 +150,8 @@ public class ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDet
             .send(new WalletAnalyticsCommand(action));
    }
 
-   void retryFactoryReset() {
-      checkPinDelegate.getFactoryResetDelegate().factoryReset();
+   HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen, FactoryResetView {

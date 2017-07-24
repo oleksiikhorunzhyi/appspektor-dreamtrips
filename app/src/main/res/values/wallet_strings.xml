@@ -73,7 +73,7 @@
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
 
-   <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart card is already assigned</string>
+   <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart Card is already assigned</string>
 
    <string name="wallet_payment_cards_title">Payment cards</string>
    <string name="wallet_loyalty_cards_title">Loyalty cards</string>
@@ -81,7 +81,7 @@
    <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode.</string>
    <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
-   <string name="wallet_wizard_manual_input_card_is_assigned">Smart card is already assigned</string>
+   <string name="wallet_wizard_manual_input_card_is_assigned">Smart Card is already assigned</string>
 
    <!--details-->
    <string name="wallet_card_details_title">Card Details</string>

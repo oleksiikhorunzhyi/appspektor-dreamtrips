@@ -58,7 +58,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.Wall
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;

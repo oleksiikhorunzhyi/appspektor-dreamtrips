@@ -31,7 +31,7 @@ public class RetryDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
    @Nullable
    @Override
-   public ErrorView<T> create(T t, Throwable throwable) {
+   public ErrorView<T> create(T t, Throwable parentThrowable, Throwable throwable) {
       return errorView;
    }
 }

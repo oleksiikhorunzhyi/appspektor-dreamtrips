@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.mobilesdk.service.ServiceLabel;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
@@ -42,11 +41,14 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
 
    @Override
    @Nullable
-   public ErrorView<T> create(T t, Throwable throwable) {
+   public ErrorView<T> create(T t, @Nullable Throwable parentThrowable, Throwable throwable) {
       throwable = throwable instanceof HttpServiceException ? throwable.getCause() : throwable;
 
-      if (throwable instanceof JanetActionException &&
-            ((JanetActionException) throwable).getAction() instanceof ServiceLabel) {
+      boolean parentIsJanetException = parentThrowable != null && parentThrowable instanceof JanetActionException;
+
+      if (throwable instanceof JanetActionException || parentIsJanetException) {
+         if (parentIsJanetException) throwable = parentThrowable;
+
          final Object action = ((JanetActionException) throwable).getAction();
          final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null);
          if (httpErrorMessage == null) return null;

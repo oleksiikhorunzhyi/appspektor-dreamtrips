@@ -32,7 +32,7 @@ public class SCConnectionErrorViewProvider<T> implements ErrorViewProvider<T> {
    }
 
    @Override
-   public ErrorView<T> create(T t, Throwable throwable) {
+   public ErrorView<T> create(T t, Throwable parentThrowable, Throwable throwable) {
       return new SimpleErrorView<>(context, context.getString(R.string.wallet_smart_card_is_disconnected),
             negAction, R.string.ok, posAction, R.string.wallet_retry_label);
    }

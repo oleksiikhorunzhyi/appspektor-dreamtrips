@@ -160,7 +160,7 @@
    <string name="wallet_card_settings_profile_dialog_error_server_content">We\'re sorry there was an error communicating with the server. Please try again later.</string>
    <string name="wallet_card_settings_profile_dialog_error_network_unavailable">You don\'t have internet connection. Check it and try again.</string>
    <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Please make sure your Smart Card is on and Bluetooth is enabled on your phone.</string>
-   <string name="wallet_card_settings_profile_display_settings_label">Display Settings</string>
+   <string name="wallet_card_settings_profile_display_settings_label">Display Options</string>
    <string name="wallet_card_settings_profile_display_settings_exception_photo">Removing your photo will reset your Smart Card\'s display setting. Would you like to continue?</string>
    <string name="wallet_card_settings_profile_display_settings_exception_phone">Removing your phone number will reset your Smart Card\'s display setting. Would you like to continue?</string>
 

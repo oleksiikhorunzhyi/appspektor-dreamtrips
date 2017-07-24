@@ -81,7 +81,7 @@ class LostCardManager {
             .map(command -> command.getResult().smartCardId())
             .flatMap(activeSmartCardId -> beaconClient.observeEvents()
                   .filter(beaconEvent -> beaconEvent.getSmartCardId() != null)
-                  .doOnNext(beaconEvent -> Timber.d("Beacon event :: %s", beaconEvent))
+                  .doOnNext(beaconEvent -> Timber.d("Beacon client :: on beacon event - %s", beaconEvent))
 
                   .doOnSubscribe(() -> beaconClient.startScan(
                         new RegionBundle("Motion region", UUID_MOTION, null, activeSmartCardId)))
@@ -89,7 +89,7 @@ class LostCardManager {
 
             .subscribe(beaconEvent -> triggerLocation(beaconEvent.enteredRegion() ?
                         WalletLocationType.CONNECT : WalletLocationType.DISCONNECT),
-                  throwable -> Timber.e(throwable, "observeBeacon"))
+                  throwable -> Timber.e(throwable, "Beacon client :: observeBeacon"))
       );
    }
 

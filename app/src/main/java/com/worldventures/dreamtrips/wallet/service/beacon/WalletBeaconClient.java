@@ -38,6 +38,7 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
       this.context = context;
 
       beaconManager = BeaconManager.getInstanceForApplication(context);
+      beaconManager.setEnableScheduledScanJobs(true);
       beaconManager.getBeaconParsers().clear();
       beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(BEACON_LAYOUT));
    }
@@ -52,10 +53,11 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
       if (beaconManager.isBound(this)) return;
 
       try {
+         Timber.d("Beacon client :: start scan with settings - %s", bundle);
          prepareRegion(bundle);
          beaconManager.bind(this);
       } catch (BeaconManager.ServiceNotDeclaredException e) {
-         Timber.e(e, "startScan");
+         Timber.e(e, "Beacon client :: startScan");
       }
    }
 
@@ -69,12 +71,14 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    @Override
    public void onBeaconServiceConnect() {
+      Timber.d("Beacon client :: service connected :: scan region - %s", scanRegion);
       regionBootstrap = new RegionBootstrap(this, scanRegion);
       backgroundPowerSaver = new BackgroundPowerSaver(context);
    }
 
    @Override
    public void stopScan() {
+      Timber.d("Beacon client :: stop scan");
       if (regionBootstrap != null) {
          regionBootstrap.disable();
          regionBootstrap = null;

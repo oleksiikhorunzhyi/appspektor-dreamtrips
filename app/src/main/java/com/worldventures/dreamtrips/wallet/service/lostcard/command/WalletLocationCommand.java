@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import timber.log.Timber;
 
 @CommandAction
 public class WalletLocationCommand extends Command<WalletLocation> implements InjectableAction {
@@ -51,6 +52,7 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
    }
 
    private Observable<WalletLocation> saveLocation(WalletLocation location) {
+      Timber.d("Beacon client :: save location - %s", location);
       final List<WalletLocation> walletLocations = locationRepository.getWalletLocations();
       walletLocations.add(location);
       locationRepository.saveWalletLocations(walletLocations);

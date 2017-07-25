@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
@@ -57,6 +58,12 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
    public String getAuthToken() {
       return NewDreamTripsHttpService.getAuthorizationHeader(appSessionHolder.get().get().getApiToken());
+   }
+
+   public String getLegacyAuthTokenBase64() {
+      String legacyToken = appSessionHolder.get().get().getUsername() + ":" + appSessionHolder.get().get().getLegacyApiToken();
+      String base64 = ProjectTextUtils.convertToBase64(legacyToken);
+      return "Basic " + base64;
    }
 
    public void track(Route route) {

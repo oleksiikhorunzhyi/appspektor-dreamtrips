@@ -79,6 +79,7 @@ ext {
                appParams: [
                      api      : [
                            DreamTripsApi          : [String: '"https://dtapp.worldventures.biz"'],
+                           BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
                            UPLOADERY_API_URL      : [String: '"http://dtappuploads.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.dreamtrips.com"'],
                            API_TIMEOUT_SEC        : [long: '15'],

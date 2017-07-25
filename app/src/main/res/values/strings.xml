@@ -596,4 +596,5 @@
    <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Failed to process. Something wrong with video</string>
 
+   <string name="wv_advantage">WVA</string>
 </resources>

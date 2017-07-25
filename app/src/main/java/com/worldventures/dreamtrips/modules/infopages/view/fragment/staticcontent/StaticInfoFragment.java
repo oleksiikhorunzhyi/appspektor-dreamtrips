@@ -399,7 +399,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Override
    public void reload(String url) {
       webView.loadUrl("about:blank");
-      webView.loadUrl(url);
+      webView.loadUrl(url, getHeaders());
    }
 
    @Override

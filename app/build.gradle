@@ -254,9 +254,14 @@ dependencies {
 
    // customized dependencies
 
-   compile(deps.provide(deps.networking.apiMonolith)) {
+   /*compile(deps.provide(deps.networking.apiMonolith)) {
+      exclude group: 'joda-time'
+   }*/
+   compile project(':integration-check')
+   compile (project(':library')) {
       exclude group: 'joda-time'
    }
+
    devCompile deps.provide(deps.util.leakcanary)
    devpremarshmallowCompile deps.provide(deps.util.leakcanary)
    externalCompile deps.provide(deps.util.leakcanaryNoOp)

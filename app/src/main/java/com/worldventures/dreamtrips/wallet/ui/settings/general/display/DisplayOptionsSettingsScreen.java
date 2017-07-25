@@ -6,11 +6,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserView;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
-public interface DisplayOptionsSettingsScreen extends WalletScreen{
+public interface DisplayOptionsSettingsScreen extends WalletScreen, UpdateSmartCardUserView {
 
    void setupViewPager(@NonNull SmartCardUser user, @SetHomeDisplayTypeAction.HomeDisplayType int type);
 

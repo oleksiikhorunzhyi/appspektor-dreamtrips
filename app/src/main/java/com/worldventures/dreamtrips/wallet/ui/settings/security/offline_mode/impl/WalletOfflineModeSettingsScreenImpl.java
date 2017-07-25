@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -50,7 +51,7 @@ public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<Wa
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-      tvPleaseNoteMessage.setText(Html.fromHtml(getString(R.string.wallet_offline_mode_please_note_message)));
+      tvPleaseNoteMessage.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_offline_mode_please_note_message)));
       enableOfflineModeObservable = RxCompoundButton.checkedChanges(offlineModeSwitcher).skip(1);
    }
 
@@ -141,7 +142,7 @@ public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<Wa
 
          @Nullable
          @Override
-         public ErrorView<SwitchOfflineModeCommand> create(SwitchOfflineModeCommand switchOfflineModeCommand, Throwable throwable) {
+         public ErrorView<SwitchOfflineModeCommand> create(SwitchOfflineModeCommand switchOfflineModeCommand, Throwable parentThrowable, Throwable throwable) {
             return new DialogErrorView<SwitchOfflineModeCommand>(getContext()) {
                @Override
                protected MaterialDialog createDialog(SwitchOfflineModeCommand command, Throwable throwable, Context context) {

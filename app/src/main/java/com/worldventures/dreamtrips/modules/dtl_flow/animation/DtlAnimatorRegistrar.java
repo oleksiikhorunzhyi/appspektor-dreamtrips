@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 //import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPath;
 //import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodePath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScannerEnterAnimFactory;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScannerExitAnimFactory;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScannerEnterAnimFactory;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScannerExitAnimFactory;
 //import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 //import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
 //import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;

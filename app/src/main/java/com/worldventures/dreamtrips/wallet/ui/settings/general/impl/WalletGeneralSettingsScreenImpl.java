@@ -40,7 +40,7 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
    @InjectView(R.id.profile_name) TextView profileName;
    @InjectView(R.id.profile_photo) SimpleDraweeView profilePhoto;
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
-   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc}) List<View> toggleableItems;
+   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc, R.id.item_display_options}) List<View> toggleableItems;
 
    @Inject WalletGeneralSettingsPresenter presenter;
 

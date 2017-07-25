@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection;
 
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
 public interface ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDetectScreen> {
@@ -15,5 +16,7 @@ public interface ExistingCardDetectPresenter extends WalletPresenter<ExistingCar
    void unassignCard();
 
    void unassignCardOnBackend();
+
+   HttpErrorHandlingUtil httpErrorHandlingUtil();
 
 }

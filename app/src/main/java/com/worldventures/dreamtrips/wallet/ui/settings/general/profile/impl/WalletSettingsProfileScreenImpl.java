@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,31 +22,19 @@ import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
-import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
-import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
-import com.worldventures.dreamtrips.wallet.util.FirstNameException;
-import com.worldventures.dreamtrips.wallet.util.LastNameException;
-import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
-import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 
 import java.io.File;
 
 import javax.inject.Inject;
 
-import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -230,21 +216,14 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
    }
 
    @Override
-   public OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation() {
-      return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.wallet_long_operation_hint, false),
-            ErrorViewFactory.<UpdateSmartCardUserCommand>builder()
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
-                  .addProvider(provideDisplayTypeExceptionHandler(MissingUserPhotoException.class, R.string.wallet_card_settings_profile_display_settings_exception_photo))
-                  .addProvider(provideDisplayTypeExceptionHandler(MissingUserPhoneException.class, R.string.wallet_card_settings_profile_display_settings_exception_phone))
-                  .addProvider(provideUploadDataExceptionHandler())
-                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
-                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
-                  .build()
-      );
+   public OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation(WalletProfileDelegate delegate) {
+      return new UpdateSmartCardUserOperationView.UpdateUser(getContext(), delegate,
+            () -> getPresenter().confirmDisplayTypeChange());
+   }
+
+   @Override
+   public OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation(WalletProfileDelegate delegate) {
+      return new UpdateSmartCardUserOperationView.RetryHttpUpload(getContext(), delegate);
    }
 
    @Override
@@ -257,37 +236,6 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
                .build();
       }
       if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
-   }
-
-   @Override
-   public OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation() {
-      return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
-            ErrorViewFactory.<RetryHttpUploadUpdatingCommand>builder()
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
-                  .addProvider(provideUploadDataExceptionHandler())
-                  .build()
-      );
-   }
-
-   private <T> ErrorViewProvider<T> provideUploadDataExceptionHandler() {
-      final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(getContext(),
-            UploadProfileDataException.class,
-            R.string.wallet_card_settings_profile_dialog_error_server_content,
-            command -> getPresenter().retryUploadToServer(),
-            command -> getPresenter().cancelUploadServerUserData());
-      errorProvider.setPositiveText(R.string.retry);
-      return errorProvider;
-   }
-
-   private <T> ErrorViewProvider<T>
-   provideDisplayTypeExceptionHandler(Class<? extends Throwable> throwable, @StringRes int message) {
-      final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(
-            getContext(), throwable, message,
-            command -> getPresenter().confirmDisplayTypeChange(), t -> {
-      });
-      errorProvider.setPositiveText(R.string.wallet_continue_label);
-      return errorProvider;
    }
 
    @Override

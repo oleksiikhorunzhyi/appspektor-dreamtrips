@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -37,13 +38,13 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
 
    public WizardEditProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor,
-         WalletSocialInfoProvider socialInfoProvider, WalletFeatureHelper featureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.socialInfoProvider = socialInfoProvider;
       this.featureHelper = featureHelper;
-      this.delegate = new WalletProfileDelegate(analyticsInteractor);
+      this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
    @Override

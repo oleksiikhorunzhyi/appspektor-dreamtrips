@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detectio
 
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardAction;
@@ -33,11 +34,14 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
 
    private final AnalyticsInteractor analyticsInteractor;
    private final CheckPinDelegate checkPinDelegate;
+   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    public ExistingCardDetectPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor) {
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
+         FactoryResetInteractor factoryResetInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
+      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.NEW_CARD);
    }
@@ -125,6 +129,11 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
                      getNavigator().goUnassignSuccess();
                   })
                   .create());
+   }
+
+   @Override
+   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public void goBack() {

@@ -19,10 +19,6 @@ public interface WalletSettingsProfilePresenter extends WalletPresenter<WalletSe
 
    void goBack();
 
-   void retryUploadToServer();
-
-   void cancelUploadServerUserData();
-
    void confirmDisplayTypeChange();
 
    void handleBackOnDataChanged();

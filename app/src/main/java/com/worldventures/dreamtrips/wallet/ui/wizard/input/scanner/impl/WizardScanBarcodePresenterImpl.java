@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.impl;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl;
 
 
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodeScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodeScreen;
 
-public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardScanBarcodeScreen> implements WizardScanBarcodePresenter{
+public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardScanBarcodeScreen> implements WizardScanBarcodePresenter {
 
    private final PermissionDispatcher permissionDispatcher;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;

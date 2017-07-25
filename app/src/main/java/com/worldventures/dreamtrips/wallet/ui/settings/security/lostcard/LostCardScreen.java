@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.model.LostCardPin;
@@ -12,8 +11,6 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public interface LostCardScreen extends WalletScreen{
-
-   LocationSettingsService getLocationSettingsService();
 
    Observable<Boolean> observeTrackingEnable();
 

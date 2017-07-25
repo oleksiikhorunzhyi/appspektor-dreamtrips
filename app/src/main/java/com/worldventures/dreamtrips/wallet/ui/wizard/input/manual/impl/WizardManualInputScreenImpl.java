@@ -98,7 +98,8 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> getPresenter().retry(command.barcode), c -> { /*nothing*/ })
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
+                        command -> getPresenter().retry(command.barcode), c -> { /*nothing*/ })
                   ).build()
       );
    }

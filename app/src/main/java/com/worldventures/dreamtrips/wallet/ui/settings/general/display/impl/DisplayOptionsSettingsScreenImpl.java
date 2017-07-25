@@ -18,6 +18,8 @@ import android.view.WindowManager;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
@@ -38,6 +40,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOp
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsViewHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -197,6 +201,16 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
             : null;
    }
 
+   @Override
+   public OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation(WalletProfileDelegate delegate) {
+      return new UpdateSmartCardUserOperationView.UpdateUser(getContext(), delegate, null);
+   }
+
+   @Override
+   public OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation(WalletProfileDelegate delegate) {
+      return new UpdateSmartCardUserOperationView.RetryHttpUpload(getContext(), delegate);
+   }
+
    @NonNull
    private ErrorViewProvider<SaveDisplayTypeCommand>
    getUserRequiredInfoMissingDialogProvider(Class<? extends Throwable> error, @StringRes int title, @StringRes int message) {
@@ -208,7 +222,7 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
          @Nullable
          @Override
-         public ErrorView<SaveDisplayTypeCommand> create(SaveDisplayTypeCommand command, Throwable throwable) {
+         public ErrorView<SaveDisplayTypeCommand> create(SaveDisplayTypeCommand command, Throwable parentThrowable, Throwable throwable) {
             return new DialogErrorView<SaveDisplayTypeCommand>(getContext()) {
                @Override
                protected MaterialDialog createDialog(SaveDisplayTypeCommand command, Throwable throwable, Context context) {

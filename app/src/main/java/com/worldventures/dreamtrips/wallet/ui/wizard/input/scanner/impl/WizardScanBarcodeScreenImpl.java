@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.impl;
+package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl;
 
 
 import android.support.annotation.NonNull;
@@ -15,12 +15,13 @@ import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStat
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeFinder;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeScanner;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodeScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodeScreen;
 
 import javax.inject.Inject;
 
@@ -116,6 +117,8 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NumberFormatException.class,
+                        R.string.wallet_wizard_scan_barcode_invalid_format))
                   .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
                         command -> getPresenter().retry(command.barcode),
                         command -> { /*nothing*/ }))

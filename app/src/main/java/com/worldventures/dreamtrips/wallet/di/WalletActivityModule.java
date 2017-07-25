@@ -26,12 +26,13 @@ import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
-import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
+import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -173,9 +174,9 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckin
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.WizardScanBarcodePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.impl.WizardScanBarcodePresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scaner.impl.WizardScanBarcodeScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodeScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl.PairKeyPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl.PairKeyScreenImpl;
@@ -420,9 +421,10 @@ public class WalletActivityModule {
    WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
-         WalletSocialInfoProvider socialInfoProvider, WalletFeatureHelper walletFeatureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
+         WalletFeatureHelper walletFeatureHelper) {
       return new WizardEditProfilePresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
-            analyticsInteractor, socialInfoProvider, walletFeatureHelper);
+            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor, walletFeatureHelper);
    }
 
    @Provides
@@ -541,9 +543,9 @@ public class WalletActivityModule {
    @Provides
    ExistingCardDetectPresenter provideExistingCardDetectPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
-         FactoryResetInteractor factoryResetInteractor) {
+         FactoryResetInteractor factoryResetInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       return new ExistingCardDetectPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor,
-            factoryResetInteractor);
+            factoryResetInteractor, httpErrorHandlingUtil);
    }
 
    @Provides
@@ -603,10 +605,13 @@ public class WalletActivityModule {
    LostCardPresenter provideLostCardPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          PermissionDispatcher permissionDispatcher, SmartCardLocationInteractor smartCardLocationInteractor,
-         WalletDetectLocationService walletDetectLocationService, AnalyticsInteractor analyticsInteractor,
+         WalletDetectLocationService walletDetectLocationService, Activity activity, AnalyticsInteractor analyticsInteractor,
          HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      //noinspection all
       return new LostCardPresenterImpl(navigator, smartCardInteractor, networkService, permissionDispatcher,
-            smartCardLocationInteractor, walletDetectLocationService, analyticsInteractor, httpErrorHandlingUtil);
+            smartCardLocationInteractor, walletDetectLocationService,
+            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor,
+            httpErrorHandlingUtil);
    }
 
    @Provides
@@ -633,8 +638,10 @@ public class WalletActivityModule {
 
    @Provides
    DisplayOptionsSettingsPresenter provideDisplayOptionsSettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
-      return new DisplayOptionsSettingsPresenterImpl(navigator, smartCardInteractor, networkService);
+         SmartCardInteractor smartCardInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+      return new DisplayOptionsSettingsPresenterImpl(navigator, smartCardInteractor, smartCardUserDataInteractor,
+            networkService, analyticsInteractor);
    }
 
    @Provides

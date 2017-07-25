@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -51,8 +50,8 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 import static android.graphics.Bitmap.createBitmap;
-import static android.view.View.VISIBLE;
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, LostCardPresenter> implements LostCardScreen {
 
@@ -72,7 +71,6 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    private Observable<Boolean> enableTrackingObservable;
-   private LocationSettingsService locationSettingsService;
    private GoogleMap googleMap;
 
    public LostCardScreenImpl() {
@@ -85,9 +83,7 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
       enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher).skip(1);
 
       initMap();
-      //// TODO: 2/14/17 fromHtml is deprecated from 24 API
-      //noinspection all
-      tvDisableLostCardMsg.setText(Html.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
+      tvDisableLostCardMsg.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
    }
 
    @Override
@@ -95,8 +91,6 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
       super.onAttach(view);
       mapView.onCreate(null);
       mapView.onResume();
-      //noinspection all
-      locationSettingsService = (LocationSettingsService) getContext().getSystemService(LocationSettingsService.SERVICE_NAME);
    }
 
    @Override
@@ -108,11 +102,6 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
 
    protected void onNavigationClick() {
       getPresenter().goBack();
-   }
-
-   @Override
-   public LocationSettingsService getLocationSettingsService() {
-      return locationSettingsService;
    }
 
    @Override

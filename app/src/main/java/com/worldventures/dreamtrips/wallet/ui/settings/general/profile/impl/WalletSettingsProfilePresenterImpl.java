@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -15,8 +13,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
-import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
-import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -25,10 +21,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSet
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.functions.Action0;
 import timber.log.Timber;
 
@@ -49,7 +46,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
       super(navigator, smartCardInteractor, networkService);
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.socialInfoProvider = socialInfoProvider;
-      this.delegate = new WalletProfileDelegate(analyticsInteractor);
+      this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
    @Override
@@ -57,9 +54,9 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
       super.attachView(view);
 
       fetchProfile();
-      observeUploading(view);
       observeChangeFields(view);
 
+      delegate.observeProfileUploading(view, this::goBack, throwable -> view.setDoneButtonEnabled(isDataChanged()));
       delegate.observePickerAndCropper(view);
       delegate.sendAnalytics(new SmartCardProfileAction());
 
@@ -82,27 +79,9 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @SuppressWarnings("ConstantConditions")
    private void setUser(SmartCardUser user) {
       this.user = user;
-      getView().setUser(delegate.toViewModel(user));
-   }
-
-   private void observeUploading(WalletSettingsProfileScreen view) {
-      smartCardUserDataInteractor.updateSmartCardUserPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
-            .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation())
-                  .onSuccess(setupUserDataCommand -> {
-                     delegate.sendAnalytics(new ProfileChangesSavedAction());
-                     goBack();
-                  })
-                  .onFail((command, throwable) -> view.setDoneButtonEnabled(isDataChanged()))
-                  .create());
-
-      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()))
-            .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation()).create());
+      if (getView().getUser().isEmpty()) {
+         getView().setUser(delegate.toViewModel(user));
+      }
    }
 
    @Override
@@ -151,22 +130,9 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
                   equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
-
-
-
-   @Override
-   public void cancelUploadServerUserData() {
-      smartCardUserDataInteractor.revertSmartCardUserUpdatingPipe().send(new RevertSmartCardUserUpdatingCommand());
-   }
-
    @Override
    public void goBack() {
       getNavigator().goBack();
-   }
-
-   @Override
-   public void retryUploadToServer() {
-      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe().send(new RetryHttpUploadUpdatingCommand());
    }
 
    @SuppressWarnings("ConstantConditions")
@@ -190,8 +156,17 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @SuppressWarnings("ConstantConditions")
    @Override
    public void openDisplaySettings() {
-      assertSmartCardConnected(() -> getNavigator().goSettingsDisplayOptions(DisplayOptionsSource.PROFILE,
-            delegate.createSmartCardUser(getView().getUser())));
+      assertSmartCardConnected(() -> {
+         final SmartCardUser user = isDataChanged() ? delegate.createSmartCardUser(getView().getUser()) : null;
+         try {
+            if (user != null) {
+               WalletValidateHelper.validateUserFullNameOrThrow(user.firstName(), user.middleName(), user.lastName());
+            }
+            getNavigator().goSettingsDisplayOptions(DisplayOptionsSource.PROFILE, user);
+         } catch (FormatException e) {
+            getView().provideUpdateSmartCardOperation(delegate).showError(null, e);
+         }
+      });
    }
 
    @SuppressWarnings("ConstantConditions")

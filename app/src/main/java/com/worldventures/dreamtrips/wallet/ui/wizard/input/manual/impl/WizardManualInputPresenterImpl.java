@@ -28,12 +28,13 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
       this.analyticsInteractor = analyticsInteractor;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       this.inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
-            getView(), InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor));
+            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor));
    }
 
    @Override
    public void attachView(WizardManualInputScreen view) {
       super.attachView(view);
+      inputBarcodeDelegate.init(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new ManualCardInputAction()));
       observeScidInput();

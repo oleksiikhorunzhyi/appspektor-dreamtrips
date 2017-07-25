@@ -14,4 +14,6 @@ public interface WalletDisableDefaultCardScreen extends WalletScreen {
    int getSelectedPosition();
 
    String getTextBySelectedModel(SettingsRadioModel selectedDelay);
+
+   void setDelayChanged(boolean delayWasChanged);
 }

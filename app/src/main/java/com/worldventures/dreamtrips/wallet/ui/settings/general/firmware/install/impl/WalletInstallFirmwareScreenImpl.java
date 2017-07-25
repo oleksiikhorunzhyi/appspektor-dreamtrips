@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +40,8 @@ import static android.view.View.VISIBLE;
 
 public class WalletInstallFirmwareScreenImpl extends WalletBaseController<WalletInstallFirmwareScreen, WalletInstallFirmwarePresenter> implements WalletInstallFirmwareScreen {
 
+   private static final String KEY_INSTALL_STARTED = "key_install_started";
+
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
    @InjectView(R.id.progressStatusLabel) TextView progressStatusLabel;
    @InjectView(R.id.install_step) TextView installStep;
@@ -46,6 +49,7 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
 
    @Inject WalletInstallFirmwarePresenter presenter;
 
+   private boolean started;
    private Dialog errorDialog;
 
    @Override
@@ -118,6 +122,28 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
    public void showInstallingStatus(int currentStep, int totalSteps, int progress) {
       progressStatusLabel.setText(String.format("%d%%", progress));
       installStep.setText(getString(R.string.wallet_firmware_install_sub_text, currentStep, totalSteps));
+   }
+
+   @Override
+   public void setInstallStarted(boolean started) {
+      this.started = started;
+   }
+
+   @Override
+   public boolean isInstallStarted() {
+      return started;
+   }
+
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      outState.putBoolean(KEY_INSTALL_STARTED,  started);
+      super.onSaveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      started = savedInstanceState.getBoolean(KEY_INSTALL_STARTED, false);
    }
 
    private CharSequence createDialogContentText() {

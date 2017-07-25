@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl;
 
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,21 +105,17 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
       return presenter;
    }
 
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      outState.putParcelable(PROFILE_STATE_KEY, viewModel);
+      super.onSaveInstanceState(outState);
+   }
 
-   //   TODO : uncomment on implement
-//   @Override
-//   protected Parcelable onSaveInstanceState() {
-//      Bundle bundle = (Bundle) super.onSaveInstanceState();
-//      bundle.putParcelable(PROFILE_STATE_KEY, viewModel);
-//      return bundle;
-//   }
-//
-//   @Override
-//   protected void onRestoreInstanceState(Parcelable state) {
-//      super.onRestoreInstanceState(state);
-//      Bundle bundle = (Bundle) state;
-//      setProfile(bundle.getParcelable(PROFILE_STATE_KEY));
-//   }
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      setProfile(savedInstanceState.getParcelable(PROFILE_STATE_KEY));
+   }
 
    protected void navigateButtonClick() {
       getPresenter().back();

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.impl;
 
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,8 @@ import butterknife.InjectView;
 
 public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<WalletDisableDefaultCardScreen, WalletDisableDefaultCardPresenter> implements WalletDisableDefaultCardScreen {
 
+   private static final String KEY_DELAY_CHANGED = "key_delay_changed";
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.disable_variant_list) RecyclerView recyclerView;
 
@@ -38,6 +41,7 @@ public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<Wal
 
    private SingleSelectionManager selectionManager;
    private BaseDelegateAdapter adapter;
+   private boolean delayWasChanged;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -119,5 +123,30 @@ public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<Wal
    @Override
    public String getTextBySelectedModel(SettingsRadioModel selectedDelay) {
       return getString(selectedDelay.getTextResId());
+   }
+
+   @Override
+   public void setDelayChanged(boolean delayWasChanged) {
+      this.delayWasChanged = delayWasChanged;
+   }
+
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      outState.putBoolean(KEY_DELAY_CHANGED, delayWasChanged);
+      super.onSaveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      this.delayWasChanged = savedInstanceState.getBoolean(KEY_DELAY_CHANGED, false);
+      super.onRestoreInstanceState(savedInstanceState);
+   }
+
+   @Override
+   protected void onDetach(@NonNull View view) {
+      if (delayWasChanged) {
+         getPresenter().trackChangedDelay();
+      }
+      super.onDetach(view);
    }
 }

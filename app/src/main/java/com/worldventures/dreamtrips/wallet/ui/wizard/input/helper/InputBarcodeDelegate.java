@@ -15,19 +15,14 @@ public class InputBarcodeDelegate {
    private final Navigator navigator;
    private final InputAnalyticsDelegate analyticsDelegate;
    private final WizardInteractor wizardInteractor;
-   private final InputDelegateView inputDelegateView;
 
    public InputBarcodeDelegate(
          Navigator navigator,
          WizardInteractor wizardInteractor,
-         InputDelegateView inputDelegateView,
          InputAnalyticsDelegate analyticsDelegate) {
       this.navigator = navigator;
       this.analyticsDelegate = analyticsDelegate;
       this.wizardInteractor = wizardInteractor;
-      this.inputDelegateView = inputDelegateView;
-
-      init();
    }
 
    public void barcodeEntered(String barcode) {
@@ -42,7 +37,7 @@ public class InputBarcodeDelegate {
       wizardInteractor.getSmartCardStatusCommandActionPipe().send(new GetSmartCardStatusCommand(barcode));
    }
 
-   private void init() {
+   public void init(InputDelegateView inputDelegateView) {
       wizardInteractor.getSmartCardStatusCommandActionPipe()
             .observe()
             .compose(RxLifecycle.bindView(inputDelegateView.getView()))

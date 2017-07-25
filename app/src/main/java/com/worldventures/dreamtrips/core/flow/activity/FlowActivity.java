@@ -186,7 +186,7 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
       });
    }
 
-   protected void initFlow() {
+   private void initFlow() {
       // Init flow
       History defaultHistory = provideDefaultHistory();
       if (Flow.get(this) == null) {

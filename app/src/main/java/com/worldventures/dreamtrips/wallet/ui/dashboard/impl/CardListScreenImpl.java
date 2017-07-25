@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -284,25 +285,20 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
       if (!factoryResetConfirmationDialog.isShowing()) factoryResetConfirmationDialog.show();
    }
 
-//   TODO : uncomment on implement
-//   @Override
-//   protected Parcelable onSaveInstanceState() {
-//      Bundle state = (Bundle) super.onSaveInstanceState();
-//      state.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
-//      state.putParcelableArrayList(KEY_LOADED_CARDS_LIST, this.cardViewModels);
-//      return state;
-//   }
-//
-//   @SuppressWarnings("WrongConstant")
-//   @Override
-//   protected void onRestoreInstanceState(Parcelable state) {
-//      //noinspection all
-//      Bundle bundle = (Bundle) state;
-//      firmwareAvailableView.setVisibility(bundle.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
-//      this.cardViewModels = bundle.getParcelableArrayList(KEY_LOADED_CARDS_LIST);
-//      super.onRestoreInstanceState(state);
-//   }
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      outState.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
+      outState.putParcelableArrayList(KEY_LOADED_CARDS_LIST, this.cardViewModels);
+      super.onSaveInstanceState(outState);
+   }
 
+   @SuppressWarnings("WrongConstant")
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      firmwareAvailableView.setVisibility(savedInstanceState.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      this.cardViewModels = savedInstanceState.getParcelableArrayList(KEY_LOADED_CARDS_LIST);
+   }
 
    private void setupCardStackList() {
       int dimension = getResources().getDimensionPixelSize(R.dimen.wallet_card_height);

@@ -87,7 +87,6 @@ import dagger.Lazy;
 import timber.log.Timber;
 
 public class NavigatorImpl implements Navigator {
-   //TODO : double check all "single" routing!
 
    private final Lazy<Router> routerLazy;
 
@@ -102,7 +101,25 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void finish() {
-      routerLazy.get().popToRoot();
+      routerLazy.get().getActivity().finish();
+   }
+
+   @Override
+   public void goInstallFirmwareWalletStart() {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new WalletInstallFirmwareScreenImpl()));
+   }
+
+   @Override
+   public void goNewFirmwareAvailableWalletStart() {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new WalletNewFirmwareAvailableScreenImpl()));
+   }
+
+   @Override
+   public void goWizardWelcomeWalletStart(ProvisioningMode provisioningMode) {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(WizardWelcomeScreenImpl.create(provisioningMode)));
    }
 
    @Override
@@ -117,18 +134,19 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goProvisioningBlocked() {
-      routerLazy.get().replaceTopController(constructTransaction(new WalletProvisioningBlockedScreenImpl()));
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new WalletProvisioningBlockedScreenImpl()));
    }
 
    @Override
    public void goCardList() {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructTransaction(new CardListScreenImpl()));
+      routerLazy.get().setRoot(constructTransaction(new CardListScreenImpl()));
    }
 
    @Override
    public void goAddCard(Record record) {
-      routerLazy.get().pushController(constructTransaction(AddCardDetailsScreenImpl.create(record)));
+      routerLazy.get().replaceTopController(constructTransaction(AddCardDetailsScreenImpl.create(record)));
    }
 
    @Override
@@ -138,7 +156,8 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goNewFirmwareAvailable() {
-      routerLazy.get().replaceTopController(constructTransaction(new WalletNewFirmwareAvailableScreenImpl()));
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new WalletNewFirmwareAvailableScreenImpl()));
    }
 
    @Override
@@ -154,13 +173,13 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goWizardChecks() {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructInvisibleTransaction(new WizardCheckingScreenImpl()));
+      routerLazy.get().setRoot(constructTransaction(new WizardCheckingScreenImpl()));
    }
 
    @Override
    public void goWizardTerms() {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructInvisibleTransaction(new WizardTermsScreenImpl()));
+      routerLazy.get().setRoot(constructTransaction(new WizardTermsScreenImpl()));
    }
 
    @Override
@@ -191,7 +210,7 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goPairKeyExistingDevice(ProvisioningMode provisioningMode, String smartCardId) {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      goPairKey(provisioningMode, smartCardId);
+      routerLazy.get().setRoot(constructTransaction(PairKeyScreenImpl.create(provisioningMode, smartCardId)));
    }
 
    @Override
@@ -237,7 +256,7 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goPaymentSyncFinished() {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructInvisibleTransaction(new PaymentSyncFinishScreenImpl()));
+      routerLazy.get().setRoot(constructImmediateTransaction(new PaymentSyncFinishScreenImpl()));
    }
 
    @Override
@@ -262,7 +281,13 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goStartFirmwareInstall() {
-      routerLazy.get().replaceTopController(constructTransaction(new StartFirmwareInstallScreenImpl()));
+      routerLazy.get().pushController(constructTransaction(new StartFirmwareInstallScreenImpl()));
+   }
+
+   @Override
+   public void goStartFirmwareInstallCardList() {
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructImmediateTransaction(new StartFirmwareInstallScreenImpl()));
    }
 
    @Override
@@ -273,14 +298,14 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goWalletSuccessFirmwareInstall(FirmwareUpdateData firmwareUpdateData) {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructInvisibleTransaction(new CardListScreenImpl()));
+      routerLazy.get().setRoot(constructImmediateTransaction(new CardListScreenImpl()));
       routerLazy.get().pushController(constructTransaction(WalletSuccessInstallFirmwareScreenImpl.create(firmwareUpdateData)));
    }
 
    @Override
    public void goWalletSuccessFirmwareInstallAfterReset(FirmwareUpdateData firmwareUpdateData) {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructTransaction(WalletSuccessInstallFirmwareScreenImpl.create(firmwareUpdateData)));
+      routerLazy.get().setRoot(constructTransaction(WalletSuccessInstallFirmwareScreenImpl.create(firmwareUpdateData)));
    }
 
    @Override
@@ -290,12 +315,14 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goFactoryResetSuccess() {
-      routerLazy.get().replaceTopController(constructTransaction(new FactoryResetSuccessScreenImpl()));
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new FactoryResetSuccessScreenImpl()));
    }
 
    @Override
    public void goUnassignSuccess() {
-      routerLazy.get().replaceTopController(constructTransaction(new UnassignSuccessScreenImpl()));
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new UnassignSuccessScreenImpl()));
    }
 
    @Override
@@ -390,7 +417,8 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goForceUpdatePowerOn() {
-      routerLazy.get().replaceTopController(constructTransaction(new ForceUpdatePowerOnScreenImpl()));
+      routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
+      routerLazy.get().setRoot(constructTransaction(new ForceUpdatePowerOnScreenImpl()));
    }
 
    @Override
@@ -416,7 +444,7 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goForcePairKey() {
       routerLazy.get().popToRoot(new NoOpControllerChangeHandler());
-      routerLazy.get().pushController(constructTransaction(new ForcePairKeyScreenImpl()));
+      routerLazy.get().setRoot(constructTransaction(new ForcePairKeyScreenImpl()));
    }
 
    @Override
@@ -459,7 +487,7 @@ public class NavigatorImpl implements Navigator {
       context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
    }
 
-   public void goPLayStore(Context context) {
+   public void goPlayStore(Context context) {
       String appPackageName = "com.worldventures.dreamtrips";
       try {
          context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
@@ -474,8 +502,7 @@ public class NavigatorImpl implements Navigator {
       context.startActivity(intent);
    }
 
-   private RouterTransaction constructInvisibleTransaction(Controller controller) {
-      //TODO : ensure this makes transactions instant
+   private RouterTransaction constructImmediateTransaction(Controller controller) {
       return constructTransaction(controller, new NoOpControllerChangeHandler(), new NoOpControllerChangeHandler());
    }
 

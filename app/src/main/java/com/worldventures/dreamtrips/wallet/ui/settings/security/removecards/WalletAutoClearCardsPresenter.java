@@ -7,4 +7,6 @@ public interface WalletAutoClearCardsPresenter extends WalletPresenter<WalletAut
    void goBack();
 
    void onTimeSelected(long time);
+
+   void trackChangedDelay();
 }

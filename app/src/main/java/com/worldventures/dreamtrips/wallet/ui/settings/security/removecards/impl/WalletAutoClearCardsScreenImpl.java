@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.impl;
 
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,8 @@ import butterknife.InjectView;
 
 public class WalletAutoClearCardsScreenImpl extends WalletBaseController<WalletAutoClearCardsScreen, WalletAutoClearCardsPresenter> implements WalletAutoClearCardsScreen {
 
+   private static final String KEY_DELAY_CHANGED = "key_delay_changed";
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.recycler_view) RecyclerView recyclerView;
 
@@ -38,6 +41,7 @@ public class WalletAutoClearCardsScreenImpl extends WalletBaseController<WalletA
 
    private SingleSelectionManager selectionManager;
    private BaseDelegateAdapter adapter;
+   private boolean autoClearWasChanged;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -62,8 +66,8 @@ public class WalletAutoClearCardsScreenImpl extends WalletBaseController<WalletA
 
    @Override
    protected void onAttach(@NonNull View view) {
-      super.onAttach(view);
       prepareRecyclerView();
+      super.onAttach(view);
    }
 
    @Override
@@ -121,5 +125,30 @@ public class WalletAutoClearCardsScreenImpl extends WalletBaseController<WalletA
    @Override
    public String getTextBySelectedModel(SettingsRadioModel settingsRadioModel) {
       return getString(settingsRadioModel.getTextResId());
+   }
+
+   @Override
+   public void setAutoClearWasChanged(boolean autoClearWasChanged) {
+      this.autoClearWasChanged = autoClearWasChanged;
+   }
+
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      outState.putBoolean(KEY_DELAY_CHANGED, autoClearWasChanged);
+      super.onSaveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      this.autoClearWasChanged = savedInstanceState.getBoolean(KEY_DELAY_CHANGED, false);
+      super.onRestoreInstanceState(savedInstanceState);
+   }
+
+   @Override
+   protected void onDetach(@NonNull View view) {
+      if (autoClearWasChanged) {
+         getPresenter().trackChangedDelay();
+      }
+      super.onDetach(view);
    }
 }

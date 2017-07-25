@@ -39,8 +39,8 @@ public class EnterPinPresenterImpl extends WalletPresenterImpl<EnterPinScreen> i
    @Override
    public void attachView(EnterPinScreen view) {
       super.attachView(view);
-      trackScreen();
       enterPinDelegate = EnterPinDelegate.create(getView().getPinAction(), analyticsInteractor, getNavigator());
+      trackScreen();
       enterPinDelegate.prepareView(view);
       observeSetupFinishedPipe();
       setupPIN();

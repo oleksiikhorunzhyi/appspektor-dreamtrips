@@ -7,4 +7,6 @@ public interface WalletDisableDefaultCardPresenter extends WalletPresenter<Walle
    void goBack();
 
    void onTimeSelected(long selectedTime);
+
+   void trackChangedDelay();
 }

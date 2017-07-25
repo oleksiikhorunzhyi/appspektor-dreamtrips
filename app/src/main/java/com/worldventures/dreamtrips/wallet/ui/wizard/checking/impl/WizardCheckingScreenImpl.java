@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl;
 
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

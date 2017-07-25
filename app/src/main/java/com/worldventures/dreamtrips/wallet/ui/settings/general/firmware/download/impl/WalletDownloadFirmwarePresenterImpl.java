@@ -63,7 +63,7 @@ public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<Wal
    }
 
    private void openPreInstallationChecks() {
-      getNavigator().goWalletFirmwareChecks(); //withoutLast(new WalletFirmwareChecksPath());
+      getNavigator().goWalletFirmwareChecks();
    }
 
    @Override

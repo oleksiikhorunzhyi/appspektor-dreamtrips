@@ -92,9 +92,9 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
          final FirmwareUpdateData firmwareUpdateData = result.firmwareUpdateData();
          //noinspection ConstantConditions
          if (firmwareUpdateData.fileDownloaded()) {
-            getNavigator().goInstallFirmware();
+            getNavigator().goInstallFirmwareWalletStart();
          } else {
-            getNavigator().goNewFirmwareAvailable();
+            getNavigator().goNewFirmwareAvailableWalletStart();
          }
       } else {
          navigateToWizard();
@@ -102,6 +102,6 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
    }
 
    private void navigateToWizard() {
-      getNavigator().goWizardWelcome(ProvisioningMode.STANDARD);
+      getNavigator().goWizardWelcomeWalletStart(ProvisioningMode.STANDARD);
    }
 }

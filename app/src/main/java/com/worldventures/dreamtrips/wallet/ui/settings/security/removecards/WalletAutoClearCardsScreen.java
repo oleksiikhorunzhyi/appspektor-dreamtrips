@@ -15,4 +15,5 @@ public interface WalletAutoClearCardsScreen extends WalletScreen {
 
    String getTextBySelectedModel(SettingsRadioModel settingsRadioModel);
 
+   void setAutoClearWasChanged(boolean autoClearWasChanged);
 }

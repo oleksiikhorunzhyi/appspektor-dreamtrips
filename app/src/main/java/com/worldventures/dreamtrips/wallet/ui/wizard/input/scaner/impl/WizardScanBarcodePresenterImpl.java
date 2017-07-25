@@ -30,7 +30,13 @@ public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardSc
       this.permissionDispatcher = permissionDispatcher;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       this.inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
-            getView(), InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor));
+            InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor));
+   }
+
+   @Override
+   public void attachView(WizardScanBarcodeScreen view) {
+      super.attachView(view);
+      inputBarcodeDelegate.init(view);
    }
 
    @Override

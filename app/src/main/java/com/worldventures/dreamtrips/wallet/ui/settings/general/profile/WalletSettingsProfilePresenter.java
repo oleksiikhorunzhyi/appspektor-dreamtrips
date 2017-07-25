@@ -9,7 +9,7 @@ public interface WalletSettingsProfilePresenter extends WalletPresenter<WalletSe
 
    void handleDoneAction();
 
-   void handleBackAction();
+   boolean isDataChanged();
 
    void handlePickedPhoto(PhotoPickerModel photoPickerModel);
 
@@ -24,4 +24,6 @@ public interface WalletSettingsProfilePresenter extends WalletPresenter<WalletSe
    void cancelUploadServerUserData();
 
    void confirmDisplayTypeChange();
+
+   void handleBackOnDataChanged();
 }

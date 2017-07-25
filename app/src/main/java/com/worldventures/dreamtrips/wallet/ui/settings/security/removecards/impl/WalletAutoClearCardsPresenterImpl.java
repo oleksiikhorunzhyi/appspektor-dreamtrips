@@ -23,8 +23,6 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
 
    private final AnalyticsInteractor analyticsInteractor;
    private final ErrorHandlerFactory errorHandlerFactory;
-
-   private boolean autoClearWasChanged = false;
    private final AutoClearSmartCardItemProvider itemProvider;
 
    public WalletAutoClearCardsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
@@ -35,42 +33,12 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
       this.itemProvider = new AutoClearSmartCardItemProvider();
    }
 
-
-//   TODO : uncomment on implement
-   // View State
-//   @Override
-//   public void onNewViewState() {
-//      state = new WalletAutoClearCardsState();
-//   }
-//
-//   @Override
-//   public void applyViewState() {
-//      super.applyViewState();
-//      autoClearWasChanged = state.autoClearWasChanged();
-//   }
-//
-//   @Override
-//   public void onSaveInstanceState(Bundle bundle) {
-//      state.setAutoClearWasChanged(autoClearWasChanged);
-//      super.onSaveInstanceState(bundle);
-//   }
-
-
    @Override
    public void attachView(WalletAutoClearCardsScreen view) {
       super.attachView(view);
       getView().setItems(itemProvider.items());
       observeSmartCard();
       observeDelayChange();
-   }
-
-   @Override
-   public void detachView(boolean retainInstance) {
-      if (autoClearWasChanged) {
-         //known problem: this action will be sent after action from onAttachView of next screen
-         trackChangedDelay();
-      }
-      super.detachView(retainInstance);
    }
 
    @Override
@@ -103,7 +71,7 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
             .subscribe(OperationActionStateSubscriberWrapper.<SetAutoClearSmartCardDelayCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> {
                      bindToView(command.getResult());
-                     autoClearWasChanged = true;
+                     getView().setAutoClearWasChanged(true);
                   })
                   .onFail(errorHandlerFactory.errorHandler())
                   .wrap());
@@ -113,7 +81,8 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
       getView().setSelectedPosition(itemProvider.getPositionForValue(autoClearDelay));
    }
 
-   private void trackChangedDelay() {
+   @Override
+   public void trackChangedDelay() {
       final SettingsRadioModel selectedDelay = itemProvider.item(getView().getSelectedPosition());
       trackAutoClear(new AutoClearChangedAction(getView().getTextBySelectedModel(selectedDelay)));
    }

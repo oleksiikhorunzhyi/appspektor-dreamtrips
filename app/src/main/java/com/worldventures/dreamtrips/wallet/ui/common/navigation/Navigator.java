@@ -21,6 +21,12 @@ public interface Navigator {
 
    void finish();
 
+   void goInstallFirmwareWalletStart();
+
+   void goNewFirmwareAvailableWalletStart();
+
+   void goWizardWelcomeWalletStart(ProvisioningMode provisioningMode);
+
    void goWalletSettings();
 
    void goSettingsProfile();
@@ -82,6 +88,8 @@ public interface Navigator {
    void goPuckConnection();
 
    void goStartFirmwareInstall();
+
+   void goStartFirmwareInstallCardList();
 
    void goWalletFirmwareChecks();
 
@@ -155,7 +163,7 @@ public interface Navigator {
 
    void goSystemSettings(Context context);
 
-   void goPLayStore(Context context);
+   void goPlayStore(Context context);
 
    void goSettings(Context context);
 }

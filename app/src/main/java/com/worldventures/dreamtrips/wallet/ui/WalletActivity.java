@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bluelinelabs.conductor.Conductor;
@@ -42,9 +42,8 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
    @InjectView(R.id.drawer) DrawerLayout drawerLayout;
-   @InjectView(R.id.drawer_layout)  NavigationDrawerViewImpl
-
-   private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
+   @InjectView(R.id.drawer_layout)  NavigationDrawerViewImpl navDrawer;
+   @InjectView(R.id.root_container) FrameLayout rootContainer;
 
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject WalletCropImageService cropImageDelegate;
@@ -53,12 +52,14 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
    @Inject ActivityRouter activityRouter;
 
+   private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
+
    private Router router;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      router = Conductor.attachRouter(this, (ViewGroup) findViewById(android.R.id.content), savedInstanceState);
+      router = Conductor.attachRouter(this, rootContainer, savedInstanceState);
       if (!router.hasRootController()) {
          router.setRoot(RouterTransaction.with(new WalletStartScreenImpl()));
       }

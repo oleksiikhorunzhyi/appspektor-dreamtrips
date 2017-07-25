@@ -115,6 +115,11 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
       assertSmartCardConnected(() -> saveUserProfile(true));
    }
 
+   @Override
+   public void handleBackOnDataChanged() {
+      getView().showRevertChangesDialog();
+   }
+
    @SuppressWarnings("ConstantConditions")
    private void saveUserProfile(boolean forceUpdateDisplayType) {
       if (isDataChanged()) {
@@ -135,7 +140,8 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    }
 
    @SuppressWarnings("ConstantConditions")
-   private boolean isDataChanged() {
+   @Override
+   public boolean isDataChanged() {
       final ProfileViewModel profile = getView().getUser();
       return user != null &&
             !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
@@ -146,15 +152,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    }
 
 
-   @SuppressWarnings("ConstantConditions")
-   @Override
-   public void handleBackAction() {
-      if (isDataChanged()) {
-         getView().showRevertChangesDialog();
-      } else {
-         goBack();
-      }
-   }
+
 
    @Override
    public void cancelUploadServerUserData() {

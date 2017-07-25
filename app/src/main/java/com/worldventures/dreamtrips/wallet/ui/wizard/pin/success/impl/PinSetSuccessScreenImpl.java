@@ -31,8 +31,6 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
 
    @Inject PinSetSuccessPresenter presenter;
 
-   private final DialogOperationScreen dialogOperationScreen = new DialogOperationScreen(getView());
-
    public static PinSetSuccessScreenImpl create(Action pinAction) {
       final Bundle args = new Bundle();
       args.putSerializable(KEY_PIN_ACTION, pinAction);
@@ -75,7 +73,7 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return dialogOperationScreen;
+      return  new DialogOperationScreen(getView());
    }
 
    @Override

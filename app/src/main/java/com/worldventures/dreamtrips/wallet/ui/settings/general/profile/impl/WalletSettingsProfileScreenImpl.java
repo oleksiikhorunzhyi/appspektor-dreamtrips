@@ -114,7 +114,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
    }
 
    protected void onNavigationClick() {
-      getPresenter().handleBackAction();
+      getPresenter().goBack();
    }
 
    void onChoosePhotoClick(String initialPhotoUrl) {
@@ -154,8 +154,12 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
    @Override
    public boolean handleBack() {
-      getPresenter().handleBackAction();
-      return super.handleBack();
+      if (getPresenter().isDataChanged()) {
+         getPresenter().handleBackOnDataChanged();
+         return true;
+      } else {
+         return super.handleBack();
+      }
    }
 
    @Override
@@ -182,20 +186,17 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
       observeNewAvatar();
    }
 
-//   TODO : Uncomment on implement
-//   @Override
-//   protected Parcelable onSaveInstanceState() {
-//      Bundle bundle = (Bundle) super.onSaveInstanceState();
-//      bundle.putParcelable(PROFILE_STATE_KEY, profileViewModel);
-//      return bundle;
-//   }
-//
-//   @Override
-//   protected void onRestoreInstanceState(Parcelable state) {
-//      super.onRestoreInstanceState(state);
-//      Bundle bundle = (Bundle) state;
-//      setUser(bundle.getParcelable(PROFILE_STATE_KEY));
-//   }
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      outState.putParcelable(PROFILE_STATE_KEY, profileViewModel);
+      super.onSaveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      setUser(savedInstanceState.getParcelable(PROFILE_STATE_KEY));
+   }
 
    private void observeNewAvatar() {
       observeCropper()

@@ -71,7 +71,6 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private final RecordInteractor recordInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
    private final NavigationDrawerPresenter navigationDrawerPresenter;
    private final WalletFeatureHelper featureHelper;
    private final CheckPinDelegate checkPinDelegate;
@@ -81,14 +80,12 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    public CardListPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory,
-         FactoryResetInteractor factoryResetInteractor, NavigationDrawerPresenter navigationDrawerPresenter,
-         WalletFeatureHelper walletFeatureHelper) {
+         AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
+         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
       this.navigationDrawerPresenter = navigationDrawerPresenter;
       this.featureHelper = walletFeatureHelper;
       this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
@@ -382,7 +379,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @Override
    public void navigateToFirmwareUpdate() {
-      getNavigator().goStartFirmwareInstall();
+      getNavigator().goStartFirmwareInstallCardList();
    }
 
    @SuppressWarnings("ConstantConditions")

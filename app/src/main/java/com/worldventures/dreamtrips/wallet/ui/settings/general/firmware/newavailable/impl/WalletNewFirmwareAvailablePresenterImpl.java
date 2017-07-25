@@ -83,7 +83,7 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
 
    @Override
    public void openMarket() {
-      getNavigator().goPLayStore(getView().getViewContext());
+      getNavigator().goPlayStore(getView().getViewContext());
    }
 
    @Override

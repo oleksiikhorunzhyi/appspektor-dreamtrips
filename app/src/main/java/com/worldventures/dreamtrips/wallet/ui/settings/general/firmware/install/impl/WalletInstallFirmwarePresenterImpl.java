@@ -17,15 +17,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareState;
 
 public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<WalletInstallFirmwareScreen> implements WalletInstallFirmwarePresenter {
 
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;
    private final ErrorHandlerFactory errorHandlerFactory;
-
-   private WalletInstallFirmwareState state;
 
    public WalletInstallFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
@@ -51,9 +48,9 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
                         InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, integer))
                   .onFail(errorHandlerFactory.errorHandler())
                   .wrap()
-                  .onStart(installFirmwareCommand -> state.started = true)
+                  .onStart(installFirmwareCommand -> getView().setInstallStarted(true))
             );
-      if (!state.started) {
+      if (!getView().isInstallStarted()) {
          install();
       }
    }
@@ -62,12 +59,6 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
       analyticsInteractor.walletFirmwareAnalyticsPipe()
             .send(new WalletFirmwareAnalyticsCommand(new InstallingUpdateAction()));
    }
-
-//   TODO : uncomment on implement
-//   @Override
-//   public void onNewViewState() {
-//      state = new WalletInstallFirmwareState();
-//   }
 
    protected void install() {
       getView().showProgress(null);

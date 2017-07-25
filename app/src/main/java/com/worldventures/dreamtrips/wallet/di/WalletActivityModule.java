@@ -486,11 +486,10 @@ public class WalletActivityModule {
    @Provides
    CardListPresenter provideCardListPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory,
-         FactoryResetInteractor factoryResetInteractor, NavigationDrawerPresenter navigationDrawerPresenter,
-         WalletFeatureHelper walletFeatureHelper) {
+         AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
+         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper) {
       return new CardListPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor,
-            firmwareInteractor, analyticsInteractor, errorHandlerFactory, factoryResetInteractor,
+            firmwareInteractor, analyticsInteractor, factoryResetInteractor,
             navigationDrawerPresenter, walletFeatureHelper);
    }
 

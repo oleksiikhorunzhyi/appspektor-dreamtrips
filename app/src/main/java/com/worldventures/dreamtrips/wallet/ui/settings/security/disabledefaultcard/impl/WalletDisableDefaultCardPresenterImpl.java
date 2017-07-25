@@ -25,8 +25,6 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
    private final ErrorHandlerFactory errorHandlerFactory;
    private final DisableDefaultCardItemProvider itemProvider;
 
-   private boolean delayWasChanged = false;
-
    public WalletDisableDefaultCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
       super(navigator, smartCardInteractor, networkService);
@@ -35,41 +33,12 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
       this.itemProvider = new DisableDefaultCardItemProvider();
    }
 
-//   TODO : uncomment on implement
-   // View State
-//   @Override
-//   public void onNewViewState() {
-//      state = new WalletDisableDefaultCardState();
-//   }
-//
-//   @Override
-//   public void applyViewState() {
-//      super.applyViewState();
-//      delayWasChanged = state.delayWasChanged();
-//   }
-//
-//   @Override
-//   public void onSaveInstanceState(Bundle bundle) {
-//      state.setDelayWasChanged(delayWasChanged);
-//      super.onSaveInstanceState(bundle);
-//   }
-
-
    @Override
    public void attachView(WalletDisableDefaultCardScreen view) {
       super.attachView(view);
       getView().setItems(itemProvider.items());
       fetchSmartCard();
       observeDelayChange();
-   }
-
-   @Override
-   public void detachView(boolean retainInstance) {
-      if (delayWasChanged) {
-         //known problem: this action will be sent after action from onAttachView of next screen
-         trackChangedDelay();
-      }
-      super.detachView(retainInstance);
    }
 
    @Override
@@ -102,7 +71,7 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
             .subscribe(OperationActionStateSubscriberWrapper.<SetDisableDefaultCardDelayCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> {
                      bindToView(command.getResult());
-                     delayWasChanged = true;
+                     getView().setDelayChanged(true);
                   })
                   .onFail(errorHandlerFactory.errorHandler())
                   .wrap());
@@ -118,6 +87,7 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
       trackDisableDelay(new DisableDefaultAction(getView().getTextBySelectedModel(selectedDelay)));
    }
 
+   @Override
    public void trackChangedDelay() {
       final SettingsRadioModel selectedDelay = itemProvider.item(getView().getSelectedPosition());
       trackDisableDelay(new DisableDefaultChangedAction(getView().getTextBySelectedModel(selectedDelay)));

@@ -15,8 +15,9 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
 
    public void onThrstCallback(String message) {
       if (message.equals(SUCCESS_MESSAGE)) {
+         view.openThankYouScreen(message, message);
       } else {
-
+         view.openPaymentFailedScreen(message, message);
       }
    }
 

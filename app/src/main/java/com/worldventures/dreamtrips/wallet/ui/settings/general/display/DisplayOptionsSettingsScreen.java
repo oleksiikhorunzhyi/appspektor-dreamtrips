@@ -8,12 +8,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
@@ -29,6 +32,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionE
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -151,6 +156,21 @@ public class DisplayOptionsSettingsScreen extends WalletLinearLayout<DisplayOpti
                   .defaultErrorView(new RetryDialogErrorView<>(getContext(), R.string.error_something_went_wrong, retryAction -> saveCurrentChoice()))
                   .build()
       );
+   }
+
+   @Override
+   public View getView() {
+      return this;
+   }
+
+   @Override
+   public OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation(WalletProfileDelegate delegate) {
+      return new UpdateSmartCardUserOperationView.UpdateUser(getContext(), delegate, null);
+   }
+
+   @Override
+   public OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation(WalletProfileDelegate delegate) {
+      return new UpdateSmartCardUserOperationView.RetryHttpUpload(getContext(), delegate);
    }
 
    @NonNull

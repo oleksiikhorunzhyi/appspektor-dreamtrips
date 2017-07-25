@@ -50,7 +50,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    public WizardEditProfilePresenter(Context context, Injector injector) {
       super(context, injector);
-      this.delegate = new WalletProfileDelegate(analyticsInteractor);
+      this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
    @Override

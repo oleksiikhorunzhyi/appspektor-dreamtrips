@@ -2,22 +2,73 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
 import android.support.annotation.Nullable;
 
+import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 public class WalletProfileDelegate {
 
+   private SmartCardUserDataInteractor smartCardUserDataInteractor;
    private AnalyticsInteractor analyticsInteractor;
 
-   public WalletProfileDelegate(
+   public WalletProfileDelegate(SmartCardUserDataInteractor smartCardUserDataInteractor,
          AnalyticsInteractor analyticsInteractor) {
+      this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.analyticsInteractor = analyticsInteractor;
+   }
+
+   public void observeProfileUploading(UpdateSmartCardUserView view) {
+      observeProfileUploading(view, null, null);
+   }
+
+   public void observeProfileUploading(UpdateSmartCardUserView view,
+         @Nullable Action0 onSuccess, @Nullable Action1<Throwable> onFailure) {
+
+      smartCardUserDataInteractor.updateSmartCardUserPipe()
+            .observeWithReplay()
+            .compose(RxLifecycle.bindView(view.getView()))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
+            .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation(this))
+                  .onSuccess(setupUserDataCommand -> {
+                     sendAnalytics(new ProfileChangesSavedAction());
+                     if (onSuccess != null) onSuccess.call();
+                  })
+                  .onFail((command, throwable) -> {
+                     if (onFailure != null) onFailure.call(throwable);
+                  })
+                  .create());
+
+      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
+            .observeWithReplay()
+            .compose(RxLifecycle.bindView(view.getView()))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()))
+            .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation(this)).create());
+   }
+
+   void cancelUploadServerUserData() {
+      smartCardUserDataInteractor.revertSmartCardUserUpdatingPipe().send(new RevertSmartCardUserUpdatingCommand());
+   }
+
+   void retryUploadToServer() {
+      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe().send(new RetryHttpUploadUpdatingCommand());
    }
 
    public void sendAnalytics(WalletAnalyticsAction action) {

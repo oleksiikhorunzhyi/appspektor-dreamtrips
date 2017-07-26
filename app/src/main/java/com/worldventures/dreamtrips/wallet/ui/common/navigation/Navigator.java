@@ -6,11 +6,11 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
@@ -35,7 +35,7 @@ public interface Navigator {
 
    void goCardList();
 
-   void goAddCard(Record record);
+   void goAddCard(RecordViewModel recordViewModel);
 
    void goInstallFirmware();
 
@@ -79,7 +79,7 @@ public interface Navigator {
 
    void goPaymentSyncFinished();
 
-   void goCardDetails(Record record, TransitionModel transitionModel);
+   void goCardDetails(RecordViewModel recordViewModel, TransitionModel transitionModel);
 
    void goWizardCharging();
 
@@ -115,7 +115,7 @@ public interface Navigator {
 
    void goSettingsDisplayOptions(DisplayOptionsSource source);
 
-   void goSettingsDisplayOptions(DisplayOptionsSource source, SmartCardUser user);
+   void goSettingsDisplayOptions(DisplayOptionsSource source, ProfileViewModel profileViewModel);
 
    void goExistingCardDetected();
 

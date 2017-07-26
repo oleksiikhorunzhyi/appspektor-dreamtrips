@@ -17,8 +17,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingScreen;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.net.UnknownHostException;
 
@@ -141,6 +143,6 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    }
 
    private void bankCardCreated(Record record) {
-      getNavigator().goAddCard(record);
+      getNavigator().goAddCard(WalletRecordUtil.prepareRecordViewModel(record));
    }
 }

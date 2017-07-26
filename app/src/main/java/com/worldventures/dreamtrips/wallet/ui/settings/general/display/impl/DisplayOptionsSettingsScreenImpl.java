@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.view.ViewPager;
@@ -40,6 +39,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOp
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsViewHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 
@@ -58,7 +58,7 @@ import me.relex.circleindicator.CircleIndicator;
 import static android.view.View.OVER_SCROLL_NEVER;
 
 public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter> implements DisplayOptionsSettingsScreen {
-   public static String KEY_SMART_CARD_USER = "key_smart_card_user";
+   public static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
    public static String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -72,9 +72,9 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
       return create(null, source);
    }
 
-   public static DisplayOptionsSettingsScreenImpl create(SmartCardUser user, DisplayOptionsSource source) {
+   public static DisplayOptionsSettingsScreenImpl create(ProfileViewModel profileViewModel, DisplayOptionsSource source) {
       final Bundle args = new Bundle();
-      args.putParcelable(KEY_SMART_CARD_USER, (Parcelable) user);
+      args.putParcelable(KEY_PROFILE_VIEWMODEL, profileViewModel);
       args.putSerializable(KEY_DISPLAY_OPTIONS_SOURCE, source);
       return new DisplayOptionsSettingsScreenImpl(args);
    }
@@ -188,9 +188,9 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    }
 
    @Override
-   public SmartCardUser getSmartCardUser() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_SMART_CARD_USER))
-                  ? getArgs().getParcelable(KEY_SMART_CARD_USER)
+   public ProfileViewModel getProfileViewModel() {
+      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PROFILE_VIEWMODEL))
+                  ? getArgs().getParcelable(KEY_PROFILE_VIEWMODEL)
                   : null;
    }
 

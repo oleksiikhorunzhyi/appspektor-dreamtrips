@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserView;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -19,7 +20,7 @@ public interface DisplayOptionsSettingsScreen extends WalletScreen, UpdateSmartC
 
    OperationView<SaveDisplayTypeCommand> provideSaveDisplayTypeOperationView();
 
-   SmartCardUser getSmartCardUser();
+   ProfileViewModel getProfileViewModel();
 
    DisplayOptionsSource getDisplayOptionsSource();
 }

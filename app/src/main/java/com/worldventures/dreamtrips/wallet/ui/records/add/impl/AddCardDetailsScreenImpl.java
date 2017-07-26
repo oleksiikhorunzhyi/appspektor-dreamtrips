@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.add.impl;
 
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -28,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDial
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
@@ -68,15 +68,10 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    private Observable<String> cardNicknameObservable;
    private Observable<String> cvvObservable;
 
-   public static AddCardDetailsScreenImpl create(Record record) {
+   public static AddCardDetailsScreenImpl create(RecordViewModel recordViewModel) {
       final Bundle args = new Bundle();
-      //TODO : deal with Parcelable
-      args.putParcelable(KEY_ADD_RECORD, (Parcelable) record);
-      return new AddCardDetailsScreenImpl();
-   }
-
-   public AddCardDetailsScreenImpl() {
-      this(null);
+      args.putParcelable(KEY_ADD_RECORD, recordViewModel);
+      return new AddCardDetailsScreenImpl(args);
    }
 
    public AddCardDetailsScreenImpl(Bundle args) {
@@ -119,11 +114,9 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    }
 
    @Override
-   public void setCardBank(Record record) {
-      bankCardWidget.setBankCard(record);
-
-      int cvvLength = WalletRecordUtil.obtainRequiredCvvLength(record.number());
-      etCardCvv.setMaxLength(cvvLength);
+   public void setCardBank(RecordViewModel recordViewModel) {
+      bankCardWidget.setBankCard(recordViewModel);
+      etCardCvv.setMaxLength(recordViewModel.getCvvLength());
    }
 
    public Observable<String> getCardNicknameObservable() {
@@ -192,7 +185,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    }
 
    @Override
-   public Record getRecord() {
+   public RecordViewModel getRecordViewModel() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_ADD_RECORD))
             ? getArgs().getParcelable(KEY_ADD_RECORD)
             : null;

@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail.impl;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionMod
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
@@ -75,18 +75,17 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    private Observable<String> cardNicknameObservable;
    private MaterialDialog networkConnectionErrorDialog;
 
-   public static CardDetailsScreenImpl create(Record record) {
-      return create(record, null);
+   public static CardDetailsScreenImpl create(RecordViewModel recordViewModel) {
+      return create(recordViewModel, null);
    }
 
-   public static CardDetailsScreenImpl create(Record record, TransitionModel transitionModel) {
+   public static CardDetailsScreenImpl create(RecordViewModel recordViewModel, TransitionModel transitionModel) {
       final Bundle args = new Bundle();
-      //TODO : deal with Parcelable
-      args.putParcelable(KEY_MODIFY_RECORD, (Parcelable) record);
+      args.putParcelable(KEY_MODIFY_RECORD, recordViewModel);
       if (transitionModel != null) {
-         args.putParcelable(KEY_TRANSITION_MODEL, (Parcelable) transitionModel);
+         args.putParcelable(KEY_TRANSITION_MODEL, transitionModel);
       }
-      return new CardDetailsScreenImpl();
+      return new CardDetailsScreenImpl(args);
    }
 
    public CardDetailsScreenImpl() {
@@ -155,10 +154,10 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    }
 
    @Override
-   public void showWalletRecord(Record record) {
-      bankCardWidget.setBankCard(record);
+   public void showWalletRecord(RecordViewModel recordViewModel) {
+      bankCardWidget.setBankCard(recordViewModel);
 
-      final String nickName = record.nickName();
+      final String nickName = recordViewModel.getNickName();
       etCardNickname.setText(nickName);
       etCardNickname.setSelection(nickName.length());
    }
@@ -334,7 +333,7 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    }
 
    @Override
-   public Record getRecord() {
+   public RecordViewModel getRecordViewModel() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_MODIFY_RECORD))
             ? getArgs().getParcelable(KEY_MODIFY_RECORD)
             : null;

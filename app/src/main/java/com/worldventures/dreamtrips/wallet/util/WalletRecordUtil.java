@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 
 import static java.lang.String.format;
 
@@ -173,5 +174,12 @@ public class WalletRecordUtil {
             .append(goodThru)
             .append(" ")
             .append(date);
+   }
+
+   public static RecordViewModel prepareRecordViewModel(Record record) {
+      final int cvvLength = obtainRequiredCvvLength(record.number());
+      final String ownerName = fetchFullName(record);
+      return new RecordViewModel(record.id(), cvvLength, record.nickName(), ownerName, record.numberLastFourDigits(),
+            record.expDate(), record.recordType());
    }
 }

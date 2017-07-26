@@ -62,8 +62,8 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
 
    @Override
    protected void onAttach(@NonNull View view) {
+      operationScreen = new DialogOperationScreen(view);
       super.onAttach(view);
-      operationScreen = new DialogOperationScreen(getView());
       swipingAnimations.animateSmartCard(smartCard);
       swipingAnimations.animateBankCard(creditCard, Animation.INFINITE);
    }

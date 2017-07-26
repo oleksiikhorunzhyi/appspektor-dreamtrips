@@ -49,6 +49,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDel
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -261,8 +262,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    @Override
    public void cardClicked(String recId, TransitionModel transitionModel) {
       if (this.records != null && !this.records.isEmpty()) {
-         Record record = Queryable.from(this.records).first(card -> card.id() != null && card.id().equals(recId));
-         getNavigator().goCardDetails(record, transitionModel);
+         final Record record = Queryable.from(this.records).first(card -> card.id() != null && card.id().equals(recId));
+         getNavigator().goCardDetails(WalletRecordUtil.prepareRecordViewModel(record), transitionModel);
       }
    }
 

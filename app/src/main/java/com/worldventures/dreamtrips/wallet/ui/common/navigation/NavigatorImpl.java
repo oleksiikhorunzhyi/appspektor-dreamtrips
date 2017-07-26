@@ -11,19 +11,20 @@ import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.add.impl.AddCardDetailsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl.AboutScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
@@ -44,6 +45,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.impl.EnterPinUnassignScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.impl.NewCardPowerOnScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.impl.UnassignSuccessScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl.WalletSettingsProfileScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.impl.FactoryResetScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.impl.FactoryResetSuccessScreenImpl;
@@ -145,8 +147,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goAddCard(Record record) {
-      routerLazy.get().replaceTopController(constructTransaction(AddCardDetailsScreenImpl.create(record)));
+   public void goAddCard(RecordViewModel recordViewModel) {
+      routerLazy.get().replaceTopController(constructTransaction(AddCardDetailsScreenImpl.create(recordViewModel)));
    }
 
    @Override
@@ -260,8 +262,9 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goCardDetails(Record record, TransitionModel transitionModel) {
-      routerLazy.get().pushController(constructTransaction(CardDetailsScreenImpl.create(record, transitionModel)));
+   public void goCardDetails(RecordViewModel recordViewModel, TransitionModel transitionModel) {
+      routerLazy.get().pushController(constructTransaction(CardDetailsScreenImpl.create(recordViewModel, transitionModel),
+            new FadeChangeHandler(), new FadeChangeHandler()));
    }
 
    @Override
@@ -356,8 +359,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goSettingsDisplayOptions(DisplayOptionsSource source, SmartCardUser user) {
-      routerLazy.get().pushController(constructTransaction(DisplayOptionsSettingsScreenImpl.create(user, source)));
+   public void goSettingsDisplayOptions(DisplayOptionsSource source, ProfileViewModel profileViewModel) {
+      routerLazy.get().pushController(constructTransaction(DisplayOptionsSettingsScreenImpl.create(profileViewModel, source)));
    }
 
    @Override

@@ -7,13 +7,14 @@ import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCo
 import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public interface CardDetailsScreen extends WalletScreen {
 
-   void showWalletRecord(Record record);
+   void showWalletRecord(RecordViewModel recordViewModel);
 
    void showDefaultCardDialog(Record defaultRecord);
 
@@ -53,5 +54,5 @@ public interface CardDetailsScreen extends WalletScreen {
 
    TransitionModel getTransitionModel();
 
-   Record getRecord();
+   RecordViewModel getRecordViewModel();
 }

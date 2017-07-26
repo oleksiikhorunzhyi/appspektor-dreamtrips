@@ -51,7 +51,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    public void attachView(DisplayOptionsSettingsScreen view) {
       super.attachView(view);
       this.source = getView().getDisplayOptionsSource();
-      this.user = getView().getSmartCardUser();
+      this.user = delegate.createSmartCardUser(getView().getProfileViewModel());
       this.mustSaveUserProfile = user != null;
       observeHomeDisplay();
       observeUserProfileUploading();

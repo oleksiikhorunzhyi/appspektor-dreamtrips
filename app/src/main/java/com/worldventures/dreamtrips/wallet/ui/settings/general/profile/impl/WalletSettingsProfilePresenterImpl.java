@@ -157,12 +157,12 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @Override
    public void openDisplaySettings() {
       assertSmartCardConnected(() -> {
-         final SmartCardUser user = isDataChanged() ? delegate.createSmartCardUser(getView().getUser()) : null;
+         final ProfileViewModel profileViewModel = isDataChanged() ? getView().getUser() : null;
          try {
-            if (user != null) {
-               WalletValidateHelper.validateUserFullNameOrThrow(user.firstName(), user.middleName(), user.lastName());
+            if (profileViewModel != null) {
+               WalletValidateHelper.validateUserFullNameOrThrow(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName());
             }
-            getNavigator().goSettingsDisplayOptions(DisplayOptionsSource.PROFILE, user);
+            getNavigator().goSettingsDisplayOptions(DisplayOptionsSource.PROFILE, profileViewModel);
          } catch (FormatException e) {
             getView().provideUpdateSmartCardOperation(delegate).showError(null, e);
          }

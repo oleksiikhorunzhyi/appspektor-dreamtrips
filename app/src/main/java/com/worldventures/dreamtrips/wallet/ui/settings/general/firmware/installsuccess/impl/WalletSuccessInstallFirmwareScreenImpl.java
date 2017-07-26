@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -53,8 +52,7 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
 
    public static WalletSuccessInstallFirmwareScreenImpl create(FirmwareUpdateData firmwareUpdateData) {
       final Bundle args = new Bundle();
-      //TODO : deal with parcelable
-      args.putParcelable(KEY_FIRMWARE_UPDATE_DATA, (Parcelable) firmwareUpdateData);
+      args.putSerializable(KEY_FIRMWARE_UPDATE_DATA, firmwareUpdateData);
       return new WalletSuccessInstallFirmwareScreenImpl(args);
    }
 
@@ -114,7 +112,7 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
    @Override
    public FirmwareUpdateData getFirmwareUpdateData() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_FIRMWARE_UPDATE_DATA))
-            ? getArgs().getParcelable(KEY_FIRMWARE_UPDATE_DATA)
+            ? (FirmwareUpdateData) getArgs().getSerializable(KEY_FIRMWARE_UPDATE_DATA)
             : null;
    }
 

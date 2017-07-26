@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.Arrays;
@@ -95,12 +95,12 @@ public class BankCardWidget extends FrameLayout {
       tvShortCardNumber.setVisibility(show ? VISIBLE : GONE);
    }
 
-   public void setBankCard(Record card) {
-      setCardName(card.nickName());
-      setOwnerName(WalletRecordUtil.fetchFullName(card));
-      setCardNumber(card.numberLastFourDigits());
-      setExpireDate(card.expDate());
-      setRecordType(card.recordType());
+   public void setBankCard(RecordViewModel recordViewModel) {
+      setCardName(recordViewModel.getNickName());
+      setOwnerName(recordViewModel.getOwnerName());
+      setCardNumber(recordViewModel.getCardNumber());
+      setExpireDate(recordViewModel.getExpireDate());
+      setRecordType(recordViewModel.getRecordType());
    }
 
    //   properties:

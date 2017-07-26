@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -44,6 +45,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private String cardNickname;
+   private Record record;
 
    public AddCardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
@@ -58,14 +60,26 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    @Override
    public void attachView(AddCardDetailsScreen view) {
       super.attachView(view);
-      final Record record = getView().getRecord();
-      getView().setCardBank(record);
-      trackScreen();
+      final RecordViewModel recordViewModel = getView().getRecordViewModel();
+      getView().setCardBank(recordViewModel);
+      observeChargedRecord();
       presetRecordToDefaultIfNeeded();
       observeDefaultCardChangeByUser();
       observeSavingCardDetailsData();
       observeMandatoryFields();
       observePinOptions();
+   }
+
+   private void observeChargedRecord() {
+      recordInteractor
+            .bankCardPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .map(Command::getResult)
+            .subscribe(record -> {
+                     this.record = record;
+                     trackScreen();
+            }, Timber::e);
    }
 
    private void observePinOptions() {
@@ -106,7 +120,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private void onCardAdd(AddRecordCommand command) {
       if (command.setAsDefaultRecord()) trackSetAsDefault(command.getResult());
-      trackAddedCard(getView().getRecord(), command.setAsDefaultRecord());
+      trackAddedCard(record, command.setAsDefaultRecord());
       getSmartCardInteractor().checkPinStatusActionPipe().send(new CheckPinStatusAction());
       wizardInteractor.pinOptionalActionPipe().send(PinOptionalCommand.fetch());
    }
@@ -115,7 +129,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    public void onCardInfoConfirmed(String cvv, String cardName, boolean setAsDefaultCard) {
       this.cardNickname = cardName;
       recordInteractor.addRecordPipe()
-            .send(new AddRecordCommand.Builder().setRecord(getView().getRecord())
+            .send(new AddRecordCommand.Builder().setRecord(record)
                   .setRecordName(cardName)
                   .setCvv(cvv)
                   .setSetAsDefaultRecord(setAsDefaultCard)
@@ -193,7 +207,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    }
 
    private boolean checkMandatoryFields(boolean cardNameValid, String cvv) {
-      return cardNameValid && WalletRecordUtil.validationMandatoryFields(getView().getRecord().number(), cvv);
+      return cardNameValid && WalletRecordUtil.validationMandatoryFields(record.number(), cvv);
    }
 
    private void trackScreen() {
@@ -204,7 +218,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .map(SmartCardStatus::connectionStatus)
             .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsCommandPipe()
                   .send(new WalletAnalyticsCommand(AddCardDetailsAction
-                        .forBankCard(getView().getRecord(), connectionStatus.isConnected()))));
+                        .forBankCard(record, connectionStatus.isConnected()))));
    }
 
    private void trackSetAsDefault(Record record) {

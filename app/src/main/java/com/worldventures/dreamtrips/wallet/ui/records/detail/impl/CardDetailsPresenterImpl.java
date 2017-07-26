@@ -32,11 +32,13 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -46,6 +48,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private final RecordInteractor recordInteractor;
    private final AnalyticsInteractor analyticsInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
+
+   private Record record;
 
    public CardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor,
@@ -59,10 +63,10 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    @Override
    public void attachView(CardDetailsScreen view) {
       super.attachView(view);
-      trackScreen();
-      getView().showWalletRecord(getView().getRecord());
+      getView().showWalletRecord(getView().getRecordViewModel());
       final TransitionModel transitionModel = getView().getTransitionModel();
       getView().animateCard(transitionModel);
+      observeCardList();
       updateCardConditionState();
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
@@ -70,11 +74,27 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
       observeCardNickName();
       observeDefaultCardSwitcher();
       observeSaveCardData();
+      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
    }
+
+   private void observeCardList() {
+      recordInteractor.cardsListPipe()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(recordInteractor.cardsListPipe()))
+            .compose(new ActionStateToActionTransformer<>())
+            .compose(bindViewIoToMainComposer())
+            .map(Command::getResult)
+            .subscribe(records -> {
+               final RecordViewModel recordViewModel = getView().getRecordViewModel();
+               this.record = Queryable.from(records).first(card -> card.id() != null && card.id().equals(recordViewModel.getId()));
+               trackScreen();
+            }, Timber::e);
+   }
+
    private void observeSaveCardData() {
       recordInteractor.updateRecordPipe()
             .observe()
-            .filter(state -> getView().getRecord().id().equals(state.action.getRecord().id()))
+            .filter(state -> record.id().equals(state.action.getRecord().id()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSaveCardData())
                   .onSuccess(command -> updateRecordVar(command.getRecord()))
@@ -82,18 +102,18 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void updateRecordVar(Record updatedRecord) {
-      //TODO update record in screen
-      final Record record = ImmutableRecord.builder()
-            .from(getView().getRecord())
+      final Record resultRecord = ImmutableRecord.builder()
+            .from(record)
             .nickName(updatedRecord.nickName())
             .build();
+      getView().showWalletRecord(WalletRecordUtil.prepareRecordViewModel(resultRecord));
    }
 
    @Override
    public void updateNickName() {
       fetchOfflineModeState(offlineModeEnabled -> {
          if (offlineModeEnabled || getNetworkService().isAvailable()) {
-            if (!TextUtils.equals(getView().getUpdateNickname(), getView().getRecord().nickName())) {
+            if (!TextUtils.equals(getView().getUpdateNickname(), record.nickName())) {
                nicknameUpdated(getView().getUpdateNickname());
             } else {
                getView().notifyCardDataIsSaved();
@@ -115,13 +135,13 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
-            .send(new PaycardAnalyticsCommand(new CardDetailsAction(getView().getRecord().nickName()), getView().getRecord()));
+            .send(new PaycardAnalyticsCommand(new CardDetailsAction(record.nickName()), record));
    }
 
    private void connectToDeleteCardPipe() {
       recordInteractor.deleteRecordPipe()
             .observeWithReplay()
-            .filter(state -> state.action.getRecordId().equals(getView().getRecord().id()))
+            .filter(state -> state.action.getRecordId().equals(record.id()))
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(recordInteractor.deleteRecordPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationDeleteRecord())
@@ -143,7 +163,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(recordInteractor.setPaymentCardActionActionPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetPaymentCardAction())
-                  .onSuccess(action -> getView().showCardIsReadyDialog(getView().getRecord().nickName()))
+                  .onSuccess(action -> getView().showCardIsReadyDialog(record.nickName()))
                   .create());
    }
 
@@ -184,7 +204,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    public void payThisCard() {
       fetchConnectionStats(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            recordInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(getView().getRecord()));
+            recordInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(record));
          } else {
             getView().showSCNonConnectionDialog();
          }
@@ -198,12 +218,12 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    @Override
    public void onDeleteCardConfirmed() {
-      recordInteractor.deleteRecordPipe().send(new DeleteRecordCommand(getView().getRecord().id()));
+      recordInteractor.deleteRecordPipe().send(new DeleteRecordCommand(record.id()));
    }
 
    private void unsetCardAsDefault() {
       fetchDefaultRecordId(defaultRecordId -> {
-         if (WalletRecordUtil.equals(defaultRecordId, getView().getRecord())) {
+         if (WalletRecordUtil.equals(defaultRecordId, record)) {
             recordInteractor.setDefaultCardOnDeviceCommandPipe()
                   .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
          }
@@ -231,7 +251,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void applyDefaultId() {
       trackSetAsDefault();
       recordInteractor.setDefaultCardOnDeviceCommandPipe()
-            .send(SetDefaultCardOnDeviceCommand.setAsDefault(getView().getRecord().id()));
+            .send(SetDefaultCardOnDeviceCommand.setAsDefault(record.id()));
    }
 
    private void showChangeDefaultIdConfirmDialog(Record record) {
@@ -255,7 +275,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void trackSetAsDefault() {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(ChangeDefaultCardAction.forBankCard(getView().getRecord())));
+            .send(new WalletAnalyticsCommand(ChangeDefaultCardAction.forBankCard(record)));
    }
 
    public void goBack() {
@@ -263,7 +283,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void nicknameUpdated(String nickName) {
-      recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(getView().getRecord(), nickName));
+      recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(record, nickName));
    }
 
    private void defaultCardSwitcherChanged(boolean setDefaultCard) {
@@ -282,7 +302,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void updateCardConditionState() {
-      fetchDefaultRecordId(defaultRecordId -> bindDefaultStatus(WalletRecordUtil.equals(defaultRecordId, getView().getRecord())));
+      fetchDefaultRecordId(defaultRecordId -> bindDefaultStatus(WalletRecordUtil.equals(defaultRecordId, record)));
    }
 
    private void bindDefaultStatus(boolean isDefault) {

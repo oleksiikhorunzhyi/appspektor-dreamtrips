@@ -9,14 +9,12 @@ import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
 public class CreateRecordCommand extends Command<Record> implements InjectableAction {
 
-   @Inject Janet janet;
    @Inject MapperyContext mappery;
 
    private final io.techery.janet.smartcard.model.Record swipedCard;

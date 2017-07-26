@@ -18,12 +18,10 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.util.SmartCardSDK;
-import io.techery.mappery.MapperyContext;
 
 @CommandAction
 public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implements InjectableAction {
 
-   @Inject MapperyContext mapperyContext;
    @Inject Janet janet;
    @Inject SnappyRepository snappyRepository;
    @Inject FirmwareRepository firmwareRepository;

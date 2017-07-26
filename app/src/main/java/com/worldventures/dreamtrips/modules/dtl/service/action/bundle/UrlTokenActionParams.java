@@ -14,4 +14,6 @@ public interface UrlTokenActionParams extends HttpActionParams {
    String receiptPhotoUrl();
 
    Location location();
+
+   String merchantId();
 }

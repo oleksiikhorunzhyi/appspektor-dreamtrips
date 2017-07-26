@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Value.Immutable
 public interface TransactionDetails extends Serializable {
 
+   @Nullable String transactionId();
    @Nullable Double creditedAmount();
    @Nullable Double currentBalance();
 }

@@ -1,23 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableGetUrlTokenParamsSdk;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableLocation;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.Location;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableGetUrlTokenParams;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableLocationThrst;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.LocationThrst;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableSdkFlaggingReviewParams;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableUrlTokenActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -32,7 +25,6 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 import io.techery.janet.ActionPipe;
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailReviewScreen, ViewState.EMPTY> implements DtlDetailReviewPresenter {
 
@@ -76,7 +68,7 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
 
     @Override
     public void sendFlag() {
-       /* ActionPipe<FlaggingReviewAction> reviewActionPipe = merchantInteractor.flaggingReviewHttpPipe();
+        ActionPipe<FlaggingReviewAction> reviewActionPipe = merchantInteractor.flaggingReviewHttpPipe();
         reviewActionPipe
               .observeWithReplay()
               .compose(bindViewIoToMainComposer());
@@ -85,39 +77,11 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
                                                                 .authorIpAddress(getIpAddress())
                                                                 .contentType(1)
                                                                 .feedbackType(1)
-                                                                .build()));*/
-
-
-        ActionPipe<UrlTokenAction> reviewActionPipe = merchantInteractor.urlTokenThrstHttpPipe();
-
-        reviewActionPipe
-              .observeWithReplay()
-              .compose(bindViewIoToMainComposer())
-              .subscribe(new ActionStateSubscriber<UrlTokenAction>()
-                    .onSuccess(this::onMerchantsLoaded)
-                    .onProgress(this::onMerchantsLoading)
-                    .onFail(this::onMerchantsLoadingError));
-
-        reviewActionPipe.send(UrlTokenAction.create(getView().getMerchantId(),
-                                                      //ImmutableGetUrlTokenParams.builder()
-                                                        ImmutableUrlTokenActionParams.builder()
-                                                            .checkinTime(DateTimeUtils.currentUtcString())
-                                                            //.currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
-                                                            .currencyCode("USD")
-                                                            .receiptPhotoUrl("https://dtappqa.s3.amazonaws.com/18B1BC60-77B7-4579-AA60-9E9E1BC181E4_1496844041254.jpg")
-                                                            /*.location(ImmutableLocationThrst.builder()
-                                                                        .coordinates("-34.89128014541686,-56.19534546514618")
-                                                                        .build())*/
-                                                              .location(ImmutableLocation.builder().coordinates("33.0638987,-96.8020342").build())
-                                                            .build()));
+                                                                .build()));
     }
 
     private void onMerchantsLoaded(UrlTokenAction action) {
         getView().onRefreshSuccess();
-        //String token = action.getResult().thrstInfo().token();
-        //String url = action.getResult().thrstInfo().redirectUrl();
-
-        //Log.e("dataInfoPilot", "token = " + token + " \n =============================== \n url = " + url);
     }
 
     private void onMerchantsLoading(UrlTokenAction action, Integer progress) {

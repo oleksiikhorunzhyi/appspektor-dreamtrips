@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetUrlTokenResponse;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableGetUrlTokenResponse;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ThrstInfo;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.TransactionDetails;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
@@ -20,10 +21,10 @@ public class UrlTokenConverter implements Converter<com.worldventures.dreamtrips
    }
 
    @Override
-   public GetUrlTokenResponse convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.GetUrlTokenResponseSdk review) {
+   public GetUrlTokenResponse convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.GetUrlTokenResponseSdk pilot) {
       return ImmutableGetUrlTokenResponse.builder()
-                     .thrstInfo(review.thrstInfo() != null ? mapperyContext.convert(review.thrstInfo(), ThrstInfo.class) : null)
-                     //.transaction(review.transaction() != null ? mapperyContext.convert(review.transaction(), Transaction.class) : null)
+                     .transaction(pilot.transaction() != null ? mapperyContext.convert(pilot.transaction(), TransactionDetails.class) : null)
+                     .thrstInfo(pilot.thrstInfo() != null ? mapperyContext.convert(pilot.thrstInfo(), ThrstInfo.class) : null)
             .build();
    }
 }

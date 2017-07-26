@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Value.Immutable
 public interface ThrstInfo extends Serializable {
 
-   @Nullable String RedirectUrl();
-   @Nullable String Token();
+   @Nullable String redirectUrl();
+   @Nullable String token();
 }

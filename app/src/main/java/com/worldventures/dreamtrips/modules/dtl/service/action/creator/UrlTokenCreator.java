@@ -15,13 +15,12 @@ public class UrlTokenCreator implements HttpActionCreator<GetUrlTokenPilotAction
 
    @Override
    public GetUrlTokenPilotAction createAction(UrlTokenActionParams params) {
-      return new GetUrlTokenPilotAction("fcedee48-667e-482b-8f31-a47335b7ed6c", ImmutableGetUrlTokenParamsSdk.builder()
+      return new GetUrlTokenPilotAction(params.merchantId(), ImmutableGetUrlTokenParamsSdk.builder()
                                                 .checkinTime(params.checkinTime())
                                                 .receiptPhotoUrl(params.receiptPhotoUrl())
                                                 .currencyCode(params.currencyCode())
-                                                //.location(params.location())
                                                 .location(ImmutableLocationThrst.builder()
-                                                      .coordinates("-34.89128014541686,-56.19534546514618")
+                                                      .coordinates(params.location().coordinates())
                                                       .build())
                                              .build());
    }

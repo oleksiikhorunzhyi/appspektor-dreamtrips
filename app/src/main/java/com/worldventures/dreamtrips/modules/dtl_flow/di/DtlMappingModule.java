@@ -25,6 +25,8 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewTextConve
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.TransactionThrstConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.TransactionTokenConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.UrlTokenConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.UserImageConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -190,4 +192,12 @@ public class DtlMappingModule {
    @Provides(type = Provides.Type.SET)
    @Singleton
    Converter provideThrstPilotConverter() { return new UrlTokenConverter(); }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTransactionThrstPilotConverter() { return new TransactionThrstConverter(); }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTokenThrstPilotConverter() { return new TransactionTokenConverter(); }
 }

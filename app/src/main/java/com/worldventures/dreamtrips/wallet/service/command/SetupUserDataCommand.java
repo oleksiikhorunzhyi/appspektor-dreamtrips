@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
@@ -23,7 +22,6 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.user.AssignUserAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.janet.smartcard.model.User;
-import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -31,12 +29,9 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class SetupUserDataCommand extends Command<SmartCardUser> implements InjectableAction {
 
-   @Inject Janet janetGeneric;
    @Inject @Named(JANET_WALLET) Janet janetWallet;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject WalletSocialInfoProvider socialInfoProvider;
-   @Inject SmartCardAvatarHelper smartCardAvatarHelper;
-   @Inject MapperyContext mappery;
 
    private final SmartCardUser userData;
 

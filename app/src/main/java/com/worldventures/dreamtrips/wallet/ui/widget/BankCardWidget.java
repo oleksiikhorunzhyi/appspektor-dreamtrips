@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.Arrays;
@@ -64,7 +64,7 @@ public class BankCardWidget extends FrameLayout {
       } finally {
          a.recycle();
       }
-      walletRecordUtil = new WalletRecordUtil(context);
+      walletRecordUtil = new WalletRecordUtil();
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
    }
@@ -95,12 +95,12 @@ public class BankCardWidget extends FrameLayout {
       tvShortCardNumber.setVisibility(show ? VISIBLE : GONE);
    }
 
-   public void setBankCard(Record card) {
-      setCardName(card.nickName());
-      setOwnerName(WalletRecordUtil.fetchFullName(card));
-      setCardNumber(card.numberLastFourDigits());
-      setExpireDate(card.expDate());
-      setRecordType(card.recordType());
+   public void setBankCard(RecordViewModel recordViewModel) {
+      setCardName(recordViewModel.getNickName());
+      setOwnerName(recordViewModel.getOwnerName());
+      setCardNumber(recordViewModel.getCardNumber());
+      setExpireDate(recordViewModel.getExpireDate());
+      setRecordType(recordViewModel.getRecordType());
    }
 
    //   properties:
@@ -137,7 +137,7 @@ public class BankCardWidget extends FrameLayout {
    }
 
    public void setRecordType(RecordType recordType) {
-      tvCardType.setText(walletRecordUtil.obtainRecordType(recordType));
+      tvCardType.setText(walletRecordUtil.obtainRecordType(getContext(), recordType));
    }
 
    public enum BankCardResource {

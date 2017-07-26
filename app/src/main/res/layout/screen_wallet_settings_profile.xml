@@ -30,11 +30,12 @@
             />
    </data>
 
-   <com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen
+   <LinearLayout
          android:id="@+id/root_wallet_settings_profile_screen"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:theme="@style/WalletTheme"
+         android:orientation="vertical"
          >
 
       <android.support.v7.widget.Toolbar
@@ -230,5 +231,5 @@
 
          </android.support.constraint.ConstraintLayout>
       </android.support.v4.widget.NestedScrollView>
-   </com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen>
+   </LinearLayout>
 </layout>

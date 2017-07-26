@@ -18,16 +18,13 @@ import java.util.Locale;
 
 public class WalletHelpVideoDelegate {
 
-   private final Context context;
-
    private List<VideoLocale> videoLocales = null;
    private VideoLocale lastVideoLocale = null;
 
-   public WalletHelpVideoDelegate(Context context) {
-      this.context = context;
+   public WalletHelpVideoDelegate() {
    }
 
-   VideoLanguage getDefaultLanguage(final List<VideoLocale> videoLocales) {
+   public VideoLanguage getDefaultLanguage(final List<VideoLocale> videoLocales) {
       VideoLocale videoLocale = null;
       if (videoLocales != null && !videoLocales.isEmpty()) {
          videoLocale = Queryable.from(videoLocales).firstOrDefault(element -> element.getCountry()
@@ -56,33 +53,28 @@ public class WalletHelpVideoDelegate {
       return Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase();
    }
 
-   String getPathForCache(final CachedModel entity) {
-      return getFilePath(entity.getUrl());
+   public String getPathForCache(Context context, final CachedModel entity) {
+      return getFilePath(context, entity.getUrl());
    }
 
-   String obtainVideoLanguage(final Video video) {
+   public String obtainVideoLanguage(final Video video) {
       return ProjectTextUtils.defaultIfEmpty(video.getLanguage(), "null");
    }
 
-   void playVideo(final Video video) {
+   public Uri playVideo(Context context, final Video video) {
       CachedModel videoEntity = video.getCacheEntity();
       Uri parse = Uri.parse(video.getVideoUrl());
-      if (isCached(videoEntity)) {
-         parse = Uri.parse(getFilePath(videoEntity.getUrl()));
+      if (isCached(context, videoEntity)) {
+         parse = Uri.parse(getFilePath(context, videoEntity.getUrl()));
       }
-
-      Intent intent = new Intent(context, PlayerActivity.class).setData(parse)
-            .putExtra(PlayerActivity.EXTRA_VIDEO_NAME, video.getVideoName())
-            .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, getClass())
-            .putExtra(PlayerActivity.EXTRA_LANGUAGE, obtainVideoLanguage(video));
-      context.startActivity(intent);
+      return parse;
    }
 
-   boolean isCurrentSelectedVideoLocale(final VideoLocale videoLocale) {
+   public boolean isCurrentSelectedVideoLocale(final VideoLocale videoLocale) {
       return lastVideoLocale == null || videoLocale.equals(lastVideoLocale);
    }
 
-   void processCachingState(final CachedModel cachedEntity, final HelpScreen view) {
+   public void processCachingState(final CachedModel cachedEntity, final HelpScreen view) {
       Queryable.from(view.getCurrentItems())
             .notNulls()
             .filter(video -> video.getCacheEntity().getUuid().equals(cachedEntity.getUuid()))
@@ -92,21 +84,21 @@ public class WalletHelpVideoDelegate {
             });
    }
 
-   int getDefaultLocaleIndex(List<VideoLocale> videoLocales) {
+   public int getDefaultLocaleIndex(List<VideoLocale> videoLocales) {
       VideoLocale videoLocale = Queryable.from(videoLocales).firstOrDefault(element -> element.getCountry()
             .equalsIgnoreCase(Locale.getDefault().getCountry()));
       return videoLocale == null ? 0 : videoLocales.indexOf(videoLocale);
    }
 
-   int getLastSelectedLocaleIndex() {
+   public int getLastSelectedLocaleIndex() {
       return videoLocales == null ? 0 : videoLocales.indexOf(lastVideoLocale);
    }
 
-   void setVideoLocales(List<VideoLocale> videoLocales) {
+   public void setVideoLocales(List<VideoLocale> videoLocales) {
       this.videoLocales = videoLocales;
    }
 
-   void setCurrentSelectedVideoLocale(VideoLocale videoLocale) {
+   public void setCurrentSelectedVideoLocale(VideoLocale videoLocale) {
       this.lastVideoLocale = videoLocale;
    }
 
@@ -114,11 +106,11 @@ public class WalletHelpVideoDelegate {
       return getDefaultLanguage(lastVideoLocale);
    }
 
-   private boolean isCached(CachedModel cachedModel) {
-      return new File(getFilePath(cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
+   private boolean isCached(Context context, CachedModel cachedModel) {
+      return new File(getFilePath(context, cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
    }
 
-   private String getFilePath(String url) {
+   private String getFilePath(Context context, String url) {
       return context.getFilesDir().getPath() + File.separator + getFileName(url);
    }
 

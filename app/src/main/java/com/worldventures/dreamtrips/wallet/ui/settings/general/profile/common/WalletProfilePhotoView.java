@@ -8,7 +8,7 @@ import java.io.File;
 
 import rx.Observable;
 
-public interface WalletProfilePhotoView extends RxLifecycleView{
+public interface WalletProfilePhotoView {
 
    void pickPhoto(String initialPhotoUrl);
 

@@ -1,49 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+public interface WalletPinIsSetScreen extends WalletScreen {
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
-public class WalletPinIsSetScreen extends WalletLinearLayout<WalletPinIsSetPresenter.Screen, WalletPinIsSetPresenter, WalletPinIsSetPath> implements WalletPinIsSetPresenter.Screen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-
-   public WalletPinIsSetScreen(Context context) {
-      super(context);
-   }
-
-   public WalletPinIsSetScreen(Context context, AttributeSet attrs) {
-      super(context, attrs);
-   }
-
-   @NonNull
-   @Override
-   public WalletPinIsSetPresenter createPresenter() {
-      return new WalletPinIsSetPresenter(getContext(), getInjector());
-   }
-
-   @Override
-   protected void onFinishInflate() {
-      super.onFinishInflate();
-      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-   }
-
-   @OnClick(R.id.next_button)
-   public void nextClick() {
-      presenter.navigateToNextScreen();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
 }

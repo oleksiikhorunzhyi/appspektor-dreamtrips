@@ -28,7 +28,7 @@ public class SettingsRadioCell extends AbstractDelegateCell<SettingsRadioModel, 
 
    @Override
    protected void syncUIStateWithModel() {
-      checkBox.setText(getModelObject().getText());
+      checkBox.setText(itemView.getContext().getString(getModelObject().getTextResId()));
       checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
       divider.setVisibility(cellDelegate.isLast(getAdapterPosition()) ? View.GONE : View.VISIBLE);
    }

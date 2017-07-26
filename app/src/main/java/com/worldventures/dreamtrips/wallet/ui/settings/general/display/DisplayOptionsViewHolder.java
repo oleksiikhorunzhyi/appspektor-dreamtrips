@@ -26,7 +26,7 @@ import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeActio
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY;
 
-class DisplayOptionsViewHolder {
+public class DisplayOptionsViewHolder {
 
    @InjectView(R.id.tv_title) TextView title;
 
@@ -88,7 +88,7 @@ class DisplayOptionsViewHolder {
       this.clickListener = clickListener;
    }
 
-   void onPagePositionUpdated(float position, float alphaOffset) {
+   public void onPagePositionUpdated(float position, float alphaOffset) {
       final float scale = Math.abs(Math.abs(position) - 1) * 0.2f + 0.8f;
       rootView.setScaleX(scale);
       rootView.setScaleY(scale);

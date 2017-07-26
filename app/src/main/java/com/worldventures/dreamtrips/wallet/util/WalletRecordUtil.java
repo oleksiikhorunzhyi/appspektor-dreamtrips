@@ -15,15 +15,13 @@ import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 
 import static java.lang.String.format;
 
 public class WalletRecordUtil {
 
-   private final Context context;
-
-   public WalletRecordUtil(Context context) {
-      this.context = context;
+   public WalletRecordUtil() {
    }
 
    public static String obtainLastCardDigits(String cardNumber) {
@@ -48,7 +46,7 @@ public class WalletRecordUtil {
       return cardNumber.length() == 15 && amexPrefix;
    }
 
-   public String obtainFinancialServiceType(FinancialService financialService) {
+   public String obtainFinancialServiceType(Context context, FinancialService financialService) {
       switch (financialService) {
          case VISA:
             return context.getString(R.string.wallet_card_financial_service_visa);
@@ -66,8 +64,8 @@ public class WalletRecordUtil {
       }
    }
 
-   public String financialServiceWithCardNumber(Record record) {
-      return format("%s •••• %s", obtainFinancialServiceType(record.financialService()), record.numberLastFourDigits());
+   public String financialServiceWithCardNumber(Context context, Record record) {
+      return format("%s •••• %s", obtainFinancialServiceType(context, record.financialService()), record.numberLastFourDigits());
    }
 
    public String bankNameWithCardNumber(Record record) {
@@ -77,7 +75,7 @@ public class WalletRecordUtil {
    }
 
    // utils
-   public String obtainRecordType(RecordType cardType) {
+   public String obtainRecordType(Context context, RecordType cardType) {
       if (cardType == null) {
          return null;
       }
@@ -169,12 +167,19 @@ public class WalletRecordUtil {
       return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
    }
 
-   public CharSequence goodThrough(String date) {
+   public CharSequence goodThrough(Context context, String date) {
       SpannableString goodThru = new SpannableString(context.getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
       return new SpannableStringBuilder()
             .append(goodThru)
             .append(" ")
             .append(date);
+   }
+
+   public static RecordViewModel prepareRecordViewModel(Record record) {
+      final int cvvLength = obtainRequiredCvvLength(record.number());
+      final String ownerName = fetchFullName(record);
+      return new RecordViewModel(record.id(), cvvLength, record.nickName(), ownerName, record.numberLastFourDigits(),
+            record.expDate(), record.recordType());
    }
 }

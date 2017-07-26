@@ -6,15 +6,12 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPath;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-abstract class PairDelegate {
+public abstract class PairDelegate {
 
    protected final Navigator navigator;
    protected final SmartCardInteractor smartCardInteractor;
@@ -49,7 +46,7 @@ abstract class PairDelegate {
 
       @Override
       public void navigateOnNextScreen(PairView view) {
-         navigator.withoutLast(new SyncRecordsPath(SyncAction.TO_DEVICE));
+         navigator.goSyncRecordsPath(SyncAction.TO_DEVICE);
       }
    }
 
@@ -77,9 +74,9 @@ abstract class PairDelegate {
 
       private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
          if (smartCardUser != null) {
-            navigator.withoutLast(new WizardUploadProfilePath());
+            navigator.goWizardUploadProfile();
          } else {
-            navigator.withoutLast(new WizardEditProfilePath());
+            navigator.goWizardEditProfile();
          }
       }
    }

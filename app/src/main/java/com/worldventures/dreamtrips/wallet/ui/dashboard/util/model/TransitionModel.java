@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
-public class TransitionModel {
+public class TransitionModel implements Parcelable {
    private boolean defaultCard;
    private int left;
    private int top;
@@ -22,6 +24,28 @@ public class TransitionModel {
       this.overlap = overlap;
       this.background = background;
    }
+
+   protected TransitionModel(Parcel in) {
+      defaultCard = in.readByte() != 0;
+      left = in.readInt();
+      top = in.readInt();
+      width = in.readInt();
+      height = in.readInt();
+      overlap = in.readInt();
+      background = in.readInt();
+   }
+
+   public static final Creator<TransitionModel> CREATOR = new Creator<TransitionModel>() {
+      @Override
+      public TransitionModel createFromParcel(Parcel in) {
+         return new TransitionModel(in);
+      }
+
+      @Override
+      public TransitionModel[] newArray(int size) {
+         return new TransitionModel[size];
+      }
+   };
 
    public boolean isDefaultCard() {
       return defaultCard;
@@ -49,5 +73,21 @@ public class TransitionModel {
 
    public int getBackground() {
       return background;
+   }
+
+   @Override
+   public int describeContents() {
+      return 0;
+   }
+
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeByte((byte) (defaultCard ? 1 : 0));
+      dest.writeInt(left);
+      dest.writeInt(top);
+      dest.writeInt(width);
+      dest.writeInt(height);
+      dest.writeInt(overlap);
+      dest.writeInt(background);
    }
 }

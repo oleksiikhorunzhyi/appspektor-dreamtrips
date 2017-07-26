@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/grey_lighter"
@@ -33,4 +33,4 @@
 
    </FrameLayout>
 
-</com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentScreen>
+</LinearLayout>

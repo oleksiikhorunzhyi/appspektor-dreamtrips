@@ -27,11 +27,11 @@ abstract class BaseItemProvider {
       return 0;
    }
 
-   public final String provideTextByValue(long value) {
+   public final int provideTextResIdByValue(long value) {
       final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
-         if (value == items.get(i).getValue()) return items.get(i).getText();
+         if (value == items.get(i).getValue()) return items.get(i).getTextResId();
       }
-      return items.get(0).getText();
+      return items.get(0).getTextResId();
    }
 }

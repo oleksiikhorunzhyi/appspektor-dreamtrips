@@ -15,15 +15,10 @@ import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPath;
 
 import butterknife.ButterKnife;
 import io.techery.janet.Command;
@@ -46,17 +41,15 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public void prepareSettingsScreen(WalletSettingsPresenter.Screen view) {
-      WalletSettingsScreen screen = (WalletSettingsScreen) view;
-      ButterKnife.apply(screen.toggleableItems, (item, i) -> item.setVisibility(View.GONE));
-      invalidateDivider((LinearLayout) screen.toggleableItems.get(0).getParent());
+   public void prepareSettingsScreen(WalletSettingsScreen view) {
+      ButterKnife.apply(view.getToggleableItems(), (item, i) -> item.setVisibility(View.GONE));
+      invalidateDivider((LinearLayout) view.getToggleableItems().get(0).getParent());
    }
 
    @Override
-   public void prepareSettingsGeneralScreen(WalletGeneralSettingsPresenter.Screen view) {
-      WalletGeneralSettingsScreen screen = (WalletGeneralSettingsScreen) view;
-      ButterKnife.apply(screen.toggleableItems, (item, i) -> item.setVisibility(View.GONE));
-      invalidateDivider((LinearLayout) screen.toggleableItems.get(0).getParent());
+   public void prepareSettingsGeneralScreen(WalletGeneralSettingsScreen view) {
+      ButterKnife.apply(view.getToggleableItems(), (item, i) -> item.setVisibility(View.GONE));
+      invalidateDivider((LinearLayout) view.getToggleableItems().get(0).getParent());
    }
 
    @Override
@@ -65,10 +58,9 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public void prepareSettingsSecurityScreen(WalletSecuritySettingsPresenter.Screen view) {
-      WalletSecuritySettingsScreen screen = (WalletSecuritySettingsScreen) view;
-      ButterKnife.apply(screen.toggleableItems, (item, i) -> item.setVisibility(View.GONE));
-      invalidateDivider((LinearLayout) screen.toggleableItems.get(0).getParent());
+   public void prepareSettingsSecurityScreen(WalletSecuritySettingsScreen view) {
+      ButterKnife.apply(view.getToggleableItems(), (item, i) -> item.setVisibility(View.GONE));
+      invalidateDivider((LinearLayout) view.getToggleableItems().get(0).getParent());
    }
 
    @Override
@@ -77,13 +69,12 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public void prepareDashboardScreen(CardListPresenter.Screen view) {
-      CardListScreen screen = (CardListScreen) view;
-      screen.fabButton.setBackgroundTintList(
-            ColorStateList.valueOf(ContextCompat.getColor(screen.getContext(), R.color.wallet_add_cards_inactive_color))
+   public void prepareDashboardScreen(CardListScreen view) {
+      view.getCardListFab().setBackgroundTintList(
+            ColorStateList.valueOf(ContextCompat.getColor(view.getViewContext(), R.color.wallet_add_cards_inactive_color))
       );
-      screen.emptyCardListView.setText(R.string.wallet_wizard_card_list_add_card_coming_soon_text);
-      screen.fabButton.setOnClickListener(v -> Toast.makeText(screen.getContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show());
+      view.getEmptyCardListView().setText(R.string.wallet_wizard_card_list_add_card_coming_soon_text);
+      view.getCardListFab().setOnClickListener(v -> Toast.makeText(view.getViewContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show());
    }
 
    @Override
@@ -118,13 +109,13 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast) {
+   public void navigateFromSetupUserScreen(Navigator navigator) {
       wizardInteractor.provisioningStatePipe()
             .createObservable(ProvisioningModeCommand.fetchState())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
                   .onSuccess(command ->
-                        navigator.withoutLast(new WizardAssignUserPath(command.getResult()))));
+                        navigator.goWizardAssignUser(command.getResult())));
    }
 
    @Override

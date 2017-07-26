@@ -118,13 +118,17 @@ ext {
    // presentation frameworks
    def mosbyVersion = '2.0.0'
    def flowVersion = '0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+   def conductorVersion = '2.0.2'
    moduleDependencies.presentation = [
-         mosbyMvp      : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
-         mosbyCommon   : [c: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],
-         mosbyViewstate: [c: "com.hannesdorfmann.mosby:viewstate:$mosbyVersion"],
-         flow          : [c: "com.github.almozavr.flow:flow:$flowVersion"],
-         flowPath      : [c: "com.github.almozavr.flow:flow-path:$flowVersion"],
-         butterknife   : [c: 'com.jakewharton:butterknife:6.1.0'],
+         mosbyMvp             : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
+         mosbyCommon          : [c: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],
+         mosbyViewstate       : [c: "com.hannesdorfmann.mosby:viewstate:$mosbyVersion"],
+         flow                 : [c: "com.github.almozavr.flow:flow:$flowVersion"],
+         flowPath             : [c: "com.github.almozavr.flow:flow-path:$flowVersion"],
+         conductor            : [c: "com.bluelinelabs:conductor:$conductorVersion"],
+         conductorSupport     : [c: "com.bluelinelabs:conductor-support:$conductorVersion"],
+         conductorRxLifecycle : [c: "com.bluelinelabs:conductor-rxlifecycle:$conductorVersion"],
+         butterknife          : [c: 'com.jakewharton:butterknife:6.1.0'],
    ]
    // media
    moduleDependencies.media = [

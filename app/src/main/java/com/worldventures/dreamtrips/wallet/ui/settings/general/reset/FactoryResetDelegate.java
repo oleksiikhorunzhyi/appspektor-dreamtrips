@@ -11,11 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPath;
 
-import flow.path.Path;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -64,13 +60,9 @@ public abstract class FactoryResetDelegate {
       factoryReset();
    }
 
-   protected void handleSuccessResult() {
-      navigator.single(provideSuccessStep());
-   }
-
    public void setupDelegate(FactoryResetView view) {
       if (pinMode == PinMode.ENABLED) {
-         navigator.go(provideStartStep());
+         performStart();
       } else {
          bindView(view);
       }
@@ -96,15 +88,20 @@ public abstract class FactoryResetDelegate {
 
    protected abstract ResetOptions provideResetOptions();
 
-   protected abstract Path provideStartStep();
+   protected abstract void performStart();
 
-   protected abstract Path provideSuccessStep();
+   protected abstract void handleSuccessResult();
 
    private static class GeneralFactoryResetDelegate extends FactoryResetDelegate {
 
       private GeneralFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
             AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
          super(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
+      }
+
+      @Override
+      protected void handleSuccessResult() {
+         navigator.goFactoryResetSuccess();
       }
 
       @Override
@@ -130,13 +127,8 @@ public abstract class FactoryResetDelegate {
       }
 
       @Override
-      protected Path provideStartStep() {
-         return new FactoryResetPath();
-      }
-
-      @Override
-      protected Path provideSuccessStep() {
-         return new FactoryResetSuccessPath();
+      protected void performStart() {
+         navigator.goFactoryReset();
       }
    }
 
@@ -173,19 +165,14 @@ public abstract class FactoryResetDelegate {
       }
 
       @Override
-      protected Path provideStartStep() {
-         return new EnterPinUnassignPath();
-      }
-
-      @Override
-      protected Path provideSuccessStep() {
-         return new UnassignSuccessPath();
+      protected void performStart() {
+         navigator.goEnterPinUnassign();
       }
 
       @Override
       protected void handleSuccessResult() {
          trackResetSuccess();
-         super.handleSuccessResult();
+         navigator.goUnassignSuccess();
       }
    }
 }

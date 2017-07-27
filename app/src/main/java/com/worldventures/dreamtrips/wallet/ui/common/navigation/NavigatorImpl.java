@@ -284,7 +284,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goStartFirmwareInstallCardList() {
-      single(constructImmediateTransaction(new StartFirmwareInstallScreenImpl()));
+      single(new StartFirmwareInstallScreenImpl());
    }
 
    @Override

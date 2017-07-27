@@ -9,10 +9,14 @@ public class ThrstFlowBundle implements Parcelable {
 
    private final Merchant merchant;
    private final String receiptUrl;
+   private final String token;
+   private final String transactionId;
 
-   public ThrstFlowBundle(Merchant merchant, String receiptUrl) {
+   public ThrstFlowBundle(Merchant merchant, String receiptUrl, String token, String transactionId) {
       this.merchant = merchant;
       this.receiptUrl = receiptUrl;
+      this.token = token;
+      this.transactionId = transactionId;
    }
 
    public Merchant getMerchant() {
@@ -23,6 +27,14 @@ public class ThrstFlowBundle implements Parcelable {
       return receiptUrl;
    }
 
+   public String getToken() {
+      return token;
+   }
+
+   public String getTransactionId() {
+      return transactionId;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Parcelable part
    ///////////////////////////////////////////////////////////////////////////
@@ -30,12 +42,16 @@ public class ThrstFlowBundle implements Parcelable {
    protected ThrstFlowBundle(Parcel in) {
       merchant = (Merchant) in.readSerializable();
       receiptUrl = in.readString();
+      token = in.readString();
+      transactionId = in.readString();
    }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeSerializable(merchant);
       dest.writeString(receiptUrl);
+      dest.writeString(token);
+      dest.writeString(transactionId);
    }
 
    public static final Creator<ThrstFlowBundle> CREATOR = new Creator<ThrstFlowBundle>() {

@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.client.HttpErrorHandlerWebViewClient;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.javascript.JavaScriptInterface;
@@ -23,6 +24,7 @@ public class HttpErrorHandlerWebView extends WebView {
    private HttpStatusErrorCallback httpStatusErrorCallback;
    private JavascriptCallback javascriptCallback;
    private PageStateCallback pageStateCallback;
+   private String thrstToken;
 
    public HttpErrorHandlerWebView(Context context) {
       super(context);
@@ -51,14 +53,7 @@ public class HttpErrorHandlerWebView extends WebView {
       getSettings().setJavaScriptEnabled(true);
       getSettings().setDefaultTextEncodingName("utf-8");
       setWebChromeClient(new WebChromeClient());
-      setWebViewClient(new HttpErrorHandlerWebViewClient() {
-         @Override
-         protected void onHttpStatusError(final String url, final int statusCode) {
-            if (httpStatusErrorCallback != null) {
-               handler.post(() -> httpStatusErrorCallback.onHttpStatusError(url, statusCode));
-            }
-         }
-
+      setWebViewClient(new WebViewClient() {
          @Override
          public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -118,5 +113,14 @@ public class HttpErrorHandlerWebView extends WebView {
    public interface PageStateCallback {
       void onPageStarted();
       void onPageFinished();
+   }
+
+   public void setThrstToken(String thrstToken) {
+      this.thrstToken = thrstToken;
+      init();
+   }
+
+   public String getThrstToken() {
+      return thrstToken;
    }
 }

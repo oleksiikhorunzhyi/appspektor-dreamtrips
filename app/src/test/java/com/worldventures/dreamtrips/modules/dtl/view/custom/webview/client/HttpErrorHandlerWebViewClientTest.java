@@ -18,7 +18,7 @@ public class HttpErrorHandlerWebViewClientTest {
    @Before
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
-      webViewClient = new HttpErrorHandlerWebViewClient() {
+      webViewClient = new HttpErrorHandlerWebViewClient("") {
          @Override
          protected void onHttpStatusError(String url, int statusCode) {
          }

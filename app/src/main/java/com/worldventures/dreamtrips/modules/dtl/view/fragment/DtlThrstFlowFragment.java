@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -14,6 +16,9 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPath;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.InjectView;
 import flow.Flow;
@@ -30,10 +35,24 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       super.onActivityCreated(savedInstanceState);
       ThrstFlowBundle thrstFlowBundle = getArgs();
       String receiptUrl = thrstFlowBundle.getReceiptUrl();
+      String token = thrstFlowBundle.getToken();
+      String transactionId = thrstFlowBundle.getTransactionId();
       String merchantName = thrstFlowBundle.getMerchant().displayName();
       ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
 
-      webView.loadUrl("http://dev.thrst.com/#/thrst");
+      //webView.loadUrl("http://dev.thrst.com/#/thrst");
+
+      //webView.setThrstToken(token);
+      CookieSyncManager.createInstance(getContext());
+      CookieManager cookieManager = CookieManager.getInstance();
+      cookieManager.removeSessionCookie();
+      String cookieString = "auth=" + token;
+      cookieManager.setCookie(".", cookieString);
+      CookieSyncManager.getInstance().sync();
+
+      Map<String, String> abc = new HashMap<String, String>();
+      abc.put("Cookie", cookieString);
+      webView.loadUrl(receiptUrl, abc);
       webView.setPageStateCallbackListener(new HttpErrorHandlerWebView.PageStateCallback() {
          @Override
          public void onPageStarted() {

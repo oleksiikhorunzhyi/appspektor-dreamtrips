@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableLocation;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -15,11 +17,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableUrlTokenActionParams;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.schedulers.Schedulers;
@@ -30,6 +36,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PickImageDelegate pickImageDelegate;
    @Inject MediaInteractor mediaInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    private final Merchant merchant;
 
    private UploadTask uploadTask;
@@ -70,7 +77,38 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    }
 
    public void openThrstFlow() {
-      view.openThrstFlow(merchant, photoUploadingManagerS3.getResultUrl(uploadTask));
+      ActionPipe<UrlTokenAction> reviewActionPipe = merchantInteractor.urlTokenThrstHttpPipe();
+
+      reviewActionPipe
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<UrlTokenAction>()
+                  .onSuccess(this::onThrstSuccess)
+                  .onProgress(this::onThrstProgress)
+                  .onFail(this::onThrstError));
+
+      reviewActionPipe.send(UrlTokenAction.create(merchant.id(),
+            ImmutableUrlTokenActionParams.builder()
+                  .checkinTime(DateTimeUtils.currentUtcString())
+                  .merchantId(merchant.id())
+                  .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
+                  .receiptPhotoUrl(photoUploadingManagerS3.getResultUrl(uploadTask))
+                  .location(ImmutableLocation.builder().coordinates("33.0638987,-96.8020342").build())
+                  .build()));
+   }
+
+   private void onThrstError(UrlTokenAction urlTokenAction, Throwable throwable) {
+
+   }
+
+   private void onThrstProgress(UrlTokenAction urlTokenAction, Integer integer) {
+
+   }
+
+   private void onThrstSuccess(UrlTokenAction urlTokenAction) {
+      view.openThrstFlow(merchant, urlTokenAction.getResult().thrstInfo().redirectUrl(),
+                         urlTokenAction.getResult().thrstInfo().token(),
+                         urlTokenAction.getResult().transaction().transactionId());
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -129,6 +167,6 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
 
       void showProgress();
 
-      void openThrstFlow(Merchant merchant, String dtlTransaction);
+      void openThrstFlow(Merchant merchant, String dtlTransaction, String token, String transactionId);
    }
 }

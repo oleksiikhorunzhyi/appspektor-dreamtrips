@@ -62,7 +62,7 @@ ext {
          dbflowCompiler     : [a: "com.raizlabs.android:DBFlow-Compiler:$dbflowVersion"],
    ]
    // networking
-   def janetHttpVersion = '1.2.3'
+   def janetHttpVersion = '1.3.1'
    def okhttp2Version = '2.7.5'
    def okhttp3Version = '3.5.0'
    def smackVersion = '4.1.6'
@@ -73,7 +73,7 @@ ext {
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
          janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp:$janetHttpVersion"],
-         janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.0.2'],
+         janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.1.1'],
          // client & converter
          okhttpClient2            : [c: "com.squareup.okhttp:okhttp:$okhttp2Version"],
          okhttpUrlConnection2     : [c: "com.squareup.okhttp:okhttp-urlconnection:$okhttp2Version"],

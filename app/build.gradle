@@ -155,6 +155,23 @@ android {
       exclude 'META-INF/services/javax.annotation.processing.Processor'
       exclude 'META-INF/LICENSE.txt'
       exclude 'META-INF/NOTICE.txt'
+
+      exclude 'org/joda/time/format/messages.properties'
+      exclude 'org/joda/time/format/messages_es.properties'
+      exclude 'org/joda/time/format/messages_en.properties'
+      exclude 'org/joda/time/format/messages_cs.properties'
+      exclude 'org/joda/time/format/messages_da.properties'
+      exclude 'org/joda/time/format/messages_de.properties'
+      exclude 'org/joda/time/format/messages_fr.properties'
+      exclude 'org/joda/time/format/messages_it.properties'
+      exclude 'org/joda/time/format/messages_ja.properties'
+      exclude 'org/joda/time/format/messages_nl.properties'
+      exclude 'org/joda/time/format/messages_pl.properties'
+      exclude 'org/joda/time/format/messages_pt.properties'
+      exclude 'org/joda/time/format/messages_ru.properties'
+      exclude 'org/joda/time/format/messages_tr.properties'
+      exclude 'META-INF/rxjava.properties'
+      exclude 'META-INF/LICENSE'
    }
    useLibrary 'org.apache.http.legacy'
 
@@ -254,7 +271,11 @@ dependencies {
 
    // customized dependencies
 
-   compile(deps.provide(deps.networking.apiMonolith)) {
+   /*compile(deps.provide(deps.networking.apiMonolith)) {
+      exclude group: 'joda-time'
+   }*/
+   compile project(':integration-check')
+   compile (project(':library')) {
       exclude group: 'joda-time'
    }
 

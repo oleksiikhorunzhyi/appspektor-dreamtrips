@@ -43,7 +43,7 @@ ext {
          "$flavors.codes.preprod"                                               : [
                appParams: [
                      api      : [
-                           DreamTripsApi    : [String: '"http://dtapp-qa.worldventures.biz/"'],
+                           DreamTripsApi    : [String: '"http://dtapp-dev.worldventures.biz/"'],
                            UPLOADERY_API_URL: [String: '"http://dtapp-qa.worldventures.biz/uploadery"'],
                      ],
                      messenger: [

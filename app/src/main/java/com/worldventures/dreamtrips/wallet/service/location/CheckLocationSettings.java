@@ -34,6 +34,7 @@ class CheckLocationSettings extends GoogleApiObservable<LocationSettingsResult> 
 
    @Override
    protected void execute(GoogleApiClient googleApiClient, Subscriber<? super LocationSettingsResult> subscriber) {
-      checkSettings(googleApiClient, locationRequest);
+      subscriber.onNext(checkSettings(googleApiClient, locationRequest));
+      subscriber.onCompleted();
    }
 }

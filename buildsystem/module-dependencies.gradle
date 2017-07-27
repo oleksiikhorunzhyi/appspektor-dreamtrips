@@ -98,7 +98,7 @@ ext {
          service: [c: 'io.techery.janet:smartcard:0.21.3-SNAPSHOT'],
    ]
    // services
-   def googleServicesVersion = '11.0.2'
+   def googleServicesVersion = '11.0.4'
    moduleDependencies.services = [
          // amazon
          amazonCore    : [c: 'com.amazonaws:aws-android-sdk-core:2.2.6'],

@@ -6,16 +6,17 @@ import android.view.MenuItem;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableSdkFlaggingReviewParams;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
-import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
 import javax.inject.Inject;
@@ -77,6 +78,18 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
                                                                 .contentType(1)
                                                                 .feedbackType(1)
                                                                 .build()));
+    }
+
+    private void onMerchantsLoaded(UrlTokenAction action) {
+        getView().onRefreshSuccess();
+    }
+
+    private void onMerchantsLoading(UrlTokenAction action, Integer progress) {
+        getView().onRefreshProgress();
+    }
+
+    private void onMerchantsLoadingError(UrlTokenAction action, Throwable throwable) {
+        getView().onRefreshError(action.toString());
     }
 
     @Override

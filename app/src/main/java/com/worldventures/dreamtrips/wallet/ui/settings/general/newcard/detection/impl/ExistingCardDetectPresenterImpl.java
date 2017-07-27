@@ -117,7 +117,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
 
    @Override
    public void unassignCardOnBackend() {
-      getSmartCardInteractor().wipeSmartCardDataCommandActionPipe()
+      getSmartCardInteractor().wipeSmartCardDataPipe()
             .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)

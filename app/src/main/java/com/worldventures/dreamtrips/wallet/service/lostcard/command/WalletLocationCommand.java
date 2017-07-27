@@ -52,7 +52,7 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
    }
 
    private Observable<WalletLocation> saveLocation(WalletLocation location) {
-      Timber.d("Beacon client :: save location - %s", location);
+      Timber.d("Beacon client :: Save location - %s", location);
       final List<WalletLocation> walletLocations = locationRepository.getWalletLocations();
       walletLocations.add(location);
       locationRepository.saveWalletLocations(walletLocations);

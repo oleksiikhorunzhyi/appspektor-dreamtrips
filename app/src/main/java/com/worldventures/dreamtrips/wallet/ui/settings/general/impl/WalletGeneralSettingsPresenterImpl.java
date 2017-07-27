@@ -144,7 +144,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
    @Override
    public void onConfirmedRestartSmartCard() {
-      getSmartCardInteractor().restartSmartCardCommandActionPipe()
+      getSmartCardInteractor().restartSmartCardPipe()
             .send(new RestartSmartCardCommand());
       trackSmartCardRestart();
    }

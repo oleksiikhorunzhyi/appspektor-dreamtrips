@@ -65,7 +65,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    @Override
    public void unassignCardOnBackend() {
-      getSmartCardInteractor().wipeSmartCardDataCommandActionPipe()
+      getSmartCardInteractor().wipeSmartCardDataPipe()
             .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)

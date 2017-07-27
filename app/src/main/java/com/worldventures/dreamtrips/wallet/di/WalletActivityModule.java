@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
@@ -491,10 +492,11 @@ public class WalletActivityModule {
    CardListPresenter provideCardListPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
-         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper) {
+         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper,
+         LocationTrackingManager locationTrackingManager) {
       return new CardListPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor,
             firmwareInteractor, analyticsInteractor, factoryResetInteractor,
-            navigationDrawerPresenter, walletFeatureHelper);
+            navigationDrawerPresenter, walletFeatureHelper, locationTrackingManager);
    }
 
    @Provides

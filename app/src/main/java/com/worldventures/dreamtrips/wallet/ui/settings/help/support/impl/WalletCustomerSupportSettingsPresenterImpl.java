@@ -57,7 +57,7 @@ public class WalletCustomerSupportSettingsPresenterImpl extends WalletPresenterI
 
    @Override
    public void dialPhoneNumber(String phoneNumber) {
-      getNavigator().goDialer(getView().getViewContext(), phoneNumber);
+      getNavigator().goDialer(phoneNumber);
    }
 
    @Override

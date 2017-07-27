@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -139,11 +138,6 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
    public void showDocument(Document document) {
       toolbar.setTitle(document.getName());
       webView.loadUrl(document.getUrl());
-   }
-
-   @Override
-   public Context getViewContext() {
-      return getContext();
    }
 
    @Override

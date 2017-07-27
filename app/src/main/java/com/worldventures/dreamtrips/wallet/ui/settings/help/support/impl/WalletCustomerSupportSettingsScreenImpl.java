@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl;
 
 
-import android.content.Context;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,11 +88,6 @@ public class WalletCustomerSupportSettingsScreenImpl extends WalletBaseControlle
                         command -> getPresenter().goBack()))
                   .build()
       );
-   }
-
-   @Override
-   public Context getViewContext() {
-      return getContext();
    }
 
    @Override

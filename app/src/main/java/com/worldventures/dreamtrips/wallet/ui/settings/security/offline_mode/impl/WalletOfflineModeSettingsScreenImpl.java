@@ -110,11 +110,6 @@ public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<Wa
       offlineModeSwitcher.setCheckedWithoutNotify(enabled);
    }
 
-   @Override
-   public Context getViewContext() {
-      return getContext();
-   }
-
    @NonNull
    private DialogErrorView<SwitchOfflineModeCommand> getDefaultErrorDialogProvider() {
       return new DialogErrorView<SwitchOfflineModeCommand>(getContext()) {

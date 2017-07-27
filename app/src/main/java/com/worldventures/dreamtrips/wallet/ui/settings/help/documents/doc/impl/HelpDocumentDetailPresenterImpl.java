@@ -32,6 +32,6 @@ public class HelpDocumentDetailPresenterImpl extends WalletPresenterImpl<HelpDoc
 
    @Override
    public void sendEmail(Uri uri, String title) {
-      getNavigator().goSendEmail(getView().getViewContext(), uri, title);
+      getNavigator().goSendEmail(uri, title);
    }
 }

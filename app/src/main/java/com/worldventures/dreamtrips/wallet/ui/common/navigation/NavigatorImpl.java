@@ -99,7 +99,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goBack() {
-      routerLazy.get().handleBack();
+      routerLazy.get().getActivity().onBackPressed();
    }
 
    @Override
@@ -445,48 +445,50 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goDialer(Context context, String phoneNumber) {
+   public void goDialer(String phoneNumber) {
       Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
       try {
-         context.startActivity(intent);
+         routerLazy.get().getActivity().startActivity(intent);
       } catch (ActivityNotFoundException e) {
          Timber.e(e, "");
       }
    }
 
    @Override
-   public void goVideoPlayer(Context context, Uri uri, String videoName, Class launchComponent, String videoLanguage) {
-      Intent intent = new Intent(context, PlayerActivity.class).setData(uri)
+   public void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage) {
+      Intent intent = new Intent(routerLazy.get().getActivity(), PlayerActivity.class).setData(uri)
             .putExtra(PlayerActivity.EXTRA_VIDEO_NAME, videoName)
-            .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, getClass())
+            .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, launchComponent)
             .putExtra(PlayerActivity.EXTRA_LANGUAGE, videoLanguage);
-      context.startActivity(intent);
+      routerLazy.get().getActivity().startActivity(intent);
    }
 
    @Override
-   public void goSendEmail(Context context, Uri uri, String title) {
+   public void goSendEmail(Uri uri, String title) {
       Intent emailIntent = new Intent(Intent.ACTION_SENDTO, uri);
-      context.startActivity(Intent.createChooser(emailIntent, title));
+      routerLazy.get().getActivity().startActivity(Intent.createChooser(emailIntent, title));
    }
 
    @Override
-   public void goSystemSettings(Context context) {
-      context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+   public void goSystemSettings() {
+      routerLazy.get().getActivity().startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
    }
 
-   public void goPlayStore(Context context) {
+   @Override
+   public void goPlayStore() {
       String appPackageName = BuildConfig.APPLICATION_PACKAGE_PROD;
       try {
-         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+         routerLazy.get().getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
       } catch (android.content.ActivityNotFoundException exception) {
-         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+         routerLazy.get().getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
       }
    }
 
-   public void goSettings(Context context) {
+   @Override
+   public void goSettings() {
       Intent intent = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
       intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      context.startActivity(intent);
+      routerLazy.get().getActivity().startActivity(intent);
    }
 
    private void go(RouterTransaction routerTransaction) {

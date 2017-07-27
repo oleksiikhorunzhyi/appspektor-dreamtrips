@@ -66,7 +66,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
 
    @Override
    public void navigateToSystemSettings() {
-      getNavigator().goSystemSettings(getView().getViewContext());
+      getNavigator().goSystemSettings();
    }
 
    private void observeOfflineModeState() {

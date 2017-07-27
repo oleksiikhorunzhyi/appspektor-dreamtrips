@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode;
 
-import android.content.Context;
-
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -18,5 +16,4 @@ public interface WalletOfflineModeSettingsScreen extends WalletScreen {
 
    void setOfflineModeState(boolean enabled);
 
-   Context getViewContext();
 }

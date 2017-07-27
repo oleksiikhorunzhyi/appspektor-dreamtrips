@@ -155,15 +155,15 @@ public interface Navigator {
 
    void goForcePairKey();
 
-   void goDialer(Context context, String phoneNumber);
+   void goDialer(String phoneNumber);
 
-   void goVideoPlayer(Context context, Uri uri, String videoName, Class launchComponent, String videoLanguage);
+   void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage);
 
-   void goSendEmail(Context context, Uri uri, String title);
+   void goSendEmail(Uri uri, String title);
 
-   void goSystemSettings(Context context);
+   void goSystemSettings();
 
-   void goPlayStore(Context context);
+   void goPlayStore();
 
-   void goSettings(Context context);
+   void goSettings();
 }

@@ -253,7 +253,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goPaymentSyncFinished() {
-      single(constructImmediateTransaction(new PaymentSyncFinishScreenImpl()));
+      single(new PaymentSyncFinishScreenImpl());
    }
 
    @Override

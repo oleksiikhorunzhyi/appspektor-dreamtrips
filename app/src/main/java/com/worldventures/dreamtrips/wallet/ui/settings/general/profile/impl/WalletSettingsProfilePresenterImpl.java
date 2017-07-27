@@ -56,7 +56,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
       fetchProfile();
       observeChangeFields(view);
 
-      delegate.observeProfileUploading(view, this::goBack, throwable -> view.setDoneButtonEnabled(isDataChanged()));
+      delegate.observeProfileUploading(view, this::applyChanges, throwable -> view.setDoneButtonEnabled(isDataChanged()));
       delegate.observePickerAndCropper(view);
       delegate.sendAnalytics(new SmartCardProfileAction());
 
@@ -97,6 +97,20 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @Override
    public void handleBackOnDataChanged() {
       getView().showRevertChangesDialog();
+   }
+
+   @Override
+   public void revertChanges() {
+      if(user != null) {
+         getView().setUser(delegate.toViewModel(user));
+      }
+      goBack();
+   }
+
+   private void applyChanges(SmartCardUser updatedUser) {
+      this.user = updatedUser;
+      getView().setUser(delegate.toViewModel(updatedUser));
+      goBack();
    }
 
    @SuppressWarnings("ConstantConditions")

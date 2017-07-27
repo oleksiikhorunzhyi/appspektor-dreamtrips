@@ -38,7 +38,7 @@ public class WalletProfileDelegate {
    }
 
    public void observeProfileUploading(UpdateSmartCardUserView view,
-         @Nullable Action0 onSuccess, @Nullable Action1<Throwable> onFailure) {
+         @Nullable Action1<SmartCardUser> onSuccess, @Nullable Action1<Throwable> onFailure) {
 
       smartCardUserDataInteractor.updateSmartCardUserPipe()
             .observeWithReplay()
@@ -48,7 +48,7 @@ public class WalletProfileDelegate {
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation(this))
                   .onSuccess(setupUserDataCommand -> {
                      sendAnalytics(new ProfileChangesSavedAction());
-                     if (onSuccess != null) onSuccess.call();
+                     if (onSuccess != null) onSuccess.call(setupUserDataCommand.getResult());
                   })
                   .onFail((command, throwable) -> {
                      if (onFailure != null) onFailure.call(throwable);

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.Result;
@@ -82,6 +83,7 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    protected void onDetach(@NonNull View view) {
       scanner.stopCamera();
       super.onDetach(view);
+      getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
    }
 
    @Override

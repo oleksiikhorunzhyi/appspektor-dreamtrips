@@ -161,7 +161,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
       new MaterialDialog.Builder(getContext()).content(R.string.wallet_card_settings_profile_dialog_changes_title)
             .positiveText(R.string.wallet_card_settings_profile_dialog_changes_positive)
             .negativeText(R.string.wallet_card_settings_profile_dialog_changes_negative)
-            .onPositive((dialog, which) -> getPresenter().goBack())
+            .onPositive((dialog, which) -> getPresenter().revertChanges())
             .onNegative((dialog, which) -> dialog.dismiss())
             .show();
    }

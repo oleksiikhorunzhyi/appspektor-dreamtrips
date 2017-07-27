@@ -22,4 +22,6 @@ public interface WalletSettingsProfilePresenter extends WalletPresenter<WalletSe
    void confirmDisplayTypeChange();
 
    void handleBackOnDataChanged();
+
+   void revertChanges();
 }

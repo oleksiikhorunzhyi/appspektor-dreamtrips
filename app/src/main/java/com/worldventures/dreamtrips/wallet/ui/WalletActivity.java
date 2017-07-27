@@ -13,8 +13,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -118,7 +116,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
 
    private void initNavDrawer() {
       navigationDrawerPresenter.attachView(drawerLayout, navDrawer, rootComponentsProvider.getActiveComponents());
-      navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
+      navigationDrawerPresenter.setOnItemReselected(this::itemReselected);
       navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
       navigationDrawerPresenter.setOnLogout(this::logout);
    }
@@ -127,25 +125,21 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
       activityRouter.openMainWithComponent(component.getKey());
    }
 
-   private void itemReseleted(ComponentDescription route) {
+   private void itemReselected(ComponentDescription route) {
       if (!ViewUtils.isLandscapeOrientation(this)) {
          drawerLayout.closeDrawer(GravityCompat.START);
       }
    }
 
    private void logout() {
-      new MaterialDialog.Builder(this).title(getString(R.string.logout_dialog_title))
-            .content(getString(R.string.logout_dialog_message))
-            .positiveText(getString(R.string.logout_dialog_positive_btn))
-            .negativeText(getString(R.string.logout_dialog_negative_btn))
+      new MaterialDialog.Builder(this)
+            .title(R.string.logout_dialog_title)
+            .content(R.string.logout_dialog_message)
+            .positiveText(R.string.logout_dialog_positive_btn)
+            .negativeText(R.string.logout_dialog_negative_btn)
             .positiveColorRes(R.color.theme_main_darker)
             .negativeColorRes(R.color.theme_main_darker)
-            .callback(new MaterialDialog.ButtonCallback() {
-               @Override
-               public void onPositive(MaterialDialog dialog) {
-                  getPresentationModel().logout();
-               }
-            })
+            .onPositive((materialDialog, dialogAction) -> getPresentationModel().logout())
             .show();
    }
 }

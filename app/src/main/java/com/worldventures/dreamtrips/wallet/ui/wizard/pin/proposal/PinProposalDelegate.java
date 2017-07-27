@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.PinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.RecordsPinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.WizardPinProposalDialog;
@@ -108,7 +107,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
 
       @Override
       public void navigateCreatePin() {
-         getNavigator().goEnterPinProposal(Action.SETUP);
+         getNavigator().goEnterPinProposalWizard();
       }
    }
 
@@ -153,7 +152,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
 
       @Override
       public void navigateCreatePin() {
-         getNavigator().goEnterPinProposal(Action.ADD);
+         getNavigator().goEnterPinProposalRecords();
       }
    }
 }

@@ -61,7 +61,7 @@ class LastKnownLocationObservable extends GoogleApiObservable<Location> {
 
    static LocationRequest provideLocationRequest() {
       return LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setNumUpdates(1)
             .setFastestInterval(INTERVAL)
             .setInterval(INTERVAL);

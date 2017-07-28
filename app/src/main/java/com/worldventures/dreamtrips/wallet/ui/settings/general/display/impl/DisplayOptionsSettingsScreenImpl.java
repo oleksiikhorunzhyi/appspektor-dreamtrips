@@ -74,7 +74,9 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    public static DisplayOptionsSettingsScreenImpl create(ProfileViewModel profileViewModel, DisplayOptionsSource source) {
       final Bundle args = new Bundle();
-      args.putParcelable(KEY_PROFILE_VIEWMODEL, profileViewModel);
+      if (profileViewModel != null) {
+         args.putParcelable(KEY_PROFILE_VIEWMODEL, profileViewModel);
+      }
       args.putSerializable(KEY_DISPLAY_OPTIONS_SOURCE, source);
       return new DisplayOptionsSettingsScreenImpl(args);
    }

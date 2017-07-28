@@ -279,12 +279,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goStartFirmwareInstall() {
-      go(new StartFirmwareInstallScreenImpl());
+      go(new StartFirmwareInstallScreenImpl(), new SimpleSwapChangeHandler(), new SimpleSwapChangeHandler());
    }
 
    @Override
    public void goStartFirmwareInstallCardList() {
-      single(new StartFirmwareInstallScreenImpl());
+      single(new StartFirmwareInstallScreenImpl(), new SimpleSwapChangeHandler(), new SimpleSwapChangeHandler());
    }
 
    @Override

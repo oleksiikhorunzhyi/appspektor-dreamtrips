@@ -2,12 +2,14 @@ package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -56,6 +58,12 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    protected String getString(@StringRes int stringId, Object... formatArgs) {
       return getResources().getString(stringId, formatArgs);
+   }
+
+   @Override
+   protected void onDetach(@NonNull View view) {
+      SoftInputUtil.hideSoftInputMethod(getActivity());
+      super.onDetach(view);
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

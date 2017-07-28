@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.common.navigation;
 
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
@@ -233,8 +232,13 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goEnterPinProposal(Action pinAction) {
-      withoutLast(EnterPinScreenImpl.create(pinAction));
+   public void goEnterPinProposalWizard() {
+      go(EnterPinScreenImpl.create(Action.ADD));
+   }
+
+   @Override
+   public void goEnterPinProposalRecords() {
+      withoutLast(EnterPinScreenImpl.create(Action.SETUP));
    }
 
    @Override
@@ -249,7 +253,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goPaymentSyncFinished() {
-      single(constructImmediateTransaction(new PaymentSyncFinishScreenImpl()));
+      single(new PaymentSyncFinishScreenImpl());
    }
 
    @Override
@@ -280,7 +284,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goStartFirmwareInstallCardList() {
-      single(constructImmediateTransaction(new StartFirmwareInstallScreenImpl()));
+      single(new StartFirmwareInstallScreenImpl());
    }
 
    @Override

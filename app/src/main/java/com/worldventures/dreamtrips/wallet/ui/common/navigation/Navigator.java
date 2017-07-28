@@ -71,7 +71,9 @@ public interface Navigator {
 
    void goWizardAssignUser(ProvisioningMode provisioningMode);
 
-   void goEnterPinProposal(Action pinAction);
+   void goEnterPinProposalWizard();
+
+   void goEnterPinProposalRecords();
 
    void goPinSetSuccess(Action pinSetAction);
 

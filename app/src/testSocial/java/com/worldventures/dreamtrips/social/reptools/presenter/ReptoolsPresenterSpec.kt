@@ -31,19 +31,19 @@ class ReptoolsPresenterSpec: PresenterBaseSpec({
          }
       }
 
-      it ("should provide 4 screens with Invite screen") {
+      it ("should provide 5 screens with Invite screen") {
          init()
          doReturn(true).whenever(presenter).showInvite()
          val screens = presenter.provideScreens()
-         assertEquals(presenter.provideScreens().size, 4)
+         assertEquals(presenter.provideScreens().size, 5)
          assert(screens.filter{ it.route == Route.INVITE }.count() == 1)
       }
 
-      it ("should provide 3 screens without Invite screen") {
+      it ("should provide 4 screens without Invite screen") {
          init()
          doReturn(false).whenever(presenter).showInvite()
          val screens = presenter.provideScreens()
-         assertEquals(presenter.provideScreens().size, 3)
+         assertEquals(presenter.provideScreens().size, 4)
          assert(screens.filter{ it.route == Route.INVITE }.count() == 0)
       }
    }

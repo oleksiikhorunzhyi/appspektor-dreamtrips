@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl;
 
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;

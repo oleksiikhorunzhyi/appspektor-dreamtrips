@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl;
 
-import com.worldventures.dreamtrips.core.navigation.router.Router;
+
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
@@ -23,8 +23,8 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
 
    public PaymentFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor, Router router) {
-      super(navigator, smartCardInteractor, networkService, feedbackInteractor, walletSettingsInteractor, mediaInteractor, router);
+         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
+      super(navigator, smartCardInteractor, networkService, feedbackInteractor, walletSettingsInteractor, mediaInteractor);
       this.paymentFeedbackDelegate = new PaymentFeedbackDelegate();
    }
 

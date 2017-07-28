@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
@@ -42,19 +41,17 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
    private final FeedbackInteractor feedbackInteractor;
    private final WalletSettingsInteractor settingsInteractor;
    private final MediaInteractor mediaInteractor;
-   private final Router router;
    private final CancelableFeedbackAttachmentsManager attachmentsManager;
 
    private int attachmentsCount;
 
    public BaseFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor, Router router) {
+         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.feedbackInteractor = feedbackInteractor;
       this.settingsInteractor = walletSettingsInteractor;
       this.mediaInteractor = mediaInteractor;
-      this.router = router;
       this.attachmentsManager = new CancelableFeedbackAttachmentsManager(feedbackInteractor.uploadAttachmentPipe());
    }
 
@@ -164,13 +161,8 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    @Override
    public void openFullScreenPhoto(EntityStateHolder<FeedbackImageAttachment> holder) {
-      //TODO : try to get rid from dat sheeiiit
-      NavigationConfig config = NavigationConfigBuilder.forActivity()
-            .data(new FeedbackImageAttachmentsBundle(attachmentsManager.getAttachments().indexOf(holder),
-                  getImagesAttachments()))
-            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-            .build();
-      router.moveTo(Route.FEEDBACK_IMAGE_ATTACHMENTS, config);
+      getNavigator().goFeedBackImageAttachments(attachmentsManager.getAttachments().indexOf(holder),
+            getImagesAttachments());
    }
 
    protected abstract void handleSuccessSentFeedback();

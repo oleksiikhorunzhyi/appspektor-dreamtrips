@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl;
 
 
-import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -20,9 +19,9 @@ public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFee
 
    public SendFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor, Router router) {
+         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
       super(navigator, smartCardInteractor, networkService, feedbackInteractor, walletSettingsInteractor,
-            mediaInteractor, router);
+            mediaInteractor);
    }
 
    @Override

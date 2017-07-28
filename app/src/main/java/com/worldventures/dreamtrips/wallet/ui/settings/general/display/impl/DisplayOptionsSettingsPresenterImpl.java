@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
 
@@ -50,12 +51,17 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    @Override
    public void attachView(DisplayOptionsSettingsScreen view) {
       super.attachView(view);
-      this.source = getView().getDisplayOptionsSource();
-      this.user = delegate.createSmartCardUser(getView().getProfileViewModel());
-      this.mustSaveUserProfile = user != null;
+      initiateData();
       observeHomeDisplay();
       observeUserProfileUploading();
       fetchDisplayType();
+   }
+
+   private void initiateData() {
+      this.source = getView().getDisplayOptionsSource();
+      final ProfileViewModel profileViewModel = getView().getProfileViewModel();
+      this.user = (profileViewModel != null) ? delegate.createSmartCardUser(getView().getProfileViewModel()) : null;
+      this.mustSaveUserProfile = user != null;
    }
 
    @SuppressWarnings("ConstantConditions")

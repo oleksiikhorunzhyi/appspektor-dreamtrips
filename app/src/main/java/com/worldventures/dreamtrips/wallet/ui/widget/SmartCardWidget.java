@@ -101,7 +101,7 @@ public class SmartCardWidget extends ConstraintLayout {
          case DISPLAY_PHONE_AND_NAME:
             final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber()) ?
                   String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
-                  : "+" + holder.phoneNumber();
+                  : holder.phoneNumber();
             tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
             break;
       }

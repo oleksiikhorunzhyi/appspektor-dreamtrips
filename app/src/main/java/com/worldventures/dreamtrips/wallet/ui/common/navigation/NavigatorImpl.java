@@ -233,12 +233,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goEnterPinProposalWizard() {
-      go(EnterPinScreenImpl.create(Action.ADD));
+      go(EnterPinScreenImpl.create(Action.SETUP));
    }
 
    @Override
    public void goEnterPinProposalRecords() {
-      withoutLast(EnterPinScreenImpl.create(Action.SETUP));
+      withoutLast(EnterPinScreenImpl.create(Action.ADD));
    }
 
    @Override
@@ -279,12 +279,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goStartFirmwareInstall() {
-      go(new StartFirmwareInstallScreenImpl());
+      go(new StartFirmwareInstallScreenImpl(), new SimpleSwapChangeHandler(), new SimpleSwapChangeHandler());
    }
 
    @Override
    public void goStartFirmwareInstallCardList() {
-      single(new StartFirmwareInstallScreenImpl());
+      single(new StartFirmwareInstallScreenImpl(), new SimpleSwapChangeHandler(), new SimpleSwapChangeHandler());
    }
 
    @Override

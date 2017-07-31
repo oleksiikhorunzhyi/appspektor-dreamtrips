@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.beacon.BeaconClient;
 import com.worldventures.dreamtrips.wallet.service.beacon.RegionBundle;
+import com.worldventures.dreamtrips.wallet.service.beacon.WalletBeaconClient;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
@@ -68,12 +69,12 @@ class LostCardManager {
 
       subscriptions.add(locationInteractor.connectActionPipe()
             .observeSuccess()
-            .doOnNext(connectAction -> Timber.d("Beacon client :: SmartCard connected"))
+            .doOnNext(connectAction -> WalletBeaconClient.logBeacon("SmartCard connected"))
             .subscribe(connectAction -> triggerLocation(WalletLocationType.CONNECT)));
 
       subscriptions.add(locationInteractor.disconnectPipe()
             .observeSuccess()
-            .doOnNext(connectAction -> Timber.d("Beacon client :: SmartCard disconnected"))
+            .doOnNext(connectAction -> WalletBeaconClient.logBeacon("SmartCard disconnected"))
             .subscribe(disconnectAction -> triggerLocation(WalletLocationType.DISCONNECT)));
    }
 
@@ -83,7 +84,7 @@ class LostCardManager {
             .map(command -> command.getResult().smartCardId())
             .flatMap(activeSmartCardId -> beaconClient.observeEvents()
                   .filter(beaconEvent -> beaconEvent.getSmartCardId() != null)
-                  .doOnNext(beaconEvent -> Timber.d("Beacon client :: Beacon %s :: SmartCard ID - %s",
+                  .doOnNext(beaconEvent -> WalletBeaconClient.logBeacon("Beacon %s :: SmartCard ID - %s",
                         beaconEvent.enteredRegion() ? "detected" : "lost", beaconEvent.getSmartCardId()))
                   .doOnSubscribe(() -> beaconClient.startScan(
                         new RegionBundle("Motion region", UUID_MOTION, null, activeSmartCardId)))

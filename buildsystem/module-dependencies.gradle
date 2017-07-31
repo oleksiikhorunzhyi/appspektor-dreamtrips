@@ -99,6 +99,7 @@ ext {
          smackTcp                 : [c: "org.igniterealtime.smack:smack-tcp:$smackVersion"],
          // beacons
          altBeacon                : [c: [name: 'android-beacon-library-2.12-beta3', ext: 'aar']],
+         slf4                     : [ct: 'com.github.bright:slf4android:0.1.3'],
    ]
    // smartcard
    moduleDependencies.smartcard = [

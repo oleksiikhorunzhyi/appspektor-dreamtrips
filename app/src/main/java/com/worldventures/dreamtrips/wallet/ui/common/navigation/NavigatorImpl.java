@@ -20,9 +20,11 @@ import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.add.impl.AddCardDetailsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.records.detail.impl.CardDetailsEnterAnimHandler;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
@@ -257,9 +259,9 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goCardDetails(RecordViewModel recordViewModel, TransitionModel transitionModel) {
-      go(CardDetailsScreenImpl.create(recordViewModel, transitionModel),
-            new SimpleSwapChangeHandler(), new FadeChangeHandler());
+   public void goCardDetails(CommonCardViewModel recordViewModel, TransitionModel transitionModel) {
+      go(CardDetailsScreenImpl.create(recordViewModel),
+            new CardDetailsEnterAnimHandler(transitionModel), new FadeChangeHandler());
    }
 
    @Override

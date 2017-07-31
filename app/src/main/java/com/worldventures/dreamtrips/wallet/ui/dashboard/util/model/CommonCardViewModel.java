@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
+import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,6 +10,8 @@ import android.view.View;
 
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
+
+import com.worldventures.dreamtrips.BR;
 
 public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
@@ -71,6 +74,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return recordId;
    }
 
+   @Bindable
    public CharSequence getCardName() {
       return cardName;
    }
@@ -83,6 +87,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return cardTypeName;
    }
 
+   @Bindable
    public boolean isDefaultCard() {
       return defaultCard;
    }
@@ -109,6 +114,17 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
 
    public boolean isSampleCard() {
       return sampleCard;
+   }
+
+   public void setCardName(CharSequence cardName) {
+      this.cardName = cardName;
+      notifyPropertyChanged(BR.cardName);
+
+   }
+
+   public void setDefaultCard(boolean defaultCard) {
+      this.defaultCard = defaultCard;
+      notifyPropertyChanged(BR.defaultCard);
    }
 
    @BindingAdapter({"cardBackground"})

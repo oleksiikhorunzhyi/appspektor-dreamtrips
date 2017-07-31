@@ -5,7 +5,6 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -44,12 +43,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
-import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,6 +67,7 @@ import timber.log.Timber;
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> implements CardListPresenter {
+
    private final RecordInteractor recordInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;
@@ -260,11 +260,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    @Override
-   public void cardClicked(String recId, TransitionModel transitionModel) {
-      if (this.records != null && !this.records.isEmpty()) {
-         final Record record = Queryable.from(this.records).first(card -> card.id() != null && card.id().equals(recId));
-         getNavigator().goCardDetails(WalletRecordUtil.prepareRecordViewModel(record), transitionModel);
-      }
+   public void cardClicked(CommonCardViewModel record, TransitionModel transitionModel) {
+      getNavigator().goCardDetails(record, transitionModel);
    }
 
    @Override

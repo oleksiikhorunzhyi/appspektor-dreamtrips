@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.records.detail;
 
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
 public interface CardDetailsPresenter extends WalletPresenter<CardDetailsScreen> {
@@ -21,6 +20,7 @@ public interface CardDetailsPresenter extends WalletPresenter<CardDetailsScreen>
 
    void onCardIsReadyDialogShown();
 
-   HttpErrorHandlingUtil httpErrorHandlingUtil();
+   void validateRecordName(String name);
 
+   void changeDefaultCard(boolean isDefault);
 }

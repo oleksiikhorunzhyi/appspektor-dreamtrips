@@ -1,25 +1,21 @@
 package com.worldventures.dreamtrips.wallet.ui.records.detail.impl;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.databinding.DataBindingUtil;
+import android.databinding.Observable.OnPropertyChangedCallback;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.jakewharton.rxbinding.widget.RxTextView;
+import com.android.databinding.library.baseAdapters.BR;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.databinding.ScreenWalletWizardViewCardDetailsBinding;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -28,73 +24,48 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.binding.LastPositionSelector;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsScreen;
-import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
-import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
-import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
+import com.worldventures.dreamtrips.wallet.ui.records.detail.RecordDetailViewModel;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
-import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
 
 public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScreen, CardDetailsPresenter> implements CardDetailsScreen {
 
    private static final String KEY_MODIFY_RECORD = "key_modify_record";
-   private static final String KEY_TRANSITION_MODEL = "key_transition_model";
-   private static final long CARD_TRANSITION_DURATION = 350;
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.card) BankCardWidget bankCardWidget;
-   @InjectView(R.id.controls_layout) LinearLayout controlsLayout;
-
-   @InjectView(R.id.card_name) EditText etCardNickname;
-   @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
-   @InjectView(R.id.default_payment_card_checkbox) WalletSwitcher defaultPaymentCardSwitcher;
-   @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
+   private ScreenWalletWizardViewCardDetailsBinding binding;
 
    @Inject CardDetailsPresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   private final WalletRecordUtil walletRecordUtil;
+   private RecordDetailViewModel detailViewModel;
 
-   private Observable<Boolean> setAsDefaultCardObservable;
-   private Observable<String> cardNicknameObservable;
    private MaterialDialog networkConnectionErrorDialog;
 
-   public static CardDetailsScreenImpl create(RecordViewModel recordViewModel) {
-      return create(recordViewModel, null);
-   }
-
-   public static CardDetailsScreenImpl create(RecordViewModel recordViewModel, TransitionModel transitionModel) {
+   public static CardDetailsScreenImpl create(CommonCardViewModel recordViewModel) {
       final Bundle args = new Bundle();
       args.putParcelable(KEY_MODIFY_RECORD, recordViewModel);
-      if (transitionModel != null) {
-         args.putParcelable(KEY_TRANSITION_MODEL, transitionModel);
-      }
       return new CardDetailsScreenImpl(args);
-   }
-
-   public CardDetailsScreenImpl() {
-      this(null);
    }
 
    public CardDetailsScreenImpl(Bundle args) {
       super(args);
-      this.walletRecordUtil = new WalletRecordUtil();
    }
 
    @Override
@@ -102,17 +73,28 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
       super.onFinishInflate(view);
       setupToolbar();
 
-      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
-      cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable()
-            .toString()).skip(1);
-
-      bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
+      bindSpannableStringToTarget(binding.cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, false, false);
    }
 
    @Override
    public View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup) {
-      return layoutInflater.inflate(R.layout.screen_wallet_wizard_view_card_details, viewGroup, false);
+      detailViewModel = new RecordDetailViewModel(getArgs().getParcelable(KEY_MODIFY_RECORD));
+      binding = DataBindingUtil.inflate(layoutInflater, R.layout.screen_wallet_wizard_view_card_details, viewGroup, false);
+      binding.setRecordDetails(detailViewModel);
+      binding.setLastPositionSelector(new LastPositionSelector());
+      detailViewModel.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
+         @Override
+         public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+            if (propertyId == BR.recordName) {
+               presenter.validateRecordName(detailViewModel.getRecordName());
+            } else if (propertyId == BR.defaultRecord) {
+               if (detailViewModel.getRecordModel().isDefaultCard() == detailViewModel.isDefaultRecord()) return;
+               presenter.changeDefaultCard(detailViewModel.isDefaultRecord());
+            }
+         }
+      });
+      return binding.getRoot();
    }
 
    @Override
@@ -126,6 +108,7 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    }
 
    private void setupToolbar() {
+      final Toolbar toolbar = binding.toolbar;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       toolbar.inflateMenu(R.menu.menu_wallet_payment_card_detail);
       toolbar.setOnMenuItemClickListener(item -> {
@@ -154,17 +137,8 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    }
 
    @Override
-   public void showWalletRecord(RecordViewModel recordViewModel) {
-      bankCardWidget.setBankCard(recordViewModel);
-
-      final String nickName = recordViewModel.getNickName();
-      etCardNickname.setText(nickName);
-      etCardNickname.setSelection(nickName.length());
-   }
-
-   @Override
    public void showDefaultCardDialog(Record defaultRecord) {
-      new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(defaultRecord))
+      new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.bankNameWithCardNumber(defaultRecord))
             .setOnConfirmAction(() -> getPresenter().onChangeDefaultCardConfirmed())
             .setOnCancelAction(() -> getPresenter().onChangeDefaultCardCanceled())
             .show();
@@ -206,31 +180,6 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    }
 
    @Override
-   public void setCardNickname(String cardNickname) {
-      bankCardWidget.setCardName(cardNickname);
-   }
-
-   @Override
-   public Observable<Boolean> setAsDefaultPaymentCardCondition() {
-      return setAsDefaultCardObservable;
-   }
-
-   @Override
-   public Observable<String> getCardNicknameObservable() {
-      return cardNicknameObservable;
-   }
-
-   @Override
-   public void setDefaultCardCondition(boolean defaultCard) {
-      defaultPaymentCardSwitcher.setCheckedWithoutNotify(defaultCard);
-   }
-
-   @Override
-   public String getUpdateNickname() {
-      return etCardNickname.getText().toString().trim();
-   }
-
-   @Override
    public void showSCNonConnectionDialog() {
       new MaterialDialog.Builder(getContext())
             .title(R.string.wallet_card_settings_cant_connected)
@@ -242,12 +191,12 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
 
    @Override
    public void showCardNameError() {
-      cardNameInputLayout.setError(getString(R.string.wallet_card_details_nickname_error));
+      detailViewModel.setNameInputError(getString(R.string.wallet_card_details_nickname_error));
    }
 
    @Override
    public void hideCardNameError() {
-      cardNameInputLayout.setError("");
+      detailViewModel.setNameInputError("");
    }
 
    @Override
@@ -257,7 +206,8 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
             new SimpleToastSuccessView<>(getContext(), R.string.wallet_card_details_success_save),
             ErrorViewFactory.<UpdateRecordCommand>builder()
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> getPresenter().updateNickName()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> getPresenter().updateNickName(), command -> {
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil, command -> getPresenter()
+                        .updateNickName(), command -> {
                   }))
                   .build()
       );
@@ -265,7 +215,18 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
 
    @Override
    public void notifyCardDataIsSaved() {
+      detailViewModel.setChanged(false);
       Toast.makeText(getContext(), R.string.wallet_card_details_success_save, Toast.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public void defaultCardChanged(boolean isDefault) {
+      detailViewModel.getRecordModel().setDefaultCard(isDefault);
+   }
+
+   @Override
+   public void undoDefaultCardChanges() {
+      detailViewModel.setDefaultRecord(detailViewModel.getRecordModel().isDefaultCard());
    }
 
    @Override
@@ -299,50 +260,8 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    }
 
    @Override
-   public void animateCard(TransitionModel transitionModel) {
-      if (transitionModel != null) {
-
-         setUpViewPosition(transitionModel, bankCardWidget);
-         bankCardWidget.setBackground(ContextCompat.getDrawable(getContext(), transitionModel.getBackground()));
-
-         bankCardWidget.setVisibility(View.VISIBLE);
-         controlsLayout.setAlpha(0);
-
-         bankCardWidget.setUpCardAppearance(transitionModel.getBackground(), transitionModel.isDefaultCard());
-
-         bankCardWidget
-               .animate()
-               .translationY(0)
-               .setListener(new AnimatorListenerAdapter() {
-                  @Override
-                  public void onAnimationEnd(Animator animation) {
-                     super.onAnimationEnd(animation);
-                     controlsLayout.animate().alpha(1).setDuration(500);
-                  }
-               })
-               .setDuration(CARD_TRANSITION_DURATION)
-               .start();
-      }
-   }
-
-   @Override
-   public TransitionModel getTransitionModel() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_TRANSITION_MODEL))
-            ? getArgs().getParcelable(KEY_TRANSITION_MODEL)
-            : null;
-   }
-
-   @Override
-   public RecordViewModel getRecordViewModel() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_MODIFY_RECORD))
-            ? getArgs().getParcelable(KEY_MODIFY_RECORD)
-            : null;
-   }
-
-   private void setUpViewPosition(TransitionModel params, View view) {
-      int[] coords = new int[2];
-      view.getLocationOnScreen(coords);
-      view.setTranslationY(params.getTop() - coords[1] + params.getOverlap());
+   public RecordDetailViewModel getDetailViewModel() {
+      return detailViewModel;
    }
 
    @Override

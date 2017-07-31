@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.impl;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
@@ -343,17 +341,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
             model.isDefaultCard());
       addTransitionView(model, transitionModel);
       smartCardWidget.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION).start();
-      bankCardList
-            .animate()
-            .alpha(0)
-            .setDuration(FADE_ANIMATION_DURATION)
-            .setListener(new AnimatorListenerAdapter() {
-               @Override
-               public void onAnimationEnd(Animator animation) {
-                  super.onAnimationEnd(animation);
-                  getPresenter().cardClicked(model.getRecordId(), transitionModel);
-               }
-            });
+      getPresenter().cardClicked(model, transitionModel);
    }
 
    private void addTransitionView(CommonCardViewModel model, TransitionModel transitionModel) {

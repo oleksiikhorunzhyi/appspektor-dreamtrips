@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
@@ -81,7 +82,7 @@ public interface Navigator {
 
    void goPaymentSyncFinished();
 
-   void goCardDetails(RecordViewModel recordViewModel, TransitionModel transitionModel);
+   void goCardDetails(CommonCardViewModel recordViewModel, TransitionModel transitionModel);
 
    void goWizardCharging();
 

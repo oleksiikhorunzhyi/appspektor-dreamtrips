@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -10,12 +11,15 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
+
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -68,7 +72,7 @@ public class WalletRecordUtil {
       return format("%s •••• %s", obtainFinancialServiceType(context, record.financialService()), record.numberLastFourDigits());
    }
 
-   public String bankNameWithCardNumber(Record record) {
+   public static String bankNameWithCardNumber(Record record) {
       String bankName = record.bankName();
       bankName = (bankName == null) ? "" : bankName;
       return format("%s •••• %s", bankName, record.numberLastFourDigits());
@@ -151,8 +155,21 @@ public class WalletRecordUtil {
       return recordId != null;
    }
 
+   @Deprecated
    public static boolean equals(String recordId, Record record) {
-      return (recordId != null && record != null) && record.id().equals(recordId);
+      return equalsRecordId(recordId, record);
+   }
+
+   public static boolean equalsRecordId(String recordId, Record record) {
+      return (recordId != null && record != null) && equalsRecordId(recordId, record.id());
+   }
+
+   public static boolean equalsRecordId(@NonNull String recordId1, @Nullable String recordId2) {
+      return recordId2 != null && recordId2.equals(recordId1);
+   }
+
+   public static Record findRecord(List<Record> records, String recordId) throws IllegalStateException {
+      return Queryable.from(records).first(card -> equalsRecordId(recordId, card.id()));
    }
 
    public static String fetchFullName(Record card) {

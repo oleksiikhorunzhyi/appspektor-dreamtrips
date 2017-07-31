@@ -1,9 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter;
 
 
+import android.databinding.BaseObservable;
 import android.os.Parcelable;
 
-public abstract class BaseViewModel<T extends HolderTypeFactory> implements Parcelable {
+public abstract class BaseViewModel<T extends HolderTypeFactory> extends BaseObservable implements Parcelable {
 
    protected String modelId;
 

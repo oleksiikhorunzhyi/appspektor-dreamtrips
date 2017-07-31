@@ -785,8 +785,7 @@ public class WalletActivityModule {
    @Provides
    CardDetailsPresenter provideCardDetailsPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new CardDetailsPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor,
-            analyticsInteractor, httpErrorHandlingUtil);
+         AnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor) {
+      return new CardDetailsPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor, analyticsInteractor);
    }
 }

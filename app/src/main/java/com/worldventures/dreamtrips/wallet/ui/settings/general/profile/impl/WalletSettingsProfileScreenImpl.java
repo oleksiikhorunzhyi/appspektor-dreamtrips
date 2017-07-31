@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -24,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUplo
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.binding.LastPositionSelector;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
@@ -69,12 +69,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
       binding = DataBindingUtil.bind(view);
       binding.setOnAvatarClick(v -> showDialog());
       binding.setProfile(profileViewModel);
-      binding.setOnEditTextFocusChange((editTextView, hasFocus) -> {
-         if (hasFocus) {
-            EditText editText = (EditText) editTextView;
-            editText.setSelection(editText.length());
-         }
-      });
+      binding.setOnEditTextFocusChange(new LastPositionSelector());
       binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
       binding.setOnDisplaySettingsClick(v -> getPresenter().openDisplaySettings());

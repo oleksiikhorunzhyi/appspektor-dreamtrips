@@ -110,7 +110,7 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
 
    @Override
    public String getSmartCardId() {
-      return null;
+      return getArgs().getString(KEY_SMARTCARD_ID);
    }
 
    @Override

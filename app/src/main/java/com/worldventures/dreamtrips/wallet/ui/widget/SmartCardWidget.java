@@ -122,16 +122,22 @@ public class SmartCardWidget extends ConstraintLayout {
    }
 
    /**
-    * Fallback to default type if there is not enough user information.
+    * Fallback to default type if there is not enough user information or display type is invalid.
     */
    private int getNormalizedType(CardStackHeaderHolder holder) {
       final int displayType = holder.displayType();
-      if (((displayType == DISPLAY_PICTURE_ONLY || displayType == DISPLAY_PICTURE_AND_NAME)
-            && ProjectTextUtils.isEmpty(holder.photoUrl()))
-            || ((displayType == DISPLAY_PHONE_AND_NAME) && ProjectTextUtils.isEmpty(holder.phoneNumber()))) {
-         return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
+      switch (displayType) {
+         case DISPLAY_PICTURE_ONLY:
+         case DISPLAY_PICTURE_AND_NAME:
+            if (ProjectTextUtils.isEmpty(holder.photoUrl())) break;
+            else return displayType;
+         case DISPLAY_PHONE_AND_NAME:
+            if (ProjectTextUtils.isEmpty(holder.phoneNumber())) break;
+            else return displayType;
+         case DISPLAY_NAME_ONLY:
+            return displayType;
       }
-      return displayType;
+      return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
    }
 
    private void bindConnectionIndicator(boolean connected) {

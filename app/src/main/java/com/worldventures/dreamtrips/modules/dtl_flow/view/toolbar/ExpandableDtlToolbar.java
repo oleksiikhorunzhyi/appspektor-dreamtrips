@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
@@ -139,7 +140,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
             .filter(s -> !isCollapsed())
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(searchQuery -> this.searchQuery = searchQuery);
    }
 

@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal;
 import android.content.Context;
 import android.view.View;
 
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -74,7 +74,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       private void checkProvisionMode(PinProposalScreen pinProposalScreen) {
          wizardInteractor.provisioningStatePipe()
                .createObservable(ProvisioningModeCommand.fetchState())
-               .compose(RxLifecycle.bindView(pinProposalScreen.getView()))
+               .compose(RxLifecycleAndroid.bindView(pinProposalScreen.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
                      .onSuccess(command -> this.provisioningMode = command.getResult()));

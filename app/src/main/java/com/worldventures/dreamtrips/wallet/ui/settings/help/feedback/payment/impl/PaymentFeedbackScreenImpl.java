@@ -208,14 +208,14 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
       new MaterialDialog.Builder(getContext()).content(R.string.wallet_settings_help_payment_feedback_dialog_discard_changes)
             .positiveText(R.string.wallet_settings_help_payment_feedback_dialog_changes_positive)
             .negativeText(R.string.cancel)
-            .onPositive((dialog, which) -> onNavigationBack())
+            .onPositive((dialog, which) -> presenter.discardChanges())
             .onNegative((dialog, which) -> dialog.cancel())
             .show();
    }
 
-   private void onNavigationBack() {
-      getPresenter().clearAttachments();
-      getPresenter().goBack();
+   @Override
+   public void discardViewModelChanges() {
+      paymentFeedbackViewModel.setCanBeLost(true);
    }
 
    private void updateAttachmentsViewVisibility() {

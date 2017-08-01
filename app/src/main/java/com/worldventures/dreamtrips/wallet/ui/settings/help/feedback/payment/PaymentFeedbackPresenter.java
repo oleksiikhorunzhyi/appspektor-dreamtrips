@@ -7,4 +7,6 @@ public interface PaymentFeedbackPresenter extends BaseSendFeedbackPresenter<Paym
    void sendFeedback();
 
    void handleBackOnDataChangedAction();
+
+   void discardChanges();
 }

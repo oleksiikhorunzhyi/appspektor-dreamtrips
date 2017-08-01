@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
 
 import dagger.ObjectGraph;
 import rx.Observable;
@@ -56,7 +56,7 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
    }
 
    public final <T> Observable.Transformer<T, T> bindToLifecycle() {
-      return RxLifecycle.bindFragment(lifecycleSubject);
+      return RxLifecycle.bind(lifecycleSubject);
    }
 
    public void afterCreateView(View rootView) {

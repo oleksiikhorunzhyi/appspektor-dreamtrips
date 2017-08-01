@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
@@ -58,7 +59,7 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
 
    private void observeSize(final View view) {
       RxView.globalLayouts(view)
-            .compose(RxLifecycle.bindView(view))
+            .compose(RxLifecycleAndroid.bindView(view))
             .filter(aVoid -> view.getHeight() > 0)
             .take(1)
             .subscribe(aVoid -> getPresenter().onSizeReady(view.getHeight()));

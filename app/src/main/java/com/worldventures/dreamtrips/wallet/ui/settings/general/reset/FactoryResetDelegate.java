@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.reset;
 
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -51,7 +52,7 @@ public abstract class FactoryResetDelegate {
    protected void observeResetSmartCard(FactoryResetView view) {
       factoryResetInteractor.resetSmartCardCommandActionPipe()
             .observe()
-            .compose(RxLifecycle.bindView(view.getView()))
+            .compose(RxLifecycleAndroid.bindView(view.getView()))
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideResetOperationView(this))
                   .onSuccess(command -> handleSuccessResult())

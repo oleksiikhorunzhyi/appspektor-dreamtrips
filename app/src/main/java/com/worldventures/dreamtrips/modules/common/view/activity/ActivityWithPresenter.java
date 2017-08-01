@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.ActivityEvent;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.command.ConfigurationCommand;
@@ -166,16 +166,16 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
    @Override
    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.STOP));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycleSubject, ActivityEvent.STOP));
    }
 
    @Override
    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycleSubject, ActivityEvent.DESTROY));
    }
 
    protected <T> Observable.Transformer<T, T> bindView() {
-      return input -> input.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+      return input -> input.compose(RxLifecycle.bindUntilEvent(lifecycleSubject, ActivityEvent.DESTROY));
    }
 
    protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {

@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.modules.picker.util.MediaPickerStep;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.AdjustablePhotoPickStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.AdjustableVideoPickStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.DefaultPhotoStaticItemsStrategy;
-import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.MediaPickerStaticItemsStrategy;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.SimpleStaticItemsStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.SinglePhotoPickStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.SingleVideoLimitedDurationPickStrategy;
@@ -232,7 +232,7 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
 
    @Override
    public <T> Observable.Transformer<T, T> lifecycle() {
-      return RxLifecycle.bindView(contentView);
+      return RxLifecycleAndroid.bindView(contentView);
    }
 
    public interface OnDoneListener {

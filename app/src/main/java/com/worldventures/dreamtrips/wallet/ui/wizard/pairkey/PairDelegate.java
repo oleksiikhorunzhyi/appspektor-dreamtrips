@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey;
 
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
@@ -65,7 +65,7 @@ public abstract class PairDelegate {
       public void navigateOnNextScreen(PairView view) {
          smartCardInteractor.smartCardUserPipe()
                .createObservable(SmartCardUserCommand.fetch())
-               .compose(RxLifecycle.bindView(view.getView()))
+               .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
                      .onSuccess(command -> handleSmartCardUserExisting(command.getResult()))

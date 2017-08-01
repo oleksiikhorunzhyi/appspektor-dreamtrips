@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.assign;
 
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -98,7 +98,7 @@ public abstract class WizardAssignDelegate {
                .createObservableResult(new RecordListCommand())
                .map(Command::getResult)
                .onErrorReturn(throwable -> Collections.emptyList())
-               .compose(RxLifecycle.bindView(view.getView()))
+               .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread());
       }
 

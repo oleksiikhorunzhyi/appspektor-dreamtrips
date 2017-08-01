@@ -19,6 +19,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -102,7 +103,7 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
 
    private void bindNearMeButton() {
       RxView.clicks(autoDetectNearMe)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .throttleFirst(3L, TimeUnit.SECONDS)
             .subscribe(aVoid -> getPresenter().loadNearMeRequested());
    }

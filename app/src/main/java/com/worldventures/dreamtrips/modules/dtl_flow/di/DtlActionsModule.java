@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.creator.HttpActio
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.MerchantsActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.TransactionThrstCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.UrlTokenCreator;
 
 import javax.inject.Singleton;
@@ -51,5 +52,11 @@ public class DtlActionsModule {
    @Singleton
    HttpActionCreator provideUrlTokenActionCreator() {
       return new UrlTokenCreator();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   HttpActionCreator provideTransactionActionCreator() {
+      return new TransactionThrstCreator();
    }
 }

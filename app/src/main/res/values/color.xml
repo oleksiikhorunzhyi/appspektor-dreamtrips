@@ -223,4 +223,7 @@
    <color name="dtl_stroke_filters_map">#e3e3e3</color>
    <color name="dtl_stroke_filters_map_pressed">#53b5fe</color>
    <color name="dtl_filter_options_card">#f3f6f8</color>
+
+   <color name="photo_strip_error_message_color">#fa2d46</color>
+   <color name="create_post_description_background_color">#99000000</color>
 </resources>

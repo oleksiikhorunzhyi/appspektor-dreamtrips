@@ -8,7 +8,6 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
@@ -27,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.TransparentComponentActivity;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -101,6 +101,7 @@ import dagger.Provides;
             PodcastPlayerPresenter.class,
             DtlActivity.class,
             ComponentActivity.class,
+            TransparentComponentActivity.class,
             ConfigChangesAwareComponentActivity.class,
             ComponentPresenter.class,
             CopyFileCommand.class,

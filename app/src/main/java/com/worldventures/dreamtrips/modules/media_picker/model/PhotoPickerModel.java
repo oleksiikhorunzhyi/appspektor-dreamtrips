@@ -22,6 +22,15 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
       super(absolutePath, dateTaken);
    }
 
+   public PhotoPickerModel copy() {
+      PhotoPickerModel copy = new PhotoPickerModel(this.absolutePath, this.dateTaken);
+      copy.checked = this.checked;
+      copy.size = this.size;
+      copy.pickedTime = this.pickedTime;
+      copy.uri = this.uri;
+      return copy;
+   }
+
    @Nullable
    public Size getSize() {
       return size;

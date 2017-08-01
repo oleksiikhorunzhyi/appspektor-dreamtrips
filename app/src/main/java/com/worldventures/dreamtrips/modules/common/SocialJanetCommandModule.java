@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelComm
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
+import com.worldventures.dreamtrips.modules.common.command.MediaCaptureCanceledCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
@@ -82,6 +83,7 @@ import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMedi
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
@@ -256,8 +258,10 @@ import dagger.Module;
       GetAlbumsCommand.class,
       GetPhotosFromGalleryCommand.class,
       GetVideosFromGalleryCommand.class,
+      MediaCaptureCanceledCommand.class,
       GetVideoDurationCommand.class,
       GetMediaFromGalleryCommand.class,
+      RecognizeFacesCommand.class,
       UploadVideoFileCommand.class,
       MigrateFromCachedEntity.class,
       CreateVideoCommand.class,

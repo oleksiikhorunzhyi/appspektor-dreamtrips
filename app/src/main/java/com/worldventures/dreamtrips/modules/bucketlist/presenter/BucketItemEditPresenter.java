@@ -168,13 +168,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       }
    }
 
-   private void attachImages(List<PhotoPickerModel> chosenImages) {
-      if (chosenImages.size() == 0) {
-         return;
-      }
-      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(choseImage.getUri()));
-   }
-
    private void imageSelected(Uri uri) {
       bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, uri.toString()));
    }
@@ -200,7 +193,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       mediaPickerEventDelegate.getObservable()
             .compose(bindView())
             .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID)
-            .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
+            .subscribe(mediaAttachment -> imageSelected(mediaAttachment.chosenImage.getUri()));
    }
 
    //////////////////////

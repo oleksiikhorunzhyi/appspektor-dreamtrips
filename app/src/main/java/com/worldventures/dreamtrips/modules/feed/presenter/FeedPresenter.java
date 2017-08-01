@@ -76,7 +76,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
    Circle filterCircle;
    List<PostCompoundOperationModel> postUploads;
-   List<PhotoPickerModel> suggestedPhotos;
+   boolean shouldShowSuggestionItems;
    @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
 
@@ -177,7 +177,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    ///////////////////////////////////////////////////////////////////////////
 
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems, postUploads, suggestedPhotos);
+      view.refreshFeedItems(feedItems, postUploads, shouldShowSuggestionItems);
    }
 
    public void refreshFeed() {
@@ -358,19 +358,15 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<SuggestedPhotoCommand>()
                   .onSuccess(suggestedPhotoCommand -> {
-                     if (hasNewPhotos(suggestedPhotoCommand.getResult())) {
-                        suggestedPhotos = new ArrayList<>(suggestedPhotoCommand.getResult());
-                     }
+                     shouldShowSuggestionItems = suggestedPhotoCommand.getResult();
                      refreshFeedItems();
                   }).onFail((suggestedPhotoCommand, throwable) -> refreshFeedItems()));
    }
 
-   private boolean hasNewPhotos(List<PhotoPickerModel> photos) {
-      return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
-   }
 
    public void removeSuggestedPhotos() {
-      suggestedPhotos.clear();
+      db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
+      shouldShowSuggestionItems = false;
       suggestedPhotoHelper.reset();
       refreshFeedItems();
    }
@@ -447,7 +443,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
       void setUnreadConversationCount(int count);
 
-      void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList, List<PhotoPickerModel> suggestedPhotos);
+      void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList, boolean shouldShowSuggestions);
 
       void dataSetChanged();
 

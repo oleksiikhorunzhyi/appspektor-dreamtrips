@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvid
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -61,6 +62,7 @@ import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimeline
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
@@ -310,6 +312,11 @@ public class ManagerModule {
    @Singleton
    DeviceInfoProvider provideProfileInteractor(Context context) {
       return new DeviceInfoProviderImpl(context);
+   }
+
+   @Provides
+   CapturedRowMediaHelper provideCapturedRowMediaHelper(MediaInteractor mediaInteractor, DrawableUtil drawableUtil) {
+      return new CapturedRowMediaHelper(mediaInteractor, drawableUtil);
    }
 
    @Provides

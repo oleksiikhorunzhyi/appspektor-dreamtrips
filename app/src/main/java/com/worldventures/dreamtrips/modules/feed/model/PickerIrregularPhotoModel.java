@@ -12,6 +12,7 @@ public class PickerIrregularPhotoModel {
 
    public static final int CAMERA = 1;
    public static final int FACEBOOK = 2;
+   public static final int LIBRARY = 3;
 
    private int iconRes;
    private int titleRes;
@@ -43,7 +44,7 @@ public class PickerIrregularPhotoModel {
       return attachType;
    }
 
-   @IntDef({CAMERA, FACEBOOK})
+   @IntDef({CAMERA, FACEBOOK, LIBRARY})
    @Retention(RetentionPolicy.SOURCE)
    @interface AttachType {}
 }

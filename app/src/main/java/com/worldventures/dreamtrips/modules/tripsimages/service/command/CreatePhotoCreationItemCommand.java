@@ -1,26 +1,29 @@
 package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 
-import android.content.Context;
-import android.support.v4.util.Pair;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.util.ValidationUtils;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> implements InjectableAction {
 
-   @Inject Context context;
+   @Inject MediaInteractor mediaInteractor;
 
    private PhotoPickerModel photoPickerModel;
    private MediaAttachment.Source source;
@@ -32,23 +35,43 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
 
    @Override
    protected void run(CommandCallback<PhotoCreationItem> callback) throws Throwable {
-      ImageUtils.getBitmap(context, photoPickerModel.getUri(), 300, 300)
-            .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable),
-                  bitmapObservable, Pair::new))
-            .map(pair -> {
-               PhotoCreationItem item = new PhotoCreationItem();
-               item.setId(photoPickerModel.getUri().hashCode());
-               item.setFileUri(photoPickerModel.getUri().toString());
-               item.setFilePath(photoPickerModel.getAbsolutePath());
-               Size imageSize = photoPickerModel.getSize();
-               item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());
-               item.setHeight(imageSize != null ? imageSize.getHeight() : pair.second.getHeight());
-               item.setSuggestions(pair.first);
-               item.setSource(source);
-               item.setCanDelete(true);
-               item.setCanEdit(true);
-               return item;
-            })
-            .subscribe(callback::onSuccess, callback::onFail);
+      String fileUri = photoPickerModel.getUri().toString();
+      if (ValidationUtils.isUrl(fileUri)) {
+         mediaInteractor.copyFilePipe()
+               .createObservableResult(new CopyFileCommand(fileUri))
+               .subscribe(command -> {
+                  String stringUri = command.getResult();
+                  Uri uri = Uri.parse(stringUri);
+                  callback.onSuccess(createPhotoItem(stringUri, uri.getPath(), getImageSize(uri.getPath())));
+               }, callback::onFail);
+      } else {
+         callback.onSuccess(createPhotoItem(photoPickerModel.getUri().toString(), photoPickerModel.getAbsolutePath(),
+               getImageSize(photoPickerModel.getUri().getPath())));
+      }
+   }
+
+   private PhotoCreationItem createPhotoItem(String uri, String path, Size size) {
+      PhotoCreationItem item = new PhotoCreationItem();
+      item.setId(photoPickerModel.getUri().hashCode());
+      item.setSource(source);
+      item.setCanDelete(true);
+      item.setCanEdit(true);
+      item.setFilePath(path);
+      item.setFileUri(uri);
+      item.setWidth(size.getWidth());
+      item.setHeight(size.getHeight());
+      return item;
+   }
+
+   private Size getImageSize(String path) {
+      Size imageSize = photoPickerModel.getSize();
+      if (imageSize == null) {
+         BitmapFactory.Options options = new BitmapFactory.Options();
+         options.inJustDecodeBounds = true;
+         BitmapFactory.decodeFile(new File(path).getAbsolutePath(), options);
+         return new Size(options.outWidth, options.outHeight);
+      } else {
+         return imageSize;
+      }
    }
 }

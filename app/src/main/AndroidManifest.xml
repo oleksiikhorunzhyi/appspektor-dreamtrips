@@ -126,6 +126,20 @@
       </activity>
 
       <activity
+            android:name=".modules.common.view.activity.TransparentComponentActivity"
+            android:configChanges="layoutDirection|locale"
+            android:hardwareAccelerated="true"
+            android:theme="@style/TransparentActivity"
+            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".modules.common.view.activity.MainActivity"
+               />
+      </activity>
+
+      <activity
             android:name=".modules.common.view.activity.ConfigChangesAwareComponentActivity"
             android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"

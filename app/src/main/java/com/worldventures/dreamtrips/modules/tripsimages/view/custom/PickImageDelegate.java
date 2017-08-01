@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.command.ImageCapturedCommand;
+import com.worldventures.dreamtrips.modules.common.command.MediaCaptureCanceledCommand;
 import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 
 import icepick.Icepick;
 import icepick.State;
@@ -43,15 +45,23 @@ public class PickImageDelegate {
    }
 
    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (resultCode == Activity.RESULT_OK) {
-         switch (requestCode) {
-            case ActivityRouter.CAPTURE_PICTURE_REQUEST_TYPE:
+      switch (requestCode) {
+         case ActivityRouter.CAPTURE_PICTURE_REQUEST_TYPE:
+            if (resultCode == Activity.RESULT_OK) {
                mediaInteractor.imageCapturedPipe().send(new ImageCapturedCommand(filePath));
-               break;
-            case ActivityRouter.CAPTURE_VIDEO_REQUEST_TYPE:
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+               mediaInteractor.mediaCaptureCanceledPipe()
+                     .send(new MediaCaptureCanceledCommand(MediaPickerModel.Type.PHOTO));
+            }
+            break;
+         case ActivityRouter.CAPTURE_VIDEO_REQUEST_TYPE:
+            if (resultCode == Activity.RESULT_OK) {
                mediaInteractor.videoCapturedPipe().send(new VideoCapturedCommand(filePath));
-               break;
-         }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+               mediaInteractor.mediaCaptureCanceledPipe()
+                     .send(new MediaCaptureCanceledCommand(MediaPickerModel.Type.VIDEO));
+            }
+            break;
       }
    }
 }

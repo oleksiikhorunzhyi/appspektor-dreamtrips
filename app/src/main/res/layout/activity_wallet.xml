@@ -7,11 +7,10 @@
       android:layout_height="match_parent"
       >
 
-   <FrameLayout
+   <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
          android:id="@+id/root_container"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:clickable="false"
          />
 
    <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl

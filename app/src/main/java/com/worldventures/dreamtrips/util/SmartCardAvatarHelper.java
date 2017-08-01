@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
@@ -14,7 +15,6 @@ import javax.inject.Inject;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.getBitmap;
-import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils.scaleBitmap;
 import static rx.Observable.fromCallable;
 
 public class SmartCardAvatarHelper {
@@ -34,7 +34,7 @@ public class SmartCardAvatarHelper {
 
    private int[][] toMonochrome(Bitmap bitmap, int imageSize) throws IOException {
       if (imageSize > 0) {
-         bitmap = scaleBitmap(bitmap, imageSize);
+         bitmap = ThumbnailUtils.extractThumbnail(bitmap, imageSize, imageSize);
       }
       return floydSteinbergDither(bitmap);
    }
@@ -83,7 +83,7 @@ public class SmartCardAvatarHelper {
 
    private static void replaceSurroundingPixel(int[][] pixelMatrix, int x, int y, int error, int multiplier) {
       int oldPixel = pixelMatrix[x][y];
-      int newPixel =  oldPixel + (error * multiplier) / 16;
+      int newPixel = oldPixel + (error * multiplier) / 16;
       int dithered = Math.max(Math.min(newPixel, 250), 0);
       pixelMatrix[x][y] = dithered;
    }

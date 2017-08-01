@@ -49,7 +49,7 @@ public class ActionPanelViewShareHandler {
    }
 
    private void downloadPhoto(FeedItem feedItem) {
-      String url = ((Photo) feedItem.getItem()).getFSImage().getUrl();
+      String url = ((Photo) feedItem.getItem()).getImagePath();
       downloadPhotoAction.call(url);
    }
 
@@ -58,17 +58,14 @@ public class ActionPanelViewShareHandler {
       switch (feedItem.getType()) {
          case PHOTO:
             Photo photo = (Photo) feedItem.getItem();
-            shareUrl = photo.getFSImage().getUrl();
-            text = photo.getFSShareText();
-
+            shareUrl = photo.getImagePath();
+            text = photo.getTitle();
             break;
-
          case BUCKET_LIST_ITEM:
             BucketItem bucketItem = (BucketItem) feedItem.getItem();
             shareUrl = bucketItem.getUrl();
             text = context.getString(R.string.bucketlist_share, bucketItem.getName());
             TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_SHARE, bucketItem.getUid());
-
             break;
       }
 

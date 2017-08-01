@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.BucketFullscreenBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.tripsimages.view.view.ImageryView;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ImageryView;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketFullscreenPresenter;
 
 import butterknife.InjectView;

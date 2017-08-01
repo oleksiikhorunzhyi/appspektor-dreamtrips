@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
@@ -238,7 +238,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
       void openComments(FeedItem feedItem);
 
-      void openTripImages(Route route, TripsImagesBundle tripImagesBundle);
+      void openTripImages(Route route, TripImagesArgs tripImagesBundle);
 
       void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
 

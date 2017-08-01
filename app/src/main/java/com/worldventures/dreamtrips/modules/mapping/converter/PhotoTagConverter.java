@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.modules.mapping.converter;
 
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagPoint;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagPosition;
-import com.worldventures.dreamtrips.api.photos.model.TaggedUser;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
 import io.techery.mappery.MapperyContext;
 

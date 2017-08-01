@@ -39,7 +39,7 @@ import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+   public void openTripImages(Route route, TripImagesArgs tripImagesBundle) {
       fragmentWithFeedDelegate.openTripImages(route, tripImagesBundle);
    }
 

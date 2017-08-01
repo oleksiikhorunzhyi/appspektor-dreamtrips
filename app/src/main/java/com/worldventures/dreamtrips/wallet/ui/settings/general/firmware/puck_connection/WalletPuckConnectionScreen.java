@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;

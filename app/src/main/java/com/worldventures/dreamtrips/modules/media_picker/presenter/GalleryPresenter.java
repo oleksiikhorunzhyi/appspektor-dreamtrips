@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.List;

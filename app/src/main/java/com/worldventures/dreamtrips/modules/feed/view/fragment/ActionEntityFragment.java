@@ -42,7 +42,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCre
 import com.worldventures.dreamtrips.modules.feed.view.custom.MediaItemAnimation;
 import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.EditPhotoTagsBundle;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.args.EditPhotoTagsBundle.PhotoEntity;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P>
       implements ActionEntityPresenter.View, PhotoPostCreationDelegate {

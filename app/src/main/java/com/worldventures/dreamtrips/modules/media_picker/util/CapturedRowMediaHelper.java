@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 import rx.Observable;
 

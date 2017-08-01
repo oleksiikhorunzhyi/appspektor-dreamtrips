@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
@@ -32,11 +31,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesIntera
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;

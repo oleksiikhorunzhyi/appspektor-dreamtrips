@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
@@ -14,7 +15,6 @@ import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.HashMap;
 import java.util.Map;

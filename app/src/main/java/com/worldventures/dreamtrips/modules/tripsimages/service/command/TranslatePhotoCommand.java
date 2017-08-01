@@ -26,7 +26,7 @@ public class TranslatePhotoCommand extends Command<String> implements Injectable
    @Override
    protected void run(CommandCallback<String> callback) throws Throwable {
       janet.createPipe(TranslateTextCachedCommand.class, Schedulers.io())
-            .createObservableResult(new TranslateTextCachedCommand(photo.getFSDescription(),
+            .createObservableResult(new TranslateTextCachedCommand(photo.getTitle(),
                   LocaleHelper.getDefaultLocaleFormatted()))
             .map(TranslateTextCachedCommand::getResult)
             .subscribe(callback::onSuccess, callback::onFail);

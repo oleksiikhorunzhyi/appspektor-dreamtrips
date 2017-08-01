@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class PhotoFeedItem extends FeedItem<Photo> {
@@ -22,8 +23,8 @@ public class PhotoFeedItem extends FeedItem<Photo> {
    public String previewImage(Resources res) {
       int width = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_w);
       int height = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_h);
-      if (getItem().getFSImage() != null) {
-         return getItem().getFSImage().getUrl(width, height);
+      if (getItem().getImagePath() != null) {
+         return ImageUtils.getParametrizedUrl(getItem().getImagePath(), width, height);
       } else return null;
    }
 

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,14 +13,12 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.OnPageChangedAdapter;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.List;
 
@@ -36,7 +33,7 @@ public class FeedbackImageAttachmentsFragment extends RxBaseFragmentWithArgs<Fee
    @InjectView(R.id.feedback_toolbar_title) TextView toolbarTitle;
    @InjectView(R.id.feedback_pager) ViewPager viewPager;
 
-   private BaseStatePagerAdapter<FragmentItemWithObject<FeedbackImageAttachment>> adapter;
+   private BaseStatePagerAdapter<FragmentItem> adapter;
 
    @Override
    protected FeedbackImageAttachmentsPresenter createPresenter(Bundle savedInstanceState) {
@@ -56,52 +53,24 @@ public class FeedbackImageAttachmentsFragment extends RxBaseFragmentWithArgs<Fee
       activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
       activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_photo_back_rounded);
       activity.getSupportActionBar().setTitle("");
-      toolbar.setNavigationOnClickListener(v -> {
-         activity.onBackPressed();
-      });
+      toolbar.setNavigationOnClickListener(v -> activity.onBackPressed());
    }
 
    private void setupViewPager() {
-      adapter = new BaseStatePagerAdapter<FragmentItemWithObject<FeedbackImageAttachment>>(getActivity()
-            .getSupportFragmentManager()) {
-         @Override
-         public void setArgs(int position, Fragment fragment) {
-            FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position)
-                  .getObject(), TripImagesType.FIXED, false);
-            ((BaseFragmentWithArgs) fragment).setArgs(data);
-         }
-
-         @Override
-         public void addItems(List baseItemClasses) {
-            addToAdapter(baseItemClasses);
-         }
-      };
+      adapter = new BaseStatePagerAdapter<>(getActivity().getSupportFragmentManager());
       viewPager.setAdapter(adapter);
-      viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-         @Override
-         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-         }
-
+      viewPager.addOnPageChangeListener(new OnPageChangedAdapter() {
          @Override
          public void onPageSelected(int position) {
             refreshToolbarTitle();
          }
-
-         @Override
-         public void onPageScrollStateChanged(int state) {
-         }
-      });
-   }
-
-   private void addToAdapter(List<FeedbackImageAttachment> items) {
-      Queryable.from(items).forEachR(item -> {
-         adapter.add(new FragmentItemWithObject(Route.FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT, "", item));
       });
    }
 
    @Override
    public void addItems(List<FeedbackImageAttachment> imageAttachments) {
-      addToAdapter(imageAttachments);
+      Queryable.from(imageAttachments)
+            .forEachR(item -> adapter.add(new FragmentItem(Route.FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT, "", item)));
       refreshToolbarTitle();
       adapter.notifyDataSetChanged();
    }

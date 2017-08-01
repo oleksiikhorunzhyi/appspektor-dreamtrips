@@ -65,6 +65,7 @@ import dagger.Provides;
             BucketItemStaticCell.class,
             ForeignBucketListPresenter.class,
             BucketPhotoViewPagerFragment.class,
+            BucketPhotoViewPagerFragment.Presenter.class,
       },
       complete = false,
       library = true)

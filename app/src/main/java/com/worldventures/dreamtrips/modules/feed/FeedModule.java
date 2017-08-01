@@ -11,10 +11,10 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
@@ -99,8 +99,6 @@ import com.worldventures.dreamtrips.modules.media_picker.view.cell.PhotoPickerMo
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.VideoPickerModelCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
 import javax.inject.Singleton;
 
@@ -152,7 +150,6 @@ import dagger.Provides;
             GalleryPresenter.class,
             ActionEntityFragment.class,
             ActionEntityPresenter.class,
-            CreateTripImageFragment.class,
             CreateFeedPostFragment.class,
             CreateEntityFragment.class,
             CreateEntityPresenter.class,

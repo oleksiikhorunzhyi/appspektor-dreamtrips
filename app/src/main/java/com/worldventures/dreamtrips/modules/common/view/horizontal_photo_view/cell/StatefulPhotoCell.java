@@ -12,9 +12,9 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -22,7 +22,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
-public class StatefulPhotoCell<Photo extends IFullScreenObject, Delegate extends CellDelegate<EntityStateHolder<Photo>>>
+public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends CellDelegate<EntityStateHolder<Photo>>>
       extends AbstractDelegateCell<EntityStateHolder<Photo>, Delegate> {
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivPhoto;

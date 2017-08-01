@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragm
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripViewPagerFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,7 +39,7 @@ import dagger.Provides;
 
             FilterRangeBarsCell.class, ThemeCell.class, HeaderThemeCell.class, SoldOutCell.class, DateCell.class, RegionCell.class, TripCell.class, FavoritesCell.class, HeaderRegionCell.class, FilterRecentlyAddedCell.class,
 
-            TripMapFragment.class, TripMapPresenter.class,
+            TripMapFragment.class, TripMapPresenter.class, TripViewPagerFragment.class,
 
             TripMapListFragment.class, TripMapListPresenter.class,
 

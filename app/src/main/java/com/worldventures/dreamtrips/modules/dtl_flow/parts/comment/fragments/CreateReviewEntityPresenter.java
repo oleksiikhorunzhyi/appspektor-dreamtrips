@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
@@ -29,6 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.Command;
 import rx.Observable;
 import rx.schedulers.Schedulers;

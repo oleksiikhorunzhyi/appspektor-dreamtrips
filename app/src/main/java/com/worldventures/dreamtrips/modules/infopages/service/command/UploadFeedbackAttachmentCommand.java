@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvid
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
+import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
 
 import java.io.File;
 

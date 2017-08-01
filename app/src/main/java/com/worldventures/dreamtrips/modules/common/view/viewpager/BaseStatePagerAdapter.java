@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.adapter.ListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +41,12 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
 
    private Fragment getFragment(int i) {
       try {
-         Fragment value = fragmentItems.get(i).route.getClazz().newInstance();
-         setArgs(i, value);
-         return value;
+         Fragment fragment = fragmentItems.get(i).route.getClazz().newInstance();
+         if (fragment instanceof BaseFragmentWithArgs) {
+            ((BaseFragmentWithArgs) fragment).setArgs(fragmentItems.get(i).getArgs());
+         }
+         setArgs(i, fragment);
+         return fragment;
       } catch (Exception e) {
          Timber.e(e, "");
       }

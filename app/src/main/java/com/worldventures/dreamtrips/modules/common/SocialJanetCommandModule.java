@@ -118,13 +118,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.Download
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.PaginatedTripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.UserImagesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
@@ -211,10 +210,7 @@ import dagger.Module;
       GetMemberVideosCommand.class,
       GetVideoLocalesCommand.class,
       GetInspireMePhotosCommand.class,
-      GetMembersPhotosCommand.class,
-      GetUserPhotosCommand.class,
       GetYSBHPhotosCommand.class,
-      PaginatedTripImagesCommand.class,
       DeletePhotoCommand.class,
       DeletePhotoTagsCommand.class,
       SocialJanetCommandModule.class,
@@ -271,5 +267,7 @@ import dagger.Module;
       GetVideoMetadataCommand.class,
       LoadConfigurationCommand.class,
       MediaAttachmentPrepareCommand.class,
+      MemberImagesCommand.class,
+      UserImagesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

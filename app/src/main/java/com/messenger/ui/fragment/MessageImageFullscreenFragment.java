@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.tripsimages.view.view.ScaleImageView;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

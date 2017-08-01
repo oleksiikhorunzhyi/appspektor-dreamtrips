@@ -2,9 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.converter;
 
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
 
@@ -22,7 +21,7 @@ public abstract class PhotoConverter<T extends com.worldventures.dreamtrips.api.
    public Photo convert(MapperyContext mapperyContext, T apiPhoto) {
       Photo photo = new Photo();
       photo.setUid(apiPhoto.uid());
-      photo.setImages(mapperyContext.convert(apiPhoto.images(), Image.class));
+      photo.setUrl(apiPhoto.images().url());
       photo.setTitle(apiPhoto.title());
       photo.setShotAt(apiPhoto.shotAt());
       photo.setCreatedAt(apiPhoto.createdAt());

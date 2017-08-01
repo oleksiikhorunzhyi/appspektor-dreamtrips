@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToast
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl.BaseFeedbackScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.MerchantViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel;
 
 import java.util.List;
@@ -37,7 +39,7 @@ import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.fromHtml;
 
 public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFeedbackScreen, PaymentFeedbackPresenter> implements PaymentFeedbackScreen {
 
-   private PaymentFeedbackViewModel paymentFeedbackView = new PaymentFeedbackViewModel();
+   private PaymentFeedbackViewModel paymentFeedbackViewModel = new PaymentFeedbackViewModel();
    private MenuItem actionSendMenuItem = null;
    private ScreenWalletSettingsHelpPaymentFeedbackBinding binding;
    private Observable<CharSequence> observerMerchantName;
@@ -53,22 +55,26 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       binding = DataBindingUtil.bind(view);
-      binding.setPaymentFeedbackViewModel(paymentFeedbackView);
+      binding.setPaymentFeedbackViewModel(paymentFeedbackViewModel);
       initToolbar();
       setupAsteriskColor();
 
       observerMerchantName = RxTextView.textChanges(binding.incMerchant.etMerchantName);
       binding.incAdditionalInfo.feedbackAddPhotos.setOnClickListener(v -> getPresenter().chosenAttachments());
-      binding.incMerchant.sMerchantType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      final MerchantViewModel merchantViewModel = paymentFeedbackViewModel.getMerchantView();
+      final Spinner merchantTypeSpinner = binding.incMerchant.sMerchantType;
+      merchantTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            onMerchantTypeSelected(position, parent.getAdapter().getItem(position).toString());
+            merchantViewModel.setMerchantType(parent.getAdapter().getItem(position).toString());
+            merchantViewModel.setSelectedTypeIndex(position);
          }
 
          @Override
          public void onNothingSelected(AdapterView<?> parent) {
          }
       });
+      merchantTypeSpinner.setSelection(merchantViewModel.getSelectedTypeIndex());
    }
 
    private void setupAsteriskColor() {
@@ -139,7 +145,7 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
       if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
    }
 
-   public void showRetryUploadingUiForAttachment(EntityStateHolder<FeedbackImageAttachment> attachmentHolder) {
+   private void showRetryUploadingUiForAttachment(EntityStateHolder<FeedbackImageAttachment> attachmentHolder) {
       new MaterialDialog.Builder(getContext())
             .items(R.array.wallet_settings_help_feedback_failed_uploading_attachment)
             .itemsCallback((dialog, v, which, text) -> {
@@ -194,7 +200,7 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
 
    @Override
    public PaymentFeedbackViewModel getPaymentFeedbackViewModel() {
-      return paymentFeedbackView;
+      return paymentFeedbackViewModel;
    }
 
    @Override
@@ -215,11 +221,6 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
    private void updateAttachmentsViewVisibility() {
       int itemsCount = binding.incAdditionalInfo.feedbackAttachments.getItemCount();
       binding.incAdditionalInfo.feedbackAttachments.setVisibility(itemsCount > 0 ? View.VISIBLE : View.GONE);
-   }
-
-   public void onMerchantTypeSelected(int position, String merchantType) {
-      paymentFeedbackView.getMerchantView().setMerchantType(merchantType);
-      paymentFeedbackView.getMerchantView().setSelectedTypeIndex(position);
    }
 
    @Override
@@ -244,7 +245,7 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
 
    @Override
    public boolean handleBack() {
-      if (paymentFeedbackView.isDataChanged()) {
+      if (paymentFeedbackViewModel.isDataChanged()) {
          getPresenter().handleBackOnDataChangedAction();
          return true;
       } else {

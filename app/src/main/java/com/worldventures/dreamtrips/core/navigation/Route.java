@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetai
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopularFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPhotoViewPagerFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
@@ -161,11 +163,9 @@ public enum Route {
    NOTIFICATIONS(NotificationFragment.class, R.string.notifications_title),
    SHARE(ShareFragment.class, R.string.action_share),
    USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
-   FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
    FEED(FeedFragment.class, R.string.feed_title),
    FEED_HASHTAG(HashtagFeedFragment.class, R.string.empty),
    FEEDBACK_IMAGE_ATTACHMENTS(FeedbackImageAttachmentsFragment.class, R.string.empty),
-   FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT(FeedbackImageAttachmentFullscreenFragment.class, R.string.empty),
 
    FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
    FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),

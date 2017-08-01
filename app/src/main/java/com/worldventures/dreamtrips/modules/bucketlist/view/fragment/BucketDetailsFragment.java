@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -37,8 +38,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,8 +263,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    }
 
    @Override
-   public void openFullscreen(FullScreenImagesBundle data) {
-      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+   public void openFullscreen(BucketViewPagerBundle data) {
+      router.moveTo(Route.BUCKET_FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(data)
             .build());
@@ -288,7 +288,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       this.photos.clear();
       this.photos.addAll(newPhotos);
       adapter.clear();
-      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
+      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGE_PAGER, "")));
 
       // initialize once, initializing with empty list in view pager causes crash
       if (!photos.isEmpty() && !viewPagerIndicatorInitialized) {

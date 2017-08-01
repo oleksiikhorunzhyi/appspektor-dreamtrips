@@ -26,7 +26,7 @@ public class DeleteItemPhotoCommand extends Command<BucketItem> implements Injec
    @Override
    protected void run(CommandCallback<BucketItem> callback) throws Throwable {
       janet.createPipe(DeletePhotoFromBucketItemHttpAction.class)
-            .createObservableResult(new DeletePhotoFromBucketItemHttpAction(bucketItem.getUid(), photo.getFSId()))
+            .createObservableResult(new DeletePhotoFromBucketItemHttpAction(bucketItem.getUid(), photo.getUid()))
             .map(deleteBucketPhotoAction -> {
                bucketItem.getPhotos().remove(photo);
 

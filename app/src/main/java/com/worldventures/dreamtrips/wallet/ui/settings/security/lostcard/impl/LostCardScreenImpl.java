@@ -81,7 +81,7 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher).skip(1);
-
+      mapView.onCreate(null);
       initMap();
       tvDisableLostCardMsg.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
    }
@@ -89,7 +89,6 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
-      mapView.onCreate(null);
       mapView.onResume();
    }
 
@@ -97,6 +96,11 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    protected void onDetach(@NonNull View view) {
       super.onDetach(view);
       mapView.onPause();
+   }
+
+   @Override
+   protected void onDestroyView(View view) {
+      super.onDestroyView(view);
       mapView.onDestroy();
    }
 

@@ -150,8 +150,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    private void subscribeToMediaPicker() {
       mediaPickerEventDelegate.getObservable()
-            .filter(attachment -> attachment.chosenImages.size() > 0)
-            .compose(bindView())
+            .compose(bindViewToMainComposer())
             .subscribe(mediaAttachment -> {
                view.hideMediaPicker();
                imageSelected(mediaAttachment);
@@ -317,7 +316,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void imageSelected(MediaAttachment mediaAttachment) {
-      PhotoPickerModel image = mediaAttachment.chosenImages.get(0);
+      PhotoPickerModel image = mediaAttachment.chosenImage;
       switch (mediaAttachment.requestId) {
          case AVATAR_MEDIA_REQUEST_ID:
             onAvatarChosen(image);

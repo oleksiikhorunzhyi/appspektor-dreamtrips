@@ -9,6 +9,8 @@ import java.io.Serializable;
 
 public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelable, Serializable {
 
+   private static final String PATH_DEVIDER = "/";
+
    protected String absolutePath;
    protected Uri uri;
    protected long dateTaken;
@@ -69,6 +71,11 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
 
    public void setPickedTime(long pickedTime) {
       this.pickedTime = pickedTime;
+   }
+
+   public String getFileName() {
+      return absolutePath != null && absolutePath.contains(PATH_DEVIDER) ?
+            absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER)) : "";
    }
 
    @Override

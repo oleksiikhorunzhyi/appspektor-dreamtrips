@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.custom.MediaItemAnimation;
 import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
@@ -82,18 +83,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);//Tag
       adapter.registerCell(PostDescription.class, PostCreationTextCell.class);//hashtag
       adapter.registerCell(ImmutableVideoCreationModel.class, VideoPostCreationCell.class);
-      adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {//desc photo
-         @Override
-         public void onCellClicked(PostDescription model) {
-            router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
-                  .data(new DescriptionBundle(model.getDescription()))
-                  .build());
-         }
-      });
+      PostCreationTextCell.Delegate delegate = model -> openPhotoCreationDescriptionDialog((PostDescription) model);
+      adapter.registerDelegate(PostDescription.class, delegate);
       adapter.registerDelegate(PhotoCreationItem.class, this);
-
-      photosList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+      photosList.setLayoutManager(new LinearLayoutManager(getContext()));
       photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
+      photosList.setItemAnimator(new MediaItemAnimation(position -> photosList.scrollToPosition(position), getResources().getDimension(R.dimen.photo_cell_title_height)));
       photosList.setAdapter(adapter);
 
       configurationInteractor.configurationActionPipe()
@@ -101,6 +96,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             .compose(bindUntilDropViewComposer())
             .map(state -> state.action.getResult())
             .subscribe(this::updateContainerOnOrientationChange);
+   }
+
+   protected void openPhotoCreationDescriptionDialog(PostDescription model) {
+      router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+            .data(new DescriptionBundle(model.getDescription()))
+            .build());
    }
 
    private void updateContainerOnOrientationChange(Configuration configuration) {
@@ -145,8 +146,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void attachPhoto(PhotoCreationItem image) {
-      adapter.addItem(image);
-      adapter.notifyDataSetChanged();
+      attachMedia(image);
    }
 
    @Override
@@ -270,19 +270,32 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void updatePhoto(PhotoCreationItem item) {
-      adapter.notifyItemChanged(adapter.getItems().indexOf(item));
+      for (int i = 0; i < photosList.getChildCount(); i++) {
+         if (photosList.getChildViewHolder(photosList.getChildAt(i)) instanceof PhotoPostCreationCell) {
+            PhotoPostCreationCell cell = (PhotoPostCreationCell) photosList.getChildViewHolder(photosList.getChildAt(i));
+            if (cell.getModelObject().getId() == item.getId()) {
+               cell.syncUIStateWithModel();
+               return;
+            }
+         }
+      }
    }
 
    @Override
    public void attachVideo(VideoCreationModel model) {
+      attachMedia(model);
+   }
+
+   private void attachMedia(Object model) {
+      int position = adapter.getCount();
       adapter.addItem(model);
-      adapter.notifyDataSetChanged();
+      adapter.notifyItemInserted(position);
+      photosList.scrollToPosition(position);
    }
 
    @Override
    public void removeVideo(VideoCreationModel model) {
       adapter.remove(model);
-      adapter.notifyDataSetChanged();
    }
 
    //////////////////////////////////////////

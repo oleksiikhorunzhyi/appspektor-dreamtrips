@@ -1,33 +1,28 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import icepick.Icepick;
 import icepick.State;
+import io.techery.janet.Command;
 import rx.Observable;
-import rx.Subscriber;
 import timber.log.Timber;
 
 public class SuggestedPhotoCellPresenterHelper {
@@ -36,24 +31,22 @@ public class SuggestedPhotoCellPresenterHelper {
    private static final int SUGGESTION_ITEM_CHUNK = 20;
    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
-   private Context context;
-   private SnappyRepository db;
+   private MediaInteractor mediaInteractor;
+   private CapturedRowMediaHelper capturedRowMediaHelper;
    private SessionHolder<UserSession> appSessionHolder;
-   private DrawableUtil drawableUtil;
 
    @State ArrayList<PhotoPickerModel> suggestionItems;
-   @State ArrayList<PhotoPickerModel> selectedPhotos;
+   @State ArrayList<String> selectedPhotosPaths;
    @State long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
 
    private View view;
    private Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper;
 
-   public SuggestedPhotoCellPresenterHelper(Context context, SnappyRepository db, SessionHolder<UserSession> appSessionHolder,
-         DrawableUtil drawableUtil) {
-      this.context = context;
-      this.db = db;
+   public SuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
+         MediaInteractor mediaInteractor, CapturedRowMediaHelper capturedRowMediaHelper) {
       this.appSessionHolder = appSessionHolder;
-      this.drawableUtil = drawableUtil;
+      this.mediaInteractor = mediaInteractor;
+      this.capturedRowMediaHelper = capturedRowMediaHelper;
    }
 
    public void takeView(View view, Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper, Bundle bundle) {
@@ -66,8 +59,8 @@ public class SuggestedPhotoCellPresenterHelper {
       if (suggestionItems == null) {
          suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
       }
-      if (selectedPhotos == null) {
-         selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
+      if (selectedPhotosPaths == null) {
+         selectedPhotosPaths = new ArrayList<>(MAX_SELECTION_SIZE);
       }
 
       if (suggestionItems.isEmpty()) {
@@ -114,13 +107,11 @@ public class SuggestedPhotoCellPresenterHelper {
 
    public void reset() {
       clearCacheAndUpdate();
-
-      db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
       resetSyncTimestamp();
    }
 
    public void selectPhoto(PhotoPickerModel model) {
-      int selectedSize = selectedPhotos.size();
+      int selectedSize = selectedPhotosPaths.size();
       boolean isChecked = !model.isChecked();
 
       if (isChecked) {
@@ -128,9 +119,9 @@ public class SuggestedPhotoCellPresenterHelper {
             view.showMaxSelectionMessage();
             return;
          }
-         selectedPhotos.add(model);
+         selectedPhotosPaths.add(model.getAbsolutePath());
       } else {
-         selectedPhotos.remove(model);
+         selectedPhotosPaths.remove(model.getAbsolutePath());
       }
       model.setChecked(isChecked);
 
@@ -138,16 +129,9 @@ public class SuggestedPhotoCellPresenterHelper {
    }
 
    public Observable<MediaAttachment> mediaAttachmentObservable() {
-      return Observable.from(selectedPhotos)
-            .map(element -> {
-               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
-               return new PhotoPickerModel(pair.first, pair.second);
-            })
-            .map(photoGalleryModel -> {
-               List<PhotoPickerModel> chosenImages = new ArrayList<>();
-               chosenImages.add(photoGalleryModel);
-               return new MediaAttachment(chosenImages, MediaAttachment.Source.GALLERY);
-            });
+      return Observable.from(selectedPhotosPaths)
+            .map(element -> capturedRowMediaHelper.processPhotoModel(element))
+            .map(photoGalleryModel -> new MediaAttachment(photoGalleryModel, MediaAttachment.Source.GALLERY));
    }
 
    void saveInstanceState(Bundle bundle) {
@@ -163,50 +147,10 @@ public class SuggestedPhotoCellPresenterHelper {
 
    @NonNull
    private Observable<List<PhotoPickerModel>> getSuggestionObservable(long toTimestamp) {
-      return Observable.create(new Observable.OnSubscribe<PhotoPickerModel>() {
-         @Override
-         public void call(Subscriber<? super PhotoPickerModel> subscriber) {
-            Cursor cursor = null;
-            String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
-            //
-            try {
-               cursor = MediaStore.Images.Media.query(context.getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projectionPhotos, selection(), new String[]{String.valueOf(toTimestamp), ImageUtils.MIME_TYPE_GIF}, MediaStore.Images.Media.DATE_TAKEN + " DESC LIMIT " + SUGGESTION_ITEM_CHUNK);
-
-               int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-               int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-               while (cursor.moveToNext()) {
-                  String path = cursor.getString(dataColumn);
-                  long dateTaken = cursor.getLong(dateColumn);
-
-                  if (!subscriber.isUnsubscribed() && !ImageUtils.getImageExtensionFromPath(path)
-                        .toLowerCase()
-                        .contains("gif")) {
-                     subscriber.onNext(new PhotoPickerModel(path, dateTaken));
-                  }
-               }
-
-               if (!subscriber.isUnsubscribed()) {
-                  subscriber.onCompleted();
-               }
-            } catch (Exception e) {
-               Timber.e(e, "Cannot fetch suggestions");
-
-               if (!subscriber.isUnsubscribed()) {
-                  subscriber.onError(e);
-               }
-            } finally {
-               if (cursor != null) {
-                  cursor.close();
-               }
-            }
-         }
-      }).toList().compose(new IoToMainComposer<>());
-   }
-
-   @NonNull
-   private String selection() {
-      return MediaStore.Images.Media.DATE_TAKEN + " < " +
-            " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
+      return mediaInteractor.getPhotosFromGalleryPipe()
+            .createObservableResult(new GetPhotosFromGalleryCommand(SUGGESTION_ITEM_CHUNK, new Date(toTimestamp)))
+            .map(Command::getResult)
+            .compose(new IoToMainComposer<>());
    }
 
    private void checkView(View view) {
@@ -218,7 +162,7 @@ public class SuggestedPhotoCellPresenterHelper {
    }
 
    private void setSuggestionTitle() {
-      view.setSuggestionTitle(selectedPhotos.size());
+      view.setSuggestionTitle(selectedPhotosPaths.size());
    }
 
    private long getLastSyncOrDefault(@Nullable PhotoPickerModel model) {
@@ -231,9 +175,7 @@ public class SuggestedPhotoCellPresenterHelper {
    }
 
    private void clearCache() {
-      Queryable.from(selectedPhotos).forEachR(model -> model.setChecked(false));
-
-      selectedPhotos.clear();
+      selectedPhotosPaths.clear();
       suggestionItems.clear();
    }
 

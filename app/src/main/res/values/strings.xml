@@ -358,6 +358,7 @@
    <string name="terms_and_conditions_reject">Not Now</string>
 
    <string name="camera">Camera</string>
+   <string name="library">Library</string>
    <string name="camera_take_a_picture">Take a picture</string>
    <string name="camera_record_a_video">Record a video</string>
    <string name="add_from_facebook">Add from Facebook</string>
@@ -592,5 +593,10 @@
    <string name="uploading_post_status_progress_video"><b><i>Step 1 of 2.</i></b> Uploading…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Failed to process. Something wrong with video</string>
+
+   <string name="photo_strip_two_media_type_error">You cannot select both videos and photos</string>
+   <string name="photo_strip_photo_limit_reached">Please choose up to 15 photos</string>
+   <string name="photo_strip_video_limit_reached">Please choose up to 1 video</string>
+   <string name="photo_strip_read_storage_permission_explanation">Need permission to read storage to suggest you media content</string>
 
 </resources>

@@ -3,19 +3,22 @@ package com.worldventures.dreamtrips.modules.feed;
 import android.content.Context;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
@@ -35,6 +38,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PhotoStripDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -48,6 +52,9 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripButtonCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripPhotoCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripVideoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
@@ -87,10 +94,12 @@ import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecycle
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
+import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.PhotoPickerModelCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.VideoPickerModelCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
 import javax.inject.Singleton;
@@ -166,7 +175,10 @@ import dagger.Provides;
             StatePaginatedRecyclerViewManager.class,
             UploadingPostsSectionCell.class,
             VideoAttachmentView.class,
-            VideoPickerModelCell.class
+            VideoPickerModelCell.class,
+            PhotoStripPhotoCell.class,
+            PhotoStripVideoCell.class,
+            PhotoStripButtonCell.class
       },
       complete = false,
       library = true)
@@ -244,8 +256,15 @@ public class FeedModule {
    }
 
    @Provides
-   SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(@ForApplication Context context,
-         SnappyRepository db, SessionHolder<UserSession> appSessionHolder, DrawableUtil drawableUtil) {
-      return new SuggestedPhotoCellPresenterHelper(context, db, appSessionHolder, drawableUtil);
+   SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
+         MediaInteractor mediaInteractor, CapturedRowMediaHelper capturedRowMediaHelper) {
+      return new SuggestedPhotoCellPresenterHelper(appSessionHolder, mediaInteractor, capturedRowMediaHelper);
+   }
+
+   @Provides
+   PhotoStripDelegate providePhotoStripDelegate(@ForActivity Injector injector, MediaInteractor mediaInteractor,
+         AppConfigurationInteractor appConfigurationInteractor, PickImageDelegate pickImageDelegate,
+         CapturedRowMediaHelper capturedRowMediaHelper, PermissionDispatcher permissionDispatcher) {
+      return new PhotoStripDelegate(injector, mediaInteractor, appConfigurationInteractor, pickImageDelegate, capturedRowMediaHelper, permissionDispatcher);
    }
 }

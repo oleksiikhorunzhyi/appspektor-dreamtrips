@@ -20,14 +20,13 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_suggested_photos)
-public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate> implements CellDelegate<PhotoPickerModel>, SuggestedPhotoCellPresenterHelper.View {
+public class SuggestedPhotosCell extends AbstractDelegateCell<SuggestedPhotosCell.SuggestedPhotoModel, SuggestedPhotosDelegate> implements CellDelegate<PhotoPickerModel>, SuggestedPhotoCellPresenterHelper.View {
 
    private static final int OFFSET = 5;
    private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
@@ -182,4 +181,6 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
    public void notifyListChange() {
       suggestionAdapter.notifyDataSetChanged();
    }
+
+   public static class SuggestedPhotoModel {}
 }

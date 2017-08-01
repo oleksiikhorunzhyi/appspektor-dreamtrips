@@ -130,4 +130,12 @@
    <declare-styleable name="TranslateView">
       <attr name="translatedTextColor" format="reference"/>
    </declare-styleable>
+   
+   <declare-styleable name="PhotoStripView">
+      <attr name="errorPlankHeight" format="dimension"/>
+      <attr name="errorTextSize" format="dimension"/>
+      <attr name="errorPlankColor" format="color"/>
+      <attr name="errorTextColor" format="color"/>
+      <attr name="stripColor" format="color"/>
+   </declare-styleable>
 </resources>

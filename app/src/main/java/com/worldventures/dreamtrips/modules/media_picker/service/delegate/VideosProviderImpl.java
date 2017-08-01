@@ -13,27 +13,28 @@ import timber.log.Timber;
 
 public class VideosProviderImpl implements VideosProvider {
 
-   private Context context;
+   private final Context context;
 
    public VideosProviderImpl(Context context) {
       this.context = context;
    }
 
    @Override
-   public List<VideoPickerModel> provide() {
+   public List<VideoPickerModel> provide(int count) {
       Cursor cursor = null;
       try {
          String[] projection = {MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_TAKEN,
                MediaStore.Video.Media.DURATION, MediaStore.Video.Media.MINI_THUMB_MAGIC};
 
-         cursor = MediaStore.Video.query(context.getContentResolver(),
-               MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection);
+         cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null, null,
+               MediaStore.Images.Media.DATE_TAKEN + " DESC");
 
          int dataColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
          int dateColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
          int durationColumn = cursor.getColumnIndex(MediaStore.Video.Media.DURATION);
          List<VideoPickerModel> videos = new ArrayList<>();
-         while (cursor.moveToNext()) {
+         while (cursor.moveToNext() && count > 0) {
+            count--;
             String path = cursor.getString(dataColumn);
             long dateTaken = cursor.getLong(dateColumn);
             long duration = cursor.getLong(durationColumn);

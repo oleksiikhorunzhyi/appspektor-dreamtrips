@@ -16,6 +16,15 @@ public class VideoPickerModel extends MediaPickerModelImpl {
       this(absolutePath, duration, 0);
    }
 
+   public VideoPickerModel copy() {
+      VideoPickerModel copy = new VideoPickerModel(this.absolutePath, this.dateTaken);
+      copy.checked = this.checked;
+      copy.duration = this.duration;
+      copy.pickedTime = this.pickedTime;
+      copy.uri = this.uri;
+      return copy;
+   }
+
    public long getDuration() {
       return duration;
    }

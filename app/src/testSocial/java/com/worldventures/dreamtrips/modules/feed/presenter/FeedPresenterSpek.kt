@@ -42,7 +42,6 @@ import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
 import org.mockito.ArgumentMatchers
 import org.mockito.internal.verification.VerificationModeFactory
 import rx.Observable
@@ -99,7 +98,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             presenter.subscribeToStorage()
 
             assert(presenter.feedItems.containsAll(command.result))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(command.result, null, null)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(command.result, null, false)
             verify(view, VerificationModeFactory.times(1)).dataSetChanged()
             AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)
          }
@@ -287,21 +286,19 @@ class FeedPresenterSpek : PresenterBaseSpec({
          }
 
          it("Suggested photos collection should contain all photos from the command and call refreshFeedItems") {
-            doReturn(0L).whenever(snappy).lastSuggestedPhotosSyncTime
             presenter.subscribePhotoGalleryCheck()
             suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.send(SuggestedPhotoCommand())
 
-            assert(presenter.suggestedPhotos.containsAll(suggestedPhotos))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, presenter.suggestedPhotos)
+            assert(presenter.shouldShowSuggestionItems == true)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, true)
          }
 
          it("Suggested photos collection should be clear, suggestedPhotoCellHelper should call reset and call refreshFeedItems") {
-            presenter.suggestedPhotos = suggestedPhotos
             presenter.removeSuggestedPhotos()
 
-            assert(presenter.suggestedPhotos.isEmpty())
+            assert(presenter.shouldShowSuggestionItems == false)
             verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).reset()
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, presenter.suggestedPhotos)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, false)
          }
 
          it("Should call sync of suggestedPhotoCellHelper") {
@@ -316,7 +313,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
          }
 
          it("Should post selected photos to mediaPickerEventDelegate") {
-            val mediaAttachment = MediaAttachment(emptyList(), MediaAttachment.Source.GALLERY)
+            val mediaAttachment = MediaAttachment(PhotoPickerModel(), MediaAttachment.Source.GALLERY)
             doReturn(Observable.just(mediaAttachment)).whenever(suggestedPhotoCellHelper).mediaAttachmentObservable()
             presenter.attachSelectedSuggestionPhotos()
 
@@ -372,7 +369,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
 
             assert(presenter.postUploads.containsAll(postCompoundOperations))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, presenter.postUploads, null)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, presenter.postUploads, false)
          }
       }
    }
@@ -398,7 +395,6 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
       val circles = provideCircles()
       val feedItems = provideFeedItems()
-      val suggestedPhotos = provideSuggestedPhotos()
       val stubPostCompoundOperationModel = provideCompoundOperation()
       val postCompoundOperations = listOf(stubPostCompoundOperationModel)
 
@@ -412,7 +408,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             addContract(BaseContract.of(QueryCompoundOperationsCommand::class.java).result(postCompoundOperations))
             addContract(BaseContract.of(GetAccountFeedCommand.Refresh::class.java).result(feedItems))
             addContract(BaseContract.of(GetAccountFeedCommand.LoadNext::class.java).result(feedItems))
-            addContract(BaseContract.of(SuggestedPhotoCommand::class.java).result(suggestedPhotos))
+            addContract(BaseContract.of(SuggestedPhotoCommand::class.java).result(true))
          }.build()
 
          val janet = Janet.Builder().addService(service).build()
@@ -468,7 +464,5 @@ class FeedPresenterSpek : PresenterBaseSpec({
       fun provideCircles(): List<Circle> = mutableListOf(Circle.withTitle("Friends"), Circle.withTitle("Close friends"))
 
       fun provideFeedItems(): List<PostFeedItem> = mutableListOf(PostFeedItem(), PostFeedItem())
-
-      fun provideSuggestedPhotos(): List<PhotoPickerModel> = mutableListOf(providePhotoPickerModel(), providePhotoPickerModel())
    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/content_layout"
       xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -36,9 +36,9 @@
                android:layout_alignParentLeft="true"
                android:layout_alignParentStart="true"
                android:layout_margin="@dimen/spacing_normal"
-               fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-               fresco:placeholderImageScaleType="centerInside"
-               fresco:roundAsCircle="true"
+               app:placeholderImage="@drawable/ic_avatar_placeholder"
+               app:placeholderImageScaleType="centerInside"
+               app:roundAsCircle="true"
                />
 
          <LinearLayout
@@ -92,15 +92,19 @@
             android:layout_below="@+id/container_user"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/divider"
+            android:layout_above="@+id/container_post"
             />
 
-      <include
-            android:id="@+id/divider"
-            layout="@layout/include_divider"
+      <com.worldventures.dreamtrips.modules.feed.view.custom.PhotoStripView
+            android:id="@+id/photo_strip"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/container_post"
+            app:errorPlankHeight="@dimen/photo_strip_error_message_height"
+            app:errorTextColor="@color/photo_strip_error_message_color"
+            app:errorTextSize="@dimen/photo_strip_error_message_text_size"
+            app:errorPlankColor="@android:color/white"
+            app:stripColor="@android:color/white"
             />
 
       <LinearLayout

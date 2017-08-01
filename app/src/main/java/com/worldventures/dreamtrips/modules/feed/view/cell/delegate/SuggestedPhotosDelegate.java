@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.delegate;
 import android.support.annotation.NonNull;
 
 import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
+import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 
-public interface SuggestedPhotosDelegate extends CellDelegate<MediaAttachment> {
+public interface SuggestedPhotosDelegate extends CellDelegate<SuggestedPhotosCell.SuggestedPhotoModel> {
 
    void onCancelClicked();
 

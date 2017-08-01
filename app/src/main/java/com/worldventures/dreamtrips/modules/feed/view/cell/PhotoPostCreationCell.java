@@ -68,7 +68,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    };
 
    @Override
-   protected void syncUIStateWithModel() {
+   public void syncUIStateWithModel() {
       if (itemView.getWidth() > 0) {
          updateUi();
       } else {
@@ -78,8 +78,12 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    }
 
    private void updateUi() {
-      photoContainer.getLayoutParams().width = itemView.getWidth();
-      photoContainer.getLayoutParams().height = calculateHeight();
+      int width = itemView.getWidth();
+      int height = calculateHeight();
+
+      photoContainer.getLayoutParams().width = width;
+      photoContainer.getLayoutParams().height = height;
+
       photoContainer.requestLayout();
       photoContainer.post(() -> {
          itemView.setVisibility(View.VISIBLE);
@@ -90,17 +94,21 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          invalidateAddTagBtn();
       });
 
-      attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(
-            Uri.parse(getModelObject().getFileUri() == null
-                  ? getModelObject().getOriginUrl()
-                  : getModelObject().getFileUri()
-            ), attachedPhoto.getController()));
+      attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(getPhotoUri(),
+            attachedPhoto.getController(), width, height));
+
       photoTitle.setText(getModelObject().getTitle());
       boolean titleChangesEnabled = getModelObject().isCanEdit();
       photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
       photoTitle.setEnabled(titleChangesEnabled);
       invalidateAddTagBtn();
       invalidateDeleteBtn();
+   }
+
+   private Uri getPhotoUri() {
+      return Uri.parse(getModelObject().getFileUri() == null
+            ? getModelObject().getOriginUrl()
+            : getModelObject().getFileUri());
    }
 
    private int calculateHeight() {

@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -265,9 +264,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void onCellClicked(MediaAttachment model) {
-      // nothing to do
-   }
+   public void onCellClicked(SuggestedPhotosCell.SuggestedPhotoModel model) { }
 
    @Override
    public void updateItem(FeedItem feedItem) {
@@ -290,9 +287,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList,
-         List<PhotoPickerModel> suggestedPhotos) {
+         boolean shouldShowSuggestions) {
       List feedModels = new ArrayList();
-      processSuggestedPhotosItems(suggestedPhotos, feedModels);
+      processSuggestedPhotosItems(shouldShowSuggestions, feedModels);
       processUploadsInProgressItems(new UploadingPostsList(uploadingPostsList), feedModels);
       processFeedItems(feedItems, feedModels);
       fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
@@ -304,10 +301,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
-   private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {
-      int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
-      if (suggestedPhotosSize > 0) {
-         feedModels.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
+   private void processSuggestedPhotosItems(boolean shouldShowSuggestions, List feedModels) {
+      if (shouldShowSuggestions) {
+         feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
       }
    }
 
@@ -454,12 +450,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private void registerAdditionalCells() {
-      fragmentWithFeedDelegate.registerAdditionalCell(MediaAttachment.class, SuggestedPhotosCell.class);
+      fragmentWithFeedDelegate.registerAdditionalCell(SuggestedPhotosCell.SuggestedPhotoModel.class, SuggestedPhotosCell.class);
       fragmentWithFeedDelegate.registerAdditionalCell(EmptyFeedModel.class, EmptyFeedCell.class);
    }
 
    private void registerCellDelegates() {
-      fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
+      fragmentWithFeedDelegate.registerDelegate(SuggestedPhotosCell.SuggestedPhotoModel.class, this);
       fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
       fragmentWithFeedDelegate.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(),
             getContext()));
@@ -468,8 +464,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
-
-      fragmentWithFeedDelegate.registerDelegate(EmptyFeedModel.class,
-            model -> fragmentWithFeedDelegate.openFriendsSearch());
+      fragmentWithFeedDelegate.registerDelegate(EmptyFeedModel.class, model -> fragmentWithFeedDelegate.openFriendsSearch());
    }
 }

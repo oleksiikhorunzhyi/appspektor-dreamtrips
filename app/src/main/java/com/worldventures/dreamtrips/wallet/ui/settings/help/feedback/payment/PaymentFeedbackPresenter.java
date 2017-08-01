@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.BaseSe
 
 public interface PaymentFeedbackPresenter extends BaseSendFeedbackPresenter<PaymentFeedbackScreen> {
 
-   boolean isDataChanged();
-
    void sendFeedback();
 
    void handleBackOnDataChangedAction();

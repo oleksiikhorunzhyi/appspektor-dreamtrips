@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl;
 
-
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +12,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsHelpPaymentFeedbackBinding;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
@@ -36,6 +32,8 @@ import javax.inject.Inject;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+
+import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.fromHtml;
 
 public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFeedbackScreen, PaymentFeedbackPresenter> implements PaymentFeedbackScreen {
 
@@ -64,7 +62,7 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
       binding.incMerchant.sMerchantType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            onMerchantTypeSelected(parent.getAdapter().getItem(position).toString());
+            onMerchantTypeSelected(position, parent.getAdapter().getItem(position).toString());
          }
 
          @Override
@@ -74,15 +72,12 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
    }
 
    private void setupAsteriskColor() {
-      binding.incAttempts.tvCounterTitle.setText(ProjectTextUtils.fromHtml(
-            getString(R.string.wallet_payment_feedback_number_attempts_label)
-      ));
-      binding.incMerchant.tvMerchantTypeTitle.setText(ProjectTextUtils.fromHtml(
-            getString(R.string.wallet_payment_feedback_merchant_type_label)
-      ));
-      binding.incMerchant.tvMerchantNameTitle.setText(ProjectTextUtils.fromHtml(
-            getString(R.string.wallet_payment_feedback_merchant_name_label)
-      ));
+      binding.incAttempts.tvCounterTitle.setText(
+            fromHtml(getString(R.string.wallet_payment_feedback_number_attempts_label)));
+      binding.incMerchant.tvMerchantTypeTitle.setText(
+            fromHtml(getString(R.string.wallet_payment_feedback_merchant_type_label)));
+      binding.incMerchant.tvMerchantNameTitle.setText(
+            fromHtml(getString(R.string.wallet_payment_feedback_merchant_name_label)));
    }
 
    private void initToolbar() {
@@ -222,8 +217,9 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
       binding.incAdditionalInfo.feedbackAttachments.setVisibility(itemsCount > 0 ? View.VISIBLE : View.GONE);
    }
 
-   public void onMerchantTypeSelected(String merchantType) {
+   public void onMerchantTypeSelected(int position, String merchantType) {
       paymentFeedbackView.getMerchantView().setMerchantType(merchantType);
+      paymentFeedbackView.getMerchantView().setSelectedTypeIndex(position);
    }
 
    @Override
@@ -248,7 +244,7 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
 
    @Override
    public boolean handleBack() {
-      if (getPresenter().isDataChanged()) {
+      if (paymentFeedbackView.isDataChanged()) {
          getPresenter().handleBackOnDataChangedAction();
          return true;
       } else {

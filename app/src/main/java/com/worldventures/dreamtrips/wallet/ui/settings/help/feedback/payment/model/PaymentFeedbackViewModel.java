@@ -74,4 +74,11 @@ public class PaymentFeedbackViewModel extends BaseObservable {
       result = 31 * result + (infoView != null ? infoView.hashCode() : 0);
       return result;
    }
+
+   public boolean isDataChanged() {
+      return attemptsView.isDataChanged()
+            || merchantView.isDataChanged()
+            || terminalView.isDataChanged()
+            || infoView.isDataChanged();
+   }
 }

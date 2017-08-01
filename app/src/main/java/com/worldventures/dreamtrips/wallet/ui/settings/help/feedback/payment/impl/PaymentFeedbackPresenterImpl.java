@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl;
 
-
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
@@ -15,13 +14,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl.B
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel;
 
 import rx.functions.Action0;
 
 public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<PaymentFeedbackScreen> implements PaymentFeedbackPresenter {
 
-   private PaymentFeedbackViewModel startViewModel = new PaymentFeedbackViewModel();
    private final PaymentFeedbackDelegate paymentFeedbackDelegate;
 
    public PaymentFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
@@ -72,11 +69,6 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
    }
 
    @Override
-   public boolean isDataChanged() {
-      return !startViewModel.equals(getView().getPaymentFeedbackViewModel());
-   }
-
-   @Override
    public void sendFeedback() {
       getView().changeActionSendMenuItemEnabled(false);
 
@@ -102,8 +94,7 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
    }
 
    private void handleDataChanges(Action0 action) {
-      //TODO : check view model properly
-      if (isDataChanged()) {
+      if (!getView().getPaymentFeedbackViewModel().isDataChanged()) {
          action.call();
       } else {
          handleBackOnDataChangedAction();

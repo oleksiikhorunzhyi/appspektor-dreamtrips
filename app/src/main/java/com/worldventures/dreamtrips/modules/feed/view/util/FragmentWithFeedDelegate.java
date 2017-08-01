@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -34,6 +33,7 @@ import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
@@ -91,8 +91,8 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof MediaAttachment &&
-                  items.get(newItemPosition) instanceof MediaAttachment) {
+            if (adapter.getItem(oldItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel &&
+                  items.get(newItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel) {
                return true;
             }
             if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&

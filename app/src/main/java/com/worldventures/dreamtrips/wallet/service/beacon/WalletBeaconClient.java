@@ -25,10 +25,6 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
    public static final String TAG = "Beacon client";
    private static final Logger FILE_LOGGER = LoggerFactory.getLogger(TAG);
 
-   static {
-      FILE_LOGGER.debug("BOOM");
-   }
-
    public static void logBeacon(String s, Object... args) {
       if (args.length > 0) {
          s = String.format(s, args);
@@ -55,7 +51,7 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
       this.context = context;
 
       beaconManager = BeaconManager.getInstanceForApplication(context);
-      //      beaconManager.setEnableScheduledScanJobs(false);
+      beaconManager.setEnableScheduledScanJobs(true);
       beaconManager.getBeaconParsers().clear();
       beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(BEACON_LAYOUT));
    }

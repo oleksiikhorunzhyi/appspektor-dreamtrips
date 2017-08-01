@@ -195,6 +195,7 @@ public enum Route {
    YSBH_FULLSCREEN(YSBHPhotoFullscreenFragment.class),
    TRIP_PHOTO_FULLSCREEN(TripPhotoFullscreenFragment.class),
    BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
+   MESSENGER_FULLSCREEN_IMAGES(PhotoAttachmentPagerFragment.class),
    MESSAGE_IMAGE_FULLSCREEN(MessageImageFullscreenFragment.class),
 
    THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),

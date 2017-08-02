@@ -284,8 +284,20 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    }
 
    @Override
-   protected void onSaveInstanceState(@NonNull Bundle outState) {
+   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
       outState.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
+      super.onSaveViewState(view, outState);
+   }
+
+   @SuppressWarnings("WrongConstant")
+   @Override
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      firmwareAvailableView.setVisibility(savedViewState.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+   }
+
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
       outState.putParcelableArrayList(KEY_LOADED_CARDS_LIST, this.cardViewModels);
       super.onSaveInstanceState(outState);
    }
@@ -294,7 +306,6 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    @Override
    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
-      firmwareAvailableView.setVisibility(savedInstanceState.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
       this.cardViewModels = savedInstanceState.getParcelableArrayList(KEY_LOADED_CARDS_LIST);
    }
 

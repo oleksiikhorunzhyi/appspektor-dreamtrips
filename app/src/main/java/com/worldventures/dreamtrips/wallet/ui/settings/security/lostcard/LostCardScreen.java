@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -24,8 +23,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -55,7 +54,6 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @InjectView(R.id.tracking_enable_switcher) WalletSwitcher trackingEnableSwitcher;
    @InjectView(R.id.ll_disable_tracking_info_view) View disabledTrackingView;
    @InjectView(R.id.last_connection_time_container) View lastConnectionTimeContainer;
-   //   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
    @InjectView(R.id.map_container) View mapContainer;
    @InjectView(R.id.tv_empty_lost_card_msg) TextView tvDisableLostCardMsg;
    @InjectView(R.id.empty_location_view) View emptyLocationsView;
@@ -76,14 +74,10 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       super(context, attrs);
    }
 
-
    @NonNull
    @Override
    public LostCardPresenter createPresenter() {
-      final Context context = getContext();
-      //noinspection all
-      final LocationSettingsService locationSettingsService = (LocationSettingsService) context.getSystemService(LocationSettingsService.SERVICE_NAME);
-      return new LostCardPresenter(context, locationSettingsService, getInjector());
+      return new LostCardPresenter(getContext(), getInjector());
    }
 
    @Override
@@ -96,9 +90,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
       mapView.onCreate(null);
       initMap();
-      //// TODO: 2/14/17 fromHtml is deprecated from 24 API
-      //noinspection all
-      tvDisableLostCardMsg.setText(Html.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
+      tvDisableLostCardMsg.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
    }
 
    @Override

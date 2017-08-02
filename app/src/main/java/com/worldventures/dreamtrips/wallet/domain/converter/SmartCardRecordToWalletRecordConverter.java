@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.Map;
 
@@ -32,6 +33,7 @@ public class SmartCardRecordToWalletRecordConverter implements Converter<io.tech
       return ImmutableRecord.builder()
             .id(recordId != null ? String.valueOf(recordId) : null)
             .number(record.cardNumber())
+            .numberLastFourDigits(WalletRecordUtil.obtainLastCardDigits(record.cardNumber()))
             .expDate(record.expDate())
             .cvv(record.cvv())
             .track1(record.t1())

@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelComm
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
+import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
@@ -264,6 +265,7 @@ import dagger.Module;
       MigrateFromCachedEntity.class,
       FeedItemsVideoProcessingStatusCommand.class,
       GetVideoMetadataCommand.class,
-      LoadConfigurationCommand.class
+      LoadConfigurationCommand.class,
+      MediaAttachmentPrepareCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

@@ -187,6 +187,7 @@
       <activity
             android:name=".wallet.ui.WalletActivity"
             android:launchMode="singleTop"
+            android:theme="@style/WalletTheme"
             android:screenOrientation="portrait"
             >
          <meta-data

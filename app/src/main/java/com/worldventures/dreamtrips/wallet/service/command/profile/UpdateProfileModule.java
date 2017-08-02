@@ -13,7 +13,8 @@ import io.techery.janet.Janet;
       injects = {
             UpdateSmartCardUserCommand.class,
             RevertSmartCardUserUpdatingCommand.class,
-            RetryHttpUploadUpdatingCommand.class
+            RetryHttpUploadUpdatingCommand.class,
+            UpdateSmartCardUserPhotoCommand.class
       },
       library = true, complete = false)
 public class UpdateProfileModule {

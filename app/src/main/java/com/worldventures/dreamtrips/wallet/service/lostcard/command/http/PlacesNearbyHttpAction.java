@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command.http;
 
-import com.worldventures.dreamtrips.mobilesdk.service.ServiceLabel;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.NearbyResponse;
 
@@ -14,7 +13,7 @@ import io.techery.janet.http.annotations.Url;
 import static io.techery.janet.http.annotations.HttpAction.Method.GET;
 
 @HttpAction(method = GET)
-public class PlacesNearbyHttpAction implements ServiceLabel {
+public class PlacesNearbyHttpAction extends BaseThirdPartyHttpAction {
 
    @Url String loadPlacesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 
@@ -30,10 +29,5 @@ public class PlacesNearbyHttpAction implements ServiceLabel {
 
    public NearbyResponse response() {
       return response;
-   }
-
-   @Override
-   public String label() {
-      return "non-api-action";
    }
 }

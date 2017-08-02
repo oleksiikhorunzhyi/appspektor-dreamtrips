@@ -58,7 +58,11 @@ public class GetAlbumsCommand extends CommandWithError<List<FacebookAlbum>> impl
          }
       }
       graphResponse = graphRequest.executeAndWait();
-      callback.onSuccess(facebookHelper.processList(graphResponse, new TypeToken<List<FacebookAlbum>>(){}));
+      if (graphResponse.getError() == null) {
+         callback.onSuccess(facebookHelper.processList(graphResponse, new TypeToken<List<FacebookAlbum>>() {}));
+      } else {
+         callback.onFail(facebookHelper.getThrowableFromGraphError(graphResponse.getError()));
+      }
    }
 
    @Override

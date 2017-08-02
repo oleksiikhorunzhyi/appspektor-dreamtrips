@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
@@ -23,8 +22,8 @@ public class WalletRecordUtil {
 
    private final Context context;
 
-   public WalletRecordUtil(@ForApplication Context appContext) {
-      this.context = appContext;
+   public WalletRecordUtil(Context context) {
+      this.context = context;
    }
 
    public static String obtainLastCardDigits(String cardNumber) {

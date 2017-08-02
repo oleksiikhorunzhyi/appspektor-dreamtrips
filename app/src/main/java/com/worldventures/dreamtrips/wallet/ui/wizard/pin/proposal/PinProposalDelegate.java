@@ -139,7 +139,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
 
       @Override
       public RecordsPinProposalDialog createPinDialog(PinProposalPresenter presenter, View bottomSheetView, Context context) {
-         return new RecordsPinProposalDialog(presenter, bottomSheetView);
+         return new RecordsPinProposalDialog(context, presenter);
       }
 
       @Override

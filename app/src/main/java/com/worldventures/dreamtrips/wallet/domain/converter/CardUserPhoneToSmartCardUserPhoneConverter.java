@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 
 import io.techery.mappery.MapperyContext;
@@ -11,7 +10,7 @@ public class CardUserPhoneToSmartCardUserPhoneConverter implements Converter<Car
 
    @Override
    public SmartCardUserPhone convert(MapperyContext mapperyContext, CardUserPhone cardUserPhone) {
-      return ImmutableSmartCardUserPhone.of(cardUserPhone.number(), cardUserPhone.code());
+      return SmartCardUserPhone.of(cardUserPhone.code(), cardUserPhone.number());
    }
 
    @Override

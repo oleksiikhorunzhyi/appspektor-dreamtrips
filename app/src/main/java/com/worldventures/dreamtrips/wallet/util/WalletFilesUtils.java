@@ -2,14 +2,19 @@ package com.worldventures.dreamtrips.wallet.util;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+
 import java.io.File;
+
+import timber.log.Timber;
 
 public class WalletFilesUtils {
 
-   public static final String FIRMWARE_FILE_NAME = "flyee_firmware.zip";
+   private static final String FIRMWARE_FILE_NAME = "flyee_firmware.zip";
 
    private WalletFilesUtils() {}
 
@@ -51,6 +56,20 @@ public class WalletFilesUtils {
       return new StatFs(directory.getPath()).getAvailableBytes();
    }
 
+   public static Uri convertPickedPhotoToUri(PhotoPickerModel photoModel) {
+      Uri uri = photoModel.getUri();
+      if (uri.getScheme() == null) {
+         //check if is local file path
+         final File localFile = new File(photoModel.getUri().getPath());
+         if (localFile.exists()) {
+            uri = Uri.fromFile(localFile);
+         } else {
+            Timber.e("Cannot parse path into Uri : %s", photoModel.getUri().getPath());
+         }
+      }
+      return uri;
+   }
+
    public static class NotEnoughSpaceException extends Throwable {
       private final long missingByteSpace;
 
@@ -60,5 +79,4 @@ public class WalletFilesUtils {
          return missingByteSpace;
       }
    }
-
 }

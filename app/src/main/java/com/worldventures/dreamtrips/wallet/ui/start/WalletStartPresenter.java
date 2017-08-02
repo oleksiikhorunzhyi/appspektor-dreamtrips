@@ -5,12 +5,11 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -35,7 +34,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject Navigator navigator;
-   @Inject FeatureManager featureManager;
+   @Inject WalletAccessValidator walletAccessValidator;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    public WalletStartPresenter(Context context, Injector injector) {
@@ -45,8 +44,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      featureManager.with(Feature.WALLET_PROVISIONING,
-            this::onWalletAvailable,
+      walletAccessValidator.validate(this::onWalletAvailable,
             () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)
       );
    }

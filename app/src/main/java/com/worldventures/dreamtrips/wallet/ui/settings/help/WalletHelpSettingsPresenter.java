@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPath;
 
@@ -26,23 +27,36 @@ public class WalletHelpSettingsPresenter extends WalletPresenter<WalletHelpSetti
       navigator.goBack();
    }
 
-   void openSendFeedbackSection() {
-      navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.SmartCardFeedback));
+   public void openPaymentFeedbackScreen() {
+      getView().hideBottomFeedbackMenu();
+      navigator.go(new PaymentFeedbackPath());
    }
 
-   void openVideoSection() {
+   void openVideoScreen() {
       navigator.go(new WalletHelpVideoPath());
    }
 
-   public void openCustomerSupportScreen() {
+   void openCustomerSupportScreen() {
       navigator.go(new WalletCustomerSupportSettingsPath());
+   }
+
+   void openDocumentsScreen() {
+      navigator.go(new WalletHelpDocumentsPath());
+   }
+
+   void handleVariantFeedback() {
+      getView().showBottomFeedbackMenu();
+   }
+
+   public void openOtherFeedbackScreen() {
+      getView().hideBottomFeedbackMenu();
+      navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.SmartCardFeedback));
    }
 
    public interface Screen extends WalletScreen {
 
-   }
+      void showBottomFeedbackMenu();
 
-   public void openDocuments() {
-      navigator.go(new WalletHelpDocumentsPath());
+      void hideBottomFeedbackMenu();
    }
 }

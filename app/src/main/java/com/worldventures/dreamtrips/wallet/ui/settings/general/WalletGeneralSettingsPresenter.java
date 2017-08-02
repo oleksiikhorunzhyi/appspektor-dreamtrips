@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsGeneralAct
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -23,6 +24,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPath;
@@ -101,6 +104,16 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
       }
    }
 
+   void openDisplayOptionsScreen() {
+      fetchConnectionStatus(connectionStatus -> {
+         if (connectionStatus.isConnected()) {
+            navigator.go(new DisplayOptionsSettingsPath(DisplayOptionsSource.SETTINGS));
+         } else {
+            getView().showSCNonConnectionDialog();
+         }
+      });
+   }
+
    void onClickFactoryResetSmartCard() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
@@ -144,7 +157,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
    }
 
    private void bindSmartCardUser(SmartCardUser it) {
-      if (it.userPhoto() != null) getView().setPreviewPhoto(it.userPhoto().photoUrl());
+      getView().setPreviewPhoto(it.userPhoto());
       getView().setUserName(it.firstName(), it.middleName(), it.lastName());
    }
 
@@ -188,7 +201,7 @@ public class WalletGeneralSettingsPresenter extends WalletPresenter<WalletGenera
 
    public interface Screen extends WalletScreen, FactoryResetView {
 
-      void setPreviewPhoto(String photoUrl);
+      void setPreviewPhoto(@Nullable SmartCardUserPhoto photo);
 
       void setUserName(String firstName, String middleName, String lastName);
 

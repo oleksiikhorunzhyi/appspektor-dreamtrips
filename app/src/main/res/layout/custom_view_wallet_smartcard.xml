@@ -1,76 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/wallet_card_height"
+      android:layout_height="match_parent"
       android:animateLayoutChanges="true"
       android:background="@drawable/flyecard_front_with_emv"
-      android:paddingBottom="@dimen/spacing_small"
-      android:paddingEnd="@dimen/spacing_normal"
-      android:paddingStart="@dimen/spacing_normal"
-      android:paddingTop="@dimen/spacing_medium"
+      tools:layout_height="210dp"
       >
 
    <ImageView
-         android:id="@+id/settings_button"
+         android:id="@+id/button_settings"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignParentEnd="true"
-         android:layout_marginEnd="8dp"
-         android:layout_marginTop="4dp"
+         android:layout_marginEnd="12dp"
+         android:layout_marginTop="8dp"
          android:background="?attr/selectableItemBackgroundBorderless"
+         android:padding="8dp"
          android:src="@drawable/ic_wallet_settings"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
          tools:ignore="ContentDescription"
          />
 
    <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
-         android:id="@+id/smartcard_badge"
-         android:layout_width="16dp"
+         android:id="@+id/badge"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignEnd="@+id/settings_button"
-         android:layout_marginEnd="-8dp"
          android:textSize="@dimen/font_small"
+         app:layout_constraintEnd_toEndOf="@id/button_settings"
+         app:layout_constraintTop_toTopOf="@id/button_settings"
          tools:text="1"
          />
 
    <ImageView
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/settings_button"
-         android:layout_alignTop="@+id/settings_button"
-         android:layout_marginEnd="@dimen/spacing_medium"
-         android:layout_marginTop="6dp"
-         android:layout_toStartOf="@+id/settings_button"
+         android:layout_alignBottom="@+id/button_settings"
+         android:layout_marginEnd="18dp"
          android:src="@drawable/ic_wallet_green_dot"
+         app:layout_constraintBottom_toBottomOf="@id/button_settings"
+         app:layout_constraintEnd_toStartOf="@id/button_settings"
+         app:layout_constraintTop_toTopOf="@id/button_settings"
          tools:ignore="ContentDescription"
          />
+
+   <android.support.constraint.ConstraintLayout
+         android:id="@+id/photo_container"
+         android:layout_width="90dp"
+         android:layout_height="90dp"
+         android:layout_marginEnd="16dp"
+         android:background="#dddddd"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         >
+
+      <TextView
+            android:id="@+id/tv_photo_full_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@string/font_fontFamily_medium"
+            android:gravity="center"
+            android:maxLines="8"
+            android:paddingEnd="@dimen/spacing_small"
+            android:paddingStart="@dimen/spacing_small"
+            android:textSize="9sp"
+            tools:ignore="SmallSp"
+            tools:text="Samantha\nLouise\nSaltalamacchia\n\n+14155552671"
+            />
+
+      <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/cardListSCAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:actualImageScaleType="centerCrop"
+            />
+
+      <TextView
+            android:id="@+id/tv_photo_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:background="@color/black_semi_transparent_darker"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/spacing_small"
+            android:paddingStart="@dimen/spacing_small"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="SmallSp"
+            tools:text="Samantha"
+            />
+
+      <ImageView
+            android:layout_width="16dp"
+            android:layout_height="14dp"
+            android:layout_margin="2dp"
+            android:src="@drawable/ic_wallet_edit_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            />
+
+   </android.support.constraint.ConstraintLayout>
 
    <LinearLayout
          android:id="@+id/indicators_container"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         android:layout_alignParentEnd="true"
-         android:layout_marginTop="15dp"
-         android:gravity="center_vertical|bottom"
+         android:layout_marginBottom="16dp"
+         android:layout_marginEnd="16dp"
+         android:gravity="center"
          android:orientation="horizontal"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
          >
 
       <ImageView
             android:id="@+id/link_indicator"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_margin="2dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="6dp"
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_wallet_link_indicator"
             />
 
       <ImageView
             android:id="@+id/stealth_indicator"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_margin="2dp"
+            android:layout_width="17dp"
+            android:layout_height="11dp"
+            android:layout_marginEnd="9dp"
             android:src="@drawable/ic_wallet_stealth_indicator"
             android:visibility="gone"
             tools:ignore="ContentDescription"
@@ -79,9 +141,9 @@
 
       <ImageView
             android:id="@+id/lock_indicator"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_margin="2dp"
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="10dp"
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_wallet_lock_indicator"
             />
@@ -89,65 +151,61 @@
       <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:orientation="vertical"
             >
 
          <TextView
-               android:id="@+id/batteryLevel"
+               android:id="@+id/battery_indicator_text"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:textColor="#ffffff"
+               android:textColor="@android:color/white"
                android:textSize="10sp"
-               tools:text="0%"
+               tools:ignore="SmallSp"
+               tools:text="100%"
                />
 
          <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
-               android:id="@+id/batteryView"
+               android:id="@+id/battery_indicator"
                android:layout_width="21dp"
                android:layout_height="11dp"
-               android:layout_marginBottom="2dp"
-               android:layout_marginLeft="2dp"
-               android:layout_marginRight="2dp"
+               tools:src="@drawable/ic_wallet_battery"
                />
       </LinearLayout>
 
    </LinearLayout>
 
    <TextView
-         android:id="@+id/connectedCardsCount"
-         android:layout_width="match_parent"
+         android:id="@+id/tv_cards_loaded"
+         android:layout_width="0dp"
          android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         android:layout_marginEnd="5dp"
-         android:layout_toStartOf="@+id/indicators_container"
+         android:layout_marginBottom="8dp"
+         android:layout_marginEnd="12dp"
+         android:layout_marginStart="20dp"
          android:textColor="@color/wallet_card_list_header_text"
          android:textSize="@dimen/font_medium"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toStartOf="@id/indicators_container"
+         app:layout_constraintStart_toStartOf="parent"
          tools:text="@string/wallet_card_list_records_connected"
          />
 
-   <com.facebook.drawee.view.SimpleDraweeView
-         android:id="@+id/cardListSCAvatar"
-         android:layout_width="90.4dp"
-         android:layout_height="90.4dp"
-         android:layout_above="@+id/indicators_container"
-         android:layout_alignParentEnd="true"
-         android:layout_marginBottom="10dp"
-         app:placeholderImage="@drawable/avatar"
-         app:placeholderImageScaleType="fitCenter"
-         />
-
    <TextView
-         android:id="@+id/bankLabel"
-         android:layout_width="wrap_content"
+         android:id="@+id/tv_full_name"
+         android:layout_width="0dp"
          android:layout_height="wrap_content"
-         android:layout_above="@+id/connectedCardsCount"
+         android:layout_above="@+id/tv_cards_loaded"
          android:layout_alignParentStart="true"
+         android:layout_marginEnd="12dp"
+         android:layout_marginStart="20dp"
          android:ellipsize="end"
          android:singleLine="true"
          android:textColor="@android:color/white"
          android:textSize="@dimen/font_normal"
-         tools:text="Jhon's card"
+         app:layout_constraintBottom_toTopOf="@id/tv_cards_loaded"
+         app:layout_constraintEnd_toStartOf="@id/indicators_container"
+         app:layout_constraintStart_toStartOf="parent"
+         tools:text="SHIRLEY TEMPLE"
          />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

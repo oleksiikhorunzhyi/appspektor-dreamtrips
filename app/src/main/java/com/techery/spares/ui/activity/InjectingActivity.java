@@ -1,6 +1,7 @@
 package com.techery.spares.ui.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.techery.spares.annotations.Layout;
@@ -15,6 +16,8 @@ import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 
 public abstract class InjectingActivity extends AppCompatActivity implements Injector {
+
+   public static final String OBJECT_GRAPH_SERVICE_NAME = "ObjectGraphKey";
 
    private ObjectGraph objectGraph;
 
@@ -100,5 +103,13 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
       List<Object> result = new ArrayList<Object>();
       result.add(new InjectingActivityModule(this, this));
       return result;
+   }
+
+   @Override
+   public Object getSystemService(@NonNull String name) {
+      if (OBJECT_GRAPH_SERVICE_NAME.equals(name)) {
+         return getObjectGraph();
+      }
+      return super.getSystemService(name);
    }
 }

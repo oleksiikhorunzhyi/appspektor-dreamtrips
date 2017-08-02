@@ -18,7 +18,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.service.*
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.*
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.AddressRestResponse
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.ApiPlace
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.NearbyResponse
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper
@@ -35,12 +37,15 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.mock.device.DeviceStorage
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
+import io.techery.mappery.Converter
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.mockito.ArgumentMatchers.anyList
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -200,7 +205,20 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             .map(SmartCardLocationType::class.java).to(WalletLocationType::class.java, SmartCardLocationTypeToWalletLocationTypeConverter())
             .map(WalletLocationType::class.java).to(SmartCardLocationType::class.java, WalletLocationTypeToSmartCardLocationTypeConverter())
             .map(ApiPlace::class.java).to(WalletPlace::class.java, ApiPlaceToWalletPlaceConverter())
+            .map(AddressRestResponse::class.java).to(WalletAddress::class.java, getMockAddressConverter())
             .build()
+
+      private fun getMockAddressConverter(): Converter<AddressRestResponse, WalletAddress> {
+         val mockConverter = Mockito.mock(HttpAddressToWalletAddressConverter::class.java)
+         `when`(mockConverter.convert(Mockito.any(MapperyContext::class.java),
+               Mockito.any(AddressRestResponse::class.java))).thenReturn(ImmutableWalletAddress.builder()
+               .addressLine("Test address line")
+               .countryName("Test country")
+               .adminArea("Test admin area")
+               .postalCode("Test postal code")
+               .build())
+         return mockConverter
+      }
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
@@ -219,6 +237,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun mockHttpService(): MockHttpActionService {
          val placesResponse: NearbyResponse = mockPlacesResponse()
+         val addressResponse: AddressRestResponse = mock()
          return MockHttpActionService.Builder()
                .bind(MockHttpActionService.Response(200)) { request ->
                   Pattern.compile("api/smartcard/provisioning/card_data/[0-9]+/locations").matcher(request.url).find()
@@ -226,6 +245,10 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                .bind(MockHttpActionService.Response(200)
                      .body(placesResponse)) { request ->
                   request.url.startsWith("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
+               }
+               .bind(MockHttpActionService.Response(200).body(addressResponse)) {
+                  request ->
+                  request.url.startsWith("http://maps.googleapis.com/maps/api/geocode/json")
                }
                .build()
       }
@@ -248,7 +271,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          val walletDetectLocationService: WalletDetectLocationService = mock()
          whenever(walletDetectLocationService.isPermissionGranted).thenReturn(true)
          whenever(walletDetectLocationService.detectLastKnownLocation()).thenReturn(Observable.just(location))
-         whenever(walletDetectLocationService.obtainAddressByGeoposition(any(), any())).thenReturn(Observable.just(address))
          return walletDetectLocationService
       }
 

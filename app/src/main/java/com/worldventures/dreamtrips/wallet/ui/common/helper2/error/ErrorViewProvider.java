@@ -9,5 +9,5 @@ public interface ErrorViewProvider<T> {
    Class<? extends Throwable> forThrowable();
 
    @Nullable
-   ErrorView<T> create(T t, Throwable throwable);
+   ErrorView<T> create(T t, @Nullable Throwable parentThrowable, Throwable throwable);
 }

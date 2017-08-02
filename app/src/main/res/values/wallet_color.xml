@@ -4,6 +4,8 @@
    <color name="wallet_success_green">#FF81c435</color>
    <color name="wallet_waring_red">#FFfa2d46</color>
 
+   <color name="wallet_card_display_default_background">#ddd</color>
+
    <color name="wallet_card_details_address_text_color">#666666</color>
    <!--does not use like background, should be fixed -->
 
@@ -37,6 +39,7 @@
 
    <color name="wallet_battery_low_level">#fa2d46</color>
    <color name="wallet_color_divider">#1e000000</color>
+   <color name="wallet_color_settings_section_divider">#ececec</color>
    <color name="wallet_about_item_value">#8E8E93</color>
 
    <color name="wallet_new_card_have_not_card">#005e92</color>
@@ -51,5 +54,11 @@
 
    <color name="wallet_settings_feedback_message_stroke">#76b2fe</color>
    <color name="wallet_settings_feedback_line_divider">#76b2fe</color>
+   <color name="wallet_payment_feedback_secondary_text">#797979</color>
+
+   <color name="wallet_settings_display_options_add_info">#169BD5</color>
+
+   <color name="wallet_default_card_text">#006ca2</color>
+   <color name="wallet_bottom_line_fields_payment_feedback">#979797</color>
 
 </resources>

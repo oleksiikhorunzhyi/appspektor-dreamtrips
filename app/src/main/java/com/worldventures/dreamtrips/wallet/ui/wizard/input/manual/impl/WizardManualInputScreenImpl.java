@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl;
 
-
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -112,11 +110,6 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
             .positiveText(R.string.ok)
             .onPositive((dialog, which) -> dialog.dismiss())
             .show();
-   }
-
-   @Override
-   public void reset() {
-      //nothing
    }
 
    @Override

@@ -389,9 +389,9 @@ public class WalletActivityModule {
    @Provides
    WizardScanBarcodePresenter provideWizardScanBarcodePresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
-         AnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         AnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
       return new WizardScanBarcodePresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
-            analyticsInteractor, permissionDispatcher, httpErrorHandlingUtil);
+            analyticsInteractor, permissionDispatcher);
    }
 
    @Provides

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl;
 
-
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.Result;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -30,8 +31,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter> implements WizardScanBarcodeScreen {
+public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter> implements WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.scanner_view) WalletBarCodeScanner scanner;
@@ -39,6 +41,7 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    @InjectView(R.id.content) View contentView;
 
    @Inject WizardScanBarcodePresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -77,6 +80,18 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
       getPresenter().requestCamera();
+   }
+
+   @Override
+   protected void onActivityStarted(Activity activity) {
+      super.onActivityStarted(activity);
+      presenter.requestCamera();
+   }
+
+   @Override
+   protected void onActivityStopped(Activity activity) {
+      scanner.stopCamera();
+      super.onActivityStopped(activity);
    }
 
    @Override
@@ -120,10 +135,11 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NumberFormatException.class,
-                        R.string.wallet_wizard_scan_barcode_invalid_format))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
+                        R.string.wallet_wizard_scan_barcode_invalid_format,
+                        command -> presenter.retryScan()))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
                         command -> getPresenter().retry(command.barcode),
-                        command -> { /*nothing*/ }))
+                        command -> presenter.retryScan()))
                   .build()
       );
    }
@@ -133,7 +149,7 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
       new MaterialDialog.Builder(getContext())
             .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
             .positiveText(R.string.ok)
-            .onPositive((dialog, which) -> dialog.dismiss())
+            .onPositive((dialog, which) -> presenter.retryScan())
             .show();
    }
 

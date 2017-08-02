@@ -5,9 +5,7 @@ import android.view.View;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputDelegateView;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-public interface WizardScanBarcodeScreen extends WalletScreen, InputDelegateView, ZXingScannerView.ResultHandler {
+public interface WizardScanBarcodeScreen extends WalletScreen, InputDelegateView {
 
    void onPostEnterAnimation();
 
@@ -20,4 +18,6 @@ public interface WizardScanBarcodeScreen extends WalletScreen, InputDelegateView
    void showDeniedForCamera();
 
    View getContentView();
+
+   void reset();
 }

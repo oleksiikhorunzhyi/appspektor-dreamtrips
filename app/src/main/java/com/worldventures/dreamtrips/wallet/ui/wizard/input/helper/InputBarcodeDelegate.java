@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.helper;
 
-import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -40,21 +39,15 @@ public class InputBarcodeDelegate {
    public void init(InputDelegateView inputDelegateView) {
       wizardInteractor.getSmartCardStatusCommandActionPipe()
             .observe()
-            .compose(RxLifecycleAndroid.bindView(inputDelegateView.getView()))
+            .compose(inputDelegateView.bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(inputDelegateView.provideOperationFetchCardStatus())
                   .onSuccess(command -> SmartCardStatusHandler.handleSmartCardStatus(command.getResult(),
                         statusUnassigned -> cardIsUnassigned(command.getSmartCardId()),
                         statusAssignToAnotherDevice -> cardAssignToAnotherDevice(command.getSmartCardId()),
-                        statusAssignedToAnotherUser -> {
-                           inputDelegateView.showErrorCardIsAssignedDialog();
-                           inputDelegateView.reset();
-                        }
+                        statusAssignedToAnotherUser -> inputDelegateView.showErrorCardIsAssignedDialog()
                   ))
-                  .onFail((command, throwable) -> {
-                     Timber.e(throwable, "");
-                     inputDelegateView.reset();
-                  })
+                  .onFail((command, throwable) -> Timber.e(throwable, ""))
                   .create());
    }
 

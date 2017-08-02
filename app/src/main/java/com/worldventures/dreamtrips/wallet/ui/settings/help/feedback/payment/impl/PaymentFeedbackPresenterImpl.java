@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.Pay
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen;
 
+import rx.Observable;
+
 public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<PaymentFeedbackScreen> implements PaymentFeedbackPresenter {
 
    private final PaymentFeedbackDelegate paymentFeedbackDelegate;
@@ -41,7 +43,6 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
             .subscribe(holder -> {
                final int attachmentsCount = getAttachmentsManager().getAttachments().size();
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
-               getView().changeActionSendMenuItemEnabled(holder.state() != EntityStateHolder.State.PROGRESS);
             });
    }
 
@@ -51,8 +52,15 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
    }
 
    private void observeFormValidation() {
-      getView().observeMerchantName()
-            .map(this::validForm)
+      Observable.combineLatest(
+            getView().observeMerchantName()
+                  .map(this::validForm),
+            getAttachmentsManager()
+                  .getAttachmentsObservable()
+                  .map(holder -> holder.state() != EntityStateHolder.State.PROGRESS)
+                  .startWith(true),
+            (isMerchantNameValid, isAttachmentsUploadFinished)
+                  -> isMerchantNameValid && isAttachmentsUploadFinished)
             .compose(bindView())
             .subscribe(enable -> getView().changeActionSendMenuItemEnabled(enable));
    }

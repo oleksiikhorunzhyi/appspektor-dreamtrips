@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.modules.picker.util.MediaPickerStep;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.AdjustablePhotoPickStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.AdjustableVideoPickStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.DefaultPhotoStaticItemsStrategy;
-import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.MediaPickerStaticItemsStrategy;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.SimpleStaticItemsStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.SinglePhotoPickStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.SingleVideoLimitedDurationPickStrategy;
@@ -31,8 +31,6 @@ import com.worldventures.dreamtrips.modules.picker.view.facebook.albums.Facebook
 import com.worldventures.dreamtrips.modules.picker.view.facebook.photos.FacebookPhotosPickerLayout;
 import com.worldventures.dreamtrips.modules.picker.view.gallery.GalleryMediaPickerLayout;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -43,7 +41,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import dagger.ObjectGraph;
 import rx.Observable;
-
 
 public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerDialogView {
 
@@ -122,7 +119,8 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
 
       if (bottomSheetBehavior != null) {
          bottomSheetBehavior.setHideable(true);
-         bottomSheetBehavior.setPeekHeight(getContext().getResources().getDimensionPixelSize(R.dimen.picker_panel_height));
+         bottomSheetBehavior.setPeekHeight(getContext().getResources()
+               .getDimensionPixelSize(R.dimen.picker_panel_height));
       }
    }
 
@@ -205,15 +203,9 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
 
    @Override
    public Observable<List<BaseMediaPickerViewModel>> attachedMedia() {
-      return Observable.<List<BaseMediaPickerViewModel>, List<BaseMediaPickerViewModel>, List<BaseMediaPickerViewModel>>combineLatest(
+      return Observable.<List<BaseMediaPickerViewModel>>merge(
             mediaPickerContainer.getScreens().get(MediaPickerStep.GALLERY).attachedItems(),
-            mediaPickerContainer.getScreens().get(MediaPickerStep.FB_PHOTOS).attachedItems(),
-            (galleryAttachment, facebookAttachment) -> {
-               final List<BaseMediaPickerViewModel> combinedAttachments = new ArrayList<>();
-               combinedAttachments.addAll(galleryAttachment);
-               combinedAttachments.addAll(facebookAttachment);
-               return Collections.unmodifiableList(combinedAttachments);
-            });
+            mediaPickerContainer.getScreens().get(MediaPickerStep.FB_PHOTOS).attachedItems());
    }
 
    @Override

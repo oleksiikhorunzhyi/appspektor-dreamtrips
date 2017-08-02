@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.picker.presenter.base;
 
-
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.view.base.BaseMediaPickerView;
 

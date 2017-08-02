@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -17,9 +16,6 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPath;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.InjectView;
 import flow.Flow;
 import flow.History;
@@ -27,8 +23,8 @@ import flow.path.Path;
 
 @Layout(R.layout.fragment_dtl_thrst_webview)
 public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, ThrstFlowBundle> implements DtlThrstFlowPresenter.View {
+
    @InjectView(R.id.web_view) HttpErrorHandlerWebView webView;
-   @InjectView(R.id.page_progress) ProgressBar pageProgress;
 
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
@@ -39,34 +35,19 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       String transactionId = thrstFlowBundle.getTransactionId();
       String merchantName = thrstFlowBundle.getMerchant().displayName();
       ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
+      final String cookieString = "\"auth=" + token + "; Domain=.thrst.com; Path=/;\"";
 
-      //webView.loadUrl("http://dev.thrst.com/#/thrst");
+      WebView.setWebContentsDebuggingEnabled(true);
+      webView.init();
+      webView.setWebChromeClient(new WebChromeClient());
+      webView.setWebViewClient(new WebViewClient());
+      String executeThrstJs = "<script type='text/javascript'>javascript:(function () { " +
+            "document.cookie = " + cookieString + ";\n" +
+            "console.log(document.cookie);" +
+            "window.location.href = '" + receiptUrl + "';\n" +
+            "})()</script>";
+      webView.loadDataWithBaseURL(receiptUrl, executeThrstJs, "text/html", "utf-8", null);
 
-      //webView.setThrstToken(token);
-      CookieSyncManager.createInstance(getContext());
-      CookieManager cookieManager = CookieManager.getInstance();
-      cookieManager.removeSessionCookie();
-      String cookieString = "auth=" + token;
-      cookieManager.setCookie(".", cookieString);
-      CookieSyncManager.getInstance().sync();
-
-      Map<String, String> abc = new HashMap<String, String>();
-      abc.put("Cookie", cookieString);
-      webView.loadUrl(receiptUrl, abc);
-      webView.setPageStateCallbackListener(new HttpErrorHandlerWebView.PageStateCallback() {
-         @Override
-         public void onPageStarted() {
-            pageProgress.setVisibility(View.VISIBLE);
-         }
-
-         @Override
-         public void onPageFinished() {
-            pageProgress.setVisibility(View.INVISIBLE);
-         }
-      });
-      webView.setHttpStatusErrorCallbackListener((url, statusCode) ->
-            Toast.makeText(getContext(), "URL:" + url + "\nStatus code=" + statusCode, Toast.LENGTH_SHORT).show()
-      );
       webView.setJavascriptCallbackListener(message ->
             getPresenter().onThrstCallback(message)
       );
@@ -75,16 +56,6 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-   }
-
-   @Override
-   public void onResume() {
-      super.onResume();
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
    }
 
    @Override

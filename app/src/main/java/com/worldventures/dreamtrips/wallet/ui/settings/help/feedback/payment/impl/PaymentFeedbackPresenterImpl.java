@@ -15,8 +15,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.Pay
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackScreen;
 
-import rx.functions.Action0;
-
 public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<PaymentFeedbackScreen> implements PaymentFeedbackPresenter {
 
    private final PaymentFeedbackDelegate paymentFeedbackDelegate;
@@ -49,10 +47,6 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
 
    @Override
    public void goBack() {
-      handleDataChanges(this::back);
-   }
-
-   public void back() {
       getNavigator().goBack();
    }
 
@@ -83,21 +77,19 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
    }
 
    @Override
-   protected void handleSuccessSentFeedback() {
+   public void discardChanges() {
       clearAttachments();
-      back();
+      getView().discardViewModelChanges();
+      goBack();
+   }
+
+   @Override
+   protected void handleSuccessSentFeedback() {
+      discardChanges();
    }
 
    @Override
    protected void handleFailSentFeedback(SendWalletFeedbackCommand command, Throwable throwable) {
       getView().changeActionSendMenuItemEnabled(true);
-   }
-
-   private void handleDataChanges(Action0 action) {
-      if (!getView().getPaymentFeedbackViewModel().isDataChanged()) {
-         action.call();
-      } else {
-         handleBackOnDataChangedAction();
-      }
    }
 }

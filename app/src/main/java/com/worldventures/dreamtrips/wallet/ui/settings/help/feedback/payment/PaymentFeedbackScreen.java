@@ -12,4 +12,6 @@ public interface PaymentFeedbackScreen extends BaseFeedbackScreen {
    PaymentFeedbackViewModel getPaymentFeedbackViewModel();
 
    void showBackConfirmDialog();
+
+   void discardViewModelChanges();
 }

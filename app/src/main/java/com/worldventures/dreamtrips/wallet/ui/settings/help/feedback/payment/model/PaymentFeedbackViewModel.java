@@ -11,6 +11,7 @@ public class PaymentFeedbackViewModel extends BaseObservable {
    private MerchantViewModel merchantView = new MerchantViewModel();
    private PaymentTerminalViewModel terminalView = new PaymentTerminalViewModel();
    private AdditionalInfoViewModel infoView = new AdditionalInfoViewModel();
+   private boolean canBeLost;
 
    @Bindable
    public AttemptsViewModel getAttemptsView() {
@@ -75,10 +76,15 @@ public class PaymentFeedbackViewModel extends BaseObservable {
       return result;
    }
 
+   public void setCanBeLost(boolean canBeLost) {
+      this.canBeLost = canBeLost;
+   }
+
    public boolean isDataChanged() {
-      return attemptsView.isDataChanged()
+      return !canBeLost
+            && (attemptsView.isDataChanged()
             || merchantView.isDataChanged()
             || terminalView.isDataChanged()
-            || infoView.isDataChanged();
+            || infoView.isDataChanged());
    }
 }

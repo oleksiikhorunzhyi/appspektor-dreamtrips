@@ -92,6 +92,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.view_perks) TextView perks;
    @InjectView(R.id.container_comments) OfferWithReviewView mContainerComments;
    @InjectView(R.id.btn_rate_and_review) TextView rateAndReviewBtn;
+   @InjectView(R.id.order_from_menu_divider) View orderFromMenuDivider;
+   @InjectView(R.id.order_from_menu) TextView orderFromMenuBtn;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -192,7 +194,17 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.order_from_menu)
    void orderFromMenu() {
-      getPresenter().orderFromMenu();
+      SweetAlertDialog openOrderFromMenuDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE);
+      openOrderFromMenuDialog.setTitle(R.string.alert);
+      openOrderFromMenuDialog.setContentText(getContext().getString(R.string.open_order_from_menu_msg));
+      openOrderFromMenuDialog.setConfirmText(getActivity().getString(R.string.ok));
+      openOrderFromMenuDialog.setCancelText(getActivity().getString(R.string.cancel));
+      openOrderFromMenuDialog.showCancelButton(true);
+      openOrderFromMenuDialog.setConfirmClickListener(listener -> {
+         listener.dismiss();
+         getPresenter().orderFromMenu();
+      });
+      openOrderFromMenuDialog.show();
    }
 
    @Override
@@ -478,6 +490,18 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return super.getActivity();
    }
 
+   @Override
+   public void showOrderFromMenu() {
+      orderFromMenuBtn.setVisibility(VISIBLE);
+      orderFromMenuDivider.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void hideOrderFromMenu() {
+      orderFromMenuBtn.setVisibility(GONE);
+      orderFromMenuDivider.setVisibility(GONE);
+   }
+
    private void setOffersSection() {
       if (!merchant.asMerchantAttributes().hasOffers()) {
          ViewUtils.setViewVisibility(this.perks, View.GONE);
@@ -502,6 +526,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private void setThrstFlow() {
       getPresenter().setThrstFlow();
+      getPresenter().setupFullThrstBtn();
    }
 
    ///////////////////////////////////////////////////////////////////////////

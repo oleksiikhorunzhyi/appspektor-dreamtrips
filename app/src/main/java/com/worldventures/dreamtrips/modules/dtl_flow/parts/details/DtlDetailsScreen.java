@@ -70,4 +70,8 @@ public interface DtlDetailsScreen extends DtlScreen {
    void showEarnFlowButton();
 
    Activity getActivity();
+
+   void showOrderFromMenu();
+
+   void hideOrderFromMenu();
 }

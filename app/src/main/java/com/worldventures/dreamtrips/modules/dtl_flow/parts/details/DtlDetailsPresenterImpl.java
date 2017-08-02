@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -382,8 +383,17 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          return;
       }
       Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-      browserIntent.setData(Uri.parse("https://www.google.com"));
+      browserIntent.setData(Uri.parse(merchant.thrstFullCapabilityUrl()));
       activity.startActivity(browserIntent);
+   }
+
+   @Override
+   public void setupFullThrstBtn() {
+      if (TextUtils.isEmpty(merchant.thrstFullCapabilityUrl())) {
+         getView().hideOrderFromMenu();
+      } else {
+         getView().showOrderFromMenu();
+      }
    }
 
    private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {

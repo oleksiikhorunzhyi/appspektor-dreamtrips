@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.Recy
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
 import java.util.ArrayList;
+
 import flow.Flow;
 
 public class OfferWithReviewView extends LinearLayout {
@@ -43,21 +44,6 @@ public class OfferWithReviewView extends LinearLayout {
    public static String IS_TABLET = "isTablet";
 
    private ArrayList<ReviewObject> mArrayInfo = new ArrayList<>();
-
-   private RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerAdapter,
-         new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-               Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo
-                     .get(position)
-                     .getReviewId(), mIsFromListReview));
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-         });
 
    private float mRatingMerchant;
    private int mCountReview;
@@ -102,7 +88,7 @@ public class OfferWithReviewView extends LinearLayout {
       isTablet = bundle.getBoolean(IS_TABLET, false);
 
       /** if statement must be removed when optimizing to tablet **/
-      if(isTablet){
+      if (isTablet) {
          recyclerAdapter.setVisibility(View.GONE);
          reviewHeader.setVisibility(View.GONE);
       }
@@ -116,7 +102,21 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void initListener() {
-      recyclerAdapter.addOnItemTouchListener(onItemTouchListener);
+      recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerAdapter,
+            new RecyclerClickListener() {
+               @Override
+               public void onClick(View view, int position) {
+                  Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo
+                        .get(position)
+                        .getReviewId(), mIsFromListReview));
+               }
+
+               @Override
+               public void onLongClick(View view, int position) {
+
+               }
+            })
+      );
    }
 
    private void setUpInfo() {

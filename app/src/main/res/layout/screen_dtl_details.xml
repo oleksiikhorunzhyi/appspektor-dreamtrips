@@ -276,6 +276,7 @@
          </LinearLayout>
 
          <View
+               android:id="@+id/order_from_menu_divider"
                android:layout_width="match_parent"
                android:layout_height="1dp"
                android:background="@drawable/list_divider_with_right_padding"

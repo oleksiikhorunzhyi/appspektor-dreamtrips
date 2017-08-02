@@ -26,4 +26,5 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void setThrstFlow();
    void onClickPay();
    void orderFromMenu();
+   void setupFullThrstBtn();
 }

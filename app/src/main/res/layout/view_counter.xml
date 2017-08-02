@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/wallet_count_view_height"
             android:layout_marginLeft="@dimen/spacing_medium"
-            android:background="@drawable/button_counter_square"
+            android:background="@drawable/wallet_button_counter_background"
             android:divider="@drawable/divider_vertical_counter_view"
             android:orientation="horizontal"
             android:showDividers="middle"

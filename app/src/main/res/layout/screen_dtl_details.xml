@@ -281,6 +281,19 @@
                android:background="@drawable/list_divider_with_right_padding"
                />
 
+         <TextView
+               android:id="@+id/order_from_menu"
+               style="@style/DtlRateButton"
+               android:text="@string/order_from_menu"
+               android:layout_margin="@dimen/dtl_all_reviews_margin"
+               />
+
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/list_divider_with_right_padding"
+               />
+
          <com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView
              android:id="@+id/container_comments"
              android:layout_width="match_parent"

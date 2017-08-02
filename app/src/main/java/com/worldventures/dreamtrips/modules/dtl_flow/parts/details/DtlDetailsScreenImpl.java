@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -187,6 +188,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
       getPresenter().onClickRatingsReview(merchant);
+   }
+
+   @OnClick(R.id.order_from_menu)
+   void orderFromMenu() {
+      getPresenter().orderFromMenu();
    }
 
    @Override
@@ -465,6 +471,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public void showEarnFlowButton() {
       View earnBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
       earnBtn.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public AppCompatActivity getActivity() {
+      return super.getActivity();
    }
 
    private void setOffersSection() {

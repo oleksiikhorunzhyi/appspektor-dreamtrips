@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -371,6 +373,17 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onClickPay() {
       onCheckInClicked();
+   }
+
+   @Override
+   public void orderFromMenu() {
+      Activity activity = getView().getActivity();
+      if (activity == null) {
+         return;
+      }
+      Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+      browserIntent.setData(Uri.parse("https://www.google.com"));
+      activity.startActivity(browserIntent);
    }
 
    private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {

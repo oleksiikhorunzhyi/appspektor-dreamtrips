@@ -15,7 +15,6 @@
          android:id="@+id/tv_title"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:background="@color/white"
          android:paddingBottom="@dimen/spacing_small"
          android:paddingLeft="@dimen/spacing_huge"
          android:paddingRight="@dimen/spacing_huge"

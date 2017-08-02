@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 
 import butterknife.InjectView;
 
+import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
+
 public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, AboutPresenter, AboutPath> implements AboutPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -82,6 +84,6 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
 
    @Override
    public void setSmartCardUser(SmartCardUser smartCardUser) {
-      tvUserName.setText(smartCardUser.fullName());
+      tvUserName.setText(userFullName(smartCardUser));
    }
 }

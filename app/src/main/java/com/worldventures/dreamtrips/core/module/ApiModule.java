@@ -6,12 +6,10 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
@@ -26,7 +24,6 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
-import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.GsonAdaptersRecord;
 
 import java.net.CookieManager;
@@ -58,7 +55,6 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
             //smartcard flow
             .registerTypeAdapterFactory(new GsonAdaptersRecord())
-            .registerTypeAdapterFactory(new GsonAdaptersRecordIssuerInfo())
             .create();
    }
 
@@ -79,7 +75,7 @@ public class ApiModule {
    }
 
    @Provides
-   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, AppVersionNameBuilder appVersionNameBuilder) {
-      return new HeaderProvider(appSessionHolder, appVersionNameBuilder);
+   HeaderProvider provideHeaderProvider(AppVersionNameBuilder appVersionNameBuilder) {
+      return new HeaderProvider(appVersionNameBuilder);
    }
 }

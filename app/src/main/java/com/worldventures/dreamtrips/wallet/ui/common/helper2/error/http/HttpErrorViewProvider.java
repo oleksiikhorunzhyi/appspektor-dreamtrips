@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.mobilesdk.service.ServiceLabel;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
@@ -11,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorVi
 import org.jetbrains.annotations.Nullable;
 
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import io.techery.janet.helper.JanetActionException;
@@ -41,11 +41,14 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
 
    @Override
    @Nullable
-   public ErrorView<T> create(T t, Throwable throwable) {
+   public ErrorView<T> create(T t, @Nullable Throwable parentThrowable, Throwable throwable) {
       throwable = throwable instanceof HttpServiceException ? throwable.getCause() : throwable;
 
-      if (throwable instanceof JanetActionException &&
-            ((JanetActionException) throwable).getAction() instanceof ServiceLabel) {
+      boolean parentIsJanetException = parentThrowable != null && parentThrowable instanceof JanetActionException;
+
+      if (throwable instanceof JanetActionException || parentIsJanetException) {
+         if (parentIsJanetException) throwable = parentThrowable;
+
          final Object action = ((JanetActionException) throwable).getAction();
          final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null);
          if (httpErrorMessage == null) return null;
@@ -54,17 +57,21 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
 
       if (throwable instanceof HttpException) {
          final Response response = ((HttpException) throwable).getResponse();
-         if (response != null && response.getStatus() == 500) {
+         if (response != null && response.getStatus() >= 500) {
             return new SimpleErrorView<>(context, cancelAction, context.getString(R.string.error_internal_server));
+         } else if (throwable.getCause() != null) {
+            // if there is no response at all - it might be connection exception, try to handle cause
+            throwable = throwable.getCause();
          }
-         // if there is no response at all - it might be connection exception, try to handle cause
-         throwable = throwable.getCause();
       }
 
       if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {
          return new ConnectionErrorView<>(context, context.getString(R.string.wallet_no_internet_connection), retryAction, cancelAction);
       }
 
+      if (throwable instanceof SocketTimeoutException) {
+         return new ConnectionErrorView<>(context, context.getString(R.string.wallet_connection_timed_out), retryAction, cancelAction);
+      }
       return null;
    }
 }

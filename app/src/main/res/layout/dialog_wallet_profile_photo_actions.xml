@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:divider="@drawable/divider_horizontal_wallet_settings"
+      android:orientation="vertical"
+      android:showDividers="middle"
+      >
+
+   <TextView
+         android:id="@+id/choose_photo_action"
+         style="@style/WalletTheme.BottomSheetMenuItem"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/wallet_edit_profile_photo_choose"
+         />
+
+   <TextView
+         android:id="@+id/do_not_add_photo_action"
+         style="@style/WalletTheme.BottomSheetMenuItem"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/wallet_edit_profile_photo_not_add"
+         />
+
+   <TextView
+         android:id="@+id/cancel_action"
+         style="@style/WalletTheme.BottomSheetMenuItem"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/wallet_edit_profile_photo_cancel"
+         />
+
+</LinearLayout>

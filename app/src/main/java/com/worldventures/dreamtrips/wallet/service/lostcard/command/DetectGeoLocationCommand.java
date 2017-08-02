@@ -5,7 +5,7 @@ import android.location.Location;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
-import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 import com.worldventures.dreamtrips.wallet.util.LocationPermissionDeniedException;
 

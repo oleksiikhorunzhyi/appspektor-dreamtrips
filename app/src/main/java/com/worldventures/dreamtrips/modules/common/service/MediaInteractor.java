@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.service;
 
-
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.ImageCapturedCommand;
@@ -9,6 +8,7 @@ import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,6 +29,7 @@ public class MediaInteractor {
    private final ActionPipe<GetMediaFromGalleryCommand> getMediaFromGalleryPipe;
    private final ActionPipe<GetVideoDurationCommand> getVideoDurationPipe;
    private final ActionPipe<MediaCaptureCanceledCommand> mediaCaptureCanceledPipe;
+   private final ActionPipe<MediaAttachmentPrepareCommand> mediaAttachmentPreparePipe;
 
    @Inject
    public MediaInteractor(Janet janet) {
@@ -40,6 +41,7 @@ public class MediaInteractor {
       this.getMediaFromGalleryPipe = janet.createPipe(GetMediaFromGalleryCommand.class, Schedulers.io());
       this.getVideoDurationPipe = janet.createPipe(GetVideoDurationCommand.class, Schedulers.io());
       this.mediaCaptureCanceledPipe = janet.createPipe(MediaCaptureCanceledCommand.class, Schedulers.io());
+      this.mediaAttachmentPreparePipe = janet.createPipe(MediaAttachmentPrepareCommand.class, Schedulers.computation());
    }
 
    public ActionPipe<ImageCapturedCommand> imageCapturedPipe() {
@@ -72,5 +74,9 @@ public class MediaInteractor {
 
    public ActionPipe<MediaCaptureCanceledCommand> mediaCaptureCanceledPipe() {
       return mediaCaptureCanceledPipe;
+   }
+
+   public ActionPipe<MediaAttachmentPrepareCommand> mediaAttachmentPreparePipe() {
+      return mediaAttachmentPreparePipe;
    }
 }

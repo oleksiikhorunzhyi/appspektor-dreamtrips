@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsAction;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmw
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 
 import java.util.List;
 
@@ -80,10 +80,9 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void bindCardList(List<Record> records) {
-      // TODO: 1/26/17 CardListPresenter.MAX_CARD_LIMIT should be a common constant
-      //noinspection ConstantConditions
-      getView().onProvidePayCardInfo(records.size(), CardListPresenter.MAX_CARD_LIMIT - records.size());
+      getView().onProvidePayCardInfo(records.size(), WalletConstants.MAX_CARD_LIMIT - records.size());
    }
 
    public void goBack() {

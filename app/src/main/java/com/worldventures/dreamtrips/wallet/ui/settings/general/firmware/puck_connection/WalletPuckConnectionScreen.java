@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_co
 import android.content.Context;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.View;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
@@ -67,7 +69,9 @@ public class WalletPuckConnectionScreen extends WalletLinearLayout<WalletPuckCon
    }
 
    @Override
-   public void userPhoto(String photoUrl) {
-      userPhoto.setImageURI(photoUrl);
+   public void userPhoto(@Nullable SmartCardUserPhoto photo) {
+      if (photo != null) {
+         userPhoto.setImageURI(photo.uri());
+      } // // TODO: 5/23/17 add place holder
    }
 }

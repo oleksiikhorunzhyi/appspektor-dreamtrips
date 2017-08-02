@@ -2,12 +2,13 @@ ext {
    flavors = [:]
    flavors.codes = [
          dev   : 'dev', devpremarshmallow: 'devpremarshmallow', external: 'external',
-         stable: 'stable', social: 'social', messenger: 'messenger', dtl: 'dtl', smartcardmock: 'smartcardmock', smartcardnxtid: 'smartcardnxtid',
+         stable: 'stable', social: 'social', messenger: 'messenger', dtl: 'dtl',
+         smartcardmock: 'smartcardmock', smartcardemulmode: 'smartcardemulmode', smartcardnxtid: 'smartcardnxtid',
          stage : 'stage', preprod: 'preprod', perf: 'perf', integration: 'integration', prod: 'prod'
    ]
    flavors.types = [
          build : [flavors.codes.dev, flavors.codes.devpremarshmallow, flavors.codes.external],
-         stream: [flavors.codes.stable, flavors.codes.social, flavors.codes.dtl, flavors.codes.messenger, flavors.codes.smartcardmock, flavors.codes.smartcardnxtid],
+         stream: [flavors.codes.stable, flavors.codes.social, flavors.codes.dtl, flavors.codes.messenger, flavors.codes.smartcardmock, flavors.codes.smartcardemulmode, flavors.codes.smartcardnxtid],
          config: [flavors.codes.stage, flavors.codes.preprod, flavors.codes.perf, flavors.codes.integration, flavors.codes.prod]
    ]
    flavors.configs = [
@@ -29,6 +30,14 @@ ext {
                appParams: [
                      feature: [
                            SMART_CARD_SDK_CLIENT: [String: '"mock"'],
+                     ]
+               ]
+         ],
+         "$flavors.codes.smartcardemulmode"                                         : [
+               appParams: [
+                     feature: [
+                           SMART_CARD_SDK_CLIENT: [String: '"mock"'],
+                           WALLET_EMULATOR_MODE: [boolean: 'true']
                      ]
                ]
          ],
@@ -55,6 +64,7 @@ ext {
                appParams: [
                      api : [
                            DreamTripsApi          : [String: '"http://dtapp-perf.worldventures.biz"'],
+                           BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
                            UPLOADERY_API_URL      : [String: '"dtappupload-perf.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader-perf.dreamtrips.com"'],
                      ],
@@ -79,6 +89,7 @@ ext {
                appParams: [
                      api      : [
                            DreamTripsApi          : [String: '"https://dtapp.worldventures.biz"'],
+                           BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
                            UPLOADERY_API_URL      : [String: '"http://dtappuploads.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.dreamtrips.com"'],
                            API_TIMEOUT_SEC        : [long: '15'],

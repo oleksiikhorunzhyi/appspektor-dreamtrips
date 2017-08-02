@@ -342,7 +342,7 @@
    <string name="no_feed">Εδώ θα βλέπετε τη δραστηριότητα των Φίλων σας.\n Κάντε κλικ στον παρακάτω σύνδεσμο για να βρείτε τους φίλους σας</string>
    <string name="search_friends">Αναζήτηση Φίλων</string>
 
-   <string name="feed_share_post_button">Μοιραστείτε φωτογραφίες, βίντεο ή σκέψεις</string>
+   <string name="feed_share_photo_or_idea">Μοιραστείτε φωτό ή σκέψεις</string>
    <string name="feed_view_profile_btn">Προβολή προφίλ</string>
    <string name="start_searching">Πληκτρολογήστε για να ξεκινήσει η αναζήτηση</string>
 

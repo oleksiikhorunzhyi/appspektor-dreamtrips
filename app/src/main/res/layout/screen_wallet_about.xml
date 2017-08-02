@@ -23,7 +23,9 @@
       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="@drawable/divider_horizontal_wallet_settings"
             android:orientation="vertical"
+            android:showDividers="middle"
             >
 
          <View
@@ -31,8 +33,6 @@
                android:layout_width="match_parent"
                android:layout_height="@dimen/wallet_content_divider_header_height"
                />
-
-         <View style="@style/SettingsItemDividerStyle" />
 
          <LinearLayout
                android:layout_width="match_parent"
@@ -67,8 +67,6 @@
                   />
          </LinearLayout>
 
-         <View style="@style/SettingsItemDividerStyle" />
-
          <View
                android:id="@+id/view"
                android:layout_width="match_parent"
@@ -83,12 +81,9 @@
                android:orientation="vertical"
                >
 
-            <View style="@style/SettingsItemDividerStyle" />
-
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -117,13 +112,12 @@
 
             <View
                   style="@style/SettingsItemDividerStyle"
-                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginStart="@dimen/spacing_normal"
                   />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -152,13 +146,12 @@
 
             <View
                   style="@style/SettingsItemDividerStyle"
-                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginStart="@dimen/spacing_normal"
                   />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -185,7 +178,6 @@
                      />
             </LinearLayout>
 
-            <View style="@style/SettingsItemDividerStyle" />
          </LinearLayout>
 
          <View
@@ -201,12 +193,9 @@
                android:orientation="vertical"
                >
 
-            <View style="@style/SettingsItemDividerStyle" />
-
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -236,13 +225,12 @@
 
             <View
                   style="@style/SettingsItemDividerStyle"
-                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginStart="@dimen/spacing_normal"
                   />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -272,13 +260,12 @@
 
             <View
                   style="@style/SettingsItemDividerStyle"
-                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginStart="@dimen/spacing_normal"
                   />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -308,13 +295,12 @@
 
             <View
                   style="@style/SettingsItemDividerStyle"
-                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginStart="@dimen/spacing_normal"
                   />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -344,13 +330,12 @@
 
             <View
                   style="@style/SettingsItemDividerStyle"
-                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginStart="@dimen/spacing_normal"
                   />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/white"
                   android:orientation="horizontal"
                   >
 
@@ -378,7 +363,6 @@
                      />
             </LinearLayout>
 
-            <View style="@style/SettingsItemDividerStyle" />
          </LinearLayout>
 
       </LinearLayout>

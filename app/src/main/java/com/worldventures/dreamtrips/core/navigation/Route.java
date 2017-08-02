@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.WVAdvantageFragment;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
@@ -185,6 +186,7 @@ public enum Route {
    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
    ENROLL_REP(EnrollRepFragment.class),
+   WV_ADVANTAGE(WVAdvantageFragment.class, R.string.wv_advantage),
    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
    SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 

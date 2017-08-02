@@ -344,7 +344,7 @@
    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
    <string name="search_friends">Search Friends</string>
 
-   <string name="feed_share_post_button">Share a photo, video or idea</string>
+   <string name="feed_share_photo_or_idea">Share a photo or idea</string>
    <string name="feed_view_profile_btn">View Profile</string>
    <string name="start_searching">Type to start searching</string>
 
@@ -378,6 +378,11 @@
    <string name="picker_erros_photos_and_videos">You can\'t select photos and videos</string>
    <string name="picker_video_duration_limit">You can\'t upload video more than %1$d seconds</string>
    <string name="pending">Pending…</string>
+   <string name="media_picker_error_contents">Loading of %s failed.</string>
+   <string name="media_picker_gallery_action">gallery media</string>
+   <string name="media_picker_fb_albums_actions">facebook albums</string>
+   <string name="media_picker_fb_photos_actions">facebook photos</string>
+   <string name="media_picker_limit_reached">You can choose only up to %s photos</string>
 
    <string name="back">Back</string>
    <string name="logout_component">Logout</string>
@@ -599,4 +604,5 @@
    <string name="photo_strip_video_limit_reached">Please choose up to 1 video</string>
    <string name="photo_strip_read_storage_permission_explanation">Need permission to read storage to suggest you media content</string>
 
+   <string name="wv_advantage">WVA</string>
 </resources>

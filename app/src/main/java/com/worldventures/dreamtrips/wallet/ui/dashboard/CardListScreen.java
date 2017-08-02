@@ -12,17 +12,21 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
@@ -31,10 +35,13 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.AnimatorProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.recycler.WrapContentLinearLayoutManager;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderFactoryImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -48,7 +55,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -80,6 +86,9 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private MultiHolderAdapter multiAdapter;
    private ScreenWalletCardlistBinding binding;
 
+   private ArrayList<BaseViewModel> cardViewModels;
+   private static final String KEY_LOADED_CARDS_LIST = "CardListScreen#KEY_CARD_LIST";
+
    public CardListScreen(Context context) {
       this(context, null);
    }
@@ -107,7 +116,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onDetachedFromWindow() {
       dismissDialogs();
-
       super.onDetachedFromWindow();
    }
 
@@ -125,9 +133,18 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void showRecordsInfo(List<BaseViewModel> result) {
-      multiAdapter.updateItems(result);
-      emptyCardListView.setVisibility(multiAdapter.getItemCount() <= 1 ? VISIBLE : GONE);
+   public void showRecordsInfo(ArrayList<BaseViewModel> result) {
+      if (this.cardViewModels == null) {
+         bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
+               R.anim.bottom_to_top_layout_animation));
+         bankCardList.scheduleLayoutAnimation();
+      } else {
+         bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
+               R.anim.instant_layout_animation));
+      }
+      multiAdapter.swapList(result);
+      this.cardViewModels = result;
+      emptyCardListView.setVisibility(result != null && !result.isEmpty() ? GONE : VISIBLE);
    }
 
    @Override
@@ -137,46 +154,51 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @Override
    public void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .batteryLevel(batteryLevel)
             .connected(connected)
             .lock(lock)
             .stealthMode(stealthMode)
-            .build();
-
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+            .build());
    }
 
    @Override
-   public void setSmartCardUserAttrs(String fullname, String photoFileUrl) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+   public void setSmartCardUser(SmartCardUser smartCardUser) {
+      final SmartCardUserPhoto photo = smartCardUser.userPhoto();
+      final SmartCardUserPhone phone = smartCardUser.phoneNumber();
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
-            .fullname(fullname)
-            .photoUrl(photoFileUrl)
-            .build();
-
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+            .firstName(smartCardUser.firstName())
+            .middleName(smartCardUser.middleName())
+            .lastName(smartCardUser.lastName())
+            .photoUrl(photo != null ? photo.uri() : "")
+            .phoneNumber(phone != null ? phone.fullPhoneNumber() : "")
+            .build());
    }
 
    @Override
    public void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .firmwareUpdateAvailable(firmwareUpdateAvailable)
-            .build();
-
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+            .build());
    }
 
    @Override
    public void setCardsCount(int count) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .cardCount(count)
-            .build();
+            .build());
+   }
 
-      smartCardWidget.bindCard(cardStackHeaderHolder);
+   @Override
+   public void setDisplayType(int displayType) {
+      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .displayType(displayType)
+            .build());
    }
 
    @Override
@@ -185,7 +207,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
       switch (errorDialogType) {
          case ERROR_DIALOG_FULL_SMARTCARD:
-            builder.content(R.string.wallet_wizard_full_card_list_error_message);
+            builder.content(R.string.wallet_wizard_full_card_list_error_message, WalletConstants.MAX_CARD_LIMIT);
             break;
          case ERROR_DIALOG_NO_INTERNET_CONNECTION:
             builder.title(R.string.wallet_wizard_no_internet_connection_title);
@@ -269,13 +291,17 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    protected Parcelable onSaveInstanceState() {
       Bundle state = (Bundle) super.onSaveInstanceState();
       state.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
+      state.putParcelableArrayList(KEY_LOADED_CARDS_LIST, this.cardViewModels);
       return state;
    }
 
+   @SuppressWarnings("WrongConstant")
    @Override
    protected void onRestoreInstanceState(Parcelable state) {
       //noinspection all
-      firmwareAvailableView.setVisibility(((Bundle) state).getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      Bundle bundle = (Bundle) state;
+      firmwareAvailableView.setVisibility(bundle.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      this.cardViewModels = bundle.getParcelableArrayList(KEY_LOADED_CARDS_LIST);
       super.onRestoreInstanceState(state);
    }
 
@@ -283,13 +309,13 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private void setupCardStackList() {
 
       int dimension = getContext().getResources().getDimensionPixelSize(R.dimen.wallet_card_height);
-      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>());
+      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>(), new DashboardHolderFactoryImpl());
       bankCardList.setAdapter(multiAdapter);
       final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
       listAnimator.setSupportsChangeAnimations(false);
       bankCardList.setItemAnimator(listAnimator);
       bankCardList.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
-      LinearLayoutManager layout = new LinearLayoutManager(getContext());
+      WrapContentLinearLayoutManager layout = new WrapContentLinearLayoutManager(getContext());
       layout.setAutoMeasureEnabled(true);
       bankCardList.setLayoutManager(layout);
       bankCardList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
@@ -309,13 +335,19 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             }));
 
       smartCardWidget.setOnSettingsClickListener(v -> presenter.onSettingsChosen());
-
+      smartCardWidget.setOnPhotoClickListener(v -> presenter.onProfileChosen());
       binding.transitionView.getRoot().setVisibility(GONE);
+
+
+      if (null != this.cardViewModels) {
+         showRecordsInfo(this.cardViewModels);
+      }
    }
 
    private void showDetails(View view, int overlap) {
       CommonCardViewModel model = ((CommonCardHolder) bankCardList.getChildViewHolder(view)).getData();
-      TransitionModel transitionModel = presenter.getCardPosition(view, overlap, model.isCardBackGround());
+      TransitionModel transitionModel = presenter.getCardPosition(view, overlap, model.getCardBackGround(),
+            model.isDefaultCard());
       addTransitionView(model, transitionModel);
       smartCardWidget.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION).start();
       bankCardList
@@ -404,6 +436,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_card_list_card_synchronization_dialog_text, false),
             ErrorViewFactory.<SyncSmartCardCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
                   .build()
       );
    }
@@ -424,7 +457,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {},
+            () -> {
+            },
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.retry,

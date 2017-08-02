@@ -342,7 +342,7 @@
    <string name="no_feed">Verás la actividad de tu amigo aquí.\n Haz clic en el enlace siguiente para encontrar a tus amigos</string>
    <string name="search_friends">Buscar amigos</string>
 
-   <string name="feed_share_post_button">Comparte una foto, video o idea</string>
+   <string name="feed_share_photo_or_idea">Comparte una foto o idea</string>
    <string name="feed_view_profile_btn">Ver perfil</string>
    <string name="start_searching">Escribe para empezar a buscar</string>
 

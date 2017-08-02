@@ -14,6 +14,7 @@ public class SupportModule {
 
    @Provides
    StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider) {
-      return new StaticPageProvider(appSessionHolder, deviceInfoProvider, BuildConfig.DreamTripsApi, BuildConfig.UPLOADERY_API_URL);
+      return new StaticPageProvider(appSessionHolder, deviceInfoProvider, BuildConfig.DreamTripsApi,
+            BuildConfig.BACKOFFICE_URL, BuildConfig.UPLOADERY_API_URL);
    }
 }

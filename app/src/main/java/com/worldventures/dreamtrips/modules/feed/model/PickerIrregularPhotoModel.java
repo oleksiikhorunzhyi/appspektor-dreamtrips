@@ -46,5 +46,5 @@ public class PickerIrregularPhotoModel {
 
    @IntDef({CAMERA, FACEBOOK, LIBRARY})
    @Retention(RetentionPolicy.SOURCE)
-   @interface AttachType {}
+   protected @interface AttachType {}
 }

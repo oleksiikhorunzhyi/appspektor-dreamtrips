@@ -78,7 +78,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public static final String MAP_TAG = "MAP_DETAILS_TAG";
 
    @Inject ActivityResultDelegate activityResultDelegate;
-   @Inject BackStackDelegate backStackDelegate;
    @Inject Router router;
    @Inject DeviceInfoProvider deviceInfoProvider;
 
@@ -113,7 +112,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
       toolbar.setNavigationIcon(R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> back());
-      backStackDelegate.setListener(() -> back());
 
       activityResultDelegate.addListener(this);
 
@@ -182,7 +180,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (merchantInfoInflater != null) merchantInfoInflater.release();
       if (merchantHoursInflater != null) merchantHoursInflater.release();
       activityResultDelegate.removeListener(this);
-      backStackDelegate.clearListener();
       super.onDetachedFromWindow();
    }
 

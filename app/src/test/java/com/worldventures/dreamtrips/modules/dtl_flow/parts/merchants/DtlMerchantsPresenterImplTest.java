@@ -63,9 +63,8 @@ public class DtlMerchantsPresenterImplTest {
    @Test
    public void itShouldCall_SearchMerchantType() {
       List<String> merchantType = new ArrayList<>();
-      String searchQuery = "something";
-      presenter.setMerchantType(merchantType, searchQuery);
-      verify(filterDataInteractor).searchMerchantType(merchantType, searchQuery);
+      presenter.setMerchantType(merchantType);
+      verify(filterDataInteractor).searchMerchantType(merchantType);
    }
 
    @Test

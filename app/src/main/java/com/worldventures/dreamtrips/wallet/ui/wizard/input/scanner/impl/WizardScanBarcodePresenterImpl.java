@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl;
 
-
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -19,16 +17,13 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBar
 public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardScanBarcodeScreen> implements WizardScanBarcodePresenter {
 
    private final PermissionDispatcher permissionDispatcher;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
-
    private final InputBarcodeDelegate inputBarcodeDelegate;
 
    public WizardScanBarcodePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor,
-         PermissionDispatcher permissionDispatcher, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         PermissionDispatcher permissionDispatcher) {
       super(navigator, smartCardInteractor, networkService);
       this.permissionDispatcher = permissionDispatcher;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       this.inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
             InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor));
    }
@@ -70,7 +65,7 @@ public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardSc
    }
 
    @Override
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
+   public void retryScan() {
+      getView().reset();
    }
 }

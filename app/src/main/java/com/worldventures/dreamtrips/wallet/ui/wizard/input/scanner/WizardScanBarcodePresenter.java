@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner;
 
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
 public interface WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodeScreen> {
@@ -13,7 +12,7 @@ public interface WizardScanBarcodePresenter extends WalletPresenter<WizardScanBa
 
    void startManualInput();
 
-   HttpErrorHandlingUtil httpErrorHandlingUtil();
-
    void retry(String barcode);
+
+   void retryScan();
 }

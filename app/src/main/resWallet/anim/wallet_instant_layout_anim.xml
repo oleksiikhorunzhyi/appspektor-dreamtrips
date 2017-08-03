@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layoutAnimation
       xmlns:android="http://schemas.android.com/apk/res/android"
-      android:animation="@anim/instant_translate_animation"
+      android:animation="@anim/wallet_instant_translate_anim"
       android:delay="0"
       android:animationOrder="normal"
       />

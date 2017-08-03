@@ -132,11 +132,11 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    public void showRecordsInfo(ArrayList<BaseViewModel> result) {
       if (this.cardViewModels == null) {
          bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
-               R.anim.bottom_to_top_layout_animation));
+               R.anim.wallet_bottom_to_top_layout_anim));
          bankCardList.scheduleLayoutAnimation();
       } else {
          bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
-               R.anim.instant_layout_animation));
+               R.anim.wallet_instant_layout_anim));
       }
       multiAdapter.swapList(result);
       this.cardViewModels = result;

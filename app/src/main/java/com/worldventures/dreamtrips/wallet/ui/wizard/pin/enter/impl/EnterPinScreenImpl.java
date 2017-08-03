@@ -62,7 +62,7 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
       toolbar.setNavigationOnClickListener(v -> onBackClick());
       setupMenuItem();
       headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
-      wizardVideoView.setVideoSource(R.raw.anim_pin_entry);
+      wizardVideoView.setVideoSource(R.raw.wallet_anim_pin_entry);
    }
 
    @Override

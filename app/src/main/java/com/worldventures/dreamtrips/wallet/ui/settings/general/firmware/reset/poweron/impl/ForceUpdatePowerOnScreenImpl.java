@@ -44,7 +44,7 @@ public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpda
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
       hideAllView();
-      wizardVideoView.setVideoSource(R.raw.anim_power_on_sc);
+      wizardVideoView.setVideoSource(R.raw.wallet_anim_power_on_sc);
    }
 
    @Override

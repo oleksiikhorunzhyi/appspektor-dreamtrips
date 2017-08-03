@@ -33,7 +33,7 @@ public class WizardPowerOnScreenImpl extends WalletBaseController<WizardWelcomeS
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
-      wizardVideoView.setVideoSource(R.raw.anim_power_on_sc);
+      wizardVideoView.setVideoSource(R.raw.wallet_anim_power_on_sc);
    }
 
    @Override

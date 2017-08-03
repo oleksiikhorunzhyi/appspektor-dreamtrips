@@ -11,22 +11,22 @@ public class VideoPlayerHolder {
    private final DtFullscreenHandler dtFullscreenHandler;
 
    private JWPlayerView jwPlayerView;
-   private VideoAttachmentView videoAttachmentView;
+   private VideoContainerView videoContainerView;
 
    public VideoPlayerHolder(Activity activity, BackStackDelegate backStackDelegate) {
       this.dtFullscreenHandler = new DtFullscreenHandler(activity, backStackDelegate, this);
    }
 
-   public void init(JWPlayerView jwPlayerView, VideoAttachmentView videoAttachmentView) {
-      this.videoAttachmentView = videoAttachmentView;
+   public void init(JWPlayerView jwPlayerView, VideoContainerView videoContainerView) {
+      this.videoContainerView = videoContainerView;
       this.jwPlayerView = jwPlayerView;
 
       jwPlayerView.setFullscreenHandler(dtFullscreenHandler);
    }
 
    public void attachToContainer() {
-      if (playerExists() && videoAttachmentView != null) {
-         videoAttachmentView.getVideoContainer().addView(jwPlayerView);
+      if (playerExists() && videoContainerView != null) {
+         videoContainerView.getVideoContainer().addView(jwPlayerView);
       }
    }
 
@@ -36,21 +36,26 @@ public class VideoPlayerHolder {
       }
    }
 
+   public void pause() {
+      if (playerExists()) {
+         jwPlayerView.pause();
+      }
+   }
+
    public void dettachFromContainer() {
-      if (playerExists() && videoAttachmentView != null) {
-         videoAttachmentView.getVideoContainer().removeView(jwPlayerView);
+      if (playerExists() && videoContainerView != null) {
+         videoContainerView.getVideoContainer().removeView(jwPlayerView);
       }
    }
 
    public void clearCurrent() {
-      if (videoAttachmentView != null) {
+      if (videoContainerView != null) {
          jwPlayerView = null;
-         videoAttachmentView.clearResources();
       }
    }
 
    public ViewGroup getContainer() {
-      return videoAttachmentView.getVideoContainer();
+      return videoContainerView.getVideoContainer();
    }
 
    public JWPlayerView getJwPlayerView() {

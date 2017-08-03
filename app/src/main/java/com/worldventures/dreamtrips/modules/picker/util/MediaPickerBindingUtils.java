@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
+import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
 
 public class MediaPickerBindingUtils {
 
@@ -36,7 +36,7 @@ public class MediaPickerBindingUtils {
 
    @BindingAdapter("pickerVideoDuration")
    public static void setDuration(TextView textView, long duration) {
-      textView.setText(PickerVideoDurationFormatter.getFormattedDuration(duration));
+      textView.setText(VideoDurationFormatter.getFormattedDuration(duration));
    }
 
 }

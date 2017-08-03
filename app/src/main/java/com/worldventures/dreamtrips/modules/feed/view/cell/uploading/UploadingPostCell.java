@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithV
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoAttachmentPreviewView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoPreviewViewFactory;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util.UploadingTimeLeftFormatter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
+import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
 
 import java.io.File;
 import java.util.Collections;
@@ -118,7 +118,7 @@ public class UploadingPostCell extends FrameLayout {
    private void processVideoPost() {
       videoDetails.setVisibility(VISIBLE);
       long durationInMs = ((PostWithVideoAttachmentBody) compoundOperationModel.body()).durationInSeconds() * 1000;
-      duration.setText(PickerVideoDurationFormatter.getFormattedDuration(durationInMs));
+      duration.setText(VideoDurationFormatter.getFormattedDuration(durationInMs));
       PostWithVideoAttachmentBody postWithAttachmentBody = (PostWithVideoAttachmentBody) compoundOperationModel.body();
       refreshPhotoPreviewView(Collections.singletonList(Uri.fromFile(new File(postWithAttachmentBody.videoPath()))));
    }

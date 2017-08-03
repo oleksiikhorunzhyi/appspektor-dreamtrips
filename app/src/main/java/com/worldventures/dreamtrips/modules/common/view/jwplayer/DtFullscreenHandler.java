@@ -12,6 +12,8 @@ import butterknife.ButterKnife;
 
 class DtFullscreenHandler implements FullscreenHandler {
 
+   private static final String SKIN_URL = "file:///android_asset/player_skin.css";
+
    private final VideoPlayerHolder videoPlayerHolder;
    private final Activity activity;
    private BackStackDelegate backStackDelegate;
@@ -39,6 +41,9 @@ class DtFullscreenHandler implements FullscreenHandler {
 
    @Override
    public void onFullscreenRequested() {
+      videoPlayerHolder.getJwPlayerView().setSkin(SKIN_URL);
+      videoPlayerHolder.getJwPlayerView().setControls(true);
+
       hideSystemUI();
       videoPlayerHolder.getJwPlayerView().destroySurface();
 
@@ -57,6 +62,7 @@ class DtFullscreenHandler implements FullscreenHandler {
 
    @Override
    public void onFullscreenExitRequested() {
+      videoPlayerHolder.getJwPlayerView().setControls(false);
       showSystemUI();
       videoPlayerHolder.getJwPlayerView().destroySurface();
 

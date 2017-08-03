@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class VideoAttachmentView extends FrameLayout {
+public class VideoAttachmentView extends FrameLayout implements VideoContainerView {
 
    private static final String SKIN_URL = "file:///android_asset/player_skin.css";
 
@@ -123,6 +123,7 @@ public class VideoAttachmentView extends FrameLayout {
       //Stop video which playing now, on some neighbour cell
       if (videoPlayerHolder.getJwPlayerView() != null) {
          videoPlayerHolder.clearCurrent();
+         clearResources();
       }
 
       playProgressBar.setVisibility(VISIBLE);
@@ -134,6 +135,7 @@ public class VideoAttachmentView extends FrameLayout {
       videoPlayerHolder.play();
    }
 
+   @Override
    public FrameLayout getVideoContainer() {
       return videoContainer;
    }

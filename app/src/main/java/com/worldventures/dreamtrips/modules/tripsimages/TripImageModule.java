@@ -8,6 +8,9 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.FullscreenPhotoPresenter;
@@ -37,9 +40,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.inspire_me
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ysbh.FullscreenYsbhFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ysbh.YouShouldBeHereFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ysbh.YsbhViewPagerFragment;
-import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
 
 import javax.inject.Singleton;
 
@@ -91,6 +92,8 @@ import dagger.Provides;
             TripPhotoFullscreenFragment.class,
             EditPhotoTagsPresenter.class,
             EditPhotoTagsFragment.class,
+
+            VideoView.class
       },
       complete = false,
       library = true)

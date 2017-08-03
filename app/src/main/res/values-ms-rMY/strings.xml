@@ -589,7 +589,6 @@
 
    <string name="uploading_post_status_progress_video"><b><i>Langkah 1 dari 2.</i></b> Memuat naik …</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Langkah 2 dari 2.</i></b> Memproses …</string>
-   <string name="uploading_post_status_processing">Sedang memproses</string>
    <string name="uploading_post_status_progress_video_processing_failed">Gagal memproses. Sesuatu masalah dengan video</string>
 
 </resources>

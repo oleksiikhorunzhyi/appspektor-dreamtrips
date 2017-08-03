@@ -19,8 +19,8 @@
       <item name="colorPrimary">@color/wallet_color_primary</item>
       <item name="colorPrimaryDark">@color/wallet_color_primary_dark</item>
       <item name="android:textColorPrimary">@color/wallet_text_color_primary</item>
-      <item name="android:actionMenuTextColor">@color/color_selector_wallet_settings_item_white</item>
-      <item name="actionMenuTextColor">@color/color_selector_wallet_settings_item_white</item>
+      <item name="android:actionMenuTextColor">@color/wallet_selector_settings_item_white</item>
+      <item name="actionMenuTextColor">@color/wallet_selector_settings_item_white</item>
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
@@ -37,7 +37,7 @@
       <item name="android:textAppearanceSmall">@style/WalletTheme.TextAppearanceSmall</item>
 
       <item name="colorAccent">@color/wallet_color_primary_dark</item>
-      <item name="colorButtonNormal">@color/wallet_button_colors</item>
+      <item name="colorButtonNormal">@color/wallet_selector_btn</item>
 
       <!-- Inactive thumb color -->
       <item name="colorSwitchThumbNormal">@color/wallet_button_color_disabled</item>
@@ -48,13 +48,13 @@
 
    <style name="WalletTheme.ButtonStyle" parent="Widget.AppCompat.Button">
       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-      <item name="android:textColor">@color/wallet_button_text_colors</item>
+      <item name="android:textColor">@color/wallet_selector_btn_text</item>
       <item name="android:padding">@dimen/spacing_normal</item>
    </style>
 
    <style name="WalletTheme.SpinnerStyle" parent="Widget.AppCompat.Spinner">
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-      <item name="android:textColor">@color/wallet_button_text_colors</item>
+      <item name="android:textColor">@color/wallet_selector_btn_text</item>
 
       <item name="backgroundTint">#cccccc</item>
    </style>
@@ -123,12 +123,12 @@
    </style>
 
    <style name="SettingsText.Primary">
-      <item name="android:textColor">@color/color_selector_wallet_settings_item_primery</item>
+      <item name="android:textColor">@color/wallet_selector_settings_item_primery</item>
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
    </style>
 
    <style name="SettingsText.Secondary">
-      <item name="android:textColor">@color/color_selector_wallet_settings_item_secondary</item>
+      <item name="android:textColor">@color/wallet_selector_settings_item_secondary</item>
       <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
    </style>
 

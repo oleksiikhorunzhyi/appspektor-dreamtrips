@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.CardGroupNameItemBindingBinding;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CardGroupHeaderModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardGroupHeaderHolder;
@@ -41,7 +42,6 @@ public class DashboardHolderFactoryImpl implements DashboardHolderTypeFactory {
             return new CardGroupHeaderHolder(cardGroup);
          default:
             throw new IllegalArgumentException();
-
       }
    }
 }

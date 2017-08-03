@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
 
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 public interface HelpScreen extends WalletScreen {
 
-   void provideVideos(List<Video> videos);
+   void provideVideos(List<WalletVideo> videos);
 
    void provideVideoLocales(List<VideoLocale> videoLocales);
 
@@ -27,7 +27,7 @@ public interface HelpScreen extends WalletScreen {
 
    void notifyItemChanged(CachedModel cachedEntity);
 
-   List<Video> getCurrentItems();
+   List<WalletVideo> getCurrentItems();
 
    void showDialogChosenLanguage(VideoLocale videoLocale);
 

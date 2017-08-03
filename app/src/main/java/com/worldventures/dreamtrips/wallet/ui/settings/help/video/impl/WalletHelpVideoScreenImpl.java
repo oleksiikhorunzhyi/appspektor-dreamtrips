@@ -14,17 +14,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
-import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -34,6 +35,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVide
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.adapter.VideoLanguagesAdapter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.adapter.VideoLocaleAdapter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.delegate.WalletVideoCallback;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder.VideoHolderFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +56,10 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    @InjectView(R.id.refresh_layout) SwipeRefreshLayout refreshLayout;
 
    @Inject WalletHelpVideoPresenter presenter;
+   @Inject CachedModelHelper cachedModelHelper;
+   @Inject SessionHolder<UserSession> appSessionHolder;
 
-   private BaseDelegateAdapter<Video> adapter;
+   private MultiHolderAdapter<WalletVideo> adapter;
    private VideoLocaleAdapter localeAdapter;
    private Spinner videoLocales;
 
@@ -100,14 +105,13 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    };
 
    private void initAdapter() {
-      //TODO get rid of this adapter and injector
-      adapter = new BaseDelegateAdapter<>(getContext(), (Injector) getContext());
-      adapter.registerCell(Video.class, VideoCell.class, videoActionsCallback);
+      adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(),
+            new VideoHolderFactoryImpl(cachedModelHelper, videoActionsCallback, appSessionHolder));
 
       rvVideos.setAdapter(adapter);
    }
 
-   private VideoCellDelegate videoActionsCallback = new VideoCellDelegate() {
+   private WalletVideoCallback videoActionsCallback = new WalletVideoCallback() {
 
       @Override
       public void sendAnalytic(String action, String name) {}
@@ -128,17 +132,15 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       }
 
       @Override
-      public void onPlayVideoClicked(Video entity) {
+      public void onPlayVideoClicked(WalletVideo entity) {
          getPresenter().onPlayVideo(entity);
       }
-
-      @Override
-      public void onCellClicked(Video model) {}
    };
 
    @Override
-   public void provideVideos(List<Video> videos) {
-      adapter.setItems(videos);
+   public void provideVideos(List<WalletVideo> videos) {
+      adapter.clear();
+      adapter.addItems(videos);
    }
 
    @Override
@@ -204,8 +206,8 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    }
 
    @Override
-   public List<Video> getCurrentItems() {
-      return adapter.getCount() == 0 ? new ArrayList<>() : adapter.getItems();
+   public List<WalletVideo> getCurrentItems() {
+      return adapter.getItemCount() == 0 ? new ArrayList<>() : adapter.getItems();
    }
 
    @Override
@@ -223,7 +225,7 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
 
    @Override
    public void setSelectedLocale(int index) {
-      if(videoLocales != null) videoLocales.setSelection(index);
+      if (videoLocales != null) videoLocales.setSelection(index);
    }
 
    @Override

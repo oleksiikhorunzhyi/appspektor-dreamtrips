@@ -42,9 +42,6 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
@@ -60,8 +57,6 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPres
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.impl.WizardChargingPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl.AboutPresenterImpl;
@@ -229,6 +224,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
+import io.techery.mappery.MapperyContext;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -239,11 +235,6 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
       injects = {
             WalletActivityPresenter.class,
             WalletStartScreenImpl.class,
-            UnsupportedDeviceInfoCell.class,
-            SupportedDevicesListCell.class,
-            SupportedDeviceItemCell.class,
-            SettingsRadioCell.class,
-            SectionDividerCell.class,
             WalletProvisioningBlockedScreenImpl.class,
             WizardSplashScreenImpl.class,
             WizardPowerOnScreenImpl.class,
@@ -723,17 +714,19 @@ public class WalletActivityModule {
    @Provides
    WalletHelpVideoPresenter provideWalletHelpVideoPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
-         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate,
+         HttpErrorHandlingUtil httpErrorHandlingUtil, MapperyContext mapperyContext) {
       return new WalletHelpVideoPresenterImpl(navigator, smartCardInteractor, networkService, memberVideosInteractor,
-            cachedEntityInteractor, cachedEntityDelegate, httpErrorHandlingUtil);
+            cachedEntityInteractor, cachedEntityDelegate, httpErrorHandlingUtil, mapperyContext);
    }
 
    @Provides
    WalletHelpDocumentsPresenter provideWalletHelpDocumentsPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         DocumentsInteractor documentsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         DocumentsInteractor documentsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil,
+         MapperyContext mapperyContext) {
       return new WalletHelpDocumentsPresenterImpl(navigator, smartCardInteractor, networkService,
-            documentsInteractor, httpErrorHandlingUtil);
+            documentsInteractor, httpErrorHandlingUtil, mapperyContext);
    }
 
    @Provides

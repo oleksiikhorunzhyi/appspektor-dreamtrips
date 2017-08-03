@@ -10,20 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SectionDividerModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.holder.DefaultCardHolderFactoryImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.holder.ListItemDisableHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,7 +41,7 @@ public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<Wal
    @Inject WalletDisableDefaultCardPresenter presenter;
 
    private SingleSelectionManager selectionManager;
-   private BaseDelegateAdapter adapter;
+   private MultiHolderAdapter adapter;
    private boolean delayWasChanged;
 
    @Override
@@ -85,24 +86,40 @@ public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<Wal
    }
 
    private void prepareRecyclerView() {
-      adapter = new BaseDelegateAdapter(getContext(), (Injector) getContext());
-      adapter.registerCell(SectionDividerModel.class, SectionDividerCell.class);
-      adapter.registerCell(SettingsRadioModel.class, SettingsRadioCell.class, new SettingsRadioCell.Delegate() {
-         @Override
-         public boolean isLast(int position) {
-            return adapter.getCount() - 1 == position;
-         }
+      adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new DefaultCardHolderFactoryImpl(itemDisableCallback));
 
-         @Override
-         public void onCellClicked(SettingsRadioModel model) {
-            getPresenter().onTimeSelected(model.getValue());
-         }
-      });
       adapter.addItem(new SectionDividerModel(R.string.wallet_settings_disable_default_card_description));
       selectionManager = new SingleSelectionManager(recyclerView);
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
    }
+
+   private ListItemDisableHolder.Callback itemDisableCallback = new ListItemDisableHolder.Callback() {
+      @Override
+      public boolean isLast(int position) {
+         return adapter.getItemCount() - 1 == position;
+      }
+
+      @Override
+      public void onClick(SettingsRadioModel model) {
+         getPresenter().onTimeSelected(model.getValue());
+      }
+
+      @Override
+      public void toggleSelection(int position) {
+         selectionManager.toggleSelection(position);
+      }
+
+      @Override
+      public void setSelection(int position, boolean isSelected) {
+         selectionManager.setSelection(position, isSelected);
+      }
+
+      @Override
+      public boolean isSelected(int position) {
+         return selectionManager.isSelected(position);
+      }
+   };
 
    @Override
    public void setItems(List<SettingsRadioModel> items) {

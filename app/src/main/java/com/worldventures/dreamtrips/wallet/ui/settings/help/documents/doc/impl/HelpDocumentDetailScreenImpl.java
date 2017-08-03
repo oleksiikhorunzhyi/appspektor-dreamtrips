@@ -15,7 +15,7 @@ import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.infopages.model.Document;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailPresenter;
@@ -39,7 +39,7 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
 
    @Inject HelpDocumentDetailPresenter presenter;
 
-   public static HelpDocumentDetailScreenImpl create(Document document) {
+   public static HelpDocumentDetailScreenImpl create(WalletDocument document) {
       final Bundle args = new Bundle();
       args.putParcelable(KEY_HELP_DOCUMENT, document);
       return new HelpDocumentDetailScreenImpl(args);
@@ -128,14 +128,14 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
    }
 
    @Override
-   public Document getDocument() {
+   public WalletDocument getDocument() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_HELP_DOCUMENT))
             ? getArgs().getParcelable(KEY_HELP_DOCUMENT)
             : null;
    }
 
    @Override
-   public void showDocument(Document document) {
+   public void showDocument(WalletDocument document) {
       toolbar.setTitle(document.getName());
       webView.loadUrl(document.getUrl());
    }

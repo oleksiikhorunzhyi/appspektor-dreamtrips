@@ -16,9 +16,9 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -421,7 +421,7 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goHelpDocumentDetails(Document document) {
+   public void goHelpDocumentDetails(WalletDocument document) {
       withoutLast(HelpDocumentDetailScreenImpl.create(document));
    }
 
@@ -494,9 +494,13 @@ public class NavigatorImpl implements Navigator {
    public void goPlayStore() {
       String appPackageName = BuildConfig.APPLICATION_PACKAGE_PROD;
       try {
-         routerLazy.get().getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+         routerLazy.get()
+               .getActivity()
+               .startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
       } catch (android.content.ActivityNotFoundException exception) {
-         routerLazy.get().getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+         routerLazy.get()
+               .getActivity()
+               .startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
       }
    }
 

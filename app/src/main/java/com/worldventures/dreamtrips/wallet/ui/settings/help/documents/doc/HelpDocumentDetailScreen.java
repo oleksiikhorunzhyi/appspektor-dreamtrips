@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc;
 
 
-import com.worldventures.dreamtrips.modules.infopages.model.Document;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 public interface HelpDocumentDetailScreen extends WalletScreen {
 
-   Document getDocument();
+   WalletDocument getDocument();
 
-   void showDocument(Document document);
+   void showDocument(WalletDocument document);
 }

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstScanReceiptPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
@@ -63,8 +64,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
@@ -126,6 +126,8 @@ import dagger.Provides;
             DtlVerifyAmountPresenter.class,
             DtlThrstFlowFragment.class,
             DtlThrstFlowPresenter.class,
+            DtlThankYouScreenFragment.class,
+            DtlThrstThankYouScreenPresenter.class,
             MerchantWorkingHoursAdapter.class,
             ThinMerchantsAdapter.class,
             BaseExpandableAdapter.class,
@@ -143,9 +145,7 @@ import dagger.Provides;
             ActionReviewEntityFragment.class,
             CreateReviewPostFragment.class,
             CreateReviewEntityFragment.class,
-            OfferWithReviewView.class,
-            DtlPaymentPresenterImpl.class,
-            DtlPaymentScreenImpl.class
+            OfferWithReviewView.class
 
       },
       complete = false, library = true)

@@ -9,17 +9,16 @@ import android.webkit.WebViewClient;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentPath;
 
 import butterknife.InjectView;
-import flow.Flow;
-import flow.History;
-import flow.path.Path;
 
 @Layout(R.layout.fragment_dtl_thrst_webview)
 public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, ThrstFlowBundle> implements DtlThrstFlowPresenter.View {
@@ -73,19 +72,22 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    }
 
    @Override
-   public void openThankYouScreen(String merchantName, String totalAmount) {
-      goToDtlPaymentPath(true, merchantName, totalAmount);
+   public void openThankYouScreen(String totalAmount) {
+      goToDtlPaymentPath(true, totalAmount);
    }
 
    @Override
-   public void openPaymentFailedScreen(String merchantName, String totalAmount) {
-      goToDtlPaymentPath(false, merchantName, totalAmount);
+   public void openPaymentFailedScreen(String totalAmount) {
+      goToDtlPaymentPath(false, totalAmount);
    }
 
-   private void goToDtlPaymentPath(boolean isPaid, String totalAmount, String merchantName) {
-      Path path = new DtlPaymentPath(isPaid, totalAmount, merchantName);
-      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-      historyBuilder.push(path);
-      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+   private void goToDtlPaymentPath(boolean isPaid, String totalAmount) {
+      router.back();
+      router.moveTo(
+            Route.DTL_THRST_THANK_YOU_SCREEN,
+            NavigationConfigBuilder.forActivity()
+                  .data(new ThrstPaymentBundle(isPaid, totalAmount))
+                  .build()
+      );
    }
 }

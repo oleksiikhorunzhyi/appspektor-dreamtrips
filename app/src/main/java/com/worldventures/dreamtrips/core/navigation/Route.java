@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstFlowFragme
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
@@ -182,6 +183,7 @@ public enum Route {
    DTL_THRST_SCAN_RECEIPT(DtlThrstScanReceiptFragment.class, R.string.dtl_thrst_scan_receipt_screen_title),
    DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
    DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
+   DTL_THRST_THANK_YOU_SCREEN(DtlThankYouScreenFragment.class, R.string.empty),
    // </dtl_legasy_routes>
 
    GALLERY(DtGalleryFragment.class),

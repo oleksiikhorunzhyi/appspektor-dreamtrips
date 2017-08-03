@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -35,6 +36,7 @@ public class HttpErrorHandlerWebView extends WebView {
 
    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
    public void init() {
+      clearCache(true);
       getSettings().setJavaScriptEnabled(true);
       getSettings().setDefaultTextEncodingName("utf-8");
       getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -44,15 +46,16 @@ public class HttpErrorHandlerWebView extends WebView {
       getSettings().setDatabaseEnabled(true);
       getSettings().setDomStorageEnabled(true);
       getSettings().setAllowContentAccess(true);
-      getSettings().setAppCacheEnabled(true);
+      getSettings().setAppCacheEnabled(false);
+      getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
       setWebChromeClient(new WebChromeClient());
       setWebViewClient(new WebViewClient());
       addJavascriptInterface(new JavaScriptInterface() {
          @Override
-         public void thrstCallback(String message) {
+         public void thrstCallback(ThrstStatusResponse thrstStatusResponse) {
             if (javascriptCallback != null) {
-               javascriptCallback.onThrstCallback(message);
+               javascriptCallback.onThrstCallback(thrstStatusResponse);
             }
          }
       }, JAVASCRIPT_INTERFACE);
@@ -63,6 +66,6 @@ public class HttpErrorHandlerWebView extends WebView {
    }
 
    public interface JavascriptCallback {
-      void onThrstCallback(String message);
+      void onThrstCallback(JavaScriptInterface.ThrstStatusResponse thrstStatusResponse);
    }
 }

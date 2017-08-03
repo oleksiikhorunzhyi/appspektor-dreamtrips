@@ -5,12 +5,6 @@
       android:layout_height="match_parent"
       >
 
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar_actionbar"
-         style="@style/ToolBarStyle"
-         />
-
-
    <include
          android:id="@+id/include_thank_you_screen"
          layout="@layout/include_thank_you_screen"

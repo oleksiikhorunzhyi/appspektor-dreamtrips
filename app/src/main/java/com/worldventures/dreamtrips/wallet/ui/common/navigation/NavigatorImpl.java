@@ -17,6 +17,7 @@ import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
@@ -87,15 +88,19 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.impl.W
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
 
+import java.util.List;
+
 import dagger.Lazy;
 import timber.log.Timber;
 
 public class NavigatorImpl implements Navigator {
 
    private final Lazy<Router> routerLazy;
+   private final CoreNavigator coreNavigator;
 
-   public NavigatorImpl(Lazy<Router> routerLazy) {
+   public NavigatorImpl(Lazy<Router> routerLazy, CoreNavigator coreNavigator) {
       this.routerLazy = routerLazy;
+      this.coreNavigator = coreNavigator;
    }
 
    @Override
@@ -438,6 +443,11 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goForcePairKey() {
       single(new ForcePairKeyScreenImpl());
+   }
+
+   @Override
+   public void goFeedBackImageAttachments(int position, List<FeedbackImageAttachment> attachments) {
+      coreNavigator.goFeedBackImageAttachments(position, attachments);
    }
 
    @Override

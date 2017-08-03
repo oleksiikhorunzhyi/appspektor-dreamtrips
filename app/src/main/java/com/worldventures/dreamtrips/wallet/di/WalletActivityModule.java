@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigatorImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
@@ -327,8 +328,8 @@ public class WalletActivityModule {
 
    @Singleton
    @Provides
-   Navigator provideConductorNavigator(Lazy<Router> router) {
-      return new NavigatorImpl(router);
+   Navigator provideConductorNavigator(Lazy<Router> router, com.worldventures.dreamtrips.core.navigation.router.Router coreRouter) {
+      return new NavigatorImpl(router, new CoreNavigatorImpl(coreRouter));
    }
 
    @Provides
@@ -745,18 +746,18 @@ public class WalletActivityModule {
    SendFeedbackPresenter providesSendFeedbackPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaInteractor mediaInteractor, com.worldventures.dreamtrips.core.navigation.router.Router router) {
+         MediaInteractor mediaInteractor) {
       return new SendFeedbackPresenterImpl(navigator, smartCardInteractor, networkService,
-            feedbackInteractor, walletSettingsInteractor, mediaInteractor, router);
+            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
    }
 
    @Provides
    PaymentFeedbackPresenter providePaymentFeedbackPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaInteractor mediaInteractor, com.worldventures.dreamtrips.core.navigation.router.Router router) {
+         MediaInteractor mediaInteractor) {
       return new PaymentFeedbackPresenterImpl(navigator, smartCardInteractor, networkService,
-            feedbackInteractor, walletSettingsInteractor, mediaInteractor, router);
+            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
    }
 
    @Provides

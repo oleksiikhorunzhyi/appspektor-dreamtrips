@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -15,6 +16,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Pr
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
+
+import java.util.List;
 
 public interface Navigator {
 
@@ -157,6 +160,8 @@ public interface Navigator {
    void goNewCardPowerOn();
 
    void goForcePairKey();
+
+   void goFeedBackImageAttachments(int position, List<FeedbackImageAttachment> attachments);
 
    void goDialer(String phoneNumber);
 

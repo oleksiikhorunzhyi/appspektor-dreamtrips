@@ -69,7 +69,7 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:ellipsize="end"
-         android:fontFamily="@string/font_fontFamily_medium"
+         android:fontFamily="@string/wallet_fontFamily_medium"
          android:text="@string/wallet_settings_general_display_photo_required"
          android:textColor="#222"
          android:textSize="@dimen/font_medium"

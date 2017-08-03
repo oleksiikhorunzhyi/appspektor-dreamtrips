@@ -61,7 +61,7 @@
             android:id="@+id/tv_photo_full_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@string/font_fontFamily_medium"
+            android:fontFamily="@string/wallet_fontFamily_medium"
             android:gravity="center"
             android:maxLines="8"
             android:paddingEnd="@dimen/spacing_small"

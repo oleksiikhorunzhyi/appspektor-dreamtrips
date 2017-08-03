@@ -7,14 +7,16 @@ import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenter> extends PresentableController<V, P> implements WalletScreen {
    private ObjectGraph objectGraph;
@@ -62,8 +64,9 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    @Override
    protected void onDetach(@NonNull View view) {
-      SoftInputUtil.hideSoftInputMethod(getActivity());
       super.onDetach(view);
+      final InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+      inputManager.hideSoftInputFromWindow(null, 0);
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

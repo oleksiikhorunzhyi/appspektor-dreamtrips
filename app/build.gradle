@@ -172,6 +172,7 @@ android {
       social {
          test.java.srcDirs += 'src/testSocial/java'
       }
+      main.res.srcDirs += 'src/main/resWallet'
    }
 
 }

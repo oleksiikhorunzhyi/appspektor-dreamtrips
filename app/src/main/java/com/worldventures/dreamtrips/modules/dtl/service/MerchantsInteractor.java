@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.UrlTokenCreator;
 
@@ -29,6 +30,7 @@ public class MerchantsInteractor {
    private final ActionPipe<AddReviewAction> addReviewsPipe;
    private final ActionPipe<FlaggingReviewAction> addFlaggingPipe;
    private final ActionPipe<UrlTokenAction> addUrlTokenPipe;
+   private final ActionPipe<TransactionPilotAction> addTransactionPipe;
 
    public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor dtlLocationInteractor,
          ClearMemoryInteractor clearMemoryInteractor) {
@@ -41,6 +43,7 @@ public class MerchantsInteractor {
       this.addReviewsPipe = sessionActionPipeCreator.createPipe(AddReviewAction.class, Schedulers.io());
       this.addFlaggingPipe = sessionActionPipeCreator.createPipe(FlaggingReviewAction.class, Schedulers.io());
       this.addUrlTokenPipe = sessionActionPipeCreator.createPipe(UrlTokenAction.class, Schedulers.io());
+      this.addTransactionPipe = sessionActionPipeCreator.createPipe(TransactionPilotAction.class, Schedulers.io());
 
       connectNewRelicTracking();
       connectForLocationUpdates();
@@ -97,6 +100,10 @@ public class MerchantsInteractor {
 
    public ActionPipe<UrlTokenAction> urlTokenThrstHttpPipe() {
       return addUrlTokenPipe;
+   }
+
+   public ActionPipe<TransactionPilotAction> transactionThrstHttpPipe() {
+      return addTransactionPipe;
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

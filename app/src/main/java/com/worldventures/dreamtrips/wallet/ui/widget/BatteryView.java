@@ -43,7 +43,7 @@ public class BatteryView extends AppCompatImageView {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      setImageResource(R.drawable.ic_wallet_battery);
+      setImageResource(R.drawable.ic_wallet_vector_battery);
    }
 
    private int getColorPaintByLevel(int level) {

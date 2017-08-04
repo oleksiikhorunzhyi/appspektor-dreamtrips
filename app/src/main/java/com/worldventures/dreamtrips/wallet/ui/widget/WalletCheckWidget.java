@@ -51,7 +51,7 @@ public class WalletCheckWidget extends RelativeLayout {
       checkedColor = ContextCompat.getColor(context, R.color.wallet_success_green);
       uncheckedColor = ContextCompat.getColor(context, R.color.wallet_waring_red);
       checkedStatusIcon = appCompatDrawableManager.getDrawable(context, R.drawable.ic_wallet_check_success);
-      uncheckedStatusIcon = appCompatDrawableManager.getDrawable(context, R.drawable.ic_wallet_do_not_check);
+      uncheckedStatusIcon = appCompatDrawableManager.getDrawable(context, R.drawable.ic_wallet_vector_do_not_check);
       checkedFilter = AppCompatDrawableManager.getPorterDuffColorFilter(checkedColor, PorterDuff.Mode.MULTIPLY);
       uncheckedFilter = AppCompatDrawableManager.getPorterDuffColorFilter(uncheckedColor, PorterDuff.Mode.MULTIPLY);
       init(context, attrs);

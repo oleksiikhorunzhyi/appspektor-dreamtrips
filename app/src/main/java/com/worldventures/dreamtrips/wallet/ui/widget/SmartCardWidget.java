@@ -141,7 +141,7 @@ public class SmartCardWidget extends ConstraintLayout {
    }
 
    private void bindConnectionIndicator(boolean connected) {
-      linkIndicator.setImageResource(connected ? R.drawable.ic_wallet_link_indicator : R.drawable.ic_wallet_unlink_indicator);
+      linkIndicator.setImageResource(connected ? R.drawable.ic_wallet_vector_link_indicator : R.drawable.ic_wallet_vector_unlink_indicator);
    }
 
    private void bindStealthModeIndicator(boolean stealthModeEnabled) {
@@ -150,7 +150,7 @@ public class SmartCardWidget extends ConstraintLayout {
    }
 
    private void bindLockIndicator(boolean lock) {
-      lockIndicator.setImageResource(lock ? R.drawable.ic_wallet_lock_indicator : R.drawable.ic_wallet_unlock_indicator);
+      lockIndicator.setImageResource(lock ? R.drawable.ic_wallet_vector_lock_indicator : R.drawable.ic_wallet_vector_unlock_indicator);
    }
 
    private void bindBatteryIndicator(int batteryLevel) {

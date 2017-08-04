@@ -21,7 +21,7 @@
          android:layout_height="@dimen/wallet_card_height"
          android:layout_gravity="center_horizontal"
          app:cardBackground="@{cardModel.cardBackGround}"
-         tools:background="@drawable/background_card_blue"
+         tools:background="@drawable/wallet_card_blue_background"
          >
 
       <TextView
@@ -157,7 +157,7 @@
             android:layout_marginBottom="0dp"
             android:layout_marginStart="18dp"
             android:layout_marginTop="0dp"
-            android:src="@drawable/ic_vector_check_circle_green"
+            android:src="@drawable/ic_wallet_vector_check_circle_green"
             android:visibility="@{cardModel.defaultCard ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_default_card_label"
             app:layout_constraintLeft_toLeftOf="parent"

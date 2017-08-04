@@ -53,7 +53,7 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:scaleType="fitXY"
-               android:src="@drawable/flye_card_front_with_emv_charger"
+               android:src="@drawable/wallet_flye_card_front_with_emv_charger"
                />
 
          <com.facebook.drawee.view.SimpleDraweeView

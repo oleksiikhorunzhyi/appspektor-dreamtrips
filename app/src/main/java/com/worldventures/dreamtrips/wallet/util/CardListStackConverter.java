@@ -79,7 +79,7 @@ public class CardListStackConverter {
    }
 
    private int getCardBackGroundResId() {
-      return index % 2 == 0 ? R.drawable.background_card_dark_blue : R.drawable.background_card_blue;
+      return index % 2 == 0 ? R.drawable.wallet_card_dark_blue_background : R.drawable.wallet_card_blue_background;
    }
 
    private CommonCardViewModel.StackType setCardType(String name) {

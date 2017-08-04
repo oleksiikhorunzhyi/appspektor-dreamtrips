@@ -51,13 +51,13 @@
                android:layout_width="match_parent"
                android:layout_height="@dimen/spacing_huge"
                android:layout_gravity="top"
-               android:background="@drawable/white_gradient_top_bottom"
+               android:background="@drawable/wallet_terms_top_overlay"
                />
          <View
                android:layout_width="match_parent"
                android:layout_height="@dimen/spacing_huge"
                android:layout_gravity="bottom"
-               android:background="@drawable/white_gradient_bottom_top"
+               android:background="@drawable/wallet_terms_bottom_overlay"
                />
 
          <me.zhanghai.android.materialprogressbar.MaterialProgressBar

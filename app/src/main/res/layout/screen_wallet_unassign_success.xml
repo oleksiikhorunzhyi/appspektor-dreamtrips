@@ -20,29 +20,15 @@
          android:layout_height="match_parent"
          >
 
-      <FrameLayout
-            android:id="@+id/image_success_container"
+      <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:id="@+id/image_success_container"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="58dp"
-            >
-
-         <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:src="@drawable/ic_circle_blue"
-               tools:ignore="ContentDescription"
-               />
-
-         <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:padding="16dp"
-               android:src="@drawable/ic_check_blue"
-               tools:ignore="ContentDescription"
-               />
-      </FrameLayout>
+            android:src="@drawable/ic_wallet_vector_success"
+            tools:ignore="ContentDescription"
+            />
 
       <TextView
             android:id="@+id/tv_unassigned_success_msg"

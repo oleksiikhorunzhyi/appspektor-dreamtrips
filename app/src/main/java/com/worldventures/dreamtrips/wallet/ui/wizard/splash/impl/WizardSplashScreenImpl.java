@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl;
 
 
 import android.animation.AnimatorSet;
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +88,7 @@ public class WizardSplashScreenImpl extends WalletBaseController<WizardSplashScr
       actionBtn.setOnClickListener(view -> getPresenter().startScanCard());
       walletWizardSplashTitle.setText(R.string.wallet_wizard_scan_proposal);
 
-      front.setImageResource(R.drawable.flyecard_front);
+      front.setImageResource(R.drawable.wallet_flye_front);
       flipAnim.flipCard(FLIP_ANIM_DELAY);
 
       setDefaultAlpha();

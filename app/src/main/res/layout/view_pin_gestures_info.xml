@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            app:infoViewImage="@drawable/wizard_lock_info_arrow_right"
+            app:infoViewImage="@drawable/wallet_pin_info_arrow_right"
             app:infoViewTitle="@string/wallet_lock_label_swipe_right"
             />
 
@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            app:infoViewImage="@drawable/wizard_lock_info_arrow_left"
+            app:infoViewImage="@drawable/wallet_pin_info_arrow_left"
             app:infoViewTitle="@string/wallet_lock_label_swipe_left"
             />
    </LinearLayout>
@@ -40,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            app:infoViewImage="@drawable/wizard_lock_info_long_click_right_btn"
+            app:infoViewImage="@drawable/wallet_vector_pin_info_long_click_right_btn"
             app:infoViewTitle="@string/wallet_lock_label_hold_right_btn"
             />
 
@@ -48,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            app:infoViewImage="@drawable/wizard_lock_info_long_click_left_btn"
+            app:infoViewImage="@drawable/wallet_vector_pin_info_long_click_left_btn"
             app:infoViewTitle="@string/wallet_lock_label_hold_left_btn"
             />
    </LinearLayout>
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            app:infoViewImage="@drawable/wizard_lock_info_click_right_btn"
+            app:infoViewImage="@drawable/wallet_vector_pin_info_click_right_btn"
             app:infoViewTitle="@string/wallet_lock_label_click_right_btn"
             />
 
@@ -72,7 +72,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            app:infoViewImage="@drawable/wizard_lock_info_click_left_btn"
+            app:infoViewImage="@drawable/wallet_vector_pin_info_click_left_btn"
             app:infoViewTitle="@string/wallet_lock_label_tap_left_btn"
             />
    </LinearLayout>

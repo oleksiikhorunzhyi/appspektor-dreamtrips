@@ -73,9 +73,9 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
       binding.toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
       binding.photoPreview.getHierarchy()
-            .setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+            .setPlaceholderImage(R.drawable.ic_wallet_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy()
-            .setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+            .setFailureImage(R.drawable.ic_wallet_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.setProfile(viewModel);
    }
 

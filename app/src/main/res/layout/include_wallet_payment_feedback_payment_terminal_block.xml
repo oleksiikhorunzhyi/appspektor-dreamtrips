@@ -56,7 +56,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:drawableEnd="@drawable/ic_wallet_pencil"
+            android:drawableEnd="@drawable/ic_wallet_vector_pencil"
             android:hint="@string/wallet_payment_feedback_enter_name_model_hint"
             android:text="@={paymentTerminal.terminalNameModel}"
             app:layout_constraintLeft_toLeftOf="parent"

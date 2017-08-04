@@ -76,7 +76,7 @@
    </style>
 
    <style name="WalletTheme.EditTextStyle" parent="Widget.AppCompat.EditText">
-      <item name="android:background">@drawable/wallet_background_edit_text</item>
+      <item name="android:background">@drawable/wallet_edit_text_background_selector</item>
       <item name="android:paddingTop">@dimen/wallet_edit_text_spaces_top_bottom</item>
       <item name="android:paddingBottom">@dimen/wallet_edit_text_spaces_top_bottom</item>
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -101,7 +101,7 @@
    <!--TODO REMOVE-->
 
    <style name="SettingsMenuItem">
-      <item name="android:background">@drawable/background_wallet_settings_menu_item</item>
+      <item name="android:background">@drawable/wallet_settings_menu_item_background_selector</item>
       <item name="android:layout_width">match_parent</item>
       <item name="android:layout_height">wrap_content</item>
       <item name="android:gravity">center_vertical</item>
@@ -146,13 +146,13 @@
    <style name="WalletTheme.RoundCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
       <item name="android:layout_height">wrap_content</item>
       <item name="android:layout_width">wrap_content</item>
-      <item name="android:button">@drawable/round_check_box</item>
+      <item name="android:button">@drawable/wallet_round_check_box_selector</item>
       <item name="android:paddingLeft">@dimen/wallet_round_check_box_left_padding</item>
       <item name="android:textSize">@dimen/wallet_round_check_box_text_size</item>
    </style>
 
    <style name="WalletTheme.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
-      <item name="navigationIcon">@drawable/back_icon</item>
+      <item name="navigationIcon">@drawable/ic_wallet_vector_arrow_back</item>
       <item name="android:gravity">center_vertical</item>
       <item name="titleTextColor">@android:color/white</item>
       <item name="actionMenuTextColor">@android:color/white</item>

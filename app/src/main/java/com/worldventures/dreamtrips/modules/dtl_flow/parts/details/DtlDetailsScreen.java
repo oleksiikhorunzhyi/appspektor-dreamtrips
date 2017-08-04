@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
@@ -69,4 +70,10 @@ public interface DtlDetailsScreen extends DtlScreen {
    void showThrstFlowButton();
 
    void showEarnFlowButton();
+
+   Activity getActivity();
+
+   void showOrderFromMenu();
+
+   void hideOrderFromMenu();
 }

@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -377,6 +380,26 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onClickPay() {
       onCheckInClicked();
+   }
+
+   @Override
+   public void orderFromMenu() {
+      Activity activity = getView().getActivity();
+      if (activity == null) {
+         return;
+      }
+      Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+      browserIntent.setData(Uri.parse(merchant.thrstFullCapabilityUrl()));
+      activity.startActivity(browserIntent);
+   }
+
+   @Override
+   public void setupFullThrstBtn() {
+      if (TextUtils.isEmpty(merchant.thrstFullCapabilityUrl())) {
+         getView().hideOrderFromMenu();
+      } else {
+         getView().showOrderFromMenu();
+      }
    }
 
    private ArrayList<ReviewObject> getListReviewByBusinessRule(@NonNull ArrayList<ReviewObject> reviews) {

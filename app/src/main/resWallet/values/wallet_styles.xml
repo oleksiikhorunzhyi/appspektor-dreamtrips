@@ -152,7 +152,7 @@
    </style>
 
    <style name="WalletTheme.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
-      <item name="navigationIcon">@drawable/back_icon</item>
+      <item name="navigationIcon">@drawable/ic_wallet_vector_arrow_back</item>
       <item name="android:gravity">center_vertical</item>
       <item name="titleTextColor">@android:color/white</item>
       <item name="actionMenuTextColor">@android:color/white</item>

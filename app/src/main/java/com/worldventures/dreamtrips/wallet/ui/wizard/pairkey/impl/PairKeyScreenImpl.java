@@ -91,7 +91,7 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
 
    @Override
    public void showBackButton() {
-      toolbar.setNavigationIcon(R.drawable.back_icon);
+      toolbar.setNavigationIcon(R.drawable.ic_wallet_vector_arrow_back);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 

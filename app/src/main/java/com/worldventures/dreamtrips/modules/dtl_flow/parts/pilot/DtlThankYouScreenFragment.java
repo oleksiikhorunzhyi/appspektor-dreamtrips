@@ -12,11 +12,13 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.include_thank_you_screen)
 public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle> implements DtlThrstThankYouScreenPresenter.View {
@@ -54,7 +56,10 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    @Override
-   public void goBack() {
+   public void goBack(boolean isPaid, String earnedPoints, String totalPoints) {
+      if (isPaid) {
+         EventBus.getDefault().postSticky(new DtlThrstTransactionSucceedEvent(earnedPoints, totalPoints));
+      }
       getActivity().onBackPressed();
    }
 

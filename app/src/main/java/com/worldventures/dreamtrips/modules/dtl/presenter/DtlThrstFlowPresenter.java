@@ -37,7 +37,7 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
       if (thrstStatusResponse.status.equals(SUCCESS_STATUS)) {
          checkTransaction();
       } else {
-         view.openPaymentFailedScreen(thrstStatusResponse.body);
+         view.openPaymentFailedScreen(thrstStatusResponse.body, "", "");
       }
    }
 
@@ -61,19 +61,19 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
    private void onMerchantsLoaded(TransactionPilotAction action) {
       boolean isFail = StringUtils.containsIgnoreCase(action.getResult().transactionStatus(), TRANSACTION_FAILED);
       if (isFail) {
-         view.openPaymentFailedScreen(action.getResult().billTotal());
+         view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
       } else {
-         view.openThankYouScreen(action.getResult().billTotal());
+         view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
       }
    }
 
    private void onMerchantsLoadingError(TransactionPilotAction action, Throwable throwable) {
-      view.openPaymentFailedScreen(action.getErrorMessage());
+      view.openPaymentFailedScreen(action.getErrorMessage(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
    }
 
    public interface View extends RxView, ApiErrorView {
-      void openThankYouScreen(String totalAmount);
+      void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints);
 
-      void openPaymentFailedScreen(String totalAmount);
+      void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints);
    }
 }

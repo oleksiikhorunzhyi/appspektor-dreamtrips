@@ -24,6 +24,8 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showSucceed(Merchant merchant, DtlTransaction dtlTransaction);
 
+   void showThrstSucceed(Merchant merchant, String earnedPoints, String totalPoints);
+
    void setTransaction(DtlTransaction dtlTransaction, boolean isThrstTransaction);
 
    void setSuggestMerchantButtonAvailable(boolean available);

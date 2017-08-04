@@ -41,6 +41,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentCompletedBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
@@ -362,6 +363,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public void showSucceed(Merchant merchant, DtlTransaction dtlTransaction) {
       router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
             .data(new MerchantBundle(merchant))
+            .build());
+   }
+
+   @Override
+   public void showThrstSucceed(Merchant merchant, String earnedPoints, String totalPoints) {
+      router.moveTo(Route.DTL_THRST_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
+            .data(new ThrstPaymentCompletedBundle(merchant, earnedPoints, totalPoints))
             .build());
    }
 

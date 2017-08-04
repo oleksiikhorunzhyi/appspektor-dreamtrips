@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -174,6 +175,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (event != null) {
          EventBus.getDefault().removeStickyEvent(event);
          getView().showSucceed(merchant, transaction);
+      }
+      DtlThrstTransactionSucceedEvent dtlThrstTransactionSucceedEvent = EventBus.getDefault().getStickyEvent(DtlThrstTransactionSucceedEvent.class);
+      if (dtlThrstTransactionSucceedEvent != null) {
+         EventBus.getDefault().removeStickyEvent(dtlThrstTransactionSucceedEvent);
+         getView().showThrstSucceed(merchant, dtlThrstTransactionSucceedEvent.earnedPoints, dtlThrstTransactionSucceedEvent.totalPoints);
       }
    }
 

@@ -73,21 +73,21 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    }
 
    @Override
-   public void openThankYouScreen(String totalAmount) {
-      goToDtlPaymentPath(true, totalAmount);
+   public void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints) {
+      goToDtlPaymentPath(true, totalAmount, earnedPoints, totalPoints);
    }
 
    @Override
-   public void openPaymentFailedScreen(String totalAmount) {
-      goToDtlPaymentPath(false, totalAmount);
+   public void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints) {
+      goToDtlPaymentPath(false, totalAmount, earnedPoints, totalPoints);
    }
 
-   private void goToDtlPaymentPath(boolean isPaid, String totalAmount) {
+   private void goToDtlPaymentPath(boolean isPaid, String totalAmount, String earnedPoints, String totalPoints) {
       router.back();
       router.moveTo(
             Route.DTL_THRST_THANK_YOU_SCREEN,
             NavigationConfigBuilder.forActivity()
-                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, totalAmount))
+                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, totalAmount, earnedPoints, totalPoints))
                   .build()
       );
    }

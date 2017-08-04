@@ -40,7 +40,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
    }
 
    public void onDoneClick() {
-      view.goBack();
+      view.goBack(thrstPaymentBundle.isPaid(), thrstPaymentBundle.getEarnedPoints(), thrstPaymentBundle.getTotalPoints());
    }
 
    public interface View extends RxView, ApiErrorView {
@@ -71,6 +71,6 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
       void hideSubThankYouMessage();
 
-      void goBack();
+      void goBack(boolean isPaid, String earnedPoints, String totalPoints);
    }
 }

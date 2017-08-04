@@ -35,7 +35,7 @@
             android:layout_below="@+id/wizard_manual_text"
             android:layout_marginTop="50dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/flyecard_scid"
+            android:src="@drawable/wallet_flye_scid"
             tools:ignore="ContentDescription"
             />
 

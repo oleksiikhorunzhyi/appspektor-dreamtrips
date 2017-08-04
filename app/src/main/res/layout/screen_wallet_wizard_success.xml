@@ -24,7 +24,7 @@
             android:layout_above="@+id/success_label_text_view"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"
-            android:src="@drawable/ic_wallet_success"
+            android:src="@drawable/ic_wallet_vector_success"
             tools:ignore="ContentDescription"
             />
 

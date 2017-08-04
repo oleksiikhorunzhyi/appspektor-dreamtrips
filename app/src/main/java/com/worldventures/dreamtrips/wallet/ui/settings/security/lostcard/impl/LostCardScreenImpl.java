@@ -188,7 +188,7 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    }
 
    private Bitmap getBitmapFromVectorDrawable() {
-      Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_dining_pin_icon);
+      Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_wallet_vector_dining_pin);
       Bitmap bitmap = createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
       Canvas canvas = new Canvas(bitmap);
       drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());

@@ -67,7 +67,7 @@
                android:layout_height="wrap_content"
                android:layout_alignParentStart="true"
                android:layout_alignParentTop="true"
-               android:src="@drawable/settings_gear_layer"
+               android:src="@drawable/ic_wallet_settings_gear"
                tools:ignore="ContentDescription"
                />
 

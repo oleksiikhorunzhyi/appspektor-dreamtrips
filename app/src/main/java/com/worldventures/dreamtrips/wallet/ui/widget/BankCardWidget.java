@@ -140,10 +140,9 @@ public class BankCardWidget extends FrameLayout {
       tvCardType.setText(walletRecordUtil.obtainRecordType(getContext(), recordType));
    }
 
-   public enum BankCardResource {
-      BLUE(0, R.drawable.creditcard_blue),
-      GREY(1, R.drawable.creditcard_grey),
-      DARK_BLUE(2, R.drawable.creditcard_darkblue);
+   private enum BankCardResource {
+      BLUE(0, R.drawable.wallet_card_blue_background),
+      DARK_BLUE(2, R.drawable.wallet_card_dark_blue_background);
 
       private int attrId;
       private int drawableResId;

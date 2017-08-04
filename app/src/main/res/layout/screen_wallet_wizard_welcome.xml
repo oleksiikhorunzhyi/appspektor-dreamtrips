@@ -62,7 +62,7 @@
                android:layout_alignParentTop="true"
                android:layout_centerHorizontal="true"
                android:scaleType="fitCenter"
-               android:src="@drawable/flyecard_front_with_emv"
+               android:src="@drawable/wallet_flye_front_with_emv"
                tools:ignore="ContentDescription"
                />
 

@@ -28,7 +28,7 @@
          android:layout_alignParentTop="true"
          android:layout_toEndOf="@+id/check_icon_status"
          tools:ignore="ContentDescription"
-         tools:src="@drawable/ic_wallet_power"
+         tools:src="@drawable/ic_wallet_vector_check_power"
          />
 
    <TextView

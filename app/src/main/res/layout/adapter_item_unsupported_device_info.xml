@@ -9,7 +9,7 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_marginTop="50dp"
-         android:src="@drawable/flyecard_front_with_swipe_chip_dialog"
+         android:src="@drawable/wallet_front_with_swipe_chip_dialog"
          />
 
    <TextView

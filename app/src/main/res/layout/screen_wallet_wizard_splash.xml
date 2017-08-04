@@ -61,7 +61,7 @@
                   android:layout_height="wrap_content"
                   android:alpha="0"
                   android:scaleType="fitCenter"
-                  android:src="@drawable/flyecard_back"
+                  android:src="@drawable/wallet_flye_back"
                   tools:ignore="ContentDescription"
                   />
 
@@ -71,7 +71,7 @@
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_horizontal"
                   android:scaleType="fitCenter"
-                  android:src="@drawable/flyecard_angle_with_shadow"
+                  android:src="@drawable/wallet_flye_angle_with_shadow"
                   tools:ignore="ContentDescription"
                   />
          </FrameLayout>

@@ -5,7 +5,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:animateLayoutChanges="true"
-      android:background="@drawable/flyecard_front_with_emv"
+      android:background="@drawable/wallet_flye_front_with_emv"
       tools:layout_height="210dp"
       >
 
@@ -18,7 +18,7 @@
          android:layout_marginTop="8dp"
          android:background="?attr/selectableItemBackgroundBorderless"
          android:padding="8dp"
-         android:src="@drawable/ic_wallet_settings"
+         android:src="@drawable/ic_wallet_vector_settings"
          app:layout_constraintEnd_toEndOf="parent"
          app:layout_constraintTop_toTopOf="parent"
          tools:ignore="ContentDescription"
@@ -38,7 +38,7 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignBottom="@+id/button_settings"
-         android:src="@drawable/ic_wallet_green_dot"
+         android:src="@drawable/ic_wallet_vector_green_dot"
          app:layout_constraintBottom_toBottomOf="@id/button_settings"
          app:layout_constraintEnd_toEndOf="@id/photo_container"
          app:layout_constraintStart_toStartOf="@id/photo_container"
@@ -125,7 +125,7 @@
             android:layout_height="14dp"
             android:layout_marginEnd="6dp"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_wallet_link_indicator"
+            tools:src="@drawable/ic_wallet_vector_link_indicator"
             />
 
       <ImageView
@@ -133,7 +133,7 @@
             android:layout_width="17dp"
             android:layout_height="11dp"
             android:layout_marginEnd="9dp"
-            android:src="@drawable/ic_wallet_stealth_indicator"
+            android:src="@drawable/ic_wallet_vector_stealth_indicator"
             android:visibility="gone"
             tools:ignore="ContentDescription"
             tools:visibility="visible"
@@ -145,7 +145,7 @@
             android:layout_height="15dp"
             android:layout_marginEnd="10dp"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_wallet_lock_indicator"
+            tools:src="@drawable/ic_wallet_vector_lock_indicator"
             />
 
       <LinearLayout
@@ -169,7 +169,7 @@
                android:id="@+id/battery_indicator"
                android:layout_width="21dp"
                android:layout_height="11dp"
-               tools:src="@drawable/ic_wallet_battery"
+               tools:src="@drawable/ic_wallet_vector_battery"
                />
       </LinearLayout>
 

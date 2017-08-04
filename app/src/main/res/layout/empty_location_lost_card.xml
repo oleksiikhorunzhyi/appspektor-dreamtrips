@@ -15,7 +15,7 @@
          android:layout_height="wrap_content"
          android:layout_gravity="center"
          android:layout_marginBottom="@dimen/spacing_medium"
-         android:src="@drawable/ic_offer_pin_icon"
+         android:src="@drawable/ic_wallet_vector_offer_pin"
          tools:ignore="ContentDescription"
          />
 

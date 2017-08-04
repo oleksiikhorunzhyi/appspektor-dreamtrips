@@ -86,7 +86,7 @@
                   android:id="@+id/card_name"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:drawableEnd="@drawable/ic_wallet_pencil"
+                  android:drawableEnd="@drawable/ic_wallet_vector_pencil"
                   android:hint="@string/wallet_view_card_details_hint_nickname_card"
                   android:imeOptions="actionDone"
                   android:inputType="textCapSentences"

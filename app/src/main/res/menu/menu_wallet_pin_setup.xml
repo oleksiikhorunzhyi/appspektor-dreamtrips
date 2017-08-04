@@ -4,7 +4,7 @@
 
    <item
          android:id="@+id/action_info_gestures"
-         android:icon="@drawable/wallet_ic_info"
+         android:icon="@drawable/ic_wallet_info"
          android:title="@string/wallet_pin_setup_action_info_gesture_label"
          app:showAsAction="ifRoom|withText" />
 </menu>

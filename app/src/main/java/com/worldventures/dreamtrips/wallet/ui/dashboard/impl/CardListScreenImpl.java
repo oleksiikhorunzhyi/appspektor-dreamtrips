@@ -390,7 +390,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    public void modeAddCard() {
       emptyCardListView.setText(R.string.wallet_wizard_empty_card_list_label);
       fabButton.setRotation(0);
-      fabButton.setImageResource(R.drawable.ic_white_plus);
+      fabButton.setImageResource(R.drawable.ic_wallet_vector_white_plus);
       fabButton.setOnClickListener(v -> addCardButtonClick());
    }
 

@@ -46,7 +46,7 @@
             <ImageView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:src="@drawable/flyecard_front_pin_proposal"
+                  android:src="@drawable/wallet_flye_front_pin_proposal"
                   />
 
             <ImageView
@@ -55,7 +55,7 @@
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_vertical|end"
                   android:layout_marginEnd="15dp"
-                  android:src="@drawable/flye_pin_proposal_screen"
+                  android:src="@drawable/wallet_flye_display_lock"
                   />
          </FrameLayout>
 

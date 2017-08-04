@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="6dp"
             android:layout_gravity="top"
-            android:background="@drawable/square_shadow"
+            android:background="@drawable/wallet_square_shadow"
             android:elevation="@dimen/spacing_tiniest"
             android:translationZ="@dimen/spacing_tiniest"
             />
@@ -68,7 +68,7 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_marginBottom="@dimen/spacing_large"
-               android:src="@drawable/offline_mode_wifi"
+               android:src="@drawable/ic_wallet_offline_mode_wifi"
                />
 
          <TextView

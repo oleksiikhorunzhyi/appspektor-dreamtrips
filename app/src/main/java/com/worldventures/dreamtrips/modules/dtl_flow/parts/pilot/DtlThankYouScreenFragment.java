@@ -10,7 +10,9 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
 
 import butterknife.InjectView;
@@ -26,6 +28,16 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    @InjectView(R.id.tv_payment_resume_text_pilot) TextView mPaymentResumeView;
    @InjectView(R.id.tv_payment_sub_thank_you_message_pilot) TextView mSubThankYouMessage;
 
+   private Merchant merchant;
+
+   @Override
+   public void onActivityCreated(Bundle savedInstanceState) {
+      super.onActivityCreated(savedInstanceState);
+      ThrstPaymentBundle thrstPaymentBundle = getArgs();
+      merchant = thrstPaymentBundle.getMerchant();
+      ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchant.displayName());
+   }
+
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
@@ -38,7 +50,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
 
    @OnClick(R.id.payment_done_button)
    public void onDoneClick(){
-      getPresenter().onBackPressed();
+      getPresenter().onDoneClick();
    }
 
    @Override

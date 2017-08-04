@@ -25,14 +25,15 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
 
    @InjectView(R.id.web_view) HttpErrorHandlerWebView webView;
 
+   private String merchantName;
+
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
       ThrstFlowBundle thrstFlowBundle = getArgs();
       String receiptUrl = thrstFlowBundle.getReceiptUrl();
       String token = thrstFlowBundle.getToken();
-      String transactionId = thrstFlowBundle.getTransactionId();
-      String merchantName = thrstFlowBundle.getMerchant().displayName();
+      merchantName = thrstFlowBundle.getMerchant().displayName();
       ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
       final String cookieString = "\"auth=" + token + "; Domain=.thrst.com; Path=/;\"";
 
@@ -59,7 +60,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
 
    @Override
    protected DtlThrstFlowPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlThrstFlowPresenter();
+      return new DtlThrstFlowPresenter(getArgs());
    }
 
    @Override
@@ -86,7 +87,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       router.moveTo(
             Route.DTL_THRST_THANK_YOU_SCREEN,
             NavigationConfigBuilder.forActivity()
-                  .data(new ThrstPaymentBundle(isPaid, totalAmount))
+                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, totalAmount))
                   .build()
       );
    }

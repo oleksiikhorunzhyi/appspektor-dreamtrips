@@ -39,7 +39,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
       }
    }
 
-   public void onBackPressed() {
+   public void onDoneClick() {
       view.goBack();
    }
 

@@ -156,6 +156,9 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.im
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
@@ -281,6 +284,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
             ForceUpdatePowerOnScreenImpl.class,
             ForcePairKeyScreenImpl.class,
             LostCardScreenImpl.class,
+            MapScreenImpl.class,
             ExistingCardDetectScreenImpl.class,
             UnassignSuccessScreenImpl.class,
             EnterPinUnassignScreenImpl.class,
@@ -600,13 +604,16 @@ public class WalletActivityModule {
    LostCardPresenter provideLostCardPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
          PermissionDispatcher permissionDispatcher, SmartCardLocationInteractor smartCardLocationInteractor,
-         WalletDetectLocationService walletDetectLocationService, Activity activity, AnalyticsInteractor analyticsInteractor,
-         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WalletDetectLocationService walletDetectLocationService, Activity activity, AnalyticsInteractor analyticsInteractor) {
       //noinspection all
       return new LostCardPresenterImpl(navigator, smartCardInteractor, networkService, permissionDispatcher,
             smartCardLocationInteractor, walletDetectLocationService,
-            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor,
-            httpErrorHandlingUtil);
+            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor);
+   }
+
+   @Provides
+   MapPresenter provideMapPresenter(SmartCardLocationInteractor smartCardLocationInteractor, AnalyticsInteractor analyticsInteractor) {
+      return new MapPresenterImpl(smartCardLocationInteractor, analyticsInteractor);
    }
 
    @Provides

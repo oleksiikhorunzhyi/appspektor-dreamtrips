@@ -124,7 +124,7 @@ ext {
    // presentation frameworks
    def mosbyVersion = '2.0.0'
    def flowVersion = '0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
-   def conductorVersion = '2.0.2'
+   def conductorVersion = '2.1.4'
    moduleDependencies.presentation = [
          mosbyMvp             : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
          mosbyCommon          : [c: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],

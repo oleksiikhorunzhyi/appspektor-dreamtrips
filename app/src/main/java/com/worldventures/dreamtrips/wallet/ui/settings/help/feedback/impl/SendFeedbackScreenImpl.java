@@ -101,7 +101,7 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
    }
 
    private void initItemMenu() {
-      toolbar.inflateMenu(R.menu.menu_wallet_settings_help);
+      toolbar.inflateMenu(R.menu.wallet_settings_help);
       actionSendMenuItem = toolbar.getMenu().findItem(R.id.action_send);
       toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {

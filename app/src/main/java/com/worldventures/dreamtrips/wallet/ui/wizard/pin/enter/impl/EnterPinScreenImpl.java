@@ -81,7 +81,7 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
    }
 
    private void setupMenuItem() {
-      toolbar.inflateMenu(R.menu.menu_wallet_pin_setup);
+      toolbar.inflateMenu(R.menu.wallet_pin_setup);
       toolbar.setOnMenuItemClickListener(item -> handleActionItemsClick(item.getItemId()));
    }
 

@@ -71,7 +71,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
       binding.setProfile(profileViewModel);
       binding.setOnEditTextFocusChange(new LastPositionSelector());
       binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-      binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
+      binding.toolbar.inflateMenu(R.menu.wallet_settings_profile);
       binding.setOnDisplaySettingsClick(v -> getPresenter().openDisplaySettings());
       actionDoneMenuItem = binding.toolbar.getMenu().findItem(R.id.done);
       binding.toolbar.setOnMenuItemClickListener(item -> {

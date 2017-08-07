@@ -114,7 +114,7 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    private void setupToolbar() {
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-      toolbar.inflateMenu(R.menu.menu_wallet_settings_display_options);
+      toolbar.inflateMenu(R.menu.wallet_settings_display_options);
       toolbar.setOnMenuItemClickListener(item -> {
          if (item.getItemId() == R.id.done) saveCurrentChoice();
          return false;

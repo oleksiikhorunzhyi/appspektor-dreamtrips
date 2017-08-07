@@ -89,7 +89,7 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
    private void initToolbar() {
       binding.toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
 
-      binding.toolbar.inflateMenu(R.menu.menu_wallet_payment_feedback);
+      binding.toolbar.inflateMenu(R.menu.wallet_payment_feedback);
       actionSendMenuItem = binding.toolbar.getMenu().findItem(R.id.action_send);
 
       binding.toolbar.setOnMenuItemClickListener(item -> {

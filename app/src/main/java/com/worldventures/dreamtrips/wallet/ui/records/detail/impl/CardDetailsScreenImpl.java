@@ -110,7 +110,7 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    private void setupToolbar() {
       final Toolbar toolbar = binding.toolbar;
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-      toolbar.inflateMenu(R.menu.menu_wallet_payment_card_detail);
+      toolbar.inflateMenu(R.menu.wallet_payment_card_detail);
       toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.action_save:

@@ -78,7 +78,7 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
 
    private void initToolbar() {
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-      toolbar.inflateMenu(R.menu.menu_wallet_settings_videos);
+      toolbar.inflateMenu(R.menu.wallet_settings_videos);
 
       final MenuItem actionVideoLanguage = toolbar.getMenu().findItem(R.id.action_video_language);
       videoLocales = (Spinner) MenuItemCompat.getActionView(actionVideoLanguage);

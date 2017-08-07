@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.impl;
 
-
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
@@ -71,7 +70,6 @@ import static android.view.View.VISIBLE;
 public class CardListScreenImpl extends WalletBaseController<CardListScreen, CardListPresenter>
       implements CardListScreen {
    private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
-   private static final long FADE_ANIMATION_DURATION = 250;
    private static final double VISIBLE_SCALE = 0.64;
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
@@ -351,7 +349,6 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
       TransitionModel transitionModel = getPresenter().getCardPosition(view, overlap, model.getCardBackGround(),
             model.isDefaultCard());
       addTransitionView(model, transitionModel);
-      smartCardWidget.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION).start();
       getPresenter().cardClicked(model, transitionModel);
    }
 

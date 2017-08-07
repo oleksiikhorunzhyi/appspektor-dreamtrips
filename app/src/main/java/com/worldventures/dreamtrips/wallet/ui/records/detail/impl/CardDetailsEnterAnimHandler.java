@@ -42,7 +42,7 @@ public class CardDetailsEnterAnimHandler extends AnimatorChangeHandler {
       final AnimatorSet animatorSet = new AnimatorSet();
       animatorSet.play(ofFloat(cardView, View.TRANSLATION_Y, y, 0))
             .before(ofFloat(controlsLayout, View.ALPHA, 0, 1))
-            .with(ofFloat(from, View.ALPHA, 1, 0).setDuration(50));
+            .with(ofFloat(from, View.ALPHA, 1, 0, 0, 0));
       return animatorSet;
    }
 
@@ -63,9 +63,8 @@ public class CardDetailsEnterAnimHandler extends AnimatorChangeHandler {
    }
 
    private float calcTargetTranslationY(TransitionModel params, View view) {
-      int[] coords = new int[2];
-      view.getLocationOnScreen(coords);
-      return params.getTop() - coords[1] + params.getOverlap();
+      int marginTop = ((ViewGroup) view.getParent()).getPaddingTop();
+      return params.getTop() + marginTop + params.getOverlap();
    }
 
 

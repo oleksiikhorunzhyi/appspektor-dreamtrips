@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.worldventures.dreamtrips.R;
@@ -19,7 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.VideoCreationCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.PhotoStripView;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -31,7 +30,6 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    @State boolean pickerDisabled;
    @State boolean imageFromArgsAlreadyAttached;
 
-   @InjectView(R.id.picker_container) ViewGroup pickerContainer;
    @InjectView(R.id.photo_strip) PhotoStripView photoStripView;
 
    @Override
@@ -56,18 +54,6 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    @Override
    public void onViewCreated(View view, Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
-      pickerContainer.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
-         @Override
-         public void onChildViewAdded(View parent, View child) {
-
-         }
-
-         @Override
-         public void onChildViewRemoved(View parent, View child) {
-            if (isResumed()) backStackDelegate.setListener(() -> onBack());
-         }
-      });
-
       attachImages();
    }
 
@@ -83,12 +69,6 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
             .transparentBackground(true)
             .animationConfig(new AnimationConfig(R.anim.fade_in, R.anim.fade_out))
             .build());
-   }
-
-   @Override
-   public void cancel() {
-      pickerContainer.setOnHierarchyChangeListener(null);
-      super.cancel();
    }
 
    @Override
@@ -108,14 +88,8 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    }
 
    @Override
-   public void enableImagePicker() {
-      pickerDisabled = false;
-      updatePickerState();
-   }
-
-   @Override
-   public void disableImagePicker() {
-      pickerDisabled = true;
+   public void setEnabledImagePicker(boolean enabled) {
+      pickerDisabled = !enabled;
       updatePickerState();
    }
 
@@ -136,17 +110,10 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    }
 
    @Override
-   public void showMediaPicker(boolean picturesSelected, int videoPickLimit) {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .data(new PickerBundle.Builder()
-                  .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
-                  .setVideoPickLimit(videoPickLimit)
-                  .setVideoPickingEnabled(false)
-                  .build())
-            .build());
+   public void showMediaPicker(int photoPickLimit, int videoPickLimit, int maxVideoDuration) {
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(getPresenter()::attachMedia);
+      mediaPickerDialog.show(photoPickLimit);
    }
 
    @Override

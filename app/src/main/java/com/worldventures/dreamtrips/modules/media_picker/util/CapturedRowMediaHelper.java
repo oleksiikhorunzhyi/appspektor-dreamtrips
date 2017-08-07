@@ -42,4 +42,9 @@ public final class CapturedRowMediaHelper {
       Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, pickedPath);
       return new PhotoPickerModel(pair.first, pair.second);
    }
+
+   public Pair<String, Size> generateUri(String path) {
+      return ImageUtils.generateUri(drawableUtil, path);
+   }
+
 }

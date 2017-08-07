@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoComm
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.ProcessAttachmentsAndPost;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
@@ -21,6 +22,7 @@ public class PostsInteractor {
    private ActionPipe<EditPostCommand> editPostPipe;
    private ActionPipe<DeletePostCommand> deletePostPipe;
    private ActionPipe<CreatePostCompoundOperationCommand> createPostCompoundOperationPipe;
+   private ActionPipe<ProcessAttachmentsAndPost> ProcessAttachmentsAndPostPipe;
 
    public PostsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       createPostPipe = sessionActionPipeCreator.createPipe(CreatePostCommand.class, Schedulers.io());
@@ -30,6 +32,7 @@ public class PostsInteractor {
       createVideoPipe = sessionActionPipeCreator.createPipe(CreateVideoCommand.class, Schedulers.io());
       createPhotosPipe = sessionActionPipeCreator.createPipe(CreatePhotosCommand.class, Schedulers.io());
       createPostCompoundOperationPipe = sessionActionPipeCreator.createPipe(CreatePostCompoundOperationCommand.class, Schedulers.io());
+      ProcessAttachmentsAndPostPipe = sessionActionPipeCreator.createPipe(ProcessAttachmentsAndPost.class, Schedulers.io());
    }
 
    public ActionPipe<CreatePostCommand> createPostPipe() {
@@ -58,5 +61,9 @@ public class PostsInteractor {
 
    public ActionPipe<CreatePostCompoundOperationCommand> createPostCompoundOperationPipe() {
       return createPostCompoundOperationPipe;
+   }
+
+   public ActionPipe<ProcessAttachmentsAndPost> processAttachmentsAndPostPipe() {
+      return ProcessAttachmentsAndPostPipe;
    }
 }

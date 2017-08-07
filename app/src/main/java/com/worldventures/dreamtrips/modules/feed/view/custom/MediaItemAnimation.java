@@ -242,13 +242,14 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    }
 
    private void animateScroll(ViewHolder viewHolder) {
-      viewHolder.itemView.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+      viewHolder.itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
          @Override
-         public void onDraw() {
+         public boolean onPreDraw() {
             if (viewHolder.itemView.getHeight() > notifyIfViewHigher) {
-               viewHolder.itemView.getViewTreeObserver().removeOnDrawListener(this);
+               viewHolder.itemView.getViewTreeObserver().removeOnPreDrawListener(this);
                scrollAction.call(viewHolder.getAdapterPosition());
             }
+            return true;
          }
       });
    }

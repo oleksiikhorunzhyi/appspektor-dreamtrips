@@ -25,6 +25,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.feed.model.PickerIrregularPhotoModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripButtonCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripPhotoCell;
@@ -117,12 +118,20 @@ public class PhotoStripView extends LinearLayout {
       mediaAdapter = new BaseDelegateAdapter(getContext(), injector);
       mediaAdapter.registerCell(PhotoPickerModel.class, PhotoStripPhotoCell.class);
       mediaAdapter.registerDelegate(PhotoPickerModel.class, model -> {
-         if(eventListener != null) eventListener.photoPickStatusChanged(((PhotoPickerModel) model).copy());
+         if(eventListener != null) {
+            PhotoPickerModel pickedModel = ((PhotoPickerModel) model).copy();
+            pickedModel.setSource(MediaAttachment.Source.PHOTO_STRIP);
+            eventListener.photoPickStatusChanged(pickedModel);
+         }
       });
 
       mediaAdapter.registerCell(VideoPickerModel.class, PhotoStripVideoCell.class);
       mediaAdapter.registerDelegate(VideoPickerModel.class, model -> {
-         if(eventListener != null) eventListener.videoPickStatusChanged(((VideoPickerModel) model).copy());
+         if(eventListener != null) {
+            VideoPickerModel pickedModel = ((VideoPickerModel) model).copy();
+            pickedModel.setSource(MediaAttachment.Source.PHOTO_STRIP);
+            eventListener.videoPickStatusChanged(pickedModel);
+         }
       });
 
       mediaAdapter.registerCell(PickerIrregularPhotoModel.class, PhotoStripButtonCell.class);

@@ -22,6 +22,7 @@ public class VideoPickerModel extends MediaPickerModelImpl {
       copy.duration = this.duration;
       copy.pickedTime = this.pickedTime;
       copy.uri = this.uri;
+      copy.source = this.source;
       return copy;
    }
 

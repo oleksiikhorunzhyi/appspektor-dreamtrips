@@ -61,6 +61,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.LikeEntityComma
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.ProcessAttachmentsAndPost;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
@@ -236,6 +237,7 @@ import dagger.Module;
       GetPopularBucketItemsCommand.class,
       GetFeedEntityCommand.class,
       CreatePhotosCommand.class,
+      ProcessAttachmentsAndPost.class,
       CreateBucketItemCommand.class,
       UpdateBucketItemCommand.class,
       ChangeBucketListOrderCommand.class,

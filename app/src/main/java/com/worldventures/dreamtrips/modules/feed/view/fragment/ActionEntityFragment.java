@@ -88,8 +88,9 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       adapter.registerDelegate(PhotoCreationItem.class, this);
       photosList.setLayoutManager(new LinearLayoutManager(getContext()));
       photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
-      photosList.setItemAnimator(new MediaItemAnimation(position -> photosList.scrollToPosition(position), getResources().getDimension(R.dimen.photo_cell_title_height)));
       photosList.setAdapter(adapter);
+      photosList.setItemAnimator(new MediaItemAnimation(position -> photosList.scrollToPosition(position), getResources()
+            .getDimension(R.dimen.photo_cell_title_height)));
 
       configurationInteractor.configurationActionPipe()
             .observe()
@@ -140,13 +141,29 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void attachPhotos(List<PhotoCreationItem> images) {
-      adapter.addItems(images);
-      adapter.notifyDataSetChanged();
+      if (images.size() > 1) {
+         adapter.addItems(images);
+         adapter.notifyDataSetChanged();
+      } else {
+         attachMedia(images.get(0));
+      }
    }
 
    @Override
-   public void attachPhoto(PhotoCreationItem image) {
-      attachMedia(image);
+   public void attachVideo(VideoCreationModel model) {
+      attachMedia(model);
+   }
+
+   private void attachMedia(Object model) {
+      int position = adapter.getCount();
+      adapter.addItem(model);
+      adapter.notifyItemInserted(position);
+      photosList.scrollToPosition(position);
+   }
+
+   @Override
+   public void removeVideo(VideoCreationModel model) {
+      adapter.remove(model);
    }
 
    @Override
@@ -279,23 +296,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             }
          }
       }
-   }
-
-   @Override
-   public void attachVideo(VideoCreationModel model) {
-      attachMedia(model);
-   }
-
-   private void attachMedia(Object model) {
-      int position = adapter.getCount();
-      adapter.addItem(model);
-      adapter.notifyItemInserted(position);
-      photosList.scrollToPosition(position);
-   }
-
-   @Override
-   public void removeVideo(VideoCreationModel model) {
-      adapter.remove(model);
    }
 
    //////////////////////////////////////////

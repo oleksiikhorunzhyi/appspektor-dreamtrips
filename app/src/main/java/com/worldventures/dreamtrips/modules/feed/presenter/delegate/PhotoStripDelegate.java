@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -154,6 +155,7 @@ public class PhotoStripDelegate {
          return;
       }
 
+      model.setSource(MediaAttachment.Source.PHOTO_STRIP);
       photoAvailableLimit += model.isChecked()? -1 : +1;
       photoStrip.updateMediaModel(model);
 
@@ -167,13 +169,16 @@ public class PhotoStripDelegate {
                .compose(bindIoToMain(stopper))
                .subscribe(processedModel -> {
                   processedModel.setChecked(model.isChecked());
+                  processedModel.setSource(model.getSource());
                   processedModels.put(model.getAbsolutePath(), processedModel);
+
                   newMediaAction.call(processedModel.copy());
                });
       }
    }
 
    private void videoPickStatusChanged(VideoPickerModel model) {
+      model.setSource(MediaAttachment.Source.PHOTO_STRIP);
       if (checkLimitVideoException(model) || checkTwoMediaTypeException(model)) {
          removeItem(model);
       } else {
@@ -232,6 +237,7 @@ public class PhotoStripDelegate {
             .subscribe(videoPickerModel -> {
                if (!checkMaxVideoLengthException(videoPickerModel, videoLengthLimit)) {
                   videoPickerModel.setChecked(true);
+                  videoPickerModel.setSource(MediaAttachment.Source.CAMERA);
                   newMediaAction.call(videoPickerModel);
                }
                unsubscribeCameraSubscription();
@@ -243,6 +249,7 @@ public class PhotoStripDelegate {
             .compose(bindIoToMain(stopper))
             .subscribe(photoPickerModel -> {
                photoPickerModel.setChecked(true);
+               photoPickerModel.setSource(MediaAttachment.Source.CAMERA);
                newMediaAction.call(photoPickerModel);
                unsubscribeCameraSubscription();
             });

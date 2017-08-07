@@ -28,6 +28,7 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
       copy.size = this.size;
       copy.pickedTime = this.pickedTime;
       copy.uri = this.uri;
+      copy.source = this.source;
       return copy;
    }
 

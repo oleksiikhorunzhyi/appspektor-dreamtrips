@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.modules.facebook.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.facebook.CallbackManager;
-import com.facebook.login.LoginManager;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -20,7 +17,6 @@ import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumPres
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,8 +36,6 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
 
    private BaseArrayListAdapter<FacebookAlbum> adapter;
    private GridLayoutManager layoutManager;
-
-   private CallbackManager callbackManager;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -92,30 +86,9 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
    }
 
    @Override
-   public void setCallbackManager(CallbackManager callbackManager) {
-      this.callbackManager = callbackManager;
-   }
-
-   @Override
-   public void loginToFacebook(Collection<String> permissions) {
-      LoginManager.getInstance().logInWithReadPermissions(this, permissions);
-   }
-
-   @Override
-   public int getItemsCount() {
-      return adapter.getItemCount();
-   }
-
-   @Override
    public void onDestroyView() {
       this.lvItems.setAdapter(null);
       super.onDestroyView();
-   }
-
-   @Override
-   public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      callbackManager.onActivityResult(requestCode, resultCode, data);
    }
 
    @Override

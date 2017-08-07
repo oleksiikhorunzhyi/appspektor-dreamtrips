@@ -132,74 +132,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       this.refreshLayout.setOnRefreshListener(this);
       this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       webView.getSettings().setJavaScriptEnabled(true);
+      webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
       webView.getSettings().setDefaultTextEncodingName("utf-8");
-      webView.setWebViewClient(new WebViewClient() {
-
-         @Override
-         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            // Ensure we don't track redirected urls
-            if (!TextUtils.isEmpty(url) && url.equals(getURL())) {
-               sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
-            }
-            isLoading = true;
-            weakHandler.post(() -> {
-               if (refreshLayout != null) refreshLayout.setRefreshing(true);
-            });
-            cleanError();
-         }
-
-         @Override
-         public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            getPresenter().pageLoaded(url);
-         }
-
-         @Override
-         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.startsWith("mailto:")) {
-               Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
-               startActivity(Intent.createChooser(emailIntent, getString(R.string.email_app_choose_dialog_title)));
-               view.reload();
-               return true;
-            }
-
-            if (url.endsWith(".pdf")) {
-               startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-               return true;
-            }
-            return false;
-         }
-
-         @TargetApi(Build.VERSION_CODES.M)
-         @Override
-         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            super.onReceivedError(view, request, error);
-            showError(error.getErrorCode());
-         }
-
-         @Override
-         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            super.onReceivedError(view, errorCode, description, failingUrl);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) showError(errorCode);
-         }
-
-         @Override
-         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            super.onReceivedHttpError(view, request, errorResponse);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-               StaticInfoFragment.this.onReceivedHttpError(errorResponse.getStatusCode());
-            }
-         }
-
-         @Override
-         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            handler.cancel();
-            CrashlyticsTracker.trackError(new IllegalStateException("Can't load web page due to ssl error:\n" + error));
-            showError(SECURE_CONNECTION_ERROR);
-         }
-
-      });
+      webView.setWebViewClient(new DtWebviewClient());
 
       VideoEnabledWebChromeClient webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, null, webView) {
          // file upload callback (Android 2.2 (API level 8) -- Android 2.3 (API level 10)) (hidden method)
@@ -399,7 +334,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Override
    public void reload(String url) {
       webView.loadUrl("about:blank");
-      webView.loadUrl(url);
+      webView.loadUrl(url, getHeaders());
    }
 
    @Override
@@ -581,6 +516,77 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       public void afterCreateView(View rootView) {
          webView.getSettings().setDomStorageEnabled(true);
          super.afterCreateView(rootView);
+      }
+   }
+
+   private class DtWebviewClient extends WebViewClient {
+
+      @Override
+      public void onPageStarted(WebView view, String url, Bitmap favicon) {
+         super.onPageStarted(view, url, favicon);
+         // Ensure we don't track redirected urls
+         if (!TextUtils.isEmpty(url) && url.equals(getURL())) {
+            sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+         }
+         isLoading = true;
+         weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         });
+         cleanError();
+      }
+
+      @Override
+      public void onPageFinished(WebView view, String url) {
+         super.onPageFinished(view, url);
+         getPresenter().pageLoaded(url);
+      }
+
+      @Override
+      public boolean shouldOverrideUrlLoading(WebView view, String url) {
+         return shouldOverride(view, url);
+      }
+
+      private boolean shouldOverride(WebView view, String url) {
+         if (url.startsWith("mailto:")) {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.email_app_choose_dialog_title)));
+            view.reload();
+            return true;
+         }
+
+         if (url.endsWith(".pdf")) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            return true;
+         }
+         return false;
+      }
+
+      @TargetApi(Build.VERSION_CODES.M)
+      @Override
+      public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+         super.onReceivedError(view, request, error);
+         showError(error.getErrorCode());
+      }
+
+      @Override
+      public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+         super.onReceivedError(view, errorCode, description, failingUrl);
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) showError(errorCode);
+      }
+
+      @Override
+      public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+         super.onReceivedHttpError(view, request, errorResponse);
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            StaticInfoFragment.this.onReceivedHttpError(errorResponse.getStatusCode());
+         }
+      }
+
+      @Override
+      public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+         handler.cancel();
+         CrashlyticsTracker.trackError(new IllegalStateException("Can't load web page due to ssl error:\n" + error));
+         showError(SECURE_CONNECTION_ERROR);
       }
    }
 }

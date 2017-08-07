@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
+import java.net.URLEncoder
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -81,12 +82,19 @@ class StaticPageProviderSpec: BaseSpec({
          val params = parseParamsFromUrl(actualUrl)
          checkEnrollMerchantParams(params)
       }
+
+      it ("should provide correct backoffice url") {
+         val encodedPart = URLEncoder.encode("/Marketing/WorldVenturesAdvantage", "UTF-8")
+         val expectedUrl = "$BACKOFFICE_URL/Account/Dispatch?url=$encodedPart"
+         assertEquals(expectedUrl, provider.wvAdvantageUrl)
+      }
    }
 
 }) {
    companion object {
-      val API_URL = "http://some-api.io/";
-      val UPLOADERY_URL = "http://some-uploadery-api.io";
+      val API_URL = "http://some-api.io/"
+      val BACKOFFICE_URL = "http://backoffice.io/"
+      val UPLOADERY_URL = "http://some-uploadery-api.io"
 
       val USERNAME = "515661"
       val TRIP_ID = "12410101"
@@ -97,7 +105,7 @@ class StaticPageProviderSpec: BaseSpec({
 
       val mockSessionHolder: SessionHolder<UserSession> = mock()
       val deviceInfoProvider: DeviceInfoProvider = mock()
-      val provider = StaticPageProvider(mockSessionHolder, deviceInfoProvider, API_URL, UPLOADERY_URL)
+      val provider = StaticPageProvider(mockSessionHolder, deviceInfoProvider, API_URL, BACKOFFICE_URL, UPLOADERY_URL)
       val userSession: UserSession = mock()
 
       init {

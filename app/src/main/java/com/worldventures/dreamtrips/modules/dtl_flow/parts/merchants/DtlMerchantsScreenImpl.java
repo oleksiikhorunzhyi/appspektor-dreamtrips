@@ -38,7 +38,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelp
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -449,7 +448,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
       updateFiltersView(stringResource);
-      getPresenter().setMerchantType(merchantType, getActivity().getString(stringResource));
+      getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);
    }
 }

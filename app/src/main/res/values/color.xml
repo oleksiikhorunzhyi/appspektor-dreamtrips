@@ -12,6 +12,7 @@
 
    <color name="grey">#A0A0A0</color>
    <color name="grey_lighter">#e6e6e6</color>
+   <color name="feed_post_create_text_color">#929292</color>
 
    <color name="comment_button_disabled">#858585</color>
 

@@ -191,7 +191,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void unsetCardAsDefault() {
-      if (recordDetailViewModel.isDefaultRecord()) {
+      if (recordDetailViewModel.getRecordModel().isDefaultCard()) {
          recordInteractor.setDefaultCardOnDeviceCommandPipe()
                .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
       }

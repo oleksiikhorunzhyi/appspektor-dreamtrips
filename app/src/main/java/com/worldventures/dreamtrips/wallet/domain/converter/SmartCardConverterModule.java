@@ -120,4 +120,14 @@ public class SmartCardConverterModule {
    Converter provideSmartCardUserPhoneToCardUserPhoneConverter() {
       return new SmartCardUserPhoneToCardUserPhoneConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSocialVideoToWalletVideoConverter() {
+      return new SocialVideoToWalletVideoConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSocialDocumentToWalletDocumentConterter() {
+      return new SocialDocumentToWalletDocumentConterter();
+   }
 }

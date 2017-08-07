@@ -10,23 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
-import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
-import com.worldventures.dreamtrips.modules.infopages.view.cell.DocumentCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletLoadMore;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder.DocumentHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder.HelpDocsHolderFactoryImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +46,7 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
 
    @Inject WalletHelpDocumentsPresenter presenter;
 
-   private BaseDelegateAdapter adapter;
+   private MultiHolderAdapter adapter;
    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
 
    @Override
@@ -86,19 +87,17 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
    }
 
    private void setUpView() {
-      // TODO get rid of this adapter and Injector
-      adapter = new BaseDelegateAdapter(getContext(), (Injector) getContext());
-      adapter.registerCell(Document.class, DocumentCell.class, this);
-      adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
+      adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new HelpDocsHolderFactoryImpl(documentCallback));
 
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(getView());
       statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(errorTv);
+
       statePaginatedRecyclerViewManager.init(adapter, new Bundle());
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL_LIST));
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
          if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
-            adapter.addItem(new LoadMoreModel());
+            adapter.addItem(new WalletLoadMore());
             adapter.notifyDataSetChanged();
          }
 
@@ -107,14 +106,17 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
       statePaginatedRecyclerViewManager.startLoading();
    }
 
+   private DocumentHolder.Callback documentCallback = walletDocument -> getPresenter().openDocument(walletDocument);
+
    protected void onNavigationClick() {
       getPresenter().goBack();
    }
 
    @Override
-   public void onDocumentsLoaded(List<Document> documents) {
+   public void onDocumentsLoaded(List<WalletDocument> documents) {
       statePaginatedRecyclerViewManager.finishLoading();
-      adapter.setItems(documents);
+      adapter.clear();
+      adapter.addItems(documents);
    }
 
    @Override
@@ -129,13 +131,9 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
             ErrorViewFactory.<GetDocumentsCommand>builder()
                   .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
                         command -> getPresenter().refreshDocuments(),
-                        command -> {}))
+                        command -> {
+                        }))
                   .build());
-   }
-
-   @Override
-   public void onCellClicked(Document model) {
-      getPresenter().openDocument(model);
    }
 
    @Override

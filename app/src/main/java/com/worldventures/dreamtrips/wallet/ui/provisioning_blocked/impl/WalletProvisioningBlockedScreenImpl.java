@@ -9,18 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedScreen;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListModel;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceModel;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.adapter.ProvisionBlockedHolderFactoryImpl;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDevicesListModel;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.UnsupportedDeviceModel;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -33,7 +33,7 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
 
    @Inject WalletProvisioningBlockedPresenter presenter;
 
-   IgnoreFirstItemAdapter adapter;
+   private SimpleMultiHolderAdapter adapter;
 
    @Override
    protected void onAttach(@NonNull View view) {
@@ -41,10 +41,8 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
 
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
 
-      adapter = new IgnoreFirstItemAdapter(getContext(), (Injector) getContext());
+      adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new ProvisionBlockedHolderFactoryImpl());
 
-      adapter.registerCell(UnsupportedDeviceModel.class, UnsupportedDeviceInfoCell.class);
-      adapter.registerCell(SupportedDevicesListModel.class, SupportedDevicesListCell.class);
       adapter.addItem(0, new UnsupportedDeviceModel());
 
       deviceList.setAdapter(adapter);
@@ -64,7 +62,7 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
 
    @Override
    public void onSupportedDevicesLoaded(SupportedDevicesListModel devicesModel) {
-      adapter.clear();
+      adapter.clearWithoutFirst();
       adapter.addItem(devicesModel);
    }
 

@@ -28,6 +28,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -40,10 +42,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.recycler.WrapContentLinearL
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderFactoryImpl;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.MultiHolderAdapter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
@@ -89,7 +89,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    private Dialog factoryResetConfirmationDialog;
    private Dialog scNonConnectionDialog;
 
-   private MultiHolderAdapter multiAdapter;
+   private DashboardHolderAdapter multiAdapter;
    private ScreenWalletCardlistBinding binding;
 
    private ArrayList<BaseViewModel> cardViewModels;
@@ -309,7 +309,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
 
    private void setupCardStackList() {
       int dimension = getResources().getDimensionPixelSize(R.dimen.wallet_card_height);
-      multiAdapter = new MultiHolderAdapter<>(new ArrayList<>(), new DashboardHolderFactoryImpl());
+      multiAdapter = new DashboardHolderAdapter<>(new ArrayList<>(), new DashboardHolderFactoryImpl());
       bankCardList.setAdapter(multiAdapter);
       final DefaultItemAnimator listAnimator = new DefaultItemAnimator();
       listAnimator.setSupportsChangeAnimations(false);

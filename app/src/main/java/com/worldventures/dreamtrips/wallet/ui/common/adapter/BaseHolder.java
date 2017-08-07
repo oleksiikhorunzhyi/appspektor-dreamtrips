@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter;
+package com.worldventures.dreamtrips.wallet.ui.common.adapter;
 
 
 import android.support.v7.widget.RecyclerView;

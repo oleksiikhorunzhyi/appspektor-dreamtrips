@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEnt
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
@@ -15,6 +14,7 @@ import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
@@ -27,6 +27,7 @@ import java.util.List;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelpVideoScreen> implements WalletHelpVideoPresenter {
@@ -34,19 +35,21 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    private final CachedEntityInteractor cachedEntityInteractor;
    private final CachedEntityDelegate cachedEntityDelegate;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
+   private final MapperyContext mapperyContext;
 
    private final WalletHelpVideoDelegate helpVideoDelegate;
 
    public WalletHelpVideoPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
          CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate,
-         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         HttpErrorHandlingUtil httpErrorHandlingUtil, MapperyContext mapperyContext) {
       super(navigator, smartCardInteractor, networkService);
       this.memberVideosInteractor = memberVideosInteractor;
       this.cachedEntityInteractor = cachedEntityInteractor;
       this.cachedEntityDelegate = cachedEntityDelegate;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       this.helpVideoDelegate = new WalletHelpVideoDelegate();
+      this.mapperyContext = mapperyContext;
    }
 
    @Override
@@ -68,7 +71,7 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    }
 
    private void handleUpdatedStatusCachedEntities(List<VideoCategory> categories) {
-      getView().provideVideos(categories.get(0).getVideos());
+      getView().provideVideos(mapperyContext.convert(categories.get(0).getVideos(), WalletVideo.class));
       getView().showRefreshing(false);
    }
 
@@ -116,7 +119,7 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    }
 
    @Override
-   public void onPlayVideo(Video video) {
+   public void onPlayVideo(WalletVideo video) {
       final Uri videoUri = helpVideoDelegate.playVideo(getView().getViewContext(), video);
       getNavigator().goVideoPlayer(videoUri, video.getVideoName(),
             getClass(), helpVideoDelegate.obtainVideoLanguage(video));

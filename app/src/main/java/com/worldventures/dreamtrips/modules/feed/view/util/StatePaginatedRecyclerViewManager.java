@@ -8,7 +8,6 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Focusable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView;
@@ -39,13 +38,13 @@ public class StatePaginatedRecyclerViewManager {
       weakHandler = new WeakHandler();
    }
 
-   public void init(BaseArrayListAdapter adapter, Bundle savedInstanceState) {
+   public void init(RecyclerView.Adapter adapter, Bundle savedInstanceState) {
       LinearLayoutManager linearLayoutManager = new LinearLayoutManager(stateRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
       linearLayoutManager.setAutoMeasureEnabled(true);
       init(adapter, savedInstanceState, linearLayoutManager);
    }
 
-   public void init(BaseArrayListAdapter adapter, Bundle savedInstanceState, LinearLayoutManager linearLayoutManager) {
+   public void init(RecyclerView.Adapter adapter, Bundle savedInstanceState, LinearLayoutManager linearLayoutManager) {
       layoutManager = linearLayoutManager;
       swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
 

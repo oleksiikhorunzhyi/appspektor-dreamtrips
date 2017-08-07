@@ -1,16 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 
 import java.io.File;
 import java.util.List;
@@ -57,11 +55,11 @@ public class WalletHelpVideoDelegate {
       return getFilePath(context, entity.getUrl());
    }
 
-   public String obtainVideoLanguage(final Video video) {
+   public String obtainVideoLanguage(final WalletVideo video) {
       return ProjectTextUtils.defaultIfEmpty(video.getLanguage(), "null");
    }
 
-   public Uri playVideo(Context context, final Video video) {
+   public Uri playVideo(Context context, final WalletVideo video) {
       CachedModel videoEntity = video.getCacheEntity();
       Uri parse = Uri.parse(video.getVideoUrl());
       if (isCached(context, videoEntity)) {

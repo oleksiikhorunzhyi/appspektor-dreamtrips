@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
@@ -18,14 +19,14 @@ import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Photo extends BaseFeedEntity implements IFullScreenObject {
+public class Photo extends BaseFeedEntity implements ImagePathHolder, Parcelable {
 
    private String title;
    private Date shotAt;
    private Date createdAt;
    private Location location;
    private List<String> tags;
-   private Image images;
+   private String url;
    private List<PhotoTag> photoTags;
    private int photoTagsCount;
    private int width;
@@ -90,8 +91,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       this.title = title;
    }
 
-   public void setImages(Image images) {
-      this.images = images;
+   public void setUrl(String url) {
+      this.url = url;
    }
 
    public List<PhotoTag> getPhotoTags() {
@@ -128,92 +129,13 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
    }
 
    @Override
-   public String toString() {
-      return "Photo{" +
-            "title='" + title + '\'' +
-            ", shotAt=" + shotAt +
-            ", location=" + location +
-            ", tags=" + tags +
-            ", images=" + images +
-            ", photoTags=" + photoTags +
-            ", photoTagsCount=" + photoTagsCount +
-            ", width=" + width +
-            ", height=" + height +
-            '}';
-   }
-
-   @Override
    public String getOriginalText() {
       return getTitle();
    }
 
    @Override
    public String getImagePath() {
-      return images.getUrl();
-   }
-
-   public String getFSId() {
-      return uid;
-   }
-
-   @Override
-   public Image getFSImage() {
-      return images;
-   }
-
-   @Override
-   public String getFSTitle() {
-      if (owner != null) {
-         return owner.getUsername();
-      }
-      return "";
-   }
-
-   @Override
-   public String getFSDescription() {
-      return title;
-   }
-
-   @Override
-   public String getFSShareText() {
-      return title;
-   }
-
-   @Override
-   public int getFSCommentCount() {
-      return commentsCount;
-   }
-
-   @Override
-   public int getFSLikeCount() {
-      return getLikesCount();
-   }
-
-   @Override
-   public String getFSLocation() {
-      if (location == null) {
-         return "";
-      }
-      return location.getName();
-   }
-
-   @Override
-   public String getFSDate() {
-      return DateTimeUtils.convertDateToString(shotAt, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
-   }
-
-   @Override
-   public String getFSUserPhoto() {
-      if (owner == null) {
-         return "";
-      } else {
-         return owner.getAvatar().getMedium();
-      }
-   }
-
-   @Override
-   public User getUser() {
-      return owner;
+      return url;
    }
 
    public void setUser(User user) {
@@ -226,6 +148,16 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
    public void setLocation(Location location) {
       this.location = location;
+   }
+
+   public BaseMediaEntity castToMediaEntity() {
+      PhotoMediaEntity mediaEntity = new PhotoMediaEntity();
+      mediaEntity.setType(TripImageType.PHOTO);
+      mediaEntity.setUid(getUid());
+      mediaEntity.setCreatedAt(getCreatedAt());
+      mediaEntity.setUrl(url);
+      mediaEntity.setPhoto(this);
+      return mediaEntity;
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -260,7 +192,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       parcel.writeSerializable(createdAt);
       parcel.writeParcelable(location, i);
       parcel.writeStringList(tags);
-      parcel.writeParcelable(images, i);
+      parcel.writeString(url);
       parcel.writeParcelable(owner, i);
       parcel.writeTypedList(photoTags);
       parcel.writeInt(photoTagsCount);
@@ -278,7 +210,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       createdAt = (Date) in.readSerializable();
       location = in.readParcelable(Location.class.getClassLoader());
       tags = in.createStringArrayList();
-      images = in.readParcelable(Image.class.getClassLoader());
+      url = in.readString();
       owner = in.readParcelable(User.class.getClassLoader());
       photoTags = new ArrayList<>();
       in.readTypedList(photoTags, PhotoTag.CREATOR);

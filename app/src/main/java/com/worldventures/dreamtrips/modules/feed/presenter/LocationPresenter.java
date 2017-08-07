@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
 
 import java.io.IOException;
 import java.util.List;

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendProgressAnalyticsIfNeed;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;

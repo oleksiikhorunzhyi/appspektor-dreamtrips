@@ -9,7 +9,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
@@ -29,10 +28,9 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedCellListWidt
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -187,10 +185,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
+      int thumbSize = itemView.getResources().getDimensionPixelSize(R.dimen.photo_thumb_size);
       return Queryable.from(attachments).map(element -> (Photo) element.getItem()).map(photo -> {
-         return new CollageItem(photo.getFSImage().getThumbUrl(itemView.getResources()),
-               photo.getFSImage().getUrl(itemView.getWidth(), itemView.getHeight()),
-         photo.getWidth(), photo.getHeight());
+         return new CollageItem(ImageUtils.getParametrizedUrl(photo.getImagePath(), thumbSize, thumbSize),
+               ImageUtils.getParametrizedUrl(photo.getImagePath(), itemView.getWidth(), itemView.getHeight()),
+               photo.getWidth(), photo.getHeight());
       }).toList();
    }
 
@@ -204,29 +203,20 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void openFullscreenPhotoList(int position) {
-      List<IFullScreenObject> items = Queryable.from(getModelObject().getItem().getAttachments())
-            .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
-            .map(element -> {
-               Photo photo = (Photo) element.getItem();
-               photo.setUser(getModelObject().getItem().getOwner());
-               return photo;
-            })
-            .map(element -> (IFullScreenObject) element)
-            .toList();
-      FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(position)
-            .userId(getModelObject().getItem().getOwner().getId())
-            .type(TripImagesType.FIXED)
-            .route(Route.SOCIAL_IMAGE_FULLSCREEN)
-            .fixedList(new ArrayList<>(items))
-            .showTags(true)
-            .build();
-
-      NavigationConfig config = NavigationConfigBuilder.forActivity()
-            .data(data)
+      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+            .data(TripImagesFullscreenArgs.builder()
+                  .currentItemPosition(position)
+                  .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())
+                        .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
+                        .map(element -> {
+                           Photo photo = (Photo) element.getItem();
+                           photo.setUser(getModelObject().getItem().getOwner());
+                           return photo.castToMediaEntity();
+                        })
+                        .toList())
+                  .build())
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-            .build();
-
-      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, config);
+            .build());
    }
 
    private void openFeedItemDetails() {

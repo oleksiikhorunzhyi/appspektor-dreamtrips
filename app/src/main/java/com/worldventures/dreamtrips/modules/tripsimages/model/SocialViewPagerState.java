@@ -3,12 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 import java.io.Serializable;
 
 public class SocialViewPagerState implements Serializable {
-   private boolean contentWrapperVisible;
-   private boolean tagHolderVisible;
+   private boolean contentWrapperVisible = true;
+   private boolean tagHolderVisible = true;
 
    public SocialViewPagerState() {
    }
-
 
    public void setContentWrapperVisible(boolean contentWrapperVisible) {
       this.contentWrapperVisible = contentWrapperVisible;

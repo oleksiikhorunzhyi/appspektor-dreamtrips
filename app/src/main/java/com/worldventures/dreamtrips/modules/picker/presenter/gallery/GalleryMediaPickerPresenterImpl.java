@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
@@ -17,7 +18,6 @@ import com.worldventures.dreamtrips.modules.picker.model.GalleryPhotoPickerViewM
 import com.worldventures.dreamtrips.modules.picker.model.GalleryVideoPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.base.BaseMediaPickerPresenterImpl;
 import com.worldventures.dreamtrips.modules.picker.view.gallery.GalleryMediaPickerView;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;

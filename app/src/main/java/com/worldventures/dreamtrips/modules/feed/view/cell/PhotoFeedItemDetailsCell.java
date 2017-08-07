@@ -23,12 +23,13 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -65,21 +66,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
       }
 
       photoImageView.setOnClickListener(v -> {
-         ArrayList<IFullScreenObject> items = new ArrayList<>();
-         items.add(getModelObject().getItem());
-         FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(0)
-               .userId(getModelObject().getItem().getOwner().getId())
-               .type(TripImagesType.FIXED)
-               .route(Route.SOCIAL_IMAGE_FULLSCREEN)
-               .fixedList(items)
-               .build();
-
-         router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
-               .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-               .data(data)
-               .build());
-         //
-         sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+         openFullscreen();
       });
    }
 
@@ -130,29 +117,29 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
    }
 
    private void loadPhoto(Photo photoObj) {
-      photoImageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(photoObj.getFSImage()
-            .getThumbUrl(itemView.getResources())), photoImageView.getController()));
+      int thumbSize = itemView.getResources().getDimensionPixelSize(R.dimen.photo_thumb_size);
+      photoImageView.setController(GraphicUtils.provideFrescoResizingController(
+            Uri.parse(ImageUtils.getParametrizedUrl(photoObj.getImagePath(), thumbSize, thumbSize)),
+            photoImageView.getController()));
    }
 
    @OnClick(R.id.tag)
    public void onTagClick(View view) {
-      ArrayList<IFullScreenObject> items = new ArrayList<>();
-      items.add(getModelObject().getItem());
-      FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(0)
-            .userId(getModelObject().getItem()
-                  .getOwner()
-                  .getId())
-            .type(TripImagesType.FIXED)
-            .route(Route.SOCIAL_IMAGE_FULLSCREEN)
-            .fixedList(items)
-            .showTags(true)
-            .build();
+      openFullscreen();
+   }
+
+   private void openFullscreen() {
+      List<BaseMediaEntity> items = new ArrayList<>();
+      items.add(getModelObject().getItem().castToMediaEntity());
 
       NavigationConfig config = NavigationConfigBuilder.forActivity()
-            .data(data)
+            .data(TripImagesFullscreenArgs.builder()
+                  .mediaEntityList(items)
+                  .build())
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build();
-      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, config);
+      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, config);
+      sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
    }
 
    @Override

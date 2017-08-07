@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
-public class TripImage implements IFullScreenObject {
+public class TripImage implements Parcelable, ImagePathHolder {
 
    public static final long serialVersionUID = 128L;
 
@@ -51,63 +52,6 @@ public class TripImage implements IFullScreenObject {
    @Override
    public String getImagePath() {
       return url;
-   }
-
-   @Override
-   public Image getFSImage() {
-      Image image = new Image();
-      image.setUrl(url);
-      return image;
-   }
-
-   @Override
-   public String getFSTitle() {
-      return "";
-   }
-
-   @Override
-   public String getFSDescription() {
-      return description;
-   }
-
-   @Override
-   public String getFSShareText() {
-      return "";
-   }
-
-   @Override
-   public String getFSId() {
-      return id;
-   }
-
-   @Override
-   public int getFSCommentCount() {
-      return -1;
-   }
-
-   @Override
-   public int getFSLikeCount() {
-      return -1;
-   }
-
-   @Override
-   public String getFSLocation() {
-      return null;
-   }
-
-   @Override
-   public String getFSDate() {
-      return "";
-   }
-
-   @Override
-   public String getFSUserPhoto() {
-      return "";
-   }
-
-   @Override
-   public User getUser() {
-      return null;
    }
 
    @Override

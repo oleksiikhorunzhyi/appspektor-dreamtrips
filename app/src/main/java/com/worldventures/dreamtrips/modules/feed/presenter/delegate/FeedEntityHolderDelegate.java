@@ -8,7 +8,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBuc
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
@@ -31,6 +33,7 @@ import rx.functions.Action2;
 public class FeedEntityHolderDelegate {
 
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FeedInteractor feedInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject BucketInteractor bucketInteractor;
    @Inject FriendsInteractor friendsInteractor;
@@ -47,6 +50,13 @@ public class FeedEntityHolderDelegate {
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<EditPostCommand>()
                   .onSuccess(editPostCommand -> feedEntityHolder.updateFeedEntity(editPostCommand.getResult()))
+                  .onFail(errorAction::call));
+
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(changeFeedEntityLikedStatusCommand -> feedEntityHolder.updateFeedEntity(changeFeedEntityLikedStatusCommand.getResult()))
                   .onFail(errorAction::call));
 
       postsInteractor.deletePostPipe()

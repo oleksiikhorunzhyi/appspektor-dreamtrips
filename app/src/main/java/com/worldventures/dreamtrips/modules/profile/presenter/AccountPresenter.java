@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
@@ -34,8 +35,7 @@ import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
@@ -51,7 +51,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User>
-   implements UploadingListenerPresenter {
+      implements UploadingListenerPresenter {
 
    private static final int AVATAR_MEDIA_REQUEST_ID = 155322;
    private static final int COVER_MEDIA_REQUEST_ID = 155323;
@@ -269,8 +269,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, getAccount()
-            .getId()));
+      view.openTripImages(Route.ACCOUNT_IMAGES, TripImagesArgs.builder()
+            .route(Route.ACCOUNT_IMAGES)
+            .origin(CreateEntityBundle.Origin.PROFILE_TRIP_IMAGES)
+            .userId(getAccount().getId())
+            .build());
    }
 
    public void photoClicked() {

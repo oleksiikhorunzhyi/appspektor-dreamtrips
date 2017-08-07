@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataIn
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.delegate.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,6 @@ import rx.schedulers.Schedulers;
 
 public class SmartAvatarView extends AvatarView {
 
-   private User user;
    private Subscription subscription;
 
    @Inject UserStatusAdapter userStatusAdapter;
@@ -30,7 +29,6 @@ public class SmartAvatarView extends AvatarView {
    }
 
    public void setup(User user, Injector injector) {
-      this.user = user;
       injector.inject(this);
       unsubscribe();
       subscription = userStatusAdapter.getUserHolder(user.getUsername())

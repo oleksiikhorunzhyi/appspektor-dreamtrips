@@ -41,8 +41,8 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
@@ -233,7 +233,7 @@ public class FragmentWithFeedDelegate {
       }
    }
 
-   public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+   public void openTripImages(Route route, TripImagesArgs tripImagesBundle) {
       router.moveTo(route, NavigationConfigBuilder.forActivity().data(tripImagesBundle).build());
    }
 

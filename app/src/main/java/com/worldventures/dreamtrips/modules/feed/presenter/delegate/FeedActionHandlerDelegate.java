@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostComma
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 

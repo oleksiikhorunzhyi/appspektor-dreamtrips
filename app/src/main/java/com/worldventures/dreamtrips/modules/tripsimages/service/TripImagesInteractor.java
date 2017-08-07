@@ -3,95 +3,80 @@ package com.worldventures.dreamtrips.modules.tripsimages.service;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseTripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesAddedCommand;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
 public class TripImagesInteractor {
 
-   private final ActionPipe<CreatePhotoCreationItemCommand> createPhotoCreationItemPipe;
-   private final ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe;
-   private final ActionPipe<FetchLocationFromExifCommand> fetchLocationFromExifPipe;
+   private final ActionPipe<BaseTripImagesCommand> baseTripImagesActionPipe;
+   private final ActionPipe<DeletePhotoCommand> deletePhotoPipe;
    private final ActionPipe<GetInspireMePhotosCommand> inspireMePhotosActionPipe;
-   private final ActionPipe<GetMembersPhotosCommand> membersPhotosActionPipe;
-   private final ActionPipe<GetUserPhotosCommand> userPhotosActionPipe;
    private final ActionPipe<GetYSBHPhotosCommand> ysbhPhotosActionPipe;
+   private final ActionPipe<DeletePhotoTagsCommand> deletePhotoTagsActionPipe;
+   private final ActionPipe<CreatePhotoCreationItemCommand> createPhotoCreationItemPipe;
+   private final ActionPipe<FetchLocationFromExifCommand> fetchLocationFromExifPipe;
    private final ActionPipe<EditPhotoCommand> editPhotoActionPipe;
    private final ActionPipe<EditPhotoWithTagsCommand> editPhotoWithTagsCommandActionPipe;
-   private final ActionPipe<DeletePhotoCommand> deletePhotoActionPipe;
    private final ActionPipe<AddPhotoTagsCommand> addPhotoTagsActionPipe;
-   private final ActionPipe<DeletePhotoTagsCommand> deletePhotoTagsActionPipe;
    private final ActionPipe<DownloadImageCommand> downloadImageActionPipe;
+   private final ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe;
+   private final ActionPipe<MemberImagesAddedCommand> memberImagesAddedCommandPipe;
 
-   public TripImagesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      createPhotoCreationItemPipe = sessionActionPipeCreator.createPipe(CreatePhotoCreationItemCommand.class, Schedulers.io());
-      createReviewPhotoCreationItemPipe = sessionActionPipeCreator.createPipe(CreateReviewPhotoCreationItemCommand.class, Schedulers.io());
-      fetchLocationFromExifPipe = sessionActionPipeCreator.createPipe(FetchLocationFromExifCommand.class, Schedulers.io());
-      inspireMePhotosActionPipe = sessionActionPipeCreator.createPipe(GetInspireMePhotosCommand.class, Schedulers.io());
-      membersPhotosActionPipe = sessionActionPipeCreator.createPipe(GetMembersPhotosCommand.class, Schedulers.io());
-      userPhotosActionPipe = sessionActionPipeCreator.createPipe(GetUserPhotosCommand.class, Schedulers.io());
-      ysbhPhotosActionPipe = sessionActionPipeCreator.createPipe(GetYSBHPhotosCommand.class, Schedulers.io());
-      deletePhotoTagsActionPipe = sessionActionPipeCreator.createPipe(DeletePhotoTagsCommand.class, Schedulers.io());
-      editPhotoActionPipe = sessionActionPipeCreator.createPipe(EditPhotoCommand.class, Schedulers.io());
-      editPhotoWithTagsCommandActionPipe = sessionActionPipeCreator.createPipe(EditPhotoWithTagsCommand.class, Schedulers.io());
-      addPhotoTagsActionPipe = sessionActionPipeCreator.createPipe(AddPhotoTagsCommand.class, Schedulers.io());
-      deletePhotoActionPipe = sessionActionPipeCreator.createPipe(DeletePhotoCommand.class, Schedulers.io());
-      downloadImageActionPipe = sessionActionPipeCreator.createPipe(DownloadImageCommand.class, Schedulers.io());
+   public TripImagesInteractor(SessionActionPipeCreator pipeCreator) {
+      this.baseTripImagesActionPipe = pipeCreator.createPipe(BaseTripImagesCommand.class, Schedulers.io());
+      this.deletePhotoPipe = pipeCreator.createPipe(DeletePhotoCommand.class, Schedulers.io());
+      this.inspireMePhotosActionPipe = pipeCreator.createPipe(GetInspireMePhotosCommand.class, Schedulers.io());
+      this.ysbhPhotosActionPipe = pipeCreator.createPipe(GetYSBHPhotosCommand.class, Schedulers.io());
+      this.deletePhotoTagsActionPipe = pipeCreator.createPipe(DeletePhotoTagsCommand.class, Schedulers.io());
+      this.createPhotoCreationItemPipe = pipeCreator.createPipe(CreatePhotoCreationItemCommand.class, Schedulers.io());
+      this.fetchLocationFromExifPipe = pipeCreator.createPipe(FetchLocationFromExifCommand.class, Schedulers.io());
+      this.editPhotoActionPipe = pipeCreator.createPipe(EditPhotoCommand.class, Schedulers.io());
+      this.editPhotoWithTagsCommandActionPipe = pipeCreator.createPipe(EditPhotoWithTagsCommand.class, Schedulers.io());
+      this.addPhotoTagsActionPipe = pipeCreator.createPipe(AddPhotoTagsCommand.class, Schedulers.io());
+      this.downloadImageActionPipe = pipeCreator.createPipe(DownloadImageCommand.class, Schedulers.io());
+      this.createReviewPhotoCreationItemPipe = pipeCreator.createPipe(CreateReviewPhotoCreationItemCommand.class, Schedulers
+            .io());
+      this.memberImagesAddedCommandPipe = pipeCreator.createPipe(MemberImagesAddedCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<CreatePhotoCreationItemCommand> createPhotoCreationItemPipe() {
-      return createPhotoCreationItemPipe;
+   public ActionPipe<DeletePhotoCommand> deletePhotoPipe() {
+      return deletePhotoPipe;
    }
 
-   public ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe() {
-      return createReviewPhotoCreationItemPipe;
+   public ActionPipe<BaseTripImagesCommand> baseTripImagesCommandActionPipe() {
+      return baseTripImagesActionPipe;
    }
 
-   public ActionPipe<FetchLocationFromExifCommand> fetchLocationFromExifPipe() {
-      return fetchLocationFromExifPipe;
-   }
-
-   public ActionPipe<GetInspireMePhotosCommand> getInspireMePhotosPipe() {
+   public ActionPipe<GetInspireMePhotosCommand> inspireMePhotosPipe() {
       return inspireMePhotosActionPipe;
    }
 
-   public ActionPipe<GetMembersPhotosCommand> getMembersPhotosPipe() {
-      return membersPhotosActionPipe;
-   }
-
-   public ActionPipe<GetUserPhotosCommand> getUserPhotosPipe() {
-      return userPhotosActionPipe;
-   }
-
-   public ActionPipe<GetYSBHPhotosCommand> getYSBHPhotosPipe() {
+   public ActionPipe<GetYSBHPhotosCommand> ysbhPhotosPipe() {
       return ysbhPhotosActionPipe;
-   }
-
-   public ActionPipe<AddPhotoTagsCommand> addPhotoTagsActionPipe() {
-      return addPhotoTagsActionPipe;
    }
 
    public ActionPipe<DeletePhotoTagsCommand> deletePhotoTagsPipe() {
       return deletePhotoTagsActionPipe;
    }
 
-   public ActionPipe<DeletePhotoCommand> deletePhotoPipe() {
-      return deletePhotoActionPipe;
+   public ActionPipe<CreatePhotoCreationItemCommand> createPhotoCreationItemPipe() {
+      return createPhotoCreationItemPipe;
    }
 
-   public ActionPipe<DownloadImageCommand> downloadImageActionPipe() {
-      return downloadImageActionPipe;
+   public ActionPipe<FetchLocationFromExifCommand> fetchLocationFromExifPipe() {
+      return fetchLocationFromExifPipe;
    }
 
    public ActionPipe<EditPhotoCommand> editPhotoActionPipe() {
@@ -100,5 +85,21 @@ public class TripImagesInteractor {
 
    public ActionPipe<EditPhotoWithTagsCommand> editPhotoWithTagsCommandActionPipe() {
       return editPhotoWithTagsCommandActionPipe;
+   }
+
+   public ActionPipe<AddPhotoTagsCommand> addPhotoTagsActionPipe() {
+      return addPhotoTagsActionPipe;
+   }
+
+   public ActionPipe<DownloadImageCommand> downloadImageActionPipe() {
+      return downloadImageActionPipe;
+   }
+
+   public ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe() {
+      return createReviewPhotoCreationItemPipe;
+   }
+
+   public ActionPipe<MemberImagesAddedCommand> memberImagesAddedCommandPipe() {
+      return memberImagesAddedCommandPipe;
    }
 }

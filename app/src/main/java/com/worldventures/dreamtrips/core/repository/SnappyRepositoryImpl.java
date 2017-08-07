@@ -25,9 +25,7 @@ import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
@@ -459,16 +457,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    ///////////////////////////////////////////////////////////////////////////
    // Photo List Tasks
    ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
-      putList(IMAGE + ":" + type + ":" + userId, items);
-   }
-
-   @Override
-   public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
-      return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
-   }
 
    @Override
    public void saveLastUsedInspireMeRandomSeed(double randomSeed) {

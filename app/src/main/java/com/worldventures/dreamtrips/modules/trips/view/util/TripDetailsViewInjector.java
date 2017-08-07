@@ -14,12 +14,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class TripDetailsViewInjector extends TripViewInjector {
          }
       };
 
-      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
+      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGE_PAGER, "")));
 
       if (viewPagerGallery != null) {
          viewPagerGallery.setAdapter(adapter);

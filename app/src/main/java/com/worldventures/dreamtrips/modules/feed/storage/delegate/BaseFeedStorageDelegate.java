@@ -28,9 +28,9 @@ import com.worldventures.dreamtrips.modules.feed.storage.command.FeedItemsStorag
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.FeedItemsStorageBaseInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 

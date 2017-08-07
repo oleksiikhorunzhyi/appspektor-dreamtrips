@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithV
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 
 import java.io.File;
 import java.io.IOException;

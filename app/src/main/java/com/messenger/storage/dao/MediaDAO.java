@@ -87,7 +87,6 @@ public class MediaDAO extends BaseDAO {
 
       Image image = new Image();
       image.setUrl(url.replace(" ", "%20"));
-      image.setFromFile(false);
       User user = new User(userSocialId);
       user.setUsername(userName);
 

@@ -27,11 +27,12 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -92,7 +93,8 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    }
 
    private void openByType(Type type, FeedItem.Action action) {
-      TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(), getModelObject().getType());
+      TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem()
+            .getUid(), getModelObject().getType());
       switch (type) {
          case PHOTO:
             if (action == FeedItem.Action.TAG_PHOTO) {
@@ -131,14 +133,12 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    }
 
    private void openFullscreenPhoto() {
-      ArrayList<IFullScreenObject> list = new ArrayList<>();
-      list.add((IFullScreenObject) getModelObject().getItem());
-      FullScreenImagesBundle bundle = new FullScreenImagesBundle.Builder().position(0).userId(getModelObject().getItem()
-            .getOwner()
-            .getId()).type(TripImagesType.FIXED).route(Route.SOCIAL_IMAGE_FULLSCREEN).fixedList(list).build();
-
-      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
-            .data(bundle)
+      List<BaseMediaEntity> items = new ArrayList<>();
+      items.add(((Photo) getModelObject().getItem()).castToMediaEntity());
+      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+            .data(TripImagesFullscreenArgs.builder()
+                  .mediaEntityList(items)
+                  .build())
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build());
    }

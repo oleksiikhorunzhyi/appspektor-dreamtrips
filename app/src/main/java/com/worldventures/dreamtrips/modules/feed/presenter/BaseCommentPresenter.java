@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
 import java.util.List;
 
@@ -46,7 +45,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
-   @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FriendsInteractor friendsInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;

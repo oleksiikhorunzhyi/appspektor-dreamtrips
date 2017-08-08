@@ -13,6 +13,7 @@ public class MemberImagesFragment extends TripImagesFragment<MemberImagesPresent
 
    @OnClick(R.id.new_images_button)
    public void onShowNewImagesClick() {
+      recyclerView.scrollToPosition(0);
       getPresenter().onShowNewImagesClick();
    }
 

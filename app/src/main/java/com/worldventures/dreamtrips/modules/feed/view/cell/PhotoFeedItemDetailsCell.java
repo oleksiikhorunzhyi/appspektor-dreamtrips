@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
@@ -130,7 +131,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
 
    private void openFullscreen() {
       List<BaseMediaEntity> items = new ArrayList<>();
-      items.add(getModelObject().getItem().castToMediaEntity());
+      items.add(new PhotoMediaEntity(getModelObject().getItem()));
 
       NavigationConfig config = NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()

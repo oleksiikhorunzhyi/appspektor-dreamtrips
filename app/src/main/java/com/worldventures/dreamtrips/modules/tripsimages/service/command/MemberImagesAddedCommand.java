@@ -13,7 +13,9 @@ import java.util.List;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
+import io.techery.janet.command.annotations.CommandAction;
 
+@CommandAction
 public class MemberImagesAddedCommand extends Command<List<BaseMediaEntity>> implements CachedAction<List<BaseMediaEntity>> {
 
    TripImagesArgs tripImagesArgs;

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscr
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.FullscreenPhotoPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.FullscreenVideoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MemberImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabPresenter;
@@ -27,9 +28,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.ysbh.YsbhViewP
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.InspirationPhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageTimestampCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaTimestampCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.YsbhPhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullscreenPhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullscreenVideoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesFullscreenFragment;
@@ -57,6 +61,8 @@ import dagger.Provides;
             TripImagesViewPagerPresenter.class,
             MemberImagesFragment.class,
             MemberImagesPresenter.class,
+            FullscreenVideoFragment.class,
+            FullscreenVideoPresenter.class,
             FullscreenPhotoFragment.class,
             FullscreenPhotoPresenter.class,
 
@@ -76,6 +82,8 @@ import dagger.Provides;
 
             TripImageCell.class,
             YsbhPhotoCell.class,
+            VideoMediaCell.class,
+            VideoMediaTimestampCell.class,
             InspirationPhotoCell.class,
             TripImageTimestampCell.class,
 

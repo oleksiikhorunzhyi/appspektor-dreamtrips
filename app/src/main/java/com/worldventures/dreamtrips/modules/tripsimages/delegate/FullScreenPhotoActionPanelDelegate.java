@@ -67,7 +67,7 @@ public class FullScreenPhotoActionPanelDelegate {
       mediaActionPanelInfoInjector.setPublishedAtDate(photo.getShotAt());
       mediaActionPanelInfoInjector.setLiked(photo.isLiked());
       boolean isAccountsPhoto = owner != null && account.getId() == owner.getId();
-      mediaActionPanelInfoInjector.enableFlagging(isAccountsPhoto);
+      mediaActionPanelInfoInjector.enableFlagging(!isAccountsPhoto);
       mediaActionPanelInfoInjector.enableEdit(isAccountsPhoto);
    }
 

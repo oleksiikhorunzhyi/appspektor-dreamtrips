@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 
 import javax.inject.Inject;
@@ -63,6 +64,13 @@ public class FeedEntityHolderDelegate {
             .observeWithReplay()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> feedEntityHolder.deleteFeedEntity(deletePostCommand.getResult()))
+                  .onFail(errorAction::call));
+
+      feedInteractor.deleteVideoPipe()
+            .observe()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<DeleteVideoCommand>()
                   .onSuccess(deletePostCommand -> feedEntityHolder.deleteFeedEntity(deletePostCommand.getResult()))
                   .onFail(errorAction::call));
 

@@ -1,5 +1,18 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
-public enum  TripImageType {
-   PHOTO, VIDEO
+import com.worldventures.dreamtrips.api.entity.model.EntityHolder;
+
+public enum TripImageType {
+   PHOTO, VIDEO, UNKNOWN;
+
+   public static TripImageType from(EntityHolder.Type type) {
+      switch (type) {
+         case PHOTO:
+            return TripImageType.PHOTO;
+         case VIDEO:
+            return TripImageType.VIDEO;
+         default:
+            return TripImageType.UNKNOWN;
+      }
+   }
 }

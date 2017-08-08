@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
@@ -21,9 +23,10 @@ import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedComm
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.VideoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageArgsFilterFunc;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseTripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
@@ -86,6 +89,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    public void reload() {
+      view.hideNewImagesButton();
       refreshImages();
    }
 
@@ -128,7 +132,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
             .observe()
             .filter(new TripImageArgsFilterFunc(tripImagesArgs))
             .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<BaseTripImagesCommand>()
+            .subscribe(new ActionStateSubscriber<BaseMediaCommand>()
                   .onStart(command -> {
                      loading = true;
                      view.showLoading();
@@ -142,12 +146,12 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
             );
    }
 
-   void itemsUpdated(BaseTripImagesCommand baseTripImagesCommand) {
+   void itemsUpdated(BaseMediaCommand baseMediaCommand) {
       loading = false;
-      lastPageReached = baseTripImagesCommand.lastPageReached();
+      lastPageReached = baseMediaCommand.lastPageReached();
       view.finishLoading();
-      if (baseTripImagesCommand.isReload()) currentItems.clear();
-      currentItems.addAll(baseTripImagesCommand.getResult());
+      if (baseMediaCommand.isReload()) currentItems.clear();
+      currentItems.addAll(baseMediaCommand.getResult());
       updateItemsInView();
    }
 
@@ -158,7 +162,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
             .subscribe(deletePhotoCommand -> {
                for (int i = 0; i < currentItems.size(); i++) {
                   BaseMediaEntity mediaEntity = currentItems.get(i);
-                  if (mediaEntity.getUid().equals(deletePhotoCommand.getResult().getUid())) {
+                  if (mediaEntity.getItem().getUid().equals(deletePhotoCommand.getResult().getUid())) {
                      currentItems.remove(i);
                   }
                   updateItemsInView();
@@ -182,22 +186,24 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void onFeedItemAdded(FeedItem feedItem) {
-      if (feedItem.getItem() instanceof Photo) {
-         Photo photo = (Photo) feedItem.getItem();
-         BaseMediaEntity mediaEntity = photo.castToMediaEntity();
+      if (feedItem.getItem() instanceof Photo || feedItem.getItem() instanceof Video) {
+         BaseMediaEntity mediaEntity = fromFeedEntityHolder(feedItem);
          if (!currentItems.contains(mediaEntity)) {
             currentItems.add(0, mediaEntity);
          }
       } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
             .getItem()).getAttachments().size() > 0) {
          List<BaseMediaEntity> mediaEntities = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
-               .map(holder -> ((Photo) holder.getItem()).castToMediaEntity())
+               .map(this::fromFeedEntityHolder)
+               .filter(item -> item != null)
                .filter(mediaEntity -> !currentItems.contains(mediaEntity))
                .toList();
          boolean allPhotosHavePublishAt = Queryable.from(mediaEntities)
-               .count(element -> element.getCreatedAt() == null) == 0;
+               .count(element -> element.getItem().getCreatedAt() == null) == 0;
          if (allPhotosHavePublishAt) {
-            Collections.sort(mediaEntities, (p1, p2) -> p1.getCreatedAt().before(p2.getCreatedAt()) ? 1 : -1);
+            Collections.sort(mediaEntities, (p1, p2) -> p1.getItem()
+                  .getCreatedAt()
+                  .before(p2.getItem().getCreatedAt()) ? 1 : -1);
          } else {
             Collections.reverse(mediaEntities);
          }
@@ -210,6 +216,23 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    public void pickedAttachments(MediaPickerAttachment mediaAttachment) {
       if (view.isVisibleOnScreen()) { //cause neighbour tab also catches this event
          view.openCreatePhoto(mediaAttachment);
+      }
+   }
+
+   private BaseMediaEntity fromFeedEntityHolder(com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder feedEntityHolder) {
+      switch (feedEntityHolder.getType()) {
+         case PHOTO:
+            Photo photo = (Photo) feedEntityHolder.getItem();
+            PhotoMediaEntity mediaEntity = new PhotoMediaEntity();
+            mediaEntity.setItem(photo);
+            return mediaEntity;
+         case VIDEO:
+            Video video = (Video) feedEntityHolder.getItem();
+            VideoMediaEntity videoMediaEntity = new VideoMediaEntity();
+            videoMediaEntity.setItem(video);
+            return videoMediaEntity;
+         default:
+            return null;
       }
    }
 
@@ -261,11 +284,8 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
       Observable.from(currentItems)
-            .filter(mediaEntity -> mediaEntity.getUid().equals(updatedFeedEntity.getUid()))
-            .doOnNext(mediaEntity -> {
-               if (updatedFeedEntity instanceof Photo)
-                  ((PhotoMediaEntity) mediaEntity).setPhoto((Photo) updatedFeedEntity);
-            })
+            .filter(mediaEntity -> mediaEntity.getItem().getUid().equals(updatedFeedEntity.getUid()))
+            .doOnNext(mediaEntity -> mediaEntity.setItem(updatedFeedEntity))
             .compose(bindViewToMainComposer())
             .subscribe();
    }
@@ -273,7 +293,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Override
    public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
       currentItems = (ArrayList<BaseMediaEntity>) Queryable.from(currentItems)
-            .filter(mediaEntity -> mediaEntity.getUid().equals(deletedFeedEntity.getUid()))
+            .filter(mediaEntity -> mediaEntity.getItem().getUid().equals(deletedFeedEntity.getUid()))
             .toList();
       updateItemsInView();
    }

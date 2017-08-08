@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -72,7 +74,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
                         .map(element -> {
                            Photo photo = (Photo) element.getItem();
                            photo.setUser(getModelObject().getItem().getOwner());
-                           return photo.castToMediaEntity();
+                           return (BaseMediaEntity) new PhotoMediaEntity(photo);
                         })
                         .toList())
                   .build())

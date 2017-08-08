@@ -33,11 +33,14 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFra
 import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.VideoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageTimestampCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaTimestampCell;
 
 import java.util.List;
 
@@ -103,6 +106,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       CellDelegate<BaseMediaEntity> delegate = getPresenter()::onItemClick;
       adapter.registerCell(PhotoMediaEntity.class, getArgs().showTimestamps() ? TripImageTimestampCell.class : TripImageCell.class);
       adapter.registerDelegate(PhotoMediaEntity.class, delegate);
+      adapter.registerCell(VideoMediaEntity.class, getArgs().showTimestamps() ? VideoMediaTimestampCell.class : VideoMediaCell.class);
+      adapter.registerDelegate(VideoMediaEntity.class, delegate);
       adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(), getContext()));
    }
@@ -133,6 +138,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN,
             NavigationConfigBuilder.forActivity()
+                  .manualOrientationActivity(true)
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                   .data(TripImagesFullscreenArgs.builder()
                         .tripImagesArgs(getArgs())

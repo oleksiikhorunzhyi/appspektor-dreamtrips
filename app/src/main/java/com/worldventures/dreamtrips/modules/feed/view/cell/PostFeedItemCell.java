@@ -28,6 +28,8 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedCellListWidt
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
+import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
@@ -211,7 +213,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
                         .map(element -> {
                            Photo photo = (Photo) element.getItem();
                            photo.setUser(getModelObject().getItem().getOwner());
-                           return photo.castToMediaEntity();
+                           return (BaseMediaEntity) new PhotoMediaEntity(photo);
                         })
                         .toList())
                   .build())

@@ -3,7 +3,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:fresco="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/black"
@@ -12,20 +11,23 @@
    <FrameLayout
          android:id="@+id/video_view_container"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"/>
+         android:layout_height="match_parent"
+         android:layout_gravity="center"
+         />
 
    <FrameLayout
          android:id="@+id/video_thumbnail_container"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="match_parent"
          android:layout_gravity="center"
          >
 
       <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/video_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
+            fresco:placeholderImageScaleType="fitCenter"
             />
 
    </FrameLayout>
@@ -35,28 +37,28 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_gravity="bottom"
-         android:paddingTop="24dp"
          android:background="@drawable/black_gradient_social_photo"
          android:orientation="vertical"
-         android:paddingRight="8dp"
          android:paddingLeft="8dp"
+         android:paddingRight="8dp"
+         android:paddingTop="24dp"
          >
 
       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
             >
 
          <ImageView
                android:id="@+id/video_view_video_play_pause_button"
                android:layout_width="19dp"
                android:layout_height="19dp"
-               android:background="@drawable/ic_player360_play"
                android:layout_marginLeft="2dp"
                android:layout_marginRight="10dp"
+               android:background="@drawable/ic_player360_play"
                />
 
          <SeekBar
@@ -64,53 +66,53 @@
                style="@style/Player360SeekBar"
                android:layout_width="0dp"
                android:layout_height="wrap_content"
-               android:layout_weight="1"
                android:layout_gravity="center"
                android:layout_marginBottom="0dp"
                android:layout_marginLeft="0dp"
                android:layout_marginRight="0dp"
+               android:layout_weight="1"
                />
 
          <TextView
                android:id="@+id/video_view_duration_text_view"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_weight="0"
-               android:textSize="10sp"
-               android:textColor="@color/white"
-               android:text="11:01"
                android:layout_marginLeft="4dp"
                android:layout_marginRight="10dp"
+               android:layout_weight="0"
+               android:text="11:01"
+               android:textColor="@color/white"
+               android:textSize="10sp"
                />
 
          <TextView
                android:id="@+id/video_view_quality_text_view"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:gravity="center"
-               android:ems="2"
-               android:background="@drawable/background_video_view_quality_label"
-               android:layout_weight="0"
-               android:textColor="#222222"
-               android:textStyle="bold"
-               android:text="HD"
-               android:paddingLeft="@dimen/spacing_tiny"
-               android:paddingRight="@dimen/spacing_tiny"
-               android:paddingBottom="1dp"
-               android:paddingTop="1dp"
-               android:textSize="10sp"
                android:layout_marginLeft="@dimen/spacing_tiny"
                android:layout_marginRight="@dimen/spacing_tiny"
+               android:layout_weight="0"
+               android:background="@drawable/background_video_view_quality_label"
+               android:ems="2"
+               android:gravity="center"
+               android:paddingBottom="1dp"
+               android:paddingLeft="@dimen/spacing_tiny"
+               android:paddingRight="@dimen/spacing_tiny"
+               android:paddingTop="1dp"
+               android:text="HD"
+               android:textColor="#222222"
+               android:textSize="10sp"
+               android:textStyle="bold"
                />
 
          <ImageView
                android:id="@+id/video_view_fullscreen_button"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_weight="0"
-               android:background="@drawable/ic_video_fullscreen"
                android:layout_marginLeft="10dp"
                android:layout_marginRight="4dp"
+               android:layout_weight="0"
+               android:background="@drawable/ic_video_fullscreen"
                android:visibility="gone"
                />
 
@@ -173,16 +175,17 @@
          <View
                android:layout_width="match_parent"
                android:layout_height="1dp"
-               android:background="#9d9d9d"
-               android:layout_marginTop="8dp"
                android:layout_marginBottom="8dp"
+               android:layout_marginTop="8dp"
+               android:background="#9d9d9d"
                />
+
          <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:orientation="horizontal"
                android:layout_marginBottom="10dp"
                android:layout_marginTop="2dp"
+               android:orientation="horizontal"
                >
 
             <LinearLayout
@@ -252,6 +255,7 @@
                      android:layout_centerInParent="true"
                      android:padding="5dp"
                      android:src="@drawable/ic_fs_share"
+                     android:visibility="gone"
                      />
 
                <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
@@ -267,6 +271,14 @@
                      android:layout_height="wrap_content"
                      android:padding="5dp"
                      android:src="@drawable/ic_fs_edit"
+                     />
+
+               <ImageView
+                     android:id="@+id/delete"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:padding="5dp"
+                     android:src="@drawable/ic_fs_delete"
                      />
             </LinearLayout>
 

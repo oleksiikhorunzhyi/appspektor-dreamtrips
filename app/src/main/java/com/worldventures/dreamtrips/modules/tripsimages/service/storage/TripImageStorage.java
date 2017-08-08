@@ -6,8 +6,9 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.UserImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMemberMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUsersMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesAddedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,6 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
 
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
-      return Arrays.asList(MemberImagesCommand.class, UserImagesCommand.class);
+      return Arrays.asList(GetMemberMediaCommand.class, GetUsersMediaCommand.class, MemberImagesAddedCommand.class);
    }
 }

@@ -1,21 +1,16 @@
 package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.photos.GetPhotosHttpAction;
-import com.worldventures.dreamtrips.api.photos.ImmutablePhotosPaginatedParams;
+import com.worldventures.dreamtrips.api.multimedia.GetUserMultimediaHttpAction;
+import com.worldventures.dreamtrips.api.multimedia.ImmutableMultimediaPaginatedParams;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.storage.TripImageStorage;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
-
-import org.immutables.value.Value;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,26 +24,28 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class MemberImagesCommand extends BaseTripImagesCommand implements InjectableAction, CachedAction<List<BaseMediaEntity>> {
+public class GetUsersMediaCommand extends BaseMediaCommand implements InjectableAction, CachedAction<List<BaseMediaEntity>> {
 
    @Inject Janet janet;
    @Inject MapperyContext mappery;
 
+   private int userId;
+   private int perPage;
    protected Date before;
    protected Date after;
-   protected int perPage;
 
    private boolean fromCache;
-   private List<BaseMediaEntity> cachedItems = new ArrayList<>();
+   private List<BaseMediaEntity> cachedItems;
 
-   public MemberImagesCommand(TripImagesArgs args, PaginationParams paginationParams) {
+   public GetUsersMediaCommand(TripImagesArgs args, GetMemberMediaCommand.PaginationParams paginationParams) {
       super(args);
+      this.userId = args.getUserId();
+      this.perPage = args.getPageSize();
       this.before = paginationParams.before();
       this.after = paginationParams.after();
-      this.perPage = paginationParams.perPage();
    }
 
-   public MemberImagesCommand(TripImagesArgs args, boolean fromCache) {
+   public GetUsersMediaCommand(TripImagesArgs args, boolean fromCache) {
       super(args);
       this.fromCache = fromCache;
    }
@@ -57,23 +54,15 @@ public class MemberImagesCommand extends BaseTripImagesCommand implements Inject
    protected void run(CommandCallback<List<BaseMediaEntity>> callback) throws Throwable {
       if (fromCache) callback.onSuccess(cachedItems);
       else {
-         janet.createPipe(GetPhotosHttpAction.class)
-               .createObservableResult(new GetPhotosHttpAction(ImmutablePhotosPaginatedParams.builder()
+         janet.createPipe(GetUserMultimediaHttpAction.class)
+               .createObservableResult(new GetUserMultimediaHttpAction(userId, ImmutableMultimediaPaginatedParams.builder()
                      .before(before)
                      .after(after)
                      .pageSize(perPage).build()))
-               .map(GetPhotosHttpAction::response)
-               .map(photos -> mappery.convert(photos, Photo.class))
-               .map(this::mapItems)
+               .map(GetUserMultimediaHttpAction::response)
+               .map(photos -> mappery.convert(photos, BaseMediaEntity.class))
                .subscribe(callback::onSuccess, callback::onFail);
       }
-
-   }
-
-   private List<BaseMediaEntity> mapItems(List<Photo> photos) {
-      return Queryable.from(photos)
-            .map(Photo::castToMediaEntity)
-            .toList();
    }
 
    @Override
@@ -83,15 +72,15 @@ public class MemberImagesCommand extends BaseTripImagesCommand implements Inject
 
    @Override
    public void onRestore(ActionHolder holder, List<BaseMediaEntity> cache) {
-      cachedItems = cache;
+      this.cachedItems = cache;
    }
 
    @Override
    public CacheOptions getCacheOptions() {
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(TripImageStorage.PARAM_ARGS, getArgs());
-      cacheBundle.put(TripImageStorage.LOAD_MORE, isLoadMore());
       cacheBundle.put(TripImageStorage.RELOAD, isReload());
+      cacheBundle.put(TripImageStorage.LOAD_MORE, isLoadMore());
       cacheBundle.put(TripImageStorage.LOAD_LATEST, false);
       return ImmutableCacheOptions.builder()
             .params(cacheBundle)
@@ -99,25 +88,12 @@ public class MemberImagesCommand extends BaseTripImagesCommand implements Inject
    }
 
    @Override
-   public int getFallbackErrorMessage() {
-      return R.string.error_failed_to_load_member_images;
-   }
-
-   @Override
    public boolean lastPageReached() {
       return getResult().size() < perPage;
    }
 
-   @Value.Immutable
-   public interface PaginationParams {
-
-      int perPage();
-
-      @Nullable
-      Date before();
-
-      @Nullable
-      Date after();
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_failed_to_load_member_images;
    }
-
 }

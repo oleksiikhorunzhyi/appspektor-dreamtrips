@@ -8,9 +8,10 @@ import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificatio
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImageType;
+import com.worldventures.dreamtrips.modules.tripsimages.model.VideoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageArgsFilterFunc;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseTripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
@@ -68,7 +69,7 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
             .observe()
             .filter(new TripImageArgsFilterFunc(tripImagesArgs))
             .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<BaseTripImagesCommand>()
+            .subscribe(new ActionStateSubscriber<BaseMediaCommand>()
                   .onStart(command -> loading = true)
                   .onFail((getYSBHPhotosCommand, throwable) -> {
                      loading = false;
@@ -84,11 +85,17 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
 
    @Override
    protected List<FragmentItem> getItems() {
-      return Queryable.from(baseMediaEntities)
-            .filter(entity -> entity.getType() == TripImageType.PHOTO)
-            .cast(PhotoMediaEntity.class)
-            .map(entity -> new FragmentItem(Route.SOCIAL_IMAGE_FULLSCREEN, "", entity.getPhoto()))
+      List<FragmentItem> items =  Queryable.from(baseMediaEntities)
+            .filter(element -> element.getType() != TripImageType.UNKNOWN)
+            .map(entity -> {
+               if (entity.getType() == TripImageType.PHOTO) {
+                  return new FragmentItem(Route.SOCIAL_IMAGE_FULLSCREEN, "", ((PhotoMediaEntity) entity).getItem());
+               } else {
+                  return new FragmentItem(Route.SOCIAL_VIDEO_FULLSCREEN, "", ((VideoMediaEntity) entity).getItem());
+               }
+            })
             .toList();
+      return items;
    }
 
    @Override

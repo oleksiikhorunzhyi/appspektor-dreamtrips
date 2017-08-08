@@ -42,7 +42,8 @@ public class VideoPlayerHolder {
 
    public void attachJwPlayerToContainer() {
       if (playerExists() && videoContainerView != null) {
-         videoContainerView.getJwPlayerViewContainer().addView(jwPlayerView);
+         videoContainerView.getJwPlayerViewContainer().addView(jwPlayerView,
+               new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
       }
    }
 

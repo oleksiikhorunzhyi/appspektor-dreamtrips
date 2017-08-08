@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.delegate;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseTripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class MediaRefresher {
             .flatMap(newestMedia -> tripImagesInteractor
                   .baseTripImagesCommandActionPipe()
                   .createObservableResult(tripImagesCommandFactory.provideRefreshCommand(args, newestMedia)))
-            .map(BaseTripImagesCommand::getResult)
+            .map(BaseMediaCommand::getResult)
             .doOnNext(photos -> {
                lastPhotos.clear();
                lastPhotos.addAll(photos);

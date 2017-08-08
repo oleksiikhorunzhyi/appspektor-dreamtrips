@@ -37,7 +37,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.delegate.MediaActionPane
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -74,6 +73,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    @InjectView(R.id.iv_share) ImageView shareButton;
    @InjectView(R.id.flag) FlagView flagButton;
    @InjectView(R.id.edit) ImageView editButton;
+   @InjectView(R.id.delete) ImageView deleteButton;
 
    @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject Application application;
@@ -135,16 +135,15 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       fullscreenButton.setVisibility(VISIBLE);
    }
 
-   public void setSocialInfo(Video video, Date publishedAtDate, boolean enableFlagging, boolean enableEdit) {
+   public void setSocialInfo(Video video, boolean enableFlagging) {
       socialInfoContainer.setVisibility(View.VISIBLE);
-
       actionPanelInjector.setCommentCount(video.getCommentsCount());
       actionPanelInjector.setLikeCount(video.getLikesCount());
       actionPanelInjector.setLiked(video.isLiked());
       actionPanelInjector.setOwner(video.getOwner());
-      actionPanelInjector.setPublishedAtDate(publishedAtDate);
+      actionPanelInjector.setPublishedAtDate(video.getCreatedAt());
       actionPanelInjector.enableFlagging(enableFlagging);
-      actionPanelInjector.enableEdit(enableEdit);
+      actionPanelInjector.enableEdit(false);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -318,16 +317,17 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    private void setVideoThumbnail() {
       videoThumbnailContainer.setVisibility(View.VISIBLE);
+      ViewUtils.runTaskAfterMeasure(this, this::setVideoThumbnailInternal);
+   }
 
-      ViewUtils.runTaskAfterMeasure(this, () -> {
-         int width = getWidth();
-         int height = (int) (width / video.getAspectRatio());
-         getLayoutParams().height = height;
-         videoThumbnail.getLayoutParams().height = height;
+   private void setVideoThumbnailInternal() {
+      int width = getWidth();
+      int height = (int) (width / video.getAspectRatio());
+      videoContainer.getLayoutParams().height = height;
+      videoThumbnail.getLayoutParams().height = height;
 
-         videoThumbnail.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(video.getThumbnail()),
-               videoThumbnail.getController()));
-      });
+      videoThumbnail.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(video.getThumbnail()),
+            videoThumbnail.getController()));
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -370,8 +370,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    private void refreshFullscreenButton(boolean fullscreen) {
-      fullscreenButton.setBackgroundResource(fullscreen ? R.drawable.ic_video_fullscreen_collapse
-         : R.drawable.ic_video_fullscreen);
+      fullscreenButton.setBackgroundResource(fullscreen ? R.drawable.ic_video_fullscreen_collapse : R.drawable.ic_video_fullscreen);
    }
 
    @Override
@@ -393,7 +392,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       if (playerView.getState() == PlayerState.PLAYING) {
          videoPlayerHolder.pause();
          showPlayButton();
-      } else if (playerView.getState() == PlayerState.PAUSED){
+      } else if (playerView.getState() == PlayerState.PAUSED) {
          videoPlayerHolder.play();
          showPauseButton();
       } else {
@@ -441,6 +440,10 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    ///////////////////////////////////////////////////////////////////////////
    // Social panel actions
    ///////////////////////////////////////////////////////////////////////////
+
+   public void setDeleteAction(Action0 action) {
+      deleteButton.setOnClickListener(v -> action.call());
+   }
 
    public void setLikeAction(Action0 action) {
       likeButton.setOnClickListener(v -> action.call());
@@ -498,7 +501,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       @Override
       public void onStopTrackingTouch(SeekBar seekBar) {
          int progress = seekBar.getProgress();
-         long positionInMillis = (int)(duration * ((float) progress / 100));
+         long positionInMillis = (int) (duration * ((float) progress / 100));
          // Workaround to avoid progress bar jumping after playback has started
          // as WPlayer seeks only to the nearest second
          long positionInSecondsRounded = positionInMillis / 1000 * 1000;

@@ -9,12 +9,12 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.adapter_item_photo)
-public class TripImageTimestampCell extends TripImageCell {
+@Layout(R.layout.adapter_item_media_video)
+public class VideoMediaTimestampCell extends VideoMediaCell {
 
-   @InjectView(R.id.photoTimestamp) TextView photoTimestampTextView;
+   @InjectView(R.id.timestamp) TextView photoTimestampTextView;
 
-   public TripImageTimestampCell(View view) {
+   public VideoMediaTimestampCell(View view) {
       super(view);
    }
 

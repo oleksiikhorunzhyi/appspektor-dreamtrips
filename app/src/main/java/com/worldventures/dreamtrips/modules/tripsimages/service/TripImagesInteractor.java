@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.service;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseTripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
@@ -20,7 +20,7 @@ import rx.schedulers.Schedulers;
 
 public class TripImagesInteractor {
 
-   private final ActionPipe<BaseTripImagesCommand> baseTripImagesActionPipe;
+   private final ActionPipe<BaseMediaCommand> baseTripImagesActionPipe;
    private final ActionPipe<DeletePhotoCommand> deletePhotoPipe;
    private final ActionPipe<GetInspireMePhotosCommand> inspireMePhotosActionPipe;
    private final ActionPipe<GetYSBHPhotosCommand> ysbhPhotosActionPipe;
@@ -35,7 +35,7 @@ public class TripImagesInteractor {
    private final ActionPipe<MemberImagesAddedCommand> memberImagesAddedCommandPipe;
 
    public TripImagesInteractor(SessionActionPipeCreator pipeCreator) {
-      this.baseTripImagesActionPipe = pipeCreator.createPipe(BaseTripImagesCommand.class, Schedulers.io());
+      this.baseTripImagesActionPipe = pipeCreator.createPipe(BaseMediaCommand.class, Schedulers.io());
       this.deletePhotoPipe = pipeCreator.createPipe(DeletePhotoCommand.class, Schedulers.io());
       this.inspireMePhotosActionPipe = pipeCreator.createPipe(GetInspireMePhotosCommand.class, Schedulers.io());
       this.ysbhPhotosActionPipe = pipeCreator.createPipe(GetYSBHPhotosCommand.class, Schedulers.io());
@@ -55,7 +55,7 @@ public class TripImagesInteractor {
       return deletePhotoPipe;
    }
 
-   public ActionPipe<BaseTripImagesCommand> baseTripImagesCommandActionPipe() {
+   public ActionPipe<BaseMediaCommand> baseTripImagesCommandActionPipe() {
       return baseTripImagesActionPipe;
    }
 

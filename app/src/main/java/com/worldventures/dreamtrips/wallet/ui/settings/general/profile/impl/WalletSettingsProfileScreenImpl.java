@@ -128,7 +128,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
       photoActionDialog.show();
    }
 
-   void onDoNotAddClick() {
+   private void onDoNotAddClick() {
       hideDialog();
       getPresenter().doNotAdd();
    }

@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 
-
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -13,10 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.databinding.WalletDisplayOptionsEnterUserPhoneBinding;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
@@ -34,6 +39,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionE
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsClickListener;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsPagerAdapter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen;
@@ -45,6 +51,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Wa
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import butterknife.InjectView;
@@ -54,8 +62,10 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import me.relex.circleindicator.CircleIndicator;
+import rx.Observable;
 
 import static android.view.View.OVER_SCROLL_NEVER;
+import static android.view.View.inflate;
 
 public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter> implements DisplayOptionsSettingsScreen {
    public static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
@@ -67,6 +77,8 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    @InjectView(R.id.indicator) CircleIndicator indicator;
 
    @Inject DisplayOptionsSettingsPresenter presenter;
+
+   private WalletCropImageService cropImageService;
 
    public static DisplayOptionsSettingsScreenImpl create(DisplayOptionsSource source) {
       return create(null, source);
@@ -91,6 +103,12 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    }
 
    @Override
+   protected void onAttach(@NonNull View view) {
+      super.onAttach(view);
+      observeNewAvatar();
+   }
+
+   @Override
    public boolean supportConnectionStatusLabel() {
       return true;
    }
@@ -110,13 +128,19 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
       super.onFinishInflate(view);
       setupToolbar();
       setupViewPager();
+
+      //noinspection all
+      cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
    }
 
    private void setupToolbar() {
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       toolbar.inflateMenu(R.menu.wallet_settings_display_options);
       toolbar.setOnMenuItemClickListener(item -> {
-         if (item.getItemId() == R.id.done) saveCurrentChoice();
+         if (item.getItemId() == R.id.done) {
+            saveCurrentChoice();
+            return true;
+         }
          return false;
       });
    }
@@ -150,7 +174,17 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    @Override
    public void setupViewPager(@NonNull SmartCardUser user, @SetHomeDisplayTypeAction.HomeDisplayType int type) {
-      viewPager.setAdapter(new DisplayOptionsPagerAdapter(getContext(), user, getPresenter()::openEditProfileScreen));
+      viewPager.setAdapter(new DisplayOptionsPagerAdapter(getContext(), user, new DisplayOptionsClickListener() {
+         @Override
+         public void onAddPhoto() {
+            getPresenter().choosePhoto();
+         }
+
+         @Override
+         public void onAddPhone() {
+            showAddPhoneDialog();
+         }
+      }));
       viewPager.setCurrentItem(DisplayOptionsPagerAdapter.DISPLAY_OPTIONS.indexOf(type));
       indicator.setViewPager(viewPager);
 
@@ -192,8 +226,8 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    @Override
    public ProfileViewModel getProfileViewModel() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PROFILE_VIEWMODEL))
-                  ? getArgs().getParcelable(KEY_PROFILE_VIEWMODEL)
-                  : null;
+            ? getArgs().getParcelable(KEY_PROFILE_VIEWMODEL)
+            : null;
    }
 
    @Override
@@ -201,6 +235,73 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_DISPLAY_OPTIONS_SOURCE))
             ? (DisplayOptionsSource) getArgs().getSerializable(KEY_DISPLAY_OPTIONS_SOURCE)
             : null;
+   }
+
+   @Override
+   public void showAddPhoneDialog() {
+      final View phoneView = inflate(getContext(), R.layout.wallet_display_options_enter_user_phone, null);
+      final WalletDisplayOptionsEnterUserPhoneBinding phoneBinding = DataBindingUtil.bind(phoneView);
+      phoneBinding.setProfile(new ProfileViewModel());
+      MaterialDialog builder = new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_settings_general_display_photo_add_phone_label)
+            .customView(phoneView, false)
+            .negativeText(R.string.wallet_cancel_label)
+            .onNegative((dialog, which) -> dialog.cancel())
+            .positiveText(R.string.wallet_done_label)
+            .onPositive((dialog, which) -> getPresenter().savePhoneNumber(phoneBinding.getProfile()))
+            .build();
+      builder.setOnShowListener(dialog -> {
+         ((EditText) phoneView.findViewById(R.id.et_phone_number))
+               .setHint(R.string.wallet_settings_general_display_add_phone_number_hint);
+         final EditText countryCode = (EditText) phoneView.findViewById(R.id.et_country_code);
+         countryCode.setSelection(countryCode.getText().length());
+      });
+      builder.show();
+   }
+
+   @Override
+   public void pickPhoto(String initialPhotoUrl) {
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(result -> {
+         if (!result.isEmpty()) {
+            getPresenter().handlePickedPhoto(result.getChosenImages().get(0));
+         }
+      });
+      if (initialPhotoUrl != null) {
+         mediaPickerDialog.show(initialPhotoUrl);
+      } else {
+         mediaPickerDialog.show();
+      }
+   }
+
+   @Override
+   public void cropPhoto(Uri photoPath) {
+      cropImageService.cropImage(photoPath);
+   }
+
+   @Override
+   public Observable<File> observeCropper() {
+      return cropImageService.observeCropper();
+   }
+
+   @Override
+   public void dropPhoto() {/*nothing*/}
+
+   @Override
+   public void showDialog() {/*nothing*/}
+
+   @Override
+   public void hideDialog() {/*nothing*/}
+
+   @Override
+   public void updateUser(SmartCardUser user) {
+      setupViewPager(user, DisplayOptionsPagerAdapter.DISPLAY_OPTIONS.get(viewPager.getCurrentItem()));
+   }
+
+   private void observeNewAvatar() {
+      observeCropper()
+            .compose(bindToLifecycle())
+            .subscribe(file -> getPresenter().saveAvatar(Uri.fromFile(file).toString()));
    }
 
    @Override

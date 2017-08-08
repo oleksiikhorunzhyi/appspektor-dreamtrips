@@ -87,6 +87,10 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl.WizardSplashScr
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.impl.WizardTermsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
+import com.worldventures.dreamtrips.wallet.util.RevertHorizontalChangeHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.List;
 
@@ -136,6 +140,15 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goSettingsProfile() {
       go(new WalletSettingsProfileScreenImpl());
+   }
+
+   @Override
+   public void goBackToProfile() {
+      final List<RouterTransaction> backstack = new ArrayList<>(
+            routerLazy.get().getBackstack().subList(0, routerLazy.get().getBackstackSize() - 2)
+      );
+      backstack.add(constructTransaction(new WalletSettingsProfileScreenImpl()));
+      routerLazy.get().setBackstack(backstack, new RevertHorizontalChangeHandler());
    }
 
    @Override

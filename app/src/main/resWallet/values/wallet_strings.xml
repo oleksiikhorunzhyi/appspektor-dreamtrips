@@ -506,6 +506,7 @@
    <string name="wallet_settings_general_display_full_name_phone">Full Name &amp; Phone</string>
    <string name="wallet_settings_general_display_full_name_only">Full Name Only</string>
    <string name="wallet_settings_general_display_add_phone_number">Add Phone Number</string>
+   <string name="wallet_settings_general_display_add_phone_number_hint">Phone</string>
    <string name="wallet_settings_general_display_add_photo">Add Photo</string>
    <string name="wallet_settings_general_display_photo_required">Photo Required</string>
    <string name="wallet_settings_general_display_phone_required">Phone Required</string>
@@ -516,6 +517,7 @@
    <string name="wallet_settings_general_display_phone_required_message">A phone number is required for this display option.</string>
    <string name="wallet_settings_general_display_photo_required_title">Photo required</string>
    <string name="wallet_settings_general_display_photo_required_message">A photo is required for this display option.</string>
+   <string name="wallet_settings_general_display_photo_add_phone_label">Add phone</string>
 
    <!-- Payment Feedback screen -->
    <string name="wallet_settings_help_payment_feedback_title_screen">Payment Feedback</string>

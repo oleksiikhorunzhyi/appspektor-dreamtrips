@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.common.navigation;
 
-
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
@@ -33,6 +32,8 @@ public interface Navigator {
    void goWalletSettings();
 
    void goSettingsProfile();
+
+   void goBackToProfile();
 
    void goProvisioningBlocked();
 

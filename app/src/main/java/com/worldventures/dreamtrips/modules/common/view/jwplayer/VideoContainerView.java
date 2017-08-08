@@ -4,5 +4,9 @@ import android.view.ViewGroup;
 
 public interface VideoContainerView {
 
-   ViewGroup getVideoContainer();
+   ViewGroup getJwPlayerViewContainer();
+
+   ViewGroup getRootContainerForFullscreen();
+
+   ViewGroup getRootContainerWhenWindowed();
 }

@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.fullscreen.FullscreenHandler;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 
-import butterknife.ButterKnife;
+import timber.log.Timber;
 
 class DtFullscreenHandler implements FullscreenHandler {
-
-   private static final String SKIN_URL = "file:///android_asset/player_skin.css";
 
    private final VideoPlayerHolder videoPlayerHolder;
    private final Activity activity;
@@ -41,45 +39,46 @@ class DtFullscreenHandler implements FullscreenHandler {
 
    @Override
    public void onFullscreenRequested() {
-      videoPlayerHolder.getJwPlayerView().setSkin(SKIN_URL);
-      videoPlayerHolder.getJwPlayerView().setControls(true);
-
+      Timber.d("Video -- on fullscreen requested");
       hideSystemUI();
-      videoPlayerHolder.getJwPlayerView().destroySurface();
 
-      videoPlayerHolder.dettachFromContainer();
-      videoPlayerHolder.getJwPlayerView().initializeSurface();
+      JWPlayerView jwPlayerView = videoPlayerHolder.getJwPlayerView();
 
-      videoPlayerHolder.getJwPlayerView().setMute(false);
-      getRootContainer().post(() -> getRootContainer().addView(videoPlayerHolder.getJwPlayerView()));
+      jwPlayerView.destroySurface();
+      videoPlayerHolder.detachFromWindowedContainer();
+      jwPlayerView.initializeSurface();
+      jwPlayerView.setMute(false);
+      jwPlayerView.post(() -> videoPlayerHolder.attachToFullscreenContainer());
 
       backStackDelegate.setListener(() -> {
-         videoPlayerHolder.onBackPressed();
+         onBackPressed();
          backStackDelegate.setListener(null);
          return true;
       });
    }
 
-   @Override
-   public void onFullscreenExitRequested() {
-      videoPlayerHolder.getJwPlayerView().setControls(false);
-      showSystemUI();
-      videoPlayerHolder.getJwPlayerView().destroySurface();
-
-      dettachFromFullscreenContainer();
-
-      videoPlayerHolder.getJwPlayerView().initializeSurface();
-
-      videoPlayerHolder.getContainer().post(() -> {
-         videoPlayerHolder.attachToContainer();
-         videoPlayerHolder.getJwPlayerView().setMute(true);
-      });
-
-      backStackDelegate.setListener(null);
+   public boolean onBackPressed() {
+      if (videoPlayerHolder.playerExists() && videoPlayerHolder.getJwPlayerView().getFullscreen()) {
+         videoPlayerHolder.getJwPlayerView().setFullscreen(false, false);
+         return true;
+      }
+      return false;
    }
 
-   private void dettachFromFullscreenContainer() {
-      getRootContainer().removeView(videoPlayerHolder.getJwPlayerView());
+   @Override
+   public void onFullscreenExitRequested() {
+      Timber.d("Video -- on fullscreen exit requested");
+      showSystemUI();
+      JWPlayerView jwPlayerView = videoPlayerHolder.getJwPlayerView();
+
+      jwPlayerView.destroySurface();
+      videoPlayerHolder.detachFromFullscreenContainer();
+      jwPlayerView.initializeSurface();
+      jwPlayerView.post(() -> {
+         videoPlayerHolder.attachToWindowedContainer();
+         jwPlayerView.setMute(true);
+      });
+
       backStackDelegate.setListener(null);
    }
 
@@ -111,9 +110,5 @@ class DtFullscreenHandler implements FullscreenHandler {
    @Override
    public void setUseFullscreenLayoutFlags(boolean b) {
 
-   }
-
-   private ViewGroup getRootContainer() {
-      return ButterKnife.findById(activity, R.id.container_details_floating);
    }
 }

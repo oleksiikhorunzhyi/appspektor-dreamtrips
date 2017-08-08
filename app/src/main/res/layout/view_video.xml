@@ -18,12 +18,14 @@
          android:id="@+id/video_thumbnail_container"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
+         android:layout_gravity="center"
          >
 
       <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/video_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             />
 
    </FrameLayout>
@@ -109,6 +111,7 @@
                android:background="@drawable/ic_video_fullscreen"
                android:layout_marginLeft="10dp"
                android:layout_marginRight="4dp"
+               android:visibility="gone"
                />
 
       </LinearLayout>

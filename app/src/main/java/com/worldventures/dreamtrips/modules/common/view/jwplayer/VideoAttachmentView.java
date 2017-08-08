@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -130,13 +131,13 @@ public class VideoAttachmentView extends FrameLayout implements VideoContainerVi
       playButton.setVisibility(GONE);
       setupVideoPlayer();
 
-      videoPlayerHolder.init(playerView, this);
-      videoPlayerHolder.attachToContainer();
+      videoPlayerHolder.init(playerView, this, null);
+      videoPlayerHolder.attachJwPlayerToContainer();
       videoPlayerHolder.play();
    }
 
    @Override
-   public FrameLayout getVideoContainer() {
+   public FrameLayout getJwPlayerViewContainer() {
       return videoContainer;
    }
 
@@ -202,4 +203,14 @@ public class VideoAttachmentView extends FrameLayout implements VideoContainerVi
          return activity == getContext() && playerView != null;
       }
    };
+
+   @Override
+   public ViewGroup getRootContainerForFullscreen() {
+      return null;
+   }
+
+   @Override
+   public ViewGroup getRootContainerWhenWindowed() {
+      return null;
+   }
 }

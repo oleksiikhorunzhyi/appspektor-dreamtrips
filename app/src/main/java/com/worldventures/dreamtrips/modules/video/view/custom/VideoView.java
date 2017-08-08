@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -76,12 +77,15 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject Application application;
+   @Inject Activity activity;
 
    @State boolean overlayContainerVisible = true;
    private Video video;
    private long duration;
    private String defaultStreamUri;
    private String currentStreamUri;
+   private ViewGroup fullscreenContainer;
+   private ViewGroup windowedContainer;
    private boolean ignoreProgressUpdates;
 
    private MediaActionPanelInfoInjector actionPanelInjector = new MediaActionPanelInfoInjector();
@@ -110,14 +114,25 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void setVideo(Video video) {
-      setVideo(video, false, video.getHdUrl());
+      setVideo(video, video.getHdUrl());
    }
 
-   public void setVideo(Video video, boolean showFullscreenButton, String defaultStreamUri) {
+   public void setVideo(Video video, String defaultStreamUri) {
       this.video = video;
       this.defaultStreamUri = defaultStreamUri;
-      assignVideoInfo(showFullscreenButton);
+      assignVideoInfo();
       setupVideoPlayer(0);
+   }
+
+   public void enableFullscreen(@IdRes int fullscreenContainerId, @IdRes int windowedContainerId) {
+      enableFullscreen(ButterKnife.findById(activity, fullscreenContainerId),
+            ButterKnife.findById(activity, windowedContainerId));
+   }
+
+   public void enableFullscreen(ViewGroup fullscreenContainer, ViewGroup windowedContainer) {
+      this.fullscreenContainer = fullscreenContainer;
+      this.windowedContainer = windowedContainer;
+      fullscreenButton.setVisibility(VISIBLE);
    }
 
    public void setSocialInfo(Video video, Date publishedAtDate, boolean enableFlagging, boolean enableEdit) {
@@ -186,12 +201,11 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    private void setupVideoPlayer(long startTimeMillis) {
+      setVisibility(VISIBLE);
       Timber.d("Video -- setup player");
-      //Stop video which playing now, on some neighbour cell
-      if (videoPlayerHolder.getJwPlayerView() != null) {
-         videoPlayerHolder.clearCurrent();
-      }
 
+      //Stop video which playing now, on some neighbour cell
+      videoPlayerHolder.clearCurrent();
       boolean resetProgressBar = startTimeMillis == 0;
       clear(resetProgressBar);
 
@@ -204,11 +218,16 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       playerView.addOnDisplayClickListener(this::toggleOverlayContainerVisibility);
 
       playerView.addOnBufferChangeListener(bufferChangeEvent -> {
-         if (bufferChangeEvent.getDuration() > 0) duration = bufferChangeEvent.getDuration();
-         refreshDurationInfo();
+         if (duration <= 0 && bufferChangeEvent.getDuration() > 0) {
+            duration = bufferChangeEvent.getDuration();
+            refreshDurationInfo();
+         }
       });
 
-      playerView.addOnCompleteListener(this::clear);
+      playerView.addOnCompleteListener(() -> {
+         clear();
+         setupVideoPlayer(0);
+      });
       playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> clear());
       playerView.addOnSetupErrorListener(e -> clear());
 
@@ -219,10 +238,12 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          setTimeLeft(currentTime);
       });
 
+      playerView.addOnFullscreenListener(this::refreshFullscreenButton);
+
       application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
 
-      videoPlayerHolder.init(playerView, this);
-      videoPlayerHolder.attachToContainer();
+      videoPlayerHolder.init(playerView, this, this);
+      videoPlayerHolder.attachJwPlayerToContainer();
    }
 
    private void setProgressInSeekbar(long currentTime) {
@@ -254,7 +275,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    @Override
-   public ViewGroup getVideoContainer() {
+   public ViewGroup getJwPlayerViewContainer() {
       return videoContainer;
    }
 
@@ -264,10 +285,10 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    private void clear(boolean resetProgressBarState) {
       resetUiState(resetProgressBarState);
+      application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
       if (playerView == null) return;
       playerView.stop();
-      videoContainer.removeView(playerView);
-      application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
+      videoPlayerHolder.detachJwPlayerFromContainer();
       playerView = null;
    }
 
@@ -275,14 +296,13 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    // Video info
    ///////////////////////////////////////////////////////////////////////////
 
-   private void assignVideoInfo(boolean showFullscreenButton) {
+   private void assignVideoInfo() {
       setVideoThumbnail();
       refreshDurationInfo();
 
       boolean showHd = defaultStreamUri.equals(video.getHdUrl());
       videoQualityButton.setText(showHd ? STREAM_NAME_HD : STREAM_NAME_SD);
       currentStreamUri = defaultStreamUri;
-      fullscreenButton.setVisibility(showFullscreenButton ? VISIBLE : GONE);
    }
 
    private void refreshDurationInfo() {
@@ -339,7 +359,29 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    @OnClick(R.id.video_view_fullscreen_button)
    void onFullscreenButtonClick() {
-      playerView.setFullscreen(true, true);
+      Timber.d("Video -- fullscreen clicked");
+      boolean isFullscreen = !playerView.getFullscreen();
+      if (isFullscreen) {
+         playerView.setFullscreen(true, false);
+      } else {
+         playerView.setFullscreen(false, false);
+      }
+      refreshFullscreenButton(isFullscreen);
+   }
+
+   private void refreshFullscreenButton(boolean fullscreen) {
+      fullscreenButton.setBackgroundResource(fullscreen ? R.drawable.ic_video_fullscreen_collapse
+         : R.drawable.ic_video_fullscreen);
+   }
+
+   @Override
+   public ViewGroup getRootContainerForFullscreen() {
+      return fullscreenContainer;
+   }
+
+   @Override
+   public ViewGroup getRootContainerWhenWindowed() {
+      return windowedContainer;
    }
 
    @OnClick(R.id.video_view_video_play_pause_button)
@@ -390,6 +432,10 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    public void showPlayButton() {
       playPauseButton.setBackgroundResource(R.drawable.ic_player360_play);
+   }
+
+   public void hide() {
+      setVisibility(GONE);
    }
 
    ///////////////////////////////////////////////////////////////////////////

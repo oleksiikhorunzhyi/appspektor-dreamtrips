@@ -19,11 +19,5 @@
             tools:text="@string/wallet_settings_disable_default_card_4_hours"
             />
 
-      <View
-            android:id="@+id/divider"
-            style="@style/SettingsItemDividerStyle"
-            android:layout_gravity="bottom"
-            />
-
    </FrameLayout>
 </layout>

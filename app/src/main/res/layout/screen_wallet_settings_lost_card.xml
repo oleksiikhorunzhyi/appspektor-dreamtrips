@@ -19,7 +19,9 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:background="@android:color/white"
+         android:divider="@drawable/wallet_divider_horizontal_settings"
          android:orientation="vertical"
+         android:showDividers="middle"
          >
 
       <RelativeLayout
@@ -47,9 +49,6 @@
                />
 
       </RelativeLayout>
-
-      <!--divider-->
-      <View style="@style/SettingsItemDividerStyle" />
 
       <LinearLayout
             android:id="@+id/last_connection_time_container"

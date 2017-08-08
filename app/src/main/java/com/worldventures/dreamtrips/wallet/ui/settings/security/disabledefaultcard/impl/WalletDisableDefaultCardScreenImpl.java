@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
+import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -30,6 +31,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+
+import static com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
 
 public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<WalletDisableDefaultCardScreen, WalletDisableDefaultCardPresenter> implements WalletDisableDefaultCardScreen {
 
@@ -90,15 +93,12 @@ public class WalletDisableDefaultCardScreenImpl extends WalletBaseController<Wal
 
       adapter.addItem(new SectionDividerModel(R.string.wallet_settings_disable_default_card_description));
       selectionManager = new SingleSelectionManager(recyclerView);
+      recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL_LIST));
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
    }
 
    private ListItemDisableHolder.Callback itemDisableCallback = new ListItemDisableHolder.Callback() {
-      @Override
-      public boolean isLast(int position) {
-         return adapter.getItemCount() - 1 == position;
-      }
 
       @Override
       public void onClick(SettingsRadioModel model) {

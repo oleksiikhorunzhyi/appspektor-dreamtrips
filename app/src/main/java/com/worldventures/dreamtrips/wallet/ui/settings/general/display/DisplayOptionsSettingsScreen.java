@@ -8,11 +8,12 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.general.disp
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfilePhotoView;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
-public interface DisplayOptionsSettingsScreen extends WalletScreen, UpdateSmartCardUserView {
+public interface DisplayOptionsSettingsScreen extends WalletScreen, WalletProfilePhotoView, UpdateSmartCardUserView {
 
    void setupViewPager(@NonNull SmartCardUser user, @SetHomeDisplayTypeAction.HomeDisplayType int type);
 
@@ -23,4 +24,8 @@ public interface DisplayOptionsSettingsScreen extends WalletScreen, UpdateSmartC
    ProfileViewModel getProfileViewModel();
 
    DisplayOptionsSource getDisplayOptionsSource();
+
+   void showAddPhoneDialog();
+
+   void updateUser(SmartCardUser user);
 }

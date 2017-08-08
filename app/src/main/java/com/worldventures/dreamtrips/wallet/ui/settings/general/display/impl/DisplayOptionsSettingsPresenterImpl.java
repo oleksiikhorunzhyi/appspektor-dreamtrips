@@ -1,14 +1,18 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 
-
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
@@ -19,10 +23,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTransformer;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
@@ -34,17 +38,18 @@ import timber.log.Timber;
 public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<DisplayOptionsSettingsScreen> implements DisplayOptionsSettingsPresenter {
 
    private final SmartCardUserDataInteractor smartCardUserDataInteractor;
+   private final WalletSocialInfoProvider socialInfoProvider;
+   private final WalletProfileDelegate delegate;
 
-   private WalletProfileDelegate delegate;
    private boolean mustSaveUserProfile;
-   private DisplayOptionsSource source;
    private SmartCardUser user;
 
    public DisplayOptionsSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor) {
+         AnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
+      this.socialInfoProvider = socialInfoProvider;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
@@ -58,7 +63,6 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    }
 
    private void initiateData() {
-      this.source = getView().getDisplayOptionsSource();
       final ProfileViewModel profileViewModel = getView().getProfileViewModel();
       this.user = (profileViewModel != null) ? delegate.createSmartCardUser(getView().getProfileViewModel()) : null;
       this.mustSaveUserProfile = user != null;
@@ -90,8 +94,11 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SetHomeDisplayTypeAction>provideSaveDisplayTypeOperationView())
                   .onSuccess(command -> {
-                     if (mustSaveUserProfile) returnToDashboard();
-                     else goBack();
+                     if (mustSaveUserProfile && getView().getDisplayOptionsSource().isSettings()) {
+                        goBack();
+                     } else {
+                        getNavigator().goBackToProfile();
+                     }
                   })
                   .create()
             );
@@ -103,13 +110,48 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
 
    @NonNull
    private Observable<SmartCardUser> getUserObservable() {
-      return (user != null) ? Observable.just(user) : getSmartCardInteractor().smartCardUserPipe()
+      return user != null ? Observable.just(user) : getSmartCardInteractor().smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.fetch())
             .map(Command::getResult).doOnNext(smartCardUser -> user = smartCardUser);
    }
 
    @Override
    public void fetchDisplayType() {getSmartCardInteractor().getDisplayTypePipe().send(new GetDisplayTypeCommand(true));}
+
+   @Override
+   public void savePhoneNumber(ProfileViewModel profile) {
+      final SmartCardUserPhone enteredPhone = delegate.createPhone(profile);
+      if (enteredPhone == null) return;
+
+      user = ImmutableSmartCardUser.builder()
+            .from(user)
+            .phoneNumber(enteredPhone)
+            .build();
+
+      mustSaveUserProfile = true;
+      getView().updateUser(user);
+   }
+
+   @Override
+   public void handlePickedPhoto(PhotoPickerModel model) {
+      getView().cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model));
+   }
+
+   @Override
+   public void saveAvatar(String imageUri) {
+      user = ImmutableSmartCardUser.builder()
+            .from(user)
+            .userPhoto(SmartCardUserPhoto.of(imageUri))
+            .build();
+
+      mustSaveUserProfile = true;
+      getView().updateUser(user);
+   }
+
+   @Override
+   public void choosePhoto() {
+      getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()));
+   }
 
    @Override
    public void saveDisplayType(@SetHomeDisplayTypeAction.HomeDisplayType int type) {
@@ -138,21 +180,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    }
 
    @Override
-   public void openEditProfileScreen() {
-      if (source.isSettings()) {
-         getNavigator().goSettingsProfile();
-      } else {
-         goBack();
-      }
-   }
-
-   @Override
    public void goBack() {
       getNavigator().goBack();
    }
-
-   private void returnToDashboard() {
-      getNavigator().goCardList();
-   }
-
 }

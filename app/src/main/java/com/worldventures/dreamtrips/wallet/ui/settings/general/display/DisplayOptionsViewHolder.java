@@ -53,7 +53,7 @@ public class DisplayOptionsViewHolder {
       SmartCardUserPhoto userPhoto = user.userPhoto();
       SmartCardUserPhone userPhone = user.phoneNumber();
       String phone = (userPhone == null) ? String.format(Locale.US, "(%s)", rootView.getResources()
-            .getString(R.string.wallet_settings_general_display_phone_required)) : "+" + userPhone.fullPhoneNumber();
+            .getString(R.string.wallet_settings_general_display_phone_required)) : userPhone.fullPhoneNumber();
 
       title.setText(titleRes);
 
@@ -105,7 +105,13 @@ public class DisplayOptionsViewHolder {
 
    @Optional
    @OnClick({R.id.tv_add_phone, R.id.tv_add_photo})
-   void onClickAddInfo() {
-      if (clickListener != null) clickListener.onAddInfoClicked();
+   void onClickAddInfo(View v) {
+      if (clickListener != null) {
+         if (v.getId() == R.id.tv_add_phone) {
+            clickListener.onAddPhone();
+         } else if (v.getId() == R.id.tv_add_photo) {
+            clickListener.onAddPhoto();
+         }
+      }
    }
 }

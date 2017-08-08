@@ -82,6 +82,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
       if (getView().getUser().isEmpty()) {
          getView().setUser(delegate.toViewModel(user));
       }
+      getView().setDoneButtonEnabled(isDataChanged());
    }
 
    @Override

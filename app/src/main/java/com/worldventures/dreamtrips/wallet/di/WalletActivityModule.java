@@ -631,9 +631,9 @@ public class WalletActivityModule {
    @Provides
    DisplayOptionsSettingsPresenter provideDisplayOptionsSettingsPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
       return new DisplayOptionsSettingsPresenterImpl(navigator, smartCardInteractor, smartCardUserDataInteractor,
-            networkService, analyticsInteractor);
+            networkService, analyticsInteractor, socialInfoProvider);
    }
 
    @Provides

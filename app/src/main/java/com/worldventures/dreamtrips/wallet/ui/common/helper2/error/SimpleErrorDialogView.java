@@ -53,6 +53,6 @@ public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
    }
 
    public void setNegativeText(int negativeResId) {
-      this.positiveResId = negativeResId;
+      this.negativeResId = negativeResId;
    }
 }

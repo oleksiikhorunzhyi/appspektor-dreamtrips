@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.records.add.impl;
 
-
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
@@ -62,8 +61,6 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    @Inject AddCardDetailsPresenter presenter;
 
-   private final WalletRecordUtil walletRecordUtil;
-
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
    private Observable<String> cvvObservable;
@@ -76,7 +73,6 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    public AddCardDetailsScreenImpl(Bundle args) {
       super(args);
-      this.walletRecordUtil = new WalletRecordUtil();
    }
 
    @Override
@@ -89,7 +85,9 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       super.onFinishInflate(view);
       setHintsAndLabels();
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
+      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher)
+            .doOnNext(value -> bankCardWidget.setAsDefault(value))
+            .skip(1);
       cardNicknameObservable = observableFrom(etCardNickname);
       cvvObservable = observableFrom(etCardCvv);
    }
@@ -143,7 +141,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    @Override
    public void showChangeCardDialog(Record record) {
-      new ChangeDefaultPaymentCardDialog(getContext(), walletRecordUtil.bankNameWithCardNumber(record))
+      new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.bankNameWithCardNumber(record))
             .setOnCancelAction(() -> getPresenter().onCardToDefaultClick(false))
             .setOnConfirmAction(() -> getPresenter().onCardToDefaultClick(true))
             .show();

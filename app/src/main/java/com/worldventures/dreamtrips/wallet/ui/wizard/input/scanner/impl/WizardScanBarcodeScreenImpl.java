@@ -136,7 +136,7 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NumberFormatException.class,
                         R.string.wallet_wizard_scan_barcode_invalid_format,
-                        command -> presenter.retryScan()))
+                        command -> presenter.retryScan(), null, () -> presenter.retryScan()))
                   .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
                         command -> getPresenter().retry(command.barcode),
                         command -> presenter.retryScan()))
@@ -150,6 +150,7 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
             .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
             .positiveText(R.string.ok)
             .onPositive((dialog, which) -> presenter.retryScan())
+            .cancelListener(dialog -> presenter.retryScan())
             .show();
    }
 

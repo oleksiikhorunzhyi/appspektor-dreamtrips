@@ -271,11 +271,7 @@ dependencies {
 
    // customized dependencies
 
-   /*compile(deps.provide(deps.networking.apiMonolith)) {
-      exclude group: 'joda-time'
-   }*/
-   compile project(':integration-check')
-   compile (project(':library')) {
+   compile(deps.provide(deps.networking.apiMonolith)) {
       exclude group: 'joda-time'
    }
 

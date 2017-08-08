@@ -14,15 +14,5 @@ buildscript {
       classpath project.ext.pluginDependencies.newrelic
       //
       classpath project.ext.pluginDependencies.versionChecker
-      classpath "net.ltgt.gradle:gradle-apt-plugin:0.8"
-      classpath "ru.d10xa:gradle-allure-plugin:0.5.3"
-      classpath 'com.github.ben-manes:gradle-versions-plugin:0.13.0'
-   }
-
-   ext {
-      janetHttpVersion = '1.0.11'
-      immutablesVersion = '2.3.9'
-      mobileSdkVersion = '1.2.2'
-
    }
 }

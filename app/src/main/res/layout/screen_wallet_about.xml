@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme"
       android:orientation="vertical"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
@@ -79,7 +79,9 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:background="@color/white"
+               android:divider="@drawable/wallet_divider_horizontal_with_left_padding_settings"
                android:orientation="vertical"
+               android:showDividers="middle"
                >
 
             <LinearLayout
@@ -111,11 +113,6 @@
                      />
             </LinearLayout>
 
-            <View
-                  style="@style/SettingsItemDividerStyle"
-                  android:layout_marginStart="@dimen/spacing_normal"
-                  />
-
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -144,11 +141,6 @@
                      tools:text="3"
                      />
             </LinearLayout>
-
-            <View
-                  style="@style/SettingsItemDividerStyle"
-                  android:layout_marginStart="@dimen/spacing_normal"
-                  />
 
             <LinearLayout
                   android:layout_width="match_parent"
@@ -191,7 +183,9 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:background="@color/white"
+               android:divider="@drawable/wallet_divider_horizontal_with_left_padding_settings"
                android:orientation="vertical"
+               android:showDividers="middle"
                >
 
             <LinearLayout
@@ -224,11 +218,6 @@
                      />
             </LinearLayout>
 
-            <View
-                  style="@style/SettingsItemDividerStyle"
-                  android:layout_marginStart="@dimen/spacing_normal"
-                  />
-
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -258,11 +247,6 @@
                      tools:text="1.49.0"
                      />
             </LinearLayout>
-
-            <View
-                  style="@style/SettingsItemDividerStyle"
-                  android:layout_marginStart="@dimen/spacing_normal"
-                  />
 
             <LinearLayout
                   android:layout_width="match_parent"
@@ -294,11 +278,6 @@
                      />
             </LinearLayout>
 
-            <View
-                  style="@style/SettingsItemDividerStyle"
-                  android:layout_marginStart="@dimen/spacing_normal"
-                  />
-
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -328,11 +307,6 @@
                      tools:text="1.13.3"
                      />
             </LinearLayout>
-
-            <View
-                  style="@style/SettingsItemDividerStyle"
-                  android:layout_marginStart="@dimen/spacing_normal"
-                  />
 
             <LinearLayout
                   android:layout_width="match_parent"

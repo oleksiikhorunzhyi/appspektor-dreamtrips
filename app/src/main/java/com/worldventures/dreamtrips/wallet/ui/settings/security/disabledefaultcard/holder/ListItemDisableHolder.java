@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.holder;
 
-import android.view.View;
-
 import com.worldventures.dreamtrips.databinding.ListItemDisableDefaultCardBinding;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SelectableCallback;
@@ -22,7 +20,6 @@ public class ListItemDisableHolder extends BaseHolder<SettingsRadioModel> {
    public void setData(SettingsRadioModel data) {
       binding.checkbox.setText(itemView.getContext().getString(data.getTextResId()));
       binding.checkbox.setChecked(callback.isSelected(getAdapterPosition()));
-      binding.divider.setVisibility(callback.isLast(getAdapterPosition()) ? View.GONE : View.VISIBLE);
 
       binding.checkbox.setOnClickListener(view -> {
          callback.toggleSelection(getAdapterPosition());
@@ -31,8 +28,6 @@ public class ListItemDisableHolder extends BaseHolder<SettingsRadioModel> {
    }
 
    public interface Callback extends SelectableCallback {
-
-      boolean isLast(int position);
 
       void onClick(SettingsRadioModel model);
    }

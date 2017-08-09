@@ -17,4 +17,5 @@ public class WalletUtilModule {
       return new ErrorHandlerFactory(context, errorHandlingUtils);
    }
 
+
 }

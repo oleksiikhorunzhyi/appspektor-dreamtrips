@@ -1,6 +1,7 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.common.provider;
+package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items;
 
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
+import android.content.Context;
+import android.support.annotation.StringRes;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ abstract class BaseItemProvider {
    public SettingsRadioModel item(int position) {
       return items.get(position);
    }
+
    public final int getPositionForValue(long value) {
       final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
@@ -27,11 +29,15 @@ abstract class BaseItemProvider {
       return 0;
    }
 
-   public final int provideTextResIdByValue(long value) {
+   public final String provideTextByValue(long value) {
       final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
-         if (value == items.get(i).getValue()) return items.get(i).getTextResId();
+         if (value == items.get(i).getValue()) return items.get(i).getText();
       }
-      return items.get(0).getTextResId();
+      return items.get(0).getText();
+   }
+
+   protected static SettingsRadioModel createRadioModel(Context context, @StringRes int textResId, long delay) {
+      return new SettingsRadioModel(context.getString(textResId), delay);
    }
 }

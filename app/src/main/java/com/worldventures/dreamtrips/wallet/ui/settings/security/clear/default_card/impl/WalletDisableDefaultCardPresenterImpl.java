@@ -1,5 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.impl;
-
+package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
@@ -11,26 +10,24 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDefaultCardItemProvider;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.SettingsRadioModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.DisableDefaultCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.WalletDisableDefaultCardScreen;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<WalletDisableDefaultCardScreen> implements WalletDisableDefaultCardPresenter {
 
    private final AnalyticsInteractor analyticsInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
    private final DisableDefaultCardItemProvider itemProvider;
 
    public WalletDisableDefaultCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
-      this.itemProvider = new DisableDefaultCardItemProvider();
+      this.itemProvider = itemProvider;
    }
 
    @Override
@@ -68,13 +65,12 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
       getSmartCardInteractor().disableDefaultCardDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<SetDisableDefaultCardDelayCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().<SetDisableDefaultCardDelayCommand>provideOperationView())
                   .onSuccess(command -> {
                      bindToView(command.getResult());
-                     getView().setDelayChanged(true);
+                     getView().setDelayWasChanged(true);
                   })
-                  .onFail(errorHandlerFactory.errorHandler())
-                  .wrap());
+                  .create());
    }
 
    private void bindToView(long disableCardDelay) {
@@ -84,13 +80,13 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
 
    public void trackScreen() {
       final SettingsRadioModel selectedDelay = itemProvider.item(getView().getSelectedPosition());
-      trackDisableDelay(new DisableDefaultAction(getView().getTextBySelectedModel(selectedDelay)));
+      trackDisableDelay(new DisableDefaultAction(selectedDelay.getText()));
    }
 
    @Override
    public void trackChangedDelay() {
       final SettingsRadioModel selectedDelay = itemProvider.item(getView().getSelectedPosition());
-      trackDisableDelay(new DisableDefaultChangedAction(getView().getTextBySelectedModel(selectedDelay)));
+      trackDisableDelay(new DisableDefaultChangedAction(selectedDelay.getText()));
    }
 
    private void trackDisableDelay(WalletAnalyticsAction disableCardDelayAction) {

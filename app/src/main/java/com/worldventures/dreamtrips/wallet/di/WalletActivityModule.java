@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.di;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.bluelinelabs.conductor.Router;
 import com.worldventures.dreamtrips.R;
@@ -144,9 +145,14 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHel
 import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.impl.WalletDisableDefaultCardPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.impl.WalletDisableDefaultCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.DisableDefaultCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl.WalletDisableDefaultCardPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl.WalletDisableDefaultCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
@@ -155,9 +161,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.Lo
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.impl.WalletAutoClearCardsPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.impl.WalletAutoClearCardsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartScreenImpl;
@@ -607,19 +610,29 @@ public class WalletActivityModule {
    }
 
    @Provides
+   DisableDefaultCardItemProvider provideDisableDefaultCardItemProvider(Context context) {
+      return new DisableDefaultCardItemProvider(context);
+   }
+
+   @Provides
+   AutoClearSmartCardItemProvider provideAutoClearSmartCardItemProvider(Context context) {
+      return new AutoClearSmartCardItemProvider(context);
+   }
+
+   @Provides
    WalletAutoClearCardsPresenter provideWalletAutoClearCardsPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
+         AnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider itemProvider) {
       return new WalletAutoClearCardsPresenterImpl(navigator, smartCardInteractor, networkService,
-            analyticsInteractor, errorHandlerFactory);
+            analyticsInteractor, itemProvider);
    }
 
    @Provides
    WalletDisableDefaultCardPresenter provideWalletDisableDefaultCardPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
+         AnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
       return new WalletDisableDefaultCardPresenterImpl(navigator, smartCardInteractor, networkService,
-            analyticsInteractor, errorHandlerFactory);
+            analyticsInteractor, itemProvider);
    }
 
    @Provides

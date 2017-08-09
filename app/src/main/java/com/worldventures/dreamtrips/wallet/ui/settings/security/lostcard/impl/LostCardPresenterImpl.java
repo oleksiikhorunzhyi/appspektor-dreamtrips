@@ -6,40 +6,25 @@ import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.ClickDirectionsAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayLocateCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayMapAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.LocateDisabledAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.LocateEnabledAnalyticsAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.model.ImmutableLostCardPin;
-
-import java.util.List;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import timber.log.Timber;
-
-import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.getLatestLocation;
-import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.toLatLng;
 
 public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> implements LostCardPresenter {
 
@@ -47,21 +32,18 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    private final SmartCardLocationInteractor smartCardLocationInteractor;
    private final WalletDetectLocationService locationService;
    private final AnalyticsInteractor analyticsInteractor;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
    private final LocationScreenComponent locationScreenComponent;
 
    public LostCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, PermissionDispatcher permissionDispatcher,
          SmartCardLocationInteractor smartCardLocationInteractor, WalletDetectLocationService walletDetectLocationService,
-         LocationScreenComponent locationScreenComponent, AnalyticsInteractor analyticsInteractor,
-         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         LocationScreenComponent locationScreenComponent, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.permissionDispatcher = permissionDispatcher;
       this.smartCardLocationInteractor = smartCardLocationInteractor;
       this.locationService = walletDetectLocationService;
       this.locationScreenComponent = locationScreenComponent;
       this.analyticsInteractor = analyticsInteractor;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
    }
 
    @Override
@@ -70,25 +52,12 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       trackScreen();
 
       observeCheckingSwitcher();
-      observeWalletLocationCommand();
-      observeEnableTrackingState();
-      observeLocationSettings();
-
-      fetchEnableTrackingState();
    }
 
    private void observeLocationSettings() {
       locationService.observeLocationSettingState()
             .compose(bindViewIoToMainComposer())
             .subscribe(this::handleLocationSettingsStatus,
-                  throwable -> Timber.e(throwable, ""));
-   }
-
-   private void observeWalletLocationCommand() {
-      smartCardLocationInteractor.walletLocationCommandPipe()
-            .observeSuccess()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()),
                   throwable -> Timber.e(throwable, ""));
    }
 
@@ -100,7 +69,11 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
             .subscribe(command -> onTrackingStateFetched(command.getResult()));
    }
 
-   private void fetchEnableTrackingState() {
+   @Override
+   public void prepareTrackingStateSubscriptions() {
+      observeEnableTrackingState();
+      observeLocationSettings();
+
       smartCardLocationInteractor.enabledTrackingPipe().send(CardTrackingStatusCommand.fetch());
    }
 
@@ -153,14 +126,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private void applyTrackingStatusForUI(boolean isTrackingEnabled) {
       getView().setTrackingSwitchStatus(isTrackingEnabled);
-
-      getView().setVisibleDisabledTrackingView(!isTrackingEnabled);
-      getView().setVisibilityMap(isTrackingEnabled);
-   }
-
-   @Override
-   public void onMapPrepared() {
-      fetchLastSmartCardLocation();
+      getView().setMapEnabled(isTrackingEnabled);
    }
 
    @Override
@@ -183,10 +149,6 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       getNavigator().goBack();
    }
 
-   @Override
-   public void retryFetchAddressWithPlaces(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
-      fetchAddressWithPlaces(fetchAddressWithPlacesCommand.getCoordinates());
-   }
 
    private void checkLocationSettings() {
       locationService.fetchLastKnownLocationSettings()
@@ -208,57 +170,6 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       smartCardLocationInteractor.enabledTrackingPipe().send(CardTrackingStatusCommand.save(enableTracking));
    }
 
-   private void fetchLastSmartCardLocation() {
-      smartCardLocationInteractor.getLocationPipe()
-            .createObservable(new GetLocationCommand())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<GetLocationCommand>()
-                  .onSuccess(getLocationCommand -> {
-                     final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
-                     processLastLocation(walletLocation);
-                  })
-            );
-   }
-
-   private void processLastLocation(WalletLocation walletLocation) {
-      if (walletLocation == null) {
-         toggleLocationContainersVisibility(false);
-         return;
-      }
-      toggleLocationContainersVisibility(true);
-      getView().setLastConnectionDate(walletLocation.createdAt());
-
-      fetchAddressWithPlaces(walletLocation.coordinates());
-   }
-
-   private void fetchAddressWithPlaces(WalletCoordinates coordinates) {
-      smartCardLocationInteractor.fetchAddressPipe()
-            .createObservable(new FetchAddressWithPlacesCommand(coordinates))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView(), true)
-                  .onSuccess(command ->
-                        setupLocationAndAddress(coordinates, command.getResult().address, command.getResult().places))
-                  .onFail((fetchAddressWithPlacesCommand, throwable) -> setupEmptyLocation(fetchAddressWithPlacesCommand))
-                  .create());
-   }
-
-   private void setupEmptyLocation(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
-      getView().addPin(toLatLng(fetchAddressWithPlacesCommand.getCoordinates()));
-   }
-
-   private void toggleLocationContainersVisibility(boolean locationExists) {
-      getView().setVisibleMsgEmptyLastLocation(!locationExists);
-      getView().setVisibleLastConnectionTime(locationExists);
-   }
-
-   private void setupLocationAndAddress(WalletCoordinates coordinates, WalletAddress address, List<WalletPlace> places) {
-      getView().addPin(ImmutableLostCardPin.builder()
-            .position(toLatLng(coordinates))
-            .address(address)
-            .places(places)
-            .build());
-   }
-
    private void trackScreen() {
       smartCardLocationInteractor.enabledTrackingPipe()
             .createObservable(CardTrackingStatusCommand.fetch())
@@ -274,19 +185,9 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
                   trackingEnabled ? new DisplayMapAnalyticsAction() : new DisplayLocateCardAnalyticsAction()));
    }
 
-   @Override
-   public void trackDirectionsClick() {
-      analyticsInteractor.locateCardAnalyticsCommandActionPipe()
-            .send(new LocateCardAnalyticsCommand(new ClickDirectionsAnalyticsAction()));
-   }
-
    private void trackSwitchStateChanged(boolean enableTracking) {
       analyticsInteractor.locateCardAnalyticsCommandActionPipe()
             .send(new LocateCardAnalyticsCommand(enableTracking
                   ? new LocateEnabledAnalyticsAction() : new LocateDisabledAnalyticsAction()));
-   }
-
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
    }
 }

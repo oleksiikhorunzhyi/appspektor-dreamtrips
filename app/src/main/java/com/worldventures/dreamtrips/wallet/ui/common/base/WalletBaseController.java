@@ -69,6 +69,12 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
       inputManager.hideSoftInputFromWindow(null, 0);
    }
 
+   @Override
+   protected void onDestroyView(@NonNull View view) {
+      super.onDestroyView(view);
+      ButterKnife.reset(this);
+   }
+
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);
 
    public abstract boolean supportConnectionStatusLabel();

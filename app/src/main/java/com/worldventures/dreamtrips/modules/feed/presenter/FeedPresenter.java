@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.command
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -383,10 +384,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       suggestedPhotoHelper.selectPhoto(model);
    }
 
-   public void attachSelectedSuggestionPhotos() {
-      suggestedPhotoHelper.mediaAttachmentObservable()
-            .compose(bindViewToMainComposer())
-            .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment), error -> Timber.e(error, ""));
+   public void attachSuggestionsClicked() {
+      view.openCreatePostScreen(suggestedPhotoHelper.getSelectedAttachments());
+      removeSuggestedPhotos();
    }
 
    public long lastSyncTimestamp() {
@@ -454,5 +454,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       void openComments(FeedItem feedItem);
 
       void updateLoadingStatus(boolean noMoreElements);
+
+      void openCreatePostScreen(MediaPickerAttachment mediaPickerAttachment);
    }
 }

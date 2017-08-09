@@ -6,9 +6,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -47,7 +46,6 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject TripImagesCommandFactory tripImagesCommandFactory;
-   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    boolean memberImagesAreRefreshing;
@@ -75,7 +73,6 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
          subscribeToBackgroundUploadingOperations();
       }
       subscribeToTripImages();
-      subscribeToMediaItems();
       subscribeToPhotoDeletedEvents();
       subscribeToErrorUpdates();
       subscribeToNewItems();
@@ -210,13 +207,10 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       updateItemsInView();
    }
 
-   void subscribeToMediaItems() {
-      mediaPickerEventDelegate.getObservable()
-            .compose(bindViewToMainComposer())
-            .subscribe(mediaAttachment -> {
-               if (view.isVisibleOnScreen()) //cause neighbour tab also catches this event
-                  view.openCreatePhoto(mediaAttachment);
-            });
+   public void pickedAttachments(MediaPickerAttachment mediaAttachment) {
+      if (view.isVisibleOnScreen()) { //cause neighbour tab also catches this event
+         view.openCreatePhoto(mediaAttachment);
+      }
    }
 
    void updateItemsInView() {
@@ -301,6 +295,6 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
 
       void hideCreateImageButton();
 
-      void openCreatePhoto(MediaAttachment mediaAttachment);
+      void openCreatePhoto(MediaPickerAttachment mediaAttachment);
    }
 }

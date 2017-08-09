@@ -204,12 +204,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       }
    }
 
-   @Deprecated
-   public void attachMedia(MediaAttachment mediaAttachment) {
-      attachMedia(mediaAttachment.hasImages() ?
-            new MediaPickerAttachment(mediaAttachment.chosenImages, -1) : new MediaPickerAttachment(mediaAttachment.chosenVideo, -1));
-   }
-
    public void attachMedia(MediaPickerAttachment mediaPickerAttachment) {
       if (!mediaPickerAttachment.hasImages() && !mediaPickerAttachment.hasVideo()) return;
 

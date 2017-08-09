@@ -312,13 +312,6 @@ class FeedPresenterSpek : PresenterBaseSpec({
             verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).selectPhoto(any())
          }
 
-         it("Should post selected photos to mediaPickerEventDelegate") {
-            val mediaAttachment = MediaAttachment(PhotoPickerModel(), MediaAttachment.Source.GALLERY)
-            doReturn(Observable.just(mediaAttachment)).whenever(suggestedPhotoCellHelper).mediaAttachmentObservable()
-            presenter.attachSelectedSuggestionPhotos()
-
-            verify(mediaPickerEventDelegate, VerificationModeFactory.times(1)).post(mediaAttachment)
-         }
       }
 
       describe("Counters") {

@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -220,10 +221,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void onAttachClicked() {
-      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(false,
-            CreateEntityBundle.Origin.FEED));
-      getPresenter().attachSelectedSuggestionPhotos();
-      getPresenter().removeSuggestedPhotos();
+      getPresenter().attachSuggestionsClicked();
+   }
+
+   @Override
+   public void openCreatePostScreen(MediaPickerAttachment mediaPickerAttachment) {
+      CreateEntityBundle bundle = new CreateEntityBundle(mediaPickerAttachment, CreateEntityBundle.Origin.FEED);
+      bundle.setShowPickerImmediately(false);
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), bundle);
    }
 
    @Override

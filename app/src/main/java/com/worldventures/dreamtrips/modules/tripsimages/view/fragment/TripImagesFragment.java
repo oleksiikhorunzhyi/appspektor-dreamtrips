@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesPresenter;
@@ -78,13 +78,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       initRecyclerView();
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-   }
-
-   @Override
-   public void setUserVisibleHint(boolean isVisibleToUser) {
-      super.setUserVisibleHint(isVisibleToUser);
-
-      if (!isVisibleToUser) hidePhotoPicker();
    }
 
    @Override
@@ -156,21 +149,9 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .data(new PickerBundle.Builder().setPhotoPickLimit(MEDIA_PICKER_ITEMS_COUNT).build())
-            .build());
-   }
-
-   private void hidePhotoPicker() {
-      if (isAdded()) {
-         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-               .containerId(R.id.picker_container)
-               .fragmentManager(getChildFragmentManager())
-               .build());
-      }
+      MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(getPresenter()::pickedAttachments);
+      mediaPickerDialog.show(MEDIA_PICKER_ITEMS_COUNT);
    }
 
    @Override
@@ -222,7 +203,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment) {
+   public void openCreatePhoto(MediaPickerAttachment mediaAttachment) {
       if (isCreatePhotoAlreadyAttached()) return;
       router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)

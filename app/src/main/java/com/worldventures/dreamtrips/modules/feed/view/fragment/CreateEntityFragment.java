@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.modules.feed.model.ImmutableVideoCreationModel;
@@ -96,8 +96,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    @Override
    protected void onTitleFocusChanged(boolean hasFocus) {
       super.onTitleFocusChanged(hasFocus);
-      if (hasFocus) hideMediaPicker();
-      else name.requestFocus();
+      if (!hasFocus) name.requestFocus();
    }
 
    @OnClick(R.id.image)
@@ -121,13 +120,6 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
       return photoStripView;
    }
 
-   protected void hideMediaPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .build());
-   }
-
    protected void attachImages() {
       if (!imageFromArgsAlreadyAttached && getMediaAttachment() != null) {
          getPresenter().attachMedia(getMediaAttachment());
@@ -135,7 +127,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
       }
    }
 
-   private MediaAttachment getMediaAttachment() {
+   private MediaPickerAttachment getMediaAttachment() {
       return getArgs() != null && getArgs().getMediaAttachment() != null ? getArgs().getMediaAttachment() : null;
    }
 }

@@ -254,8 +254,8 @@ public class FeedModule {
 
    @Provides
    SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
-         MediaInteractor mediaInteractor, CapturedRowMediaHelper capturedRowMediaHelper) {
-      return new SuggestedPhotoCellPresenterHelper(appSessionHolder, mediaInteractor, capturedRowMediaHelper);
+         MediaInteractor mediaInteractor) {
+      return new SuggestedPhotoCellPresenterHelper(appSessionHolder, mediaInteractor);
    }
 
    @Provides

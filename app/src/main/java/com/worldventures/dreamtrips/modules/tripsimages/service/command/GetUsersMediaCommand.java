@@ -82,6 +82,7 @@ public class GetUsersMediaCommand extends BaseMediaCommand implements Injectable
       cacheBundle.put(TripImageStorage.RELOAD, isReload());
       cacheBundle.put(TripImageStorage.LOAD_MORE, isLoadMore());
       cacheBundle.put(TripImageStorage.LOAD_LATEST, false);
+      cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false);
       return ImmutableCacheOptions.builder()
             .params(cacheBundle)
             .build();

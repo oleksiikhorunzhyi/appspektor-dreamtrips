@@ -82,7 +82,7 @@ public class FeedEntityHolderDelegate {
                   .onFail(errorAction::call));
 
       tripImagesInteractor.deletePhotoPipe()
-            .observeWithReplay()
+            .observe()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
                   .onSuccess(deletePhotoCommand -> feedEntityHolder.deleteFeedEntity(deletePhotoCommand.getResult()))

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelega
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -209,6 +211,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void onDeleteTextualPost(TextualPost textualPost) {
       feedActionHandlerDelegate.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
    }
 
    @Override

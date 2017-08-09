@@ -162,7 +162,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<SuggestedPhotosCel
    @Override
    public void showMaxSelectionMessage() {
       Snackbar.make(itemView, itemView.getContext()
-            .getString(R.string.photo_limitation_message, SuggestedPhotoCellPresenterHelper.MAX_SELECTION_SIZE), Snackbar.LENGTH_SHORT)
+            .getString(R.string.picker_photo_limit_plural, SuggestedPhotoCellPresenterHelper.MAX_SELECTION_SIZE), Snackbar.LENGTH_SHORT)
             .show();
    }
 

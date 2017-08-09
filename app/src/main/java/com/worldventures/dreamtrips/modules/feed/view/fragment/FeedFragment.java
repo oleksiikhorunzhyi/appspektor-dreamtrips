@@ -38,6 +38,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.cell.EmptyFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
@@ -469,6 +470,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(EmptyFeedModel.class, model -> fragmentWithFeedDelegate.openFriendsSearch());
    }
 }

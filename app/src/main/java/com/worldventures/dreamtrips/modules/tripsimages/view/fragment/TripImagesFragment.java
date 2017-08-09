@@ -89,6 +89,11 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       super.onDestroyView();
    }
 
+   @Override
+   public void scrollToTop() {
+      recyclerView.scrollToPosition(0);
+   }
+
    private void initAdapter() {
       initLayoutManager(getSpanCount());
       stateDelegate.setRecyclerView(recyclerView);
@@ -154,10 +159,10 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void openPicker() {
+   public void openPicker(int durationLimit) {
       MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
       mediaPickerDialog.setOnDoneListener(getPresenter()::pickedAttachments);
-      mediaPickerDialog.show(MEDIA_PICKER_ITEMS_COUNT);
+      mediaPickerDialog.show(MEDIA_PICKER_ITEMS_COUNT, durationLimit);
    }
 
    @Override
@@ -179,8 +184,10 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items) {
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return adapter.getItem(oldItemPosition) instanceof UploadingPostsList && items.get(newItemPosition) instanceof UploadingPostsList
-                  || super.areItemsTheSame(oldItemPosition, newItemPosition);
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList && items.get(newItemPosition) instanceof UploadingPostsList){
+               return true;
+            }
+            return super.areItemsTheSame(oldItemPosition, newItemPosition);
          }
       });
       adapter.setItemsNoNotify(items);

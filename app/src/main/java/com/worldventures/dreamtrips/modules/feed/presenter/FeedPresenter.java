@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDel
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
@@ -42,6 +43,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -129,6 +131,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void dropView() {
       translationDelegate.onDropView();
+      suggestedPhotoHelper.dropView();
       super.dropView();
    }
 
@@ -322,6 +325,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void onDeleteTextualPost(TextualPost textualPost) {
       feedActionHandlerDelegate.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
    }
 
    @Override

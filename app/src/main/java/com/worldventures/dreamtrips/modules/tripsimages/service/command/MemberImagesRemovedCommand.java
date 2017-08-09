@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.storage.TripImag
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.techery.janet.ActionHolder;
@@ -16,12 +17,12 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class MemberImagesAddedCommand extends Command<List<BaseMediaEntity>> implements CachedAction<List<BaseMediaEntity>> {
+public class MemberImagesRemovedCommand extends Command<List<BaseMediaEntity>> implements CachedAction<List<BaseMediaEntity>> {
 
    TripImagesArgs tripImagesArgs;
    List<BaseMediaEntity> baseMediaEntities;
 
-   public MemberImagesAddedCommand(TripImagesArgs tripImagesArgs, List<BaseMediaEntity> baseMediaEntities) {
+   public MemberImagesRemovedCommand(TripImagesArgs tripImagesArgs, List<BaseMediaEntity> baseMediaEntities) {
       this.tripImagesArgs = tripImagesArgs;
       this.baseMediaEntities = baseMediaEntities;
    }
@@ -43,10 +44,10 @@ public class MemberImagesAddedCommand extends Command<List<BaseMediaEntity>> imp
    public CacheOptions getCacheOptions() {
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(TripImageStorage.PARAM_ARGS, tripImagesArgs);
-      cacheBundle.put(TripImageStorage.LOAD_LATEST, true);
+      cacheBundle.put(TripImageStorage.LOAD_LATEST, false);
       cacheBundle.put(TripImageStorage.RELOAD, false);
       cacheBundle.put(TripImageStorage.LOAD_MORE, false);
-      cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false);
+      cacheBundle.put(TripImageStorage.REMOVE_ITEMS, true);
       return ImmutableCacheOptions.builder()
             .params(cacheBundle)
             .restoreFromCache(false)

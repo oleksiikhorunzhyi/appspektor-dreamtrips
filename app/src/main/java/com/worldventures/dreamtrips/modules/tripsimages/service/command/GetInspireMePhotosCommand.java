@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
-import com.worldventures.dreamtrips.modules.tripsimages.service.storage.TripImageStorage;
+import com.worldventures.dreamtrips.modules.tripsimages.service.storage.InspireMeStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +82,8 @@ public class GetInspireMePhotosCommand extends CommandWithError<List<Inspiration
    @Override
    public CacheOptions getCacheOptions() {
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
-      cacheBundle.put(TripImageStorage.RELOAD, page == 1);
-      cacheBundle.put(TripImageStorage.LOAD_MORE, page != 1);
+      cacheBundle.put(InspireMeStorage.RELOAD, page == 1);
+      cacheBundle.put(InspireMeStorage.LOAD_MORE, page != 1);
       return ImmutableCacheOptions.builder().params(cacheBundle).build();
    }
 

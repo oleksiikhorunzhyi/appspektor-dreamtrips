@@ -18,6 +18,7 @@ import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 public class MediaActionPanelInfoInjector {
 
@@ -39,8 +40,8 @@ public class MediaActionPanelInfoInjector {
       this.injector = injector;
    }
 
-   public void enableEdit(boolean isAccountsPhoto) {
-      edit.setVisibility(isAccountsPhoto ? View.VISIBLE : View.GONE);
+   public void enableEdit(boolean enable) {
+      edit.setVisibility(enable ? View.VISIBLE : View.GONE);
    }
 
    public void enableFlagging(boolean enableFlag) {

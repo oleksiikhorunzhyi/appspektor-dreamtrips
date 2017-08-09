@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 
-
 import android.support.v4.app.FragmentManager;
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
@@ -21,6 +19,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntit
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import javax.inject.Inject;
@@ -53,7 +52,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
       super.takeView(view);
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       view.setVideo(video);
-      view.setSocialInfo(video, !appSessionHolder.get().get().getUser().equals(video.getOwner()));
+      view.setSocialInfo(video, enableEdit(), enableDelete());
       loadEntity();
    }
 
@@ -95,24 +94,33 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
       if (updatedFeedEntity.getUid().equals(video.getUid())) {
          video = (Video) updatedFeedEntity;
-         view.setSocialInfo(video, !appSessionHolder.get().get().getUser().equals(video.getOwner()));
+         view.setSocialInfo(video, enableEdit(), enableDelete());
       }
    }
 
    @Override
    public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
-      if (deletedFeedEntity.getUid().equals(video.getUid())) {
-         view.informUser(context.getString(R.string.video_deleted));
-         view.back();
-      }
+       // we delete entity in TripImagesViewPagerPresenter
+   }
+
+   private boolean enableEdit() {
+      return !getAccount().equals(video.getOwner());
+   }
+
+   private boolean enableDelete() {
+      return getAccount().equals(video.getOwner());
+   }
+
+   public void openUser() {
+      view.openUser(new UserBundle(video.getOwner()));
    }
 
    public interface View extends Presenter.View, Flaggable, FlagDelegate.View {
       void setVideo(Video video);
 
-      void setSocialInfo(Video video, boolean enableFlagging);
+      void openUser(UserBundle bundle);
 
-      void back();
+      void setSocialInfo(Video video, boolean enableFlagging, boolean enableDelete);
 
       void showFlagProgress();
 

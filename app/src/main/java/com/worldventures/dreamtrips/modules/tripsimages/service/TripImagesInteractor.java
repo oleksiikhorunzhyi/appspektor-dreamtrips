@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLoc
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesAddedCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesRemovedCommand;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
@@ -33,6 +35,8 @@ public class TripImagesInteractor {
    private final ActionPipe<DownloadImageCommand> downloadImageActionPipe;
    private final ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe;
    private final ActionPipe<MemberImagesAddedCommand> memberImagesAddedCommandPipe;
+   private final ActionPipe<MemberImagesRemovedCommand> memberImagesRemovedCommandPipe;
+   private final ActionPipe<CheckVideoProcessingStatusCommand> checkVideoProcessingStatusPipe;
 
    public TripImagesInteractor(SessionActionPipeCreator pipeCreator) {
       this.baseTripImagesActionPipe = pipeCreator.createPipe(BaseMediaCommand.class, Schedulers.io());
@@ -49,6 +53,8 @@ public class TripImagesInteractor {
       this.createReviewPhotoCreationItemPipe = pipeCreator.createPipe(CreateReviewPhotoCreationItemCommand.class, Schedulers
             .io());
       this.memberImagesAddedCommandPipe = pipeCreator.createPipe(MemberImagesAddedCommand.class, Schedulers.io());
+      this.memberImagesRemovedCommandPipe = pipeCreator.createPipe(MemberImagesRemovedCommand.class, Schedulers.io());
+      this.checkVideoProcessingStatusPipe = pipeCreator.createPipe(CheckVideoProcessingStatusCommand.class, Schedulers.io());
    }
 
    public ActionPipe<DeletePhotoCommand> deletePhotoPipe() {
@@ -101,5 +107,13 @@ public class TripImagesInteractor {
 
    public ActionPipe<MemberImagesAddedCommand> memberImagesAddedCommandPipe() {
       return memberImagesAddedCommandPipe;
+   }
+
+   public ActionPipe<MemberImagesRemovedCommand> memberImagesRemovedPipe() {
+      return memberImagesRemovedCommandPipe;
+   }
+
+   public ActionPipe<CheckVideoProcessingStatusCommand> checkVideoProcessingStatusPipe() {
+      return checkVideoProcessingStatusPipe;
    }
 }

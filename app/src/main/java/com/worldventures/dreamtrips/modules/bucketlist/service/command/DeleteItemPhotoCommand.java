@@ -38,4 +38,8 @@ public class DeleteItemPhotoCommand extends Command<BucketItem> implements Injec
             })
             .subscribe(callback::onSuccess, callback::onFail);
    }
+
+   public BucketPhoto getPhoto() {
+      return photo;
+   }
 }

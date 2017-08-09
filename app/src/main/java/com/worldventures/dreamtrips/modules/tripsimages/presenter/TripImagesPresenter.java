@@ -2,13 +2,17 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.http.CheckVideoProcessingHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -27,6 +31,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.VideoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageArgsFilterFunc;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CheckVideoProcessingStatusCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesAddedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
@@ -50,6 +56,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject TripImagesCommandFactory tripImagesCommandFactory;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
+   @Inject AppConfigurationInteractor appConfigurationInteractor;
 
    boolean memberImagesAreRefreshing;
    int previousScrolledTotal = 0;
@@ -109,12 +116,20 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    public void addPhotoClicked() {
-      view.openPicker();
-      if (tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES) {
-         TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
-      } else {
-         TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
-      }
+      appConfigurationInteractor.configurationCommandActionPipe()
+            .createObservableResult(new ConfigurationCommand())
+            .compose(new IoToMainComposer<>())
+            .map(configurationCommand -> configurationCommand.getResult()
+                  .getVideoRequirement()
+                  .getVideoMaxLength())
+            .subscribe(length -> {
+               view.openPicker(length);
+               if (tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES) {
+                  TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
+               } else {
+                  TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
+               }
+            });
    }
 
    void refreshImages() {
@@ -153,6 +168,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       if (baseMediaCommand.isReload()) currentItems.clear();
       currentItems.addAll(baseMediaCommand.getResult());
       updateItemsInView();
+      tripImagesInteractor.checkVideoProcessingStatusPipe().send(new CheckVideoProcessingStatusCommand(currentItems));
    }
 
    void subscribeToPhotoDeletedEvents() {
@@ -185,15 +201,9 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
             .subscribe(this::onFeedItemAdded);
    }
 
-   void onFeedItemAdded(FeedItem feedItem) {
-      if (feedItem.getItem() instanceof Photo || feedItem.getItem() instanceof Video) {
-         BaseMediaEntity mediaEntity = fromFeedEntityHolder(feedItem);
-         if (!currentItems.contains(mediaEntity)) {
-            currentItems.add(0, mediaEntity);
-         }
-      } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
-            .getItem()).getAttachments().size() > 0) {
-         List<BaseMediaEntity> mediaEntities = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
+   void onFeedItemAdded(FeedItem<TextualPost> feedItem) {
+      if (feedItem.getItem().getAttachments().size() > 0) {
+         List<BaseMediaEntity> mediaEntities = Queryable.from(feedItem.getItem().getAttachments())
                .map(this::fromFeedEntityHolder)
                .filter(item -> item != null)
                .filter(mediaEntity -> !currentItems.contains(mediaEntity))
@@ -208,14 +218,12 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
             Collections.reverse(mediaEntities);
          }
 
+         tripImagesInteractor.memberImagesAddedCommandPipe()
+               .send(new MemberImagesAddedCommand(tripImagesArgs, mediaEntities));
          currentItems.addAll(0, mediaEntities);
-      }
-      updateItemsInView();
-   }
 
-   public void pickedAttachments(MediaPickerAttachment mediaAttachment) {
-      if (view.isVisibleOnScreen()) { //cause neighbour tab also catches this event
-         view.openCreatePhoto(mediaAttachment);
+         updateItemsInView();
+         view.scrollToTop();
       }
    }
 
@@ -224,16 +232,22 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
          case PHOTO:
             Photo photo = (Photo) feedEntityHolder.getItem();
             PhotoMediaEntity mediaEntity = new PhotoMediaEntity();
+            photo.setOwner(getAccount());
             mediaEntity.setItem(photo);
             return mediaEntity;
          case VIDEO:
             Video video = (Video) feedEntityHolder.getItem();
             VideoMediaEntity videoMediaEntity = new VideoMediaEntity();
+            video.setOwner(getAccount());
             videoMediaEntity.setItem(video);
             return videoMediaEntity;
          default:
             return null;
       }
+   }
+
+   public void pickedAttachments(MediaPickerAttachment mediaAttachment) {
+      view.openCreatePhoto(mediaAttachment);
    }
 
    void updateItemsInView() {
@@ -293,12 +307,14 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Override
    public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
       currentItems = (ArrayList<BaseMediaEntity>) Queryable.from(currentItems)
-            .filter(mediaEntity -> mediaEntity.getItem().getUid().equals(deletedFeedEntity.getUid()))
+            .filter(mediaEntity -> !mediaEntity.getItem().getUid().equals(deletedFeedEntity.getUid()))
             .toList();
       updateItemsInView();
    }
 
    public interface View extends Presenter.View {
+      void scrollToTop();
+
       void openFullscreen(boolean lastPageReached, int index);
 
       void updateItems(List items);
@@ -307,7 +323,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
 
       void finishLoading();
 
-      void openPicker();
+      void openPicker(int durationLimit);
 
       void showNewImagesButton(String newImagesCountString);
 

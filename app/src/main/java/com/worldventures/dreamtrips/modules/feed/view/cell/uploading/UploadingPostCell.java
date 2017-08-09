@@ -62,6 +62,7 @@ public class UploadingPostCell extends FrameLayout {
    @InjectView(R.id.uploading_cell_progress_infinite) ProgressBar progressBarInfinite;
    @InjectView(R.id.uploading_cell_duration) TextView duration;
    @InjectView(R.id.uploading_cell_video_details) View videoDetails;
+   @InjectView(R.id.uploading_cell_control_cancel) View cancelButton;
 
    private PhotoAttachmentPreviewView photoPreviewView;
 
@@ -254,15 +255,14 @@ public class UploadingPostCell extends FrameLayout {
       mainControlImageView.setImageResource(R.drawable.uploading_control_pause);
       mainControlImageView.setVisibility(VISIBLE);
       mainControlImageView.setVisibility(GONE);
+      cancelButton.setVisibility(GONE);
 
       statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_uploading));
       if (compoundOperationModel.type() == PostBody.Type.VIDEO) {
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            statusTextView.setText(Html
-                  .fromHtml(getContext().getString(R.string.uploading_post_status_progress_video_processing), Html.FROM_HTML_MODE_COMPACT));
+            statusTextView.setText(Html.fromHtml(getContext().getString(R.string.uploading_post_status_progress_video_processing), Html.FROM_HTML_MODE_COMPACT));
          } else {
-            statusTextView.setText(Html
-                  .fromHtml(getContext().getString(R.string.uploading_post_status_progress_video_processing)));
+            statusTextView.setText(Html.fromHtml(getContext().getString(R.string.uploading_post_status_progress_video_processing)));
          }
       }
 
@@ -273,6 +273,7 @@ public class UploadingPostCell extends FrameLayout {
    }
 
    private void initViewsForGeneralUploadState() {
+      cancelButton.setVisibility(VISIBLE);
       progressBarInfinite.setVisibility(GONE);
       if (generalUploadContainer.getAlpha() < 0.9f) {
          generalUploadContainer.setAlpha(1f);

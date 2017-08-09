@@ -112,7 +112,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    public void showMediaPicker(int photoPickLimit, int videoPickLimit, int maxVideoDuration) {
       final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
       mediaPickerDialog.setOnDoneListener(getPresenter()::attachMedia);
-      mediaPickerDialog.show(photoPickLimit);
+      mediaPickerDialog.show(photoPickLimit, videoPickLimit, maxVideoDuration);
    }
 
    @Override

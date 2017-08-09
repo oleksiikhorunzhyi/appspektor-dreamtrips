@@ -32,6 +32,6 @@ public class DeleteVideoCommand extends CommandWithError<Video> implements Injec
 
    @Override
    public int getFallbackErrorMessage() {
-      return R.string.error_failed_to_delete_image;
+      return R.string.error_failed_to_delete_video;
    }
 }

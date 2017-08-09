@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -26,11 +25,13 @@ import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
 import com.techery.spares.module.Injector;
 import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoContainerView;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoViewFullscreenHandler;
 import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.tripsimages.delegate.MediaActionPanelInfoInjector;
@@ -59,27 +60,30 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    @InjectView(R.id.social_info_container) ViewGroup socialInfoContainer;
    @InjectView(R.id.video_thumbnail_container) ViewGroup videoThumbnailContainer;
 
-   private JWPlayerView playerView;
+   @Nullable private JWPlayerView playerView;
    @InjectView(R.id.video_view_seekbar) SeekBar seekBar;
    @InjectView(R.id.video_view_video_play_pause_button) ImageView playPauseButton;
    @InjectView(R.id.video_view_duration_text_view) TextView timeLeftTextView;
    @InjectView(R.id.video_view_quality_text_view) TextView videoQualityButton;
-   @InjectView(R.id.video_view_fullscreen_button) View fullscreenButton;
    @InjectView(R.id.video_thumbnail) SimpleDraweeView videoThumbnail;
    @InjectView(R.id.video_thumbnail_progress) View loadingProgressBar;
 
    @InjectView(R.id.iv_like) ImageView likeButton;
    @InjectView(R.id.iv_comment) ImageView commentButton;
+   @InjectView(R.id.tv_likes_count) TextView likesCount;
+   @InjectView(R.id.tv_comments_count) TextView commentsCount;
    @InjectView(R.id.iv_share) ImageView shareButton;
    @InjectView(R.id.flag) FlagView flagButton;
    @InjectView(R.id.edit) ImageView editButton;
-   @InjectView(R.id.delete) ImageView deleteButton;
 
    @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject Application application;
    @Inject Activity activity;
+   @Inject BackStackDelegate backStackDelegate;
+   private VideoViewFullscreenHandler fullscreenHandler;
 
    @State boolean overlayContainerVisible = true;
+   private boolean mute = true;
    private Video video;
    private long duration;
    private String defaultStreamUri;
@@ -87,6 +91,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    private ViewGroup fullscreenContainer;
    private ViewGroup windowedContainer;
    private boolean ignoreProgressUpdates;
+   private boolean resizeVideoContainer;
 
    private MediaActionPanelInfoInjector actionPanelInjector = new MediaActionPanelInfoInjector();
 
@@ -114,28 +119,27 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void setVideo(Video video) {
-      setVideo(video, video.getHdUrl());
+      setVideo(video, false);
    }
 
-   public void setVideo(Video video, String defaultStreamUri) {
+   public void setVideo(Video video, boolean resizeVideoContainer) {
       this.video = video;
-      this.defaultStreamUri = defaultStreamUri;
+      this.defaultStreamUri = video.getHdUrl();
+      this.resizeVideoContainer = resizeVideoContainer;
+      this.duration = video.getDuration();
       assignVideoInfo();
-      setupVideoPlayer(0);
-   }
-
-   public void enableFullscreen(@IdRes int fullscreenContainerId, @IdRes int windowedContainerId) {
-      enableFullscreen(ButterKnife.findById(activity, fullscreenContainerId),
-            ButterKnife.findById(activity, windowedContainerId));
    }
 
    public void enableFullscreen(ViewGroup fullscreenContainer, ViewGroup windowedContainer) {
       this.fullscreenContainer = fullscreenContainer;
       this.windowedContainer = windowedContainer;
-      fullscreenButton.setVisibility(VISIBLE);
+      if (fullscreenHandler == null) {
+         fullscreenHandler = new VideoViewFullscreenHandler(activity, backStackDelegate, videoPlayerHolder, this);
+         fullscreenHandler.initUi();
+      }
    }
 
-   public void setSocialInfo(Video video, boolean enableFlagging) {
+   public void setSocialInfo(Video video, boolean enableFlagging, boolean enableDelete) {
       socialInfoContainer.setVisibility(View.VISIBLE);
       actionPanelInjector.setCommentCount(video.getCommentsCount());
       actionPanelInjector.setLikeCount(video.getLikesCount());
@@ -143,7 +147,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       actionPanelInjector.setOwner(video.getOwner());
       actionPanelInjector.setPublishedAtDate(video.getCreatedAt());
       actionPanelInjector.enableFlagging(enableFlagging);
-      actionPanelInjector.enableEdit(false);
+      actionPanelInjector.enableEdit(enableDelete);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -156,7 +160,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    private void play(long startTimeMillis) {
       Timber.d("Video - play start time %d", startTimeMillis);
-      if (playerView == null) {
+      if (playerView == null || playerView != videoPlayerHolder.getJwPlayerView()) {
          setupVideoPlayer(startTimeMillis);
       }
 
@@ -172,6 +176,9 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          }
       });
 
+      if (playerView != null && playerView.getState() == PlayerState.PLAYING) {
+         return;
+      }
       loadingProgressBar.setVisibility(VISIBLE);
       showPauseButton();
       videoPlayerHolder.play();
@@ -200,44 +207,43 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    private void setupVideoPlayer(long startTimeMillis) {
-      setVisibility(VISIBLE);
       Timber.d("Video -- setup player");
 
       //Stop video which playing now, on some neighbour cell
       videoPlayerHolder.clearCurrent();
+
+      setVisibility(VISIBLE);
+
       boolean resetProgressBar = startTimeMillis == 0;
       clear(resetProgressBar);
 
       playerView = new JWPlayerView(getContext(), new PlayerConfig.Builder()
-            .mute(true)
+            .mute(mute)
             .playlist(preparePlaylist())
             .controls(false)
             .build());
 
       playerView.addOnDisplayClickListener(this::toggleOverlayContainerVisibility);
-
-      playerView.addOnBufferChangeListener(bufferChangeEvent -> {
-         if (duration <= 0 && bufferChangeEvent.getDuration() > 0) {
-            duration = bufferChangeEvent.getDuration();
-            refreshDurationInfo();
-         }
-      });
-
       playerView.addOnCompleteListener(() -> {
          clear();
          setupVideoPlayer(0);
       });
-      playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> clear());
-      playerView.addOnSetupErrorListener(e -> clear());
+      playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> {
+         Timber.d("Error occured, %s", event.getException());
+         clear();
+      });
+      playerView.addOnSetupErrorListener(event -> {
+         Timber.d("Error occured, %s", event);
+         clear();
+      });
 
       playerView.addOnTimeListener((currentTime, duration) -> {
-         if (duration > 0) this.duration = duration;
+         if (playerView == null) return;
+         if (currentTime > 0) loadingProgressBar.setVisibility(GONE);
          if (ignoreProgressUpdates) return;
          setProgressInSeekbar(currentTime);
          setTimeLeft(currentTime);
       });
-
-      playerView.addOnFullscreenListener(this::refreshFullscreenButton);
 
       application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
 
@@ -264,12 +270,14 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    private List<PlaylistItem> preparePlaylist() {
       List<MediaSource> mediaSources = new ArrayList<>();
-      String sdUrl = video.getSdUrl();
-      mediaSources.add(new MediaSource.Builder().file(sdUrl).isdefault(sdUrl.equals(currentStreamUri))
-            .label(STREAM_NAME_SD).build());
-      String hdUrl = video.getHdUrl();
-      mediaSources.add(new MediaSource.Builder().file(hdUrl).isdefault(hdUrl.equals(currentStreamUri))
-            .label(STREAM_NAME_HD).build());
+      mediaSources.add(new MediaSource.Builder().file(video.getSdUrl())
+            .isdefault(defaultStreamUri.equals(video.getSdUrl()))
+            .label(STREAM_NAME_SD)
+            .build());
+      mediaSources.add(new MediaSource.Builder().file(video.getHdUrl())
+            .isdefault(defaultStreamUri.equals(video.getHdUrl()))
+            .label(STREAM_NAME_HD)
+            .build());
       return Collections.singletonList(new PlaylistItem.Builder().sources(mediaSources).build());
    }
 
@@ -296,6 +304,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    ///////////////////////////////////////////////////////////////////////////
 
    private void assignVideoInfo() {
+      setVisibility(VISIBLE);
       setVideoThumbnail();
       refreshDurationInfo();
 
@@ -315,19 +324,35 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       }
    }
 
-   private void setVideoThumbnail() {
-      videoThumbnailContainer.setVisibility(View.VISIBLE);
-      ViewUtils.runTaskAfterMeasure(this, this::setVideoThumbnailInternal);
+   public void resizeView(int width) {
+      if (playerView != null) playerView.destroySurface();
+      setVideoThumbnailInternal(width);
+      if (playerView != null) playerView.initializeSurface();
    }
 
-   private void setVideoThumbnailInternal() {
-      int width = getWidth();
+   private void setVideoThumbnail() {
+      videoThumbnailContainer.setVisibility(View.VISIBLE);
+      ViewUtils.runTaskAfterMeasure(this, () -> setVideoThumbnailInternal(getWidth()));
+   }
+
+   private void setVideoThumbnailInternal(int width) {
       int height = (int) (width / video.getAspectRatio());
-      videoContainer.getLayoutParams().height = height;
-      videoThumbnail.getLayoutParams().height = height;
+      Timber.d("VideoCell -- width %d %d %f %b", width, height, video.getAspectRatio(), resizeVideoContainer);
+      ViewGroup.LayoutParams params = videoThumbnailContainer.getLayoutParams();
+      params.height = height;
+      videoThumbnailContainer.setLayoutParams(params);
+      if (resizeVideoContainer && fullscreenHandler != null && fullscreenHandler.canResizeVideoContainer(width, height)) {
+         params = videoContainer.getLayoutParams();
+         params.height = height;
+         videoContainer.setLayoutParams(params);
+      }
 
       videoThumbnail.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(video.getThumbnail()),
-            videoThumbnail.getController()));
+            videoThumbnail.getController(), width, height));
+   }
+
+   public void setMute(boolean mute) {
+      this.mute = mute;
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -357,29 +382,11 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    // Player button clicks
    ///////////////////////////////////////////////////////////////////////////
 
-   @OnClick(R.id.video_view_fullscreen_button)
-   void onFullscreenButtonClick() {
-      Timber.d("Video -- fullscreen clicked");
-      boolean isFullscreen = !playerView.getFullscreen();
-      if (isFullscreen) {
-         playerView.setFullscreen(true, false);
-      } else {
-         playerView.setFullscreen(false, false);
-      }
-      refreshFullscreenButton(isFullscreen);
-   }
-
-   private void refreshFullscreenButton(boolean fullscreen) {
-      fullscreenButton.setBackgroundResource(fullscreen ? R.drawable.ic_video_fullscreen_collapse : R.drawable.ic_video_fullscreen);
-   }
-
-   @Override
-   public ViewGroup getRootContainerForFullscreen() {
+   public ViewGroup getFullscreenContainer() {
       return fullscreenContainer;
    }
 
-   @Override
-   public ViewGroup getRootContainerWhenWindowed() {
+   public ViewGroup getWindowedContainer() {
       return windowedContainer;
    }
 
@@ -404,25 +411,22 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    void onQualityButtonClick() {
       if (currentStreamUri.equals(video.getHdUrl())) {
          currentStreamUri = video.getSdUrl();
+         if (playerView != null) playerView.setCurrentQuality(0);
          videoQualityButton.setText(STREAM_NAME_SD);
       } else {
          currentStreamUri = video.getHdUrl();
+         if (playerView != null) playerView.setCurrentQuality(1);
          videoQualityButton.setText(STREAM_NAME_HD);
-      }
-      if (playerView != null) {
-         long currentTime = playerView.getPosition();
-         clear(false);
-         play(currentTime);
-      } else {
-         setupVideoPlayer(0);
       }
    }
 
-   public void showPauseButton() {
-      playPauseButton.setBackgroundResource(R.drawable.ic_player360_pause);
+   @OnClick(R.id.video_thumbnail)
+   void onThumbnailTouch() {
+      toggleOverlayContainerVisibility();
    }
 
    private void resetUiState(boolean resetProgressBar) {
+      loadingProgressBar.setVisibility(GONE);
       videoThumbnailContainer.setVisibility(VISIBLE);
       if (resetProgressBar) seekBar.setProgress(0);
       refreshDurationInfo();
@@ -433,6 +437,10 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       playPauseButton.setBackgroundResource(R.drawable.ic_player360_play);
    }
 
+   public void showPauseButton() {
+      playPauseButton.setBackgroundResource(R.drawable.ic_player360_pause);
+   }
+
    public void hide() {
       setVisibility(GONE);
    }
@@ -441,16 +449,20 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    // Social panel actions
    ///////////////////////////////////////////////////////////////////////////
 
-   public void setDeleteAction(Action0 action) {
-      deleteButton.setOnClickListener(v -> action.call());
-   }
-
    public void setLikeAction(Action0 action) {
       likeButton.setOnClickListener(v -> action.call());
    }
 
    public void setCommentAction(Action0 action) {
       commentButton.setOnClickListener(v -> action.call());
+   }
+
+   public void setLikesCountAction(Action0 action) {
+      likesCount.setOnClickListener(v -> action.call());
+   }
+
+   public void setCommentsCountAction(Action0 action) {
+      commentsCount.setOnClickListener(v -> action.call());
    }
 
    public void setShareAction(Action0 action) {
@@ -463,6 +475,10 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    public void setEditAction(Action0 action) {
       editButton.setOnClickListener(v -> action.call());
+   }
+
+   public ImageView getEditButton() {
+      return editButton;
    }
 
    private SimpleActivityLifecycleCallbacks lifecycleCallbacks = new SimpleActivityLifecycleCallbacks() {
@@ -480,6 +496,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          super.onActivityPaused(activity);
          if (playerViewIsActive(activity)) {
             playerView.onPause();
+            showPlayButton();
          }
       }
 

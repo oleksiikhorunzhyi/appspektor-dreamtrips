@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.picker.util;
 
 import android.databinding.BindingAdapter;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,4 +41,14 @@ public class MediaPickerBindingUtils {
       textView.setText(VideoDurationFormatter.getFormattedDuration(duration));
    }
 
+   @BindingAdapter("buttonTextColor")
+   public static void setTextColor(TextView textView, @ColorRes int colorRes) {
+      int fontColor = 0;
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+         fontColor = textView.getContext().getResources().getColor(colorRes);
+      } else {
+         fontColor = textView.getContext().getResources().getColor(colorRes, null);
+      }
+      textView.setTextColor(fontColor);
+   }
 }

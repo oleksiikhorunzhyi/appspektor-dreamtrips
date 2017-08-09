@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
@@ -166,6 +167,7 @@ public class FragmentWithFeedDelegate {
       adapter.registerCell(TripFeedItem.class, FeedItemCell.class);
       adapter.registerCell(BucketFeedItem.class, FeedItemCell.class);
       adapter.registerCell(PostFeedItem.class, FeedItemCell.class);
+      adapter.registerCell(VideoFeedItem.class, FeedItemCell.class);
       adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
       adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerCell(LoadMoreModel.class, LoaderCell.class);

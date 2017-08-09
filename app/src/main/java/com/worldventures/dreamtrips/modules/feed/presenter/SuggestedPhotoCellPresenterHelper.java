@@ -69,6 +69,12 @@ public class SuggestedPhotoCellPresenterHelper {
       }
    }
 
+   public void dropView() {
+      view = null;
+      suggestionItems = null;
+      selectedPhotosPaths = null;
+   }
+
    public void preloadSuggestionPhotos(@Nullable PhotoPickerModel model) {
       syncTimestampLast = getLastSyncOrDefault(model);
 

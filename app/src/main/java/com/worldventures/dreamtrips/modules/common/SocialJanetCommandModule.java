@@ -112,9 +112,11 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
@@ -271,5 +273,7 @@ import dagger.Module;
       MediaAttachmentPrepareCommand.class,
       GetMemberMediaCommand.class,
       GetUsersMediaCommand.class,
+      DeleteVideoCommand.class,
+      CheckVideoProcessingStatusCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

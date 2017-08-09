@@ -342,7 +342,7 @@
    <string name="no_feed">Itt fogja látni barátjának tevékenységét.\n Barátok kereséséhez kattintson az alábbi hivatkozásra</string>
    <string name="search_friends">Barátok keresése</string>
 
-   <string name="feed_share_photo_or_idea">Ossz meg egy képet vagy ötletet</string>
+   <string name="feed_share_post_button">Ossz meg egy képet, videót vagy ötletet</string>
    <string name="feed_view_profile_btn">Profil megtekintése</string>
    <string name="start_searching">Kezdje el a beírást a keresés elkezdéséhez</string>
 
@@ -371,9 +371,6 @@
    <string name="user_mutual_friends">Közös barátok</string>
    <string name="no_mutual_friends">Nincsenek közös barátai</string>
 
-   <string name="photo_limitation_message">Legfeljebb %1$d fényképet válasszon</string>
-   <string name="picker_erros_photos_and_videos">Nem tudsz képet és videót kiválasztani</string>
-   <string name="picker_video_duration_limit">Nem tudsz feltölteni hosszabb videót, mint %1$d másodperc</string>
    <string name="pending">Függőben...</string>
 
    <string name="back">Vissza</string>

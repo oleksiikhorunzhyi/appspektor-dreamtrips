@@ -342,7 +342,7 @@
    <string name="no_feed">Du kommer att se din väns aktivitet här.\n Klicka på länken nedan för att hitta dina vänner</string>
    <string name="search_friends">Sök efter vänner</string>
 
-   <string name="feed_share_photo_or_idea">Dela ett foto eller en idé</string>
+   <string name="feed_share_post_button">Dela ett foto, en video eller en idé</string>
    <string name="feed_view_profile_btn">Visa profil</string>
    <string name="start_searching">Skriv för att börja söka</string>
 
@@ -371,9 +371,6 @@
    <string name="user_mutual_friends">Gemensamma vänner</string>
    <string name="no_mutual_friends">Ni har inga gemensamma vänner</string>
 
-   <string name="photo_limitation_message">Välj upp till %1$d foton</string>
-   <string name="picker_erros_photos_and_videos">Du kan inte välja bilder och videor</string>
-   <string name="picker_video_duration_limit">Du kan inte ladda upp en video som är mer än %1$d sekunder</string>
    <string name="pending">Väntar …</string>
 
    <string name="back">Tillbaka</string>

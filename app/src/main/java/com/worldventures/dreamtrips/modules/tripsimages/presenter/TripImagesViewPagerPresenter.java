@@ -1,32 +1,43 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImageType;
 import com.worldventures.dreamtrips.modules.tripsimages.model.VideoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageArgsFilterFunc;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.BaseMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesRemovedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 
 public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<BaseImageViewPagerPresenter.View> {
    @Inject TripImagesCommandFactory tripImagesCommandFactory;
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FeedInteractor feedInteractor;
    @Inject NotificationFeedInteractor notificationFeedInteractor;
+   @Inject VideoPlayerHolder videoPlayerHolder;
 
    List<BaseMediaEntity> baseMediaEntities;
    TripImagesArgs tripImagesArgs;
@@ -46,6 +57,27 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
       if (notificationId != 0) {
          notificationFeedInteractor.markNotificationPipe().send(new MarkNotificationAsReadCommand(notificationId));
       }
+      Observable.merge(feedInteractor.deleteVideoPipe().observeSuccess().map(Command::getResult),
+            tripImagesInteractor.deletePhotoPipe().observeSuccess().map(Command::getResult))
+            .compose(bindViewToMainComposer())
+            .subscribe(this::itemDeleted);
+   }
+
+   private void itemDeleted(FeedEntity feedEntity) {
+      if (tripImagesArgs != null) {
+         BaseMediaEntity deletedEntity = feedEntity instanceof Photo ? new PhotoMediaEntity() : new VideoMediaEntity();
+         deletedEntity.setItem(feedEntity);
+         int index = baseMediaEntities.indexOf(deletedEntity);
+         tripImagesInteractor.memberImagesRemovedPipe()
+               .send(new MemberImagesRemovedCommand(tripImagesArgs, Collections.singletonList(baseMediaEntities.get(index))));
+      }
+      view.goBack();
+   }
+
+   @Override
+   public void pageSelected(int position) {
+      videoPlayerHolder.clearCurrent();
+      super.pageSelected(position);
    }
 
    @Override
@@ -85,7 +117,7 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
 
    @Override
    protected List<FragmentItem> getItems() {
-      List<FragmentItem> items =  Queryable.from(baseMediaEntities)
+      List<FragmentItem> items = Queryable.from(baseMediaEntities)
             .filter(element -> element.getType() != TripImageType.UNKNOWN)
             .map(entity -> {
                if (entity.getType() == TripImageType.PHOTO) {
@@ -110,5 +142,4 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
                .send(tripImagesCommandFactory.provideLoadMoreCommand(tripImagesArgs, baseMediaEntities));
       }
    }
-
 }

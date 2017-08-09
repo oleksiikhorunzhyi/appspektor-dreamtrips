@@ -109,7 +109,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    public void initialPhotoStripDelegate() {
       photoStripDelegate.setMaxPickLimits(MAX_PHOTOS_COUNT, MAX_VIDEO_COUNT);
-      photoStripDelegate.maintainPhotoStrip(view.getPhotoStrip(), bindView(), false);
+      photoStripDelegate.maintainPhotoStrip(view.getPhotoStrip(), bindView(), true);
       photoStripDelegate.setActions(this::mediaPickerModelChanged, this::showMediaPicker);
       photoStripDelegate.startLoadMedia();
    }
@@ -130,6 +130,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             removeVideo(ImmutableVideoCreationModel.builder()
                   .uri(model.getUri())
                   .state(VideoCreationModel.State.LOCAL)
+                  .canDelete(canDeleteVideo())
                   .build());
          }
       }

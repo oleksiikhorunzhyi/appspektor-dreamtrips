@@ -30,6 +30,7 @@ public abstract class BaseVideoConverter<T extends com.worldventures.dreamtrips.
       video.setUid(videoAttachment.uid());
       video.setUploadId(videoAttachment.uploadId());
       video.setCreatedAt(videoAttachment.createdAt());
+      video.setDuration(videoAttachment.duration());
       return video;
    }
 

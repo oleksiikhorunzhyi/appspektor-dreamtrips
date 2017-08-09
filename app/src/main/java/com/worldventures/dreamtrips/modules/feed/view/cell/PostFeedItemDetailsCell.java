@@ -73,7 +73,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
                         .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
                         .map(element -> {
                            Photo photo = (Photo) element.getItem();
-                           photo.setUser(getModelObject().getItem().getOwner());
+                           photo.setOwner(getModelObject().getItem().getOwner());
                            return (BaseMediaEntity) new PhotoMediaEntity(photo);
                         })
                         .toList())

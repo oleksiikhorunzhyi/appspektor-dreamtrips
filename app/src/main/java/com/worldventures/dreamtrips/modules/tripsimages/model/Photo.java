@@ -138,10 +138,6 @@ public class Photo extends BaseFeedEntity implements ImagePathHolder, Parcelable
       return url;
    }
 
-   public void setUser(User user) {
-      owner = user;
-   }
-
    public Location getLocation() {
       return location;
    }

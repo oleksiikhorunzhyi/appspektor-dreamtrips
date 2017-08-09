@@ -105,8 +105,13 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
                         .state(VideoCreationModel.State.LOCAL)
                         .size(videoMetadata == null ? null : new Size(videoMetadata.width(), videoMetadata.height()))
                         .uri(selectedVideoPathUri)
+                        .canDelete(canDeleteVideo())
                         .build()
             );
+   }
+
+   protected boolean canDeleteVideo() {
+      return true;
    }
 
    public void cancelClicked() {

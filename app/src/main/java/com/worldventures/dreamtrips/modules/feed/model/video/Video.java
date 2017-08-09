@@ -17,6 +17,7 @@ public class Video extends BaseFeedEntity implements Parcelable {
    private String hdUrl;
    private double aspectRatio;
    private Date createdAt;
+   private long duration;
 
    public Video() {
    }
@@ -41,6 +42,10 @@ public class Video extends BaseFeedEntity implements Parcelable {
       return aspectRatio;
    }
 
+   public long getDuration() {
+      return duration;
+   }
+
    @Override
    public Date getCreatedAt() {
       return createdAt;
@@ -48,6 +53,10 @@ public class Video extends BaseFeedEntity implements Parcelable {
 
    public void setUploadId(String uploadId) {
       this.uploadId = uploadId;
+   }
+
+   public void setDuration(long duration) {
+      this.duration = duration;
    }
 
    public void setThumbnail(String thumbnail) {

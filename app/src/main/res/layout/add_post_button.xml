@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/share_post"
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/share_post"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/grey_lighter"
+      tools:showIn="@layout/layout_feed_user_info"
       >
 
    <TextView
-         android:layout_width="0dp"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:drawableLeft="@drawable/ic_profile_post_normal"
+         android:drawablePadding="@dimen/spacing_small"
          android:layout_gravity="center"
-         android:layout_weight="1"
          android:padding="@dimen/spacing_medium"
-         android:text="@string/feed_share_photo_or_idea"
-         android:textColor="@color/feed_post_create_text_color"
          android:textSize="@dimen/font_normal"
+         android:text="@string/feed_share_post_button"
          />
 
-   <ImageView
-         android:layout_width="24dp"
-         android:layout_height="24dp"
-         android:layout_gravity="center"
-         android:layout_marginBottom="12dp"
-         android:layout_marginRight="8dp"
-         android:layout_marginTop="12dp"
-         android:src="@drawable/ic_profile_post_normal"
-         />
-
-</LinearLayout>
+</FrameLayout>

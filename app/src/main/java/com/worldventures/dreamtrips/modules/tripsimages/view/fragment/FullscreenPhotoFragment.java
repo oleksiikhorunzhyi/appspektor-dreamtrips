@@ -297,9 +297,4 @@ public class FullscreenPhotoFragment extends BaseFragmentWithArgs<FullscreenPhot
    public void onShowShareOptions() {
       new PhotosShareDialog(getActivity(), type -> getPresenter().onShareOptionChosen(type)).show();
    }
-
-   @Override
-   public void back() {
-      router.back();
-   }
 }

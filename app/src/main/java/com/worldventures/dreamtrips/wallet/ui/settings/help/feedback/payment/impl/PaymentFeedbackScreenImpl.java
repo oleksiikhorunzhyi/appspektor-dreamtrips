@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsHelpPaymentF
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.success.SimpleToastSuccessView;
@@ -45,11 +44,6 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
    private Observable<CharSequence> observerMerchantName;
 
    @Inject PaymentFeedbackPresenter presenter;
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
-   }
 
    @Override
    protected void onFinishInflate(View view) {

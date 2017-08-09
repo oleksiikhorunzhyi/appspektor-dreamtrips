@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
@@ -45,11 +44,6 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       wizardVideoView.setVideoSource(R.raw.wallet_anim_power_on_sc);
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override
@@ -99,7 +93,8 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {},
+            () -> {
+            },
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.retry,

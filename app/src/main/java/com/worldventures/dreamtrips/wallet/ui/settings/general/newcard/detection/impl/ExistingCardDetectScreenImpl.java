@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
@@ -49,11 +48,6 @@ public class ExistingCardDetectScreenImpl extends WalletBaseController<ExistingC
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @OnClick(R.id.have_card_button)
@@ -139,7 +133,8 @@ public class ExistingCardDetectScreenImpl extends WalletBaseController<ExistingC
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {},
+            () -> {
+            },
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.retry,

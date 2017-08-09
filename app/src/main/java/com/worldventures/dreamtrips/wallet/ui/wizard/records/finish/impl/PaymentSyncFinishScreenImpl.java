@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishScreen;
 
@@ -44,11 +43,6 @@ public class PaymentSyncFinishScreenImpl extends WalletBaseController<PaymentSyn
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @OnClick(R.id.btn_done)

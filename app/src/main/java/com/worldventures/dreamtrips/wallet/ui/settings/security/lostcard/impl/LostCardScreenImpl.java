@@ -15,8 +15,6 @@ import com.bluelinelabs.conductor.ControllerChangeType;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.custom.ControllerFlipListener;
@@ -109,11 +107,6 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    public void showDeniedForLocation() {
       Snackbar.make(getView(), R.string.wallet_lost_card_no_permission, Snackbar.LENGTH_SHORT).show();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

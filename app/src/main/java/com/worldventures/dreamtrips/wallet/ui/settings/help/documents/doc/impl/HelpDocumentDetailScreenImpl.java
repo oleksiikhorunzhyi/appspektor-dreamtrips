@@ -15,9 +15,8 @@ import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailScreen;
 
@@ -120,11 +119,6 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
             .onPositive(retryAction)
             .cancelable(false)
             .show();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

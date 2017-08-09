@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryDialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
@@ -137,9 +136,6 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {return null;}
-
-   @Override
    public void showChangeCardDialog(Record record) {
       new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.bankNameWithCardNumber(record))
             .setOnCancelAction(() -> getPresenter().onCardToDefaultClick(false))
@@ -175,7 +171,8 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
                   .defaultErrorView(new RetryDialogErrorView<>(getContext(), R.string.wallet_add_card_details_error_default,
                         command -> addRecordWithCurrentData()))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> addRecordWithCurrentData(), command -> { }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> addRecordWithCurrentData(), command -> {
+                  }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
                   .build()

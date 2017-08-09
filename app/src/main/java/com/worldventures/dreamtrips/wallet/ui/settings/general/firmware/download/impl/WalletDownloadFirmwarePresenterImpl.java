@@ -10,27 +10,24 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwareScreen;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<WalletDownloadFirmwareScreen> implements WalletDownloadFirmwarePresenter {
 
    private final AnalyticsInteractor analyticsInteractor;
    private final FirmwareInteractor firmwareInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
 
    private DownloadFirmwareCommand action;
 
    public WalletDownloadFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor,
-         ErrorHandlerFactory errorHandlerFactory) {
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.firmwareInteractor = firmwareInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
    }
 
    @Override
@@ -46,15 +43,20 @@ public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<Wal
             .observe()
             .compose(new ActionPipeCacheWiper<>(firmwareInteractor.downloadFirmwarePipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<DownloadFirmwareCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationDownload())
                   .onSuccess(event -> openPreInstallationChecks())
-                  .onFail(errorHandlerFactory.errorHandler(it -> getNavigator().goBack()))
-                  .wrap());
+                  .create());
    }
 
-   private void downloadFirmware() {
+   @Override
+   public void downloadFirmware() {
       action = new DownloadFirmwareCommand();
       firmwareInteractor.downloadFirmwarePipe().send(action);
+   }
+
+   @Override
+   public void goBack() {
+      getNavigator().goBack();
    }
 
    private void trackScreen() {

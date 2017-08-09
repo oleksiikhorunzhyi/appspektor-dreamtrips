@@ -12,14 +12,20 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.DisableDefaultCardItemProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import java.util.List;
 
@@ -29,6 +35,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WalletSecuritySettingsScreenImpl extends WalletBaseController<WalletSecuritySettingsScreen, WalletSecuritySettingsPresenter> implements WalletSecuritySettingsScreen {
@@ -176,13 +184,6 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
       return stealthModeSwitcherObservable;
    }
 
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
-   }
-
-
    @Override
    public void showSCNonConnectionDialog() {
       if (noConnectionDialog == null) {
@@ -203,6 +204,30 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
    @Override
    public Context getViewContext() {
       return getContext();
+   }
+
+   @Override
+   public OperationView<SetLockStateCommand> provideOperationSeLockState() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<SetLockStateCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(
+                        getContext(),
+                        SmartCardConnectException.class,
+                        R.string.wallet_smartcard_connection_error,
+                        command -> getPresenter().lockStatusFailed()))
+                  .build()
+      );
+   }
+
+   @Override
+   public OperationView<SetStealthModeCommand> provideOperationSetStealthMode() {
+      return new ComposableOperationView<>(
+            ErrorViewFactory.<SetStealthModeCommand>builder()
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
+      );
    }
 
    @Override

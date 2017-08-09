@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryDialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
@@ -78,11 +77,6 @@ public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScree
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

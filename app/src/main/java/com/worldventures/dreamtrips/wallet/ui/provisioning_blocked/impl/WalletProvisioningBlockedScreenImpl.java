@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedScreen;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.adapter.ProvisionBlockedHolderFactoryImpl;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<WalletProvisioningBlockedScreen, WalletProvisioningBlockedPresenter> implements WalletProvisioningBlockedScreen {
 
@@ -56,14 +60,19 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
-   }
-
-   @Override
    public void onSupportedDevicesLoaded(SupportedDevicesListModel devicesModel) {
       adapter.clearWithoutFirst();
       adapter.addItem(devicesModel);
+   }
+
+   @Override
+   public OperationView<GetCompatibleDevicesCommand> provideOperationGetCompatibleDevices() {
+      return new ComposableOperationView<>(
+            ErrorViewFactory.<GetCompatibleDevicesCommand>builder()
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
+      );
    }
 
    @Override

@@ -1,17 +1,20 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.impl;
 
 
-import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
@@ -19,16 +22,17 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.functions.Action1;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 public class StartFirmwareInstallScreenImpl extends WalletBaseController<StartFirmwareInstallScreen, StartFirmwareInstallPresenter> implements StartFirmwareInstallScreen {
+
    @InjectView(R.id.progress) WalletProgressWidget progressView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject StartFirmwareInstallPresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    @Override
    public View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup) {
@@ -52,42 +56,26 @@ public class StartFirmwareInstallScreenImpl extends WalletBaseController<StartFi
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return this;
-   }
-
-   @Override
-   public void showProgress(@Nullable String text) {
-      progressView.setVisibility(VISIBLE);
-      progressView.start();
-   }
-
-   @Override
-   public void hideProgress() {
-      progressView.stop();
-      progressView.setVisibility(GONE);
-   }
-
-   @Override
-   public Context context() {
-      return getContext();
-   }
-
-   @Override
-   public void showError(String message, @Nullable Action1<Void> action) {
-      new MaterialDialog.Builder(getContext())
-            .content(message)
-            .positiveText(R.string.wallet_firmware_install_error_retry_action)
-            .negativeText(R.string.wallet_firmware_install_error_cancel_action)
-            .onPositive((dialog, which) -> {
-               if (action != null) action.call(null);
-            })
-            .onNegative((dialog, which) -> getPresenter().finish())
-            .show();
-   }
-
-   @Override
    public StartFirmwareInstallPresenter getPresenter() {
       return presenter;
    }
+
+   @Override
+   public OperationView<PrepareForUpdateCommand> provideOperationPrepareForUpdate() {
+      return new ComposableOperationView<>(
+            new WalletProgressView<>(progressView),
+            ErrorViewFactory.<PrepareForUpdateCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        positivePreparingAction, negativePreparingAction))
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
+                        positivePreparingAction, negativePreparingAction))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(),
+                        positivePreparingAction, negativePreparingAction))
+                  .build()
+      );
+   }
+
+   private final Action1<PrepareForUpdateCommand> positivePreparingAction = cmd -> getPresenter().prepareForUpdate();
+
+   private final Action1<PrepareForUpdateCommand> negativePreparingAction = cmd -> getPresenter().finish();
 }

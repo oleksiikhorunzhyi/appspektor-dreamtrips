@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -71,11 +70,6 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @OnClick(R.id.button_unpair)

@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionScreen;
@@ -71,11 +70,6 @@ public class WalletPuckConnectionScreenImpl extends WalletBaseController<WalletP
    @OnClick(R.id.next_button)
    void nextButtonClick() {
       getPresenter().goNext();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

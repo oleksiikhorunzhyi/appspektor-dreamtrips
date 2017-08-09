@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.impl;
 
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -17,8 +16,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
@@ -29,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
 import rx.Observable;
@@ -36,16 +34,14 @@ import rx.functions.Action1;
 
 public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<WalletSecuritySettingsScreen> implements WalletSecuritySettingsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
+   private final AnalyticsInteractor analyticsInteractor;;
    private final WalletFeatureHelper featureHelper;
 
    public WalletSecuritySettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory,
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
          WalletFeatureHelper walletFeatureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
       this.featureHelper = walletFeatureHelper;
    }
 
@@ -70,24 +66,19 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
             .observe()
             .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetStealthMode())
                   .onSuccess(action -> trackSmartCardStealthMode(action.stealthModeEnabled))
-                  .onFail(errorHandlerFactory.errorHandler(command -> stealthModeFailed()))
-                  .wrap()
+                  .onFail((setStealthModeCommand, throwable) -> stealthModeFailed())
+                  .create()
             );
 
       getSmartCardInteractor().lockPipe()
             .observe()
             .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSeLockState())
                   .onSuccess(action -> trackSmartCardLock(action.isLock()))
-                  .onFail(errorHandlerFactory.<SetLockStateCommand>builder()
-                        .defaultMessage(R.string.wallet_smartcard_connection_error)
-                        .defaultAction(a -> lockStatusFailed())
-                        .build()
-                  )
-                  .wrap());
+                  .create());
 
       Observable.merge(
             getSmartCardInteractor().pinStatusEventPipe()
@@ -151,7 +142,8 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
                   .onSuccess(command -> getView().stealthModeStatus(command.getResult().stealthMode())));
    }
 
-   private void lockStatusFailed() {
+   @Override
+   public void lockStatusFailed() {
       //noinspection ConstantConditions
       getSmartCardInteractor().deviceStatePipe().createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())

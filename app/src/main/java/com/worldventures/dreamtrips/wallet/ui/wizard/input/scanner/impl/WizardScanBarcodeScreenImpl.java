@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
@@ -105,9 +104,6 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    public WizardScanBarcodePresenter getPresenter() {
       return presenter;
    }
-
-   @Override
-   public OperationScreen provideOperationDelegate() { return null; }
 
    @Override
    public void startCamera() {

@@ -24,6 +24,7 @@ public class PrepareForUpdateCommand extends Command<FirmwareUpdateType> impleme
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateType> callback) throws Throwable {
+      callback.onProgress(0);
       final FirmwareUpdateData updateData = ImmutableFirmwareUpdateData.builder()
             .from(firmwareRepository.getFirmwareUpdateData())
             .isStarted(true)

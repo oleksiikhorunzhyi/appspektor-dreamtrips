@@ -9,18 +9,24 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyScreen;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class ForcePairKeyScreenImpl extends WalletBaseController<ForcePairKeyScreen, ForcePairKeyPresenter> implements ForcePairKeyScreen{
+public class ForcePairKeyScreenImpl extends WalletBaseController<ForcePairKeyScreen, ForcePairKeyPresenter> implements ForcePairKeyScreen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -48,17 +54,26 @@ public class ForcePairKeyScreenImpl extends WalletBaseController<ForcePairKeyScr
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
-   }
-
-
-   @Override
    public void showError(@StringRes int messageId) {
       new MaterialDialog.Builder(getContext())
             .content(messageId)
             .positiveText(R.string.ok)
             .show();
+   }
+
+   @Override
+   public OperationView<ConnectForFirmwareUpdate> provideOperationConnect() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<ConnectForFirmwareUpdate>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(
+                        getContext(),
+                        SmartCardConnectException.class,
+                        R.string.wallet_smartcard_connection_error,
+                        command -> getPresenter().goBack()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
+      );
    }
 
    @OnClick(R.id.button_next)

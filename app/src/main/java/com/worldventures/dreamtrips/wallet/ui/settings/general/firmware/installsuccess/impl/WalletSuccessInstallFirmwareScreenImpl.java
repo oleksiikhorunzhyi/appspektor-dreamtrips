@@ -17,8 +17,6 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwareScreen;
 
@@ -97,11 +95,6 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
             asList(image, subTitle, title, subImage, done),
             (view, index) -> view.setAlpha(0)
       );
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

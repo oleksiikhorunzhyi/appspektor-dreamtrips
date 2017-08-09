@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.general.disp
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.DialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
@@ -116,11 +115,6 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

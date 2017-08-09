@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessScreen;
 
@@ -42,11 +41,6 @@ public class UnassignSuccessScreenImpl extends WalletBaseController<UnassignSucc
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @OnClick(R.id.get_started_button)

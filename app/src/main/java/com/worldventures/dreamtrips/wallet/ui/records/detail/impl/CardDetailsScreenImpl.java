@@ -22,8 +22,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.binding.LastPositionSelector;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
@@ -129,11 +127,6 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    @OnClick(R.id.pay_this_card_button)
    public void onPayThisCardClicked() {
       getPresenter().payThisCard();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

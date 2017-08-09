@@ -23,6 +23,7 @@ public class FetchFirmwareUpdateDataCommand extends Command<FirmwareUpdateData> 
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
+      callback.onProgress(0);
       final FirmwareUpdateData cachedFirmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
 
       smartCardInteractor.smartCardFirmwarePipe()

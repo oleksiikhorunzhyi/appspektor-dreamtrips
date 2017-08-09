@@ -81,7 +81,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
             .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
-                  .onProgress(command -> waitingForNetwork = false)
+                  .onProgress((command, progress) -> waitingForNetwork = false)
                   .onSuccess(command -> trackStateChange(command.getResult()))
                   .onFail((command, throwable) -> {
                      if (throwable.getCause() instanceof NetworkUnavailableException) {

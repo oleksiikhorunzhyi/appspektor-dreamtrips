@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -50,11 +49,6 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
 
    public PairKeyScreenImpl(Bundle args) {
       super(args);
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @OnClick(R.id.button_next)

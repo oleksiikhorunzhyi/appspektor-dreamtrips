@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
@@ -39,7 +37,6 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
 
    @Inject EnterPinPresenter presenter;
 
-   private DialogOperationScreen dialogOperationScreen;
    private MaterialDialog infoLockGesturesDialog = null;
 
    public static EnterPinScreenImpl create(Action pinAction) {
@@ -107,12 +104,6 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
 
    private void onBackClick() {
       getPresenter().goBack();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(getView());
-      return dialogOperationScreen;
    }
 
    @Override

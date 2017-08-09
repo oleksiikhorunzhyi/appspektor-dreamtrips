@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.BR;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsScreen;
 
@@ -57,11 +56,6 @@ public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHel
 
    protected void onNavigationClick() {
       getPresenter().goBack();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @OnClick(R.id.item_documents)

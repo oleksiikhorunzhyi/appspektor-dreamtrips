@@ -18,8 +18,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
@@ -125,11 +123,6 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
    @Override
    public void showFirmwareBadge() {
       badgeFirmwareUpdates.show(true);
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

@@ -13,7 +13,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
@@ -39,11 +38,6 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    @Inject PreCheckNewCardPresenter presenter;
 
    private MaterialDialog addCardContinueDialog = null;
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
-   }
 
    @Override
    protected void onFinishInflate(View view) {

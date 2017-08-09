@@ -15,11 +15,10 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryDialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
@@ -33,6 +32,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import rx.functions.Action1;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
@@ -52,6 +52,7 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
    @InjectView(R.id.download_install_btn) Button downloadVersion;
 
    @Inject WalletNewFirmwareAvailablePresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -74,11 +75,6 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @OnClick(R.id.update_dt_app)
@@ -138,14 +134,16 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
             ErrorViewFactory.<FetchFirmwareUpdateDataCommand>builder()
                   .defaultErrorView(new RetryDialogErrorView<>(getContext(), R.string.error_something_went_wrong,
-                        command -> getPresenter().fetchFirmwareInfo(),
-                        command -> getPresenter().goBack()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
-                        command -> getPresenter().fetchFirmwareInfo(),
-                        command -> getPresenter().goBack()))
+                        positiveFetchingAction, negativeFetchingAction))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        positiveFetchingAction, negativeFetchingAction))
                   .build()
       );
    }
+
+   private final Action1<FetchFirmwareUpdateDataCommand> positiveFetchingAction = cmd -> getPresenter().fetchFirmwareInfo();
+
+   private final Action1<FetchFirmwareUpdateDataCommand> negativeFetchingAction = cmd -> getPresenter().goBack();
 
    @Override
    public WalletNewFirmwareAvailablePresenter getPresenter() {

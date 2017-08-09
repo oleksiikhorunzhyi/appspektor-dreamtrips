@@ -7,21 +7,19 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareUpdateType;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallScreen;
 
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+
 public class StartFirmwareInstallPresenterImpl extends WalletPresenterImpl<StartFirmwareInstallScreen> implements StartFirmwareInstallPresenter {
 
-   private final ErrorHandlerFactory errorHandlerFactory;
    private final FirmwareInteractor firmwareInteractor;
 
    public StartFirmwareInstallPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, ErrorHandlerFactory errorHandlerFactory, FirmwareInteractor firmwareInteractor) {
+         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor) {
       super(navigator, smartCardInteractor, networkService);
-      this.errorHandlerFactory = errorHandlerFactory;
       this.firmwareInteractor = firmwareInteractor;
    }
 
@@ -31,15 +29,15 @@ public class StartFirmwareInstallPresenterImpl extends WalletPresenterImpl<Start
       firmwareInteractor.prepareForUpdatePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<PrepareForUpdateCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationPrepareForUpdate())
                   .onSuccess(command -> cardPrepared(command.getResult()))
-                  .onFail(errorHandlerFactory.errorHandler(command -> prepareForUpdate()))
-                  .wrap());
+                  .create());
 
       prepareForUpdate();
    }
 
-   private void prepareForUpdate() {
+   @Override
+   public void prepareForUpdate() {
       firmwareInteractor.prepareForUpdatePipe().send(new PrepareForUpdateCommand());
    }
 

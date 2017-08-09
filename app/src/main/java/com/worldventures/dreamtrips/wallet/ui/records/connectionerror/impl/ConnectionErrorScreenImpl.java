@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorScreen;
 
@@ -41,11 +40,6 @@ public class ConnectionErrorScreenImpl extends WalletBaseController<ConnectionEr
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

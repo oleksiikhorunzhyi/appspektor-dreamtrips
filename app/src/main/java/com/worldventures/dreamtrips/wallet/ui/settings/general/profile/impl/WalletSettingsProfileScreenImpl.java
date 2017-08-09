@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.binding.LastPositionSelector;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfileScreen;
@@ -203,11 +202,6 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
    @Override
    public ProfileViewModel getUser() {
       return profileViewModel;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

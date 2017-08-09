@@ -23,14 +23,13 @@ import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.adapter.VideoLanguagesAdapter;
@@ -62,11 +61,6 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    private MultiHolderAdapter<WalletVideo> adapter;
    private VideoLocaleAdapter localeAdapter;
    private Spinner videoLocales;
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
-   }
 
    @Override
    protected void onFinishInflate(View view) {

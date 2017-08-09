@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnScreen;
@@ -49,11 +48,6 @@ public class WizardPowerOnScreenImpl extends WalletBaseController<WizardWelcomeS
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

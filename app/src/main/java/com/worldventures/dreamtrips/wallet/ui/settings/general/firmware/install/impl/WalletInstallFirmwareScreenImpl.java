@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.impl;
 
 
-import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -23,9 +20,14 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.CustomDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
@@ -33,10 +35,9 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.functions.Action1;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
 
 public class WalletInstallFirmwareScreenImpl extends WalletBaseController<WalletInstallFirmwareScreen, WalletInstallFirmwarePresenter> implements WalletInstallFirmwareScreen {
 
@@ -48,15 +49,29 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject WalletInstallFirmwarePresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private boolean started;
-   private Dialog errorDialog;
+   private MaterialDialog errorDialog;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       installProgress.start();
+      setupCustomErrorDialog();
+   }
+
+   private void setupCustomErrorDialog() {
+      errorDialog = new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_firmware_install_error_alert_title)
+            .content(createDialogContentText())
+            .positiveText(R.string.wallet_firmware_install_error_retry_action)
+            .onPositive((dialog, which) -> getPresenter().retry())
+            .negativeText(R.string.wallet_firmware_install_error_cancel_action)
+            .onNegative((dialog, which) -> getPresenter().cancelReinstall())
+            .cancelable(false)
+            .build();
    }
 
    @Override
@@ -86,39 +101,6 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() { return new DialogOperationScreen(getView()); }
-
-   @Override
-   public void showProgress(@Nullable String text) {
-      installProgress.setVisibility(VISIBLE);
-   }
-
-   @Override
-   public void hideProgress() {
-      installProgress.setVisibility(INVISIBLE);
-   }
-
-   @Override
-   public Context context() {
-      // redundant method from Operation Screen interface
-      return getContext();
-   }
-
-   @Override
-   public void showError(String msg, @Nullable Action1 action) {
-      errorDialog = new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_firmware_install_error_alert_title)
-            .content(createDialogContentText())
-            .positiveText(R.string.wallet_firmware_install_error_retry_action)
-            .onPositive((dialog, which) -> getPresenter().retry())
-            .negativeText(R.string.wallet_firmware_install_error_cancel_action)
-            .onNegative((dialog, which) -> getPresenter().cancelReinstall())
-            .cancelable(false)
-            .build();
-      errorDialog.show();
-   }
-
-   @Override
    public void showInstallingStatus(int currentStep, int totalSteps, int progress) {
       progressStatusLabel.setText(String.format("%d%%", progress));
       installStep.setText(getString(R.string.wallet_firmware_install_sub_text, currentStep, totalSteps));
@@ -135,8 +117,26 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
    }
 
    @Override
+   public OperationView<InstallFirmwareCommand> provideOperationInstall() {
+      return new ComposableOperationView<>(
+            new WalletProgressView<>(installProgress),
+            ErrorViewFactory.<InstallFirmwareCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        positiveInstallingAction, negativeInstallingAction))
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
+                        positiveInstallingAction, negativeInstallingAction))
+                  .addProvider(new CustomDialogErrorViewProvider<>(errorDialog, Throwable.class))
+                  .build()
+      );
+   }
+
+   private final Action1<InstallFirmwareCommand> positiveInstallingAction = cmd -> getPresenter().install();
+
+   private final Action1<InstallFirmwareCommand> negativeInstallingAction = cmd -> getPresenter().cancelReinstall();
+
+   @Override
    protected void onSaveInstanceState(@NonNull Bundle outState) {
-      outState.putBoolean(KEY_INSTALL_STARTED,  started);
+      outState.putBoolean(KEY_INSTALL_STARTED, started);
       super.onSaveInstanceState(outState);
    }
 

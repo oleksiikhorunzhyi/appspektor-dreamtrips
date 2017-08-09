@@ -10,13 +10,14 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedScreen;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDevicesListModel;
 
 import java.util.List;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<WalletProvisioningBlockedScreen> implements WalletProvisioningBlockedPresenter {
 
@@ -41,17 +42,16 @@ public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<
       getSmartCardInteractor().compatibleDevicesActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(
-                  ErrorActionStateSubscriberWrapper.<GetCompatibleDevicesCommand>forView(getView().provideOperationDelegate())
-                        .onSuccess(action -> {
-                           List<Device> response = action.getResult();
-                           List<String> devices = Queryable.from(response)
-                                 .map(device -> device.manufacturer() + " " + device.model())
-                                 .sort()
-                                 .toList();
-                           getView().onSupportedDevicesLoaded(new SupportedDevicesListModel(devices));
-                        })
-                        .wrap()
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetCompatibleDevices())
+                  .onSuccess(action -> {
+                     List<Device> response = action.getResult();
+                     List<String> devices = Queryable.from(response)
+                           .map(device -> device.manufacturer() + " " + device.model())
+                           .sort()
+                           .toList();
+                     getView().onSupportedDevicesLoaded(new SupportedDevicesListModel(devices));
+                  })
+                  .create()
             );
    }
 

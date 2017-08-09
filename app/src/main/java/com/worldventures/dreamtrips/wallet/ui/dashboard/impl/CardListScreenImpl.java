@@ -31,8 +31,6 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardC
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
@@ -119,11 +117,6 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
       if (addCardErrorDialog != null) addCardErrorDialog.dismiss();
       if (factoryResetConfirmationDialog != null) factoryResetConfirmationDialog.dismiss();
       if (scNonConnectionDialog != null) scNonConnectionDialog.dismiss();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

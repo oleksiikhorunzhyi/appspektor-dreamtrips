@@ -35,6 +35,8 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_photo_post)
 public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
 
+   private static final int DEGREE_PER_ONE_ROTATION = 90;
+
    @Inject SessionHolder<UserSession> userSessionHolder;
 
    @InjectView(R.id.photo_container) View photoContainer;
@@ -120,7 +122,10 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          width = cellWidth;
          height = cellWidth;
       }
-      return (int) (cellWidth / (float) width * height);
+
+      boolean normalRotationPosition = (getModelObject().getRotation() / DEGREE_PER_ONE_ROTATION) % 2 == 0;
+      double aspectRatio = normalRotationPosition ? (double) height / width :  (double) width / height;
+      return (int) (cellWidth * aspectRatio);
    }
 
    private void showTagViewGroup() {

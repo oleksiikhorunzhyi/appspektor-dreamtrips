@@ -17,9 +17,6 @@ import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.techery.janet.Command;
 import rx.Observable;
 import rx.Subscription;
@@ -52,7 +49,6 @@ public class PhotoStripDelegate {
    private Action0 openPickerAction;
    private boolean videoEnabled;
 
-   private Map<String, PhotoPickerModel> processedModels;
    private Subscription cameraSubscription;
    private int videoAvailableLimit;
    private int photoAvailableLimit;
@@ -84,7 +80,6 @@ public class PhotoStripDelegate {
 
       photoStrip = view;
       stopper = viewStopper;
-      processedModels = new HashMap<>();
 
       photoStrip.setInjector(injector);
       photoStrip.setEventListener(provideEventListener());
@@ -158,23 +153,7 @@ public class PhotoStripDelegate {
       model.setSource(MediaAttachment.Source.PHOTO_STRIP);
       photoAvailableLimit += model.isChecked()? -1 : +1;
       photoStrip.updateMediaModel(model);
-
-      if (processedModels.containsKey(model.getAbsolutePath())){
-         PhotoPickerModel processedModel = processedModels.get(model.getAbsolutePath());
-         processedModel.setChecked(model.isChecked());
-         newMediaAction.call(processedModel.copy());
-      } else {
-         Observable.just(model)
-               .map(photoPickerModel -> capturedRowMediaHelper.processPhotoModel(photoPickerModel.getAbsolutePath()))
-               .compose(bindIoToMain(stopper))
-               .subscribe(processedModel -> {
-                  processedModel.setChecked(model.isChecked());
-                  processedModel.setSource(model.getSource());
-                  processedModels.put(model.getAbsolutePath(), processedModel);
-
-                  newMediaAction.call(processedModel.copy());
-               });
-      }
+      newMediaAction.call(model.copy());
    }
 
    private void videoPickStatusChanged(VideoPickerModel model) {

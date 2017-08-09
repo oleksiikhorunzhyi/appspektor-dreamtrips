@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.impl;
 
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
@@ -16,8 +15,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.AutoClearSmartCardItemProvider;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDefaultCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.DisableDefaultCardItemProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
@@ -53,12 +52,12 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
    List<View> toggleableItems;
 
    @Inject WalletSecuritySettingsPresenter presenter;
+   @Inject DisableDefaultCardItemProvider disableDefaultCardItemProvider;
+   @Inject AutoClearSmartCardItemProvider autoClearSmartCardItemProvider;
 
    private Observable<Boolean> lockSwitcherObservable;
    private Observable<Boolean> stealthModeSwitcherObservable;
 
-   private AutoClearSmartCardItemProvider autoClearSmartCardItemProvider;
-   private DisableDefaultCardItemProvider disableDefaultCardItemProvider;
 
    private MaterialDialog noConnectionDialog = null;
 
@@ -68,8 +67,6 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
    @Override
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
-      this.autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
-      this.disableDefaultCardItemProvider = new DisableDefaultCardItemProvider();
    }
 
    @Override
@@ -160,12 +157,12 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
 
    @Override
    public void disableDefaultPaymentValue(long minutes) {
-      disableDefaultPaymentCardAfterLabel.setText(getString(disableDefaultCardItemProvider.provideTextResIdByValue(minutes)));
+      disableDefaultPaymentCardAfterLabel.setText(disableDefaultCardItemProvider.provideTextByValue(minutes));
    }
 
    @Override
    public void autoClearSmartCardValue(long minutes) {
-      autoDeleteCardLabel.setText(getString(autoClearSmartCardItemProvider.provideTextResIdByValue(minutes)));
+      autoDeleteCardLabel.setText(autoClearSmartCardItemProvider.provideTextByValue(minutes));
    }
 
 

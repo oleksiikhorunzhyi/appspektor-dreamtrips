@@ -1,5 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.impl;
-
+package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
@@ -11,26 +10,24 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.SettingsRadioModel;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.AutoClearSmartCardItemProvider;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.SettingsRadioModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsScreen;
+
+import static io.techery.janet.operationsubscriber.OperationActionSubscriber.forView;
 
 public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<WalletAutoClearCardsScreen> implements WalletAutoClearCardsPresenter {
 
    private final AnalyticsInteractor analyticsInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
    private final AutoClearSmartCardItemProvider itemProvider;
 
    public WalletAutoClearCardsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider autoClearSmartCardItemProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
-      this.itemProvider = new AutoClearSmartCardItemProvider();
+      this.itemProvider = autoClearSmartCardItemProvider;
    }
 
    @Override
@@ -68,13 +65,12 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
       getSmartCardInteractor().autoClearDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<SetAutoClearSmartCardDelayCommand>forView(getView().provideOperationDelegate())
+            .subscribe(forView(getView().<SetAutoClearSmartCardDelayCommand>provideOperationView())
                   .onSuccess(command -> {
                      bindToView(command.getResult());
-                     getView().setAutoClearWasChanged(true);
+                     getView().setDelayWasChanged(true);
                   })
-                  .onFail(errorHandlerFactory.errorHandler())
-                  .wrap());
+                  .create());
    }
 
    private void bindToView(long autoClearDelay) {
@@ -84,16 +80,15 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
    @Override
    public void trackChangedDelay() {
       final SettingsRadioModel selectedDelay = itemProvider.item(getView().getSelectedPosition());
-      trackAutoClear(new AutoClearChangedAction(getView().getTextBySelectedModel(selectedDelay)));
+      trackAutoClear(new AutoClearChangedAction(selectedDelay.getText()));
    }
 
    private void trackScreen() {
       final SettingsRadioModel selectedDelay = itemProvider.item(getView().getSelectedPosition());
-      trackAutoClear(new AutoClearAction(getView().getTextBySelectedModel(selectedDelay)));
+      trackAutoClear(new AutoClearAction(selectedDelay.getText()));
    }
 
    private void trackAutoClear(WalletAnalyticsAction autoClearAction) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(autoClearAction));
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(autoClearAction));
    }
 }

@@ -61,11 +61,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.impl.WalletHelpSetti
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsScreenImpl;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.impl.WalletDisableDefaultCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl.WalletDisableDefaultCardScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.impl.WalletAutoClearCardsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -90,8 +90,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomeS
 import com.worldventures.dreamtrips.wallet.util.RevertHorizontalChangeHandler;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import java.util.List;
 
 import dagger.Lazy;

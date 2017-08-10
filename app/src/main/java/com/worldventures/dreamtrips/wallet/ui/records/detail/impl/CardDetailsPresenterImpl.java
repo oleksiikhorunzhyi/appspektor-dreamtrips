@@ -78,7 +78,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
       fetchOfflineModeState(offlineModeEnabled -> {
          if (offlineModeEnabled || getNetworkService().isAvailable()) {
             if (!recordDetailViewModel.isErrorShown() && recordDetailViewModel.isChanged()) {
-               nicknameUpdated(recordDetailViewModel.getRecordName());
+               nicknameUpdated(recordDetailViewModel.getRecordName().trim());
             } else {
                getView().notifyCardDataIsSaved();
             }
@@ -129,7 +129,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(recordInteractor.setPaymentCardPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetPaymentCardAction())
-                  .onSuccess(action -> getView().showCardIsReadyDialog(recordDetailViewModel.getRecordName()))
+                  .onSuccess(action -> getView().showCardIsReadyDialog(recordDetailViewModel.getRecordName().trim()))
                   .create());
    }
 

@@ -85,7 +85,7 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
          @Override
          public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
             if (propertyId == BR.recordName) {
-               presenter.validateRecordName(detailViewModel.getRecordName());
+               presenter.validateRecordName(detailViewModel.getRecordName().trim());
             } else if (propertyId == BR.defaultRecord) {
                if (detailViewModel.getRecordModel().isDefaultCard() == detailViewModel.isDefaultRecord()) return;
                presenter.changeDefaultCard(detailViewModel.isDefaultRecord());

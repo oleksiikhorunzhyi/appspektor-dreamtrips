@@ -87,7 +87,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher)
             .doOnNext(value -> bankCardWidget.setAsDefault(value))
             .skip(1);
-      cardNicknameObservable = observableFrom(etCardNickname);
+      cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable().toString().trim()).skip(1);
       cvvObservable = observableFrom(etCardCvv);
    }
 

@@ -54,6 +54,8 @@ public class OfferWithReviewView extends LinearLayout {
 
    private boolean isLoading = false;
 
+   private IMyEventListener mEventListener;
+
    public OfferWithReviewView(Context context) {
       this(context, null);
    }
@@ -84,8 +86,8 @@ public class OfferWithReviewView extends LinearLayout {
          isLoading = false;
       }
 
-      List<ReviewObject> mockArray = getMockObjects();
-//      List<ReviewObject> mockArray = bundle.<ReviewObject>getParcelableArrayList(ARRAY);
+      //List<ReviewObject> mockArray = getMockObjects();
+      List<ReviewObject> mockArray = bundle.<ReviewObject>getParcelableArrayList(ARRAY);
       mAdapter.addItems(mockArray);
 
       mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
@@ -176,18 +178,21 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void getMoreReviewItems(){
-      int lastIndex = mAdapter.getItemCount()+1;
-      //TODO call presenter
-      //presenter.loadNextPage(lastIndex);
-      recyclerAdapter.postDelayed(new Runnable() {
-         @Override
-         public void run() {
-            addBundle(new Bundle());
-         }
-      }, 1800);
+      int lastIndex = getNextItemValue();
+      mEventListener.onEventAccured(lastIndex);
    }
+
+   private int getNextItemValue() { return mAdapter.getItemCount() + 1;}
 
    private void initAdapter() {
       recyclerAdapter.setAdapter(mAdapter);
+   }
+
+   public interface IMyEventListener {
+      void onEventAccured(int indexOf);
+   }
+
+   public void setEventListener(IMyEventListener mEventListener) {
+      this.mEventListener = mEventListener;
    }
 }

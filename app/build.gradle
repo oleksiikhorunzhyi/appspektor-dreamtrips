@@ -262,4 +262,10 @@ dependencies {
    releaseCompile(deps.provide(deps.util.jodaTimeAndroid))
 
    releaseAnnotationProcessor deps.provide(deps.di.daggerProguard)
+
+   compile project(':integration-check')
+   compile (project(':library')) {
+      exclude group: 'joda-time', module: ':library'
+   }
+
 }

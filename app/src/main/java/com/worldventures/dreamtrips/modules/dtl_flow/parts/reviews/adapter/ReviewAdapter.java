@@ -86,7 +86,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
    }
 
    public void addItems(List<ReviewObject> reviewResults) {
-      reviewResults.forEach(this::add);
+      //reviewResults.forEach(this::add);
+      for (ReviewObject review : reviewResults) {
+         add(review);
+      }
    }
 
    public List<ReviewObject> getAllItems(){

@@ -32,6 +32,13 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    SweetAlertDialog errorDialog;
 
+   OfferWithReviewView.IMyEventListener listener = new OfferWithReviewView.IMyEventListener() {
+      @Override
+      public void onEventAccured(int indexOf) {
+         getPresenter().addMoreReviews(indexOf);
+      }
+   };
+
    public DtlReviewsScreenImpl(Context context) {
       super(context);
    }
@@ -54,6 +61,8 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
          Flow.get(getContext()).goBack();
       });
       showMessage();
+
+      mContainerDetail.setEventListener(listener);
    }
 
    private void showMessage() {

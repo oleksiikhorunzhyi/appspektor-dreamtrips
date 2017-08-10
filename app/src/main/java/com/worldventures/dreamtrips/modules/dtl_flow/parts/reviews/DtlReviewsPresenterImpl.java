@@ -47,7 +47,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      connectReviewMerchants();
+      connectReviewMerchants(0);
    }
 
    @Override
@@ -76,7 +76,12 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       }
    }
 
-   private void connectReviewMerchants() {
+   @Override
+   public void addMoreReviews(int indexOf){
+      connectReviewMerchants(indexOf);
+   }
+
+   private void connectReviewMerchants(int indexOf) {
       ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
       reviewActionPipe
             .observeWithReplay()
@@ -89,6 +94,8 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
             .builder()
             .brandId(BRAND_ID)
             .productId(merchant.id())
+            .limit(10)
+            .indexOf(indexOf)
             .build()));
    }
 

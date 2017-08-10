@@ -26,6 +26,7 @@ public class MediaPickerContainer extends FrameLayout {
    private AnimatorSet navigationAnimatorSet;
    private TreeMap<MediaPickerStep, BaseMediaPickerLayout> screens;
    private MediaPickerStep currentStep;
+   private PickerOnPageChangedListener pickerOnPageChangedListener;
 
    public MediaPickerContainer(@NonNull Context context) {
       super(context);
@@ -84,13 +85,13 @@ public class MediaPickerContainer extends FrameLayout {
          }
          fadeInScreen.setX(isForward ? getWidth() : -getWidth());
          addView(fadeInScreen);
-         animators.add(ObjectAnimator.ofFloat(fadeInScreen, "x", fadeInScreen.getX(), fadeInScreen.getX() + deltaX));
+         animators.add(ObjectAnimator.ofFloat(fadeInScreen, View.X, fadeInScreen.getX(), fadeInScreen.getX() + deltaX));
       }
       final BaseMediaPickerLayout fadeOutScreen = currentStep == null
             ? null
             : screens.get(currentStep);
       if (fadeOutScreen != null) {
-         animators.add(ObjectAnimator.ofFloat(fadeOutScreen, "x", fadeOutScreen.getX(), fadeOutScreen.getX() + deltaX));
+         animators.add(ObjectAnimator.ofFloat(fadeOutScreen, View.X, fadeOutScreen.getX(), fadeOutScreen.getX() + deltaX));
       }
       navigationAnimatorSet.playTogether(animators);
       navigationAnimatorSet.addListener(new AnimatorListenerAdapter() {
@@ -104,6 +105,9 @@ public class MediaPickerContainer extends FrameLayout {
             }
             if (fadeInScreen != null) {
                currentStep = fadeInScreen.getStep();
+               if (pickerOnPageChangedListener != null) {
+                  pickerOnPageChangedListener.onPageChanged(canGoBack());
+               }
             }
          }
       });
@@ -148,6 +152,11 @@ public class MediaPickerContainer extends FrameLayout {
       navigationAnimatorSet = null;
       screens.clear();
       currentStep = null;
+      pickerOnPageChangedListener = null;
       removeAllViews();
+   }
+
+   public void setPickerOnPageChangedListener(PickerOnPageChangedListener pickerOnPageChangedListener) {
+      this.pickerOnPageChangedListener = pickerOnPageChangedListener;
    }
 }

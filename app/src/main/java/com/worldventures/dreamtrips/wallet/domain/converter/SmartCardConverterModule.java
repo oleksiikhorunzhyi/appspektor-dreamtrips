@@ -122,11 +122,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideSocialVideoToWalletVideoConverter() {
-      return new SocialVideoToWalletVideoConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideSocialDocumentToWalletDocumentConterter() {
       return new SocialDocumentToWalletDocumentConterter();
    }

@@ -138,6 +138,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.impl.WalletHelpSetti
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
@@ -732,10 +733,9 @@ public class WalletActivityModule {
    @Provides
    WalletHelpVideoPresenter provideWalletHelpVideoPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
-         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate,
-         HttpErrorHandlingUtil httpErrorHandlingUtil, MapperyContext mapperyContext) {
+         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, Context context) {
       return new WalletHelpVideoPresenterImpl(navigator, smartCardInteractor, networkService, memberVideosInteractor,
-            cachedEntityInteractor, cachedEntityDelegate, httpErrorHandlingUtil, mapperyContext);
+            cachedEntityInteractor, cachedEntityDelegate, new WalletHelpVideoDelegate(context));
    }
 
    @Provides

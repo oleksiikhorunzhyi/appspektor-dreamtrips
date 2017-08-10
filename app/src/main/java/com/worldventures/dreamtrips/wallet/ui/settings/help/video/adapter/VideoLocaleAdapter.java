@@ -31,7 +31,7 @@ public class VideoLocaleAdapter extends ArrayAdapter<VideoLocale> {
    public View getDropDownView(int position, @Nullable View view, @NonNull ViewGroup parent) {
       ViewHolder holder;
       if (view == null) {
-         view = layoutInflater.inflate(R.layout.adapter_item_video_locale_wallet, null);
+         view = layoutInflater.inflate(R.layout.adapter_item_video_locale_wallet, parent, false);
 
          holder = new ViewHolder();
          holder.tvName = (TextView) view.findViewById(R.id.tv_name);

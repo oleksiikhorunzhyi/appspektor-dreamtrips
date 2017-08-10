@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
+package com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 
 import java.io.File;
 import java.util.List;
@@ -19,7 +20,10 @@ public class WalletHelpVideoDelegate {
    private List<VideoLocale> videoLocales = null;
    private VideoLocale lastVideoLocale = null;
 
-   public WalletHelpVideoDelegate() {
+   private final Context context;
+
+   public WalletHelpVideoDelegate(Context context) {
+      this.context = context;
    }
 
    public VideoLanguage getDefaultLanguage(final List<VideoLocale> videoLocales) {
@@ -47,23 +51,23 @@ public class WalletHelpVideoDelegate {
             getDefaultLocaleName());
    }
 
-   String getDefaultLocaleName() {
+   private String getDefaultLocaleName() {
       return Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase();
    }
 
-   public String getPathForCache(Context context, final CachedModel entity) {
-      return getFilePath(context, entity.getUrl());
+   public String getPathForCache(final CachedModel entity) {
+      return getFilePath(entity.getUrl());
    }
 
-   public String obtainVideoLanguage(final WalletVideo video) {
-      return ProjectTextUtils.defaultIfEmpty(video.getLanguage(), "null");
+   public String obtainVideoLanguage(final WalletVideoModel video) {
+      return ProjectTextUtils.defaultIfEmpty(video.getVideo().getLanguage(), "null");
    }
 
-   public Uri playVideo(Context context, final WalletVideo video) {
-      CachedModel videoEntity = video.getCacheEntity();
-      Uri parse = Uri.parse(video.getVideoUrl());
-      if (isCached(context, videoEntity)) {
-         parse = Uri.parse(getFilePath(context, videoEntity.getUrl()));
+   public Uri playVideo(final WalletVideoModel video) {
+      CachedModel videoEntity = video.getVideo().getCacheEntity();
+      Uri parse = Uri.parse(video.getVideo().getVideoUrl());
+      if (isCached(videoEntity)) {
+         parse = Uri.parse(getFilePath(videoEntity.getUrl()));
       }
       return parse;
    }
@@ -72,9 +76,10 @@ public class WalletHelpVideoDelegate {
       return lastVideoLocale == null || videoLocale.equals(lastVideoLocale);
    }
 
-   public void processCachingState(final CachedModel cachedEntity, final HelpScreen view) {
+   public void processCachingState(final CachedModel cachedEntity, final WalletHelpVideoScreen view) {
       Queryable.from(view.getCurrentItems())
             .notNulls()
+            .map(WalletVideoModel::getVideo)
             .filter(video -> video.getCacheEntity().getUuid().equals(cachedEntity.getUuid()))
             .forEachR(video -> {
                video.setCacheEntity(cachedEntity);
@@ -104,11 +109,11 @@ public class WalletHelpVideoDelegate {
       return getDefaultLanguage(lastVideoLocale);
    }
 
-   private boolean isCached(Context context, CachedModel cachedModel) {
-      return new File(getFilePath(context, cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
+   private boolean isCached(CachedModel cachedModel) {
+      return new File(getFilePath(cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
    }
 
-   private String getFilePath(Context context, String url) {
+   private String getFilePath(String url) {
       return context.getFilesDir().getPath() + File.separator + getFileName(url);
    }
 

@@ -1,55 +1,50 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl;
 
-
 import android.net.Uri;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
-import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelpVideoScreen> implements WalletHelpVideoPresenter {
+
    private final MemberVideosInteractor memberVideosInteractor;
    private final CachedEntityInteractor cachedEntityInteractor;
    private final CachedEntityDelegate cachedEntityDelegate;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
-   private final MapperyContext mapperyContext;
 
    private final WalletHelpVideoDelegate helpVideoDelegate;
 
    public WalletHelpVideoPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
-         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate,
-         HttpErrorHandlingUtil httpErrorHandlingUtil, MapperyContext mapperyContext) {
+         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, WalletHelpVideoDelegate helpVideoDelegate) {
       super(navigator, smartCardInteractor, networkService);
       this.memberVideosInteractor = memberVideosInteractor;
       this.cachedEntityInteractor = cachedEntityInteractor;
       this.cachedEntityDelegate = cachedEntityDelegate;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
-      this.helpVideoDelegate = new WalletHelpVideoDelegate();
-      this.mapperyContext = mapperyContext;
+      this.helpVideoDelegate = helpVideoDelegate;
    }
 
    @Override
@@ -71,8 +66,13 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    }
 
    private void handleUpdatedStatusCachedEntities(List<VideoCategory> categories) {
-      getView().provideVideos(mapperyContext.convert(categories.get(0).getVideos(), WalletVideo.class));
+      getView().provideVideos(convert(categories.get(0).getVideos()));
       getView().showRefreshing(false);
+   }
+
+   private List<WalletVideoModel> convert(List<Video> videos) {
+      if (videos.isEmpty()) return Collections.emptyList();
+      return Queryable.from(videos).map(WalletVideoModel::new).toList();
    }
 
    @Override
@@ -119,10 +119,10 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    }
 
    @Override
-   public void onPlayVideo(WalletVideo video) {
-      final Uri videoUri = helpVideoDelegate.playVideo(getView().getViewContext(), video);
-      getNavigator().goVideoPlayer(videoUri, video.getVideoName(),
-            getClass(), helpVideoDelegate.obtainVideoLanguage(video));
+   public void onPlayVideo(WalletVideoModel videoModel) {
+      final Uri videoUri = helpVideoDelegate.playVideo(videoModel);
+      getNavigator().goVideoPlayer(videoUri, videoModel.getVideo().getVideoName(),
+            getClass(), helpVideoDelegate.obtainVideoLanguage(videoModel));
    }
 
    private void subscribeToCachingStatusUpdates() {
@@ -141,7 +141,7 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
 
    @Override
    public void onCancelAction(CachedModel entity) {
-      cachedEntityDelegate.cancelCaching(entity, helpVideoDelegate.getPathForCache(getView().getViewContext(), entity));
+      cachedEntityDelegate.cancelCaching(entity, helpVideoDelegate.getPathForCache(entity));
    }
 
    @Override
@@ -151,12 +151,12 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
 
    @Override
    public void onDeleteAction(CachedModel entity) {
-      cachedEntityDelegate.deleteCache(entity, helpVideoDelegate.getPathForCache(getView().getViewContext(), entity));
+      cachedEntityDelegate.deleteCache(entity, helpVideoDelegate.getPathForCache(entity));
    }
 
    @Override
    public void downloadVideo(CachedModel entity) {
-      cachedEntityDelegate.startCaching(entity, helpVideoDelegate.getPathForCache(getView().getViewContext(), entity));
+      cachedEntityDelegate.startCaching(entity, helpVideoDelegate.getPathForCache(entity));
    }
 
    @Override
@@ -176,10 +176,5 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    @Override
    public void onSelectLastLocale() {
       getView().setSelectedLocale(helpVideoDelegate.getLastSelectedLocaleIndex());
-   }
-
-   @Override
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
    }
 }

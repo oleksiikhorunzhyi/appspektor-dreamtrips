@@ -83,7 +83,6 @@ public class OfferWithReviewView extends LinearLayout {
          isFirstLoad = false;
       else {
          mAdapter.removeLoadingFooter();
-         isLoading = false;
       }
 
       //List<ReviewObject> mockArray = getMockObjects();
@@ -96,6 +95,7 @@ public class OfferWithReviewView extends LinearLayout {
       mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
 
       setUpInfo();
+      isLoading = false;
    }
 
    private List<ReviewObject> getMockObjects(){
@@ -165,6 +165,7 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerAdapter.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
          @Override
          protected void loadMoreItems() {
+            if(isLoading()) return;
             mAdapter.addLoadingFooter();
             isLoading = true;
             getMoreReviewItems();

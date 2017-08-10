@@ -85,6 +85,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
       reviewActionPipe
             .observeWithReplay()
+            .take(1)
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ReviewMerchantsAction>()
                   .onSuccess(this::onMerchantsLoaded)
@@ -102,9 +103,11 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
       //getView().showFrameLayoutReviews(true);
-      getView().addCommentsAndReviews(Float.parseFloat(action.getResult().ratingAverage()), Integer.parseInt(action.getResult().total()),
-            ReviewObject.getReviewList(action.getResult().reviews()));
-
+      int reviewSize = action.getResult().reviews().size();
+      if (reviewSize > 0) {
+         getView().addCommentsAndReviews(Float.parseFloat(action.getResult().ratingAverage()), Integer.parseInt(action.getResult().total()),
+               ReviewObject.getReviewList(action.getResult().reviews()));
+      }
    }
 
    private void onMerchantsLoading(ReviewMerchantsAction action, Integer progress) {

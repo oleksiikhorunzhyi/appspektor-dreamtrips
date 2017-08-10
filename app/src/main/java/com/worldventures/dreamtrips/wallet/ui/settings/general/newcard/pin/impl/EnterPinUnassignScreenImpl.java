@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
@@ -25,11 +24,6 @@ public class EnterPinUnassignScreenImpl extends WalletBaseController<EnterPinUna
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject EnterPinUnassignPresenter presenter;
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
-   }
 
    @Override
    protected void onFinishInflate(View view) {

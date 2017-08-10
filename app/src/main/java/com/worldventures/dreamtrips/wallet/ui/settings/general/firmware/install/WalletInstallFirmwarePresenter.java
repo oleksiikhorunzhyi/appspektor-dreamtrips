@@ -8,4 +8,5 @@ public interface WalletInstallFirmwarePresenter extends WalletPresenter<WalletIn
 
    void cancelReinstall();
 
+   void install();
 }

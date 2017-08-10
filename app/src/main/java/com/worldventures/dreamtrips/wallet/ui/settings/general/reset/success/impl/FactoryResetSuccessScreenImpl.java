@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessScreen;
 
@@ -23,11 +21,6 @@ public class FactoryResetSuccessScreenImpl extends WalletBaseController<FactoryR
    @OnClick(R.id.btn_done)
    public void onClickDone() {
       getPresenter().navigateNext();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

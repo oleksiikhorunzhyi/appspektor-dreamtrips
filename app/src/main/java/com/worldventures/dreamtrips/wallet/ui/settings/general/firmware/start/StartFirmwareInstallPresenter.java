@@ -7,4 +7,6 @@ public interface StartFirmwareInstallPresenter extends WalletPresenter<StartFirm
    void goBack();
 
    void finish();
+
+   void prepareForUpdate();
 }

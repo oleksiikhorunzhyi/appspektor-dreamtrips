@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutScreen;
 
@@ -37,8 +35,6 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
    @InjectView(R.id.tvAtmelChargerFWVersion) TextView tvAtmelChargerFWVersion;
 
    @Inject AboutPresenter presenter;
-
-   private DialogOperationScreen dialogOperationScreen;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -64,11 +60,6 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
 
    private void provideAppVersion() {
       tvDTAppVersion.setText(BuildConfig.VERSION_NAME);
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return dialogOperationScreen == null ? dialogOperationScreen = new DialogOperationScreen(getView()) : dialogOperationScreen;
    }
 
    @Override

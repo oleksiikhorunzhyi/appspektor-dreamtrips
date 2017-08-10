@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_ca
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+
 public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<WalletDisableDefaultCardScreen> implements WalletDisableDefaultCardPresenter {
 
    private final AnalyticsInteractor analyticsInteractor;

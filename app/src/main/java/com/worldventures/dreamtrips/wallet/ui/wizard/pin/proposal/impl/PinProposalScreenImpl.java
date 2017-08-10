@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
@@ -56,11 +55,6 @@ public class PinProposalScreenImpl extends WalletBaseController<PinProposalScree
 
    public PinProposalScreenImpl(Bundle args) {
       super(args);
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

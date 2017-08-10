@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 
@@ -104,11 +102,6 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
    @Override
    public List<View> getToggleableItems() {
       return toggleableItems;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

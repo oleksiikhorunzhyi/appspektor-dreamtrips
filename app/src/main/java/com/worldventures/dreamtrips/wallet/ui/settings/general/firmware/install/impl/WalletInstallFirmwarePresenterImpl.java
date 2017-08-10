@@ -12,25 +12,23 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<WalletInstallFirmwareScreen> implements WalletInstallFirmwarePresenter {
 
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
 
    public WalletInstallFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor, ErrorHandlerFactory errorHandlerFactory) {
+         AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
    }
 
    @Override
@@ -40,15 +38,14 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
 
       firmwareInteractor.installFirmwarePipe()
             .observeWithReplay()
-            .compose(new ActionPipeCacheWiper(firmwareInteractor.installFirmwarePipe()))
+            .compose(new ActionPipeCacheWiper<>(firmwareInteractor.installFirmwarePipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<InstallFirmwareCommand>forView(getView())
-                  .onSuccess(command -> openSuccess(command.getResult()))
-                  .onProgress((command, integer) -> getView().showInstallingStatus(command.getCurrentStep(),
-                        InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, integer))
-                  .onFail(errorHandlerFactory.errorHandler())
-                  .wrap()
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationInstall())
                   .onStart(installFirmwareCommand -> getView().setInstallStarted(true))
+                  .onSuccess(command -> openSuccess(command.getResult()))
+                  .onProgress((cmd, progress) -> getView().showInstallingStatus(cmd.getCurrentStep(),
+                        InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, progress))
+                  .create()
             );
       if (!getView().isInstallStarted()) {
          install();
@@ -60,8 +57,8 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
             .send(new WalletFirmwareAnalyticsCommand(new InstallingUpdateAction()));
    }
 
-   protected void install() {
-      getView().showProgress(null);
+   @Override
+   public void install() {
       getView().showInstallingStatus(0, InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, 0);
       firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand());
    }

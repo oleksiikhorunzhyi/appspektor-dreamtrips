@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
@@ -26,7 +25,7 @@ import static android.animation.ObjectAnimator.ofFloat;
 import static butterknife.ButterKnife.apply;
 import static java.util.Arrays.asList;
 
-public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpdatePowerOnScreen, ForceUpdatePowerOnPresenter> implements ForceUpdatePowerOnScreen{
+public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpdatePowerOnScreen, ForceUpdatePowerOnPresenter> implements ForceUpdatePowerOnScreen {
 
    private static final int SHOW_SOAR_TITLE_DELAY = 1000;
    private static final int CARD_FADE_IN_DELAY = 300;
@@ -71,11 +70,6 @@ public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpda
    @Override
    public ForceUpdatePowerOnPresenter getPresenter() {
       return presenter;
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    private void hideAllView() {

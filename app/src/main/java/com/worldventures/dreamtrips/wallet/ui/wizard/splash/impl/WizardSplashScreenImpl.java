@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.anim.FlipAnim;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen;
@@ -73,11 +72,6 @@ public class WizardSplashScreenImpl extends WalletBaseController<WizardSplashScr
             asList(walletWizardSplashTitle, actionBtn, cardContainer),
             (view, index) -> view.setAlpha(0)
       );
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

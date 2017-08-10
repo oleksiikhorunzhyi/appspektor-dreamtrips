@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetScreen;
 
@@ -48,11 +46,6 @@ public class WalletPinIsSetScreenImpl extends WalletBaseController<WalletPinIsSe
    @OnClick(R.id.next_button)
    public void nextClick() {
       getPresenter().navigateToNextScreen();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @Override

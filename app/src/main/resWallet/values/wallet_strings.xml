@@ -300,6 +300,7 @@
    <!--firmware download-->
    <string name="wallet_firmware_download_header">Smart Card Update</string>
    <string name="wallet_firmware_download_text">Downloading Update</string>
+   <string name="wallet_firmware_download_error">Can\'t download update, firmware is not available!</string>
    <string name="wallet_firmware_download_cancel_action">Cancel</string>
 
    <!-- firmware install-->

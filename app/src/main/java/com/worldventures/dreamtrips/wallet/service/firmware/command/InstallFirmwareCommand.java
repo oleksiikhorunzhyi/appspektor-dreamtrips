@@ -39,6 +39,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
+      callback.onProgress(0);
       loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);
       if (firmwareRepository.getFirmwareUpdateData() == null) {
          throw new IllegalStateException("FirmwareUpdateData does not exist");

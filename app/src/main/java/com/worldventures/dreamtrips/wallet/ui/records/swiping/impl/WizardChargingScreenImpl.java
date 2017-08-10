@@ -10,13 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
@@ -24,6 +27,9 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipi
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 
 public class WizardChargingScreenImpl extends WalletBaseController<WizardChargingScreen, WizardChargingPresenter> implements WizardChargingScreen {
 
@@ -35,7 +41,6 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
    @Inject WizardChargingPresenter presenter;
 
    private final ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
-   private OperationScreen operationScreen;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -62,7 +67,6 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
 
    @Override
    protected void onAttach(@NonNull View view) {
-      operationScreen = new DialogOperationScreen(view);
       super.onAttach(view);
       swipingAnimations.animateSmartCard(smartCard);
       swipingAnimations.animateBankCard(creditCard, Animation.INFINITE);
@@ -73,30 +77,40 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
       return presenter;
    }
 
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return operationScreen;
-   }
-
    private void navigateClick() {
       getPresenter().goBack();
    }
 
    @Override
    public void showSwipeError() {
-      operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {
-      });
+      showDialog(getString(R.string.wallet_wizard_charging_swipe_error), false);
    }
 
    @Override
    public void trySwipeAgain() {
-      operationScreen.showError(getString(R.string.wallet_receive_data_error), o -> {
-      });
+      showDialog(getString(R.string.wallet_receive_data_error), false);
    }
 
    @Override
    public void showSwipeSuccess() {
-      operationScreen.showProgress(getString(R.string.wallet_add_card_swipe_success));
+      showDialog(getString(R.string.wallet_add_card_swipe_success), true);
+   }
+
+   private void showDialog(String message, boolean withProgress) {
+      final MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext())
+            .content(message);
+
+      if (withProgress) {
+         builder.progress(true, 0);
+      } else {
+         builder.positiveText(R.string.ok);
+         builder.onPositive((dialog, which) -> {
+            dialog.dismiss();
+            getPresenter().goBack();
+         });
+      }
+
+      builder.build().show();
    }
 
    @Override
@@ -104,5 +118,27 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
       if (photo != null) {
          userPhoto.setImageURI(photo.uri());
       } // TODO: 5/23/17 add placeholder
+   }
+
+   @Override
+   public OperationView<CreateRecordCommand> provideOperationCreateRecord() {
+      return new ComposableOperationView<>(
+            ErrorViewFactory.<CreateRecordCommand>builder()
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
+      );
+   }
+
+   @Override
+   public OperationView<StartCardRecordingAction> provideOperationStartCardRecording() {
+      return new ComposableOperationView<>(
+            ErrorViewFactory.<StartCardRecordingAction>builder()
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
+                        cmd -> trySwipeAgain(), cmd -> getPresenter().goBack()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(),
+                        cmd -> trySwipeAgain(), cmd -> getPresenter().goBack()))
+                  .build()
+      );
    }
 }

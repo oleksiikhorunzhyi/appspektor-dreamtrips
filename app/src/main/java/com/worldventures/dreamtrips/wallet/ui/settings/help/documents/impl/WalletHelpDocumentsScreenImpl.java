@@ -14,14 +14,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletLoadMore;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletLoadMore;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder.DocumentHolder;
@@ -48,11 +47,6 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
 
    private MultiHolderAdapter adapter;
    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
-   }
 
    @Override
    protected void onFinishInflate(View view) {

@@ -11,12 +11,12 @@ import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.SettingsRadioModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.SettingsRadioModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsScreen;
 
-import static io.techery.janet.operationsubscriber.OperationActionSubscriber.forView;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<WalletAutoClearCardsScreen> implements WalletAutoClearCardsPresenter {
 
@@ -65,7 +65,7 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
       getSmartCardInteractor().autoClearDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(forView(getView().<SetAutoClearSmartCardDelayCommand>provideOperationView())
+            .subscribe(OperationActionSubscriber.forView(getView().<SetAutoClearSmartCardDelayCommand>provideOperationView())
                   .onSuccess(command -> {
                      bindToView(command.getResult());
                      getView().setDelayWasChanged(true);

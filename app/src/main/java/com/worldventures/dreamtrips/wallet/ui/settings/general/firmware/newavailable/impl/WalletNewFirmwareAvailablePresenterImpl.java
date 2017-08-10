@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavai
 
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkUpdateAction;
@@ -29,15 +28,12 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
 
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    public WalletNewFirmwareAvailablePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
    }
 
    @Override
@@ -113,10 +109,5 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
 
    private void goDownloadFile() {
       getNavigator().goPuckConnection();
-   }
-
-   @Override
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
    }
 }

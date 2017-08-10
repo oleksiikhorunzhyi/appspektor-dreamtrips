@@ -19,4 +19,6 @@ public interface WalletSecuritySettingsPresenter extends WalletPresenter<WalletS
    void addPin();
 
    void removePin();
+
+   void lockStatusFailed();
 }

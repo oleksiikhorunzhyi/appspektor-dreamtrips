@@ -1,19 +1,21 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.impl;
 
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwareScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
@@ -22,13 +24,15 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.functions.Action1;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletDownloadFirmwareScreenImpl extends WalletBaseController<WalletDownloadFirmwareScreen, WalletDownloadFirmwarePresenter> implements WalletDownloadFirmwareScreen {
    @InjectView(R.id.firmware_download_progress) WalletProgressWidget downloadProgress;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject WalletDownloadFirmwarePresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -57,38 +61,24 @@ public class WalletDownloadFirmwareScreenImpl extends WalletBaseController<Walle
    }
 
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return this;
-   }
-
-   @Override
-   public void showProgress(@Nullable String text) {
-      downloadProgress.start();
-   }
-
-   @Override
-   public void hideProgress() {
-      //needless
-   }
-
-   @Override
-   public void showError(String msg, @Nullable Action1<Void> action) {
-      Snackbar.make(getView(), msg, Snackbar.LENGTH_SHORT)
-            .setCallback(new Snackbar.Callback() {
-               @Override
-               public void onDismissed(Snackbar snackbar, int event) {
-                  if (action != null) action.call(null);
-               }
-            }).show();
-   }
-
-   @Override
-   public Context context() {
-      return getContext();
-   }
-
-   @Override
    public WalletDownloadFirmwarePresenter getPresenter() {
       return presenter;
+   }
+
+   @Override
+   public OperationView<DownloadFirmwareCommand> provideOperationDownload() {
+      return new ComposableOperationView<>(
+            new WalletProgressView<>(downloadProgress),
+            ErrorViewFactory.<DownloadFirmwareCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        cmd -> getPresenter().downloadFirmware(),
+                        cmd -> getPresenter().goBack()))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(
+                        getContext(),
+                        IllegalStateException.class,
+                        R.string.wallet_firmware_download_text,
+                        cmd -> getPresenter().goBack()))
+                  .build()
+      );
    }
 }

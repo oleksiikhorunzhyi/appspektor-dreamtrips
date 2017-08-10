@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingScreen;
@@ -78,11 +77,6 @@ public class WizardCheckingScreenImpl extends WalletBaseController<WizardCheckin
    @OnClick(R.id.next_button)
    protected void onNextClick() {
       getPresenter().goNext();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

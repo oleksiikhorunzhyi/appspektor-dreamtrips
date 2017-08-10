@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.swiping.impl;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
-import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
@@ -12,38 +11,28 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingScreen;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
-import java.net.UnknownHostException;
-
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
-import io.techery.janet.smartcard.exception.NotConnectedException;
 
 // TODO: 5/30/17 Create task and refactor both screen and presenter, it's ugly and error handling is a joke
 public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardChargingScreen> implements WizardChargingPresenter {
 
    private final RecordInteractor recordInteractor;
    private final AnalyticsInteractor analyticsInteractor;
-   private final ErrorHandlerFactory errorHandlerFactory;
 
    public WizardChargingPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor,
-         ErrorHandlerFactory errorHandlerFactory) {
+         WalletNetworkService networkService, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.errorHandlerFactory = errorHandlerFactory;
    }
 
    @Override
@@ -72,11 +61,7 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
       getSmartCardInteractor().startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<StartCardRecordingAction>forView(getView().provideOperationDelegate())
-                  .onFail(createErrorHandlerBuilder(StartCardRecordingAction.class)
-                        .handle(Throwable.class, action -> getView().trySwipeAgain())
-                        .build())
-                  .wrap());
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationStartCardRecording()).create());
 
       getSmartCardInteractor().cardSwipedEventPipe()
             .observeSuccess()
@@ -105,21 +90,9 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
       recordInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<CreateRecordCommand>forView(getView().provideOperationDelegate())
-                  .onFail(createErrorHandlerBuilder(CreateRecordCommand.class).build())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationCreateRecord())
                   .onSuccess(command -> bankCardCreated(command.getResult()))
-                  .wrap());
-   }
-
-   private <T> ErrorHandler.Builder<T> createErrorHandlerBuilder(Class<T> clazz) {
-      return errorHandlerFactory.<T>builder()
-            .handle(NotConnectedException.class, t -> {
-               analyticsInteractor.walletAnalyticsCommandPipe()
-                     .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));
-            }).handle(UnknownHostException.class, t -> {
-               analyticsInteractor.walletAnalyticsCommandPipe()
-                     .send(new WalletAnalyticsCommand(FailedToAddCardAction.noNetworkConnection()));
-            });
+                  .create());
    }
 
    private void trackScreen() {

@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen;
 
@@ -135,11 +134,6 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
    @OnClick(R.id.setup_button)
    public void onSetSetupButtonClicked() {
       getPresenter().setupCardClicked();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
    }
 
    @Override

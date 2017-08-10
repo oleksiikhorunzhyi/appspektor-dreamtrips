@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.modules.picker.model.GalleryMediaPickerViewM
 import com.worldventures.dreamtrips.modules.picker.model.IrregularPhotoPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.gallery.GalleryMediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.picker.util.MediaPickerStep;
-import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.MediaPickerStaticItemsStrategy;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.util.strategy.VideoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.view.base.BaseMediaPickerLayout;
 
@@ -191,4 +191,7 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
    public void clearItems() {
       getAdapter().clear();
    }
+
+   @Override
+   public void onProgressChanged(int i) { /* nothing */ }
 }

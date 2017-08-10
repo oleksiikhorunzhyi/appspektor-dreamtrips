@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessScreen;
@@ -69,11 +67,6 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
    @OnClick(R.id.next_button)
    public void nextClick() {
       getPresenter().goToNext();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return  new DialogOperationScreen(getView());
    }
 
    @Override

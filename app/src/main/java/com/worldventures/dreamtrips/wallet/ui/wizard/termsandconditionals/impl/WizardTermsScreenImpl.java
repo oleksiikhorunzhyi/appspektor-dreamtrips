@@ -20,8 +20,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.ViewProgressView;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreen;
@@ -146,11 +144,6 @@ public class WizardTermsScreenImpl extends WalletBaseController<WizardTermsScree
             .positiveText(R.string.wallet_retry_label)
             .onPositive(retryAction)
             .show();
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(getView());
    }
 
    @OnClick(R.id.wallet_wizard_terms_and_conditions_agree_btn)

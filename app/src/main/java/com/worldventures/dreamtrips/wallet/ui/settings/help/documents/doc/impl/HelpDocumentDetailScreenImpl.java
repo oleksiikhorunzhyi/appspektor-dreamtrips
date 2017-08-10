@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl;
 
-
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,8 +14,8 @@ import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailScreen;
 
@@ -30,7 +29,7 @@ import static android.view.View.VISIBLE;
 
 public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocumentDetailScreen, HelpDocumentDetailPresenter> implements HelpDocumentDetailScreen {
 
-   public static final String KEY_HELP_DOCUMENT = "key_help_document";
+   private static final String KEY_HELP_DOCUMENT = "key_help_document";
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.document_view) WebView webView;
@@ -38,7 +37,7 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
 
    @Inject HelpDocumentDetailPresenter presenter;
 
-   public static HelpDocumentDetailScreenImpl create(WalletDocument document) {
+   public static HelpDocumentDetailScreenImpl create(WalletDocumentModel document) {
       final Bundle args = new Bundle();
       args.putParcelable(KEY_HELP_DOCUMENT, document);
       return new HelpDocumentDetailScreenImpl(args);
@@ -122,14 +121,14 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
    }
 
    @Override
-   public WalletDocument getDocument() {
+   public WalletDocumentModel getDocument() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_HELP_DOCUMENT))
             ? getArgs().getParcelable(KEY_HELP_DOCUMENT)
             : null;
    }
 
    @Override
-   public void showDocument(WalletDocument document) {
+   public void showDocument(WalletDocumentModel document) {
       toolbar.setTitle(document.getName());
       webView.loadUrl(document.getUrl());
    }

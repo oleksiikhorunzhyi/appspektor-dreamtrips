@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.AdapterItemDocumentBinding;
 import com.worldventures.dreamtrips.databinding.AdapterItemLoadMoreFeedBinding;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletLoadMore;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletLoadMoreModel;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 
 public class HelpDocsHolderFactoryImpl implements HelpDocsTypeFactory {
@@ -38,12 +38,12 @@ public class HelpDocsHolderFactoryImpl implements HelpDocsTypeFactory {
    }
 
    @Override
-   public int type(WalletDocument document) {
+   public int type(WalletDocumentModel document) {
       return R.layout.adapter_item_document;
    }
 
    @Override
-   public int type(WalletLoadMore walletLoadMore) {
+   public int type(WalletLoadMoreModel walletLoadMore) {
       return R.layout.adapter_item_load_more_feed;
    }
 }

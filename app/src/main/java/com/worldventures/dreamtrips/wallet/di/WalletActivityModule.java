@@ -741,10 +741,8 @@ public class WalletActivityModule {
    @Provides
    WalletHelpDocumentsPresenter provideWalletHelpDocumentsPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         DocumentsInteractor documentsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil,
-         MapperyContext mapperyContext) {
-      return new WalletHelpDocumentsPresenterImpl(navigator, smartCardInteractor, networkService,
-            documentsInteractor, httpErrorHandlingUtil, mapperyContext);
+         DocumentsInteractor documentsInteractor) {
+      return new WalletHelpDocumentsPresenterImpl(navigator, smartCardInteractor, networkService, documentsInteractor);
    }
 
    @Provides

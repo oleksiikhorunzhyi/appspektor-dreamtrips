@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
@@ -151,7 +151,7 @@ public interface Navigator {
 
    void goForceUpdatePowerOn();
 
-   void goHelpDocumentDetails(WalletDocument document);
+   void goHelpDocumentDetails(WalletDocumentModel document);
 
    void goPinProposalRecords(String cardNickname);
 

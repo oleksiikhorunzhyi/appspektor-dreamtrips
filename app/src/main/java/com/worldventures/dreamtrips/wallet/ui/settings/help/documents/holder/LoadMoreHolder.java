@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder;
 import android.view.View;
 
 import com.worldventures.dreamtrips.databinding.AdapterItemLoadMoreFeedBinding;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletLoadMore;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletLoadMoreModel;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 
-public class LoadMoreHolder extends BaseHolder<WalletLoadMore> {
+public class LoadMoreHolder extends BaseHolder<WalletLoadMoreModel> {
 
    private final AdapterItemLoadMoreFeedBinding binding;
 
@@ -16,7 +16,7 @@ public class LoadMoreHolder extends BaseHolder<WalletLoadMore> {
    }
 
    @Override
-   public void setData(WalletLoadMore data) {
+   public void setData(WalletLoadMoreModel data) {
       binding.pbLoadMore.setVisibility(data.isVisible() ? View.VISIBLE : View.GONE);
    }
 }

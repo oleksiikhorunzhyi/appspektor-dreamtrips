@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
@@ -21,7 +21,7 @@ public class HelpDocumentDetailPresenterImpl extends WalletPresenterImpl<HelpDoc
    @Override
    public void attachView(HelpDocumentDetailScreen view) {
       super.attachView(view);
-      final WalletDocument document = getView().getDocument();
+      final WalletDocumentModel document = getView().getDocument();
       getView().showDocument(document);
    }
 

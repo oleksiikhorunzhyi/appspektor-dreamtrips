@@ -91,21 +91,21 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    public void onRefreshSuccess() {
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
-      this.refreshLayout.setVisibility(View.GONE);
+      //this.refreshLayout.setVisibility(View.GONE);
       this.mContainerDetail.setVisibility(View.VISIBLE);
    }
 
    @Override
    public void onRefreshProgress() {
-      this.refreshLayout.setVisibility(View.VISIBLE);
-      this.mContainerDetail.setVisibility(View.GONE);
+      //this.refreshLayout.setVisibility(View.VISIBLE);
+      //this.mContainerDetail.setVisibility(View.GONE);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
-      this.refreshLayout.setVisibility(View.GONE);
+      //this.refreshLayout.setVisibility(View.GONE);
       this.showEmpty(false);
    }
 

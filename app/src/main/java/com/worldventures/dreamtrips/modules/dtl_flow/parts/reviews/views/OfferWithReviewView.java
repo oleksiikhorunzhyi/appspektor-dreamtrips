@@ -87,7 +87,7 @@ public class OfferWithReviewView extends LinearLayout {
       }
 
       //List<ReviewObject> mockArray = getMockObjects();
-      List<ReviewObject> mockArray = bundle.<ReviewObject>getParcelableArrayList(ARRAY);
+      List<ReviewObject> mockArray = bundle.getParcelableArrayList(ARRAY);
       mAdapter.addItems(mockArray);
 
       mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
@@ -182,7 +182,7 @@ public class OfferWithReviewView extends LinearLayout {
       mEventListener.onEventAccured(lastIndex);
    }
 
-   private int getNextItemValue() { return mAdapter.getItemCount() + 1;}
+   private int getNextItemValue() { return mAdapter.getItemCount() - 1;}
 
    private void initAdapter() {
       recyclerAdapter.setAdapter(mAdapter);

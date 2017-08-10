@@ -433,7 +433,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goHelpDocumentDetails(WalletDocumentModel document) {
-      withoutLast(HelpDocumentDetailScreenImpl.create(document));
+      go(HelpDocumentDetailScreenImpl.create(document));
    }
 
    @Override

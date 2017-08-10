@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public interface WalletHelpDocumentsScreen extends WalletScreen, SwipeRefreshLayout.OnRefreshListener {
 
-   void onDocumentsLoaded(List<WalletDocumentModel> documents);
+   void onDocumentsLoaded(ArrayList<WalletDocumentModel> documents);
 
    void onError(String errorMessage);
 

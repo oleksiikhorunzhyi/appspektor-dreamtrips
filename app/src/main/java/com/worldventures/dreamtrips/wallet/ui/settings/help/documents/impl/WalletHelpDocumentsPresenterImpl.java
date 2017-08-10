@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelp
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
@@ -56,8 +57,8 @@ public class WalletHelpDocumentsPresenterImpl extends WalletPresenterImpl<Wallet
                   .create());
    }
 
-   private List<WalletDocumentModel> convert(List<Document> documents) {
-      return Queryable.from(documents).map(WalletDocumentModel::new).toList();
+   private ArrayList<WalletDocumentModel> convert(List<Document> documents) {
+      return (ArrayList<WalletDocumentModel>) Queryable.from(documents).map(WalletDocumentModel::new).toList();
    }
 
    @Override

@@ -7,8 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
@@ -21,7 +23,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
    private ArrayList<ReviewObject> mItems = new ArrayList<>();
    private Context context;
@@ -30,26 +32,38 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       this.context = context;
    }
 
-   @Override
-   public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
-      return new RecyclerViewHolder(v);
-   }
-
-   public void addAll(List<ReviewObject> items) {
-      int pos = getItemCount();
-      mItems.addAll(items);
-      notifyItemRangeInserted(pos, mItems.size());
-   }
-
-   public void clear() {
-      mItems.clear();
-      notifyDataSetChanged();
-   }
+   // View Types
+   private static final int ITEM = 0;
+   private static final int LOADING = 1;
+   private boolean isLoadingAdded = false;
 
    @Override
-   public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-      holder.bind(position);
+   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      RecyclerView.ViewHolder viewHolder = null;
+      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+      switch (viewType) {
+         case ITEM:
+            View viewItem = inflater.inflate(R.layout.item_review, parent, false);
+            viewHolder = new RecyclerViewHolder(viewItem);
+            break;
+         case LOADING:
+            View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
+            viewHolder = new LoadingVH(viewLoading);
+            break;
+      }
+      return viewHolder;
+   }
+
+   @Override
+   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+      ReviewObject result = mItems.get(position); // Review
+      switch (getItemViewType(position)) {
+         case ITEM:
+            final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
+               recyclerViewHolder.bind(position);
+            break;
+      }
    }
 
    @Override
@@ -57,8 +71,72 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       return mItems.size();
    }
 
+   @Override
+   public int getItemViewType(int position) {
+      return (position == mItems.size() - 1 && isLoadingAdded) ? LOADING : ITEM;    }
 
-   class RecyclerViewHolder extends RecyclerView.ViewHolder {
+     /*
+        Helpers - Pagination
+   _________________________________________________________________________________________________
+    */
+
+   public void add(ReviewObject r) {
+      mItems.add(r);
+      notifyItemInserted(mItems.size() - 1);
+   }
+
+   public void addItems(List<ReviewObject> reviewResults) {
+      reviewResults.forEach(this::add);
+   }
+
+   public List<ReviewObject> getAllItems(){
+      return mItems;
+   }
+
+   public void remove(ReviewObject r) {
+      int position = mItems.indexOf(r);
+      if (position > -1) {
+         mItems.remove(position);
+         notifyItemRemoved(position);
+      }
+   }
+
+   public void clear() {
+      isLoadingAdded = false;
+      while (getItemCount() > 0) {
+         remove(getItem(0));
+      }
+   }
+
+   public boolean isEmpty() {
+      return getItemCount() == 0;
+   }
+
+   public void addLoadingFooter() {
+      isLoadingAdded = true;
+      add(new ReviewObject());
+   }
+
+   public void removeLoadingFooter() {
+      isLoadingAdded = false;
+
+      int position = mItems.size() - 1;
+      ReviewObject reviewObject = getItem(position);
+
+      if (reviewObject != null) {
+         mItems.remove(position);
+         notifyItemRemoved(position);
+      }
+   }
+
+   public ReviewObject getItem(int position) {
+      return mItems.get(position);
+   }
+
+   /**
+    * Main list's content ViewHolder
+    */
+   protected class RecyclerViewHolder extends RecyclerView.ViewHolder {
       private SimpleDraweeView mAvatar;
       private TextView mUserName;
       private TextView mCommentWrote;
@@ -118,6 +196,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
 
       private void changeVisibility(@NonNull View view, int type){
          view.setVisibility(type);
+      }
+   }
+
+   protected class LoadingVH extends RecyclerView.ViewHolder{
+      public LoadingVH(View itemView) {
+         super(itemView);
       }
    }
 }

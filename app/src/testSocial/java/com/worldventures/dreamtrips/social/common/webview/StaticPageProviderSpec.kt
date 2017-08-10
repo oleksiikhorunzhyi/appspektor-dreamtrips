@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
+import com.worldventures.dreamtrips.modules.infopages.ImmutableStaticPageProviderConfig
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProviderConfig
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.net.URLEncoder
@@ -105,7 +107,15 @@ class StaticPageProviderSpec: BaseSpec({
 
       val mockSessionHolder: SessionHolder<UserSession> = mock()
       val deviceInfoProvider: DeviceInfoProvider = mock()
-      val provider = StaticPageProvider(mockSessionHolder, deviceInfoProvider, API_URL, BACKOFFICE_URL, UPLOADERY_URL)
+      val staticPageProviderConfig: StaticPageProviderConfig =
+            ImmutableStaticPageProviderConfig.builder()
+                  .appSessionHolder(mockSessionHolder)
+                  .deviceInfoProvider(deviceInfoProvider)
+                  .apiUrl(API_URL)
+                  .backofficeUrl(BACKOFFICE_URL)
+                  .uploaderyUrl(UPLOADERY_URL)
+                  .build()
+      val provider = StaticPageProvider(staticPageProviderConfig)
       val userSession: UserSession = mock()
 
       init {

@@ -197,7 +197,7 @@ ext {
          jodaTimeAndroid          : [c: "net.danlew:android.joda:$jodaTimeVersion"],
          androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
          androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],
-         operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.2'],
+         operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.3'],
          collectionsQuery         : [c: 'com.innahema:collections-query:0.2.9'],
          weakHandler              : [c: 'com.badoo.mobile:android-weak-handler:1.1'],
          mappery                  : [c: 'com.github.techery:mappery:0.0.2'],

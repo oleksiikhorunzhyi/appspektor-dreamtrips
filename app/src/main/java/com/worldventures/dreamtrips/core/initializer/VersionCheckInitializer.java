@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.initializer;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 

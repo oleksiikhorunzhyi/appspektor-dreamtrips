@@ -34,7 +34,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    OfferWithReviewView.IMyEventListener listener = new OfferWithReviewView.IMyEventListener() {
       @Override
-      public void onEventAccured(int indexOf) {
+      public void onEventOccurred(int indexOf) {
          getPresenter().addMoreReviews(indexOf);
       }
    };
@@ -133,6 +133,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    @Override
    public String getMerchantId() {
       return getPath().getMerchant().id();
+   }
+
+   @Override
+   public void removeScrollListener() {
+      mContainerDetail.removeScrollListener();
    }
 
    @Override

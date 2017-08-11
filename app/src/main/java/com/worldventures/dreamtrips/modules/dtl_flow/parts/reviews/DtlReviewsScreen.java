@@ -21,4 +21,7 @@ public interface DtlReviewsScreen extends DtlScreen {
    void userHasPendingReview();
 
    String getMerchantId();
+
+   void removeScrollListener();
+
 }

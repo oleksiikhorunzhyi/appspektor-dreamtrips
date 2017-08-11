@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
@@ -77,15 +78,16 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    }
 
    @Override
-   public void addMoreReviews(int indexOf){
+   public void addMoreReviews(int indexOf) {
       connectReviewMerchants(indexOf);
    }
 
    private void connectReviewMerchants(int indexOf) {
+      Log.e("LOGXYZ", "connectReviewMerchants > " + indexOf);
+
       ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
       reviewActionPipe
             .observeWithReplay()
-            .take(1)
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ReviewMerchantsAction>()
                   .onSuccess(this::onMerchantsLoaded)
@@ -102,11 +104,15 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
-      //getView().showFrameLayoutReviews(true);
+//      getView().showFrameLayoutReviews(true);
       int reviewSize = action.getResult().reviews().size();
+      Log.e("LOGXYZ", "onMerchantsLoaded > " + reviewSize);
       if (reviewSize > 0) {
-         getView().addCommentsAndReviews(Float.parseFloat(action.getResult().ratingAverage()), Integer.parseInt(action.getResult().total()),
+         getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
+                     .ratingAverage()), Integer.parseInt(action.getResult().total()),
                ReviewObject.getReviewList(action.getResult().reviews()));
+      } else {
+         getView().removeScrollListener();
       }
    }
 

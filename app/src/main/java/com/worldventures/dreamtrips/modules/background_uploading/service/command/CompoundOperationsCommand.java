@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.background_uploading.service.comman
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +11,19 @@ import java.util.List;
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 
-public abstract class CompoundOperationsCommand extends Command<List<CompoundOperationModel>>
-      implements CachedAction<List<CompoundOperationModel>> {
+public abstract class CompoundOperationsCommand extends Command<List<PostCompoundOperationModel>>
+      implements CachedAction<List<PostCompoundOperationModel>> {
 
-   protected List<CompoundOperationModel> cachedModels = new ArrayList<>();
+   protected List<PostCompoundOperationModel> cachedModels = new ArrayList<>();
 
    @Override
-   public List<CompoundOperationModel> getCacheData() {
+   public List<PostCompoundOperationModel> getCacheData() {
+      if (getResult() != null) return new ArrayList<>(getResult());
       return new ArrayList<>(cachedModels);
    }
 
    @Override
-   public void onRestore(ActionHolder holder, List<CompoundOperationModel> cache) {
+   public void onRestore(ActionHolder holder, List<PostCompoundOperationModel> cache) {
       if (cache != null) {
          cachedModels.addAll(cache);
       }
@@ -34,15 +35,15 @@ public abstract class CompoundOperationsCommand extends Command<List<CompoundOpe
             .build();
    }
 
-   public static CompoundOperationsCommand compoundOperationsChanged(List<CompoundOperationModel> updatedModels) {
+   public static CompoundOperationsCommand compoundOperationsChanged(List<PostCompoundOperationModel> updatedModels) {
       return new UpdateCompoundOperationsCommand(updatedModels);
    }
 
-   public static CompoundOperationsCommand compoundCommandChanged(CompoundOperationModel updatedModel) {
+   public static CompoundOperationsCommand compoundCommandChanged(PostCompoundOperationModel updatedModel) {
       return new UpdateCompoundOperationCommand(updatedModel);
    }
 
-   public static CompoundOperationsCommand compoundCommandRemoved(CompoundOperationModel updatedModel) {
+   public static CompoundOperationsCommand compoundCommandRemoved(PostCompoundOperationModel updatedModel) {
       return new DeleteCompoundOperationsCommand(updatedModel);
    }
 }

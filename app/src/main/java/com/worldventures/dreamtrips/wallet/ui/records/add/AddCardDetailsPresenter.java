@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
@@ -49,6 +50,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordInteractor recordInteractor;
    @Inject WizardInteractor wizardInteractor;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final Record record;
    private String cardNickname;
@@ -218,6 +220,10 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    private void trackAddedCard(Record record, boolean setAsDefault) {
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
+   }
+
+   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen {

@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkUpdateAction;
@@ -40,6 +41,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
    @Inject Navigator navigator;
    @Inject ActivityRouter activityRouter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    public WalletNewFirmwareAvailablePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -113,6 +115,10 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
    private void goDownloadFile() {
       navigator.go(new WalletPuckConnectionPath());
+   }
+
+   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
+      return httpErrorHandlingUtil;
    }
 
    public interface Screen extends WalletScreen {

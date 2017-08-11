@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.content.Intent;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -14,12 +12,13 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -30,6 +29,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPre
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.command.AccountTimelineStorageCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
@@ -58,10 +58,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    private static final int DEFAULT_RATIO_X = 3;
    private static final int DEFAULT_RATIO_Y = 1;
 
-   @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
    @Inject DownloadFileInteractor downloadFileInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
+   @Inject PingAssetStatusInteractor assetStatusInteractor;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
@@ -127,7 +127,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail((command, e) -> {
                      handleError(command, e);
                      user.setAvatarUploadInProgress(false);
-                     view.notifyUserChanged();
+                     refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
             );
    }
@@ -141,7 +142,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail((command, e) -> {
                      handleError(command, e);
                      user.setCoverUploadInProgress(false);
-                     view.notifyUserChanged();
+                     refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
             );
    }
@@ -169,8 +171,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       accountTimelineStorageDelegate.startUpdatingStorage()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<AccountTimelineStorageCommand>()
-                  .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+                  .onSuccess(storageCommand -> timeLineUpdated(storageCommand.getResult()))
                   .onFail(this::handleError));
+   }
+
+   private void timeLineUpdated(List<FeedItem> items) {
+      assetStatusInteractor.feedItemsVideoProcessingPipe().send(new FeedItemsVideoProcessingStatusCommand(items));
+      onItemsChanged(items);
    }
 
    private void subscribeLoadNextFeeds() {
@@ -188,8 +195,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
-                           .cast(PostCompoundOperationModel.class).toList();
+                     postUploads = compoundOperationsCommand.getResult();
                      refreshFeedItems();
                   }));
    }
@@ -221,7 +227,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       this.user.setAvatar(currentUser.getAvatar());
       this.user.setAvatarUploadInProgress(false);
-      view.notifyUserChanged();
+      refreshFeedItems();
+      view.notifyDataSetChanged();
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
@@ -232,7 +239,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
       this.user.setCoverUploadInProgress(false);
-      view.notifyUserChanged();
+      refreshFeedItems();
+      view.notifyDataSetChanged();
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
@@ -278,7 +286,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       TrackingHelper.profileUploadStart(getAccountUserId());
       profileInteractor.uploadAvatarPipe().send(new UploadAvatarCommand(fileThumbnail));
       user.setAvatarUploadInProgress(true);
-      view.notifyUserChanged();
+      refreshFeedItems();
+      view.notifyDataSetChanged();
    }
 
    private void onCoverCropped(File croppedFile, String errorMsg) {
@@ -286,7 +295,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
          TrackingHelper.profileUploadStart(getAccountUserId());
          profileInteractor.uploadBackgroundPipe().send(new UploadBackgroundCommand(croppedFile.getPath()));
          user.setCoverUploadInProgress(true);
-         view.notifyUserChanged();
+         refreshFeedItems();
+         view.notifyDataSetChanged();
       } else {
          view.informUser(errorMsg);
       }
@@ -307,7 +317,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void imageSelected(MediaAttachment mediaAttachment) {
-      PhotoGalleryModel image = mediaAttachment.chosenImages.get(0);
+      PhotoPickerModel image = mediaAttachment.chosenImages.get(0);
       switch (mediaAttachment.requestId) {
          case AVATAR_MEDIA_REQUEST_ID:
             onAvatarChosen(image);
@@ -318,7 +328,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       }
    }
 
-   private void onAvatarChosen(PhotoGalleryModel image) {
+   private void onAvatarChosen(PhotoPickerModel image) {
       if (image != null) {
          String filePath = image.getAbsolutePath();
          if (ValidationUtils.isUrl(filePath)) {
@@ -339,7 +349,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail(this::handleError));
    }
 
-   private void onCoverChosen(PhotoGalleryModel image) {
+   private void onCoverChosen(PhotoPickerModel image) {
       if (image != null) {
          String filePath = image.getAbsolutePath();
          if (ValidationUtils.isUrl(filePath)) {
@@ -360,7 +370,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Override
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads));
+      view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads), user);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -401,6 +411,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       void cropImage(SocialCropImageManager socialCropImageManager, String path);
 
-      void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList);
+      void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user);
+
+      void notifyDataSetChanged();
    }
 }

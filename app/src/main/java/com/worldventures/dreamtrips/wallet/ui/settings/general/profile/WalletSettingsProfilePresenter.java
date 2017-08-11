@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCa
 import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
@@ -54,6 +54,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject ErrorHandlerFactory errorHandlerFactory;
 
    private SmartCardUserPhoto preparedPhoto;
    private boolean profileDataIsChanged = false;
@@ -192,7 +193,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .subscribe(OperationActionStateSubscriberWrapper.<UpdateSmartCardUserCommand>forView(getView().provideOperationDelegate())
                   .onStart(getContext().getString(R.string.loading))
                   .onSuccess(setupUserDataCommand -> goBack())
-                  .onFail(ErrorHandler.<UpdateSmartCardUserCommand>builder(getContext())
+                  .onFail(errorHandlerFactory.<UpdateSmartCardUserCommand>builder()
                         .handle(FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail)
                         .handle(LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail)
                         .handle(MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail)

@@ -158,7 +158,9 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       super.onMenuInflated(menu);
       MenuItem searchItem = menu.findItem(R.id.action_search);
       if (searchItem != null) {
-         if (searchOpened) searchItem.expandActionView();
+         if (searchOpened) {
+            getView().post(() -> searchItem.expandActionView());
+         }
          MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {

@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
@@ -23,6 +25,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 import javax.inject.Inject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
    @Inject MerchantsInteractor merchantInteractor;
@@ -30,6 +34,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject PresentationInteractor presentationInteractor;
+   @Inject DeviceInfoProvider deviceInfoProvider;
 
    private final ThinMerchant merchant;
 
@@ -81,7 +86,13 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
 
    @Override
    public void onClickRatingsReview() {
-      fullMerchantInteractor.load(merchant.id(), merchant.reviewSummary(), true);
+      if (!deviceInfoProvider.isTablet()) {
+         if (hasPendingReview()) {
+            getView().showPendingReviewError();
+         } else {
+            fullMerchantInteractor.load(merchant.id(), merchant.reviewSummary(), true);
+         }
+      }
    }
 
    @Override

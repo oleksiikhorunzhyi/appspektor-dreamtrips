@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Locale;
 
 public class StaticPageProvider {
@@ -24,6 +26,8 @@ public class StaticPageProvider {
    private static final String PRIVACY_POLICY_URL = "/gateway/privacy_policy";
    private static final String COOKIES_POLICY_URL = "/gateway/cookies_policy";
    private static final String ENROLL_UPGRADE_URL = "/gateway/enroll_upgrade";
+   private static final String WV_ADVANTAGE_URL = "/Account/Dispatch?url=";
+   private static final String WV_ADVANTAGE_URL_TO_ENCODE = "/Marketing/WorldVenturesAdvantage";
 
    ///////////////////////////////////////////
    //// Query params
@@ -37,12 +41,15 @@ public class StaticPageProvider {
    private DeviceInfoProvider deviceInfoProvider;
 
    private String apiUrl;
+   private String backofficeUrl;
    private String uploaderyUrl;
 
-   public StaticPageProvider(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider, String apiUrl, String uploaderyUrl) {
+   public StaticPageProvider(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider, String apiUrl,
+         String backofficeUrl, String uploaderyUrl) {
       this.appSessionHolder = appSessionHolder;
       this.deviceInfoProvider = deviceInfoProvider;
       this.apiUrl = apiUrl;
+      this.backofficeUrl = backofficeUrl;
       this.uploaderyUrl = uploaderyUrl;
    }
 
@@ -114,6 +121,14 @@ public class StaticPageProvider {
 
    public String getEnrollRepWithLocation(double latitude, double longitude) {
       return getEnrollRepUrl() + String.format(Locale.ENGLISH, LAT, latitude) + String.format(Locale.ENGLISH, LNG, longitude);
+   }
+
+   public String getWvAdvantageUrl() {
+      try {
+         return backofficeUrl + WV_ADVANTAGE_URL + URLEncoder.encode(WV_ADVANTAGE_URL_TO_ENCODE, "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+         return "about:blank";
+      }
    }
 
    private String getUsername() {

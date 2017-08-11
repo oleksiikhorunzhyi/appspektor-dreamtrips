@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMerchantPr
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMemberFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.WVAdvantageFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
@@ -48,7 +49,8 @@ import dagger.Provides;
             EnrollMemberPresenter.class,
             EnrollRepPresenter.class,
             PreviewTemplateFragment.class,
-            FilterLanguageDialogFragment.class
+            FilterLanguageDialogFragment.class,
+            WVAdvantageFragment.class,
       },
       complete = false,
       library = true)
@@ -56,6 +58,12 @@ public class MembershipModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMembershipComponent() {
-      return new ComponentDescription(Route.MEMBERSHIP.name(), R.string.membership, R.string.membership, R.drawable.ic_membership, MembershipFragment.class);
+      return new ComponentDescription.Builder()
+            .key(Route.MEMBERSHIP.name())
+            .navMenuTitle(R.string.membership)
+            .toolbarTitle(R.string.membership)
+            .icon(R.drawable.ic_membership)
+            .fragmentClass(MembershipFragment.class)
+            .build();
    }
 }

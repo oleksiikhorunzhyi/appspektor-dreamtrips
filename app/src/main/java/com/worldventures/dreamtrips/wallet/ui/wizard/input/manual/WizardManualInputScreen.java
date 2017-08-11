@@ -85,7 +85,7 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> presenter.retry(command.barcode), c -> { /*nothing*/ })
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), command -> presenter.retry(command.barcode), c -> { /*nothing*/ })
                   ).build()
       );
    }

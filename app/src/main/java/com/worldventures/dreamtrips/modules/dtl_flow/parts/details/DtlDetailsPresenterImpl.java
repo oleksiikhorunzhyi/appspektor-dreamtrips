@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
@@ -43,6 +44,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -70,7 +72,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
-
+   @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
    private final Merchant merchant;
@@ -92,6 +94,13 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       getView().setMerchant(merchant);
       preExpandOffers();
       tryHideSuggestMerchantButton();
+      validateTablet();
+   }
+
+   protected void validateTablet() {
+      if(getView().isTablet()){
+         getView().hideReviewViewsOnTablets();
+      }
    }
 
    @Override
@@ -158,7 +167,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> {
                      DtlTransaction transaction = action.getResult();
                      if (transaction != null) {
@@ -182,7 +191,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          transactionInteractor.transactionActionPipe()
                .createObservable(DtlTransactionAction.delete(merchant))
                .compose(bindViewIoToMainComposer())
-               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                      .onSuccess(action -> getView().setTransaction(action.getResult())));
       }
    }
@@ -192,7 +201,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> {
                      if (action.getResult() != null) {
                         DtlTransaction dtlTransaction = action.getResult();
@@ -266,7 +275,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void showAllReviews() {
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()),merchant, ""));
    }
 
    @Override
@@ -279,46 +288,44 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             //Business logic: If the size is equals than 0, so we need to show an screen without info
             int countReview = Integer.parseInt(reviews.total());
             float ratingMerchant = Float.parseFloat(reviews.ratingAverage());
-            if (getView() != null) {
-               if (countReview == 0) {
-                  getView().addNoCommentsAndReviews();
-               } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
-                  //If list size is major or equals 3, must be show read all message button
-                  getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
-                  getView().showButtonAllRateAndReview();
-                  getView().setTextRateAndReviewButton(countReview);
-               } else {
-                  //if it doesn't, only show the comment in the same screen
-                  getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
-                  getView().hideButtonAllRateAndReview();
-               }
+            if (countReview == 0) {
+               getView().addNoCommentsAndReviews();
+            } else if (countReview > MAX_SIZE_TO_SHOW_BUTTON) {
+               //If list size is major or equals 3, must be show read all message button
+               getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBusinessRule(listReviews));
+               getView().setTextRateAndReviewButton(countReview);
+            } else {
+               //if it doesn't, only show the comment in the same screen
+               getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
             }
          } else {
-            if (getView() != null) {
-               getView().addNoCommentsAndReviews();
-            }
+            getView().addNoCommentsAndReviews();
          }
+      } else {
+         getView().addNoCommentsAndReviews();
       }
    }
 
    @Override
    public void onClickRatingsReview(Merchant merchant) {
-      if (isReviewCached()) {
-         if (userHasReviews()) {
-            goToReviewList();
+      if (!deviceInfoProvider.isTablet()) {
+         if (isReviewCached()) {
+            if (userHasReviews()) {
+               goToReviewList();
+            } else {
+               getView().userHasPendingReview();
+            }
          } else {
-            getView().userHasPendingReview();
-         }
-      } else {
-         if (userHasReviews()) {
-            goToReviewList();
-         } else {
-            goToCommentReview();
+            if (userHasReviews()) {
+               goToReviewList();
+            } else {
+               goToCommentReview();
+            }
          }
       }
    }
 
-   private boolean userHasReviews() {
+   protected boolean userHasReviews() {
       if (merchant.reviews() == null) {
          return false;
       }
@@ -337,12 +344,12 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       return appSessionHolder.get().get().getUser();
    }
 
-   private boolean isReviewCached() {
+   protected boolean isReviewCached() {
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 
    private void goToReviewList(){
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
    private void goToCommentReview(){

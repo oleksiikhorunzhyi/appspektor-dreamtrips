@@ -123,6 +123,19 @@
                android:name="android.support.PARENT_ACTIVITY"
                android:value=".modules.common.view.activity.MainActivity"
                />
+      </activity>
+
+      <activity
+            android:name=".modules.common.view.activity.ConfigChangesAwareComponentActivity"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".modules.common.view.activity.MainActivity"
+               />
 
       </activity>
 
@@ -131,11 +144,22 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             />
 
+      <meta-data
+            android:name="JW_LICENSE_KEY"
+            android:value="k/oXE6R4JCQeSPhvZ4qNjiNOqL49dRMASkD4MEOLWVb3BeGX"
+            />
       <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:screenOrientation="sensorLandscape"
             />
+
+      <activity
+            android:name=".modules.feed.view.activity.FeedActivity"
+            android:launchMode="singleTop"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            >
+      </activity>
 
       <!--Chat activities-->
       <activity
@@ -211,8 +235,7 @@
       <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="${applicationId}.com.facebook.app.FacebookContentProvider761062457321921"
-            android:exported="false"
-            />
+            android:exported="false"/>
 
       <activity
             android:name="com.yalantis.ucrop.UCropActivity"

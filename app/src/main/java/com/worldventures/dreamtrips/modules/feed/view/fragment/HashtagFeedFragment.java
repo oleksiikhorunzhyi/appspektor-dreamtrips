@@ -21,7 +21,9 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
@@ -35,6 +37,8 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
@@ -61,6 +65,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
 
    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
    RecyclerViewStateDelegate stateDelegate;
@@ -91,12 +96,14 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
          if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyDataSetChanged();
+            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
-      if (isTabletLandscape()) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
+      if (ViewUtils.isTablet(getContext())) {
+         int margin = getResources().getInteger(R.integer.feed_landscape_horizontal_margin);
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(margin, false));
       }
+
       fragmentWithFeedDelegate.init(feedAdapter);
       BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());
       fragmentWithFeedDelegate.registerDelegate(PhotoFeedItem.class, delegate);
@@ -164,6 +171,8 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       if (args != null && args.getHashtag() != null) {
          getPresenter().onRefresh();
       }
+
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED_HASHTAG));
    }
 
    @Override
@@ -237,8 +246,11 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void refreshFeedItems(List feedItems) {
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(feedItems);
+      fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+   }
+
+   @Override
+   public void dataSetChanged() {
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 

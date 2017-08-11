@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -14,13 +13,13 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
+import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
-import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
 import java.util.ArrayList;
@@ -62,22 +61,23 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    public void onResume() {
       super.onResume();
       TrackingHelper.viewMyProfileScreen();
+      startAutoplayVideos();
    }
 
    @Override
-   protected BaseDelegateAdapter createAdapter() {
-      return new IgnoreFirstExpandedItemAdapter(getContext(), this);
-   }
-
-   @Override
-   public void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList) {
+   public void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user) {
       List newItems = new ArrayList();
+      newItems.add(user);
       if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
          newItems.add(uploadingPostsList);
       }
       newItems.addAll(items);
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(newItems);
+      fragmentWithFeedDelegate.updateItems(newItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+      startAutoplayVideos();
+   }
+
+   @Override
+   public void notifyDataSetChanged() {
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
@@ -126,10 +126,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
-   protected void initialToolbar() {
-      if (getActivity() instanceof MainActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
+   protected void initToolbar() {
+      if (getActivity() instanceof FeedActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
          profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-         profileToolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+         profileToolbar.setNavigationOnClickListener(view -> ((FeedActivity) getActivity()).openLeftDrawer());
       } else {
          profileToolbar.setNavigationIcon(R.drawable.back_icon);
          profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
@@ -142,7 +142,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(requestId))
+            .data(new PickerBundle.Builder().setRequestId(requestId).build())
             .build());
    }
 
@@ -173,5 +173,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    @Override
    public void onUserPhotoClicked() {
       getPresenter().photoClicked();
+   }
+
+   @Override
+   public Route getRoute() {
+      return Route.ACCOUNT_PROFILE;
    }
 }

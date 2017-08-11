@@ -17,7 +17,7 @@ import javax.inject.Inject;
 public class SessionHolder<S> extends ComplexObjectStorage<UserSession> {
 
    private final String[] supportedLanguageCodes = new String[] {"en-us", "el-cy", "el-gr", "es-us", "hu-hu", "ms-my",
-         "ro-hu", "sv-se", "zh", "zh-cn", "zh-hk", "zh-tw"};
+         "ro-hu", "sv-se", "zh", "zh-cn", "zh-hk", "zh-tw", "zh-sg"};
    private final List<Locale> supportedLocales;
 
    @Inject public SessionHolder(SimpleKeyValueStorage keyValueStorage) {

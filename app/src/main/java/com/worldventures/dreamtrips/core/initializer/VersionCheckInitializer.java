@@ -3,16 +3,18 @@ package com.worldventures.dreamtrips.core.initializer;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.version_check.service.VersionCheckInteractor;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 
 public class VersionCheckInitializer implements AppInitializer {
-   private VersionCheckInteractor versionCheckInteractor;
+   private AppConfigurationInteractor appConfigurationInteractor;
 
-   public VersionCheckInitializer(VersionCheckInteractor versionCheckInteractor) {
-      this.versionCheckInteractor = versionCheckInteractor;
+   public VersionCheckInitializer(AppConfigurationInteractor appConfigurationInteractor) {
+      this.appConfigurationInteractor = appConfigurationInteractor;
    }
 
    @Override
    public void initialize(Injector injector) {
-      //versionCheckInteractor.versionCheckPipe().send(new VersionCheckCommand());
+      appConfigurationInteractor.loadConfigurationPipe().send(new LoadConfigurationCommand());
    }
 }

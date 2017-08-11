@@ -12,10 +12,10 @@ import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAct
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 
 import javax.inject.Inject;
@@ -33,13 +33,13 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject SnappyRepository db;
 
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject DtlLocationInteractor dtlLocationInteractor;
-   // Lazy dagger won't instantiate unless injected. Do not delete unused InitializerInteractor below!
-   @Inject InitializerInteractor initializerInteractor;
-
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   // Lazy dagger won't instantiate unless injected. Do not delete unused below!
+   @Inject DtlLocationInteractor dtlLocationInteractor;
+   @Inject InitializerInteractor initializerInteractor;
+   @Inject HttpResponseSnifferDelegate httpResponseSnifferDelegate;
 
    @State boolean dtlInitDone;
    @State boolean userAlreadyLoggedIn = true;

@@ -16,8 +16,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.WVAdvantageFragment;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
@@ -157,11 +158,11 @@ public enum Route {
    FRIEND_LIST(FriendListFragment.class),
    FRIEND_REQUESTS(RequestsFragment.class, R.string.social_requests),
    FRIEND_PREFERENCES(FriendPreferenceFragment.class, R.string.friend_pref_lists_header),
-   FEED(FeedFragment.class, R.string.feed_title),
    NOTIFICATIONS(NotificationFragment.class, R.string.notifications_title),
    SHARE(ShareFragment.class, R.string.action_share),
    USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
    FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
+   FEED(FeedFragment.class, R.string.feed_title),
    FEED_HASHTAG(HashtagFeedFragment.class, R.string.empty),
    FEEDBACK_IMAGE_ATTACHMENTS(FeedbackImageAttachmentsFragment.class, R.string.empty),
    FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT(FeedbackImageAttachmentFullscreenFragment.class, R.string.empty),
@@ -185,6 +186,7 @@ public enum Route {
    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
    ENROLL_REP(EnrollRepFragment.class),
+   WV_ADVANTAGE(WVAdvantageFragment.class, R.string.wv_advantage),
    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
    SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 

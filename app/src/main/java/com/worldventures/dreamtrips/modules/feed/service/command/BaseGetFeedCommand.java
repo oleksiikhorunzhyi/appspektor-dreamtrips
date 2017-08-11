@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.feed.GetFeedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import java.util.Date;
@@ -22,6 +24,7 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
 
    @Inject protected Janet janet;
    @Inject protected MapperyContext mappery;
+   @Inject protected SessionHolder<UserSession> userSessionHolder;
 
    protected Date before;
 

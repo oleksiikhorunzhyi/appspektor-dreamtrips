@@ -169,10 +169,13 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @Override
    protected void updateToolbarCaptions() {
       if (collapsed) {
-         final String searchQueryTitle = TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
+         String searchQueryTitle = TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
          if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
          } else {
+            if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
+               searchQueryTitle = defaultEmptySearchCaption;
+            }
             merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
          }
       } else {

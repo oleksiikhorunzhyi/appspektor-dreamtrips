@@ -8,12 +8,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.container_comments_detail) OfferWithReviewView mContainerDetail;
-   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
+   @InjectView(R.id.progress_loader) ProgressBar refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
 
@@ -53,8 +53,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       toolbar.setNavigationOnClickListener(view -> {
          Flow.get(getContext()).goBack();
       });
-      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-      refreshLayout.setEnabled(true);
       showMessage();
    }
 
@@ -76,31 +74,29 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       mContainerDetail.addBundle(bundle);
    }
 
-   private void refreshProgress(boolean isShow) {
-      refreshLayout.setRefreshing(isShow);
-   }
-
    private void hideRefreshMerchantsError() {
       errorView.setVisibility(GONE);
    }
 
    @Override
    public void onRefreshSuccess() {
-      this.refreshProgress(false);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
+      this.refreshLayout.setVisibility(View.GONE);
+      this.mContainerDetail.setVisibility(View.VISIBLE);
    }
 
    @Override
    public void onRefreshProgress() {
-      this.refreshProgress(true);
+      this.refreshLayout.setVisibility(View.VISIBLE);
+      this.mContainerDetail.setVisibility(View.GONE);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
-      this.refreshProgress(false);
+      this.refreshLayout.setVisibility(View.GONE);
       this.showEmpty(false);
    }
 
@@ -133,16 +129,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    @Override
    public boolean isTabletLandscape() {
       return false;
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-
    }
 
    @Override

@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.view.util;
 
+import java.io.Serializable;
+
 /**
  * Immutable class for describing width and height dimensions in pixels.
  *
  * @see android.util.Size
  * Original class is for API >= 21. This fork for API >= 1
  */
-public final class Size {
+public final class Size implements Serializable {
 
    private final int width;
    private final int height;

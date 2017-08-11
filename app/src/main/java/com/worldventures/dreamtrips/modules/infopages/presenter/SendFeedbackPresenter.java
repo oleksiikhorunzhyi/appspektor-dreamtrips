@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
@@ -163,9 +163,9 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
             .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
    }
 
-   private void attachImages(List<PhotoGalleryModel> chosenImages) {
+   private void attachImages(List<PhotoPickerModel> chosenImages) {
       if (chosenImages.size() == 0) return;
-      Queryable.from(chosenImages).forEachR(chosenImage -> uploadImageAttachment(chosenImage.getImageUri()));
+      Queryable.from(chosenImages).forEachR(chosenImage -> uploadImageAttachment(chosenImage.getUri().toString()));
    }
 
    ///////////////////////////////////////////////////////////////////////////

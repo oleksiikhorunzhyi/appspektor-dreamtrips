@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListSt
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePh
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -67,13 +69,13 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
             tripImagesInteractor.deletePhotoPipe().observeSuccess()
                   .map(DeletePhotoCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::deleteItemOperation),
+                  .map(UidItem::getUid)
+                  .map(this::deleteItemOperation),
 
             postsInteractor.deletePostPipe().observeSuccess()
                   .map(DeletePostCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::deleteItemOperation),
+                  .map(UidItem::getUid)
+                  .map(this::deleteItemOperation),
 
             postsInteractor.getEditPostPipe().observeSuccess()
                   .map(EditPostCommand::getResult)
@@ -98,8 +100,8 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
             bucketInteractor.deleteItemPipe().observeSuccess()
                   .map(DeleteBucketItemCommand::getResult)
-                  .map(this::createFeedItem)
-                  .map(ListStorageOperationFactory::deleteItemOperation),
+                  .map(UidItem::getUid)
+                  .map(this::deleteItemOperation),
 
             friendsInteractor.getLikersPipe().observeSuccess()
                   .map(GetLikersCommand::getFeedEntity)
@@ -139,15 +141,37 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
       return new UpdateFeedEntityStorageOperation(feedEntity);
    }
 
-   private FeedItem createFeedItem(FeedEntity feedEntity) {
-      return FeedItem.create(feedEntity, sessionHolder.get().get().getUser());
+   protected ListStorageOperation deleteItemOperation(String uid) {
+      return new DeleteFeedItemStorageOperation(uid);
    }
 
    public Observable<ActionState<COMMAND>> startUpdatingStorage() {
       return getListStorageOperationObservable()
             .flatMap(listStorageOperation
-                  -> feedStorageInteractor.getFeedItemsStoragePipe().createObservable(createCommand(listStorageOperation)));
+                  -> feedStorageInteractor.getFeedItemsStoragePipe()
+                  .createObservable(createCommand(listStorageOperation)));
    }
 
    protected abstract COMMAND createCommand(ListStorageOperation listStorageOperation);
+
+   public class DeleteFeedItemStorageOperation implements ListStorageOperation<FeedItem<FeedEntity>> {
+
+      private String uid;
+
+      public DeleteFeedItemStorageOperation(String uid) {
+         this.uid = uid;
+      }
+
+      @Override
+      public List<FeedItem<FeedEntity>> perform(List<FeedItem<FeedEntity>> items) {
+         for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getItem().getUid().equals(uid)) {
+               items.remove(i);
+               break;
+            }
+         }
+
+         return items;
+      }
+   }
 }

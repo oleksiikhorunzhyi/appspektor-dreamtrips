@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.app.FragmentManager;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
 import com.worldventures.dreamtrips.core.permission.PermissionModule;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -52,4 +56,9 @@ public class ActivityModule {
       return new RouterImpl(baseActivity);
    }
 
+   @Provides
+   @Singleton
+   public VideoPlayerHolder provideVideoPlayerHolder(Activity activity, BackStackDelegate backStackDelegate) {
+      return new VideoPlayerHolder(activity, backStackDelegate);
+   }
 }

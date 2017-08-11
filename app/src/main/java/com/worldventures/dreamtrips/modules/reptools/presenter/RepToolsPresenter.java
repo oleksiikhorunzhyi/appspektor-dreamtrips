@@ -49,6 +49,7 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
       List<FragmentItem> items = new ArrayList<>();
       items.add(new FragmentItem(Route.TRAINING_VIDEOS, context.getString(R.string.training_videos)));
       items.add(new FragmentItem(Route.ENROLL_REP, context.getString(R.string.rep_enrollment)));
+      items.add(new FragmentItem(Route.WV_ADVANTAGE, context.getString(R.string.wv_advantage)));
       items.add(new FragmentItem(Route.SUCCESS_STORY_LIST, context.getString(R.string.success_stories)));
       if (showInvite()) {
          items.add(new FragmentItem(Route.INVITE, context.getString(R.string.invite_and_share)));

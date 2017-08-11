@@ -2,15 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview;
 
 import android.content.Context;
 
-import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
-
-import java.util.List;
-
 public class PhotoPreviewViewFactory {
 
-   public static PhotoAttachmentPreviewView provideView(Context context, List<PhotoAttachment> attachments) {
-
-        switch (attachments.size()) {
+   public static PhotoAttachmentPreviewView provideView(Context context, int attachmentsCount) {
+        switch (attachmentsCount) {
            case 1:
               return new SinglePhotoAttachmentPreviewView(context);
            case 2:

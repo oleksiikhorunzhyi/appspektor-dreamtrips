@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
 import java.util.List;
 
@@ -9,18 +9,18 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeleteCompoundOperationsCommand extends CompoundOperationsCommand {
 
-   private CompoundOperationModel removedModel;
+   private PostCompoundOperationModel removedModel;
 
-   DeleteCompoundOperationsCommand(CompoundOperationModel removedModel) {
+   DeleteCompoundOperationsCommand(PostCompoundOperationModel removedModel) {
       this.removedModel = removedModel;
    }
 
-   public CompoundOperationModel getRemovedModel() {
+   public PostCompoundOperationModel getRemovedModel() {
       return removedModel;
    }
 
    @Override
-   protected void run(CommandCallback<List<CompoundOperationModel>> callback) throws Throwable {
+   protected void run(CommandCallback<List<PostCompoundOperationModel>> callback) throws Throwable {
       processUpdatedModel();
       callback.onSuccess(cachedModels);
    }

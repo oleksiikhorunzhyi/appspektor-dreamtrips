@@ -13,8 +13,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableF
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
-import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +29,8 @@ public class FilterDataInteractor implements Initializable {
    private final SnappyRepository snappyRepository;
    private final MerchantsRequestSourceInteractor merchantsRequestSourceInteractor;
    private final ActionPipe<FilterDataAction> filterDataPipe;
+
+   private String searchQuery = "";
 
    public FilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor, MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
@@ -56,12 +56,17 @@ public class FilterDataInteractor implements Initializable {
             .map(filterData -> ImmutableFilterData.builder()
                   .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
                   .isOffersOnly(filterData.isOffersOnly())
-                  .merchantType(DtlMerchantsScreenImpl.getFilterType())
+                  .merchantType(filterData.getMerchantType())
                   .build())
             .subscribe(this::send);
    }
 
+   public void searchMerchantType(final List<String> merchantType) {
+      searchMerchantType(merchantType, searchQuery);
+   }
+
    public void searchMerchantType(final List<String> merchantType, String searchQuery) {
+      this.searchQuery = searchQuery;
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.builder()
                   .distanceType(filterData.distanceType())
@@ -101,6 +106,7 @@ public class FilterDataInteractor implements Initializable {
    }
 
    public void applySearch(@NonNull final String query) {
+      this.searchQuery = query;
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData).withPage(0)
                   .withSearchQuery(query))

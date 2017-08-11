@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +13,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -23,6 +25,8 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
@@ -38,6 +42,7 @@ import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCe
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,6 +58,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @InjectView(R.id.profile_user_status) TextView profileToolbarUserStatus;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
 
    private int scrollArea;
 
@@ -74,6 +80,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
          float percent = calculateOffset();
          setToolbarAlpha(percent);
       }
+      startAutoplayVideos();
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(getRoute()));
+   }
+
+   protected void startAutoplayVideos() {
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }
 
    @Override
@@ -91,18 +103,19 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      BaseDelegateAdapter adapter = createAdapter();
+      BaseDelegateAdapter adapter = new BaseDelegateAdapter(getContext(), this);
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
          if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().onLoadNext()) {
             fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyDataSetChanged();
+            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
          }
       });
-      if (isTabletLandscape()) {
-         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16, true));
+      if (ViewUtils.isTablet(getContext())) {
+         int margin = getResources().getInteger(R.integer.feed_landscape_horizontal_margin);
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(margin, true));
       }
       statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
          float percent = calculateOffset();
@@ -115,25 +128,22 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
             profileToolbarUserStatus.setVisibility(View.INVISIBLE);
          }
       });
-      //
+
       fragmentWithFeedDelegate.init(adapter);
       registerAdditionalCells();
       registerCellDelegates();
-      //
-      initialToolbar();
+      initToolbar();
    }
 
    @Override
-   public void setUser(User user) {
-      if (fragmentWithFeedDelegate.getItems().contains(user)) {
-         fragmentWithFeedDelegate.updateItem(user);
-      } else {
-         fragmentWithFeedDelegate.addItem(0, user);
-         fragmentWithFeedDelegate.notifyItemInserted(0);
-      }
-      //
-      ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
-      profileToolbarTitle.setText(user.getFullName());
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      initToolbar();
+   }
+
+   @Override
+   public void dataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
    @Override
@@ -162,15 +172,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void notifyUserChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
-   }
-
-   @Override
-   public void refreshFeedItems(List<FeedItem> items) {
-      fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(items);
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+   public void refreshFeedItems(List<FeedItem> items, User user) {
+      List feedModels = new ArrayList();
+      feedModels.add(user);
+      feedModels.addAll(items);
+      fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.stateRecyclerView);
+      startAutoplayVideos();
+      ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
+      profileToolbarTitle.setText(user.getFullName());
    }
 
    @Override
@@ -213,9 +222,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.openComments(feedItem, isVisibleOnScreen(), isTabletLandscape());
    }
 
-   protected abstract void initialToolbar();
-
-   protected abstract BaseDelegateAdapter createAdapter();
+   protected abstract void initToolbar();
 
    private float calculateOffset() {
       return Math.min(statePaginatedRecyclerViewManager.stateRecyclerView.getScrollOffset() / (float) scrollArea, 1);
@@ -295,4 +302,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    @Override
    public void onCellClicked(User model) { }
+
+   public abstract Route getRoute();
 }

@@ -67,7 +67,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
       super.syncUIStateWithModel();
    }
 
-   protected void openFullsreenPhoto(Photo model) {
+   private void openFullsreenPhoto(Photo model) {
       List<IFullScreenObject> items = Queryable.from(getModelObject().getItem().getAttachments())
             .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
             .map(element -> (IFullScreenObject) element.getItem())
@@ -100,14 +100,20 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
       return result;
    }
 
-   protected void processAttachments(List<FeedEntityHolder> attachments) {
+   @Override
+   protected void processPhotos() {
       adapter.clear();
-      Queryable.from(attachments).forEachR(itemHolder -> {
+      Queryable.from(getModelObject().getItem().getAttachments()).forEachR(itemHolder -> {
          if (itemHolder.getItem() instanceof Photo) {
             adapter.addItem(itemHolder.getItem());
          }
       });
       adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   protected void clearImages() {
+      adapter.clear();
    }
 
    @Override

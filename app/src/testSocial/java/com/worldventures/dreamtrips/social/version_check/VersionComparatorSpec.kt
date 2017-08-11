@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.version_check
 
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.modules.version_check.util.VersionComparator
+import com.worldventures.dreamtrips.modules.config.util.VersionComparator
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertFalse

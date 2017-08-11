@@ -157,8 +157,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
                   .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.wallet_add_card_details_error_default,
                         command -> addRecordWithCurrentData()))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData(), command -> {
-                  }))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), command -> addRecordWithCurrentData(), command -> { }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
                   .build()

@@ -206,7 +206,6 @@ tasks.whenTaskAdded { task ->
 tasks.withType(JavaCompile) {
    options.compilerArgs << "-Xmaxerrs" << "400"
 }
-
 // configuration & dependencies
 
 def deps = project.ext.moduleDependencies
@@ -235,9 +234,7 @@ dependencies {
       it.value != deps.di.daggerProguard
    })
    deps.applyAll(owner, deps.data)
-   deps.applyAll(owner, deps.networking.findAll {
-      it.value != deps.networking.apiMonolith
-   })
+   deps.applyAll(owner, deps.networking)
    deps.applyAll(owner, deps.smartcard)
    deps.applyAll(owner, deps.services)
    deps.applyAll(owner, deps.media)
@@ -253,10 +250,6 @@ dependencies {
    deps.applyAll(owner, deps.test)
 
    // customized dependencies
-
-   compile(deps.provide(deps.networking.apiMonolith)) {
-      exclude group: 'joda-time'
-   }
    devCompile deps.provide(deps.util.leakcanary)
    devpremarshmallowCompile deps.provide(deps.util.leakcanary)
    externalCompile deps.provide(deps.util.leakcanaryNoOp)

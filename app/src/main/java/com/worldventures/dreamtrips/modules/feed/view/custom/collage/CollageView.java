@@ -57,7 +57,7 @@ public class CollageView extends FrameLayout {
 
    public void setItems(List<CollageItem> items, int width) {
       clear();
-      this.items = items;
+      this.items.addAll(items);
       side = width;
       fillLayout();
    }

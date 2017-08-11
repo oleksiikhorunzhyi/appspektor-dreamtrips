@@ -20,14 +20,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CommandWithTripImages;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 
 public abstract class MembersImagesBasePresenter<C extends CommandWithTripImages>
       extends TripImagesListPresenter<MembersImagesBasePresenter.View, C> implements UploadingListenerPresenter {
@@ -84,6 +82,24 @@ public abstract class MembersImagesBasePresenter<C extends CommandWithTripImages
             return CreateEntityBundle.Origin.MY_TRIP_IMAGES;
          default:
             return CreateEntityBundle.Origin.MEMBER_TRIP_IMAGES;
+      }
+   }
+
+   public void onFeedItemAdded(FeedItem feedItem) {
+      if (feedItem.getItem() instanceof Photo) {
+         Photo photo = (Photo) feedItem.getItem();
+         photos.add(0, photo);
+         db.savePhotoEntityList(type, userId, photos);
+         view.add(0, photo);
+      } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
+            .getItem()).getAttachments().size() > 0) {
+         List<Photo> addedPhotos = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
+               .map(holder -> (Photo) holder.getItem())
+               .toList();
+         Collections.reverse(addedPhotos);
+         photos.addAll(0, addedPhotos);
+         db.savePhotoEntityList(type, userId, photos);
+         view.addAll(0, addedPhotos);
       }
    }
 

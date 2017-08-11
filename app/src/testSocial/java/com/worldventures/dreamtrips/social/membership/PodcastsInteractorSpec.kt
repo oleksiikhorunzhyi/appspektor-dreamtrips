@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper
 import com.worldventures.dreamtrips.modules.membership.model.Podcast
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity
 import com.worldventures.dreamtrips.modules.video.model.CachedModel
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -22,6 +21,8 @@ import org.junit.Assert
 import rx.observers.TestSubscriber
 import java.util.*
 import kotlin.test.assertEquals
+
+typealias ApiPodcast = com.worldventures.dreamtrips.api.podcasts.model.Podcast
 
 class PodcastsInteractorSpec : BaseSpec({
 
@@ -43,7 +44,7 @@ class PodcastsInteractorSpec : BaseSpec({
    companion object BaseCompanion {
       lateinit var mockDb: SnappyRepository
 
-      lateinit var stubPodcasts: List<com.worldventures.dreamtrips.api.podcasts.model.Podcast>
+      lateinit var stubPodcasts: List<ApiPodcast>
 
       lateinit var podcastsInteractor: PodcastsInteractor
 
@@ -68,22 +69,22 @@ class PodcastsInteractorSpec : BaseSpec({
          podcastsInteractor = PodcastsInteractor(SessionActionPipeCreator(janet))
       }
 
-      fun mockHttpService(podcasts: List<com.worldventures.dreamtrips.api.podcasts.model.Podcast>): MockHttpActionService {
+      fun mockHttpService(podcasts: List<ApiPodcast>): MockHttpActionService {
          return MockHttpActionService.Builder()
                .bind(MockHttpActionService.Response(200)
                      .body(podcasts)) { it.url.contains("/api/podcasts") }
                .build()
       }
 
-      fun makeStubPodcasts(): List<com.worldventures.dreamtrips.api.podcasts.model.Podcast> {
-         val podcasts = ArrayList<com.worldventures.dreamtrips.api.podcasts.model.Podcast>()
+      fun makeStubPodcasts(): List<ApiPodcast> {
+         val podcasts = ArrayList<ApiPodcast>()
          for (i in 1..2) {
             podcasts.add(makeStubPodcast(i))
          }
          return podcasts
       }
 
-      fun makeStubPodcast(i: Int): com.worldventures.dreamtrips.api.podcasts.model.Podcast {
+      fun makeStubPodcast(i: Int): ApiPodcast {
          return ImmutablePodcast.builder()
                .title("Title $i")
                .description("Description $i")

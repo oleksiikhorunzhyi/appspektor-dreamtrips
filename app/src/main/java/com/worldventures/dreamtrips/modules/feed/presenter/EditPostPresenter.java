@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.net.Uri;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -12,7 +15,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.View> {
+public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresenter.View> {
 
    @Inject PostsInteractor postsInteractor;
 
@@ -25,20 +28,14 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
    @Override
    public void takeView(View view) {
       if (isCachedTextEmpty()) cachedText = post.getDescription();
-      if (hasAttachments()) Queryable.from(post.getAttachments()).forEachR(attachment -> {
-         cachedCreationItems.add(createItemFromPhoto((Photo) attachment.getItem()));
-      });
-      //
+      if (hasPhotoAttachments()) {
+         Queryable.from(post.getAttachments())
+               .forEachR(attachment -> cachedCreationItems.add(createItemFromPhoto((Photo) attachment.getItem())));
+      } else if (hasVideoAttachments()) {
+         selectedVideoPathUri = Uri.parse(((Video)post.getAttachments().get(0).getItem()).getThumbnail());
+      }
       super.takeView(view);
-      //
       if (location == null) updateLocation(post.getLocation());
-   }
-
-   @Override
-   protected void updateUi() {
-      super.updateUi();
-      //
-      view.attachPhotos(cachedCreationItems);
    }
 
    @Override
@@ -68,11 +65,11 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
             .createObservable(new EditPostCommand(post.getUid(), createPostObject()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<EditPostCommand>()
-               .onSuccess(editPostCommand -> view.cancel())
-               .onFail((editPostCommand, throwable) -> {
-                  view.cancel();
-                  handleError(editPostCommand, throwable);
-               }));
+                  .onSuccess(editPostCommand -> view.cancel())
+                  .onFail((editPostCommand, throwable) -> {
+                     view.cancel();
+                     handleError(editPostCommand, throwable);
+                  }));
    }
 
    private CreatePhotoPostEntity createPostObject() {
@@ -93,11 +90,13 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
       return item;
    }
 
-   private boolean hasAttachments() {
-      return post.getAttachments() != null && post.getAttachments().size() > 0;
+   private boolean hasPhotoAttachments() {
+      return post.getAttachments() != null && post.getAttachments().size() > 0
+            && post.getAttachments().get(0).getItem() instanceof Photo;
    }
 
-   public interface View extends ActionEntityPresenter.View {
-
+   private boolean hasVideoAttachments() {
+      return post.getAttachments() != null && post.getAttachments().size() > 0
+            && post.getAttachments().get(0).getItem() instanceof Video;
    }
 }

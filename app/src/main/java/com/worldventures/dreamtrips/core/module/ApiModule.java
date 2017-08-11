@@ -6,12 +6,10 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
@@ -79,7 +77,7 @@ public class ApiModule {
    }
 
    @Provides
-   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, AppVersionNameBuilder appVersionNameBuilder) {
-      return new HeaderProvider(appSessionHolder, appVersionNameBuilder);
+   HeaderProvider provideHeaderProvider(AppVersionNameBuilder appVersionNameBuilder) {
+      return new HeaderProvider(appVersionNameBuilder);
    }
 }

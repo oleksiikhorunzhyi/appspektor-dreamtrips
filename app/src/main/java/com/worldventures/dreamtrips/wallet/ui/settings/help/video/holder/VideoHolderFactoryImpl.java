@@ -1,33 +1,27 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder;
 
-import android.databinding.DataBindingUtil;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.databinding.AdapterItemVideoBinding;
-import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.delegate.WalletVideoCallback;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
+
+import static android.databinding.DataBindingUtil.bind;
+import static android.view.LayoutInflater.from;
 
 public class VideoHolderFactoryImpl implements VideoTypeFactory {
 
    private final WalletVideoCallback videoActionsCallback;
-   private final CachedModelHelper cachedModelHelper;
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final WalletVideoHolderDelegate videoHolderDelegate;
 
-   public VideoHolderFactoryImpl(CachedModelHelper cachedModelHelper, WalletVideoCallback videoActionsCallback,
-         SessionHolder<UserSession> appSessionHolder) {
-      this.cachedModelHelper = cachedModelHelper;
+   public VideoHolderFactoryImpl(WalletVideoCallback videoActionsCallback, WalletVideoHolderDelegate videoHolderDelegate) {
+      this.videoHolderDelegate = videoHolderDelegate;
       this.videoActionsCallback = videoActionsCallback;
-      this.appSessionHolder = appSessionHolder;
    }
 
    @Override
-   public int type(WalletVideo video) {
+   public int type(WalletVideoModel video) {
       return R.layout.adapter_item_video;
    }
 
@@ -35,10 +29,8 @@ public class VideoHolderFactoryImpl implements VideoTypeFactory {
    public BaseHolder holder(ViewGroup parent, int viewType) {
       switch (viewType) {
          case R.layout.adapter_item_video:
-            AdapterItemVideoBinding videoBinding = DataBindingUtil
-                  .bind(LayoutInflater
-                        .from(parent.getContext()).inflate(viewType, parent, false));
-            return new WalletVideoHolder(videoBinding, cachedModelHelper, videoActionsCallback, appSessionHolder);
+            return new WalletVideoHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)),
+                  videoActionsCallback, videoHolderDelegate);
          default:
             throw new IllegalArgumentException();
       }

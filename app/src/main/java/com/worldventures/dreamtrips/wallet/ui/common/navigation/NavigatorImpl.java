@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -432,8 +432,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goHelpDocumentDetails(WalletDocument document) {
-      withoutLast(HelpDocumentDetailScreenImpl.create(document));
+   public void goHelpDocumentDetails(WalletDocumentModel document) {
+      go(HelpDocumentDetailScreenImpl.create(document));
    }
 
    @Override

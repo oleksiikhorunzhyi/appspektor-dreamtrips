@@ -3,9 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletVideo;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 
 import java.util.List;
 
@@ -22,11 +21,9 @@ public interface WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVide
 
    void cancelCachingVideo(CachedModel entity);
 
-   void onPlayVideo(WalletVideo entity);
+   void onPlayVideo(WalletVideoModel entity);
 
    void fetchSmartCardVideosForDefaultLocale(List<VideoLocale> videoLocales);
-
-   HttpErrorHandlingUtil httpErrorHandlingUtil();
 
    void fetchVideoLocales();
 

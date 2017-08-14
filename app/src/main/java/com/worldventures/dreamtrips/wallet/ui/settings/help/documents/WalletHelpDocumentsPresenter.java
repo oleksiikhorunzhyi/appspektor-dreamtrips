@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.documents;
 
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 
 public interface WalletHelpDocumentsPresenter extends WalletPresenter<WalletHelpDocumentsScreen> {
 
@@ -10,9 +9,7 @@ public interface WalletHelpDocumentsPresenter extends WalletPresenter<WalletHelp
 
    void goBack();
 
-   HttpErrorHandlingUtil httpErrorHandlingUtil();
-
    void refreshDocuments();
 
-   void openDocument(WalletDocument document);
+   void openDocument(WalletDocumentModel document);
 }

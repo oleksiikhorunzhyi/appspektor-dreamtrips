@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder;
 
-import android.databinding.DataBindingUtil;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.databinding.AdapterItemDocumentBinding;
-import com.worldventures.dreamtrips.databinding.AdapterItemLoadMoreFeedBinding;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletDocument;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.model.WalletLoadMore;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletLoadMoreModel;
+
+import static android.databinding.DataBindingUtil.bind;
+import static android.view.LayoutInflater.from;
 
 public class HelpDocsHolderFactoryImpl implements HelpDocsTypeFactory {
 
@@ -23,27 +22,21 @@ public class HelpDocsHolderFactoryImpl implements HelpDocsTypeFactory {
    public BaseHolder holder(ViewGroup parent, int viewType) {
       switch (viewType) {
          case R.layout.adapter_item_document:
-            AdapterItemDocumentBinding documentBinding = DataBindingUtil
-                  .bind(LayoutInflater
-                        .from(parent.getContext()).inflate(viewType, parent, false));
-            return new DocumentHolder(documentBinding, documentCallback);
+            return new DocumentHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)), documentCallback);
          case R.layout.adapter_item_load_more_feed:
-            AdapterItemLoadMoreFeedBinding loadMoreFeedBinding = DataBindingUtil
-                  .bind(LayoutInflater
-                        .from(parent.getContext()).inflate(viewType, parent, false));
-            return new LoadMoreHolder(loadMoreFeedBinding);
+            return new LoadMoreHolder( bind(from(parent.getContext()).inflate(viewType, parent, false)));
          default:
             throw new IllegalArgumentException();
       }
    }
 
    @Override
-   public int type(WalletDocument document) {
+   public int type(WalletDocumentModel document) {
       return R.layout.adapter_item_document;
    }
 
    @Override
-   public int type(WalletLoadMore walletLoadMore) {
+   public int type(WalletLoadMoreModel walletLoadMore) {
       return R.layout.adapter_item_load_more_feed;
    }
 }

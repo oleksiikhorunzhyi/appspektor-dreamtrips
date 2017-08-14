@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.common.model;
+package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder.HelpDocsTypeFactory;
 
-public class WalletLoadMore extends BaseViewModel<HelpDocsTypeFactory> implements Parcelable {
+public class WalletLoadMoreModel extends BaseViewModel<HelpDocsTypeFactory> implements Parcelable {
 
    private boolean loading;
    private boolean visible;
@@ -36,19 +36,19 @@ public class WalletLoadMore extends BaseViewModel<HelpDocsTypeFactory> implement
       dest.writeByte(this.visible ? (byte) 1 : (byte) 0);
    }
 
-   public WalletLoadMore() {}
+   public WalletLoadMoreModel() {}
 
-   protected WalletLoadMore(Parcel in) {
+   protected WalletLoadMoreModel(Parcel in) {
       this.loading = in.readByte() != 0;
       this.visible = in.readByte() != 0;
    }
 
-   public static final Creator<WalletLoadMore> CREATOR = new Creator<WalletLoadMore>() {
+   public static final Creator<WalletLoadMoreModel> CREATOR = new Creator<WalletLoadMoreModel>() {
       @Override
-      public WalletLoadMore createFromParcel(Parcel source) {return new WalletLoadMore(source);}
+      public WalletLoadMoreModel createFromParcel(Parcel source) {return new WalletLoadMoreModel(source);}
 
       @Override
-      public WalletLoadMore[] newArray(int size) {return new WalletLoadMore[size];}
+      public WalletLoadMoreModel[] newArray(int size) {return new WalletLoadMoreModel[size];}
    };
 
    @Override

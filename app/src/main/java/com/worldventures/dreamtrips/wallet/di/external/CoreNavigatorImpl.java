@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.common.navigation;
+package com.worldventures.dreamtrips.wallet.di.external;
 
 
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -8,14 +8,15 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
 
 import java.util.List;
 
-public class CoreNavigatorImpl implements CoreNavigator {
+class CoreNavigatorImpl implements CoreNavigator {
 
    private final Router router;
 
-   public CoreNavigatorImpl(Router router) {
+   CoreNavigatorImpl(Router router) {
       this.router = router;
    }
 

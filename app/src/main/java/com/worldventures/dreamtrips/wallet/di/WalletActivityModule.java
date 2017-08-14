@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
@@ -35,7 +36,7 @@ import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocation
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigatorImpl;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
@@ -139,6 +140,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustom
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsPresenterImpl;
@@ -155,11 +157,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.im
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
@@ -229,12 +231,12 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
-import io.techery.mappery.MapperyContext;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @Module(
       includes = {
+            WalletExternalActivityModule.class,
             MediaPickerModule.class
       },
       injects = {
@@ -325,8 +327,8 @@ public class WalletActivityModule {
 
    @Singleton
    @Provides
-   Navigator provideConductorNavigator(Lazy<Router> router, com.worldventures.dreamtrips.core.navigation.router.Router coreRouter) {
-      return new NavigatorImpl(router, new CoreNavigatorImpl(coreRouter));
+   Navigator provideConductorNavigator(Lazy<Router> router, CoreNavigator coreNavigator) {
+      return new NavigatorImpl(router, coreNavigator);
    }
 
    @Provides
@@ -732,19 +734,16 @@ public class WalletActivityModule {
    @Provides
    WalletHelpVideoPresenter provideWalletHelpVideoPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
-         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate,
-         HttpErrorHandlingUtil httpErrorHandlingUtil, MapperyContext mapperyContext) {
+         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, Context context) {
       return new WalletHelpVideoPresenterImpl(navigator, smartCardInteractor, networkService, memberVideosInteractor,
-            cachedEntityInteractor, cachedEntityDelegate, httpErrorHandlingUtil, mapperyContext);
+            cachedEntityInteractor, cachedEntityDelegate, new WalletHelpVideoDelegate(context));
    }
 
    @Provides
    WalletHelpDocumentsPresenter provideWalletHelpDocumentsPresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         DocumentsInteractor documentsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil,
-         MapperyContext mapperyContext) {
-      return new WalletHelpDocumentsPresenterImpl(navigator, smartCardInteractor, networkService,
-            documentsInteractor, httpErrorHandlingUtil, mapperyContext);
+         DocumentsInteractor documentsInteractor) {
+      return new WalletHelpDocumentsPresenterImpl(navigator, smartCardInteractor, networkService, documentsInteractor);
    }
 
    @Provides

@@ -22,7 +22,9 @@ import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
@@ -175,6 +177,9 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
+                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> getPresenter().back()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), cmd -> getPresenter().onUserDataConfirmed()))
                   .build()
       );
    }

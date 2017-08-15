@@ -29,7 +29,7 @@
    <!--edit profile-->
    <string name="wallet_wizard__welcom_screen_title">Personalize Smart Card</string>
    <string name="wallet_edit_profile_subtitle">Set the display photo and name you would like on your card.</string>
-   <string name="wallet_edit_profile_first_name_format_detail">First name should be from 2 to 21 letters</string>
+   <string name="wallet_edit_profile_first_name_format_detail">First name may contain letters and hyphens only</string>
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>

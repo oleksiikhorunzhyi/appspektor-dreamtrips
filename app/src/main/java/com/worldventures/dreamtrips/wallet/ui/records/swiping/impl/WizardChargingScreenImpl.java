@@ -42,6 +42,8 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
 
    private final ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
 
+   private MaterialDialog dialog;
+
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
@@ -110,7 +112,9 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
          });
       }
 
-      builder.build().show();
+      if (dialog != null) dialog.dismiss();
+      dialog = builder.build();
+      dialog.show();
    }
 
    @Override
@@ -140,5 +144,11 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
                         cmd -> trySwipeAgain(), cmd -> getPresenter().goBack()))
                   .build()
       );
+   }
+
+   @Override
+   protected void onDetach(@NonNull View view) {
+      if (dialog != null) dialog.dismiss();
+      super.onDetach(view);
    }
 }

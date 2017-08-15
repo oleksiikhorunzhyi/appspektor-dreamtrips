@@ -107,13 +107,9 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 //      getView().showFrameLayoutReviews(true);
       int reviewSize = action.getResult().reviews().size();
       Log.e("XYZFlow", "onMerchantsLoaded > " + reviewSize);
-      if (reviewSize > 0) {
          getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
                      .ratingAverage()), Integer.parseInt(action.getResult().total()),
                ReviewObject.getReviewList(action.getResult().reviews()));
-      } else {
-         getView().removeLoadingActions();
-      }
    }
 
    private void onMerchantsLoading(ReviewMerchantsAction action, Integer progress) {

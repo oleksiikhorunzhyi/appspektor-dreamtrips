@@ -84,6 +84,11 @@ public class OfferWithReviewView extends LinearLayout {
    private void loadPage(Bundle bundle) {
       List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
 
+      if(reviewObjects.isEmpty()) {
+         removeLoadingActions();
+         return;
+      }
+
       //Mock
 //      int index = bundle.getInt("nextIndex", 0);
 //      List<ReviewObject> reviewObjects = getMockObjects(index, 10);
@@ -95,17 +100,10 @@ public class OfferWithReviewView extends LinearLayout {
 
       Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
 
-      ////
-      List<ReviewObject> currentItems = mAdapter.getAllItems();
-      if(!currentItems.isEmpty()){
-         ReviewObject lastItem = currentItems.get(currentItems.size()-1);
-         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size()-1);
-
-         Log.e("XYZFlow", lastItem.getReviewId()+" vs "+ lastReceivedItem.getReviewId());
-
-         if(lastItem.getReviewId()==lastReceivedItem.getReviewId()) return;
+      if(!validReceivedData(reviewObjects)) {
+         Log.e("XYZFlow", "Same data");
+         return;
       }
-      ////
 
       Log.e("XYZFlow", "addBundle > " + reviewObjects.size());
 
@@ -116,6 +114,7 @@ public class OfferWithReviewView extends LinearLayout {
       isLoading = false;
 
       Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
+      Log.e("XYZFlow", "**************************************** ");
    }
 
    public void initViews() {
@@ -240,6 +239,20 @@ public class OfferWithReviewView extends LinearLayout {
    public void removeLoadingActions() {
       if (isLoading) mAdapter.removeLoadingFooter();
       recyclerView.removeOnScrollListener(scrollingListener);
+   }
+
+   private boolean validReceivedData(List<ReviewObject> reviewObjects){
+      List<ReviewObject> currentItems = mAdapter.getAllItems();
+      if(!currentItems.isEmpty()){
+         ReviewObject lastItem = currentItems.get(currentItems.size()-1);
+         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size()-1);
+
+         Log.e("XYZFlow", lastItem.getReviewId()+" vs "+ lastReceivedItem.getReviewId());
+
+         if(lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
+      }
+
+      return true;
    }
 
    //Mock

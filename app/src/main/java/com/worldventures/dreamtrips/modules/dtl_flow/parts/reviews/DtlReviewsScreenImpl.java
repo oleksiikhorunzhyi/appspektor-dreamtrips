@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -54,6 +55,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    protected void onPostAttachToWindowView() {
+      Log.i("XYZScreen",  "onAttachedToWindows Screen");
       inflateToolbarMenu(toolbar);
       toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
       toolbar.setNavigationIcon(R.drawable.back_icon);
@@ -63,6 +65,8 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       showMessage();
 
       mContainerDetail.setEventListener(listener);
+      mContainerDetail.loadFirstPage();
+
    }
 
    private void showMessage() {
@@ -74,13 +78,14 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
+      Log.e("XYZFlow", "addCommentsAndReviews> "+ listReviews.size());
       Bundle bundle = new Bundle();
       bundle.putParcelableArrayList(OfferWithReviewView.ARRAY, listReviews);
       bundle.putFloat(OfferWithReviewView.RATING_MERCHANT, ratingMerchant);
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, getPath().getMerchant().displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, true);
-      mContainerDetail.addBundle(bundle);
+      mContainerDetail.loadData(bundle);
    }
 
    private void hideRefreshMerchantsError() {
@@ -106,7 +111,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    @Override
    public void onRefreshError(String error) {
       //this.refreshLayout.setVisibility(View.GONE);
-      this.showEmpty(false);
    }
 
    @Override
@@ -131,13 +135,13 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    }
 
    @Override
-   public String getMerchantId() {
-      return getPath().getMerchant().id();
+   public void removeLoadingActions() {
+      mContainerDetail.removeLoadingActions();
    }
 
    @Override
-   public void removeScrollListener() {
-      mContainerDetail.removeScrollListener();
+   public String getMerchantId() {
+      return getPath().getMerchant().id();
    }
 
    @Override

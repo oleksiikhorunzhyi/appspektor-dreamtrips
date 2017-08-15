@@ -125,6 +125,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
       showMessage();
+
+      mContainerComments.loadFirstPage();
    }
 
    @Override
@@ -134,7 +136,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
-      Log.e("LOGXYZ", "addCommentsAndReviews > "+ listReviews.size());
+      Log.e("XYZ", "addCommentsAndReviews 22222> "+ listReviews.size());
 
       Bundle bundle = new Bundle();
       bundle.putParcelableArrayList(OfferWithReviewView.ARRAY, listReviews);
@@ -142,7 +144,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, merchant.displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, false);
-      mContainerComments.addBundle(bundle);
+      mContainerComments.initViews();
+      mContainerComments.loadData(bundle);
+      mContainerComments.removeLoadingActions();
    }
 
    @Override

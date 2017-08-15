@@ -13,10 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
    // View Types
    private static final int ITEM = 0;
    private static final int LOADING = 1;
-   private boolean isLoadingAdded = false;
 
    @Override
    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -57,11 +58,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-      ReviewObject result = mItems.get(position); // Review
       switch (getItemViewType(position)) {
          case ITEM:
             final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
-               recyclerViewHolder.bind(position);
+            recyclerViewHolder.bind(position);
             break;
       }
    }
@@ -73,7 +73,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
    @Override
    public int getItemViewType(int position) {
-      return (position == mItems.size() - 1 && isLoadingAdded) ? LOADING : ITEM;    }
+      String reviewId = getItem(position).getReviewId();
+      return reviewId == null || reviewId.length() == 0 ? LOADING : ITEM;
+   }
 
      /*
         Helpers - Pagination
@@ -86,13 +88,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
    }
 
    public void addItems(List<ReviewObject> reviewResults) {
-      //reviewResults.forEach(this::add);
       for (ReviewObject review : reviewResults) {
          add(review);
       }
    }
 
-   public List<ReviewObject> getAllItems(){
+   public List<ReviewObject> getAllItems() {
       return mItems;
    }
 
@@ -105,7 +106,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
    }
 
    public void clear() {
-      isLoadingAdded = false;
       while (getItemCount() > 0) {
          remove(getItem(0));
       }
@@ -116,14 +116,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
    }
 
    public void addLoadingFooter() {
-      isLoadingAdded = true;
       add(new ReviewObject());
    }
 
    public void removeLoadingFooter() {
-      isLoadingAdded = false;
+      if (mItems == null || mItems.isEmpty()) return;
 
       int position = mItems.size() - 1;
+
+      if (getItemViewType(position) == ITEM) return;
+
       ReviewObject reviewObject = getItem(position);
 
       if (reviewObject != null) {
@@ -180,7 +182,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
          setVerifiedReview(mItems.get(position).isVerifiedReview());
 
-         if(mItems.get(position).getUrlReviewImages().size() > 0){
+         if (mItems.get(position).getUrlReviewImages().size() > 0) {
             mPhotosNumber.setText(String.valueOf(mItems.get(position).getUrlReviewImages().size()));
          } else {
             mPhotosIndicatorLayout.setVisibility(View.INVISIBLE);
@@ -188,7 +190,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
       }
 
       private void setVerifiedReview(boolean isVerified) {
-         if (isVerified){
+         if (isVerified) {
             changeVisibility(mTvVerifiedReview, View.VISIBLE);
             changeVisibility(mIvVerifiedReview, View.VISIBLE);
          } else {
@@ -197,12 +199,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
          }
       }
 
-      private void changeVisibility(@NonNull View view, int type){
+      private void changeVisibility(@NonNull View view, int type) {
          view.setVisibility(type);
       }
    }
 
-   protected class LoadingVH extends RecyclerView.ViewHolder{
+   protected class LoadingVH extends RecyclerView.ViewHolder {
       public LoadingVH(View itemView) {
          super(itemView);
       }

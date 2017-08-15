@@ -48,7 +48,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      connectReviewMerchants(0);
+      Log.i("XYZPresenter",  "onAttachedToWindows Presenter");
    }
 
    @Override
@@ -83,7 +83,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    }
 
    private void connectReviewMerchants(int indexOf) {
-      Log.e("LOGXYZ", "connectReviewMerchants > " + indexOf);
+      Log.e("XYZFlow", "connectReviewMerchants > " + indexOf);
 
       ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
       reviewActionPipe
@@ -106,13 +106,13 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       getView().onRefreshSuccess();
 //      getView().showFrameLayoutReviews(true);
       int reviewSize = action.getResult().reviews().size();
-      Log.e("LOGXYZ", "onMerchantsLoaded > " + reviewSize);
+      Log.e("XYZFlow", "onMerchantsLoaded > " + reviewSize);
       if (reviewSize > 0) {
          getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
                      .ratingAverage()), Integer.parseInt(action.getResult().total()),
                ReviewObject.getReviewList(action.getResult().reviews()));
       } else {
-         getView().removeScrollListener();
+         getView().removeLoadingActions();
       }
    }
 

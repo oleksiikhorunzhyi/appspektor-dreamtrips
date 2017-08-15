@@ -47,10 +47,9 @@ public class OfferWithReviewView extends LinearLayout {
    private String mMerchantName;
    private boolean mIsFromListReview = false;
 
-   private boolean isFirstLoad = true;
-
    private boolean isLoading = false;
 
+   private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
    private IMyEventListener mEventListener;
 
@@ -69,71 +68,69 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       ratingBar2 = (RatingBar) v.findViewById(R.id.ratingBar2);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
-
-      initRecycler();
-      initAdapter();
-      initListener();
-//      generateMockObjects();
-//      addBundle(new Bundle());
+      generateMockObjects();
    }
 
-   public void addBundle(Bundle bundle) {
-      if (isFirstLoad)
-         isFirstLoad = false;
-      else
-         mAdapter.removeLoadingFooter();
+   public void loadData(Bundle bundle) {
+      mAdapter.removeLoadingFooter();
+      loadPage(bundle);
+   }
 
+   public void loadFirstPage() {
+      initViews();
+      getMoreReviewItems();
+   }
+
+   private void loadPage(Bundle bundle) {
+      List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
+
+      //Mock
 //      int index = bundle.getInt("nextIndex", 0);
-//      List<ReviewObject> mockArray = getMockObjects(index, 10);
-//      if (mockArray.size() == 0) {
-//         removeScrollListener();
+//      List<ReviewObject> reviewObjects = getMockObjects(index, 10);
+//      if (reviewObjects.size() == 0) {
+//         removeLoadingActions();
 //         return;
 //      }
-      List<ReviewObject> mockArray = bundle.getParcelableArrayList(ARRAY);
+      //Mock
+
+      Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
 
       ////
-//      List<ReviewObject> currentItems = mAdapter.getAllItems();
-//      if(!currentItems.isEmpty()){
-//         ReviewObject lastItem = currentItems.get(currentItems.size()-1);
-//         ReviewObject lastReceivedItem = mockArray.get(mockArray.size()-1);
-//
-//         if(lastItem.getReviewId()==lastReceivedItem.getReviewId()) return;
-//      }
+      List<ReviewObject> currentItems = mAdapter.getAllItems();
+      if(!currentItems.isEmpty()){
+         ReviewObject lastItem = currentItems.get(currentItems.size()-1);
+         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size()-1);
+
+         Log.e("XYZFlow", lastItem.getReviewId()+" vs "+ lastReceivedItem.getReviewId());
+
+         if(lastItem.getReviewId()==lastReceivedItem.getReviewId()) return;
+      }
       ////
 
-      Log.e("LOGXYZ", "addBundle > "+mockArray.size());
+      Log.e("XYZFlow", "addBundle > " + reviewObjects.size());
 
-      mAdapter.addItems(mockArray);
+      mAdapter.addItems(reviewObjects);
 
-      mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
-      mCountReview = bundle.getInt(COUNT_REVIEW, 0);
-      mMerchantName = bundle.getString(MERCHANT_NAME, "");
-      mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
+      setUpInfo(bundle);
 
-      setUpInfo();
       isLoading = false;
+
+      Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
    }
 
-   private int mockIndex;
-   private List<ReviewObject> mockItems = new ArrayList<>();
-
-   private void generateMockObjects() {
-      for (int i = 0; i < 28; i++) {
-         List<ReviewImages> urlReviewImages = new ArrayList<>();
-         mockItems.add(new ReviewObject(String.valueOf(i), String.valueOf(i), String.valueOf(i), 3.2f, String.valueOf(i), String.valueOf(i), true, urlReviewImages));
-      }
+   public void initViews() {
+      resetData();
+      initAdapter();
+      initListener();
+      initRecycler();
    }
 
-   private List<ReviewObject> getMockObjects(int indexOf, int limit) {
-      List<ReviewObject> items = new ArrayList<>();
-      if(indexOf >= mockItems.size()) return items;
-
-      int maxLimit = indexOf + limit <= mockItems.size() ? indexOf + limit : mockItems.size();
-
-      for (int i = indexOf; i < maxLimit; i++) {
-         items.add(mockItems.get(i));
-      }
-      return items;
+   public void resetData() {
+      isLoading = false;
+      mAdapter.getAllItems().clear();
+      mAdapter.notifyDataSetChanged();
+      recyclerView.removeOnItemTouchListener(onItemTouchListener);
+      recyclerView.removeOnScrollListener(scrollingListener);
    }
 
    public void showNoComments() {
@@ -142,7 +139,7 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void initListener() {
-      RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
+      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
             new RecyclerClickListener() {
                @Override
                public void onClick(View view, int position) {
@@ -162,7 +159,12 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.addOnItemTouchListener(onItemTouchListener);
    }
 
-   private void setUpInfo() {
+   private void setUpInfo(Bundle bundle) {
+      mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
+      mCountReview = bundle.getInt(COUNT_REVIEW, 0);
+      mMerchantName = bundle.getString(MERCHANT_NAME, "");
+      mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
+
       setUpRating();
       setUpCommentReview();
    }
@@ -193,7 +195,6 @@ public class OfferWithReviewView extends LinearLayout {
       scrollingListener = new PaginationScrollListener(linearLayoutManager) {
          @Override
          protected void loadMoreItems() {
-            if (isLoading()) return;
             mAdapter.addLoadingFooter();
             isLoading = true;
             getMoreReviewItems();
@@ -210,19 +211,19 @@ public class OfferWithReviewView extends LinearLayout {
 
    private void getMoreReviewItems() {
       int lastIndex = getNextItemValue();
-      Log.e("LOGXYZ", "Sent index > "+lastIndex);
+      Log.e("XYZ", "Sent index > " + lastIndex);
       recyclerView.postDelayed(new Runnable() {
          @Override
          public void run() {
 //            Bundle bundle = new Bundle();
 //            bundle.putInt("nextIndex", lastIndex);
-//            addBundle(bundle);
-            mEventListener.onEventOccurred(lastIndex);
+//            loadData(bundle);
+            if(mEventListener!= null) mEventListener.onEventOccurred(lastIndex);
          }
       }, 1000);
    }
 
-   private int getNextItemValue() { return mAdapter.getItemCount() - 1;}
+   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
 
    private void initAdapter() {
       recyclerView.setAdapter(mAdapter);
@@ -236,9 +237,33 @@ public class OfferWithReviewView extends LinearLayout {
       this.mEventListener = mEventListener;
    }
 
-   public void removeScrollListener() {
-      mAdapter.removeLoadingFooter();
+   public void removeLoadingActions() {
+      if (isLoading) mAdapter.removeLoadingFooter();
       recyclerView.removeOnScrollListener(scrollingListener);
    }
+
+   //Mock
+   private List<ReviewObject> mockItems = new ArrayList<>();
+
+   private void generateMockObjects() {
+      for (int i = 0; i < 28; i++) {
+         List<ReviewImages> urlReviewImages = new ArrayList<>();
+         mockItems.add(new ReviewObject(String.valueOf(i), String.valueOf(i), String.valueOf(i), 3.2f, String.valueOf(i), String
+               .valueOf(i), true, urlReviewImages));
+      }
+   }
+
+   private List<ReviewObject> getMockObjects(int indexOf, int limit) {
+      List<ReviewObject> items = new ArrayList<>();
+      if (indexOf >= mockItems.size()) return items;
+
+      int maxLimit = indexOf + limit <= mockItems.size() ? indexOf + limit : mockItems.size();
+
+      for (int i = indexOf; i < maxLimit; i++) {
+         items.add(mockItems.get(i));
+      }
+      return items;
+   }
+   //Mock
 
 }

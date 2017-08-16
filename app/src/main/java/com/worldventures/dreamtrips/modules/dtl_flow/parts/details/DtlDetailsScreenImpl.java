@@ -136,8 +136,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
-      Log.e("XYZ", "addCommentsAndReviews 22222> "+ listReviews.size());
-
       Bundle bundle = new Bundle();
       bundle.putParcelableArrayList(OfferWithReviewView.ARRAY, listReviews);
       bundle.putFloat(OfferWithReviewView.RATING_MERCHANT, ratingMerchant);

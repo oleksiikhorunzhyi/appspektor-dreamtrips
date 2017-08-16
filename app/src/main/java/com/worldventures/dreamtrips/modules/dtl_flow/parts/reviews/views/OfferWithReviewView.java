@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,7 +13,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewImages;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
@@ -24,7 +22,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.Pagi
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import flow.Flow;
@@ -72,8 +69,6 @@ public class OfferWithReviewView extends LinearLayout {
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
 
       initRecycler();
-
-      generateMockObjects();
    }
 
    public void loadData(Bundle bundle) {
@@ -95,24 +90,9 @@ public class OfferWithReviewView extends LinearLayout {
 
       List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
 
-      //Mock
-//      int index = bundle.getInt("nextIndex", 0);
-//      List<ReviewObject> reviewObjects = getMockObjects(index, 10);
-      //Mock
-
-      if (reviewObjects.isEmpty()) {
-         removeLoadingActions();
-         return;
-      }
-
-      Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
-
       if (!validReceivedData(reviewObjects)) {
-         Log.e("XYZFlow", "Same data");
          return;
       }
-
-      Log.e("XYZFlow", "addBundle > " + reviewObjects.size());
 
       mAdapter.addItems(reviewObjects);
 
@@ -120,8 +100,6 @@ public class OfferWithReviewView extends LinearLayout {
 
       isLoading = false;
 
-      Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
-      Log.e("XYZFlow", "**************************************** ");
    }
 
    public void resetViewData() {
@@ -162,15 +140,10 @@ public class OfferWithReviewView extends LinearLayout {
 
    private void getMoreReviewItems() {
       int lastIndex = getNextItemValue();
-      Log.e("XYZ", "Sent index > " + lastIndex);
       recyclerView.postDelayed(new Runnable() {
          @Override
          public void run() {
-//            Bundle bundle = new Bundle();
-//            bundle.putInt("nextIndex", lastIndex);
-//            loadData(bundle);
-
-            if(mEventListener!= null) mEventListener.onEventOccurred(lastIndex);
+            if (mEventListener != null) mEventListener.onEventOccurred(lastIndex);
          }
       }, 1000);
    }
@@ -194,12 +167,9 @@ public class OfferWithReviewView extends LinearLayout {
 
    private boolean validReceivedData(List<ReviewObject> reviewObjects) {
       List<ReviewObject> currentItems = mAdapter.getAllItems();
-      if (!currentItems.isEmpty()) {
+      if (!currentItems.isEmpty() && !reviewObjects.isEmpty()) {
          ReviewObject lastItem = currentItems.get(currentItems.size() - 1);
          ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size() - 1);
-
-         Log.e("XYZFlow", lastItem.getReviewId() + " vs " + lastReceivedItem.getReviewId());
-
          if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
       }
 
@@ -249,29 +219,5 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.setAdapter(mAdapter);
 
    }
-
-   //Mock
-   private List<ReviewObject> mockItems = new ArrayList<>();
-
-   private void generateMockObjects() {
-      for (int i = 0; i < 28; i++) {
-         List<ReviewImages> urlReviewImages = new ArrayList<>();
-         mockItems.add(new ReviewObject(String.valueOf(i), String.valueOf(i), String.valueOf(i), 3.2f, String.valueOf(i), String
-               .valueOf(i), true, urlReviewImages));
-      }
-   }
-
-   private List<ReviewObject> getMockObjects(int indexOf, int limit) {
-      List<ReviewObject> items = new ArrayList<>();
-      if (indexOf >= mockItems.size()) return items;
-
-      int maxLimit = indexOf + limit <= mockItems.size() ? indexOf + limit : mockItems.size();
-
-      for (int i = indexOf; i < maxLimit; i++) {
-         items.add(mockItems.get(i));
-      }
-      return items;
-   }
-   //Mock
 
 }

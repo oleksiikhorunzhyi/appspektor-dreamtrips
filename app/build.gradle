@@ -249,11 +249,6 @@ dependencies {
    })
    deps.applyAll(owner, deps.test)
 
-   compile project(':integration-check')
-   compile (project(':library')) {
-      exclude group: 'joda-time'
-   }
-
    devCompile deps.provide(deps.util.leakcanary)
    devpremarshmallowCompile deps.provide(deps.util.leakcanary)
    externalCompile deps.provide(deps.util.leakcanaryNoOp)
@@ -262,10 +257,4 @@ dependencies {
    releaseCompile(deps.provide(deps.util.jodaTimeAndroid))
 
    releaseAnnotationProcessor deps.provide(deps.di.daggerProguard)
-
-   compile project(':integration-check')
-   compile (project(':library')) {
-      exclude group: 'joda-time', module: ':library'
-   }
-
 }

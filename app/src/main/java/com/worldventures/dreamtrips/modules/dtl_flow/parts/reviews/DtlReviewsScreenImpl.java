@@ -4,10 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -88,7 +86,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
-      Log.e("XYZFlow", "addCommentsAndReviews> "+ listReviews.size());
       Bundle bundle = new Bundle();
       bundle.putParcelableArrayList(OfferWithReviewView.ARRAY, listReviews);
       bundle.putFloat(OfferWithReviewView.RATING_MERCHANT, ratingMerchant);
@@ -111,15 +108,12 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    public void onRefreshProgress() {
-      //this.refreshLayout.setVisibility(View.VISIBLE);
-      //this.mContainerDetail.setVisibility(View.GONE);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
-      //this.refreshLayout.setVisibility(View.GONE);
    }
 
    @Override

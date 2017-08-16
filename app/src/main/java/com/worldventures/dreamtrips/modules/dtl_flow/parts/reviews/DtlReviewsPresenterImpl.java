@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
@@ -82,8 +81,6 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    }
 
    private void connectReviewMerchants(int indexOf) {
-      Log.e("XYZFlow", "connectReviewMerchants > " + indexOf);
-
       ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
       reviewActionPipe
             .observeWithReplay()
@@ -103,16 +100,12 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
-//      getView().showFrameLayoutReviews(true);
-      int reviewSize = action.getResult().reviews().size();
-      Log.e("XYZFlow", "onMerchantsLoaded > " + reviewSize);
          getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
                      .ratingAverage()), Integer.parseInt(action.getResult().total()),
                ReviewObject.getReviewList(action.getResult().reviews()));
    }
 
    private void onMerchantsLoading(ReviewMerchantsAction action, Integer progress) {
-      //getView().showFrameLayoutReviews(false);
       getView().onRefreshProgress();
    }
 

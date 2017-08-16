@@ -35,5 +35,9 @@ public abstract class BaseMediaCommand extends CommandWithError<List<BaseMediaEn
       return args;
    }
 
+   public List<BaseMediaEntity> getItems() {
+      return getResult();
+   }
+
    public abstract boolean lastPageReached();
 }

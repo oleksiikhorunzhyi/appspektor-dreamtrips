@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.messenger.util.StringUtils;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -16,9 +15,7 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.View> {
-   private static final String TRANSACTION_FAILED = "THRST_TRANSACTION_FAILED";
-
-   private static final String SUCCESS_STATUS = "200";
+   private static final String TRANSACTION_SUCCESSFUL = "THRST_TRANSACTION_SUCCESSFUL|";
 
    @Inject MerchantsInteractor merchantInteractor;
 
@@ -34,11 +31,7 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
    }
 
    public void onThrstCallback(JavaScriptInterface.ThrstStatusResponse thrstStatusResponse) {
-      if (thrstStatusResponse.status.equals(SUCCESS_STATUS)) {
-         checkTransaction();
-      } else {
-         view.openPaymentFailedScreen(thrstStatusResponse.body, "", "");
-      }
+      checkTransaction();
    }
 
    private void checkTransaction() {
@@ -59,11 +52,11 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
    }
 
    private void onMerchantsLoaded(TransactionPilotAction action) {
-      boolean isFail = StringUtils.containsIgnoreCase(action.getResult().transactionStatus(), TRANSACTION_FAILED);
-      if (isFail) {
-         view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
-      } else {
+      String transactionResponse = action.getResult().transactionStatus();
+      if (transactionResponse.equals(TRANSACTION_SUCCESSFUL)) {
          view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
+      } else {
+         view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
       }
    }
 

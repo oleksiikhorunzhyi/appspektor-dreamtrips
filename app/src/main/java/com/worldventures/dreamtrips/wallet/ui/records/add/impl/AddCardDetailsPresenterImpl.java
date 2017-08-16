@@ -185,7 +185,6 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private Observable<Boolean> observeCardNickName() {
       return getView().getCardNicknameObservable()
-            .filter(cardName -> !TextUtils.isEmpty(cardName))
             .map(this::validateNickName);
    }
 

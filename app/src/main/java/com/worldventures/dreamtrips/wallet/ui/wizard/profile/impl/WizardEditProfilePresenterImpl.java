@@ -102,7 +102,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
       // noinspection ConstantConditions
       final ProfileViewModel profile = view.getProfile();
       //noinspection ConstantConditions
-      WalletProfileUtils.checkUserNameValidation(profile.getFirstName(), profile.getMiddleName(), profile.getLastName(),
+      WalletProfileUtils.checkUserNameValidation(profile.getFirstName(), profile.getMiddleName(), profile.getLastNameWithSuffix(),
             () -> view.showConfirmationDialog(profile),
             e -> view.provideOperationView().showError(null, e));
    }

@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Pr
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletSuffixSelectingDialog;
 
 import java.io.File;
 
@@ -53,6 +54,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
    private ScreenWalletSettingsProfileBinding binding;
    private ProfileViewModel profileViewModel = new ProfileViewModel();
    private WalletPhotoProposalDialog photoActionDialog;
+   private WalletSuffixSelectingDialog suffixSelectingDialog;
    private Dialog scNonConnectionDialog;
 
    private PublishSubject<ProfileViewModel> observeProfileViewModel = PublishSubject.create();
@@ -91,6 +93,16 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
             .setPlaceholderImage(R.drawable.ic_wallet_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy()
             .setFailureImage(R.drawable.ic_wallet_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+
+      binding.tvSuffix.setOnClickListener(v -> showSuffixDialog());
+   }
+
+   private void showSuffixDialog() {
+      if (suffixSelectingDialog == null) {
+         suffixSelectingDialog = new WalletSuffixSelectingDialog(getContext());
+         suffixSelectingDialog.setOnSelectedAction(s -> binding.tvSuffix.setText(s));
+      }
+      suffixSelectingDialog.show();
    }
 
    protected void onNavigationClick() {

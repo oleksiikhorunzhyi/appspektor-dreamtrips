@@ -24,4 +24,34 @@ class WalletValidateHelperTest {
    }
 
    fun formatMessage(name: String) = "/$name/"
+
+   @Test
+   fun testProfileLastNameWithSuffixValidator() {
+      print("test testProfileLastNameWithSuffixValidator")
+      val lastNameTrue = listOf("Pichai", "Pichai II", "Pichai-II", "Pichai Jr.", "Pichai Sr", "Pichai-asd-asad", "Pichai - Sr.", "Pichai - Sr")
+
+      val lastNameFalse = listOf("#Pichai", "Pichai_II", "Pichai, II", "Pichai-II-", "-Pichai II", "-Pichai", "Pichai - Sr-.", "Pichai, II Sn Sr", "Pichai Inasjndkajsndkjnaskjd")
+
+      for (lastName in lastNameTrue) {
+         assertTrue(WalletValidateHelper.isValidLastName(lastName))
+      }
+      for (lastName in lastNameFalse) {
+         assertFalse(WalletValidateHelper.isValidLastName(lastName))
+      }
+   }
+
+   @Test
+   fun testProfileFirstNameWithSuffixValidator() {
+      print("test testProfileFirstNameWithSuffixValidator")
+      val firstNameTrue = listOf("Sundararajan", "Sundararajan-Ruo", "    Sundararajan-Ruo    ", "  Sundararajan-s-s-s")
+
+      val firstNameFalse = listOf("#Sundararajan", "Sundararajan---", "----Sundararajan----")
+
+      for (firstName in firstNameTrue) {
+         assertTrue(WalletValidateHelper.isValidFirstName(firstName))
+      }
+      for (firstName in firstNameFalse) {
+         assertFalse(WalletValidateHelper.isValidFirstName(firstName))
+      }
+   }
 }

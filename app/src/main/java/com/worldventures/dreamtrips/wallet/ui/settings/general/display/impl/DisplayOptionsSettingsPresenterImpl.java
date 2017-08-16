@@ -78,7 +78,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
             .compose(bindViewIoToMainComposer())
             .take(1)
             .doOnSubscribe(this::fetchDisplayType)
-            .subscribe(pair -> getView().setupViewPager(pair.first, pair.second), t -> Timber.e(t, ""));
+            .subscribe(pair -> getView().setupViewPager(user, pair.second), t -> Timber.e(t, ""));
 
       final OperationView<GetDisplayTypeCommand> getDisplayTypeOperationView =
             getView().<GetDisplayTypeCommand>provideGetDisplayTypeOperationView();

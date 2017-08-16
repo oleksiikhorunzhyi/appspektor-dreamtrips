@@ -41,6 +41,15 @@
    <string name="wallet_edit_profile_photo_cancel">Cancel</string>
    <string name="wallet_edit_profile_photo_edit">Edit</string>
    <string name="wallet_edit_profile_photo_empty">No photo</string>
+   <string name="wallet_edit_profile_enter_suffix_hint">Suffix</string>
+   <string-array name="wallet_edit_profile_suffixes">
+      <item>None</item>
+      <item>Jr.</item>
+      <item>Sr.</item>
+      <item>II</item>
+      <item>III</item>
+      <item>IV</item>
+   </string-array>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>

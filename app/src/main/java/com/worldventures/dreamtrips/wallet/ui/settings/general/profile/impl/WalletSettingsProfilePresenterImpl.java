@@ -123,7 +123,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
          final ChangedFields changedFields = ImmutableChangedFields.builder()
                .firstName(profile.getFirstName())
                .middleName(profile.getMiddleName())
-               .lastName(profile.getLastName())
+               .lastName(profile.getLastNameWithSuffix())
                .phone(delegate.createPhone(profile))
                .photo(delegate.createPhoto(profile))
                .build();
@@ -141,7 +141,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
             !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
                   profile.getFirstName().equals(user.firstName()) &&
                   profile.getMiddleName().equals(user.middleName()) &&
-                  profile.getLastName().equals(user.lastName()) &&
+                  profile.getLastNameWithSuffix().equals(user.lastName()) &&
                   equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
@@ -175,7 +175,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
          final ProfileViewModel profileViewModel = isDataChanged() ? getView().getUser() : null;
          try {
             if (profileViewModel != null) {
-               WalletValidateHelper.validateUserFullNameOrThrow(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName());
+               WalletValidateHelper.validateUserFullNameOrThrow(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastNameWithSuffix());
             }
             getNavigator().goSettingsDisplayOptions(DisplayOptionsSource.PROFILE, profileViewModel);
          } catch (FormatException e) {

@@ -125,7 +125,7 @@ public class WalletProfileDelegate {
       return ImmutableSmartCardUser.builder()
             .firstName(profile.getFirstName())
             .middleName(profile.getMiddleName())
-            .lastName(profile.getLastName())
+            .lastName(profile.getLastNameWithSuffix())
             .phoneNumber(createPhone(profile))
             .userPhoto(createPhoto(profile))
             .build();

@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErro
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletSuffixSelectingDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
@@ -55,6 +56,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    private ProfileViewModel viewModel = new ProfileViewModel();
    private WalletCropImageService cropImageService;
    private WalletPhotoProposalDialog photoActionDialog;
+   private WalletSuffixSelectingDialog suffixSelectingDialog;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -77,6 +79,16 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
       binding.photoPreview.getHierarchy()
             .setFailureImage(R.drawable.ic_wallet_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.setProfile(viewModel);
+
+      binding.tvSuffix.setOnClickListener(v -> showSuffixDialog());
+   }
+
+   private void showSuffixDialog() {
+      if (suffixSelectingDialog == null) {
+         suffixSelectingDialog = new WalletSuffixSelectingDialog(getContext());
+         suffixSelectingDialog.setOnSelectedAction(s -> binding.tvSuffix.setText(s));
+      }
+      suffixSelectingDialog.show();
    }
 
    @Override
@@ -214,7 +226,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    public void showConfirmationDialog(ProfileViewModel profileViewModel) {
       new MaterialDialog.Builder(getContext())
             .content(fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message,
-                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName()))))
+                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastNameWithSuffix()))))
             .contentGravity(GravityEnum.CENTER)
             .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
             .onPositive((dialog, which) -> getPresenter().onUserDataConfirmed())

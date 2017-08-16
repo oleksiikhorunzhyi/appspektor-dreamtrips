@@ -144,7 +144,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, merchant.displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, false);
-      mContainerComments.initViews();
+      mContainerComments.resetViewData();
       mContainerComments.loadData(bundle);
       mContainerComments.removeLoadingActions();
    }

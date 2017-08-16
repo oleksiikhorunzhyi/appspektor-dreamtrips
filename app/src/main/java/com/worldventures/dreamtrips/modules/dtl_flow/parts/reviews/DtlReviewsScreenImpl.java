@@ -35,6 +35,18 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    OfferWithReviewView.IMyEventListener listener = new OfferWithReviewView.IMyEventListener() {
       @Override
+      public void onStartFistPageLoading() {
+         mContainerDetail.setVisibility(View.GONE);
+         refreshLayout.setVisibility(View.VISIBLE);
+      }
+
+      @Override
+      public void onFinishFistPageLoading() {
+         refreshLayout.setVisibility(View.GONE);
+         mContainerDetail.setVisibility(View.VISIBLE);
+      }
+
+      @Override
       public void onEventOccurred(int indexOf) {
          getPresenter().addMoreReviews(indexOf);
       }
@@ -55,7 +67,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    protected void onPostAttachToWindowView() {
-      Log.i("XYZScreen",  "onAttachedToWindows Screen");
       inflateToolbarMenu(toolbar);
       toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
       toolbar.setNavigationIcon(R.drawable.back_icon);
@@ -66,7 +77,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
       mContainerDetail.setEventListener(listener);
       mContainerDetail.loadFirstPage();
-
    }
 
    private void showMessage() {
@@ -96,7 +106,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    public void onRefreshSuccess() {
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
-      //this.refreshLayout.setVisibility(View.GONE);
       this.mContainerDetail.setVisibility(View.VISIBLE);
    }
 

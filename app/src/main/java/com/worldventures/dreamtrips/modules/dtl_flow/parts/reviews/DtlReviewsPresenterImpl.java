@@ -48,7 +48,6 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      Log.i("XYZPresenter",  "onAttachedToWindows Presenter");
    }
 
    @Override

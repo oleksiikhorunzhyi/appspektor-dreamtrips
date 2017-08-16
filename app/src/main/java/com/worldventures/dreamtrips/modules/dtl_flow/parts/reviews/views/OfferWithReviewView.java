@@ -47,8 +47,10 @@ public class OfferWithReviewView extends LinearLayout {
    private String mMerchantName;
    private boolean mIsFromListReview = false;
 
+   private boolean firstPageLoading = true;
    private boolean isLoading = false;
 
+   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
    private IMyEventListener mEventListener;
@@ -68,6 +70,9 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       ratingBar2 = (RatingBar) v.findViewById(R.id.ratingBar2);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
+
+      initRecycler();
+
       generateMockObjects();
    }
 
@@ -77,30 +82,32 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    public void loadFirstPage() {
-      initViews();
+      if (mEventListener != null) mEventListener.onStartFistPageLoading();
+      resetViewData();
       getMoreReviewItems();
    }
 
    private void loadPage(Bundle bundle) {
-      List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
-
-      if(reviewObjects.isEmpty()) {
-         removeLoadingActions();
-         return;
+      if (firstPageLoading) {
+         firstPageLoading = false;
+         if (mEventListener != null) mEventListener.onFinishFistPageLoading();
       }
+
+      List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
 
       //Mock
 //      int index = bundle.getInt("nextIndex", 0);
 //      List<ReviewObject> reviewObjects = getMockObjects(index, 10);
-//      if (reviewObjects.size() == 0) {
-//         removeLoadingActions();
-//         return;
-//      }
       //Mock
+
+      if (reviewObjects.isEmpty()) {
+         removeLoadingActions();
+         return;
+      }
 
       Log.e("XYZFlow", "mAdapterCount > " + mAdapter.getItemCount());
 
-      if(!validReceivedData(reviewObjects)) {
+      if (!validReceivedData(reviewObjects)) {
          Log.e("XYZFlow", "Same data");
          return;
       }
@@ -117,45 +124,14 @@ public class OfferWithReviewView extends LinearLayout {
       Log.e("XYZFlow", "**************************************** ");
    }
 
-   public void initViews() {
-      resetData();
-      initAdapter();
-      initListener();
-      initRecycler();
-   }
-
-   public void resetData() {
-      isLoading = false;
+   public void resetViewData() {
       mAdapter.getAllItems().clear();
       mAdapter.notifyDataSetChanged();
-      recyclerView.removeOnItemTouchListener(onItemTouchListener);
-      recyclerView.removeOnScrollListener(scrollingListener);
    }
 
    public void showNoComments() {
       removeAllViews();
       LayoutInflater.from(getContext()).inflate(R.layout.offer_details_no_review, this, true);
-   }
-
-   private void initListener() {
-      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
-            new RecyclerClickListener() {
-               @Override
-               public void onClick(View view, int position) {
-                  DtlDetailReviewPath path = new DtlDetailReviewPath(FlowUtil.currentMaster(getContext()), mMerchantName, mAdapter
-                        .getAllItems()
-                        .get(position), mAdapter.getAllItems()
-                        .get(position)
-                        .getReviewId(), mIsFromListReview);
-                  Flow.get(getContext()).set(path);
-               }
-
-               @Override
-               public void onLongClick(View view, int position) {
-
-               }
-            });
-      recyclerView.addOnItemTouchListener(onItemTouchListener);
    }
 
    private void setUpInfo(Bundle bundle) {
@@ -184,12 +160,75 @@ public class OfferWithReviewView extends LinearLayout {
       ratingBar2.setRating(mRatingMerchant);
    }
 
-   private void initRecycler() {
-      LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private void getMoreReviewItems() {
+      int lastIndex = getNextItemValue();
+      Log.e("XYZ", "Sent index > " + lastIndex);
+      recyclerView.postDelayed(new Runnable() {
+         @Override
+         public void run() {
+//            Bundle bundle = new Bundle();
+//            bundle.putInt("nextIndex", lastIndex);
+//            loadData(bundle);
 
+            if(mEventListener!= null) mEventListener.onEventOccurred(lastIndex);
+         }
+      }, 1000);
+   }
+
+   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
+
+   public interface IMyEventListener {
+      void onStartFistPageLoading();
+      void onFinishFistPageLoading();
+      void onEventOccurred(int indexOf);
+   }
+
+   public void setEventListener(IMyEventListener mEventListener) {
+      this.mEventListener = mEventListener;
+   }
+
+   public void removeLoadingActions() {
+      if (isLoading) mAdapter.removeLoadingFooter();
+      recyclerView.removeOnScrollListener(scrollingListener);
+   }
+
+   private boolean validReceivedData(List<ReviewObject> reviewObjects) {
+      List<ReviewObject> currentItems = mAdapter.getAllItems();
+      if (!currentItems.isEmpty()) {
+         ReviewObject lastItem = currentItems.get(currentItems.size() - 1);
+         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size() - 1);
+
+         Log.e("XYZFlow", lastItem.getReviewId() + " vs " + lastReceivedItem.getReviewId());
+
+         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
+      }
+
+      return true;
+   }
+
+   private void initRecycler() {
       recyclerView.setLayoutManager(linearLayoutManager);
       recyclerView.addItemDecoration(new MarginDecoration(getContext()));
       recyclerView.setHasFixedSize(false);
+
+      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
+            new RecyclerClickListener() {
+               @Override
+               public void onClick(View view, int position) {
+                  DtlDetailReviewPath path = new DtlDetailReviewPath(FlowUtil.currentMaster(getContext()), mMerchantName, mAdapter
+                        .getAllItems()
+                        .get(position), mAdapter.getAllItems()
+                        .get(position)
+                        .getReviewId(), mIsFromListReview);
+                  Flow.get(getContext()).set(path);
+               }
+
+               @Override
+               public void onLongClick(View view, int position) {
+
+               }
+            });
+      recyclerView.addOnItemTouchListener(onItemTouchListener);
 
       scrollingListener = new PaginationScrollListener(linearLayoutManager) {
          @Override
@@ -206,53 +245,9 @@ public class OfferWithReviewView extends LinearLayout {
       };
 
       recyclerView.addOnScrollListener(scrollingListener);
-   }
 
-   private void getMoreReviewItems() {
-      int lastIndex = getNextItemValue();
-      Log.e("XYZ", "Sent index > " + lastIndex);
-      recyclerView.postDelayed(new Runnable() {
-         @Override
-         public void run() {
-//            Bundle bundle = new Bundle();
-//            bundle.putInt("nextIndex", lastIndex);
-//            loadData(bundle);
-            if(mEventListener!= null) mEventListener.onEventOccurred(lastIndex);
-         }
-      }, 1000);
-   }
-
-   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
-
-   private void initAdapter() {
       recyclerView.setAdapter(mAdapter);
-   }
 
-   public interface IMyEventListener {
-      void onEventOccurred(int indexOf);
-   }
-
-   public void setEventListener(IMyEventListener mEventListener) {
-      this.mEventListener = mEventListener;
-   }
-
-   public void removeLoadingActions() {
-      if (isLoading) mAdapter.removeLoadingFooter();
-      recyclerView.removeOnScrollListener(scrollingListener);
-   }
-
-   private boolean validReceivedData(List<ReviewObject> reviewObjects){
-      List<ReviewObject> currentItems = mAdapter.getAllItems();
-      if(!currentItems.isEmpty()){
-         ReviewObject lastItem = currentItems.get(currentItems.size()-1);
-         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size()-1);
-
-         Log.e("XYZFlow", lastItem.getReviewId()+" vs "+ lastReceivedItem.getReviewId());
-
-         if(lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
-      }
-
-      return true;
    }
 
    //Mock

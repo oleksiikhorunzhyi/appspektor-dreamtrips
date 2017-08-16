@@ -1,15 +1,13 @@
 package com.worldventures.dreamtrips.wallet.analytics.oncard;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardPaymentAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardUserAction;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class SendOnCardAnalyticsCommand extends Command<Void> implements Injecta
 
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
 
    private final List<AnalyticsLog> analyticsLogs;
 
@@ -66,10 +64,6 @@ public class SendOnCardAnalyticsCommand extends Command<Void> implements Injecta
    }
 
    private void fillUserDetails(SmartCardUserAction analyticsAction) {
-      Optional<UserSession> sessionOptional = userSessionHolder.get();
-      if (sessionOptional.isPresent()) {
-         UserSession userSession = sessionOptional.get();
-         analyticsAction.setUser(userSession.getUser());
-      }
+      analyticsAction.setUserId(socialInfoProvider.userId());
    }
 }

@@ -23,6 +23,10 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineM
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
@@ -40,6 +44,7 @@ import io.techery.janet.smartcard.action.settings.RequestPinAuthAction;
 import io.techery.janet.smartcard.action.settings.SetPinEnabledAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
+import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
@@ -93,8 +98,14 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
    private final ReadActionPipe<PinStatusEvent> pinStatusEventPipe;
    private final ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe;
+   private final ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe;
 
    private final ActionPipe<GetOnCardAnalyticsCommand> getOnCardAnalyticsPipe;
+
+   private final ActionPipe<SaveDisplayTypeCommand> saveDisplayTypePipe;
+   private final ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe;
+   private final ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe;
+   private final ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -156,8 +167,16 @@ public final class SmartCardInteractor {
       setPinEnabledActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledAction.class, Schedulers.io());
       setPinEnabledCommandActionPipe = sessionActionPipeCreator.createPipe(SetPinEnabledCommand.class, Schedulers.io());
       requestPinAuthActionPipe = sessionActionPipeCreator.createPipe(RequestPinAuthAction.class, Schedulers.io());
+      removeUserPhotoActionPipe = sessionActionPipeCreator.createPipe(RemoveUserPhotoAction.class, Schedulers.io());
 
       getOnCardAnalyticsPipe = sessionActionPipeCreator.createPipe(GetOnCardAnalyticsCommand.class, Schedulers.io());
+
+      saveDisplayTypePipe = sessionActionPipeCreator.createPipe(SaveDisplayTypeCommand.class, Schedulers.io());
+      getDisplayTypePipe = sessionActionPipeCreator.createPipe(GetDisplayTypeCommand.class, Schedulers.io());
+      restoreDefaultDisplayTypePipe = sessionActionPipeCreator.createPipe(RestoreDefaultDisplayTypeCommand.class, Schedulers
+            .io());
+      validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
+            .io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -318,5 +337,25 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe() {
       return requestPinAuthActionPipe;
+   }
+
+   public ActionPipe<SaveDisplayTypeCommand> saveDisplayTypePipe() {
+      return saveDisplayTypePipe;
+   }
+
+   public ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe() {
+      return getDisplayTypePipe;
+   }
+
+   public ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe() {
+      return restoreDefaultDisplayTypePipe;
+   }
+
+   public ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe() {
+      return validateDisplayTypeDataPipe;
+   }
+
+   public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {
+      return removeUserPhotoActionPipe;
    }
 }

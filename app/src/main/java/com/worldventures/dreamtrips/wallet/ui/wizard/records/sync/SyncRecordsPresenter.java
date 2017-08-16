@@ -26,7 +26,7 @@ public class SyncRecordsPresenter extends WalletPresenter<SyncRecordsPresenter.S
 
    private final SyncRecordDelegate syncRecordDelegate;
 
-   public SyncRecordsPresenter(Context context, Injector injector, SyncAction syncAction) {
+   SyncRecordsPresenter(Context context, Injector injector, SyncAction syncAction) {
       super(context, injector);
       syncRecordDelegate = SyncRecordDelegate.create(syncAction, smartCardInteractor, recordInteractor, navigator);
    }

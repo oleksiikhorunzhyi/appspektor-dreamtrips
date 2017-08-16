@@ -3,12 +3,14 @@ package com.worldventures.dreamtrips.modules.media_picker.model;
 import android.net.Uri;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.Serializable;
 
 public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelable, Serializable {
 
+   protected MediaAttachment.Source source;
    protected String absolutePath;
    protected Uri uri;
    protected long dateTaken;
@@ -28,6 +30,15 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
    public boolean isAbsolutePathUrl() {
       // TODO Remove this check outside of this model
       return ValidationUtils.isUrl(absolutePath);
+   }
+
+   @Override
+   public MediaAttachment.Source getSource() {
+      return source;
+   }
+
+   public void setSource(MediaAttachment.Source source) {
+      this.source = source;
    }
 
    public String getAbsolutePath() {

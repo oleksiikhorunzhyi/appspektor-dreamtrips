@@ -4,7 +4,6 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@android:color/white"
       android:theme="@style/WalletTheme"
       >
 
@@ -43,7 +42,7 @@
             <TextView
                   style="@style/SettingsText.Secondary"
                   android:layout_below="@+id/lock_card"
-                  android:text="@string/wallet_card_settings_requires_pin_entry_to_unlock"
+                  android:text="@string/wallet_card_settings_lock_card_description"
                   />
 
             <com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher

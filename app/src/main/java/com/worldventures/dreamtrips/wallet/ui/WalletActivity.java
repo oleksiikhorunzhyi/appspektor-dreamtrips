@@ -6,27 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.messenger.delegate.CropImageDelegate;
-import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
+import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsService;
-import com.worldventures.dreamtrips.wallet.service.location.LocationSettingsServiceImpl;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerAdapter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import flow.History;
 
 import static com.worldventures.dreamtrips.wallet.di.WalletActivityModule.WALLET;
@@ -36,50 +29,22 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
 
    private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
-   private MediaPickerAdapter mediaPickerAdapter;
-   private LocationSettingsServiceImpl locationSettingsService;
-
-   @InjectView(R.id.wallet_photo_picker) PhotoPickerLayout photoPickerLayout;
+   private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
 
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-   @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
-   @Inject CropImageDelegate cropImageDelegate;
-
-   private GoogleApiClient googleApiClient;
+   @Inject WalletCropImageService cropImageDelegate;
+   @Inject MediaPickerFacebookService walletPickerFacebookService;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      initPickerLayout();
-      googleApiClient = new GoogleApiClient.Builder(this)
-            .addApi(LocationServices.API)
-            .build();
-      locationSettingsService = new LocationSettingsServiceImpl(this, googleApiClient);
-      mediaPickerAdapter = new MediaPickerAdapter(messengerMediaPickerDelegate, cropImageDelegate);
       navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
-      messengerMediaPickerDelegate.resetPhotoPicker();
-      messengerMediaPickerDelegate.register();
-      googleApiClient.connect();
    }
 
    @Override
    public void onDestroy() {
-      messengerMediaPickerDelegate.unregister();
-      mediaPickerAdapter.destroy();
-      googleApiClient.disconnect();
+      cropImageDelegate.destroy();
       super.onDestroy();
-   }
-
-   @Override
-   public void onSaveInstanceState(Bundle outState) {
-      super.onSaveInstanceState(outState);
-      mediaPickerAdapter.onSaveInstanceState(outState);
-   }
-
-   @Override
-   protected void onRestoreInstanceState(Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-      mediaPickerAdapter.onRestoreInstanceState(savedInstanceState);
    }
 
    @Override
@@ -101,18 +66,11 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
       context.startActivity(new Intent(context, WalletActivity.class));
    }
 
-   //TODO photo picker should be fully reworked to fit UI needs
-   private void initPickerLayout() {
-      inject(photoPickerLayout);
-      photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-      photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
-   }
-
    @Override
    public Object getSystemService(@NonNull String name) {
-      if (MediaPickerService.SERVICE_NAME.equals(name)) {
-         return mediaPickerAdapter;
-      } else if (LocationSettingsService.SERVICE_NAME.equals(name)) {
+      if (WalletCropImageService.SERVICE_NAME.equals(name)) {
+         return cropImageDelegate;
+      } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
          return locationSettingsService;
       }
       return super.getSystemService(name);
@@ -127,6 +85,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
       if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) return;
+      if (walletPickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
       super.onActivityResult(requestCode, resultCode, data);
    }
 }

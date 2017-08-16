@@ -9,8 +9,4 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardVie
 public interface HolderTypeFactory {
 
    BaseHolder holder(ViewGroup parent, int viewType);
-
-   int type(CommonCardViewModel viewModel);
-
-   int type(CardGroupHeaderModel viewModel);
 }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.widget.AbsListView;
 import android.widget.AutoCompleteTextView;
@@ -12,7 +13,7 @@ import java.lang.reflect.Field;
 
 import timber.log.Timber;
 
-public class FriendsAutoCompleteTextView extends AutoCompleteTextView {
+public class FriendsAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 
    private AbsListView.OnScrollListener listener;
 

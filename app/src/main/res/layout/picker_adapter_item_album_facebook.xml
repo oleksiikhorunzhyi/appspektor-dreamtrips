@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <data>
+
+      <import type="android.view.View" />
+
+      <variable
+            name="facebookAlbumModel"
+            type="com.worldventures.dreamtrips.modules.picker.model.FacebookAlbumPickerViewModel"
+            />
+   </data>
+
+   <com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout
+         xmlns:app="http://schemas.android.com/apk/res-auto"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_margin="@dimen/spacing_tiniest"
+         android:orientation="vertical"
+         >
+
+      <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ProgressiveDraweeView
+            android:id="@+id/iv_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            app:actualImageScaleType="centerCrop"
+            app:placeholderImageScaleType="fitXY"
+            app:placeholderImage="@drawable/ic_trip_image_placeholder"
+            app:pickerDisplayUri="@{facebookAlbumModel.uri}"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#6e000000"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            >
+
+         <TextView
+               android:id="@+id/tv_album_title"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:padding="@dimen/spacing_tiniest"
+               android:maxLines="1"
+               android:textColor="@android:color/white"
+               android:textSize="14sp"
+               android:text="@{facebookAlbumModel.name}"
+               />
+
+         <TextView
+               android:id="@+id/tv_count"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:ellipsize="end"
+               android:maxLines="1"
+               android:textColor="@android:color/white"
+               android:textSize="14sp"
+               android:text="@{String.valueOf(facebookAlbumModel.count)}"
+               />
+
+      </LinearLayout>
+
+   </com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout>
+
+</layout>

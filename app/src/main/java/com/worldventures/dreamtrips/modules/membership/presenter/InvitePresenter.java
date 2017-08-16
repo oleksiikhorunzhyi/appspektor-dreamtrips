@@ -3,13 +3,13 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
 import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Patterns;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -187,7 +187,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             switch (Type.from(view.getSelectedType())) {
                case SMS:
                   if (Patterns.PHONE.matcher(newText).matches()) {
-                     query = PhoneNumberUtils.normalizeNumber(newText);
+                     query = ProjectPhoneNumberUtils.normalizeNumber(newText);
                   } else {
                      query = newText.toLowerCase();
                   }

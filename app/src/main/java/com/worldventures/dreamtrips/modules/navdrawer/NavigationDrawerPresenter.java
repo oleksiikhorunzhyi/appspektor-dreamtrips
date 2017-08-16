@@ -61,11 +61,15 @@ public class NavigationDrawerPresenter {
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(event -> updateNotificationsCount());
-      navigationDrawerView.bind(unreadObservable.getObservable())
+
+      unreadObservable.getObservable()
+            .compose(bindView())
             .subscribe(navigationDrawerView::setUnreadMessagesCount);
-      navigationDrawerView.bind(authInteractor.updateUserPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<UpdateUserCommand>().onSuccess(updateUserCommand -> navigationDrawerView
-                  .setUser(updateUserCommand.getResult())));
+      authInteractor.updateUserPipe().observe()
+            .compose(new IoToMainComposer<>())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<UpdateUserCommand>()
+                  .onSuccess(updateUserCommand -> navigationDrawerView.setUser(updateUserCommand.getResult())));
    }
 
    public void detach() {

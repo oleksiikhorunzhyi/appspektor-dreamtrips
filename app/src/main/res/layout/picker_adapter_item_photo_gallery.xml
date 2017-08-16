@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <data>
+
+      <import type="android.view.View" />
+
+      <variable
+            name="photoGalleryModel"
+            type="com.worldventures.dreamtrips.modules.picker.model.GalleryPhotoPickerViewModel"
+            />
+   </data>
+
+   <com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
+         xmlns:app="http://schemas.android.com/apk/res-auto"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:padding="@dimen/picker_photo_spacing"
+         app:side_priority="width"
+         >
+
+      <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:placeholderImage="@drawable/ic_cover_place_holder"
+            app:placeholderImageScaleType="centerCrop"
+            app:pickerDisplayUri="@{photoGalleryModel.uri}"
+            />
+
+      <ImageView
+            android:id="@+id/pick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:layout_margin="@dimen/spacing_tiny"
+            android:src="@{photoGalleryModel.checked ? @drawable/add_photo_icon_selected : @drawable/add_photo_icon}"
+            />
+
+   </com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>
+
+</layout>

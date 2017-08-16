@@ -5,9 +5,6 @@
    <string name="trip_images">Εικόνες από Ταξίδια</string>
    <string name="bucket_list">Καλάθι Αγορών</string>
    <string name="my_profile">Το προφίλ μου</string>
-   <string name="terms_of_service">Όροι υπηρεσίας</string>
-   <string name="privacy">Πολιτική Προστασίας Προσωπικών Δεδομένων</string>
-   <string name="cookie">Πολιτική για τα Cookies</string>
    <string name="action_quick_input">Γρήγορη προσθήκη</string>
    <string name="action_popular_string">Προσθήκη από τα Δημοφιλή</string>
    <string name="action_done">Ολοκληρώθηκε</string>
@@ -189,12 +186,12 @@
    <string name="selected">Επιλέχθηκαν %1$d</string>
    <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
    <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια σου%1$s, %2$s <br/>Δες το εδώ. <br/>%3$s]]></string>
+   <string name="invitation_text_template"><![CDATA[ Γεια σου%1$s, %2$s <br/>Δες το εδώ. <br/>%3$s]]></string>
    <string name="invite_add_photo">Προσθήκη φωτογραφίας</string>
    <string name="invite_select_first">Επιλογή επαφών στην αρχή</string>
    <string name="filters_show_favorite">ΕΜΦΑΝΙΣΗ ΑΓΑΠΗΜΕΝΩΝ ΤΑΞΙΔΙΩΝ</string>
    <string name="filter_recently_added">ΠΡΟΣΦΑΤΕΣ ΠΡΟΣΘΗΚΕΣ</string>
-   <string name="bucketlist_share" formatted="false">Στο Καλάθι αγορών μου: %1$s</string>
+   <string name="bucketlist_share">Στο Καλάθι αγορών μου: %1$s</string>
    <string name="last_sent">Τελευταίες αποστολές</string>
    <string name="search_trips">Αναζήτηση ταξιδιών</string>
    <string name="search">Αναζήτηση</string>
@@ -211,7 +208,7 @@
 
    <string name="action_add_to_bucket">Προσθήκη στο Καλάθι αγορών</string>
    <string name="profile_add_friend">Προσθήκη Φίλου</string>
-   <string name="profile_friend_request" formatted="false">Ο/Η %1$s σας έστειλε αίτημα φιλίας</string>
+   <string name="profile_friend_request">Ο/Η %1$s σας έστειλε αίτημα φιλίας</string>
    <string name="profile_respond">Απάντηση</string>
    <string name="profile_waiting">Αναμονή</string>
    <string name="social_my_friends">Οι φίλοι μου</string>
@@ -232,7 +229,7 @@
    <string name="bucket_current_cover">Τρέχον εξώφυλλο</string>
    <string name="bucket_item_edit_completed">Σήμανση ως ολοκληρωμένο!</string>
    <string name="reload_feed">Νέα φόρτωση τροφοδοσίας</string>
-   <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
+   <string name="feed_header">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
    <string name="added">πρόσθεσε</string>
    <string name="booked">έκλεισε</string>
    <string name="shared">κοινοποίησε</string>
@@ -281,8 +278,8 @@
    <string name="post_cancel_message">Είστε σίγουροι ότι θέλετε να απορρίψετε τις αλλαγές;</string>
    <string name="bucket_list_foreign_message">Αυτός ο χρήστης δεν έχει αυτή τη στιγμή αντικείμενα στο Καλάθι αγορών</string>
 
-   <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
-   <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
+   <string name="user_name">&lt;b&gt;%1$s&lt;/b&gt;</string>
+   <string name="user_name_with_company">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
    <string name="email_app_choose_dialog_title">Επιλογή εφαρμογής</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;τους αρέσει αυτό</string>
@@ -308,8 +305,8 @@
    <string name="bucket_delete">Διαγραφή αντικειμένου καλαθιού αγορών</string>
    <string name="bucket_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το αντικείμενο του καλαθιού αγορών;</string>
 
-   <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
-   <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s από τους φίλους σας&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
+   <string name="feed_header_two">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
+   <string name="feed_header_many">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s από τους φίλους σας&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
 
    <string name="player_error_header">Σφάλμα αναπαραγωγής</string>
    <string name="player_error">Λυπούμαστε, δεν ήταν δυνατή η αναπαραγωγή του βίντεο αυτή τη στιγμή, ελέγξτε τη σύνδεσή σας ή δοκιμάστε αργότερα</string>
@@ -577,7 +574,7 @@
    <string name="offline_warning_dialog_message">Η πρόσβασή σας θα είναι περιορισμένη</string>
    <string name="offline_indicator_description">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
 
-   <string name="merchant_message_text" formatted="false">Συγχαρητήρια! Κερδίσατε %1$sDreamTrips Πόντους @%2$s, %3$s</string>
+   <string name="merchant_message_text">Συγχαρητήρια! Κερδίσατε %1$sDreamTrips Πόντους @%2$s, %3$s</string>
 
    <string name="beta_label">Beta</string>
 
@@ -590,7 +587,6 @@
    <string name="n_friends_accepted">%1$d φίλοι έγιναν αποδεκτοί.</string>
    <string name="friends_will_appear_momentarily">Θα εμφανιστούν στο Οι Φίλοι Μου άμεσα.</string>
 
-   <string name="uploading_post_status_processing">Γίνεται επεξεργασία</string>
    <string name="uploading_post_status_progress_video"><b><i>Βήμα 1 από 2.</i></b> Φόρτωση…</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Βήμα 2 από 2.</i></b> Επεξεργασία…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Αποτυχία επεξεργασίας Κάτι έγινε λάθος με το βίντεο</string>

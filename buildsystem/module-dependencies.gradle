@@ -73,7 +73,7 @@ ext {
          mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkCompiler        : [a: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.5-RELEASE-1.21-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.6-DEV-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -98,7 +98,7 @@ ext {
          service: [c: 'io.techery.janet:smartcard:0.21.3-SNAPSHOT'],
    ]
    // services
-   def googleServicesVersion = '10.2.0'
+   def googleServicesVersion = '11.0.2'
    moduleDependencies.services = [
          // amazon
          amazonCore    : [c: 'com.amazonaws:aws-android-sdk-core:2.2.6'],
@@ -150,7 +150,6 @@ ext {
          // Dialogs
          androidUi             : [c: 'com.github.markushi:android-ui:1.2'],
          sweetAlertDialog      : [c: 'com.github.techery:sweet-alert-dialog:d82b5e4764'],
-         dialogPlus            : [c: 'com.orhanobut:dialogplus:1.10@aar'],
          materialDialogsCore   : [c: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],
          materialDialogsCommons: [c: 'com.github.afollestad.material-dialogs:commons:0.8.6.2'],
          // FAB
@@ -168,7 +167,6 @@ ext {
          // Pickers
          ucrop                 : [c: 'com.yalantis:ucrop:2.2.0'],
          datetimepicker        : [c: 'com.github.flavienlaurent.datetimepicker:library:0.0.2'],
-         polyPicker            : [c: 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'],
          // Other
          textdrawable          : [c: 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'],
          properratingbar       : [c: 'com.github.techery:properratingbar:0.0.5'],
@@ -185,7 +183,7 @@ ext {
    moduleDependencies.util = [
          googleAnnotations        : [c: "com.android.support:support-annotations:${googleLibrariesVersion}"],
          multidex                 : [c: 'com.android.support:multidex:1.0.1'],
-         timber                   : [c: 'com.jakewharton.timber:timber:4.0.1'],
+         timber                   : [c: 'com.jakewharton.timber:timber:4.5.1'],
          jodaTimeAndroid          : [c: "net.danlew:android.joda:$jodaTimeVersion"],
          androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
          androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],

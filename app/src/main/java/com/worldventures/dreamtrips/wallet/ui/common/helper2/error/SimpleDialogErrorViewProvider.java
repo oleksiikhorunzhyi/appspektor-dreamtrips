@@ -11,7 +11,7 @@ import rx.functions.Action1;
 public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
    private Class<? extends Throwable> throwable;
-   private ErrorView<T> errorView;
+   private SimpleErrorDialogView<T> errorView;
 
    public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId) {
       this.throwable = throwable;
@@ -23,6 +23,11 @@ public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
       this.errorView = new SimpleErrorDialogView<>(context, messageResId, defaultAction);
    }
 
+   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId, Action1<T> positiveAction, Action1<T> negativeAction) {
+      this.throwable = throwable;
+      this.errorView = new SimpleErrorDialogView<>(context, messageResId, positiveAction, negativeAction);
+   }
+
    @Override
    public Class<? extends Throwable> forThrowable() {
       return throwable;
@@ -30,7 +35,15 @@ public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
    @Nullable
    @Override
-   public ErrorView<T> create(T t, Throwable throwable) {
+   public ErrorView<T> create(T t, Throwable parentThrowable, Throwable throwable) {
       return errorView;
+   }
+
+   public void setPositiveText(@StringRes int positiveResId) {
+      errorView.setPositiveText(positiveResId);
+   }
+
+   public void setNegativeText(@StringRes int negativeResId) {
+      errorView.setNegativeText(negativeResId);
    }
 }

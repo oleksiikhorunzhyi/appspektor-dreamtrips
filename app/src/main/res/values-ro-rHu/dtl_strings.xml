@@ -3,15 +3,12 @@
    <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Selectați locația</string>
    <string name="dtl_locations_try_search">Nu am putut localiza un oraș în apropierea dvs.\nÎncercați căutarea orașului</string>
-   <string name="dtl_merchant_tab_offers">Oferte</string>
-   <string name="dtl_merchant_tab_dining">Dining</string>
    <string name="dtl_near_me_caption">În apropierea mea</string>
    <string name="dtl_nearby_caption_format">în apropiere %1$s</string>
    <string name="dtl_nearby_caption_empty">În apropiere</string>
    <string name="dtl_autodetect_location">Detectare automată a locației mele</string>
    <string name="dtl_no_merchants_caption">Nu există comercianți aici</string>
    <string name="dtl_load_merchants_here_button_caption">Reinițiați căutarea de comercianți</string>
-   <string name="dtl_place_list_empty_text">Nu există nicio locație ca cea selectată</string>
    <string name="dtl_location_no_merchants_caption">Nu sunt comercianți lângă dvs.\n Introduceți un oraș nou.</string>
    <string name="dtl_location_select_from_nearby_caption">Selectați dintre orașele apropiate:</string>
    <string name="dtl_points_estimation_calculate_button_caption">Calculați</string>
@@ -26,7 +23,6 @@
    <string name="dtl_receipt_rescan">Rescanați</string>
    <string name="dtl_receipt_verify_button_caption">Verificare</string>
    <string name="dtl_receipt_verify_hint">Această sumă va fi confirmată de comerciant. Orice discrepanță între suma introdusă și cea reală va conduce la întârzieri în câștigarea punctelor DreamTrips.</string>
-   <string name="dtl_action_next">Înainte</string>
    <string name="dtl_amenities">Dotări</string>
    <string name="dtl_perks_description">Beneficii</string>
    <string name="dtl_description">Descriere</string>
@@ -43,10 +39,8 @@
    <string name="dtl_congrats">Felicitări!</string>
    <string name="dtl_you_earned">Ați câștigat</string>
    <string name="dtl_total">Total puncte DreamTrips Points:</string>
-   <string name="rate_hint">Vă rugăm, oferiți o notă experienței dvs.</string>
    <string name="dtl_success_title">Felicitări</string>
    <string name="dtl_amount_invalid">Suma nu este validă</string>
-   <string name="dtl_invalid">Intrare nevalidă</string>
    <string name="dtl_verify_amount">Confirmați suma</string>
    <string name="dtl_total_amount">Suma totală:</string>
    <string name="dtl_verify_earn_hint">Ați putea câștiga </string>
@@ -56,17 +50,10 @@
    <string name="suggest_merchant">Sugerați comerciant</string>
    <string name="suggest_merchant_title">Instrumente locale DT</string>
    <string name="dtl_details_share_title">Voi câștiga puncte Dreamtrips în %1$s</string>
-   <string name="dtl_details_share_title_earned" formatted="false"> Ați câștigat %1$s DreamTrips Points în %2$s </string>
    <string name="dtl_wait_for_receipt">Așteptați… Se încarcă nota de plată</string>
    <string name="dtl_wait_for_earn">Așteptați… Se colectează punctele</string>
-   <string name="dtl_wait_for_offers">Se caută oferte în apropiere.</string>
-   <string name="dtl_wait_for_dinings">Se caută comercianți în apropiere.</string>
    <string name="dtl_estimator_explanation">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii</string>
    <string name="dtl_photo_upload_error">Eroare de încărcare. Dacă problema persistă, contactați asistența pentru membri.</string>
-   <string name="dtl_merchant_success">Succes</string>
-   <string name="dtl_merchant_submitted">Felicitări! Comerciantul a fost trimis. Veți fi informați după ce este aprobat.</string>
-   <string name="pdf">PDF</string>
-   <string name="presentation">Prezentări</string>
    <string name="dtl_open_now">Acum este deschis</string>
    <string name="dtl_closed_now">Acum este închis</string>
    <string name="dtl_closed">Închis</string>
@@ -79,8 +66,7 @@
    <string name="perks">Beneficii</string>
    <string name="everyday">Zilnic</string>
    <string name="perks_terms">Termeni și condiții</string>
-   <string name="perks_formatted" formatted="false">%1$d Beneficii</string>
-   <string name="dtl_coming_soon_offers">Oferte disponibile în curând</string>
+   <string name="perks_formatted">%1$d Beneficii</string>
    <string name="dtl_show_offers_only">Afișați numai ofertele</string>
    <string name="dtl_earn_points">Câștigați puncte DreamTrips</string>
    <string name="dtl_details_share_title_without_points">Am descoperit %1$s în aplicația DreamTrips</string>
@@ -89,7 +75,6 @@
    <string name="offer_expiration_format">Până la %1$s</string>
    <string name="training_no_video">Videoclipuri în curând</string>
    <string name="help">Ajutor</string>
-   <string name="merchants_list_empty_text">Locuri în curând</string>
    <string name="merchants_list_empty_text_additional">- sau -</string>
    <string name="merchant_working_hours_caption">ore</string>
    <string name="filter_amenities_error_caption">Facilitățile nu au putut fi încărcate de data aceasta</string>

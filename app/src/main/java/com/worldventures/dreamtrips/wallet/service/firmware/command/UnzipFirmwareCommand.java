@@ -2,21 +2,28 @@ package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import org.immutables.value.Value;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.exception.InvalidFirmwareException;
-import io.techery.janet.smartcard.util.UnzipUtil;
 
 @CommandAction
 public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareBundle> {
 
-   public static final String APP_NORDIC_FOLDER = "AppNordic";
-   public static final String PUCK_ATMEL_FOLDER = "PuckAtmel";
-   public static final String APP_ATMEL_FOLDER = "AppAtmel";
-   public static final String BOOTLOADER_NORDIC_FOLDER = "BootloaderNordic";
+   private static final int UNZIP_BUFFER_SIZE = 4096;
+
+   private static final String APP_NORDIC_FOLDER = "AppNordic";
+   private static final String PUCK_ATMEL_FOLDER = "PuckAtmel";
+   private static final String APP_ATMEL_FOLDER = "AppAtmel";
+   private static final String BOOTLOADER_NORDIC_FOLDER = "BootloaderNordic";
 
    private final File firmwareArchive;
 
@@ -29,9 +36,9 @@ public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareB
       String firmwarePath = firmwareArchive.getAbsolutePath();
       String unzippedPath = firmwareArchive.getParent();
       try {
-         UnzipUtil.unzip(firmwarePath, unzippedPath);
+         unzip(firmwarePath, unzippedPath);
       } catch (IOException e) {
-         throw new InvalidFirmwareException("Firmware zip failed to unarchive", e);
+         callback.onFail(new InvalidFirmwareException("Firmware zip failed to unarchive", e));
       }
 
       File appNordic, puckAtmel, appAtmel, booloaderNordic;
@@ -52,6 +59,48 @@ public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareB
       }
    }
 
+   private void unzip(String zipFilePath, String destDirectory) throws IOException {
+      File destDir = new File(destDirectory);
+      if (!destDir.exists()) {
+         destDir.mkdirs();
+      }
+      ZipInputStream zipIn = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFilePath), UNZIP_BUFFER_SIZE));
+
+      File entryFile, entryParentFile;
+      String entryDestination;
+
+      ZipEntry entry;
+      while ((entry = zipIn.getNextEntry()) != null) {
+         if (!entry.isDirectory()) {
+            entryDestination = destDirectory;
+            entryFile = new File(entryDestination, entry.getName());
+
+            entryParentFile = entryFile.getParentFile();
+            if (entryParentFile != null) {
+               entryParentFile = new File(entryDestination, entryParentFile.getName());
+               entryParentFile.mkdirs();
+               entryDestination = entryParentFile.getPath();
+            }
+
+            BufferedOutputStream bos = new BufferedOutputStream(
+                  new FileOutputStream(new File(entryDestination, entryFile.getName())));
+            byte[] bytesIn = new byte[UNZIP_BUFFER_SIZE];
+            int read;
+            try {
+               while ((read = zipIn.read(bytesIn)) != -1) {
+                  bos.write(bytesIn, 0, read);
+               }
+               zipIn.closeEntry();
+            } finally {
+               bos.flush();
+               bos.close();
+            }
+         }
+         zipIn.closeEntry();
+      }
+      zipIn.close();
+   }
+
    private File getFileInDir(String path) throws IllegalArgumentException {
       File folder = new File(path);
       if (!folder.exists() || !folder.isDirectory()) {
@@ -65,7 +114,7 @@ public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareB
    }
 
    @Value.Immutable
-   public interface FirmwareBundle {
+   interface FirmwareBundle {
 
       File appNordic();
 

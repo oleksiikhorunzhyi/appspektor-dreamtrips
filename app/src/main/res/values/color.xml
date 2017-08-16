@@ -4,8 +4,6 @@
    <color name="theme_main_darker">#76b2fe</color>
    <color name="accent">#76b2fe</color>
 
-   <color name="merchant_buttons">#cc55184f</color>
-
    <color name="white">@android:color/white</color>
 
    <color name="black">#000000</color>
@@ -41,6 +39,13 @@
    <color name="bg_item_dragging_state">#e1f0fb</color>
    <color name="bg_item_dragging_active_state">#c0e2fb</color>
 
+   <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+   <color name="gray_btn_bg_color">#D0D0D0</color>
+   <color name="blue_btn_bg_color">#AEDEF4</color>
+   <color name="blue_btn_bg_pressed_color">#96BFD2</color>
+   <color name="red_btn_bg_color">#DD6B55</color>
+   <color name="red_btn_bg_pressed_color">#CD5B55</color>
+
    <color name="pin_progress_default_circle_color">#80ffffff</color>
 
    <color name="load_more_color">#e5eff4</color>
@@ -57,7 +62,6 @@
 
    <color name="light_grey_background">#eeeeee</color>
    <color name="dtl_cities_text_color">#929292</color>
-   <color name="dtl_badge_color">#8896a6b6</color>
    <color name="dtl_selection_color">#f7f7f7</color>
 
    <color name="suggest_merchant_hint_text">#7e000000</color>
@@ -65,9 +69,6 @@
 
    <color name="dtl_button_background_disabled">#424f4f4f</color>
    <color name="dtl_button_background_enabled">#81c435</color>
-   <color name="dtl_text_color_disabled">#42000000</color>
-
-   <color name="perks_text_color">#222222</color>
 
    <color name="pin_progress_bg_for_white_holder">#A5A5A5</color>
 
@@ -97,7 +98,6 @@
    <color name="dtlfb_disabled_background_color">@android:color/white</color>
    <color name="dtlfb_enabled_caption_color">@android:color/white</color>
    <color name="dtlfb_disabled_caption_color">#222</color>
-   <color name="dtlfb_ceparator_color">#979797</color>
    <!-- </DTL FilterButton dimens> -->
 
    <color name="facebook_color">#3C5A99</color>
@@ -212,7 +212,6 @@
    <color name="message_rating_first">#252525</color>
    <color name="reviews_line_separator">#4d929292</color>
    <color name="color_item_review">#929292</color>
-   <color name="color_item_review_gray">#4C5058</color>
    <color name="toolbarColor">#005E92</color>
    <color name="reviewTextColor">#7FADC7</color>
    <color name="reviewBackground">#005E92</color>

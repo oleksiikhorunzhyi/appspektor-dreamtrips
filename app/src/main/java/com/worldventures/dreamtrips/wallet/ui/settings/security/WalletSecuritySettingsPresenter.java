@@ -57,13 +57,13 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
    }
 
    @Override
-   public void attachView(Screen view) {
-      super.attachView(view);
-      featureHelper.prepareSettingsSecurityScreen(view);
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      featureHelper.prepareSettingsSecurityScreen(getView());
       observeSmartCardChanges();
 
-      observeStealthModeController(view);
-      observeLockController(view);
+      observeStealthModeController(getView());
+      observeLockController(getView());
       smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
    }
 
@@ -98,10 +98,10 @@ public class WalletSecuritySettingsPresenter extends WalletPresenter<WalletSecur
 
       Observable.merge(
             smartCardInteractor.pinStatusEventPipe()
-                  .observeSuccessWithReplay()
+                  .observeSuccess()
                   .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED),
             smartCardInteractor.setPinEnabledCommandActionPipe()
-                  .observeSuccessWithReplay()
+                  .observeSuccess()
                   .map(Command::getResult))
             .startWith(true)
             .compose(bindViewIoToMainComposer())

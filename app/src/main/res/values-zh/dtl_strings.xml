@@ -3,15 +3,12 @@
    <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">选择位置</string>
    <string name="dtl_locations_try_search">我们无法找到离您近的城市。\n试试我们的城市搜索</string>
-   <string name="dtl_merchant_tab_offers">报价</string>
-   <string name="dtl_merchant_tab_dining">餐饮</string>
    <string name="dtl_near_me_caption">靠近我</string>
    <string name="dtl_nearby_caption_format">%1$s附近</string>
    <string name="dtl_nearby_caption_empty">附近</string>
    <string name="dtl_autodetect_location">自动检测我的位置</string>
    <string name="dtl_no_merchants_caption">这里没有商家</string>
    <string name="dtl_load_merchants_here_button_caption">重做商家搜索</string>
-   <string name="dtl_place_list_empty_text">没有所选类型的地方</string>
    <string name="dtl_location_no_merchants_caption">您附近没有商家。\n请输入新城市。</string>
    <string name="dtl_location_select_from_nearby_caption">从附近的城市选择：</string>
    <string name="dtl_points_estimation_calculate_button_caption">计算</string>
@@ -26,7 +23,6 @@
    <string name="dtl_receipt_rescan">重新捕捉</string>
    <string name="dtl_receipt_verify_button_caption">验证</string>
    <string name="dtl_receipt_verify_hint">这笔款项将通过商家进行验证。输入的任何数量差异会导致延迟赚取DreamTrips点数。</string>
-   <string name="dtl_action_next">下一个</string>
    <string name="dtl_amenities">设施</string>
    <string name="dtl_perks_description">好处</string>
    <string name="dtl_description">描述</string>
@@ -43,10 +39,8 @@
    <string name="dtl_congrats">恭喜！</string>
    <string name="dtl_you_earned">您赚取了</string>
    <string name="dtl_total">DreamTrips总点数：</string>
-   <string name="rate_hint">请为这个体验打分</string>
    <string name="dtl_success_title">恭喜！</string>
    <string name="dtl_amount_invalid">金额无效</string>
-   <string name="dtl_invalid">输入无效</string>
    <string name="dtl_verify_amount">确认金额</string>
    <string name="dtl_total_amount">总金额：</string>
    <string name="dtl_verify_earn_hint">您可以赚取 </string>
@@ -56,17 +50,10 @@
    <string name="suggest_merchant">推荐商家</string>
    <string name="suggest_merchant_title">DT Local 工具</string>
    <string name="dtl_details_share_title">我将赚取%1$sDreamTrips点数</string>
-   <string name="dtl_details_share_title_earned" formatted="false">我在%2$s赚取了%1$sDreamTrips点数</string>
    <string name="dtl_wait_for_receipt">稍候…上传收据</string>
    <string name="dtl_wait_for_earn">稍候…赚取点数</string>
-   <string name="dtl_wait_for_offers">搜索附近的优惠。</string>
-   <string name="dtl_wait_for_dinings">搜索附近的商家。</string>
    <string name="dtl_estimator_explanation">点数计算是根据在商家最低消费以及一周的哪一天</string>
    <string name="dtl_photo_upload_error">上传错误。如果问题仍然存在，请联系会员服务</string>
-   <string name="dtl_merchant_success">成功</string>
-   <string name="dtl_merchant_submitted">恭喜！商家已提交。一旦获得批准，您会被告知</string>
-   <string name="pdf">PDF</string>
-   <string name="presentation">演示</string>
    <string name="dtl_open_now">现在营业</string>
    <string name="dtl_closed_now">现已停业</string>
    <string name="dtl_closed">关闭</string>
@@ -79,8 +66,7 @@
    <string name="perks">好处</string>
    <string name="everyday">每天</string>
    <string name="perks_terms">条款和条件</string>
-   <string name="perks_formatted" formatted="false">%1$d优惠</string>
-   <string name="dtl_coming_soon_offers">报价即将推出</string>
+   <string name="perks_formatted">%1$d优惠</string>
    <string name="dtl_show_offers_only">只显示优惠</string>
    <string name="dtl_earn_points">赚取DreamTrips点数</string>
    <string name="dtl_details_share_title_without_points">我使用DreamTrips应用程序发现了%1$s</string>
@@ -89,7 +75,6 @@
    <string name="offer_expiration_format">直到%1$s</string>
    <string name="training_no_video">视频即将推出</string>
    <string name="help">帮助</string>
-   <string name="merchants_list_empty_text">即将推出新新地点</string>
    <string name="merchants_list_empty_text_additional">- 或 -</string>
    <string name="merchant_working_hours_caption">小时</string>
    <string name="merchants_no_results_offers_only">对不起，您所在区域暂无优惠报价提供。\n请关闭优惠报价来查看您附近的餐厅。</string>

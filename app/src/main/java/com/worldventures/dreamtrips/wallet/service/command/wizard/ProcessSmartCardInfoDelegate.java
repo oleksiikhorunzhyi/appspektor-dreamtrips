@@ -10,9 +10,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-
-import java.io.File;
 
 import io.techery.janet.Janet;
 import io.techery.mappery.MapperyContext;
@@ -51,9 +48,8 @@ class ProcessSmartCardInfoDelegate {
 
       if (user.displayPhoto() != null) {
          final String photoUrl = user.displayPhoto();
-         return janetWallet.createPipe(SmartCardAvatarCommand.class)
-               .createObservableResult(SmartCardAvatarCommand.fromUrl(photoUrl))
-               .map(command -> changeUserPhoto(scUser, command.getResult()));
+         return Observable.just(photoUrl)
+               .map(s -> changeUserPhoto(scUser, SmartCardUserPhoto.of(s)));
       } else {
          return Observable.just(scUser);
       }
@@ -68,8 +64,8 @@ class ProcessSmartCardInfoDelegate {
    }
 
    private SmartCardUser changeUserPhoto(SmartCardUser user, SmartCardUserPhoto smartCardUserPhoto) {
-      final File originalFile = smartCardUserPhoto.original();
-      if (originalFile != null) {
+      final String uri = smartCardUserPhoto.uri();
+      if (uri != null) {
          return ImmutableSmartCardUser.builder()
                .from(user)
                .userPhoto(smartCardUserPhoto)

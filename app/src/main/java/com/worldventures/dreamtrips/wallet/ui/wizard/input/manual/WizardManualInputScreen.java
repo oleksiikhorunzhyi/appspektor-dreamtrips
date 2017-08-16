@@ -26,6 +26,7 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInputPresenter.Screen, WizardManualInputPresenter, WizardManualInputPath> implements WizardManualInputPresenter.Screen {
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @InjectView(R.id.wallet_wizard_manual_input_scid) EditText scidNumberInput;
@@ -79,14 +80,15 @@ public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInpu
    public Observable<CharSequence> scidInput() {
       return RxTextView.textChanges(scidNumberInput);
    }
-   
+
    @Override
    public OperationView<GetSmartCardStatusCommand> provideOperationFetchCardStatus() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(), command -> presenter.retry(command.barcode), c -> { /*nothing*/ })
-                  ).build()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
+                        command -> presenter.retry(command.barcode), c -> { /*nothing*/ }))
+                  .build()
       );
    }
 

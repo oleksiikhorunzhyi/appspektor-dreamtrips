@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCust
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
-import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryErrorDialogView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.RetryDialogErrorView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 
@@ -88,7 +88,7 @@ public class WalletCustomerSupportSettingsScreen extends WalletLinearLayout<Wall
    public OperationView<GetCustomerSupportContactCommand> provideOperationView() {
       return new ComposableOperationView<>(new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
             ErrorViewFactory.<GetCustomerSupportContactCommand>builder()
-                  .defaultErrorView(new RetryErrorDialogView<>(getContext(), R.string.error_something_went_wrong,
+                  .defaultErrorView(new RetryDialogErrorView<>(getContext(), R.string.error_something_went_wrong,
                         command -> getPresenter().fetchCustomerSupportContact(),
                         command -> getPresenter().goBack()))
                   .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),

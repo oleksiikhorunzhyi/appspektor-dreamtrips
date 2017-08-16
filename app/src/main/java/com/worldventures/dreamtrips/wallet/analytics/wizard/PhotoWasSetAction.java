@@ -9,7 +9,23 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
                 trackers = AdobeTracker.TRACKER_KEY)
 public class PhotoWasSetAction extends WalletAnalyticsAction {
 
-   @Attribute("displayphotoset") final String displayPhotoSet = "1";
-   @Attribute("photomethod") final String photoMethod = "Default";
+   private static final String PHOTO_METHOD_DEFAULT = "Default";
+   private static final String PHOTO_METHOD_NO_PHOTO = "No Photo";
+
+   @Attribute("displayphotoset") final String displayPhotoSet;
+   @Attribute("photomethod") final String photoMethod;
    @Attribute("cardsetupstep5") final String cardSetupStep5 = "1";
+
+   private PhotoWasSetAction(String photoMethod, boolean photoAdded) {
+      this.photoMethod = photoMethod;
+      displayPhotoSet = photoAdded ? "1" : null;
+   }
+
+   public static PhotoWasSetAction methodDefault() {
+      return new PhotoWasSetAction(PHOTO_METHOD_DEFAULT, true);
+   }
+
+   public static PhotoWasSetAction noPhoto() {
+      return new PhotoWasSetAction(PHOTO_METHOD_NO_PHOTO, false);
+   }
 }

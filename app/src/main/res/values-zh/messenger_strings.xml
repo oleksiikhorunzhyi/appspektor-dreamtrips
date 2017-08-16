@@ -76,15 +76,15 @@
 
    <!-- system messages-->
    <string name="system_message_you">您</string>
-   <string name="system_message_admin" formatted="false">%1$s（管理员）</string>
-   <string name="system_message_added" formatted="false">%1$s&lt;b&gt;添加了&lt;/b&gt;%2$s</string>
-   <string name="system_message_is_added" formatted="false">%1$s&lt;b&gt;已添加&lt;/b&gt;</string>
+   <string name="system_message_admin">%1$s（管理员）</string>
+   <string name="system_message_added">%1$s&lt;b&gt;添加了&lt;/b&gt;%2$s</string>
+   <string name="system_message_is_added">%1$s&lt;b&gt;已添加&lt;/b&gt;</string>
    <string name="system_message_you_are_added" formatted="false">您&lt;b&gt;已被添加&lt;/b&gt;</string>
-   <string name="system_message_removed" formatted="false">%1$s&lt;b&gt;将&lt;/b&gt;%2$s从聊天中移除</string>
-   <string name="system_message_is_removed" formatted="false">%1$s&lt;b&gt;已被删除&lt;/b&gt;</string>
+   <string name="system_message_removed">%1$s&lt;b&gt;将&lt;/b&gt;%2$s从聊天中移除</string>
+   <string name="system_message_is_removed">%1$s&lt;b&gt;已被删除&lt;/b&gt;</string>
    <string name="system_message_you_are_removed" formatted="false">您&lt;b&gt;被删除&lt;/b&gt;</string>
    <string name="system_message_you_left_the_chat" formatted="false">您&lt;b&gt;离开了&lt;/b&gt;聊天对话</string>
-   <string name="system_message_left" formatted="false">%1$s&lt;b&gt;离开&lt;b&gt;</string>
+   <string name="system_message_left">%1$s&lt;b&gt;离开&lt;b&gt;</string>
 
    <!-- flagging related -->
    <string name="chat_flag_dialog_progress_loading_flags">载入中…</string>

@@ -16,8 +16,8 @@
    <android.support.v7.widget.RecyclerView
          android:id="@+id/disable_variant_list"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="vertical"
+         android:layout_height="match_parent"
+         android:background="@color/wallet_color_settings_section_divider"
          />
 
 </com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardScreen>

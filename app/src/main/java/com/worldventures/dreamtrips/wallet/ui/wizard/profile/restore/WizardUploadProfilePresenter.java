@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
@@ -12,7 +13,6 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -47,10 +47,11 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    private void observeSetupUserSmartCardData() {
       wizardInteractor.setupUserDataPipe()
             .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetupUserData())
-                  .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
-                  .onFail((setupUserDataCommand, throwable) -> {
+                  .onSuccess(command -> onUserSetupSuccess(command.getResult()))
+                  .onFail((command, throwable) -> {
                      getView().showRetryDialog();
                      Timber.e(throwable, "");
                   })
@@ -70,21 +71,15 @@ public class WizardUploadProfilePresenter extends WalletPresenter<WizardUploadPr
    }
 
    private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
-      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(
-            ImmutableChangedFields.builder()
-                  .firstName(smartCardUser.firstName())
-                  .middleName(smartCardUser.middleName())
-                  .lastName(smartCardUser.lastName())
-                  .photo(smartCardUser.userPhoto())
-                  .phone(smartCardUser.phoneNumber())
-                  .build())
-      );
+      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(smartCardUser));
    }
 
    private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction()));
-      featureHelper.navigateFromSetupUserScreen(navigator, user);
+            .send(new WalletAnalyticsCommand(
+                  user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
+            );
+      featureHelper.navigateFromSetupUserScreen(navigator, user, true);
    }
 
    public interface Screen extends WalletScreen {

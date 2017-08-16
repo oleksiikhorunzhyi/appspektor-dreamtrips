@@ -1,13 +1,11 @@
 package com.messenger.synchmechanism;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 
-import com.github.pwittchen.networkevents.library.ConnectivityStatus;
-import com.github.pwittchen.networkevents.library.NetworkEvents;
-import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
+import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.util.EventBusWrapper;
 import com.messenger.util.SessionHolderHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -17,10 +15,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
-
 public class MessengerConnector {
 
    private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
@@ -28,18 +22,17 @@ public class MessengerConnector {
    private final SessionHolder<UserSession> appSessionHolder;
    private final MessengerSyncDelegate messengerSyncDelegate;
 
-   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade, EventBusWrapper eventBusWrapper, MessengerSyncDelegate messengerSyncDelegate) {
+   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder<UserSession> appSessionHolder,
+         MessengerServerFacade messengerServerFacade, MessengerSyncDelegate messengerSyncDelegate) {
       this.appSessionHolder = appSessionHolder;
       this.messengerServerFacade = messengerServerFacade;
       this.messengerSyncDelegate = messengerSyncDelegate;
-      NetworkEvents networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
+      ReactiveNetwork.observeNetworkConnectivity(applicationContext)
+            .subscribe(connectivity -> onEvent(connectivity.getState()));
 
       messengerServerFacade.getStatusObservable().subscribe(this::handleConnectionStatus);
 
-
       registerActivityWatcher(activityWatcher);
-      eventBusWrapper.register(this);
-      networkEvents.register();
    }
 
    private void registerActivityWatcher(ActivityWatcher activityWatcher) {
@@ -94,9 +87,8 @@ public class MessengerConnector {
       messengerServerFacade.disconnect();
    }
 
-   public void onEvent(ConnectivityChanged event) {
-      ConnectivityStatus status = event.getConnectivityStatus();
-      boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
+   private void onEvent(NetworkInfo.State status) {
+      boolean internetConnected = status == NetworkInfo.State.CONNECTED;
       if (internetConnected) {
          connect();
       } else {

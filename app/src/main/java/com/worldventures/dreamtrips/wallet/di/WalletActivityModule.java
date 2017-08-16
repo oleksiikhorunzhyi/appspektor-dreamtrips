@@ -4,6 +4,9 @@ import android.app.Activity;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -21,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDivide
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
@@ -43,6 +47,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPr
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
@@ -53,7 +58,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.Wall
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.barcode.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
@@ -77,6 +82,7 @@ import dagger.Provides;
 
 @Module(
       includes = {
+            MediaPickerModule.class
       },
       injects = {
             WalletActivityPresenter.class,
@@ -104,6 +110,7 @@ import dagger.Provides;
             WalletSettingsProfilePresenter.class,
             WalletOfflineModeSettingsPresenter.class,
             WalletCustomerSupportSettingsPresenter.class,
+            DisplayOptionsSettingsPresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             EnterPinPresenter.class,
@@ -141,7 +148,8 @@ import dagger.Provides;
             SendFeedbackPresenter.class,
             WalletHelpVideoPresenter.class,
             HelpDocumentPresenter.class,
-            PinProposalPresenter.class
+            PinProposalPresenter.class,
+            PaymentFeedbackPresenter.class
       },
       complete = false, library = true
 )
@@ -164,5 +172,11 @@ public class WalletActivityModule {
    @Provides
    Navigator provideNavigator(Activity activity) {
       return new FlowNavigator(activity);
+   }
+
+   @Provides
+   @Singleton
+   WalletCropImageService provideWalletCropImageDelegate(Activity activity) {
+      return new WalletCropImageServiceImpl(activity);
    }
 }

@@ -86,6 +86,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                   .observeSuccess()
                   .map(Command::getResult), (isEnabled, shouldAsk) -> !isEnabled && shouldAsk)
             .compose(bindViewIoToMainComposer())
+            .take(1)
             .subscribe(this::handlePinOptions);
    }
 

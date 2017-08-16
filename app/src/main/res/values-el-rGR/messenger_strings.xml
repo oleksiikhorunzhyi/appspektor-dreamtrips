@@ -76,15 +76,15 @@
 
    <!-- system messages-->
    <string name="system_message_you">Εσείς</string>
-   <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
-   <string name="system_message_added" formatted="false">%1$s &lt;b&gt;πρόσθεσε&lt;/b&gt; %2$s</string>
-   <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;προστέθηκε&lt;/b&gt;</string>
+   <string name="system_message_admin">%1$s(Admin)</string>
+   <string name="system_message_added">%1$s &lt;b&gt;πρόσθεσε&lt;/b&gt; %2$s</string>
+   <string name="system_message_is_added">%1$s &lt;b&gt;προστέθηκε&lt;/b&gt;</string>
    <string name="system_message_you_are_added" formatted="false">Εσείς &lt;b&gt;προστεθήκατε&lt;/b&gt;</string>
-   <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;αφαιρέθηκε&lt;/b&gt; %2$s από τη συνομιλία</string>
-   <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;αφαιρέθηκε&lt;/b&gt;</string>
+   <string name="system_message_removed">%1$s &lt;b&gt;αφαιρέθηκε&lt;/b&gt; %2$s από τη συνομιλία</string>
+   <string name="system_message_is_removed">%1$s &lt;b&gt;αφαιρέθηκε&lt;/b&gt;</string>
    <string name="system_message_you_are_removed" formatted="false">Εσείς &lt;b&gt;αφαιρεθήκατε&lt;/b&gt;</string>
    <string name="system_message_you_left_the_chat" formatted="false">Εσείς &lt;b&gt;φύγατε&lt;/b&gt; από τη συνομιλία</string>
-   <string name="system_message_left" formatted="false">%1$s &lt;b&gt;έφυγε&lt;b&gt;</string>
+   <string name="system_message_left">%1$s &lt;b&gt;έφυγε&lt;b&gt;</string>
 
    <!-- flagging related -->
    <string name="chat_flag_dialog_progress_loading_flags">Φόρτωση…</string>

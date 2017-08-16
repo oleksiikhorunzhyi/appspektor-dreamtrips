@@ -57,6 +57,7 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      agreeBtn.setVisibility(View.GONE);
       supportConnectionStatusLabel(false);
       userAgreementViewGroup.setLayoutTransition(new LayoutTransition());
       toolbar.setNavigationOnClickListener(v -> presenter.onBack());
@@ -72,7 +73,6 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
          @Override
          public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
-            agreeBtn.setVisibility(GONE);
             pb.setVisibility(GONE);
             view.setVisibility(INVISIBLE);
             showLoadTermsError();
@@ -80,7 +80,6 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
 
          @Override
          public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            agreeBtn.setVisibility(View.GONE);
             view.setVisibility(VISIBLE);
          }
 

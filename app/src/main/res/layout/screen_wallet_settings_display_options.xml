@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="56dp"
+         app:title="@string/wallet_card_settings_display_options"
+         />
+
+   <android.support.constraint.ConstraintLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/wallet_settings_general_display_customize_sleep_screen"
+            android:textSize="@dimen/font_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+      <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center_horizontal"
+            android:text="@string/wallet_settings_general_display_how_screen_appear_on_sc"
+            android:textColor="#6d6d72"
+            android:textSize="@dimen/font_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            />
+
+      <android.support.constraint.ConstraintLayout
+            android:id="@+id/wrapper_pager"
+            android:layout_width="0dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="60dp"
+            android:alpha="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
+            tools:alpha="1"
+            tools:background="@color/platinum_user"
+            >
+
+         <android.support.v4.view.ViewPager
+               android:id="@+id/pager"
+               android:layout_width="0dp"
+               android:layout_height="0dp"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               />
+
+         <ImageView
+               android:id="@+id/iv_pager_frame"
+               android:layout_width="147dp"
+               android:layout_height="147dp"
+               android:src="@drawable/shape_settings_display_options_frame"
+               app:layout_constraintBottom_toBottomOf="@+id/pager"
+               app:layout_constraintEnd_toEndOf="@+id/pager"
+               app:layout_constraintStart_toStartOf="@+id/pager"
+               app:layout_constraintTop_toTopOf="@+id/pager"
+               tools:ignore="ContentDescription"
+               />
+
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/spacing_tiny"
+               android:src="@drawable/ic_vector_check_circle_green"
+               app:layout_constraintEnd_toEndOf="@+id/iv_pager_frame"
+               app:layout_constraintTop_toTopOf="@+id/iv_pager_frame"
+               tools:ignore="ContentDescription"
+               />
+
+      </android.support.constraint.ConstraintLayout>
+
+      <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
+            app:ci_animator="@animator/wallet_settings_display_options_indicator_alpha"
+            app:ci_drawable="@drawable/shape_settings_display_options_indicator"
+            app:ci_drawable_unselected="@drawable/shape_settings_display_options_indicator"
+            app:ci_height="6dp"
+            app:ci_width="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:background="@color/golden_user"
+            tools:layout_height="6dp"
+            tools:layout_width="50dp"
+            />
+
+   </android.support.constraint.ConstraintLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsScreen>

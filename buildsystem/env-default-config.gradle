@@ -43,6 +43,7 @@ ext {
                ANALYTICS_LOG_ENABLED     : [boolean: 'false'],
                NEWRELIC_ENABLED          : [boolean: 'false'],
                QA_AUTOMATION_MODE_ENABLED: [boolean: "${project.hasProperty("qa_automation_mode") ? project.getProperties().get("qa_automation_mode") : false}"],
+               WALLET_EMULATOR_MODE      : [boolean: "${project.hasProperty("wallet_emulator_mode") ? project.getProperties().get("wallet_emulator_mode") : false}"]
          ],
    ]
    envConfig.resParams = [

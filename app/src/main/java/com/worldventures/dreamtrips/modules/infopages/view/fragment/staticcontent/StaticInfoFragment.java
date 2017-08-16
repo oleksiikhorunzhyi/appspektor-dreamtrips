@@ -546,12 +546,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          return shouldOverride(view, url);
       }
 
-      @Override
-      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-         String url = request.getUrl().toString();
-         return shouldOverride(view, url);
-      }
-
       private boolean shouldOverride(WebView view, String url) {
          if (url.startsWith("mailto:")) {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));

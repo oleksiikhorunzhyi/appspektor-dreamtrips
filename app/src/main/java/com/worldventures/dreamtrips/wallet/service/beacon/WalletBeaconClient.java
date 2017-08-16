@@ -51,6 +51,7 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
       this.context = context;
 
       beaconManager = BeaconManager.getInstanceForApplication(context);
+      beaconManager.setBackgroundMode(true);
       beaconManager.setEnableScheduledScanJobs(true);
       beaconManager.getBeaconParsers().clear();
       beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(BEACON_LAYOUT));

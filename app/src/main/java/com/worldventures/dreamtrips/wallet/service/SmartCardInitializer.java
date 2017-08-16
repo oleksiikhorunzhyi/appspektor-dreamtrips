@@ -13,6 +13,6 @@ public class SmartCardInitializer implements AppInitializer {
    @Override
    public void initialize(Injector injector) {
       injector.inject(this);
-      locationTrackingManager.init();
+      locationTrackingManager.track();
    }
 }

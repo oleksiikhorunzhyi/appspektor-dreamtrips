@@ -10,39 +10,13 @@
       >
 
    <ImageView
-         android:id="@+id/button_settings"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignParentEnd="true"
-         android:layout_marginEnd="12dp"
-         android:layout_marginTop="8dp"
-         android:background="?attr/selectableItemBackgroundBorderless"
-         android:padding="8dp"
-         android:src="@drawable/ic_wallet_vector_settings"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         tools:ignore="ContentDescription"
-         />
-
-   <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
-         android:id="@+id/badge"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:textSize="@dimen/font_small"
-         app:layout_constraintEnd_toEndOf="@id/button_settings"
-         app:layout_constraintTop_toTopOf="@id/button_settings"
-         tools:text="1"
-         />
-
-   <ImageView
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/button_settings"
+         android:layout_marginBottom="@dimen/spacing_normal"
          android:src="@drawable/ic_wallet_vector_green_dot"
-         app:layout_constraintBottom_toBottomOf="@id/button_settings"
+         app:layout_constraintBottom_toTopOf="@id/photo_container"
          app:layout_constraintEnd_toEndOf="@id/photo_container"
          app:layout_constraintStart_toStartOf="@id/photo_container"
-         app:layout_constraintTop_toTopOf="@id/button_settings"
          tools:ignore="ContentDescription"
          />
 

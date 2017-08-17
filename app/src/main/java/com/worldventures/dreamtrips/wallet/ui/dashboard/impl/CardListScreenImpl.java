@@ -21,6 +21,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
@@ -76,6 +77,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
+   private BadgeView badgeView;
 
    @Inject CardListPresenter presenter;
 
@@ -100,6 +102,11 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      toolbar.inflateMenu(R.menu.wallet_dashboard);
+      final View actionSettingsView = toolbar.getMenu().findItem(R.id.item_settings).getActionView();
+      actionSettingsView.setOnClickListener(v -> getPresenter().onSettingsChosen()); // because onMenuItemClickListener isn't called
+      badgeView = (BadgeView) actionSettingsView.findViewById(R.id.badge_view);
+      badgeView.hide(); // because BadgeView is piece of shit.
       toolbar.setNavigationOnClickListener(it -> getPresenter().navigationClick());
       binding = DataBindingUtil.bind(view);
       setupCardStackList();
@@ -165,14 +172,6 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    }
 
    @Override
-   public void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable) {
-      smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-            .from(cardStackHeaderHolder)
-            .firmwareUpdateAvailable(firmwareUpdateAvailable)
-            .build());
-   }
-
-   @Override
    public void setCardsCount(int count) {
       smartCardWidget.bindCard(cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
@@ -215,12 +214,14 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    @Override
    public void hideFirmwareUpdateBtn() {
       firmwareAvailableView.setVisibility(GONE);
+      badgeView.hide();
    }
 
    @Override
    public void showFirmwareUpdateBtn() {
       if (firmwareAvailableView.getVisibility() == VISIBLE) return;
       firmwareAvailableView.setVisibility(VISIBLE);
+      badgeView.show();
    }
 
    @Override
@@ -284,7 +285,11 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    @Override
    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
       super.onRestoreViewState(view, savedViewState);
-      firmwareAvailableView.setVisibility(savedViewState.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      int visibility = savedViewState.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE);
+      firmwareAvailableView.setVisibility(visibility);
+      if (visibility == VISIBLE) {
+         badgeView.show();
+      }
    }
 
    @Override
@@ -327,7 +332,6 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
                }
             }));
 
-      smartCardWidget.setOnSettingsClickListener(v -> getPresenter().onSettingsChosen());
       smartCardWidget.setOnPhotoClickListener(v -> getPresenter().onProfileChosen());
       binding.transitionView.getRoot().setVisibility(GONE);
 

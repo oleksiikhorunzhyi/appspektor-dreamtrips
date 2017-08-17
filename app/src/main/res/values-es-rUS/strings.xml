@@ -342,7 +342,7 @@
    <string name="no_feed">Verás la actividad de tu amigo aquí.\n Haz clic en el enlace siguiente para encontrar a tus amigos</string>
    <string name="search_friends">Buscar amigos</string>
 
-   <string name="feed_share_photo_or_idea">Comparte una foto o idea</string>
+   <string name="feed_share_post_button">Comparte una foto, video o idea</string>
    <string name="feed_view_profile_btn">Ver perfil</string>
    <string name="start_searching">Escribe para empezar a buscar</string>
 
@@ -371,9 +371,6 @@
    <string name="user_mutual_friends">Amigos en común </string>
    <string name="no_mutual_friends">No tenéis ningún amigo mutuo</string>
 
-   <string name="photo_limitation_message">Elige hasta %1$d fotos</string>
-   <string name="picker_erros_photos_and_videos">No se puede seleccionar fotos y videos</string>
-   <string name="picker_video_duration_limit">No se puede subir un video de más de %1$d segundos</string>
    <string name="pending">Pendiente...</string>
 
    <string name="back">Volver</string>

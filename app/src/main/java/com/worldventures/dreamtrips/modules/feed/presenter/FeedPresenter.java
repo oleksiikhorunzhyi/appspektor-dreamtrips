@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.command
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -26,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDel
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
@@ -41,6 +43,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -128,6 +131,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void dropView() {
       translationDelegate.onDropView();
+      suggestedPhotoHelper.dropView();
       super.dropView();
    }
 
@@ -324,6 +328,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
+   }
+
+   @Override
    public void onEditPhoto(Photo photo) {
       feedActionHandlerDelegate.onEditPhoto(photo);
    }
@@ -383,10 +392,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       suggestedPhotoHelper.selectPhoto(model);
    }
 
-   public void attachSelectedSuggestionPhotos() {
-      suggestedPhotoHelper.mediaAttachmentObservable()
-            .compose(bindViewToMainComposer())
-            .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment), error -> Timber.e(error, ""));
+   public void attachSuggestionsClicked() {
+      view.openCreatePostScreen(suggestedPhotoHelper.getSelectedAttachments());
+      removeSuggestedPhotos();
    }
 
    public long lastSyncTimestamp() {
@@ -454,5 +462,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       void openComments(FeedItem feedItem);
 
       void updateLoadingStatus(boolean noMoreElements);
+
+      void openCreatePostScreen(MediaPickerAttachment mediaPickerAttachment);
    }
 }

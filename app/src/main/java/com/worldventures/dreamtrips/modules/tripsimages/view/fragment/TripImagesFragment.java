@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
@@ -30,14 +30,17 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.VideoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageTimestampCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaCell;
+import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaTimestampCell;
 
 import java.util.List;
 
@@ -81,16 +84,14 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void setUserVisibleHint(boolean isVisibleToUser) {
-      super.setUserVisibleHint(isVisibleToUser);
-
-      if (!isVisibleToUser) hidePhotoPicker();
-   }
-
-   @Override
    public void onDestroyView() {
       stateDelegate.onDestroyView();
       super.onDestroyView();
+   }
+
+   @Override
+   public void scrollToTop() {
+      recyclerView.scrollToPosition(0);
    }
 
    private void initAdapter() {
@@ -110,6 +111,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       CellDelegate<BaseMediaEntity> delegate = getPresenter()::onItemClick;
       adapter.registerCell(PhotoMediaEntity.class, getArgs().showTimestamps() ? TripImageTimestampCell.class : TripImageCell.class);
       adapter.registerDelegate(PhotoMediaEntity.class, delegate);
+      adapter.registerCell(VideoMediaEntity.class, getArgs().showTimestamps() ? VideoMediaTimestampCell.class : VideoMediaCell.class);
+      adapter.registerDelegate(VideoMediaEntity.class, delegate);
       adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(), getContext()));
    }
@@ -140,6 +143,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN,
             NavigationConfigBuilder.forActivity()
+                  .manualOrientationActivity(true)
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                   .data(TripImagesFullscreenArgs.builder()
                         .tripImagesArgs(getArgs())
@@ -155,22 +159,10 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void openPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .data(new PickerBundle.Builder().setPhotoPickLimit(MEDIA_PICKER_ITEMS_COUNT).build())
-            .build());
-   }
-
-   private void hidePhotoPicker() {
-      if (isAdded()) {
-         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-               .containerId(R.id.picker_container)
-               .fragmentManager(getChildFragmentManager())
-               .build());
-      }
+   public void openPicker(int durationLimit) {
+      MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(getPresenter()::pickedAttachments);
+      mediaPickerDialog.show(MEDIA_PICKER_ITEMS_COUNT, durationLimit);
    }
 
    @Override
@@ -192,8 +184,10 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items) {
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return adapter.getItem(oldItemPosition) instanceof UploadingPostsList && items.get(newItemPosition) instanceof UploadingPostsList
-                  || super.areItemsTheSame(oldItemPosition, newItemPosition);
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList && items.get(newItemPosition) instanceof UploadingPostsList){
+               return true;
+            }
+            return super.areItemsTheSame(oldItemPosition, newItemPosition);
          }
       });
       adapter.setItemsNoNotify(items);
@@ -222,7 +216,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment) {
+   public void openCreatePhoto(MediaPickerAttachment mediaAttachment) {
       if (isCreatePhotoAlreadyAttached()) return;
       router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)

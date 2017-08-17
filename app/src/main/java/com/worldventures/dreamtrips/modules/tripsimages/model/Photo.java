@@ -138,26 +138,12 @@ public class Photo extends BaseFeedEntity implements ImagePathHolder, Parcelable
       return url;
    }
 
-   public void setUser(User user) {
-      owner = user;
-   }
-
    public Location getLocation() {
       return location;
    }
 
    public void setLocation(Location location) {
       this.location = location;
-   }
-
-   public BaseMediaEntity castToMediaEntity() {
-      PhotoMediaEntity mediaEntity = new PhotoMediaEntity();
-      mediaEntity.setType(TripImageType.PHOTO);
-      mediaEntity.setUid(getUid());
-      mediaEntity.setCreatedAt(getCreatedAt());
-      mediaEntity.setUrl(url);
-      mediaEntity.setPhoto(this);
-      return mediaEntity;
    }
 
    ///////////////////////////////////////////////////////////////////////////

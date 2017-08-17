@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -101,6 +102,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                openFullscreenPhoto();
                break;
             }
+         case VIDEO:
          case TRIP:
          case BUCKET_LIST_ITEM:
          case POST:
@@ -134,7 +136,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
    private void openFullscreenPhoto() {
       List<BaseMediaEntity> items = new ArrayList<>();
-      items.add(((Photo) getModelObject().getItem()).castToMediaEntity());
+      items.add((new PhotoMediaEntity((Photo) getModelObject().getItem())));
       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .mediaEntityList(items)

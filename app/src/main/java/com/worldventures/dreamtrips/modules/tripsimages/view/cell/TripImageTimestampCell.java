@@ -21,10 +21,10 @@ public class TripImageTimestampCell extends TripImageCell {
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      if (getModelObject().getCreatedAt() != null) {
+      if (getModelObject().getItem().getCreatedAt() != null) {
          photoTimestampTextView.setVisibility(View.VISIBLE);
          photoTimestampTextView.setText(DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(),
-               getModelObject().getCreatedAt().getTime()));
+               getModelObject().getItem().getCreatedAt().getTime()));
       } else {
          photoTimestampTextView.setVisibility(View.GONE);
       }

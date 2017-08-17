@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.model;
 
 import android.os.Parcelable;
 
-import java.util.Date;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
-public abstract class BaseMediaEntity implements Parcelable {
+public abstract class BaseMediaEntity<T extends FeedEntity> implements Parcelable {
    protected TripImageType type;
-   protected String uid;
-   protected Date createdAt;
+   protected T item;
 
    public TripImageType getType() {
       return type;
@@ -17,20 +16,12 @@ public abstract class BaseMediaEntity implements Parcelable {
       this.type = type;
    }
 
-   public String getUid() {
-      return uid;
+   public T getItem() {
+      return item;
    }
 
-   public void setUid(String uid) {
-      this.uid = uid;
-   }
-
-   public Date getCreatedAt() {
-      return createdAt;
-   }
-
-   public void setCreatedAt(Date createdAt) {
-      this.createdAt = createdAt;
+   public void setItem(T item) {
+      this.item = item;
    }
 
    @Override
@@ -40,11 +31,11 @@ public abstract class BaseMediaEntity implements Parcelable {
 
       BaseMediaEntity that = (BaseMediaEntity) o;
 
-      return uid != null ? uid.equals(that.uid) : that.uid == null;
+      return item.getUid() != null ? item.getUid().equals(that.getItem().getUid()) : that.item.getUid() == null;
    }
 
    @Override
    public int hashCode() {
-      return uid != null ? uid.hashCode() : 0;
+      return item.getUid() != null ? item.getUid().hashCode() : 0;
    }
 }

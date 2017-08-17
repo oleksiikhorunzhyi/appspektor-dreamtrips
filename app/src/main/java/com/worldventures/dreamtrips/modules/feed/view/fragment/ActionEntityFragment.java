@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -37,6 +38,7 @@ import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.ResizeableCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.MediaItemAnimation;
@@ -74,6 +76,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    protected BaseDelegateAdapter adapter;
    protected SweetAlertDialog dialog;
    protected PostDescription description = new PostDescription();
+   protected LinearLayoutManager layoutManager;
+   protected Pair<Integer, Integer> checkedRange = new Pair<>(-1, -1);
 
    @Override
    public void afterCreateView(View rootView) {
@@ -86,16 +90,40 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       PostCreationTextCell.Delegate delegate = model -> openPhotoCreationDescriptionDialog((PostDescription) model);
       adapter.registerDelegate(PostDescription.class, delegate);
       adapter.registerDelegate(PhotoCreationItem.class, this);
-      photosList.setLayoutManager(new LinearLayoutManager(getContext()));
+      layoutManager = new LinearLayoutManager(getContext());
+      photosList.setLayoutManager(layoutManager);
       photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
-      photosList.setItemAnimator(new MediaItemAnimation(position -> photosList.scrollToPosition(position), getResources().getDimension(R.dimen.photo_cell_title_height)));
       photosList.setAdapter(adapter);
+      photosList.setItemAnimator(new MediaItemAnimation(position -> photosList.scrollToPosition(position), getResources()
+            .getDimension(R.dimen.photo_cell_title_height)));
 
       configurationInteractor.configurationActionPipe()
             .observe()
             .compose(bindUntilDropViewComposer())
             .map(state -> state.action.getResult())
             .subscribe(this::updateContainerOnOrientationChange);
+
+      manageScrollingAndResizing();
+   }
+
+   private void manageScrollingAndResizing() {
+      photosList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+            for (int position = firstVisibleItemPosition; position <= lastVisibleItemPosition; position++) {
+               View view = layoutManager.findViewByPosition(position);
+               RecyclerView.ViewHolder holder = photosList.getChildViewHolder(view);
+
+               if (holder instanceof ResizeableCell && (position < checkedRange.first || position > checkedRange.second)) {
+                  ((ResizeableCell) holder).checkSize();
+               }
+            }
+
+            checkedRange = new Pair(firstVisibleItemPosition, lastVisibleItemPosition);
+         }});
    }
 
    protected void openPhotoCreationDescriptionDialog(PostDescription model) {
@@ -131,6 +159,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    }
 
    @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      checkedRange = new Pair<>(-1, -1);
+   }
+
+   @Override
    public void onResume() {
       super.onResume();
       backStackDelegate.setListener(this::onBack);
@@ -140,13 +174,29 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void attachPhotos(List<PhotoCreationItem> images) {
-      adapter.addItems(images);
-      adapter.notifyDataSetChanged();
+      if (images.size() > 1) {
+         adapter.addItems(images);
+         adapter.notifyDataSetChanged();
+      } else {
+         attachMedia(images.get(0));
+      }
    }
 
    @Override
-   public void attachPhoto(PhotoCreationItem image) {
-      attachMedia(image);
+   public void attachVideo(VideoCreationModel model) {
+      attachMedia(model);
+   }
+
+   private void attachMedia(Object model) {
+      int position = adapter.getCount();
+      adapter.addItem(model);
+      adapter.notifyItemInserted(position);
+      photosList.scrollToPosition(position);
+   }
+
+   @Override
+   public void removeVideo(VideoCreationModel model) {
+      adapter.remove(model);
    }
 
    @Override
@@ -279,23 +329,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             }
          }
       }
-   }
-
-   @Override
-   public void attachVideo(VideoCreationModel model) {
-      attachMedia(model);
-   }
-
-   private void attachMedia(Object model) {
-      int position = adapter.getCount();
-      adapter.addItem(model);
-      adapter.notifyItemInserted(position);
-      photosList.scrollToPosition(position);
-   }
-
-   @Override
-   public void removeVideo(VideoCreationModel model) {
-      adapter.remove(model);
    }
 
    //////////////////////////////////////////

@@ -14,7 +14,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
@@ -25,6 +27,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    @Inject HashtagInteractor interactor;
 
    @Inject TranslationDelegate translationDelegate;
+   @Inject FeedInteractor feedInteractor;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject HashtagFeedStorageDelegate hashtagFeedStorageDelegate;
 
@@ -250,6 +254,11 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    @Override
    public void onDeleteTextualPost(TextualPost textualPost) {
       feedActionHandlerDelegate.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
    }
 
    @Override

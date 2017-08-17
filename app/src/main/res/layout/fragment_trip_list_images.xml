@@ -37,10 +37,4 @@
 
    <include layout="@layout/layout_new_trip_images_button"/>
 
-   <FrameLayout
-         android:id="@+id/picker_container"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:clickable="false"
-         />
 </RelativeLayout>

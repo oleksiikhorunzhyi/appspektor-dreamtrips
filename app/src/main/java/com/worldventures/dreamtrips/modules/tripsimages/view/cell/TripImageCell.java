@@ -32,7 +32,7 @@ public class TripImageCell extends AbstractDelegateCell<PhotoMediaEntity, CellDe
 
    public String getThumbUrl() {
       int dimensionPixelSize = itemView.getResources().getDimensionPixelSize(R.dimen.photo_thumb_size);
-      return ImageUtils.getParametrizedUrl(getModelObject().getUrl(), dimensionPixelSize, dimensionPixelSize);
+      return ImageUtils.getParametrizedUrl(getModelObject().getItem().getImagePath(), dimensionPixelSize, dimensionPixelSize);
    }
 
    @Override

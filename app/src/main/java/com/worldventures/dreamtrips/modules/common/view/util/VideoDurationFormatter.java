@@ -1,8 +1,8 @@
-package com.worldventures.dreamtrips.modules.feed.view.cell.util;
+package com.worldventures.dreamtrips.modules.common.view.util;
 
 import org.joda.time.Period;
 
-public class PickerVideoDurationFormatter {
+public class VideoDurationFormatter {
 
    public static String getFormattedDuration(long duration) {
       Period period = new Period(duration);

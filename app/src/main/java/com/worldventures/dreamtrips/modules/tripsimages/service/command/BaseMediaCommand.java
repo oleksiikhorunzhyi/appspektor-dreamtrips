@@ -6,12 +6,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs
 
 import java.util.List;
 
-public abstract class BaseTripImagesCommand extends CommandWithError<List<BaseMediaEntity>> {
+public abstract class BaseMediaCommand extends CommandWithError<List<BaseMediaEntity>> {
    private TripImagesArgs args;
    private boolean reload;
    private boolean loadMore;
 
-   public BaseTripImagesCommand(TripImagesArgs args) {
+   public BaseMediaCommand(TripImagesArgs args) {
       this.args = args;
    }
 

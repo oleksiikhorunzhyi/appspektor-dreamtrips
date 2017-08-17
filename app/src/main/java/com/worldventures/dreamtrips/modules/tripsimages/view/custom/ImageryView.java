@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.custom;
 
 import android.content.Context;
 import android.graphics.drawable.Animatable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.ViewTreeObserver;
 
@@ -27,6 +28,8 @@ public class ImageryView extends ScaleImageView {
    private Action0 onFinalImageSetAction;
    private Action1<Throwable> onErrorAction;
 
+   private boolean thumbnailOnly;
+
    public ImageryView(Context context) {
       super(context);
    }
@@ -49,11 +52,15 @@ public class ImageryView extends ScaleImageView {
       }
    }
 
+   public void setThumbnailOnly(boolean thumbnailOnly) {
+      this.thumbnailOnly = thumbnailOnly;
+   }
+
    private void loadImageInternal(String url) {
       int size = Math.max(getMeasuredHeight(), getMeasuredWidth());
       int thumbSize = getResources().getDimensionPixelSize(R.dimen.photo_thumb_size);
       PipelineDraweeControllerBuilder draweeControllerBuilder = Fresco.newDraweeControllerBuilder()
-            .setImageRequest(createResizeImageRequest(parseUri(ImageUtils.getParametrizedUrl(url, size, size)), size, size))
+            .setImageRequest(thumbnailOnly ? getLowResImageRequest(url, thumbSize) : getOriginalImageRequest(url, size))
             .setControllerListener(new BaseControllerListener<ImageInfo>() {
                @Override
                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
@@ -70,8 +77,16 @@ public class ImageryView extends ScaleImageView {
                }
             });
 
-      draweeControllerBuilder.setLowResImageRequest(ImageRequest.fromUri(ImageUtils.getParametrizedUrl(url, thumbSize, thumbSize)));
+      if (!thumbnailOnly) draweeControllerBuilder.setLowResImageRequest(getLowResImageRequest(url, thumbSize));
       setController(draweeControllerBuilder.build());
+   }
+
+   private ImageRequest getLowResImageRequest(String url, int thumbSize) {
+      return ImageRequest.fromUri(ImageUtils.getParametrizedUrl(url, thumbSize, thumbSize));
+   }
+
+   private ImageRequest getOriginalImageRequest(String url, int size) {
+      return createResizeImageRequest(parseUri(ImageUtils.getParametrizedUrl(url, size, size)), size, size);
    }
 
    public void setOnFinalImageSetAction(Action0 onFinalImageSetAction) {

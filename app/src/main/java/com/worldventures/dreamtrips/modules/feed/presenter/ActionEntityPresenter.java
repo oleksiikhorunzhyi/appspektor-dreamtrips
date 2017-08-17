@@ -105,8 +105,13 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
                         .state(VideoCreationModel.State.LOCAL)
                         .size(videoMetadata == null ? null : new Size(videoMetadata.width(), videoMetadata.height()))
                         .uri(selectedVideoPathUri)
+                        .canDelete(canDeleteVideo())
                         .build()
             );
+   }
+
+   protected boolean canDeleteVideo() {
+      return true;
    }
 
    public void cancelClicked() {
@@ -184,8 +189,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    public interface View extends RxView {
 
       void attachPhotos(List<PhotoCreationItem> images);
-
-      void attachPhoto(PhotoCreationItem image);
 
       void updatePhoto(PhotoCreationItem item);
 

@@ -87,6 +87,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscr
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripViewPagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullscreenPhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullscreenVideoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesFullscreenFragment;
@@ -130,6 +131,7 @@ public enum Route {
    ACCOUNT_IMAGES(TripImagesFragment.class, R.string.trip_images),
    TRIP_IMAGES_FULLSCREEN(TripImagesFullscreenFragment.class),
    SOCIAL_IMAGE_FULLSCREEN(FullscreenPhotoFragment.class),
+   SOCIAL_VIDEO_FULLSCREEN(FullscreenVideoFragment.class),
 
    YSBH_IMAGES(YouShouldBeHereFragment.class, R.string.trip_images),
    YSBH_PAGER_IMAGES(YsbhViewPagerFragment.class),

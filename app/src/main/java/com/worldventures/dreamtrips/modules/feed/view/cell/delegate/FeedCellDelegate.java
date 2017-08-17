@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
@@ -69,6 +70,11 @@ public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEnt
    @Override
    public void onDeleteTextualPost(TextualPost textualPost) {
       presenter.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteVideo(Video video) {
+      presenter.onDeleteVideo(video);
    }
 
    @Override

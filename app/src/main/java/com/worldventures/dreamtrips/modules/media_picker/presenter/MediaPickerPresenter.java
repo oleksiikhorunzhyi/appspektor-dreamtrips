@@ -54,7 +54,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
             .subscribe(videoPickerModel -> {
                int videoDurationSec = (int) (videoPickerModel.getDuration() / 1000);
                if (videoDurationSec > videoLengthLimit) {
-                  view.informUser(context.getString(R.string.picker_video_duration_limit, videoLengthLimit));
+                  view.informUser(context.getString(R.string.picker_video_length_limit, videoLengthLimit));
                } else {
                   mediaPickerEventDelegate.post(new MediaAttachment(videoPickerModel, MediaAttachment.Source.CAMERA, requestId));
                   closeMediaPicker();

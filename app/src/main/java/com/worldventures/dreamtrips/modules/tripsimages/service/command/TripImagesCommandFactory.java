@@ -9,50 +9,53 @@ import java.util.List;
 
 public class TripImagesCommandFactory {
 
-   public BaseTripImagesCommand provideCommandCacheOnly(TripImagesArgs tripImagesArgs) {
-      BaseTripImagesCommand command;
-
+   public BaseMediaCommand provideCommandCacheOnly(TripImagesArgs tripImagesArgs) {
+      BaseMediaCommand command;
       if (tripImagesArgs.getRoute() == Route.MEMBERS_IMAGES) {
-         command = new MemberImagesCommand(tripImagesArgs, true);
+         command = new GetMemberMediaCommand(tripImagesArgs, true);
       } else {
-         command = new UserImagesCommand(tripImagesArgs, true);
+         command = new GetUsersMediaCommand(tripImagesArgs, true);
       }
       return command;
    }
 
-   public BaseTripImagesCommand provideCommand(TripImagesArgs tripImagesArgs) {
-      BaseTripImagesCommand command;
-
+   public BaseMediaCommand provideCommand(TripImagesArgs tripImagesArgs) {
+      BaseMediaCommand command;
       if (tripImagesArgs.getRoute() == Route.MEMBERS_IMAGES) {
-         command = new MemberImagesCommand(tripImagesArgs, ImmutablePaginationParams.builder()
+         command = new GetMemberMediaCommand(tripImagesArgs, ImmutablePaginationParams.builder()
                .before(new Date())
                .perPage(tripImagesArgs.getPageSize())
                .build());
       } else {
-         command = new UserImagesCommand(tripImagesArgs, 1);
+         command = new GetUsersMediaCommand(tripImagesArgs, ImmutablePaginationParams.builder()
+               .before(new Date())
+               .perPage(tripImagesArgs.getPageSize())
+               .build());
       }
       command.setReload(true);
       return command;
    }
 
-   public BaseTripImagesCommand provideLoadMoreCommand(TripImagesArgs tripImagesArgs, List<BaseMediaEntity> mediaEntityList) {
-      BaseTripImagesCommand command;
+   public BaseMediaCommand provideLoadMoreCommand(TripImagesArgs tripImagesArgs, List<BaseMediaEntity> mediaEntityList) {
+      BaseMediaCommand command;
       if (tripImagesArgs.getRoute() == Route.MEMBERS_IMAGES) {
-         command = new MemberImagesCommand(tripImagesArgs, ImmutablePaginationParams.builder()
-               .before(mediaEntityList.get(mediaEntityList.size() - 1).getCreatedAt())
+         command = new GetMemberMediaCommand(tripImagesArgs, ImmutablePaginationParams.builder()
+               .before(mediaEntityList.get(mediaEntityList.size() - 1).getItem().getCreatedAt())
                .perPage(tripImagesArgs.getPageSize())
                .build());
       } else {
-         int page = (mediaEntityList.size() / tripImagesArgs.getPageSize()) + 1;
-         command = new UserImagesCommand(tripImagesArgs, page);
+         command = new GetUsersMediaCommand(tripImagesArgs, ImmutablePaginationParams.builder()
+               .before(mediaEntityList.get(mediaEntityList.size() - 1).getItem().getCreatedAt())
+               .perPage(tripImagesArgs.getPageSize())
+               .build());
       }
       command.setLoadMore(true);
       return command;
    }
 
-   public BaseTripImagesCommand provideRefreshCommand(TripImagesArgs tripImagesArgs, BaseMediaEntity newestMedia) {
-      return new MemberImagesCommand(tripImagesArgs, ImmutablePaginationParams.builder()
-            .after(newestMedia.getCreatedAt())
+   public BaseMediaCommand provideRefreshCommand(TripImagesArgs tripImagesArgs, BaseMediaEntity newestMedia) {
+      return new GetMemberMediaCommand(tripImagesArgs, ImmutablePaginationParams.builder()
+            .after(newestMedia.getItem().getCreatedAt())
             .perPage(tripImagesArgs.getPageSize())
             .build());
    }

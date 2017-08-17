@@ -4,10 +4,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesAddedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MediaRefresher;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,12 +49,14 @@ public class MemberImagesPresenter extends TripImagesPresenter {
    }
 
    public void onShowNewImagesClick() {
-      List<BaseMediaEntity> lastPhotos = memberImagesRefresher.getLastPhotos();
+      List<BaseMediaEntity> lastPhotos = new ArrayList<>(memberImagesRefresher.getLastPhotos());
       if (lastPhotos.size() < tripImagesArgs.getPageSize()) {
          tripImagesInteractor.memberImagesAddedCommandPipe()
                .send(new MemberImagesAddedCommand(tripImagesArgs, lastPhotos));
          currentItems.addAll(0, lastPhotos);
-         view.updateItems(currentItems);
+         tripImagesInteractor.checkVideoProcessingStatusPipe()
+               .send(new CheckVideoProcessingStatusCommand(currentItems));
+         updateItemsInView();
          restartImageRefreshing();
       } else {
          reload();

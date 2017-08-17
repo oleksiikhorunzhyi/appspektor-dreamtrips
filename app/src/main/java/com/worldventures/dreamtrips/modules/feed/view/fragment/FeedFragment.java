@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -37,6 +38,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.cell.EmptyFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
@@ -220,10 +222,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void onAttachClicked() {
-      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(false,
-            CreateEntityBundle.Origin.FEED));
-      getPresenter().attachSelectedSuggestionPhotos();
-      getPresenter().removeSuggestedPhotos();
+      getPresenter().attachSuggestionsClicked();
+   }
+
+   @Override
+   public void openCreatePostScreen(MediaPickerAttachment mediaPickerAttachment) {
+      CreateEntityBundle bundle = new CreateEntityBundle(mediaPickerAttachment, CreateEntityBundle.Origin.FEED);
+      bundle.setShowPickerImmediately(false);
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), bundle);
    }
 
    @Override
@@ -464,6 +470,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(EmptyFeedModel.class, model -> fragmentWithFeedDelegate.openFriendsSearch());
    }
 }

@@ -67,9 +67,7 @@ public class PhotoNotificationFactory extends NotificationFactory {
 
    private TripImagesFullscreenArgs createPhotoBundle(String uid, int notificationId) {
       List<BaseMediaEntity> items = new ArrayList<>();
-      PhotoMediaEntity baseMediaEntity = new PhotoMediaEntity();
-      baseMediaEntity.setUid(uid);
-      baseMediaEntity.setPhoto(new Photo(uid));
+      PhotoMediaEntity baseMediaEntity = new PhotoMediaEntity(new Photo(uid));
       items.add(baseMediaEntity);
       return TripImagesFullscreenArgs.builder()
             .mediaEntityList(items)

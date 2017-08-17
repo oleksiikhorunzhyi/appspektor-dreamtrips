@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import io.techery.janet.command.annotations.CommandAction;
 public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> implements InjectableAction {
 
    @Inject MediaInteractor mediaInteractor;
+   @Inject CapturedRowMediaHelper capturedRowMediaHelper;
 
    private PhotoPickerModel photoPickerModel;
    private MediaAttachment.Source source;
@@ -45,8 +47,10 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
                   callback.onSuccess(createPhotoItem(stringUri, uri.getPath(), getImageSize(uri.getPath())));
                }, callback::onFail);
       } else {
-         callback.onSuccess(createPhotoItem(photoPickerModel.getUri().toString(), photoPickerModel.getAbsolutePath(),
-               getImageSize(photoPickerModel.getUri().getPath())));
+         PhotoCreationItem photoCreation = createPhotoItem(photoPickerModel.getUri().toString(), photoPickerModel.getAbsolutePath(),
+               getImageSize(photoPickerModel.getUri().getPath()));
+         photoCreation.setRotation(capturedRowMediaHelper.obtainPhotoOrientation(photoPickerModel.getUri().getPath()));
+         callback.onSuccess(photoCreation);
       }
    }
 

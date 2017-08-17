@@ -175,13 +175,6 @@
    </RelativeLayout>
 
    <FrameLayout
-         android:id="@+id/picker_container"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:clickable="false"
-         />
-
-   <FrameLayout
          android:id="@+id/additional_page_container"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

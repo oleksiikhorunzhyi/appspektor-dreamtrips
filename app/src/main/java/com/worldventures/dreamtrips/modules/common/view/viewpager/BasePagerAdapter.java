@@ -86,9 +86,4 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
    public int getCount() {
       return fragmentItems.size();
    }
-
-   @Override
-   public void notifyDataSetChanged() {
-      super.notifyDataSetChanged();
-   }
 }

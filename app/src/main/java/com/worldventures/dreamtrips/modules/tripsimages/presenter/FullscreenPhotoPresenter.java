@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
@@ -194,10 +193,7 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
 
    @Override
    public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
-      if (deletedFeedEntity.getUid().equals(photo.getUid())) {
-         view.informUser(context.getString(R.string.photo_deleted));
-         view.back();
-      }
+      // we delete entity in TripImagesViewPagerPresenter
    }
 
    public void onShareAction() {
@@ -250,7 +246,5 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
       void showTranslation(String translation, String languageFrom);
 
       void showTranslationInProgress();
-
-      void back();
    }
 }

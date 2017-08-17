@@ -57,13 +57,13 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
    public void onVideoPickerModelSelected(VideoPickerModel model) {
       if (getCheckedPhotosCount() > 0) {
          resetModelState(model);
-         view.informUser(context.getString(R.string.picker_erros_photos_and_videos));
+         view.informUser(context.getString(R.string.picker_two_media_type_error));
          return;
       }
       int videoDurationSec = (int) (model.getDuration() / 1000);
       if (videoDurationSec > videoLengthLimit) {
          resetModelState(model);
-         view.informUser(context.getString(R.string.picker_video_duration_limit, videoLengthLimit));
+         view.informUser(context.getString(R.string.picker_video_length_limit, videoLengthLimit));
          return;
       }
       MediaPickerModel previouslySelectedVideo = Queryable.from(mediaPickerModels)

@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
@@ -110,6 +111,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
 
       suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
       suggestionAdapter.registerCell(HashtagSuggestion.class, HashtagSuggestionCell.class);

@@ -99,4 +99,9 @@ public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresent
       return post.getAttachments() != null && post.getAttachments().size() > 0
             && post.getAttachments().get(0).getItem() instanceof Video;
    }
+
+   @Override
+   protected boolean canDeleteVideo() {
+      return false;
+   }
 }

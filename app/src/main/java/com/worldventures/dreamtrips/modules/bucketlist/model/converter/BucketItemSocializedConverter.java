@@ -22,7 +22,9 @@ public class BucketItemSocializedConverter extends BucketItemConverter<BucketIte
       bucketItem.setLikesCount(apiBucketItem.likes());
 
       bucketItem.setCommentsCount(apiBucketItem.commentsCount());
-      bucketItem.setComments(mapperyContext.convert(apiBucketItem.comments(), Comment.class));
+      if (apiBucketItem.comments() != null) {
+         bucketItem.setComments(mapperyContext.convert(apiBucketItem.comments(), Comment.class));
+      }
 
       bucketItem.setOwner(mapperyContext.convert(apiBucketItem.author(), User.class));
 

@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
@@ -173,6 +174,7 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
       this.adapter.registerCell(TripFeedItem.class, NotificationCell.class);
       this.adapter.registerCell(BucketFeedItem.class, NotificationCell.class);
       this.adapter.registerCell(PostFeedItem.class, NotificationCell.class);
+      this.adapter.registerCell(VideoFeedItem.class, NotificationCell.class);
       this.adapter.registerCell(UndefinedFeedItem.class, NotificationCell.class);
       this.adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
    }

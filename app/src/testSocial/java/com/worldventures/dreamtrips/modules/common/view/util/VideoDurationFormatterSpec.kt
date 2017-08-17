@@ -1,13 +1,12 @@
-package com.worldventures.dreamtrips.social.media_picker
+package com.worldventures.dreamtrips.modules.common.view.util
 
-import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.joda.time.MutablePeriod
 import kotlin.test.assertEquals
 
-class DurationFormatterSpec : Spek({
+class VideoDurationFormatterSpec : Spek({
    describe("Duration formatter") {
       it ("should correctly process 0 duration") {
          assertEquals("0:00", format(seconds = 0))
@@ -38,7 +37,7 @@ class DurationFormatterSpec : Spek({
 
       fun format(hours: Int, minutes: Int, seconds: Int): String {
          val millis = MutablePeriod(hours, minutes, seconds, 0).toPeriod().toStandardDuration().millis
-         return PickerVideoDurationFormatter.getFormattedDuration(millis)
+         return VideoDurationFormatter.getFormattedDuration(millis)
       }
    }
 }

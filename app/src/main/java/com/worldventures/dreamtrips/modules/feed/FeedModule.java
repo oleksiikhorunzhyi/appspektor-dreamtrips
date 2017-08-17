@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
@@ -64,6 +63,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestionPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.VideoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
@@ -171,11 +171,11 @@ import dagger.Provides;
             HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
             UploadingPostsSectionCell.class,
-            VideoAttachmentView.class,
             VideoPickerModelCell.class,
             PhotoStripPhotoCell.class,
             PhotoStripVideoCell.class,
-            PhotoStripButtonCell.class
+            PhotoStripButtonCell.class,
+            VideoFeedItemDetailsCell.class
       },
       complete = false,
       library = true)
@@ -254,8 +254,8 @@ public class FeedModule {
 
    @Provides
    SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
-         MediaInteractor mediaInteractor, CapturedRowMediaHelper capturedRowMediaHelper) {
-      return new SuggestedPhotoCellPresenterHelper(appSessionHolder, mediaInteractor, capturedRowMediaHelper);
+         MediaInteractor mediaInteractor) {
+      return new SuggestedPhotoCellPresenterHelper(appSessionHolder, mediaInteractor);
    }
 
    @Provides

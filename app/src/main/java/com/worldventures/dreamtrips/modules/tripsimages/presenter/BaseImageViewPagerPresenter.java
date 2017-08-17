@@ -50,5 +50,9 @@ public abstract class BaseImageViewPagerPresenter<VT extends BaseImageViewPagerP
       void setSelectedPosition(int position);
 
       void setItems(List<FragmentItem> fragmentItems);
+
+      void remove(int position);
+
+      void goBack();
    }
 }

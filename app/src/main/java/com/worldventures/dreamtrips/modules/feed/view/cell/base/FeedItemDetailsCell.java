@@ -50,6 +50,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
+
       if (!sessionHolder.get().isPresent()) {
          Timber.e("Something went wrong! Session is absent, but feed item is trying to render");
          return;

@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
+import java.io.IOException;
+
 import rx.Observable;
 
 public final class CapturedRowMediaHelper {
@@ -42,4 +44,17 @@ public final class CapturedRowMediaHelper {
       Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, pickedPath);
       return new PhotoPickerModel(pair.first, pair.second);
    }
+
+   public Pair<String, Size> generateUri(String path) {
+      return ImageUtils.generateUri(drawableUtil, path);
+   }
+
+   public int obtainPhotoOrientation(String path) {
+      try {
+         return drawableUtil.obtainRotation(path);
+      } catch (IOException e) {
+         return 0;
+      }
+   }
+
 }

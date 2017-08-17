@@ -6,8 +6,10 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.UserImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMemberMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUsersMediaCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesAddedCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.MemberImagesRemovedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +23,7 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
    public static final String PARAM_ARGS = "args";
    public static final String RELOAD = "RELOAD";
    public static final String LOAD_MORE = "LOAD_MORE";
+   public static final String REMOVE_ITEMS = "REMOVE_ITEM";
    public static final String LOAD_LATEST = "LOAD_LATEST";
 
    private Map<TripImagesArgs, MemoryStorage<List<BaseMediaEntity>>> map = new ConcurrentHashMap<>();
@@ -52,6 +55,10 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
          List<BaseMediaEntity> cachedItems = storage.get(params);
          cachedItems.addAll(0, data);
          storage.save(params, cachedItems);
+      } else if (params.get(REMOVE_ITEMS)) {
+         List<BaseMediaEntity> cachedItems = storage.get(params);
+         cachedItems.removeAll(data);
+         storage.save(params, cachedItems);
       }
    }
 
@@ -68,6 +75,7 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
 
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
-      return Arrays.asList(MemberImagesCommand.class, UserImagesCommand.class);
+      return Arrays.asList(GetMemberMediaCommand.class, GetUsersMediaCommand.class,
+            MemberImagesAddedCommand.class, MemberImagesRemovedCommand.class);
    }
 }

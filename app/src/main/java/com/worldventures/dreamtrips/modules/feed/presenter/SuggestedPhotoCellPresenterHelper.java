@@ -4,16 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +33,6 @@ public class SuggestedPhotoCellPresenterHelper {
    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
    private MediaInteractor mediaInteractor;
-   private CapturedRowMediaHelper capturedRowMediaHelper;
    private SessionHolder<UserSession> appSessionHolder;
 
    @State ArrayList<PhotoPickerModel> suggestionItems;
@@ -43,10 +43,9 @@ public class SuggestedPhotoCellPresenterHelper {
    private Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper;
 
    public SuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
-         MediaInteractor mediaInteractor, CapturedRowMediaHelper capturedRowMediaHelper) {
+         MediaInteractor mediaInteractor) {
       this.appSessionHolder = appSessionHolder;
       this.mediaInteractor = mediaInteractor;
-      this.capturedRowMediaHelper = capturedRowMediaHelper;
    }
 
    public void takeView(View view, Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper, Bundle bundle) {
@@ -68,6 +67,12 @@ public class SuggestedPhotoCellPresenterHelper {
       } else {
          view.appendPhotoSuggestions(suggestionItems);
       }
+   }
+
+   public void dropView() {
+      view = null;
+      suggestionItems = null;
+      selectedPhotosPaths = null;
    }
 
    public void preloadSuggestionPhotos(@Nullable PhotoPickerModel model) {
@@ -128,10 +133,16 @@ public class SuggestedPhotoCellPresenterHelper {
       setSuggestionTitle();
    }
 
-   public Observable<MediaAttachment> mediaAttachmentObservable() {
-      return Observable.from(selectedPhotosPaths)
-            .map(element -> capturedRowMediaHelper.processPhotoModel(element))
-            .map(photoGalleryModel -> new MediaAttachment(photoGalleryModel, MediaAttachment.Source.GALLERY));
+   public MediaPickerAttachment getSelectedAttachments() {
+      if (selectedPhotosPaths.isEmpty()) return null;
+
+      List<PhotoPickerModel> photoPickerModels = Queryable.from(selectedPhotosPaths)
+            .map(path -> {
+               PhotoPickerModel model = new PhotoPickerModel(path, 0);
+               model.setSource(MediaAttachment.Source.GALLERY);
+               return model;
+            }).toList();
+      return new MediaPickerAttachment(photoPickerModels, -1);
    }
 
    void saveInstanceState(Bundle bundle) {

@@ -8,9 +8,8 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.modules.tripsimages.service.storage.TripImageStorage;
+import com.worldventures.dreamtrips.modules.tripsimages.service.storage.YsbhPhotoStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +88,8 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
    @Override
    public CacheOptions getCacheOptions() {
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
-      cacheBundle.put(TripImageStorage.RELOAD, page == 1);
-      cacheBundle.put(TripImageStorage.LOAD_MORE, page != 1);
+      cacheBundle.put(YsbhPhotoStorage.RELOAD, page == 1);
+      cacheBundle.put(YsbhPhotoStorage.LOAD_MORE, page != 1);
       return ImmutableCacheOptions.builder().params(cacheBundle).build();
    }
 }

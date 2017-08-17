@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -15,9 +17,6 @@ import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.techery.janet.Command;
 import rx.Observable;
@@ -51,7 +50,6 @@ public class PhotoStripDelegate {
    private Action0 openPickerAction;
    private boolean videoEnabled;
 
-   private Map<String, PhotoPickerModel> processedModels;
    private Subscription cameraSubscription;
    private int videoAvailableLimit;
    private int photoAvailableLimit;
@@ -73,7 +71,7 @@ public class PhotoStripDelegate {
    }
 
    public void maintainPhotoStrip(PhotoStripView view, Observable.Transformer viewStopper, boolean videoEnabled) {
-      if(pickPhotoMaxCount == 0 || pickVideoMaxCount == 0)
+      if (pickPhotoMaxCount == 0 || pickVideoMaxCount == 0)
          throw new RuntimeException("Setting limits before maintaining photo strip is required");
 
       this.videoEnabled = videoEnabled;
@@ -83,7 +81,6 @@ public class PhotoStripDelegate {
 
       photoStrip = view;
       stopper = viewStopper;
-      processedModels = new HashMap<>();
 
       photoStrip.setInjector(injector);
       photoStrip.setEventListener(provideEventListener());
@@ -154,26 +151,14 @@ public class PhotoStripDelegate {
          return;
       }
 
-      photoAvailableLimit += model.isChecked()? -1 : +1;
+      model.setSource(MediaAttachment.Source.PHOTO_STRIP);
+      photoAvailableLimit += model.isChecked() ? -1 : +1;
       photoStrip.updateMediaModel(model);
-
-      if (processedModels.containsKey(model.getAbsolutePath())){
-         PhotoPickerModel processedModel = processedModels.get(model.getAbsolutePath());
-         processedModel.setChecked(model.isChecked());
-         newMediaAction.call(processedModel.copy());
-      } else {
-         Observable.just(model)
-               .map(photoPickerModel -> capturedRowMediaHelper.processPhotoModel(photoPickerModel.getAbsolutePath()))
-               .compose(bindIoToMain(stopper))
-               .subscribe(processedModel -> {
-                  processedModel.setChecked(model.isChecked());
-                  processedModels.put(model.getAbsolutePath(), processedModel);
-                  newMediaAction.call(processedModel.copy());
-               });
-      }
+      newMediaAction.call(model.copy());
    }
 
    private void videoPickStatusChanged(VideoPickerModel model) {
+      model.setSource(MediaAttachment.Source.PHOTO_STRIP);
       if (checkLimitVideoException(model) || checkTwoMediaTypeException(model)) {
          removeItem(model);
       } else {
@@ -219,9 +204,9 @@ public class PhotoStripDelegate {
             subscribeToCapturedPhoto();
          } else {
             doWithMaxLength(maxDuration -> {
-                     subscribeToCapturedVideo(maxDuration);
-                     pickImageDelegate.recordVideo(maxDuration);
-                  });
+               subscribeToCapturedVideo(maxDuration);
+               pickImageDelegate.recordVideo(maxDuration);
+            });
          }
       });
    }
@@ -232,6 +217,7 @@ public class PhotoStripDelegate {
             .subscribe(videoPickerModel -> {
                if (!checkMaxVideoLengthException(videoPickerModel, videoLengthLimit)) {
                   videoPickerModel.setChecked(true);
+                  videoPickerModel.setSource(MediaAttachment.Source.CAMERA);
                   newMediaAction.call(videoPickerModel);
                }
                unsubscribeCameraSubscription();
@@ -243,6 +229,7 @@ public class PhotoStripDelegate {
             .compose(bindIoToMain(stopper))
             .subscribe(photoPickerModel -> {
                photoPickerModel.setChecked(true);
+               photoPickerModel.setSource(MediaAttachment.Source.CAMERA);
                newMediaAction.call(photoPickerModel);
                unsubscribeCameraSubscription();
             });
@@ -255,7 +242,7 @@ public class PhotoStripDelegate {
             .subscribe(type -> unsubscribeCameraSubscription());
    }
 
-   private void unsubscribeCameraSubscription () {
+   private void unsubscribeCameraSubscription() {
       if (cameraSubscription != null && !cameraSubscription.isUnsubscribed()) {
          cameraSubscription.unsubscribe();
          cameraSubscription = null;
@@ -325,7 +312,7 @@ public class PhotoStripDelegate {
 
    private boolean checkLimitPhotoException(PhotoPickerModel model) {
       if (model.isChecked() && photoAvailableLimit == 0) {
-         photoStrip.showError(R.string.photo_strip_photo_limit_reached);
+         photoStrip.showError(R.string.picker_photo_limit_plural, pickPhotoMaxCount);
          return true;
       }
 
@@ -334,7 +321,7 @@ public class PhotoStripDelegate {
 
    private boolean checkLimitVideoException(VideoPickerModel model) {
       if (model.isChecked() && videoAvailableLimit == 0) {
-         photoStrip.showError(R.string.photo_strip_video_limit_reached);
+         photoStrip.showError(R.string.picker_video_limit, pickVideoMaxCount);
          return true;
       }
 
@@ -344,9 +331,9 @@ public class PhotoStripDelegate {
    private boolean checkTwoMediaTypeException(MediaPickerModel model) {
       if (!model.isChecked()) return false;
 
-      if ( (model.getType() == MediaPickerModel.Type.VIDEO && photoAvailableLimit < pickPhotoMaxCount)
-            || (model.getType() == MediaPickerModel.Type.PHOTO && videoAvailableLimit < pickVideoMaxCount) ) {
-         photoStrip.showError(R.string.photo_strip_two_media_type_error);
+      if ((model.getType() == MediaPickerModel.Type.VIDEO && photoAvailableLimit < pickPhotoMaxCount)
+            || (model.getType() == MediaPickerModel.Type.PHOTO && videoAvailableLimit < pickVideoMaxCount)) {
+         photoStrip.showError(R.string.picker_two_media_type_error);
          return true;
       } else {
          return false;
@@ -355,7 +342,7 @@ public class PhotoStripDelegate {
 
    private boolean checkAddNewMediaException() {
       if (videoAvailableLimit == 0 || photoAvailableLimit == 0) {
-         photoStrip.showError(R.string.photo_strip_two_media_type_error);
+         photoStrip.showError(R.string.picker_two_media_type_error);
          return true;
       } else {
          return false;
@@ -365,7 +352,7 @@ public class PhotoStripDelegate {
    private boolean checkMaxVideoLengthException(VideoPickerModel model, long maxVideoLength) {
       int videoDurationSec = (int) (model.getDuration() / 1000);
       if (videoDurationSec > maxVideoLength) {
-         photoStrip.showError(R.string.picker_video_duration_limit, maxVideoLength);
+         photoStrip.showError(R.string.picker_video_length_limit, maxVideoLength);
          return true;
       } else {
          return false;

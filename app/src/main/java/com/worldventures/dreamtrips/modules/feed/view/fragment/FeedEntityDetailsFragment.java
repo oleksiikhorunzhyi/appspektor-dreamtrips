@@ -74,4 +74,9 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
       }
       super.initConnectionOverlay(connectionStateObservable, stopper);
    }
+
+   @Override
+   protected Route getRoute() {
+      return Route.FEED_ENTITY_DETAILS;
+   }
 }

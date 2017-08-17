@@ -34,19 +34,28 @@ public class FeedCellListWidthProvider {
       final Func0<Integer> screenWidthFunc = () -> getScreenWidth();
       final Func0<Integer> phoneLandscapeFunc = () -> getScreenWidth() - navDrawerWidth;
       final Func0<Integer> tabletTimelineFunc = () -> (int) (getScreenWidth() * (1 - 2 * timelineHorizontalMarginShare));
+      final Func0<Integer> tabletLandscapeFeedFunc = () -> {
+         int listWeight = res.getInteger(R.integer.feed_landscape_tablet_weight);
+         int additionalInfoWeight = res.getInteger(R.integer.feed_landscape_tablet_additional_info_weight);
+         return (getScreenWidth() - navDrawerWidth) * listWeight / (listWeight + additionalInfoWeight);
+      };
+      final Func0<Integer> tabletFeedItemDetailsFunc = () -> (int) (getScreenWidth()
+            * res.getFraction(R.fraction.feed_details_content_tablet_landscape_width, 1, 1));
 
       putToConfigMap(new Config(FeedType.FEED, Device.PHONE, Orientation.PORTRAIT), screenWidthFunc);
       putToConfigMap(new Config(FeedType.FEED, Device.PHONE, Orientation.LANDSCAPE), phoneLandscapeFunc);
       putToConfigMap(new Config(FeedType.FEED, Device.TABLET, Orientation.PORTRAIT), screenWidthFunc);
-      putToConfigMap(new Config(FeedType.FEED, Device.TABLET, Orientation.LANDSCAPE), () -> {
-         int listWeight = res.getInteger(R.integer.feed_landscape_tablet_weight);
-         int additionalInfoWeight = res.getInteger(R.integer.feed_landscape_tablet_additional_info_weight);
-         return (getScreenWidth() - navDrawerWidth) * listWeight / (listWeight + additionalInfoWeight);
-      });
+      putToConfigMap(new Config(FeedType.FEED, Device.TABLET, Orientation.LANDSCAPE), tabletLandscapeFeedFunc);
+
       putToConfigMap(new Config(FeedType.TIMELINE, Device.PHONE, Orientation.PORTRAIT), screenWidthFunc);
       putToConfigMap(new Config(FeedType.TIMELINE, Device.PHONE, Orientation.LANDSCAPE), phoneLandscapeFunc);
       putToConfigMap(new Config(FeedType.TIMELINE, Device.TABLET, Orientation.PORTRAIT), tabletTimelineFunc);
       putToConfigMap(new Config(FeedType.TIMELINE, Device.TABLET, Orientation.LANDSCAPE), tabletTimelineFunc);
+
+      putToConfigMap(new Config(FeedType.FEED_DETAILS, Device.PHONE, Orientation.PORTRAIT), screenWidthFunc);
+      putToConfigMap(new Config(FeedType.FEED_DETAILS, Device.PHONE, Orientation.LANDSCAPE), phoneLandscapeFunc);
+      putToConfigMap(new Config(FeedType.FEED_DETAILS, Device.TABLET, Orientation.PORTRAIT), screenWidthFunc);
+      putToConfigMap(new Config(FeedType.FEED_DETAILS, Device.TABLET, Orientation.LANDSCAPE), tabletFeedItemDetailsFunc);
    }
 
    public int getScreenWidth() {
@@ -62,16 +71,33 @@ public class FeedCellListWidthProvider {
 
    public int getFeedCellWidth(Route route) {
       Config config = makeConfig(route);
-      Integer width = configWidthMap.get(config).call();
-      return width;
+      Func0<Integer> widthFunc = configWidthMap.get(config);
+      if (widthFunc == null) throw new IllegalStateException("No width func found for route. Supply corresponding config.");
+      return widthFunc.call();
    }
 
    private Config makeConfig(Route route) {
       Config config = new Config();
-      config.feedType = route == Route.FEED ? FeedType.FEED : FeedType.TIMELINE;
+      config.feedType = mapRouteToFeedType(route);
       config.device = ViewUtils.isTablet(context) ? Device.TABLET : Device.PHONE;
       config.orientation = ViewUtils.isLandscapeOrientation(context) ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
       return config;
+   }
+
+   private FeedType mapRouteToFeedType(Route route) {
+      switch (route) {
+         case FEED:
+            return FeedType.FEED;
+         case FEED_HASHTAG:
+         case ACCOUNT_PROFILE:
+         case FOREIGN_PROFILE:
+            return FeedType.TIMELINE;
+         case FEED_ITEM_DETAILS:
+         case FEED_ENTITY_DETAILS:
+            return FeedType.FEED_DETAILS;
+         default:
+            throw new IllegalArgumentException("Cannot map route to feed type");
+      }
    }
 
    public static class Config {
@@ -121,7 +147,8 @@ public class FeedCellListWidthProvider {
 
    public enum FeedType {
       FEED,
-      TIMELINE
+      TIMELINE,
+      FEED_DETAILS
    }
 
    public enum Device {

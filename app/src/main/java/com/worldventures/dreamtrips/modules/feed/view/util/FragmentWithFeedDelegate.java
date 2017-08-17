@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -31,9 +30,11 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
@@ -41,8 +42,8 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
@@ -91,8 +92,8 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof MediaAttachment &&
-                  items.get(newItemPosition) instanceof MediaAttachment) {
+            if (adapter.getItem(oldItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel &&
+                  items.get(newItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel) {
                return true;
             }
             if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&
@@ -166,6 +167,7 @@ public class FragmentWithFeedDelegate {
       adapter.registerCell(TripFeedItem.class, FeedItemCell.class);
       adapter.registerCell(BucketFeedItem.class, FeedItemCell.class);
       adapter.registerCell(PostFeedItem.class, FeedItemCell.class);
+      adapter.registerCell(VideoFeedItem.class, FeedItemCell.class);
       adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
       adapter.registerCell(UploadingPostsList.class, UploadingPostsSectionCell.class);
       adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
@@ -233,7 +235,7 @@ public class FragmentWithFeedDelegate {
       }
    }
 
-   public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+   public void openTripImages(Route route, TripImagesArgs tripImagesBundle) {
       router.moveTo(route, NavigationConfigBuilder.forActivity().data(tripImagesBundle).build());
    }
 

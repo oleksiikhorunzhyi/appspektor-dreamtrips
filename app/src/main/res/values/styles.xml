@@ -559,4 +559,14 @@
       <item name="android:layout_marginTop">@dimen/dtl_all_reviews_margin</item>
       <item name="android:elevation" tools:targetApi="lollipop">@dimen/dtl_all_reviews_elevation</item>
    </style>
+
+   <style name="TransparentActivity" parent="Theme.AppCompat">
+      <item name="windowNoTitle">true</item>
+      <item name="android:windowBackground">@android:color/transparent</item>
+      <item name="android:colorBackgroundCacheHint">@null</item>
+      <item name="android:windowIsTranslucent">true</item>
+      <item name="windowActionBar">true</item>
+      <item name="android:textColorPrimary">@color/black</item>
+   </style>
+
 </resources>

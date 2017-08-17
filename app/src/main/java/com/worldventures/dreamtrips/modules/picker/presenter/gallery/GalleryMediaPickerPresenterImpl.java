@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
@@ -16,8 +17,9 @@ import com.worldventures.dreamtrips.modules.picker.model.GalleryMediaPickerViewM
 import com.worldventures.dreamtrips.modules.picker.model.GalleryPhotoPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.model.GalleryVideoPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.base.BaseMediaPickerPresenterImpl;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.VideoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.view.gallery.GalleryMediaPickerView;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +64,7 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
       final List<GalleryMediaPickerViewModel> galleryPhotoModels = Queryable
             .from(commandResult)
             .map(element -> {
-               if(element.getType() == MediaPickerModel.Type.PHOTO) {
+               if (element.getType() == MediaPickerModel.Type.PHOTO) {
                   return new GalleryPhotoPickerViewModel(element.getAbsolutePath(), element.getDateTaken());
                } else {
                   return new GalleryVideoPickerViewModel(element.getAbsolutePath(), ((VideoPickerModel) element).getDuration());
@@ -73,7 +75,7 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
       return appendedList;
    }
 
-   private void checkPermissions(Action0 permissionsGrantedAction)  {
+   void checkPermissions(Action0 permissionsGrantedAction) {
       permissionDispatcher.requestPermission(PermissionConstants.CAMERA_STORE_PERMISSIONS)
             .compose(getView().lifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -110,7 +112,7 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
             .observeSuccess()
             .compose(getView().lifecycle())
             .map(imageCapturedCommand -> {
-               final List<GalleryMediaPickerViewModel> capturedImageContainer =  new ArrayList<>();
+               final List<GalleryMediaPickerViewModel> capturedImageContainer = new ArrayList<>();
                final GalleryPhotoPickerViewModel model = new GalleryPhotoPickerViewModel(imageCapturedCommand.getResult());
                model.setSource(MediaAttachment.Source.CAMERA);
                capturedImageContainer.add(model);
@@ -161,6 +163,44 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
       } else {
          tryOpenCameraForPhoto();
       }
+   }
+
+   @Override
+   public boolean validateItemPick(GalleryMediaPickerViewModel pickedItem, VideoPickLimitStrategy videoPickLimitStrategy, PhotoPickLimitStrategy photoPickLimitStrategy) {
+      if (pickedItem.isChecked()) return true;
+
+      List<GalleryMediaPickerViewModel> pickedItems = getView().getChosenMedia();
+      boolean itemsTypeValid = pickedItems.size() == 0 || pickedItems.get(0).getType().equals(pickedItem.getType());
+      if (!itemsTypeValid) {
+         getView().showWrongType();
+         return false;
+      }
+
+      if (pickedItem.getType() == MediaPickerModel.Type.PHOTO) {
+         boolean limitReached = photoPickLimitStrategy.photoPickLimit() > 0
+               && pickedItems.size() >= photoPickLimitStrategy.photoPickLimit();
+
+         if (limitReached) {
+            getView().showPhotoLimitReached(photoPickLimitStrategy.photoPickLimit());
+            return false;
+         }
+      } else if (pickedItem.getType() == MediaPickerModel.Type.VIDEO) {
+         boolean limitReached = videoPickLimitStrategy.videoPickLimit() > 0
+               && pickedItems.size() >= videoPickLimitStrategy.videoPickLimit();
+         int videoLengthSeconds = (int) (((GalleryVideoPickerViewModel) pickedItem).getDuration() / 1000);
+         boolean lengthLimitReached = videoLengthSeconds > videoPickLimitStrategy.videoDurationLimit();
+
+         if (limitReached) {
+            getView().showVideoLimitReached(videoPickLimitStrategy.videoPickLimit());
+            return false;
+         }
+         if (lengthLimitReached) {
+            getView().showVideoDurationLimitReached(videoPickLimitStrategy.videoDurationLimit());
+            return false;
+         }
+      }
+
+      return true;
    }
 
    @Override

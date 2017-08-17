@@ -13,6 +13,7 @@ public abstract class VideoCreationModel {
    public abstract Uri uri();
    @Nullable public abstract Size size();
    public abstract State state();
+   public abstract boolean canDelete();
 
    @Override
    public boolean equals(Object obj) {

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.bucketlist.analytics.BucketItemAddedFromPopularAnalyticsAction;
 import com.worldventures.dreamtrips.modules.bucketlist.analytics.BucketPopularTabViewAnalyticsAction;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;

@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +38,6 @@ import static com.worldventures.dreamtrips.modules.bucketlist.service.storage.Bu
 @CommandAction
 public class BucketListCommand extends Command<List<BucketItem>> implements InjectableAction, CachedAction<List<BucketItem>> {
 
-   public static final int USER_ID_WAS_NOT_PROVIDED = -1;
-
    @Inject BucketInteractor bucketInteractor;
    @Inject SessionHolder<UserSession> sessionHolder;
    @Inject Janet janet;
@@ -50,14 +49,14 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
    private boolean force;
    private boolean isFromCache;
-   private int userId = USER_ID_WAS_NOT_PROVIDED;
+   private User user;
 
    public static BucketListCommand fetch(boolean force) {
-      return fetch(-1, force);
+      return fetch(null, force);
    }
 
-   public static BucketListCommand fetch(int userId, boolean force) {
-      return new BucketListCommand(userId, force);
+   public static BucketListCommand fetch(User user, boolean force) {
+      return new BucketListCommand(user, force);
    }
 
    public static BucketListCommand createItem(BucketItem item) {
@@ -81,9 +80,9 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
    }
 
-   public BucketListCommand(int userId, boolean force) {
+   public BucketListCommand(User user, boolean force) {
       this(StubOperationFunc.INSTANCE);
-      this.userId = userId;
+      this.user = user;
       this.force = force;
    }
 
@@ -93,7 +92,12 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
             .createObservableResult(
                   new GetBucketItemsForUserHttpAction(ImmutableGetBucketItemsForUserHttpAction
                         .Params.of(userId())))
-            .map(action -> mapperyContext.convert(action.response(), BucketItem.class));
+            .map(action -> mapperyContext.convert(action.response(), BucketItem.class))
+            .map(bucketItems -> {
+               Queryable.from(bucketItems)
+                     .forEachR(bucketItem -> bucketItem.setOwner(user));
+               return bucketItems;
+            });
 
       if (force) {
          networkObservable.subscribe(callback::onSuccess, callback::onFail);
@@ -169,7 +173,8 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
       @Override
       public Observable<List<BucketItem>> call(BucketInteractor interactor, List<BucketItem> bucketItems) {
-         BucketItem oldItem = Queryable.from(bucketItems).filter((element, index) -> element.getUid().equals(item.getUid())).firstOrDefault();
+         BucketItem oldItem = Queryable.from(bucketItems).filter((element, index) -> element.getUid()
+               .equals(item.getUid())).firstOrDefault();
          int oldPosition = bucketItems.indexOf(oldItem);
          int newPosition = (oldItem.isDone() && !item.isDone()) ? 0 : oldPosition;
 
@@ -246,10 +251,7 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
       }
    }
 
-   /////////////////////////
-   /// Common
-   ////////////////////////
    private int userId() {
-      return userId == -1 ? sessionHolder.get().get().getUser().getId() : userId;
+      return user == null ? sessionHolder.get().get().getUser().getId() : user.getId();
    }
 }

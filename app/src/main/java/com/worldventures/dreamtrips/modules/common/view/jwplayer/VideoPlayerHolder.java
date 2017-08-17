@@ -1,33 +1,23 @@
 package com.worldventures.dreamtrips.modules.common.view.jwplayer;
 
-import android.app.Activity;
 import android.view.ViewGroup;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
 
 public class VideoPlayerHolder {
 
-   private final DtFullscreenHandler dtFullscreenHandler;
-
    private JWPlayerView jwPlayerView;
-   private VideoAttachmentView videoAttachmentView;
+   private VideoContainerView videoContainerView;
+   private VideoView videoView;
 
-   public VideoPlayerHolder(Activity activity, BackStackDelegate backStackDelegate) {
-      this.dtFullscreenHandler = new DtFullscreenHandler(activity, backStackDelegate, this);
+   public VideoPlayerHolder() {
    }
 
-   public void init(JWPlayerView jwPlayerView, VideoAttachmentView videoAttachmentView) {
-      this.videoAttachmentView = videoAttachmentView;
+   public void init(JWPlayerView jwPlayerView, VideoContainerView videoContainerView, VideoView videoView) {
+      this.videoContainerView = videoContainerView;
       this.jwPlayerView = jwPlayerView;
-
-      jwPlayerView.setFullscreenHandler(dtFullscreenHandler);
-   }
-
-   public void attachToContainer() {
-      if (playerExists() && videoAttachmentView != null) {
-         videoAttachmentView.getVideoContainer().addView(jwPlayerView);
-      }
+      this.videoView = videoView;
    }
 
    public void play() {
@@ -36,36 +26,38 @@ public class VideoPlayerHolder {
       }
    }
 
-   public void dettachFromContainer() {
-      if (playerExists() && videoAttachmentView != null) {
-         videoAttachmentView.getVideoContainer().removeView(jwPlayerView);
+   public void pause() {
+      if (playerExists()) {
+         jwPlayerView.pause();
+      }
+   }
+
+   public void attachJwPlayerToContainer() {
+      if (playerExists() && videoContainerView != null) {
+         videoContainerView.getJwPlayerViewContainer().addView(jwPlayerView,
+               new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+      }
+   }
+
+   public void detachJwPlayerFromContainer() {
+      if (playerExists() && videoContainerView != null) {
+         videoContainerView.getJwPlayerViewContainer().removeView(jwPlayerView);
       }
    }
 
    public void clearCurrent() {
-      if (videoAttachmentView != null) {
-         jwPlayerView = null;
-         videoAttachmentView.clearResources();
+      if (videoView != null) {
+         videoView.clear();
       }
-   }
-
-   public ViewGroup getContainer() {
-      return videoAttachmentView.getVideoContainer();
+      videoView = null;
+      jwPlayerView = null;
    }
 
    public JWPlayerView getJwPlayerView() {
       return jwPlayerView;
    }
 
-   public boolean onBackPressed() {
-      if (playerExists() && jwPlayerView.getFullscreen()) {
-         jwPlayerView.setFullscreen(false, false);
-         return true;
-      }
-      return false;
-   }
-
-   private boolean playerExists() {
+   public boolean playerExists() {
       return jwPlayerView != null;
    }
 }

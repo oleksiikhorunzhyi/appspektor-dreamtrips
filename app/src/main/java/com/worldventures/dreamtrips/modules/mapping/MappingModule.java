@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTyp
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromActivityConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromDinningConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromLocationConverter;
+import com.worldventures.dreamtrips.modules.config.model.converter.ConfigurationConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.CommentConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSimpleConverter;
@@ -75,7 +76,8 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
-import com.worldventures.dreamtrips.modules.config.model.converter.ConfigurationConverter;
+import com.worldventures.dreamtrips.modules.tripsimages.model.converter.MediaEntityConverter;
+import com.worldventures.dreamtrips.modules.tripsimages.model.converter.VideoSocializedConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
@@ -585,5 +587,17 @@ public class MappingModule {
    @Singleton
    Converter provideConfigurationConverter() {
       return new ConfigurationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideMediaEntityConverter() {
+      return new MediaEntityConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideVideoSocializedConverter() {
+      return new VideoSocializedConverter();
    }
 }

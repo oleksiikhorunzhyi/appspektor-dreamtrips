@@ -10,7 +10,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteIte
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
@@ -28,13 +30,15 @@ import com.worldventures.dreamtrips.modules.feed.storage.command.FeedItemsStorag
 import com.worldventures.dreamtrips.modules.feed.storage.interactor.FeedItemsStorageBaseInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -74,6 +78,11 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
             postsInteractor.deletePostPipe().observeSuccess()
                   .map(DeletePostCommand::getResult)
+                  .map(UidItem::getUid)
+                  .map(this::deleteItemOperation),
+
+            feedInteractor.deleteVideoPipe().observeSuccess()
+                  .map(DeleteVideoCommand::getResult)
                   .map(UidItem::getUid)
                   .map(this::deleteItemOperation),
 
@@ -152,6 +161,13 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                   .createObservable(createCommand(listStorageOperation)));
    }
 
+   public Observable<COMMAND> observeStorageCommand() {
+      return getListStorageOperationObservable()
+            .flatMap(listStorageOperation
+                  -> feedStorageInteractor.getFeedItemsStoragePipe()
+                  .createObservableResult(createCommand(listStorageOperation)));
+   }
+
    protected abstract COMMAND createCommand(ListStorageOperation listStorageOperation);
 
    public class DeleteFeedItemStorageOperation implements ListStorageOperation<FeedItem<FeedEntity>> {
@@ -164,13 +180,23 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
       @Override
       public List<FeedItem<FeedEntity>> perform(List<FeedItem<FeedEntity>> items) {
-         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getItem().getUid().equals(uid)) {
-               items.remove(i);
-               break;
+         Iterator<FeedItem<FeedEntity>> itemIterator = items.iterator();
+         while (itemIterator.hasNext()) {
+            FeedEntity entity = itemIterator.next().getItem();
+            if (entity.getUid().equals(uid)) {
+               itemIterator.remove();
+            } else if (entity instanceof TextualPost) {
+               TextualPost post = (TextualPost) entity;
+               Iterator<FeedEntityHolder> attachmentIterator = post.getAttachments().iterator();
+               while (attachmentIterator.hasNext()) {
+                  FeedEntity attachment = attachmentIterator.next().getItem();
+                  if (attachment.getUid().equals(uid)) {
+                     if (post.getAttachments().size() == 1) itemIterator.remove();
+                     else attachmentIterator.remove();
+                  }
+               }
             }
          }
-
          return items;
       }
    }

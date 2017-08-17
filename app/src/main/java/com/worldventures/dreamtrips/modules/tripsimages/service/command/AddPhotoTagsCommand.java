@@ -8,14 +8,12 @@ import rx.Observable;
 
 import com.worldventures.dreamtrips.api.photos.AddUserTagsToPhotoHttpAction;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 @CommandAction
 public class AddPhotoTagsCommand extends Command implements InjectableAction {

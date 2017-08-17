@@ -41,7 +41,7 @@
                android:layout_height="wrap_content"
                android:layout_marginTop="@dimen/spacing_medium"
                android:gravity="center"
-               android:textColor="@{staticModel.colorRes != 0 ? staticModel.colorRes : @color/grey}"
+               app:buttonTextColor="@{staticModel.colorRes != 0 ? staticModel.colorRes : @color/grey}"
                android:textSize="@dimen/font_normal"
                android:text="@{staticModel.titleRes}"
                />

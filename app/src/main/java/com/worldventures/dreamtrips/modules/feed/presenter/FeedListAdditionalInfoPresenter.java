@@ -93,7 +93,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
    }
 
    private Circle getDefaultCircleFilter() {
-      return Circle.all(context.getString(R.string.all_friends));
+      return Circle.withTitle(context.getString(R.string.all_friends));
    }
 
    ///////////////////////////////////////////////////////////////////////////

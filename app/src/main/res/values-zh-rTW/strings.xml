@@ -342,7 +342,7 @@
    <string name="no_feed">在這裡您會看到您的朋友的活動。\n點擊下面的鏈接找到您的朋友</string>
    <string name="search_friends">搜索朋友</string>
 
-   <string name="feed_share_photo_or_idea">分享一張照片或者一個想法</string>
+   <string name="feed_share_post_button">分享一張照片，一個視頻或者想法</string>
    <string name="feed_view_profile_btn">查看資料</string>
    <string name="start_searching">鍵入開始搜索</string>
 
@@ -371,9 +371,6 @@
    <string name="user_mutual_friends">共同朋友</string>
    <string name="no_mutual_friends">您沒有任何共同的朋友</string>
 
-   <string name="photo_limitation_message">請選擇最多%1$d張相片</string>
-   <string name="picker_erros_photos_and_videos">您不能選擇照片及視頻</string>
-   <string name="picker_video_duration_limit">您不能上傳超過%1$d秒的視頻</string>
    <string name="pending">待處理…</string>
 
    <string name="back">回去</string>

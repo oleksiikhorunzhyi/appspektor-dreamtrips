@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 
 public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
@@ -35,6 +36,16 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
 
    public ActivityNavigationConfigBuilder manualOrientationActivity(boolean manualOrientationActivity) {
       navigationConfig.manualOrientationActivity = manualOrientationActivity;
+      return this;
+   }
+
+   public ActivityNavigationConfigBuilder transparentBackground (boolean transparentBackground) {
+      navigationConfig.transparentBackground = transparentBackground;
+      return this;
+   }
+
+   public ActivityNavigationConfigBuilder animationConfig(AnimationConfig animationConfig) {
+      navigationConfig.animationConfig = animationConfig;
       return this;
    }
 

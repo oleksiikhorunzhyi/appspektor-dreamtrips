@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -15,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelega
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
@@ -22,7 +22,8 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       attachUserToView(user);
       loadProfile();
-      translationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems, bindView());
    }
 
    @Override
@@ -127,8 +128,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    @Override
-   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
-      feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
+   public void onFlagItem(String uid, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(uid, flagReasonId, reason, view, this::handleError);
    }
 
    @Override
@@ -143,7 +144,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    @Override
    public void onTranslateFeedEntity(FeedEntity translatableItem) {
-      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
+      translationDelegate.translate(translatableItem);
    }
 
    @Override
@@ -213,6 +214,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
+   }
+
+   @Override
    public void onEditPhoto(Photo photo) {
       feedActionHandlerDelegate.onEditPhoto(photo);
    }
@@ -239,7 +245,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
       void openComments(FeedItem feedItem);
 
-      void openTripImages(Route route, TripsImagesBundle tripImagesBundle);
+      void openTripImages(Route route, TripImagesArgs tripImagesBundle);
 
       void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
 

@@ -1,18 +1,24 @@
 package com.worldventures.dreamtrips.modules.feed.view.custom.collage;
 
 public class CollageItem {
-   public final String url;
-   public final int width;
-   public final int height;
+   private final String url;
+   private final String highResUrl;
+   private final int width;
+   private final int height;
 
-   public CollageItem(String url, int width, int height) {
+   public CollageItem(String url, String highResUrl, int width, int height) {
       this.url = url;
+      this.highResUrl = highResUrl;
       this.width = width;
       this.height = height;
    }
 
    public String url() {
       return url;
+   }
+
+   public String highResUrl() {
+      return highResUrl;
    }
 
    public int width() {

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsB
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
@@ -25,8 +26,7 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
 import java.util.Date;
 import java.util.List;
@@ -257,7 +257,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, user.getId()));
+      view.openTripImages(Route.ACCOUNT_IMAGES, TripImagesArgs
+            .builder()
+            .userId(user.getId())
+            .origin(CreateEntityBundle.Origin.PROFILE_TRIP_IMAGES)
+            .route(Route.ACCOUNT_IMAGES)
+            .build());
    }
 
    ///////////////////////////////////////////////////////////////////////////

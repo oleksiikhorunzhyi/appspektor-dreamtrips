@@ -35,21 +35,34 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       setTabs();
       loadCategories();
       loadBucketList();
+      subscribeToErrorUpdates();
    }
 
    @Override
    public void onResume() {
       super.onResume();
-
-      view.bind(recentTabCountObservable().map(Command::getResult)).subscribe(bucketTypeListPair -> {
-         view.setRecentBucketItemCountByType(bucketTypeListPair.first, bucketTypeListPair.second.size());
-      });
+      recentTabCountObservable().map(Command::getResult)
+            .compose(bindViewToMainComposer())
+            .subscribe(bucketTypeListPair -> {
+               view.setRecentBucketItemCountByType(bucketTypeListPair.first, bucketTypeListPair.second.size());
+            });
    }
 
    @Override
    public void dropView() {
       super.dropView();
       db.saveOpenBucketTabType(null);
+   }
+
+   /**
+    * We show single common connection overlay over the tabs content.
+    * Subscribe to offline errors to be able to handle those happened in tabs and show it.
+    */
+   private void subscribeToErrorUpdates() {
+      offlineErrorInteractor.offlineErrorCommandPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> reportNoConnection());
    }
 
    private void loadCategories() {
@@ -65,10 +78,10 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
    private void loadBucketList() {
       bucketInteractor.bucketListActionPipe()
-            .createObservable(BucketListCommand.fetch(getUser().getId(), false))
+            .createObservable(BucketListCommand.fetch(getUser(), false))
             .compose(bindViewToMainComposer())
             .concatMap(state -> state.action.isFromCache() ? bucketInteractor.bucketListActionPipe()
-                  .createObservable(BucketListCommand.fetch(getUser().getId(), true)) : Observable.just(state))
+                  .createObservable(BucketListCommand.fetch(getUser(), true)) : Observable.just(state))
             .subscribe(new ActionStateSubscriber<BucketListCommand>()
                   .onFail(this::handleError));
    }

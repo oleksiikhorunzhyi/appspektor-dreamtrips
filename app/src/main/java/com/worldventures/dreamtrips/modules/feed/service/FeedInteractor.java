@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedC
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,6 +24,7 @@ public class FeedInteractor {
    private final ActionPipe<GetAccountTimelineCommand.Refresh> refreshAccountTimelinePipe;
    private final ActionPipe<GetAccountTimelineCommand.LoadNext> loadNextAccountTimelinePipe;
    private final ActionPipe<GetFeedEntityCommand> getFeedEntityPipe;
+   private final ActionPipe<DeleteVideoCommand> deleteVideoPipe;
    private final ActionPipe<ChangeFeedEntityLikedStatusCommand> changeFeedEntityLikedStatusPipe;
 
    @Inject
@@ -42,6 +44,7 @@ public class FeedInteractor {
       getFeedEntityPipe = sessionActionPipeCreator.createPipe(GetFeedEntityCommand.class, Schedulers.io());
       changeFeedEntityLikedStatusPipe = sessionActionPipeCreator.createPipe(ChangeFeedEntityLikedStatusCommand.class,
             Schedulers.io());
+      deleteVideoPipe = sessionActionPipeCreator.createPipe(DeleteVideoCommand.class, Schedulers.io());
    }
 
    public ActionPipe<GetAccountFeedCommand.Refresh> getRefreshAccountFeedPipe() {
@@ -70,6 +73,10 @@ public class FeedInteractor {
 
    public ActionPipe<GetFeedEntityCommand> getFeedEntityPipe() {
       return getFeedEntityPipe;
+   }
+
+   public ActionPipe<DeleteVideoCommand> deleteVideoPipe() {
+      return deleteVideoPipe;
    }
 
    public ActionPipe<ChangeFeedEntityLikedStatusCommand> changeFeedEntityLikedStatusPipe() {

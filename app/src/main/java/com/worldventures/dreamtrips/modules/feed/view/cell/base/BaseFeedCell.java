@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.feed.view.util.ActionPanelViewShareHandler;
@@ -147,6 +148,8 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       void onEditTextualPost(TextualPost textualPost);
 
       void onDeleteTextualPost(TextualPost textualPost);
+
+      void onDeleteVideo(Video video);
 
       void onTranslateItem(FeedEntity translatableItem);
 

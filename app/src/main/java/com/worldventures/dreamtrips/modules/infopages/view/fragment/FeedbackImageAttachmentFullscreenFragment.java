@@ -1,20 +1,31 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.FullScreenPhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ImageryView;
+
+import butterknife.InjectView;
 
 @Layout(R.layout.fragment_fullscreen_feedback_image_attachment)
-public class FeedbackImageAttachmentFullscreenFragment extends FullScreenPhotoFragment<FeedbackImageAttachmentFullscreenPresenter,
-      FeedbackImageAttachment> {
+public class FeedbackImageAttachmentFullscreenFragment extends BaseFragmentWithArgs<Presenter, FeedbackImageAttachment> {
+
+   @InjectView(R.id.iv_image) ImageryView imageryView;
 
    @Override
-   protected FeedbackImageAttachmentFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-      return new FeedbackImageAttachmentFullscreenPresenter((FeedbackImageAttachment) getArgs().getPhoto(), getArgs().getType());
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      imageryView.setImageURI(getArgs().getOriginalFilePath());
+   }
+
+   @Override
+   protected Presenter createPresenter(Bundle savedInstanceState) {
+      return new Presenter();
    }
 }
 

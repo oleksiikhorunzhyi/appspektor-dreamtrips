@@ -21,7 +21,13 @@ public interface GalleryMediaPickerView extends BaseMediaPickerView<GalleryMedia
 
    void showDeniedForCamera();
 
-   void showVideoLimitReached(int limitLength);
+   void showWrongType();
+
+   void showPhotoLimitReached(int count);
+
+   void showVideoLimitReached(int count);
+
+   void showVideoDurationLimitReached(int limitLength);
 
    List<GalleryMediaPickerViewModel> provideStaticItems();
 

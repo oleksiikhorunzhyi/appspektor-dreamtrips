@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 
 import timber.log.Timber;
@@ -20,6 +21,7 @@ class FragmentCompass {
    @IdRes private int containerId;
    private boolean backStackEnabled = true;
    private FragmentManager fragmentManager;
+   private AnimationConfig animationConfig;
 
    /**
     * This constructor is to be used with {@link com.worldventures.dreamtrips.core.navigation.router.Router Router}
@@ -31,6 +33,10 @@ class FragmentCompass {
 
    public void setContainerId(@IdRes int containerId) {
       this.containerId = containerId;
+   }
+
+   public void setAnimationConfig(AnimationConfig animationConfig) {
+      this.animationConfig = animationConfig;
    }
 
    public void add(Route route) {
@@ -102,6 +108,9 @@ class FragmentCompass {
          }
          if (backStackEnabled) {
             fragmentTransaction.addToBackStack(route.name());
+         }
+         if (animationConfig != null) {
+            fragmentTransaction.setCustomAnimations(animationConfig.getAnimationEnter(), animationConfig.getAnimationExit());
          }
          fragmentTransaction.commit();
       }

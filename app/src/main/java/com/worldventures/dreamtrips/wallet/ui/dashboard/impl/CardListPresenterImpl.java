@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.impl;
 
-
 import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.view.View;
@@ -218,7 +217,6 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
-      getView().setFirmwareUpdateAvailable(firmwareUpdateData.updateAvailable());
       if (firmwareUpdateData.updateAvailable()) {
          if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
          getView().showFirmwareUpdateBtn();

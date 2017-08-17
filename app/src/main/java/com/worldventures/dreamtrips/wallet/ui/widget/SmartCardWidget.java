@@ -13,7 +13,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
@@ -40,12 +39,10 @@ public class SmartCardWidget extends ConstraintLayout {
    @InjectView(R.id.tv_cards_loaded) TextView tvCardsLoaded;
    @InjectView(R.id.battery_indicator) BatteryView batteryView;
    @InjectView(R.id.battery_indicator_text) TextView tvBatteryLevel;
-   @InjectView(R.id.button_settings) View settingsButton;
 
    @InjectView(R.id.stealth_indicator) View stealthIndicator;
    @InjectView(R.id.lock_indicator) ImageView lockIndicator;
    @InjectView(R.id.link_indicator) ImageView linkIndicator;
-   @InjectView(R.id.badge) BadgeView badgeView;
 
    public SmartCardWidget(Context context) {
       this(context, null);
@@ -110,7 +107,6 @@ public class SmartCardWidget extends ConstraintLayout {
       tvPhotoFullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_AND_NAME) ? View.VISIBLE : View.GONE);
       scAvatar.setVisibility((type == DISPLAY_PICTURE_AND_NAME || type == DISPLAY_PICTURE_ONLY) ? View.VISIBLE : View.GONE);
 
-      bindBadge(holder.firmwareUpdateAvailable());
       bindCardLoadedCount(holder.cardCount());
 
       bindConnectionIndicator(holder.connected());
@@ -158,15 +154,6 @@ public class SmartCardWidget extends ConstraintLayout {
       tvBatteryLevel.setText(String.format(Locale.US, "%d%%", batteryLevel));
    }
 
-   private void bindBadge(boolean firmwareUpdateAvailable) {
-      if (firmwareUpdateAvailable) {
-         badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
-         badgeView.show();
-      } else {
-         badgeView.hide();
-      }
-   }
-
    private void bindCardLoadedCount(int cardCount) {
       if (cardCount > 0) {
          int resId = QuantityHelper.chooseResource(cardCount, R.string.wallet_card_list_record_connected, R.string.wallet_card_list_records_connected);
@@ -175,10 +162,6 @@ public class SmartCardWidget extends ConstraintLayout {
       } else {
          tvCardsLoaded.setVisibility(INVISIBLE);
       }
-   }
-
-   public void setOnSettingsClickListener(View.OnClickListener listener) {
-      settingsButton.setOnClickListener(listener);
    }
 
    public void setOnPhotoClickListener(View.OnClickListener listener) {

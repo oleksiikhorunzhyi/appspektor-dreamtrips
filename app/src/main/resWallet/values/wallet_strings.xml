@@ -220,6 +220,7 @@
 
    <string name="wallet_card_list_records_connected">%d cards loaded</string>
    <string name="wallet_card_list_record_connected">%d card loaded</string>
+   <string name="wallet_dashboard_menu_settings_item">Settings</string>
    <string name="wallet_dashboard_flye_firmware_update">Smart Card Update</string>
    <string name="wallet_dashboard_update_dialog_title">Smart Card Update Available</string>
    <string name="wallet_dashboard_update_dialog_content">In order to get the best Smart Card experience please update your Smart Card with the latest software</string>

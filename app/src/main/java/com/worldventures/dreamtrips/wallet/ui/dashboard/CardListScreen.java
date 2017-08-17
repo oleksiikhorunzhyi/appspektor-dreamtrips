@@ -30,8 +30,6 @@ public interface CardListScreen extends WalletScreen, FactoryResetView {
 
    void setSmartCardUser(SmartCardUser smartCardUser);
 
-   void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
-
    void setCardsCount(int count);
 
    void setDisplayType(int displayType);

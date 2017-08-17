@@ -55,8 +55,8 @@
    <string name="dtl_estimator_explanation">点数计算是根据在商家最低消费以及一周的哪一天</string>
    <string name="dtl_photo_upload_error">上传错误。如果问题仍然存在，请联系会员服务</string>
    <string name="dtl_open_now">现在营业</string>
-   <string name="dtl_closed_now">现已停业</string>
-   <string name="dtl_closed">关闭</string>
+   <string name="dtl_closed_now">休息中</string>
+   <string name="dtl_closed">休息中</string>
    <string name="directions">路线</string>
    <string name="checked_in">您已成功签入</string>
    <string name="point_estimator">点数估计</string>

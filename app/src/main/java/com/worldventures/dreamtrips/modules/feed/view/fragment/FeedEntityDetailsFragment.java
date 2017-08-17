@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.FragmentHelper;
@@ -25,7 +24,10 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import rx.Observable;
 
 @Layout(R.layout.fragment_comments_with_entity_details)
-public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDetailsPresenter, FeedEntityDetailsBundle> implements FeedEntityDetailsPresenter.View {
+public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDetailsPresenter, FeedEntityDetailsBundle>
+      implements FeedEntityDetailsPresenter.View {
+
+   private boolean detailViewAdded = false;
 
    @Override
    protected FeedEntityDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -46,16 +48,13 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
    @Override
    public void onDestroyView() {
       FragmentHelper.resetChildFragmentManagerField(this);
-      //
+
       super.onDestroyView();
    }
 
    @Override
    public void showDetails(Route route, Parcelable extra) {
-      Fragment entityFragment = getChildFragmentManager().findFragmentById(R.id.fragment_details);
-      boolean notAdded = entityFragment == null || entityFragment.getView() == null || entityFragment.getView()
-            .getParent() == null || !entityFragment.getClass().getName().equals(route.getClazzName());
-      if (notAdded) {
+      if (!detailViewAdded) {
          NavigationConfig config = NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
@@ -63,6 +62,7 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
                .containerId(R.id.fragment_details)
                .build();
          router.moveTo(route, config);
+         detailViewAdded = true;
       }
    }
 

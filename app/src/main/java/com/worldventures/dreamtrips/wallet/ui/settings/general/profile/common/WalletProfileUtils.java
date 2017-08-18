@@ -6,6 +6,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
+import java.util.Locale;
+
 import rx.functions.Action0;
 import rx.functions.Action1;
 
@@ -24,6 +26,9 @@ public class WalletProfileUtils {
 
    public static boolean equalsPhone(@Nullable SmartCardUserPhone phone, String countryCode, String number) {
       boolean isStrPhoneEmpty = isEmpty(countryCode) || isEmpty(number);
+      if (!countryCode.contains("+")) {
+         countryCode = String.format(Locale.getDefault(), "+%s", countryCode);
+      }
       return (phone == null && isStrPhoneEmpty) ||
             (phone != null && phone.code().equals(countryCode) && phone.number().equals(number));
    }

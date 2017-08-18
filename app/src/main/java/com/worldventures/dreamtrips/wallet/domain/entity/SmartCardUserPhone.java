@@ -20,6 +20,6 @@ public abstract class SmartCardUserPhone {
 
    @Value.Derived
    public String fullPhoneNumber() {
-      return String.format(Locale.US, "+%s%s", code(), number());
+      return String.format(Locale.US, "%s%s", code(), number());
    }
 }

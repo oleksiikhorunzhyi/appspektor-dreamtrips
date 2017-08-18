@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -8,8 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
@@ -24,6 +27,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       implements DtlReviewsScreen {
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
+   @InjectView(R.id.tv_title) TextView tvTitle;
    @InjectView(R.id.container_comments_detail) OfferWithReviewView mContainerDetail;
    @InjectView(R.id.progress_loader) ProgressBar refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
@@ -66,8 +70,14 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    @Override
    protected void onPostAttachToWindowView() {
       inflateToolbarMenu(toolbar);
-      toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
-      toolbar.setNavigationIcon(R.drawable.back_icon);
+      if (ViewUtils.isTabletLandscape(getContext())) {
+         toolbar.setBackgroundColor(Color.WHITE);
+         tvTitle.setVisibility(View.VISIBLE);
+         tvTitle.setText(getContext().getResources().getString(R.string.reviews_text));
+      } else
+         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
+
+      toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> {
          Flow.get(getContext()).goBack();
       });

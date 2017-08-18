@@ -1,17 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl android:id="@+id/root_detail_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:fresco="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      android:id="@+id/root_detail_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
 
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar_actionbar"
-         style="@style/ToolBarStyle"
-         />
+         style="@style/ToolBarStyleWhite"
+         app:contentInsetStartWithNavigation="0dp"
+         >
+
+      <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+         <TextView
+               android:id="@+id/tv_home_title"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:fontFamily="sans-serif"
+               android:gravity="center"
+               android:textColor="@color/merchant_landscape_home_text_color"
+               android:textSize="14sp"
+               android:textStyle="normal"
+               />
+
+         <TextView
+               android:id="@+id/tv_merchant_name_title"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:fontFamily="sans-serif-medium"
+               android:gravity="center"
+               android:textColor="@color/merchant_landscape_title_color"
+               android:textSize="20sp"
+               android:textStyle="normal"
+               />
+      </RelativeLayout>
+
+   </android.support.v7.widget.Toolbar>
 
    <android.support.v4.widget.NestedScrollView
          android:id="@+id/scrollView"
@@ -41,17 +72,18 @@
                android:id="@+id/rating_header"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:layout_gravity="center_vertical"
                android:background="@color/white"
                android:orientation="horizontal"
                android:padding="@dimen/spacing_normal"
-               android:layout_gravity="center_vertical"
                >
 
             <LinearLayout
                   android:id="@+id/layout_rating_reviews_detail"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:orientation="vertical">
+                  android:orientation="vertical"
+                  >
 
                <RatingBar
                      android:id="@+id/ratingBarReviews"
@@ -63,6 +95,7 @@
                      android:rating="0"
                      android:theme="@style/SmallRatingBar"
                      />
+
                <TextView
                      android:id="@+id/text_view_rating"
                      android:layout_width="wrap_content"
@@ -70,7 +103,8 @@
                      android:text="@string/to_be_first_reviews"
                      android:textColor="@android:color/black"
                      android:textSize="@dimen/dtl_no_reviews_dimen_nine"
-                     android:textStyle="bold"/>
+                     android:textStyle="bold"
+                     />
 
             </LinearLayout>
 
@@ -78,26 +112,26 @@
                   android:id="@+id/view_points"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:textColor="@color/white"
-                  android:textSize="@dimen/font_small"
                   android:layout_marginLeft="@dimen/spacing_small"
                   android:background="@drawable/background_badge_points"
                   android:drawableLeft="@drawable/ic_points_dtl"
                   android:drawablePadding="5dp"
                   android:text="@string/points"
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/font_small"
                   />
 
             <TextView
                   android:id="@+id/view_perks"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:textColor="@color/white"
-                  android:textSize="@dimen/font_small"
                   android:layout_marginLeft="@dimen/spacing_small"
                   android:background="@drawable/background_badge_perk"
                   android:drawableLeft="@drawable/ic_perk_dtl"
                   android:drawablePadding="5dp"
                   android:text="@string/perks"
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/font_small"
                   />
          </LinearLayout>
 
@@ -157,10 +191,10 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:fontFamily="sans-serif-medium"
+                  android:padding="@dimen/spacing_normal"
                   android:text="@string/dtl_description"
                   android:textColor="@color/black"
                   android:textSize="@dimen/font_medium"
-                  android:padding="@dimen/spacing_normal"
                   />
 
             <TextView
@@ -169,10 +203,10 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:fontFamily="sans-serif"
-                  android:textSize="@dimen/font_medium"
+                  android:paddingBottom="@dimen/spacing_normal"
                   android:paddingLeft="@dimen/spacing_normal"
                   android:paddingRight="@dimen/spacing_normal"
-                  android:paddingBottom="@dimen/spacing_normal"
+                  android:textSize="@dimen/font_medium"
                   tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
                   />
 
@@ -197,22 +231,24 @@
                   />
 
             <com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView
-                android:id="@+id/container_comments"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                  android:id="@+id/container_comments"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  />
 
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
+                  android:background="@color/white"
                   android:orientation="vertical"
-                  android:background="@color/white">
+                  >
 
                <TextView
                      android:id="@+id/btn_rate_and_review"
                      style="@style/DtlRateButton"
                      />
 
-               <include layout="@layout/read_all_rating_review"/>
+               <include layout="@layout/read_all_rating_review" />
 
             </LinearLayout>
 
@@ -221,10 +257,10 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:clickable="true"
+                  android:padding="@dimen/spacing_normal"
                   android:textColor="#929292"
                   android:textSize="12sp"
                   android:visibility="gone"
-                  android:padding="@dimen/spacing_normal"
                   app:smtv_captionCollapsed="@string/details_collapsed_text_caption"
                   app:smtv_captionColor="#005e92"
                   app:smtv_captionExpanded="@string/details_expanded_text_caption"

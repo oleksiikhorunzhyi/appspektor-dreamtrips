@@ -13,6 +13,15 @@
       <item name="android:background">?attr/colorPrimary</item>
    </style>
 
+   <style name="ToolBarStyleWhite" parent="Widget.AppCompat.ActionBar">
+      <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+      <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">?attr/actionBarSize</item>
+      <!--<item name="android:background">@color/white</item>-->
+      <item name="titleTextColor">@color/merchant_landscape_home_text_color</item>
+   </style>
+
    <style name="ToolBarStyleFeed" parent="Widget.AppCompat.ActionBar">
       <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
       <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>

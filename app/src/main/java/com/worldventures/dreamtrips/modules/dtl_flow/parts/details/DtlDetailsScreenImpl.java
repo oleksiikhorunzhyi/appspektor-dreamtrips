@@ -31,7 +31,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -111,7 +110,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    protected void onPostAttachToWindowView() {
       inflateToolbarMenu(toolbar);
 
-      toolbar.setNavigationIcon(R.drawable.back_icon);
+      toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> back());
 
       activityResultDelegate.addListener(this);
@@ -195,7 +194,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
       merchantHoursInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
 
-      toolbar.setTitle(merchant.displayName());
+      if (ViewUtils.isTabletLandscape(getContext()))
+         ((TextView) toolbar.findViewById(R.id.tv_merchant_name_title)).setText(merchant.displayName());
+      else
+         toolbar.setTitle(merchant.displayName());
 
       setContacts();
       setLocation();
@@ -472,7 +474,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void hideReviewViewsOnTablets(){
+   public void hideReviewViewsOnTablets() {
       rateAndReviewBtn.setVisibility(View.GONE);
    }
 

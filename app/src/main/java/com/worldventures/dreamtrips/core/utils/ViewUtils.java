@@ -112,6 +112,10 @@ public class ViewUtils {
       return !ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
    }
 
+   public static boolean isTabletLandscape(Context context) {
+      return ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
+   }
+
    public static float dpFromPx(final Context context, final float px) {
       return px / context.getResources().getDisplayMetrics().density;
    }

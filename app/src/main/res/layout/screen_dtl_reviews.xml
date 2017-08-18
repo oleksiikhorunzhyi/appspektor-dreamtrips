@@ -5,10 +5,29 @@
       android:layout_height="match_parent"
       >
 
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar_actionbar"
-         style="@style/ToolBarStyle"
-         />
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            ></android.support.v7.widget.Toolbar>
+
+      <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/merchant_landscape_title_color"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:visibility="gone"
+            />
+   </RelativeLayout>
 
    <ProgressBar
          android:id="@+id/progress_loader"
@@ -28,30 +47,30 @@
 
    <LinearLayout
          android:id="@+id/emptyView"
-         android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:gravity="center"
+         android:orientation="vertical"
          android:padding="@dimen/spacing_large"
          android:visibility="gone"
-         android:gravity="center"
          >
 
       <TextView
             android:id="@+id/captionNoMerchants"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:gravity="center"
             android:text="@string/merchants_no_results"
             android:textSize="@dimen/font_medium"
+            android:visibility="visible"
             />
    </LinearLayout>
 
    <LinearLayout
          android:id="@+id/errorView"
-         android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:orientation="vertical"
          android:padding="@dimen/spacing_large"
          android:visibility="gone"
          >
@@ -59,9 +78,9 @@
       <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dtl_load_error"
-            android:gravity="center"
             android:layout_marginTop="160dp"
+            android:gravity="center"
+            android:text="@string/dtl_load_error"
             android:textSize="@dimen/font_normal"
             />
 
@@ -69,9 +88,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/dtl_load_merchant_error_caption"
-            android:paddingTop="@dimen/spacing_medium"
             android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_medium"
+            android:text="@string/dtl_load_merchant_error_caption"
             android:textSize="@dimen/font_normal"
             />
 

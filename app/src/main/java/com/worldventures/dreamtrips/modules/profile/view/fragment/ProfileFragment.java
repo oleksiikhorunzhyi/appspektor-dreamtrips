@@ -92,6 +92,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void onPause() {
       super.onPause();
+      statePaginatedRecyclerViewManager.stopAutoplayVideos();
       setToolbarAlpha(100);
    }
 

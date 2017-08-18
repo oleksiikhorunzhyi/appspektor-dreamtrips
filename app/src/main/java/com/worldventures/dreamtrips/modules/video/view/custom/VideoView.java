@@ -392,6 +392,10 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    @OnClick(R.id.video_view_video_play_pause_button)
    void onPlayPauseButtonClick() {
+      playVideo();
+   }
+
+   public void playVideo() {
       if (playerView == null) {
          play();
          return;

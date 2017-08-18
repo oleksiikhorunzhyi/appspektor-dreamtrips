@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
 
+import java.util.Locale;
+
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -84,7 +86,9 @@ public class WalletProfileDelegate {
       if (ProjectTextUtils.isEmpty(model.getPhoneCode()) || ProjectTextUtils.isEmpty(model.getPhoneNumber())) {
          return null;
       } else {
-         return SmartCardUserPhone.of(model.getPhoneCode(), model.getPhoneNumber());
+         return SmartCardUserPhone.of(
+               String.format(Locale.getDefault(), "+%s", model.getPhoneCode()),
+               model.getPhoneNumber());
       }
    }
 
@@ -104,7 +108,7 @@ public class WalletProfileDelegate {
       model.setLastName(user.lastName());
 
       if (phone != null) {
-         model.setPhoneCode(phone.code());
+         model.setPhoneCode(phone.code().replace("+", ""));
          model.setPhoneNumber(phone.number());
       }
       model.setChosenPhotoUri(photo != null ? photo.uri() : null);

@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl;
 
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +33,7 @@ import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
-public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<WalletOfflineModeSettingsScreen, WalletOfflineModeSettingsPresenter> implements WalletOfflineModeSettingsScreen{
+public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<WalletOfflineModeSettingsScreen, WalletOfflineModeSettingsPresenter> implements WalletOfflineModeSettingsScreen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.offline_mode_switcher) WalletSwitcher offlineModeSwitcher;
@@ -72,7 +70,7 @@ public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<Wa
    public OperationView<SwitchOfflineModeCommand> provideOperationView() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(),
-                  Html.fromHtml(getString(R.string.wallet_offline_mode_progress_message)), false),
+                  ProjectTextUtils.fromHtml(getString(R.string.wallet_offline_mode_progress_message)), false),
             ErrorViewFactory.<SwitchOfflineModeCommand>builder()
                   .addProvider(getNetworkUnavailableDialogProvider())
                   .defaultErrorView(getDefaultErrorDialogProvider())

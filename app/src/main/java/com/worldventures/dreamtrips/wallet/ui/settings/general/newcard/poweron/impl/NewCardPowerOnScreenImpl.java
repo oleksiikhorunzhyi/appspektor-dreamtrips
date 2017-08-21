@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.impl;
 
-
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +9,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -48,7 +47,7 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
 
    @Override
    public void setTitleWithSmartCardID(String scID) {
-      powerOnLabel.setText(Html.fromHtml(getString(R.string.wallet_new_card_power_on, scID)));
+      powerOnLabel.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_new_card_power_on, scID)));
    }
 
    @OnClick(R.id.btn_next)
@@ -65,7 +64,7 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
    public void showConfirmationUnassignOnBackend(String scId) {
       if (dontTurnOnCardDialog == null) {
          dontTurnOnCardDialog = new MaterialDialog.Builder(getContext())
-               .content(Html.fromHtml(getString(R.string.wallet_new_card_pre_dont_have_card_msg, scId)))
+               .content(ProjectTextUtils.fromHtml(getString(R.string.wallet_new_card_pre_dont_have_card_msg, scId)))
                .positiveText(R.string.wallet_continue_label)
                .negativeText(R.string.cancel)
                .onPositive((dialog, which) -> getPresenter().unassignCardOnBackend())

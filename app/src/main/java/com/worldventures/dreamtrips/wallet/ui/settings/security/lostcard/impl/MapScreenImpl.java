@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl;
 
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -28,18 +28,22 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.databinding.MapPopupInfoViewBinding;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.adapter.LostCardInfoWindowAdapter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.model.LostCardPin;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.model.PopupLastLocationViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -50,17 +54,17 @@ import dagger.ObjectGraph;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-import static android.graphics.Bitmap.createBitmap;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static java.lang.String.format;
 
-public class MapScreenImpl extends RxRestoreViewOnCreateController implements MapScreen, OnMapReadyCallback  {
+public class MapScreenImpl extends RxRestoreViewOnCreateController implements MapScreen, OnMapReadyCallback {
 
-   @InjectView(R.id.last_connection_time_container) View lastConnectionTimeContainer;
    @InjectView(R.id.map_view) ToucheableMapView mapView;
    @InjectView(R.id.empty_location_view) View emptyLocationsView;
    @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
    @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
+   @InjectView(R.id.ll_popup_info) View popupInfoContainer;
 
    @Inject MapPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -68,13 +72,16 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    private GoogleMap googleMap;
+   private MapPopupInfoViewBinding popupInfoViewBinding;
+   private PopupLastLocationViewModel lastLocationViewModel = new PopupLastLocationViewModel();
 
    @NonNull
    @Override
    protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup, @Nullable Bundle bundle) {
       final View view = layoutInflater.inflate(R.layout.screen_wallet_settings_lostcard_map, viewGroup, false);
       //noinspection all
-      final ObjectGraph objectGraph = (ObjectGraph) view.getContext().getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
+      final ObjectGraph objectGraph = (ObjectGraph) view.getContext()
+            .getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       ButterKnife.inject(this, view);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
@@ -82,6 +89,8 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       } else {
          mapView.onCreate(bundle);
       }
+      mapView.getMapAsync(this);
+      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       return view;
    }
 
@@ -90,6 +99,17 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       super.onAttach(view);
       getPresenter().attachView(this);
       mapView.onResume();
+
+      mapView.setMapTouchListener2(motionEvent -> {
+         switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+               popupInfoViewBinding.setVisible(false);
+               break;
+            case MotionEvent.ACTION_UP:
+               popupInfoViewBinding.setVisible(true);
+               break;
+         }
+      });
    }
 
    @Override
@@ -113,28 +133,37 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    }
 
    @Override
-   protected void onChangeEnded(@NonNull ControllerChangeHandler changeHandler, @NonNull ControllerChangeType changeType) {
-      super.onChangeEnded(changeHandler, changeType);
-      if (changeType == ControllerChangeType.PUSH_ENTER || changeType == ControllerChangeType.POP_ENTER) {
-         mapView.getMapAsync(this);
-      }
-   }
-
-   @Override
    public boolean handleBack() {
       return false;
    }
 
    @Override
    public void addPin(@NonNull LostCardPin pinData) {
-      final Marker marker = clearMapAndAttachMarker(pinData.position());
-      final LostCardInfoWindowAdapter infoWindowAdapter = new LostCardInfoWindowAdapter((ViewGroup) getView(), pinData);
-      googleMap.setInfoWindowAdapter(infoWindowAdapter);
-      googleMap.setOnInfoWindowClickListener(m -> {
-         infoWindowAdapter.openExternalMap();
+      clearMapAndAttachMarker(pinData.position());
+      lastLocationViewModel.setPlace(obtainPlace(pinData.places()));
+      lastLocationViewModel.setAddress(obtainAddress(pinData.address()));
+      popupInfoViewBinding.getRoot().setVisibility(VISIBLE);
+
+      popupInfoViewBinding.setLastLocation(lastLocationViewModel);
+      popupInfoViewBinding.setDirectionClick(view -> {
+         openExternalMap(pinData.position());
          getPresenter().trackDirectionsClick();
       });
-      marker.showInfoWindow();
+   }
+
+   private String obtainPlace(List<WalletPlace> places) {
+      return places != null && places.size() == 1 ? places.get(0).name() : "";
+   }
+
+   private String obtainAddress(WalletAddress address) {
+      return format("%s, %s\n%s", address.countryName(), address.adminArea(), address.addressLine());
+   }
+
+   private void openExternalMap(LatLng position) {
+      Intent map = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"
+            + position.latitude + "," + position.longitude + "?z=17&q="
+            + position.latitude + "," + position.longitude));
+      startActivity(map);
    }
 
    @Override
@@ -146,21 +175,12 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       googleMap.clear();
       final Marker marker = googleMap.addMarker(
             new MarkerOptions()
-                  .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
+                  .icon(BitmapDescriptorFactory.fromResource(R.drawable.wallet_image_pin_smart_card))
                   .position(position)
       );
-      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
+      position = new LatLng(position.latitude + 0.00045, position.longitude);
+      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17));
       return marker;
-   }
-
-
-   private Bitmap getBitmapFromVectorDrawable() {
-      Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_wallet_vector_dining_pin);
-      Bitmap bitmap = createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-      Canvas canvas = new Canvas(bitmap);
-      drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-      drawable.draw(canvas);
-      return bitmap;
    }
 
    @Override
@@ -177,7 +197,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
 
    @Override
    public void setLastConnectionDate(Date date) {
-      tvLastConnectionLabel.setText(lastConnectedDateFormat.format(date));
+      lastLocationViewModel.setLastConnectedDate(lastConnectedDateFormat.format(date));
    }
 
    @Override
@@ -194,11 +214,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    @Override
    public void setVisibleMsgEmptyLastLocation(boolean visible) {
       emptyLocationsView.setVisibility(visible ? VISIBLE : GONE);
-   }
-
-   @Override
-   public void setVisibleLastConnectionTime(boolean visible) {
-      lastConnectionTimeContainer.setVisibility(visible ? VISIBLE : GONE);
+      popupInfoViewBinding.setVisible(!visible);
    }
 
    private MapPresenter getPresenter() {

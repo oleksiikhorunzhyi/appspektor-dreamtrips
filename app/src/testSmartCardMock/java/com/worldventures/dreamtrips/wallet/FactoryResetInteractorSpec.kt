@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
+import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
@@ -18,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.model.TestDisassociateResponseBody
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardUser
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
@@ -49,6 +51,8 @@ class FactoryResetInteractorSpec : BaseSpec({
 
          smartCardInteractor = createSmartCardInteractor(janet)
          factoryResetInteractor = createFactoryResetInteractor(janet)
+         smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
+         settingsInteractor = createSettingsInteractor(janet)
 
          janet.connectToSmartCardSdk()
       }
@@ -149,6 +153,8 @@ class FactoryResetInteractorSpec : BaseSpec({
       lateinit var mockDb: SnappyRepository
       lateinit var lostCardRepository: LostCardRepository
       lateinit var cardStorage: RecordsStorage
+      lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
+      lateinit var settingsInteractor: SettingsInteractor
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultRecordIdStorage(cardStorage), SmartCardActionStorage(mockDb))
@@ -176,6 +182,8 @@ class FactoryResetInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(AnalyticsInteractor::class.java, { analyticsInteractor })
          daggerCommandActionService.registerProvider(FactoryResetInteractor::class.java, { factoryResetInteractor })
          daggerCommandActionService.registerProvider(CachedPhotoUtil::class.java, { mock() })
+         daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
+         daggerCommandActionService.registerProvider(SettingsInteractor::class.java, { settingsInteractor })
 
          return janet
       }
@@ -189,12 +197,19 @@ class FactoryResetInteractorSpec : BaseSpec({
                .bind(MockHttpActionService.Response(200).body(TestDisassociateResponseBody()), { request ->
                   request.url.contains("card_user") && request.method.equals("delete", true)
                })
+               .bind(MockHttpActionService.Response(204)) { request ->
+                  request.url.endsWith("api/user/settings")
+               }
                .build()
       }
 
       fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(SessionActionPipeCreator(janet))
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+
+      fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
+
+      fun createSettingsInteractor(janet: Janet) = SettingsInteractor(SessionActionPipeCreator(janet))
 
       fun mockSmartCard(cardId: String): SmartCard {
          val mockedSmartCard: SmartCard = mock()

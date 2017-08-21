@@ -15,7 +15,8 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCar
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import timber.log.Timber;
 
 public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> implements LostCardPresenter {
@@ -52,6 +54,17 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       trackScreen();
 
       observeCheckingSwitcher();
+      observeUpdateTrackingStatus();
+   }
+
+   private void observeUpdateTrackingStatus() {
+      smartCardLocationInteractor.updateTrackingStatusPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationUpdateTrackingStatus())
+                  .onSuccess(cmd -> smartCardLocationInteractor.fetchTrackingStatusPipe().send(new FetchTrackingStatusCommand()))
+                  .onFail((cmd, throwable) -> getView().revertTrackingSwitch())
+                  .create());
    }
 
    private void observeLocationSettings() {
@@ -62,7 +75,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void observeEnableTrackingState() {
-      smartCardLocationInteractor.enabledTrackingPipe()
+      smartCardLocationInteractor.fetchTrackingStatusPipe()
             .observeSuccess()
             .distinctUntilChanged(Command::getResult)
             .compose(bindViewIoToMainComposer())
@@ -74,15 +87,15 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       observeEnableTrackingState();
       observeLocationSettings();
 
-      smartCardLocationInteractor.enabledTrackingPipe().send(CardTrackingStatusCommand.fetch());
+      smartCardLocationInteractor.fetchTrackingStatusPipe().send(new FetchTrackingStatusCommand());
    }
 
    private void handleLocationSettingsStatus(boolean isEnabled) {
       if (!isEnabled) {
-         smartCardLocationInteractor.enabledTrackingPipe()
-               .createObservable(CardTrackingStatusCommand.fetch())
+         smartCardLocationInteractor.fetchTrackingStatusPipe()
+               .createObservable(new FetchTrackingStatusCommand())
                .compose(bindViewIoToMainComposer())
-               .subscribe(new ActionStateSubscriber<CardTrackingStatusCommand>()
+               .subscribe(new ActionStateSubscriber<FetchTrackingStatusCommand>()
                      .onSuccess(command -> onTrackingStateFetched(command.getResult())));
       }
    }
@@ -167,14 +180,14 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void applyTrackingStatus(boolean enableTracking) {
-      smartCardLocationInteractor.enabledTrackingPipe().send(CardTrackingStatusCommand.save(enableTracking));
+      smartCardLocationInteractor.updateTrackingStatusPipe().send(new UpdateTrackingStatusCommand(enableTracking));
    }
 
    private void trackScreen() {
-      smartCardLocationInteractor.enabledTrackingPipe()
-            .createObservable(CardTrackingStatusCommand.fetch())
+      smartCardLocationInteractor.fetchTrackingStatusPipe()
+            .createObservable(new FetchTrackingStatusCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<CardTrackingStatusCommand>()
+            .subscribe(new ActionStateSubscriber<FetchTrackingStatusCommand>()
                   .onSuccess(command -> sendTrackScreenAction(command.getResult()))
             );
    }

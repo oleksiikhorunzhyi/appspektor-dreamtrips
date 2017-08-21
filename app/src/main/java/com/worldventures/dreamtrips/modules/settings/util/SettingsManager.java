@@ -24,7 +24,7 @@ public class SettingsManager {
    }
 
    public static List<Setting> merge(List<Setting> fromServer, List<Setting> local) {
-      return Queryable.from(fromServer).filter(local::contains).map(setting -> {
+      return Queryable.from(fromServer).map(setting -> {
          Setting localSetting = Queryable.from(local).firstOrDefault(setting::equals);
          if (localSetting != null) setting.setType(localSetting.getType());
          return setting;

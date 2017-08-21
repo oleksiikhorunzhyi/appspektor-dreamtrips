@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -10,14 +10,30 @@
          android:id="@+id/map_view"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:layout_marginBottom="0dp"
+         android:layout_marginEnd="0dp"
+         android:layout_marginStart="0dp"
+         android:layout_marginTop="0dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
          />
 
    <FrameLayout
          android:id="@+id/noGoogleContainer"
          android:layout_width="match_parent"
-         android:layout_height="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="8dp"
+         android:layout_marginEnd="8dp"
+         android:layout_marginStart="8dp"
+         android:layout_marginTop="8dp"
          android:padding="16dp"
          android:visibility="gone"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
          >
 
       <TextView
@@ -33,13 +49,22 @@
 
    <android.support.v7.widget.CardView
          android:id="@+id/empty_location_view"
-         android:layout_width="wrap_content"
+         android:layout_width="0dp"
          android:layout_height="wrap_content"
          android:layout_gravity="center"
          android:layout_margin="@dimen/spacing_small"
+         android:layout_marginBottom="8dp"
+         android:layout_marginEnd="16dp"
+         android:layout_marginStart="16dp"
+         android:layout_marginTop="8dp"
          android:visibility="gone"
          app:cardCornerRadius="2dp"
          app:cardElevation="2dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.5"
          >
 
       <TextView
@@ -53,50 +78,22 @@
             />
    </android.support.v7.widget.CardView>
 
-
-   <LinearLayout
-         android:id="@+id/last_connection_time_container"
-         android:layout_width="match_parent"
+   <include
+         android:id="@+id/ll_popup_info"
+         layout="@layout/map_popup_info_view"
+         android:layout_width="0dp"
          android:layout_height="wrap_content"
-         android:layout_gravity="top"
-         android:orientation="vertical"
+         android:layout_marginBottom="8dp"
+         android:layout_marginEnd="24dp"
+         android:layout_marginStart="24dp"
+         android:layout_marginTop="8dp"
          android:visibility="gone"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.19999999"
          tools:visibility="visible"
-         >
+         />
 
-      <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/spacing_small"
-            android:paddingStart="@dimen/spacing_normal"
-            android:paddingEnd="@dimen/spacing_normal"
-            android:paddingTop="@dimen/spacing_small"
-            android:background="@android:color/white"
-            >
-
-         <TextView
-               style="@style/SettingsText.Primary"
-               android:text="@string/wallet_lost_card_last_connected"
-               android:textStyle="bold"
-               />
-
-         <TextView
-               android:id="@+id/last_connected_label"
-               style="@style/SettingsText.Secondary"
-               tools:text="Sunday, October 3rd, 12:08PM"
-               />
-
-      </LinearLayout>
-
-      <View
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:layout_gravity="top"
-            android:background="@drawable/wallet_square_shadow"
-            android:elevation="@dimen/spacing_tiniest"
-            android:translationZ="@dimen/spacing_tiniest"
-            />
-   </LinearLayout>
-
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

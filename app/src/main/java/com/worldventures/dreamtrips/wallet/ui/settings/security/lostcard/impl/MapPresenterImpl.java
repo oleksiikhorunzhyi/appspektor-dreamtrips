@@ -89,7 +89,6 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
 
    private void toggleLocationContainersVisibility(boolean locationExists) {
       getView().setVisibleMsgEmptyLastLocation(!locationExists);
-      getView().setVisibleLastConnectionTime(locationExists);
    }
 
    private void fetchAddressWithPlaces(WalletCoordinates coordinates) {

@@ -128,13 +128,8 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public boolean isCardDetailSupported() {
-      return false;
-   }
-
-   @Override
-   public boolean isCardSyncSupported() {
-      return false;
+   public boolean isSampleCardMode() {
+      return true;
    }
 
    private void invalidateDivider(LinearLayout container) {

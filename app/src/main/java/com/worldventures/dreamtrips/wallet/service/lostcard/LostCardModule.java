@@ -4,10 +4,13 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.location.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
@@ -64,8 +67,9 @@ public class LostCardModule {
    @Singleton
    @Provides
    LocationTrackingManager trackingManager(SmartCardLocationInteractor locationInteractor,
-         WalletDetectLocationService locationService,
-         LostCardManager lostCardManager) {
-      return new LocationTrackingManager(locationInteractor, locationService, lostCardManager);
+         LostCardManager lostCardManager, SmartCardInteractor smartCardInteractor,
+         LoginInteractor loginInteractor, LogoutInteractor logoutInteractor, WalletSocialInfoProvider walletSocialInfoProvider) {
+      return new LocationTrackingManager(locationInteractor, lostCardManager,
+            smartCardInteractor, loginInteractor, logoutInteractor,  walletSocialInfoProvider);
    }
 }

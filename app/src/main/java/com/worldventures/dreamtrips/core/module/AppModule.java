@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.mapping.MappingModule;
 import com.worldventures.dreamtrips.modules.media_picker.MediaPickerModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
 import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
+import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -60,7 +61,7 @@ import dagger.Provides;
             //
             LocaleModule.class, AppVersionNameModule.class,
             //
-            MessengerModule.class, FlagsModule.class, DtlModule.class,
+            MessengerModule.class, FlagsModule.class, DtlModule.class, SmartCardModule.class,
             //
             JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //

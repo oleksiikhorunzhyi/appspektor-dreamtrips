@@ -89,7 +89,6 @@ public interface SnappyRepository {
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
    String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
-   String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
    String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
    String WALLET_OPTIONAL_PIN = "WALLET_OPTIONAL_PIN";
    String WALLET_SMART_CARD_DISPLAY_TYPE = "WALLET_SMART_CARD_DISPLAY_TYPE";
@@ -293,10 +292,6 @@ public interface SnappyRepository {
    List<WalletLocation> getWalletLocations();
 
    void deleteWalletLocations();
-
-   void saveEnabledTracking(boolean enable);
-
-   boolean isEnableTracking();
 
    void saveSyncRecordsStatus(SyncRecordsStatus data);
 

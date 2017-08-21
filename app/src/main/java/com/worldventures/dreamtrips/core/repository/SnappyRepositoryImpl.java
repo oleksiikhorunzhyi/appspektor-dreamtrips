@@ -330,16 +330,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    @Override
-   public void saveEnabledTracking(boolean enable) {
-      act(db -> db.putBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING, enable));
-   }
-
-   @Override
-   public boolean isEnableTracking() {
-      return actWithResult(db -> db.getBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING)).or(false);
-   }
-
-   @Override
    public void saveSyncRecordsStatus(SyncRecordsStatus data) {
       act(db -> db.put(WALLET_SYNC_RECORD_STATUS, data));
    }

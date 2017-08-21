@@ -12,4 +12,6 @@ public interface LostCardControllerFlipper {
    void flip(boolean isMapEnabled);
 
    void destroy();
+
+   boolean isUpdated();
 }

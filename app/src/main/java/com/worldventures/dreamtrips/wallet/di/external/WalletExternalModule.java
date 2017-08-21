@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
@@ -23,5 +24,11 @@ public class WalletExternalModule {
    @Provides
    WalletSocialInfoProvider walletSocialInfoProvider(SessionHolder<UserSession> sessionHolder) {
       return new WalletSocialInfoProviderImpl(sessionHolder);
+   }
+
+   @Singleton
+   @Provides
+   WalletTrackingStatusStorage provideTrackingStatusStorage(SnappyRepository snappyRepository) {
+      return new WalletTrackingStatusStorageImpl(snappyRepository);
    }
 }

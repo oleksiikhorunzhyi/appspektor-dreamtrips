@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 
 import io.techery.janet.Command;
 import rx.Observable;
@@ -35,8 +35,8 @@ public class LocationTrackingManager {
 
    private Observable<Boolean> checkEnableTracking() {
       return Observable.zip(Observable.just(locationService.isEnabled()),
-            locationInteractor.enabledTrackingPipe()
-            .createObservableResult(CardTrackingStatusCommand.fetch())
+            locationInteractor.fetchTrackingStatusPipe()
+            .createObservableResult(new FetchTrackingStatusCommand())
             .map(Command::getResult),
             (locationSettingsEnabled, trackingStatusEnabled) -> locationSettingsEnabled && trackingStatusEnabled
       );
@@ -48,7 +48,7 @@ public class LocationTrackingManager {
    }
 
    private void observeLocationTracking() {
-      subscriptions.add(locationInteractor.enabledTrackingPipe()
+      subscriptions.add(locationInteractor.fetchTrackingStatusPipe()
             .observeSuccess()
             .map(Command::getResult)
             .subscribe(this::handleTrackingStatus));

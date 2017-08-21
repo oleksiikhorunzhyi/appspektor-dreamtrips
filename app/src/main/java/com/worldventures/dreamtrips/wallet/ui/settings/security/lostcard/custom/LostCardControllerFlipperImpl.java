@@ -10,12 +10,14 @@ import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
 
 public class LostCardControllerFlipperImpl implements LostCardControllerFlipper, ControllerChangeHandler.ControllerChangeListener {
    private Router childRouter;
    private ControllerFlipListener controllerFlipListener;
    private boolean enabled;
+   private boolean isUpdatedContainer;
 
    @Override
    public void init(Router childRouter) {
@@ -38,6 +40,7 @@ public class LostCardControllerFlipperImpl implements LostCardControllerFlipper,
                : new DisabledTrackingController();
          setRoot(targetController);
       }
+      isUpdatedContainer = true;
    }
 
    @Override
@@ -45,6 +48,11 @@ public class LostCardControllerFlipperImpl implements LostCardControllerFlipper,
       childRouter.removeChangeListener(this);
       controllerFlipListener = null;
       childRouter = null;
+   }
+
+   @Override
+   public boolean isUpdated() {
+      return isUpdatedContainer;
    }
 
    private void setRoot(Controller controller) {

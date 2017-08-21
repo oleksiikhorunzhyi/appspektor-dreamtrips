@@ -14,7 +14,9 @@ import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.ControllerChangeType;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.custom.ControllerFlipListener;
@@ -25,6 +27,8 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, LostCardPresenter> implements LostCardScreen {
@@ -94,6 +98,18 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    }
 
    @Override
+   public OperationView<UpdateTrackingStatusCommand> provideOperationUpdateTrackingStatus() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_update_tracking_status, false)
+      );
+   }
+
+   @Override
+   public void revertTrackingSwitch() {
+      trackingEnableSwitcher.setCheckedWithoutNotify(!trackingEnableSwitcher.isChecked());
+   }
+
+   @Override
    public void showRationaleForLocation() {
       new MaterialDialog.Builder(getContext())
             .content(R.string.wallet_location_permission_message)
@@ -127,6 +143,14 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return true;
+   }
+
+   @Override
+   protected void onAttach(@NonNull View view) {
+      super.onAttach(view);
+      if (controllerFlipper.isUpdated()) {
+         getPresenter().prepareTrackingStateSubscriptions();
+      }
    }
 
    @Override

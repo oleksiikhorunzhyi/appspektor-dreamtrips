@@ -4,17 +4,19 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.location.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 
 import javax.inject.Singleton;
 
@@ -27,16 +29,17 @@ import dagger.Provides;
             GetLocationCommand.class,
             DetectGeoLocationCommand.class,
             FetchAddressWithPlacesCommand.class,
-            CardTrackingStatusCommand.class,
-            WalletLocationCommand.class
+            FetchTrackingStatusCommand.class,
+            WalletLocationCommand.class,
+            UpdateTrackingStatusCommand.class
       },
       library = true, complete = false)
 public class LostCardModule {
 
    @Singleton
    @Provides
-   LostCardRepository locationRepository(SnappyRepository snappyRepository) {
-      return new DiskLostCardRepository(snappyRepository);
+   LostCardRepository locationRepository(SnappyRepository snappyRepository, WalletTrackingStatusStorage trackingStatusStorage) {
+      return new DiskLostCardRepository(snappyRepository, trackingStatusStorage);
    }
 
    @Singleton

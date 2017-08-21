@@ -21,8 +21,6 @@ public interface MapScreen extends MvpView {
 
    void setVisibleMsgEmptyLastLocation(boolean visible);
 
-   void setVisibleLastConnectionTime(boolean visible);
-
    OperationView<FetchAddressWithPlacesCommand> provideOperationView();
 
    <T> LifecycleTransformer<T> bindToLifecycle();

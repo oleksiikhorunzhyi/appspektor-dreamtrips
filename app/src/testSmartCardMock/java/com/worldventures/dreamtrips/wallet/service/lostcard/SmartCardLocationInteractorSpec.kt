@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocat
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
@@ -66,6 +67,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
          smartCardInteractor = createSmartCardInteractor(janet)
          smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
+         settingsInteractor = createSettingsInteractor(janet)
          firmwareInteractor = createFirmwareInteractor(janet)
          recordInteractor = createRecordInteractor(janet)
          smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
@@ -156,6 +158,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var recordInteractor: RecordInteractor
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var locationStorage: LostCardRepository
+      lateinit var settingsInteractor: SettingsInteractor
       val featureHelper: WalletFeatureHelper = WalletFeatureHelperFull()
 
       val deviceStore: DeviceStorage = SimpleDeviceStorage()
@@ -192,6 +195,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
          daggerCommandActionService.registerProvider(RecordInteractor::class.java, { recordInteractor })
+         daggerCommandActionService.registerProvider(SettingsInteractor::class.java, { settingsInteractor })
 
          return janet
       }
@@ -224,6 +228,8 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(SessionActionPipeCreator(janet))
 
+      fun createSettingsInteractor(janet: Janet) = SettingsInteractor(SessionActionPipeCreator(janet))
+
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper)
@@ -249,6 +255,9 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                .bind(MockHttpActionService.Response(200).body(addressResponse)) {
                   request ->
                   request.url.startsWith("http://maps.googleapis.com/maps/api/geocode/json")
+               }
+               .bind(MockHttpActionService.Response(204)) { request ->
+                  request.url.endsWith("api/user/settings")
                }
                .build()
       }
@@ -333,24 +342,25 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             return@thenAnswer null
          })
 
-         val testSubscriber: TestSubscriber<ActionState<CardTrackingStatusCommand>> = TestSubscriber()
+         val testFetchSubscriber: TestSubscriber<ActionState<FetchTrackingStatusCommand>> = TestSubscriber()
+         val testUpdateSubscriber: TestSubscriber<ActionState<UpdateTrackingStatusCommand>> = TestSubscriber()
 
-         smartCardLocationInteractor.enabledTrackingPipe()
-               .createObservable(CardTrackingStatusCommand.save(trackingStatusExpected))
-               .subscribe(testSubscriber)
+         smartCardLocationInteractor.updateTrackingStatusPipe()
+               .createObservable(UpdateTrackingStatusCommand(trackingStatusExpected))
+               .subscribe(testUpdateSubscriber)
 
-         assertActionSuccess(testSubscriber, { true })
-         testSubscriber.unsubscribe()
+         assertActionSuccess(testUpdateSubscriber, { true })
+         testUpdateSubscriber.unsubscribe()
 
-         smartCardLocationInteractor.enabledTrackingPipe()
-               .createObservable(CardTrackingStatusCommand.fetch())
-               .subscribe(testSubscriber)
+         smartCardLocationInteractor.fetchTrackingStatusPipe()
+               .createObservable(FetchTrackingStatusCommand())
+               .subscribe(testFetchSubscriber)
 
-         assertActionSuccess(testSubscriber, { true })
+         assertActionSuccess(testFetchSubscriber, { true })
          assertEquals(trackingStatusExpected, trackingStatusActual)
          verify(locationStorage, times(1)).saveEnabledTracking(any())
          verify(locationStorage, times(1)).isEnableTracking()
-         testSubscriber.unsubscribe()
+         testFetchSubscriber.unsubscribe()
       }
 
    }

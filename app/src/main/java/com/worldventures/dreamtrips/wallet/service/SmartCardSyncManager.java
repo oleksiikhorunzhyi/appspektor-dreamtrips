@@ -202,7 +202,7 @@ public class SmartCardSyncManager {
    }
 
    private void connectSyncSmartCard() {
-      if (!featureHelper.isCardSyncSupported()) return;
+      if (featureHelper.isSampleCardMode()) return;
       Observable.interval(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))

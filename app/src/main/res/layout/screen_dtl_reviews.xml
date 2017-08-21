@@ -23,7 +23,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:textColor="@color/merchant_landscape_title_color"
-            android:textSize="20sp"
+            android:textSize="@dimen/font_large"
             android:textStyle="normal"
             android:visibility="gone"
             />

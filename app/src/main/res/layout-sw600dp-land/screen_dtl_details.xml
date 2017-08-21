@@ -26,7 +26,7 @@
                android:fontFamily="sans-serif"
                android:gravity="center"
                android:textColor="@color/merchant_landscape_home_text_color"
-               android:textSize="14sp"
+               android:textSize="@dimen/font_medium"
                android:textStyle="normal"
                />
 
@@ -37,7 +37,7 @@
                android:fontFamily="sans-serif-medium"
                android:gravity="center"
                android:textColor="@color/merchant_landscape_title_color"
-               android:textSize="20sp"
+               android:textSize="@dimen/font_large"
                android:textStyle="normal"
                />
       </RelativeLayout>

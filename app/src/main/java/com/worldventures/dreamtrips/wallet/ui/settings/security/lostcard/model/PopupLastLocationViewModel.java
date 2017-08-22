@@ -42,4 +42,8 @@ public class PopupLastLocationViewModel extends BaseObservable {
       this.lastConnectedDate = lastConnectedDate;
       notifyPropertyChanged(BR.lastConnectedDate);
    }
+
+   public boolean hasLastLocation() {
+      return !address.isEmpty() && !lastConnectedDate.isEmpty();
+   }
 }

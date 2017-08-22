@@ -99,6 +99,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       mapView.onResume();
 
       mapView.setMapTouchListener2(motionEvent -> {
+         if(!lastLocationViewModel.hasLastLocation()) return;
          switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                popupInfoViewBinding.setVisible(false);

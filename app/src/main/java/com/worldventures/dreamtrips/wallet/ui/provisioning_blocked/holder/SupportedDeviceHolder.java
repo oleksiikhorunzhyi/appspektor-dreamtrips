@@ -14,6 +14,6 @@ public class SupportedDeviceHolder extends BaseHolder<SupportedDeviceModel> {
 
    @Override
    public void setData(SupportedDeviceModel data) {
-      binding.text1.setText(data.getDevice());
+      binding.setDeviceName(data.getDevice());
    }
 }

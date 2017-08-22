@@ -47,7 +47,6 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      connectReviewMerchants();
    }
 
    @Override
@@ -76,7 +75,12 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       }
    }
 
-   private void connectReviewMerchants() {
+   @Override
+   public void addMoreReviews(int indexOf) {
+      connectReviewMerchants(indexOf);
+   }
+
+   private void connectReviewMerchants(int indexOf) {
       ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
       reviewActionPipe
             .observeWithReplay()
@@ -89,19 +93,19 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
             .builder()
             .brandId(BRAND_ID)
             .productId(merchant.id())
+            .limit(10)
+            .indexOf(indexOf)
             .build()));
    }
 
    private void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
-      getView().showFrameLayoutReviews(true);
-      getView().addCommentsAndReviews(Float.parseFloat(action.getResult().ratingAverage()), Integer.parseInt(action.getResult().total()),
-            ReviewObject.getReviewList(action.getResult().reviews()));
-
+         getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
+                     .ratingAverage()), Integer.parseInt(action.getResult().total()),
+               ReviewObject.getReviewList(action.getResult().reviews()));
    }
 
    private void onMerchantsLoading(ReviewMerchantsAction action, Integer progress) {
-      getView().showFrameLayoutReviews(false);
       getView().onRefreshProgress();
    }
 

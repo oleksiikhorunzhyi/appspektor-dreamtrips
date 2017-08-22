@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl;
 
-
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -77,6 +76,11 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    public void setMapEnabled(boolean enabled) {
       controllerFlipper.flip(enabled);
+   }
+
+   @Override
+   public void switcherEnable(boolean enable) {
+      trackingEnableSwitcher.setEnabled(enable);
    }
 
    @Override

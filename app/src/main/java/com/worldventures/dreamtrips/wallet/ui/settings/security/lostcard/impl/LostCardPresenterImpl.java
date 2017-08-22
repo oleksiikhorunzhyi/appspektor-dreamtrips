@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl;
 
-
 import com.google.android.gms.location.LocationSettingsResult;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
@@ -114,6 +113,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void onTrackingSwitcherChanged(boolean enableTracking) {
+      getView().switcherEnable(false);
       trackSwitchStateChanged(enableTracking);
       if (enableTracking) {
          applyTrackingStatus(true);
@@ -138,6 +138,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void applyTrackingStatusForUI(boolean isTrackingEnabled) {
+      getView().switcherEnable(true);
       getView().setTrackingSwitchStatus(isTrackingEnabled);
       getView().setMapEnabled(isTrackingEnabled);
    }
@@ -180,6 +181,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void applyTrackingStatus(boolean enableTracking) {
+      getView().switcherEnable(true);
       smartCardLocationInteractor.updateTrackingStatusPipe().send(new UpdateTrackingStatusCommand(enableTracking));
    }
 

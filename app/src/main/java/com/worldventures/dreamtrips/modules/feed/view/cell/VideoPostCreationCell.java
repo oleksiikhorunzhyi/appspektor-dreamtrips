@@ -15,12 +15,13 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.VideoCreationCellDelegate;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_video_post)
-public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationModel, VideoCreationCellDelegate> implements ResizeableCell{
+public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationModel, VideoCreationCellDelegate> implements ResizeableCell {
 
    @InjectView(R.id.video_thumbnail) SimpleDraweeView videoThumbnail;
    @InjectView(R.id.remove) View remove;
@@ -33,7 +34,7 @@ public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationMod
 
       globalLayoutListener = () -> {
          if (itemView.getWidth() != previousWidth) {
-            refreshParamsForAspectRatio(getModelObject().size());
+            refreshParamsForAspectRatio(getModelObject().videoMetadata());
          }
       };
    }
@@ -55,8 +56,8 @@ public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationMod
       remove.setVisibility(getModelObject().canDelete() ? View.VISIBLE : View.GONE);
       ViewUtils.runTaskAfterMeasure(itemView, () -> {
                VideoCreationModel videoCreationModel = getModelObject();
-               if (videoCreationModel.size() != null) {
-                  refreshParamsForAspectRatio(videoCreationModel.size());
+               if (videoCreationModel.videoMetadata() != null) {
+                  refreshParamsForAspectRatio(videoCreationModel.videoMetadata());
                } else {
                   assignDefaultLayoutParams();
                }
@@ -64,22 +65,21 @@ public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationMod
                videoThumbnail.setController(GraphicUtils.provideFrescoResizingController(uri,
                      videoThumbnail.getController()));
             }
-         );
+      );
    }
 
    @Override
    public void checkSize() {
       if (itemView.getWidth() != previousWidth) {
-         refreshParamsForAspectRatio(getModelObject().size());
+         refreshParamsForAspectRatio(getModelObject().videoMetadata());
       }
    }
 
-   public void refreshParamsForAspectRatio(Size size) {
-      int videoWidth = size.getWidth();
-      int videoHeight = size.getHeight();
-      float aspectRatio = (float) videoWidth / videoHeight;
-      int previewWidth = videoWidth < itemView.getWidth()? videoWidth : itemView.getWidth();
-      int previewHeight =  (int) (previewWidth / aspectRatio);
+   public void refreshParamsForAspectRatio(VideoMetadata videoMetadata) {
+      double aspectRatio = videoMetadata.aspectRatio();
+      int videoWidth = videoMetadata.width();
+      int previewWidth = videoWidth != 0 && videoWidth < itemView.getWidth() ? videoWidth : itemView.getWidth();
+      int previewHeight = (int) (previewWidth / aspectRatio);
 
       ViewGroup.LayoutParams params = videoThumbnail.getLayoutParams();
       params.width = previewWidth;

@@ -34,7 +34,7 @@ public class DirectionInfoView extends LinearLayout {
    @InjectView(R.id.iv_image) ImageView ivImage;
 
    private void init(Context context, AttributeSet attrs) {
-      inflate(context, R.layout.view_direction_info, this);
+      inflate(context, R.layout.wallet_custom_view_guesture_info, this);
       if (isInEditMode()) return;
       ButterKnife.inject(this);
       if (attrs != null) {

@@ -48,7 +48,7 @@ public class WalletDelayRadioGroup extends RadioGroup {
    }
 
    private void attachItem(int position, SettingsRadioModel radioModel) {
-      final RadioButton button = (RadioButton) from(getContext()).inflate(R.layout.wallet_item_radio_button, this, false);
+      final RadioButton button = (RadioButton) from(getContext()).inflate(R.layout.item_wallet_radio_button, this, false);
       button.setText(radioModel.getText());
       button.setId(position);
       addView(button);

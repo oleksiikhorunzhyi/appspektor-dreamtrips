@@ -51,7 +51,7 @@
 
             <include
                   android:id="@+id/card"
-                  layout="@layout/card_cell_binding"
+                  layout="@layout/item_wallet_record"
                   android:visibility="gone"
                   app:cardModel="@{recordDetails.recordModel}"
                   tools:visibility="visible"

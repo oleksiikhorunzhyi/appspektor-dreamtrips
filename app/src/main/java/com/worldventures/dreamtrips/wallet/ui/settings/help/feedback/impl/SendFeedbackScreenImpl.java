@@ -227,7 +227,7 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
 
    @Override
    public View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup) {
-      return layoutInflater.inflate(R.layout.wallet_settings_help_feedback, viewGroup, false);
+      return layoutInflater.inflate(R.layout.screen_wallet_settings_help_feedback, viewGroup, false);
    }
 
    @Override

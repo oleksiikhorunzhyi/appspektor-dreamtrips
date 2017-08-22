@@ -21,7 +21,7 @@ public class WalletPhotoProposalDialog extends BottomSheetDialog {
    }
 
    private void init(Context context) {
-      final View view = View.inflate(context, R.layout.wallet_dialog_profile_photo_actions, null);
+      final View view = View.inflate(context, R.layout.dialog_wallet_profile_photo_actions, null);
       view.findViewById(R.id.choose_photo_action).setOnClickListener(v -> onChoosePhotoAction());
       view.findViewById(R.id.do_not_add_photo_action).setOnClickListener(v -> onDoNotAddPhotoAction());
       view.findViewById(R.id.cancel_action).setOnClickListener(v -> onCancelAction());

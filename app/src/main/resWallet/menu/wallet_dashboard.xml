@@ -7,6 +7,6 @@
          android:id="@+id/item_settings"
          android:icon="@drawable/ic_wallet_vector_settings"
          android:title="@string/wallet_dashboard_menu_settings_item"
-         app:actionLayout="@layout/wallet_dashboard_menu_layout"
+         app:actionLayout="@layout/wallet_custom_view_dashboard_settings"
          app:showAsAction="always" />
 </menu>

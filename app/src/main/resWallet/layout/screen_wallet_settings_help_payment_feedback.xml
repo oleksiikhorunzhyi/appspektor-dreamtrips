@@ -38,25 +38,25 @@
 
             <include
                   android:id="@+id/inc_attempts"
-                  layout="@layout/include_wallet_payment_feedback_success_attempt"
+                  layout="@layout/wallet_include_payment_feedback_success_attempt"
                   app:attempts="@{paymentFeedbackViewModel.attemptsView}"
                   />
 
             <include
                   android:id="@+id/inc_merchant"
-                  layout="@layout/include_wallet_payment_feedback_merchant_block"
+                  layout="@layout/wallet_include_payment_feedback_merchant_block"
                   app:merchant="@{paymentFeedbackViewModel.merchantView}"
                   />
 
             <include
                   android:id="@+id/inc_payment_terminal"
-                  layout="@layout/include_wallet_payment_feedback_payment_terminal_block"
+                  layout="@layout/wallet_include_payment_feedback_payment_terminal_block"
                   app:paymentTerminal="@{paymentFeedbackViewModel.terminalView}"
                   />
 
             <include
                   android:id="@+id/inc_additional_info"
-                  layout="@layout/include_wallet_payment_feedback_additional_info"
+                  layout="@layout/wallet_include_payment_feedback_additional_info"
                   app:additionalInfo="@{paymentFeedbackViewModel.infoView}"
                   />
 

@@ -21,12 +21,12 @@ public class WalletSuffixSelectingDialog extends BottomSheetDialog {
    }
 
    private void init(Context context) {
-      final View view = View.inflate(context, R.layout.wallet_dialog_profile_suffix_actions, null);
+      final View view = View.inflate(context, R.layout.dialog_wallet_profile_suffix_actions, null);
       final ListView lvSuffixes = (ListView) view.findViewById(R.id.lv_suffixes);
       final String[] suffixes = context.getResources().getStringArray(R.array.wallet_edit_profile_suffixes);
 
       final ArrayAdapter<String> adapter = new ArrayAdapter<>(
-            context, R.layout.wallet_item_profile_suffix, R.id.tv_suffix, suffixes);
+            context, R.layout.item_wallet_profile_suffix, R.id.tv_suffix, suffixes);
 
       lvSuffixes.setAdapter(adapter);
 

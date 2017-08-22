@@ -225,7 +225,7 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
 
    @Override
    public View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup) {
-      return layoutInflater.inflate(R.layout.wallet_settings_help_video, viewGroup, false);
+      return layoutInflater.inflate(R.layout.screen_wallet_settings_help_video, viewGroup, false);
    }
 
    @Override

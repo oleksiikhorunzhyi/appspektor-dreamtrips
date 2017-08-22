@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder;
 
-import com.worldventures.dreamtrips.databinding.AdapterItemSupportedDevicesListBinding;
+import com.worldventures.dreamtrips.databinding.ItemWalletSupportedDevicesListBinding;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
@@ -13,7 +13,7 @@ public class SupportedDevicesListHolder extends BaseHolder<SupportedDevicesListM
 
    private MultiHolderAdapter<SupportedDeviceModel> adapter;
 
-   public SupportedDevicesListHolder(AdapterItemSupportedDevicesListBinding binding) {
+   public SupportedDevicesListHolder(ItemWalletSupportedDevicesListBinding binding) {
       super(binding.getRoot());
       binding.deviceList.getLayoutManager().setAutoMeasureEnabled(true);
       binding.deviceList.setNestedScrollingEnabled(false);

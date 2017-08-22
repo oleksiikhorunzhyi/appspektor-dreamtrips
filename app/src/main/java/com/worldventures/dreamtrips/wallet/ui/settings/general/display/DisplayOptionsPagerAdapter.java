@@ -47,7 +47,7 @@ public class DisplayOptionsPagerAdapter extends PagerAdapter {
 
    @Override
    public Object instantiateItem(ViewGroup collection, int position) {
-      ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.adapter_item_wallet_settings_display, collection, false);
+      ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.item_wallet_settings_display, collection, false);
 
       DisplayOptionsViewHolder holder = new DisplayOptionsViewHolder(layout);
       holder.bindData(DISPLAY_OPTIONS.get(position), DISPLAY_OPTION_TITLES.get(position), smartCardUser);

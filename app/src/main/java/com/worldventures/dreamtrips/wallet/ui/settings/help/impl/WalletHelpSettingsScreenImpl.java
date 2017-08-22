@@ -47,7 +47,7 @@ public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHel
    private void initBottomSheetFeedbackDialog() {
       bottomSheetFeedbackDialog = new BottomSheetDialog(getContext());
 
-      ViewDataBinding bottomSheetView = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.wallet_bottom_sheet_feedback_dialog, (ViewGroup) getView(), false);
+      ViewDataBinding bottomSheetView = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_wallet_bottom_sheet_feedback, (ViewGroup) getView(), false);
       bottomSheetView.setVariable(BR.presenter, getPresenter());
       bottomSheetView.setVariable(BR.bottomSheetDialog, bottomSheetFeedbackDialog);
 

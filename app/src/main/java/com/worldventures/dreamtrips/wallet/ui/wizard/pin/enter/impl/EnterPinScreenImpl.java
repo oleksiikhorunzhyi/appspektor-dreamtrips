@@ -95,7 +95,7 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
       if (infoLockGesturesDialog == null) {
          infoLockGesturesDialog = new MaterialDialog.Builder(getContext())
                .title(R.string.wallet_gestures_info_dialog_title)
-               .customView(R.layout.view_pin_gestures_info, true)
+               .customView(R.layout.dialog_wallet_pin_gestures, true)
                .positiveText(R.string.wallet_close)
                .build();
       }

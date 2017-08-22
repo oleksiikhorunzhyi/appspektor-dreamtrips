@@ -54,7 +54,7 @@ public class SmartCardWidget extends ConstraintLayout {
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_smartcard, this);
+      LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_smartcard, this);
       if (isInEditMode()) return;
       ButterKnife.inject(this);
       ImageUtils.applyGrayScaleColorFilter(scAvatar);

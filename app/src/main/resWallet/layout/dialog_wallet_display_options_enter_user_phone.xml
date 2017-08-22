@@ -27,7 +27,7 @@
          >
 
       <include
-            layout="@layout/wallet_enter_user_phone"
+            layout="@layout/wallet_include_user_phone"
             app:profile="@{profile}"
             />
 

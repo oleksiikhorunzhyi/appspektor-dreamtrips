@@ -72,7 +72,7 @@ public class BankCardWidget extends FrameLayout {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      View.inflate(getContext(), R.layout.custom_view_bank_card, this);
+      View.inflate(getContext(), R.layout.wallet_custom_view_record, this);
       bankCardHolder = getChildAt(0);
       setBankCardHolder(drawableResId);
       ButterKnife.inject(this);

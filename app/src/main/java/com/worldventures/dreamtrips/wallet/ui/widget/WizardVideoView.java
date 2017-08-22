@@ -44,7 +44,7 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_wizard_video, this);
+      LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_video, this);
       ButterKnife.inject(this);
       textureView.setBackgroundColor(Color.WHITE);
       textureView.setSurfaceTextureListener(this);

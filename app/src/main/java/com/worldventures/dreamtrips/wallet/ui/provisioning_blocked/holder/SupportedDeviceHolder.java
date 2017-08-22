@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder;
 
-import com.worldventures.dreamtrips.databinding.AdapterItemSupportedDeviceItemBinding;
+import com.worldventures.dreamtrips.databinding.ItemWalletSupportedDeviceItemBinding;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 
 public class SupportedDeviceHolder extends BaseHolder<SupportedDeviceModel> {
 
-   private final AdapterItemSupportedDeviceItemBinding binding;
+   private final ItemWalletSupportedDeviceItemBinding binding;
 
-   public SupportedDeviceHolder(AdapterItemSupportedDeviceItemBinding binding) {
+   public SupportedDeviceHolder(ItemWalletSupportedDeviceItemBinding binding) {
       super(binding.getRoot());
       this.binding = binding;
    }

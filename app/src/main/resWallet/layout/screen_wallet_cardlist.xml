@@ -67,7 +67,7 @@
 
                      <include
                            android:id="@+id/transition_view"
-                           layout="@layout/card_cell_binding"
+                           layout="@layout/item_wallet_record"
                            />
 
                      <com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget

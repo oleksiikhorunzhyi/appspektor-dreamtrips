@@ -18,7 +18,7 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.databinding.WalletDisplayOptionsEnterUserPhoneBinding;
+import com.worldventures.dreamtrips.databinding.DialogWalletDisplayOptionsEnterUserPhoneBinding;
 import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
@@ -233,8 +233,8 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    @Override
    public void showAddPhoneDialog() {
-      final View phoneView = inflate(getContext(), R.layout.wallet_display_options_enter_user_phone, null);
-      final WalletDisplayOptionsEnterUserPhoneBinding phoneBinding = DataBindingUtil.bind(phoneView);
+      final View phoneView = inflate(getContext(), R.layout.dialog_wallet_display_options_enter_user_phone, null);
+      final DialogWalletDisplayOptionsEnterUserPhoneBinding phoneBinding = DataBindingUtil.bind(phoneView);
       phoneBinding.setProfile(new ProfileViewModel());
       MaterialDialog builder = new MaterialDialog.Builder(getContext())
             .title(R.string.wallet_settings_general_display_photo_add_phone_label)

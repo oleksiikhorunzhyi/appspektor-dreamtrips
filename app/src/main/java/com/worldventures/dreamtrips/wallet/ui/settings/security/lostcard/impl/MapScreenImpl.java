@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bluelinelabs.conductor.ControllerChangeHandler;
-import com.bluelinelabs.conductor.ControllerChangeType;
 import com.bluelinelabs.conductor.rxlifecycle.RxRestoreViewOnCreateController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -78,7 +76,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    @NonNull
    @Override
    protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup, @Nullable Bundle bundle) {
-      final View view = layoutInflater.inflate(R.layout.screen_wallet_settings_lostcard_map, viewGroup, false);
+      final View view = layoutInflater.inflate(R.layout.subscreen_wallet_settings_lostcard_map, viewGroup, false);
       //noinspection all
       final ObjectGraph objectGraph = (ObjectGraph) view.getContext()
             .getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);

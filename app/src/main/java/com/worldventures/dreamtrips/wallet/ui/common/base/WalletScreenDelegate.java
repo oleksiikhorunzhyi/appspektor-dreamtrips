@@ -22,9 +22,9 @@ public abstract class WalletScreenDelegate {
 
    private WalletScreenDelegate(View container, boolean visibleConnectionSmartCardLabel, boolean visibleHttpConnectionLabel) {
       this.connectionSmartCardHeader = LayoutInflater.from(container.getContext())
-            .inflate(R.layout.wallet_smartcard_connection_plank, (ViewGroup) container, false);
+            .inflate(R.layout.wallet_plank_smartcard_connection, (ViewGroup) container, false);
       this.connectionHttpHeader = LayoutInflater.from(container.getContext())
-            .inflate(R.layout.wallet_http_connection_plank, (ViewGroup) container, false);
+            .inflate(R.layout.wallet_plank_http_connection, (ViewGroup) container, false);
       this.visibleConnectionSmartCardLabel = visibleConnectionSmartCardLabel;
       this.visibleHttpConnectionLabel = visibleHttpConnectionLabel;
    }

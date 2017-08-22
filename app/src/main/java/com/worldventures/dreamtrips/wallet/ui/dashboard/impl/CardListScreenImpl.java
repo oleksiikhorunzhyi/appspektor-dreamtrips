@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.databinding.CardCellBindingBinding;
+import com.worldventures.dreamtrips.databinding.ItemWalletRecordBinding;
 import com.worldventures.dreamtrips.databinding.ScreenWalletCardlistBinding;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
@@ -136,6 +136,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
          bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
                R.anim.wallet_instant_layout_anim));
       }
+      //noinspection all
       multiAdapter.swapList(result);
       this.cardViewModels = result;
       emptyCardListView.setVisibility(result != null && !result.isEmpty() ? GONE : VISIBLE);
@@ -321,7 +322,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
                @Override
                public void onItemClick(View view, int position) {
                   if (!getPresenter().isCardDetailSupported()) return;
-                  if (multiAdapter.getItemViewType(position) == R.layout.card_cell_binding) {
+                  if (multiAdapter.getItemViewType(position) == R.layout.item_wallet_record) {
                      showDetails(view, (int) (dimension * VISIBLE_SCALE * -1));
                   }
                }
@@ -350,7 +351,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    }
 
    private void addTransitionView(CommonCardViewModel model, TransitionModel transitionModel) {
-      CardCellBindingBinding transitionView = binding.transitionView;
+      ItemWalletRecordBinding transitionView = binding.transitionView;
       transitionView.setCardModel(model);
       setUpViewPosition(transitionModel, transitionView.getRoot());
       transitionView.getRoot().setVisibility(VISIBLE);
@@ -364,7 +365,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    }
 
    @OnClick(R.id.firmware_available)
-   protected void firmwareAvailableBtnClick() {
+   void firmwareAvailableBtnClick() {
       getPresenter().navigateToFirmwareUpdate();
    }
 
@@ -399,7 +400,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
       getPresenter().addCardRequired(cardStackHeaderHolder.cardCount());
    }
 
-   protected void onSyncPaymentsCardsButtonClick() {
+   private void onSyncPaymentsCardsButtonClick() {
       getPresenter().syncPayments();
    }
 

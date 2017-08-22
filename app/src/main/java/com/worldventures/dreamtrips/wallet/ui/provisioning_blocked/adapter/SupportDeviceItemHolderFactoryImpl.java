@@ -1,25 +1,22 @@
 package com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.adapter;
 
-import android.databinding.DataBindingUtil;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.databinding.AdapterItemSupportedDeviceItemBinding;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDeviceHolder;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDeviceModel;
+
+import static android.databinding.DataBindingUtil.bind;
+import static android.view.LayoutInflater.from;
 
 public class SupportDeviceItemHolderFactoryImpl implements SupportDeviceItemTypeFactory {
 
    @Override
    public BaseHolder holder(ViewGroup parent, int viewType) {
       switch (viewType) {
-         case R.layout.adapter_item_supported_device_item:
-            AdapterItemSupportedDeviceItemBinding supportedDeviceItemBinding = DataBindingUtil
-                  .bind(LayoutInflater
-                        .from(parent.getContext()).inflate(viewType, parent, false));
-            return new SupportedDeviceHolder(supportedDeviceItemBinding);
+         case R.layout.item_wallet_supported_device_item:
+            return new SupportedDeviceHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
          default:
             throw new IllegalArgumentException();
       }
@@ -27,6 +24,6 @@ public class SupportDeviceItemHolderFactoryImpl implements SupportDeviceItemType
 
    @Override
    public int type(SupportedDeviceModel device) {
-      return R.layout.adapter_item_supported_device_item;
+      return R.layout.item_wallet_supported_device_item;
    }
 }

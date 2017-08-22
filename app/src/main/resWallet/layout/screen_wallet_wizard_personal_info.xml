@@ -251,7 +251,7 @@
                   android:layout_marginStart="8dp"
                   android:layout_marginTop="0dp"
                   android:background="@drawable/wallet_edit_text_background_selector"
-                  android:drawableRight="@drawable/ic_arrow_down_grey"
+                  android:drawableEnd="@drawable/ic_arrow_down_grey"
                   android:gravity="center_vertical"
                   android:hint="@string/wallet_edit_profile_enter_suffix_hint"
                   android:text="@={profile.suffix}"

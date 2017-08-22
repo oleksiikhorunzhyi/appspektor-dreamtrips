@@ -34,10 +34,12 @@
          tools:ignore="RelativeOverlap"
          >
 
+      <!--todo use start drawable-->
       <LinearLayout
             android:id="@+id/ll_default_card_block"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:ignore="UseCompoundDrawables"
             >
 
          <ImageView
@@ -47,6 +49,7 @@
                android:layout_gravity="center_vertical"
                android:src="@drawable/ic_wallet_vector_check_circle_green"
                android:visibility="gone"
+               tools:ignore="ContentDescription"
                />
 
          <TextView

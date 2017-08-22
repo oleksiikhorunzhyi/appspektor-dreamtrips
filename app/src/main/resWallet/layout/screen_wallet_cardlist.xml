@@ -80,6 +80,7 @@
                            />
 
 
+                     <!--todo nestedScrollingEnabled is able from lollipop-->
                      <android.support.v7.widget.RecyclerView
                            android:id="@+id/bank_card_list"
                            android:layout_width="match_parent"

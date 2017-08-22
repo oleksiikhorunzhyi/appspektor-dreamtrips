@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl;
 
-
 import android.animation.AnimatorSet;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -27,8 +26,6 @@ import static java.util.Arrays.asList;
 public class WizardSplashScreenImpl extends WalletBaseController<WizardSplashScreen, WizardSplashPresenter> implements WizardSplashScreen {
 
    private static final int FLIP_ANIM_DELAY = 500;
-   private static final int SHOW_SOAR_TITLE_DELAY = 1000;
-   private static final int SOAR_FADE_OUT_DELAY = 400;
    private static final int CARD_FADE_IN_DELAY = 300;
    private static final int COMMON_FADE_IN_DELAY = 250;
 

@@ -19,7 +19,8 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:paddingBottom="@dimen/spacing_tiny"
-         android:paddingLeft="@dimen/spacing_normal"
+         android:paddingStart="@dimen/spacing_normal"
+         android:paddingEnd="0dp"
          android:paddingTop="@dimen/spacing_tiny"
          >
 
@@ -47,6 +48,7 @@
          android:background="@color/light_grey_background"
          >
 
+      <!--todo translationZ and elevation are able from lollipop-->
       <View
             android:layout_width="match_parent"
             android:layout_height="6dp"
@@ -54,6 +56,7 @@
             android:background="@drawable/wallet_square_shadow"
             android:elevation="@dimen/spacing_tiniest"
             android:translationZ="@dimen/spacing_tiniest"
+            tools:ignore="UnusedAttribute"
             />
 
       <LinearLayout
@@ -69,6 +72,7 @@
                android:layout_height="wrap_content"
                android:layout_marginBottom="@dimen/spacing_large"
                android:src="@drawable/ic_wallet_offline_mode_wifi"
+               tools:ignore="ContentDescription"
                />
 
          <TextView

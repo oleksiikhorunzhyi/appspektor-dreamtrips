@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:gravity="center"
-      android:theme="@style/WalletTheme"
       android:orientation="vertical"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
@@ -42,40 +43,33 @@
             android:text="@string/wallet_wizard_scan_start_btn"
             />
 
-      <RelativeLayout
+      <FrameLayout
+            android:id="@+id/card_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@null"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
             >
 
-         <FrameLayout
-               android:id="@+id/card_container"
+         <ImageView
+               android:id="@+id/wallet_wizard_smarcard_back"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="150dp"
-               >
+               android:alpha="0"
+               android:scaleType="fitCenter"
+               android:src="@drawable/wallet_flye_back"
+               tools:ignore="ContentDescription"
+               />
 
-            <ImageView
-                  android:id="@+id/wallet_wizard_smarcard_back"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:alpha="0"
-                  android:scaleType="fitCenter"
-                  android:src="@drawable/wallet_flye_back"
-                  tools:ignore="ContentDescription"
-                  />
-
-            <ImageView
-                  android:id="@+id/wallet_wizard_smarcard_front"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center_horizontal"
-                  android:scaleType="fitCenter"
-                  android:src="@drawable/wallet_flye_angle_with_shadow"
-                  tools:ignore="ContentDescription"
-                  />
-         </FrameLayout>
-      </RelativeLayout>
+         <ImageView
+               android:id="@+id/wallet_wizard_smarcard_front"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:scaleType="fitCenter"
+               android:src="@drawable/wallet_flye_front"
+               tools:ignore="ContentDescription"
+               />
+      </FrameLayout>
 
    </FrameLayout>
 

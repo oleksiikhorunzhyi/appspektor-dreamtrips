@@ -145,6 +145,7 @@
             android:textColor="@color/wallet_settings_version"
             android:textSize="11sp"
             tools:text="To make our SmartCard better for you, we have updates every 2 week. Every update of our smart card includes improvements for speed and reliability. As other new features become available, we\’ll highlight those for you in the app."
+            tools:ignore="SmallSp"
             />
 
       <Button

@@ -109,7 +109,8 @@
                style="@style/WalletTheme.PaymentFeedbackSecondaryText"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:paddingLeft="@dimen/spacing_extra_large"
+               android:paddingStart="@dimen/spacing_extra_large"
+               android:paddingEnd="0dp"
                android:text="@string/wallet_payment_feedback_magnetic_swipe_description"
                android:textSize="@dimen/font_medium"
                />
@@ -128,7 +129,8 @@
                style="@style/WalletTheme.PaymentFeedbackSecondaryText"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:paddingLeft="@dimen/spacing_extra_large"
+               android:paddingStart="@dimen/spacing_extra_large"
+               android:paddingEnd="0dp"
                android:text="@string/wallet_payment_feedback_wireless_magnetic_description"
                android:textSize="@dimen/font_medium"
                />

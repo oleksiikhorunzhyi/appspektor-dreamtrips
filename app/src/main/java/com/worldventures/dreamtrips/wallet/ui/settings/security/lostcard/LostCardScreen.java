@@ -12,6 +12,8 @@ public interface LostCardScreen extends WalletScreen{
 
    void setMapEnabled(boolean enabled);
 
+   void switcherEnable(boolean enable);
+
    void setTrackingSwitchStatus(boolean checked);
 
    void showRationaleForLocation();

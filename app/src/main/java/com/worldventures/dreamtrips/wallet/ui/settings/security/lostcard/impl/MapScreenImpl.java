@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.databinding.MapPopupInfoViewBinding;
+import com.worldventures.dreamtrips.databinding.WalletIncludeMapPopupInfoBinding;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
@@ -70,7 +70,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    private GoogleMap googleMap;
-   private MapPopupInfoViewBinding popupInfoViewBinding;
+   private WalletIncludeMapPopupInfoBinding popupInfoViewBinding;
    private PopupLastLocationViewModel lastLocationViewModel = new PopupLastLocationViewModel();
 
    @NonNull

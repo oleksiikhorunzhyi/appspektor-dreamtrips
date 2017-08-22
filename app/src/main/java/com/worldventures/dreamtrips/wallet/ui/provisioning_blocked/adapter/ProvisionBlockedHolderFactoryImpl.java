@@ -18,7 +18,7 @@ public class ProvisionBlockedHolderFactoryImpl implements ProvisionBlockedTypeFa
    public BaseHolder holder(ViewGroup parent, int viewType) {
 
       switch (viewType) {
-         case R.layout.adapter_item_unsupported_device_info:
+         case R.layout.item_wallet_unsupported_device_info:
             return new UnsupportedDeviceHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
          case R.layout.item_wallet_supported_devices_list:
             return new SupportedDevicesListHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
@@ -29,7 +29,7 @@ public class ProvisionBlockedHolderFactoryImpl implements ProvisionBlockedTypeFa
 
    @Override
    public int type(UnsupportedDeviceModel model) {
-      return R.layout.adapter_item_unsupported_device_info;
+      return R.layout.item_wallet_unsupported_device_info;
    }
 
    @Override

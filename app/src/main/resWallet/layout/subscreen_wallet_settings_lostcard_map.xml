@@ -70,7 +70,7 @@
 
    <include
          android:id="@+id/ll_popup_info"
-         layout="@layout/map_popup_info_view"
+         layout="@layout/wallet_include_map_popup_info"
          android:layout_width="0dp"
          android:layout_height="wrap_content"
          android:layout_marginBottom="8dp"

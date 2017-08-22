@@ -1,4 +1,5 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:tools="http://schemas.android.com/tools"
+      xmlns:android="http://schemas.android.com/apk/res/android">
 
    <LinearLayout
          android:layout_width="wrap_content"
@@ -12,6 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:src="@drawable/wallet_front_with_swipe_chip_dialog"
+            tools:ignore="ContentDescription"
             />
 
       <TextView

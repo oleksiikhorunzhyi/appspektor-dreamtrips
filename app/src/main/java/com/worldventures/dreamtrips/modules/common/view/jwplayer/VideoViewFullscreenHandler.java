@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.common.view.jwplayer;
 
 import android.app.Activity;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -31,6 +33,10 @@ public class VideoViewFullscreenHandler {
    @InjectView(R.id.video_view_fullscreen_button) View fullscreenButton;
    @InjectView(R.id.video_view_container) ViewGroup videoContainer;
 
+   private boolean swapMute = true;
+
+   private WeakHandler weakHandler = new WeakHandler(Looper.getMainLooper());
+
    public VideoViewFullscreenHandler(Activity activity, BackStackDelegate backStackDelegate,
          VideoPlayerHolder videoPlayerHolder, VideoView videoView) {
       this.activity = activity;
@@ -44,6 +50,10 @@ public class VideoViewFullscreenHandler {
    public void initUi() {
       ButterKnife.inject(this, videoView);
       fullscreenButton.setVisibility(View.VISIBLE);
+   }
+
+   public void setSwapMute(boolean swapMute) {
+      this.swapMute = swapMute;
    }
 
    private void swapFullscreen() {
@@ -72,11 +82,9 @@ public class VideoViewFullscreenHandler {
       detachFromWindowedContainer();
       if (jwPlayerView != null) {
          jwPlayerView.initializeSurface();
-         jwPlayerView.setMute(false);
       }
-      videoView.post(() -> attachToFullscreenContainer());
+      weakHandler.post(this::attachToFullscreenContainer);
 
-      isFullscreen = true;
       refreshFullscreenButton();
 
       backStackDelegate.setListener(this::onBackPressed);
@@ -92,14 +100,10 @@ public class VideoViewFullscreenHandler {
       if (jwPlayerView != null) {
          jwPlayerView.initializeSurface();
       }
-      videoView.post(() -> {
-         attachToWindowedContainer();
-         if (jwPlayerView != null) jwPlayerView.setMute(true);
-      });
+      weakHandler.post(this::attachToWindowedContainer);
 
       backStackDelegate.setListener(null);
 
-      isFullscreen = false;
       refreshFullscreenButton();
    }
 
@@ -116,6 +120,7 @@ public class VideoViewFullscreenHandler {
    private void attachToWindowedContainer() {
       videoContainer.setLayoutParams(videoContainerWindowedLayoutParams);
       windowedContainer.addView(videoView, windowedLayoutParams);
+      if (swapMute && videoPlayerHolder.getJwPlayerView() != null) videoPlayerHolder.getJwPlayerView().setMute(true);
    }
 
    private void detachFromFullscreenContainer() {
@@ -128,6 +133,7 @@ public class VideoViewFullscreenHandler {
       videoContainer.setLayoutParams(params);
       fullscreenContainer.addView(videoView,
             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+      if (swapMute && videoPlayerHolder.getJwPlayerView() != null) videoPlayerHolder.getJwPlayerView().setMute(false);
    }
 
    ///////////////////////////////////////////////////////////////////////////

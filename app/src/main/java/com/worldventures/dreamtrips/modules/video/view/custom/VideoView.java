@@ -134,6 +134,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       this.windowedContainer = windowedContainer;
       if (fullscreenHandler == null) {
          fullscreenHandler = new VideoViewFullscreenHandler(activity, backStackDelegate, videoPlayerHolder, this);
+         fullscreenHandler.setSwapMute(mute);
          fullscreenHandler.initUi();
       }
    }

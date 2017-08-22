@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
+import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -10,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInitializer;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull;
@@ -33,7 +35,9 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
             StorageModule.class,
             JanetNxtModule.class
       },
-      complete = false, library = true
+      injects = {
+            SmartCardInitializer.class,
+      }, complete = false, library = true
 )
 public class SmartCardModule {
 
@@ -58,5 +62,10 @@ public class SmartCardModule {
    WalletFeatureHelper featureHelper(@Named(JanetModule.JANET_WALLET)Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
 //      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
       return new WalletFeatureHelperFull();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideSmartCardInitializer() {
+      return new SmartCardInitializer();
    }
 }

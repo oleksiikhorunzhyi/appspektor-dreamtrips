@@ -1,57 +1,58 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 
 import io.techery.janet.Command;
 import rx.Observable;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class LocationTrackingManager {
    private final LostCardManager lostCardManager;
    private final SmartCardLocationInteractor locationInteractor;
-   private final WalletDetectLocationService locationService;
-   private final CompositeSubscription subscriptions;
+   private final SmartCardInteractor smartCardInteractor;
+   private final LoginInteractor loginInteractor;
+   private final LogoutInteractor logoutInteractor;
+   private final WalletSocialInfoProvider walletSocialInfoProvider;
 
-   public LocationTrackingManager(SmartCardLocationInteractor locationInteractor,
-         WalletDetectLocationService locationService, LostCardManager lostCardManager) {
+   public LocationTrackingManager(SmartCardLocationInteractor locationInteractor, LostCardManager lostCardManager,
+         SmartCardInteractor smartCardInteractor, LoginInteractor loginInteractor,
+         LogoutInteractor logoutInteractor, WalletSocialInfoProvider walletSocialInfoProvider) {
       this.locationInteractor = locationInteractor;
-      this.locationService = locationService;
       this.lostCardManager = lostCardManager;
-      this.subscriptions = new CompositeSubscription();
+      this.smartCardInteractor = smartCardInteractor;
+      this.loginInteractor = loginInteractor;
+      this.logoutInteractor = logoutInteractor;
+      this.walletSocialInfoProvider = walletSocialInfoProvider;
    }
 
-   public void track() {
-      if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
-         observeLocationSettings();
-         observeLocationTracking();
-      }
-      checkEnableTracking()
+   public void init() {
+      loginInteractor.loginActionPipe().observeSuccess().map(command -> true)
+            .startWith(Observable.just(walletSocialInfoProvider.hasUser()))
+            .flatMap(isUserPresent -> isUserPresent ? checkSmartCardExistence() : Observable.just(false))
+            .flatMap(smartCardExists -> smartCardExists ? checkEnableTracking() : Observable.empty())
+            .mergeWith(locationInteractor.updateTrackingStatusPipe().observeSuccess().map(Command::getResult))
+            .mergeWith(logoutInteractor.logoutPipe().observeSuccess().map(command -> false))
+            .distinctUntilChanged()
             .subscribe(this::handleTrackingStatus, throwable -> Timber.e(throwable, ""));
    }
 
    private Observable<Boolean> checkEnableTracking() {
-      return Observable.zip(Observable.just(locationService.isEnabled()),
-            locationInteractor.fetchTrackingStatusPipe()
+      return locationInteractor.fetchTrackingStatusPipe()
             .createObservableResult(new FetchTrackingStatusCommand())
-            .map(Command::getResult),
-            (locationSettingsEnabled, trackingStatusEnabled) -> locationSettingsEnabled && trackingStatusEnabled
-      );
+            .map(Command::getResult);
    }
 
-   private void observeLocationSettings() {
-      subscriptions.add(locationService.observeLocationSettingState()
-            .subscribe(this::handleTrackingStatus));
-   }
-
-   private void observeLocationTracking() {
-      subscriptions.add(locationInteractor.fetchTrackingStatusPipe()
-            .observeSuccess()
-            .map(Command::getResult)
-            .subscribe(this::handleTrackingStatus));
+   private Observable<Boolean> checkSmartCardExistence() {
+      return smartCardInteractor.fetchAssociatedSmartCard()
+            .createObservableResult(new FetchAssociatedSmartCardCommand())
+            .map(command -> command.getResult().exist());
    }
 
    private void handleTrackingStatus(boolean isEnabled) {
@@ -60,12 +61,5 @@ public class LocationTrackingManager {
       } else {
          lostCardManager.disconnect();
       }
-   }
-
-   public void untrack() {
-      if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
-         subscriptions.clear();
-      }
-      lostCardManager.disconnect();
    }
 }

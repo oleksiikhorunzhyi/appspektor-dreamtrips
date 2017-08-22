@@ -62,7 +62,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationUpdateTrackingStatus())
-                  .onSuccess(cmd -> smartCardLocationInteractor.fetchTrackingStatusPipe().send(new FetchTrackingStatusCommand()))
+                  .onSuccess(cmd -> onTrackingStateFetched(cmd.getResult()))
                   .onFail((cmd, throwable) -> getView().revertTrackingSwitch())
                   .create());
    }

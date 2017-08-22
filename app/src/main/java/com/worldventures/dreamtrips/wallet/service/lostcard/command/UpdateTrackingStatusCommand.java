@@ -18,7 +18,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class UpdateTrackingStatusCommand extends Command<Void> implements InjectableAction {
+public class UpdateTrackingStatusCommand extends Command<Boolean> implements InjectableAction {
 
    @Inject SettingsInteractor settingsInteractor;
    @Inject LostCardRepository lostCardRepository;
@@ -30,7 +30,7 @@ public class UpdateTrackingStatusCommand extends Command<Void> implements Inject
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<Boolean> callback) throws Throwable {
       settingsInteractor.settingsActionPipe()
             .createObservableResult(new SettingsCommand(prepareTrackingStatus()))
             .onErrorReturn(throwable -> null)
@@ -38,9 +38,9 @@ public class UpdateTrackingStatusCommand extends Command<Void> implements Inject
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<Void> saveTrackingStatus() {
+   private Observable<Boolean> saveTrackingStatus() {
       lostCardRepository.saveEnabledTracking(enabled);
-      return Observable.just(null);
+      return Observable.just(enabled);
    }
 
    private List<Setting> prepareTrackingStatus() {

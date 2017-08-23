@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewO
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -34,25 +35,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    @InjectView(R.id.errorView) View errorView;
 
    SweetAlertDialog errorDialog;
-
-   OfferWithReviewView.IMyEventListener listener = new OfferWithReviewView.IMyEventListener() {
-      @Override
-      public void onStartFistPageLoading() {
-         mContainerDetail.setVisibility(View.GONE);
-         refreshLayout.setVisibility(View.VISIBLE);
-      }
-
-      @Override
-      public void onFinishFistPageLoading() {
-         refreshLayout.setVisibility(View.GONE);
-         mContainerDetail.setVisibility(View.VISIBLE);
-      }
-
-      @Override
-      public void onEventOccurred(int indexOf) {
-         getPresenter().addMoreReviews(indexOf);
-      }
-   };
 
    public DtlReviewsScreenImpl(Context context) {
       super(context);
@@ -82,9 +64,6 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
          Flow.get(getContext()).goBack();
       });
       showMessage();
-
-      mContainerDetail.setEventListener(listener);
-      mContainerDetail.loadFirstPage();
    }
 
    private void showMessage() {
@@ -111,15 +90,25 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    public void onRefreshSuccess() {
+      if(mContainerDetail.hasReviews()) {
+         mContainerDetail.showLoadingFooter(false);
+         return;
+      }
+
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
-      this.mContainerDetail.setVisibility(View.VISIBLE);
+      this.showRefreshProgress(false);
+      this.showFrameLayoutReviews(true);
    }
 
    @Override
    public void onRefreshProgress() {
+      if(mContainerDetail.hasReviews()) return;
+
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
+      this.showFrameLayoutReviews(false);
+      this.showRefreshProgress(true);
    }
 
    @Override
@@ -137,6 +126,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    }
 
    @Override
+   public void showRefreshProgress(boolean isShow) {
+      refreshLayout.setVisibility(isShow ? VISIBLE : GONE);
+   }
+
+   @Override
    public void userHasPendingReview() {
       errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
       errorDialog.setTitleText(getActivity().getString(R.string.app_name));
@@ -148,13 +142,23 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    }
 
    @Override
-   public void removeLoadingActions() {
-      mContainerDetail.removeLoadingActions();
+   public void setEventListener(OfferWithReviewView.IMyEventListener listener) {
+      mContainerDetail.setEventListener(listener);
    }
 
    @Override
    public String getMerchantId() {
       return getPath().getMerchant().id();
+   }
+
+   @Override
+   public List<ReviewObject> getCurrentReviews() {
+      return mContainerDetail.getCurrentReviews();
+   }
+
+   @Override
+   public void resetViewData() {
+      mContainerDetail.resetViewData();
    }
 
    @Override
@@ -180,5 +184,10 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    @Override
    public void hideBlockingProgress() {
 
+   }
+
+   @Override
+   public void setContainerDetail(OfferWithReviewView mContainerDetail) {
+      this.mContainerDetail = mContainerDetail;
    }
 }

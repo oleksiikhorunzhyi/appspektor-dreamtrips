@@ -9,12 +9,14 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.BucketFullscreenBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.BaseImageViewPagerPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.BaseImageViewPagerFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,10 +30,12 @@ public class BucketPhotoViewPagerFragment extends BaseImageViewPagerFragment<Buc
       @Inject BucketInteractor bucketInteractor;
 
       private BucketItem bucketItem;
+      private List<BucketPhoto> bucketPhotos;
 
       public Presenter(boolean lastPageReached, int selectedPosition, BucketItem bucketItem) {
          super(lastPageReached, selectedPosition);
          this.bucketItem = bucketItem;
+         this.bucketPhotos = new ArrayList<>(bucketItem.getPhotos());
       }
 
       @Override
@@ -40,16 +44,19 @@ public class BucketPhotoViewPagerFragment extends BaseImageViewPagerFragment<Buc
          bucketInteractor.deleteItemPhotoPipe()
                .observeSuccess()
                .compose(bindViewToMainComposer())
-               .subscribe(deleteItemPhotoCommand -> {
-                  bucketItem = deleteItemPhotoCommand.getResult();
-                  view.remove(bucketItem.getPhotos().indexOf(deleteItemPhotoCommand.getPhoto()));
-               });
+               .subscribe(this::photoDeleted);
+      }
 
+      private void photoDeleted(DeleteItemPhotoCommand deleteItemPhotoCommand) {
+         bucketItem = deleteItemPhotoCommand.getResult();
+         int index = bucketPhotos.indexOf(deleteItemPhotoCommand.getPhoto());
+         bucketPhotos.remove(index);
+         view.remove(index);
       }
 
       @Override
       protected List<FragmentItem> getItems() {
-         return Queryable.from(bucketItem.getPhotos())
+         return Queryable.from(bucketPhotos)
                .map(photo -> new FragmentItem(Route.BUCKET_PHOTO_FULLSCREEN, "", new BucketFullscreenBundle(bucketItem, photo)))
                .toList();
       }

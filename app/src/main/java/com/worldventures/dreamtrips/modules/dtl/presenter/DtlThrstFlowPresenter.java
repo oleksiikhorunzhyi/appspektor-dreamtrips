@@ -15,7 +15,7 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.View> {
-   private static final String TRANSACTION_SUCCESSFUL = "THRST_TRANSACTION_SUCCESSFUL|";
+   private static final String TRANSACTION_SUCCESSFUL = "THRST_TRANSACTION_SUCCESSFUL";
 
    @Inject MerchantsInteractor merchantInteractor;
 
@@ -53,7 +53,7 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
 
    private void onMerchantsLoaded(TransactionPilotAction action) {
       String transactionResponse = action.getResult().transactionStatus();
-      if (transactionResponse.equals(TRANSACTION_SUCCESSFUL)) {
+      if (transactionResponse.contains(TRANSACTION_SUCCESSFUL)) {
          view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
       } else {
          view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());

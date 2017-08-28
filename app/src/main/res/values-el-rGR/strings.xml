@@ -312,6 +312,7 @@
    <string name="player_error">Λυπούμαστε, δεν ήταν δυνατή η αναπαραγωγή του βίντεο αυτή τη στιγμή, ελέγξτε τη σύνδεσή σας ή δοκιμάστε αργότερα</string>
 
    <string name="retry">Επανάληψη</string>
+   <string name="cancel">Ακύρωση</string>
 
    <string name="no_notifications">Δεν έχετε καμία ειδοποίηση μέχρι στιγμής</string>
    <string name="notification_message_friend_accepted">Ο/Η %1$s αποδέχτηκε το αίτημα φιλίας σας</string>
@@ -342,7 +343,7 @@
    <string name="no_feed">Εδώ θα βλέπετε τη δραστηριότητα των Φίλων σας.\n Κάντε κλικ στον παρακάτω σύνδεσμο για να βρείτε τους φίλους σας</string>
    <string name="search_friends">Αναζήτηση Φίλων</string>
 
-   <string name="feed_share_post_button">Μοιραστείτε φωτογραφίες, βίντεο ή σκέψεις</string>
+   <string name="feed_share_post_button">Μοιραστείτε φωτό, βίντεο ή σκέψεις</string>
    <string name="feed_view_profile_btn">Προβολή προφίλ</string>
    <string name="start_searching">Πληκτρολογήστε για να ξεκινήσει η αναζήτηση</string>
 
@@ -356,6 +357,7 @@
    <string name="terms_and_conditions_reject">Όχι τώρα</string>
 
    <string name="camera">Κάμερα</string>
+   <string name="library">Βιβλιοθήκη</string>
    <string name="camera_take_a_picture">Τραβήξτε μια φωτογραφία</string>
    <string name="camera_record_a_video">Τραβήξτε ένα βίντεο</string>
    <string name="add_from_facebook">Προσθήκη από το Facebook</string>
@@ -371,7 +373,12 @@
    <string name="user_mutual_friends">Κοινοί φίλοι</string>
    <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
 
-   <string name="pending">Σε εκκρεμότητα...</string>
+   <string name="pending">Σε εκκρεμότητα…</string>
+   <string name="media_picker_error_contents">Φόρτωση %1$s απέτυχε.</string>
+   <string name="media_picker_gallery_action">Γκαλερί πολυμέσων</string>
+   <string name="media_picker_fb_albums_actions">άλμπουμ facebook</string>
+   <string name="media_picker_fb_photos_actions">φωτογραφίες facebook</string>
+   <string name="media_picker_limit_reached">Μπορείτε να επιλέξετε μόνο μέχρι %1$s φωτογραφίες</string>
 
    <string name="back">Πίσω</string>
    <string name="logout_component">Αποσύνδεση</string>
@@ -484,6 +491,8 @@
    <string name="uploading_post_status_paused">Παύση ανεβάσματος</string>
    <string name="uploading_post_status_waiting">Αναμονή</string>
    <string name="uploading_post_status_failed_connection">Η σύνδεση χάθηκε</string>
+   <string name="uploading_post_status_upload_video_failed">Αυτό το βίντεο δεν ανέβηκε</string>
+   <string name="uploading_post_status_transcoding_failed">Αυτό το βίντεο δεν μπορεί να επεξεργαστεί</string>
    <string name="uploading_post_status_uploaded">Η δημοσίευση ανέβηκε με επιτυχία!</string>
    <string name="uploading_post_time_left_posting">Δημοσίευση…</string>
    <string name="uploading_post_time_time_left">έφυγε</string>
@@ -588,4 +597,20 @@
    <string name="uploading_post_status_progress_video_processing"><b><i>Βήμα 2 από 2.</i></b> Επεξεργασία…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Αποτυχία επεξεργασίας Κάτι έγινε λάθος με το βίντεο</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">Χρειάζεται άδεια για ανάγνωση χώρου αποθήκευσης για να σας προτείνουμε περιεχόμενο πολυμέσων</string>
+
+   <string name="picker_two_media_type_error">Επιλέξτε ένα βίντεο ή φωτογραφίες</string>
+   <string name="picker_photo_limit">Μπορείτε να επιλέξετε έως %1$d φωτογραφία</string>
+   <string name="picker_photo_limit_plural">Μπορείτε να επιλέξετε έως %1$d φωτογραφίες</string>
+   <string name="picker_video_limit">Μπορείτε να επιλέξετε έως %1$d βίντεο</string>
+   <string name="picker_video_limit_plural">Μπορείτε να επιλέξετε έως %1$d βίντεο</string>
+   <string name="picker_video_length_limit">Δεν επιτρέπεται να επιλέξετε βίντεο με διάρκεια περισσότερη από %1$d δευτερόλεπτα</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">Διαγραφή βίντεο</string>
+   <string name="video_deleted">Το βίντεο έχει διαγραφεί</string>
+   <string name="video_delete_caption">Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το βίντεο;</string>
+   <string name="error_failed_to_delete_video">Απέτυχε η διαγραφή του βίντεο</string>
+   <string name="type_video">Βίντεο</string>
+   <string name="type_post">Δημοσίευση</string>
 </resources>

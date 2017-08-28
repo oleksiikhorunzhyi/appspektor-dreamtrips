@@ -53,7 +53,7 @@ class DisplayOptionsViewHolder {
       SmartCardUserPhoto userPhoto = user.userPhoto();
       SmartCardUserPhone userPhone = user.phoneNumber();
       String phone = (userPhone == null) ? String.format(Locale.US, "(%s)", rootView.getResources()
-            .getString(R.string.wallet_settings_general_display_phone_required)) : "+" + userPhone.fullPhoneNumber();
+            .getString(R.string.wallet_settings_general_display_phone_required)) : userPhone.fullPhoneNumber();
 
       title.setText(titleRes);
 

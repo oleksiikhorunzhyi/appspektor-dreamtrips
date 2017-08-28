@@ -47,7 +47,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 import rx.functions.Action0;
-import timber.log.Timber;
 
 public class VideoView extends FrameLayout implements VideoContainerView {
    private static final String TIME_LEFT_FORMAT = "- %s";
@@ -135,6 +134,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       this.windowedContainer = windowedContainer;
       if (fullscreenHandler == null) {
          fullscreenHandler = new VideoViewFullscreenHandler(activity, backStackDelegate, videoPlayerHolder, this);
+         fullscreenHandler.setSwapMute(mute);
          fullscreenHandler.initUi();
       }
    }
@@ -159,7 +159,6 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    private void play(long startTimeMillis) {
-      Timber.d("Video - play start time %d", startTimeMillis);
       if (playerView == null || playerView != videoPlayerHolder.getJwPlayerView()) {
          setupVideoPlayer(startTimeMillis);
       }
@@ -167,7 +166,6 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       // Workaround to avoid NPE inside JWPlayer. NPE happens if we try to seek right after play, so we must
       // wait until first frame appears instead
       playerView.addOnFirstFrameListener(i -> {
-         Timber.d("Video -- first frame listener");
          if (startTimeMillis > 0) {
             seekIgnoreProgressBarUpdates(startTimeMillis);
          } else {
@@ -194,7 +192,6 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       VideoPlayerEvents.OnPlayListener onPlayListener = new VideoPlayerEvents.OnPlayListener() {
          @Override
          public void onPlay(PlayerState playerState) {
-            Timber.d("Video -- player state listener %s", playerState);
             if (playerState == PlayerState.BUFFERING || playerState == PlayerState.PLAYING) {
                ignoreProgressUpdates = false;
                videoThumbnailContainer.setVisibility(GONE);
@@ -207,8 +204,6 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    private void setupVideoPlayer(long startTimeMillis) {
-      Timber.d("Video -- setup player");
-
       //Stop video which playing now, on some neighbour cell
       videoPlayerHolder.clearCurrent();
 
@@ -228,14 +223,8 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          clear();
          setupVideoPlayer(0);
       });
-      playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> {
-         Timber.d("Error occured, %s", event.getException());
-         clear();
-      });
-      playerView.addOnSetupErrorListener(event -> {
-         Timber.d("Error occured, %s", event);
-         clear();
-      });
+      playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> clear());
+      playerView.addOnSetupErrorListener(event -> clear());
 
       playerView.addOnTimeListener((currentTime, duration) -> {
          if (playerView == null) return;
@@ -255,7 +244,6 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       int currentProgress = Math.round(((float) currentTime / duration) * 100);
       // JWPlayer has a bug, currentTime can be greater than duration
       int progress = Math.min(currentProgress, 100);
-      Timber.d("Video -- progress %d %d %d", currentTime, duration, progress);
       seekBar.setProgress(progress);
    }
 
@@ -337,7 +325,6 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    private void setVideoThumbnailInternal(int width) {
       int height = (int) (width / video.getAspectRatio());
-      Timber.d("VideoCell -- width %d %d %f %b", width, height, video.getAspectRatio(), resizeVideoContainer);
       ViewGroup.LayoutParams params = videoThumbnailContainer.getLayoutParams();
       params.height = height;
       videoThumbnailContainer.setLayoutParams(params);

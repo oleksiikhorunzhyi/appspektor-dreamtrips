@@ -264,6 +264,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
+   public void notifyDataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
+
+   @Override
    public void flagSentSuccess() {
       informUser(R.string.flag_sent_success_msg);
    }

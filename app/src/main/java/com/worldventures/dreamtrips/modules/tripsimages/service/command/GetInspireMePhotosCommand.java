@@ -48,6 +48,9 @@ public class GetInspireMePhotosCommand extends CommandWithError<List<Inspiration
       return command;
    }
 
+   public boolean isFromCache() {
+      return fromCache;
+   }
 
    @Override
    protected void run(CommandCallback<List<Inspiration>> callback) throws Throwable {

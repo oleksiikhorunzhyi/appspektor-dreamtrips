@@ -11,4 +11,5 @@ public interface VideoMetadata {
    long duration();
    int width();
    int height();
+   double aspectRatio();
 }

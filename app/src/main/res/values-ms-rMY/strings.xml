@@ -312,6 +312,7 @@
    <string name="player_error">Maaf, kami tidak boleh memainkan video ini sekarang, sila semak sambungan anda atau cuba lagi</string>
 
    <string name="retry">Cuba lagi</string>
+   <string name="cancel">Batal</string>
 
    <string name="no_notifications">Anda masih belum mempunyai pemberitahuan </string>
    <string name="notification_message_friend_accepted">%1$s telah menerima permintaan kawan anda</string>
@@ -356,6 +357,7 @@
    <string name="terms_and_conditions_reject">Bukan Sekarang</string>
 
    <string name="camera">Kamera</string>
+   <string name="library">Pustaka</string>
    <string name="camera_take_a_picture">Mengambil foto</string>
    <string name="camera_record_a_video">Merekod video</string>
    <string name="add_from_facebook">Tambah dari Facebook</string>
@@ -371,7 +373,12 @@
    <string name="user_mutual_friends">Kawan bersama</string>
    <string name="no_mutual_friends">Anda tidak ada kawan bersama</string>
 
-   <string name="pending">Sedang menunggu…</string>
+   <string name="pending">Sedang menunggu...</string>
+   <string name="media_picker_error_contents">Muatan %1$s gagal</string>
+   <string name="media_picker_gallery_action">Media galeri</string>
+   <string name="media_picker_fb_albums_actions">Album Facebook</string>
+   <string name="media_picker_fb_photos_actions">Foto Facebook</string>
+   <string name="media_picker_limit_reached">Anda hanya boleh memilih sehingga %1$s foto</string>
 
    <string name="back">กลับไป</string>
    <string name="logout_component">Log keluar</string>
@@ -484,6 +491,8 @@
    <string name="uploading_post_status_paused">Muat naik terhenti seketika</string>
    <string name="uploading_post_status_waiting">Menunggu</string>
    <string name="uploading_post_status_failed_connection">Sambungan terputus</string>
+   <string name="uploading_post_status_upload_video_failed">Video ini tidak dimuat naik</string>
+   <string name="uploading_post_status_transcoding_failed">Video ini tidak boleh diproses</string>
    <string name="uploading_post_status_uploaded">Pengumuman berjaya dimuat naik!</string>
    <string name="uploading_post_time_left_posting">Mempamerkan…</string>
    <string name="uploading_post_time_time_left">meninggalkan</string>
@@ -584,8 +593,24 @@
    <string name="n_friends_accepted">%1$d kawan-kawan diterima.</string>
    <string name="friends_will_appear_momentarily">Mereka akan muncul dalam Rakan Saya sebentar lagi.</string>
 
-   <string name="uploading_post_status_progress_video"><b><i>Langkah 1 dari 2.</i></b> Memuat naik …</string>
-   <string name="uploading_post_status_progress_video_processing"><b><i>Langkah 2 dari 2.</i></b> Memproses …</string>
+   <string name="uploading_post_status_progress_video"><b><i>Langkah 1 dari 2.</i></b> Memuat naik ...</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Langkah 2 dari 2.</i></b> Memproses ...</string>
    <string name="uploading_post_status_progress_video_processing_failed">Gagal memproses. Sesuatu masalah dengan video</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">Perlukan kebenaran untuk membaca penstoran untuk mencadangkan kandungan media kepada anda</string>
+
+   <string name="picker_two_media_type_error">Pilih sama ada foto atau video</string>
+   <string name="picker_photo_limit">Anda boleh memilih sehingga %1$d foto</string>
+   <string name="picker_photo_limit_plural">Anda boleh memilih sehingga %1$d foto</string>
+   <string name="picker_video_limit">Anda boleh memilih sehingga %1$d video</string>
+   <string name="picker_video_limit_plural">Anda boleh memilih sehingga %1$d video</string>
+   <string name="picker_video_length_limit">Anda tidak dibenarkan memilih video yang melebihi %1$d saat panjangnya</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">Padamkan video</string>
+   <string name="video_deleted">Video telah dipadamkan</string>
+   <string name="video_delete_caption">Adakah anda pasti ingin memadamkan video ini?</string>
+   <string name="error_failed_to_delete_video">Gagal untuk memadamkan video</string>
+   <string name="type_video">Video</string>
+   <string name="type_post">HANTAR</string>
 </resources>

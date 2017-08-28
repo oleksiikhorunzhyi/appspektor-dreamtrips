@@ -1,0 +1,17 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="50dp"
+         android:layout_marginLeft="20dp"
+         android:layout_marginRight="20dp"
+         android:layout_marginTop="30dp"
+         android:autoLink="phone"
+         android:gravity="center_horizontal"
+         android:text="@string/wallet_supported_device_contact"
+         android:textAppearance="?android:attr/textAppearanceSmall"
+         android:textColor="@color/wallet_support_device_contact_color"
+         />
+
+</layout>

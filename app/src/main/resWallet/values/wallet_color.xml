@@ -34,8 +34,8 @@
 
    <color name="pin_normal">#6B767E</color>
 
-   <color name="wallet_support_device_info_color">#8e8e93</color>
-   <color name="wallet_support_device_list_title_color">#005e92</color>
+   <color name="wallet_support_device_contact_color">#8e8e93</color>
+   <color name="wallet_support_device_message_color">#222222</color>
 
    <color name="wallet_battery_low_level">#fa2d46</color>
    <color name="wallet_color_divider">#1e000000</color>

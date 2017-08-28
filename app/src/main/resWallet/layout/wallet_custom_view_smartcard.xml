@@ -173,14 +173,14 @@
          android:layout_marginEnd="12dp"
          android:layout_marginStart="20dp"
          android:ellipsize="end"
-         android:maxLines="2"
+         android:maxLines="3"
          android:textAllCaps="true"
          android:textColor="@android:color/white"
-         android:textSize="@dimen/font_normal"
+         android:textSize="@dimen/font_medium"
          app:layout_constraintBottom_toTopOf="@id/tv_cards_loaded"
          app:layout_constraintEnd_toStartOf="@id/photo_container"
          app:layout_constraintStart_toStartOf="parent"
-         tools:text="SHIRLEY TEMPLE WITH SUPER LONG NAME"
+         tools:text="SHIRLEYEXAMPLE TEMPLE WITH SUPER VERY LONG NAME NEXT LINE"
          />
 
 </android.support.constraint.ConstraintLayout>

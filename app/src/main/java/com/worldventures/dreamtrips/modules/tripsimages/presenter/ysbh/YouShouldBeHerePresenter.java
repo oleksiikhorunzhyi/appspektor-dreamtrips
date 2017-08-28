@@ -37,6 +37,7 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
    void subscribeToNewItems() {
       tripImagesInteractor.ysbhPhotosPipe()
             .observe()
+            .filter(command -> !command.action.isFromCache())
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetYSBHPhotosCommand>()
                   .onStart(command -> {
@@ -59,6 +60,7 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
    }
 
    void refreshImages() {
+      loading = true;
       tripImagesInteractor.ysbhPhotosPipe().send(GetYSBHPhotosCommand.commandForPage(1));
    }
 
@@ -83,6 +85,7 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
    }
 
    void loadNext() {
+      loading = true;
       tripImagesInteractor.ysbhPhotosPipe()
             .send(GetYSBHPhotosCommand.commandForPage((currentItems.size() / GetYSBHPhotosCommand.PER_PAGE) + 1));
    }

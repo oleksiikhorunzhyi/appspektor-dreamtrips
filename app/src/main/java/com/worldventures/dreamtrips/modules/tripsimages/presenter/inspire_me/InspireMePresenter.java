@@ -38,6 +38,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    void subscribeToNewItems() {
       tripImagesInteractor.inspireMePhotosPipe()
             .observe()
+            .filter(command -> !command.action.isFromCache())
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetInspireMePhotosCommand>()
                   .onStart(command -> {
@@ -66,6 +67,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    }
 
    public void reload() {
+      loading = true;
       refreshImages();
    }
 
@@ -85,6 +87,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    }
 
    void loadNext() {
+      loading = true;
       tripImagesInteractor.inspireMePhotosPipe().send(GetInspireMePhotosCommand.forPage(randomSeed,
             (currentItems.size() / GetInspireMePhotosCommand.PER_PAGE) + 1));
    }

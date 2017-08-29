@@ -15,10 +15,8 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -54,6 +52,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.impl.Factor
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.impl.FactoryResetSuccessScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl.HelpDocumentDetailScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.FeedbackType;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl.SendFeedbackScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackScreenImpl;
@@ -62,10 +61,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletC
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl.WalletDisableDefaultCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -483,11 +482,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage) {
-      Intent intent = new Intent(routerLazy.get().getActivity(), PlayerActivity.class).setData(uri)
-            .putExtra(PlayerActivity.EXTRA_VIDEO_NAME, videoName)
-            .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, launchComponent)
-            .putExtra(PlayerActivity.EXTRA_LANGUAGE, videoLanguage);
-      routerLazy.get().getActivity().startActivity(intent);
+      coreNavigator.goVideoPlayer(uri, videoName, launchComponent, videoLanguage);
    }
 
    @Override

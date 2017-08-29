@@ -17,7 +17,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -46,7 +45,6 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    @Inject MediaPickerFacebookService walletPickerFacebookService;
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
-   @Inject ActivityRouter activityRouter;
 
    private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
 

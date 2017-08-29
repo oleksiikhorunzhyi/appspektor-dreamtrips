@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
@@ -43,7 +42,6 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    @InjectView(R.id.drawer_layout)  NavigationDrawerViewImpl navDrawer;
    @InjectView(R.id.root_container) FrameLayout rootContainer;
 
-   @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject WalletCropImageService cropImageDelegate;
    @Inject MediaPickerFacebookService walletPickerFacebookService;
    @Inject RootComponentsProvider rootComponentsProvider;

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.help;
 
 import android.os.Build;
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.feedback.model.BaseFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.Feedback;
@@ -10,7 +9,6 @@ import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -26,12 +24,13 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.smartcard.util.SmartCardSDK;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends CommandWithError<Void> implements InjectableAction {
+public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends Command<Void> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
@@ -88,10 +87,5 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
             .osVersion(osVersion)
             .deviceType(deviceType)
             .build();
-   }
-
-   @Override
-   public int getFallbackErrorMessage() {
-      return R.string.error_fail_to_send_feedback;
    }
 }

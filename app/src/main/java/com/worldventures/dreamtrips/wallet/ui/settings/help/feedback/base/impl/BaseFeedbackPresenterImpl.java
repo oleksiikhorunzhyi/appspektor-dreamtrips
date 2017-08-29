@@ -5,13 +5,8 @@ import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
@@ -36,7 +31,7 @@ import timber.log.Timber;
 
 public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> extends WalletPresenterImpl<S> implements BaseSendFeedbackPresenter<S>{
 
-   public static final int MAX_PHOTOS_ATTACHMENT = 5;
+   protected static final int MAX_PHOTOS_ATTACHMENT = 5;
 
    private final FeedbackInteractor feedbackInteractor;
    private final WalletSettingsInteractor settingsInteractor;
@@ -130,7 +125,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
       attachmentsManager.removeAll();
    }
 
-   public List<FeedbackImageAttachment> getImagesAttachments() {
+   protected List<FeedbackImageAttachment> getImagesAttachments() {
       return Queryable.from(attachmentsManager.getAttachments()).map(EntityStateHolder::entity).toList();
    }
 
@@ -188,7 +183,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
       return attachmentsCount;
    }
 
-   public CancelableFeedbackAttachmentsManager getAttachmentsManager() {
+   protected CancelableFeedbackAttachmentsManager getAttachmentsManager() {
       return attachmentsManager;
    }
 

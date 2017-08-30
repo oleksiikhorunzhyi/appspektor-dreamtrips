@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/share_post"
       xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/grey_lighter"
+      tools:showIn="@layout/layout_feed_user_info"
+      android:orientation="horizontal"
       >
 
    <TextView
@@ -12,8 +15,7 @@
          android:layout_gravity="center"
          android:layout_weight="1"
          android:padding="@dimen/spacing_medium"
-         android:text="@string/feed_share_photo_or_idea"
-         android:textColor="@color/feed_post_create_text_color"
+         android:text="@string/feed_share_post_button"
          android:textSize="@dimen/font_normal"
          />
 
@@ -26,5 +28,4 @@
          android:layout_marginTop="12dp"
          android:src="@drawable/ic_profile_post_normal"
          />
-
 </LinearLayout>

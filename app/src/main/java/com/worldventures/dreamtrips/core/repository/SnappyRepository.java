@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.repository;
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -13,10 +14,7 @@ import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
@@ -130,10 +128,6 @@ public interface SnappyRepository {
    void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp);
 
    long getAppUpdateOptionalDialogConfirmedTimestamp();
-
-   void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
-
-   List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
 
    void saveLastUsedInspireMeRandomSeed(double randomSeed);
 

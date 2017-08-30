@@ -8,7 +8,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBuc
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
@@ -19,6 +21,7 @@ import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 
 import javax.inject.Inject;
@@ -31,6 +34,7 @@ import rx.functions.Action2;
 public class FeedEntityHolderDelegate {
 
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FeedInteractor feedInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject BucketInteractor bucketInteractor;
    @Inject FriendsInteractor friendsInteractor;
@@ -49,10 +53,24 @@ public class FeedEntityHolderDelegate {
                   .onSuccess(editPostCommand -> feedEntityHolder.updateFeedEntity(editPostCommand.getResult()))
                   .onFail(errorAction::call));
 
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(changeFeedEntityLikedStatusCommand -> feedEntityHolder.updateFeedEntity(changeFeedEntityLikedStatusCommand.getResult()))
+                  .onFail(errorAction::call));
+
       postsInteractor.deletePostPipe()
             .observeWithReplay()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> feedEntityHolder.deleteFeedEntity(deletePostCommand.getResult()))
+                  .onFail(errorAction::call));
+
+      feedInteractor.deleteVideoPipe()
+            .observe()
+            .compose(bind(stopper))
+            .subscribe(new ActionStateSubscriber<DeleteVideoCommand>()
                   .onSuccess(deletePostCommand -> feedEntityHolder.deleteFeedEntity(deletePostCommand.getResult()))
                   .onFail(errorAction::call));
 
@@ -64,7 +82,7 @@ public class FeedEntityHolderDelegate {
                   .onFail(errorAction::call));
 
       tripImagesInteractor.deletePhotoPipe()
-            .observeWithReplay()
+            .observe()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
                   .onSuccess(deletePhotoCommand -> feedEntityHolder.deleteFeedEntity(deletePhotoCommand.getResult()))

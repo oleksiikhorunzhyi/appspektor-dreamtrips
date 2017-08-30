@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.view.cell.util.PickerVideoDurationFormatter;
+import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 
 import butterknife.InjectView;
@@ -21,6 +21,6 @@ public class VideoPickerModelCell extends MediaPickerModelCell<VideoPickerModel>
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      durationTextView.setText(PickerVideoDurationFormatter.getFormattedDuration(getModelObject().getDuration()));
+      durationTextView.setText(VideoDurationFormatter.getFormattedDuration(getModelObject().getDuration()));
    }
 }

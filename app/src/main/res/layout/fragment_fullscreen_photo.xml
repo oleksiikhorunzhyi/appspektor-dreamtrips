@@ -13,7 +13,7 @@
          android:layout_height="match_parent"
          >
 
-      <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
+      <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ImageryView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -217,18 +217,6 @@
                android:textColor="@color/white"
                android:visibility="gone"
                />
-
-         <TextView
-               android:id="@+id/textViewInspireMeTitle"
-               android:layout_width="wrap_content"
-               android:layout_height="match_parent"
-               android:gravity="center"
-               android:textColor="@android:color/white"
-               android:textSize="20sp"
-               android:textStyle="bold"
-               tools:text="Hello"
-               />
-
 
          <LinearLayout
                android:layout_width="match_parent"

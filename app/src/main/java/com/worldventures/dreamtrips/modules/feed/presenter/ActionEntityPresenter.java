@@ -15,12 +15,13 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostDescriptionCreatedCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.delegate.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,25 +89,30 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
          getVideoMetadata()
                .compose(bindViewToMainComposer())
                .subscribe(videoCreationModel -> {
-                        view.attachVideo(videoCreationModel);
-                        invalidateDynamicViews();
-                     }
-               );
+                  view.attachVideo(videoCreationModel);
+                  invalidateDynamicViews();
+               }, e -> Timber.e(e, "Something went wrong"));
       }
    }
 
-   private Observable<VideoCreationModel> getVideoMetadata() {
+   protected Observable<VideoCreationModel> getVideoMetadata() {
       return mediaMetadataInteractor.videoMetadataCommandActionPipe()
             .createObservableResult(new GetVideoMetadataCommand(selectedVideoPathUri))
             .map(Command::getResult)
-            .onErrorReturn(throwable -> null)
-            .map(videoMetadata ->
-                  ImmutableVideoCreationModel.builder()
-                        .state(VideoCreationModel.State.LOCAL)
-                        .size(videoMetadata == null ? null : new Size(videoMetadata.width(), videoMetadata.height()))
-                        .uri(selectedVideoPathUri)
-                        .build()
-            );
+            .map(this::getVideoCreationModel);
+   }
+
+   protected ImmutableVideoCreationModel getVideoCreationModel(VideoMetadata videoMetadata) {
+      return ImmutableVideoCreationModel.builder()
+            .state(VideoCreationModel.State.LOCAL)
+            .videoMetadata(videoMetadata)
+            .uri(selectedVideoPathUri)
+            .canDelete(canDeleteVideo())
+            .build();
+   }
+
+   protected boolean canDeleteVideo() {
+      return true;
    }
 
    public void cancelClicked() {
@@ -184,8 +190,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    public interface View extends RxView {
 
       void attachPhotos(List<PhotoCreationItem> images);
-
-      void attachPhoto(PhotoCreationItem image);
 
       void updatePhoto(PhotoCreationItem item);
 

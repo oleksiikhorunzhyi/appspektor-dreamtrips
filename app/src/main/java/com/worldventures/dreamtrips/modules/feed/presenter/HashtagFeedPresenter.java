@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
@@ -15,7 +14,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
@@ -26,6 +27,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    @Inject HashtagInteractor interactor;
 
    @Inject TranslationDelegate translationDelegate;
+   @Inject FeedInteractor feedInteractor;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject HashtagFeedStorageDelegate hashtagFeedStorageDelegate;
 
@@ -66,7 +69,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
-      translationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems, bindView());
    }
 
    @Override
@@ -210,7 +213,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
 
    @Override
    public void onTranslateFeedEntity(FeedEntity translatableItem) {
-      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
+      translationDelegate.translate(translatableItem);
    }
 
    @Override
@@ -224,8 +227,8 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    }
 
    @Override
-   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
-      feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
+   public void onFlagItem(String uid, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(uid, flagReasonId, reason, view, this::handleError);
    }
 
    private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
@@ -251,6 +254,11 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends J
    @Override
    public void onDeleteTextualPost(TextualPost textualPost) {
       feedActionHandlerDelegate.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
    }
 
    @Override

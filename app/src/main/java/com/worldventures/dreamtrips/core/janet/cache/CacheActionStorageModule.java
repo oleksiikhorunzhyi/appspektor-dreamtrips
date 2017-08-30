@@ -43,6 +43,9 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.dreamtrips.modules.tripsimages.service.storage.InspireMeStorage;
+import com.worldventures.dreamtrips.modules.tripsimages.service.storage.TripImageStorage;
+import com.worldventures.dreamtrips.modules.tripsimages.service.storage.YsbhPhotoStorage;
 import com.worldventures.dreamtrips.wallet.di.WalletActionStorageModule;
 
 import javax.inject.Singleton;
@@ -161,6 +164,24 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    MultipleActionStorage provideCompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
       return new CompoundOperationStorage(compoundOperationRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideTripImageStorage() {
+      return new TripImageStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideInspitationStorage() {
+      return new InspireMeStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideYsbhStorage() {
+      return new YsbhPhotoStorage();
    }
 
    @Singleton

@@ -8,4 +8,6 @@ public interface DtlReviewsPresenter extends DtlPresenter<DtlReviewsScreen, View
    void onBackPressed();
 
    void onAddClick();
+
+   void addMoreReviews(int indexOf);
 }

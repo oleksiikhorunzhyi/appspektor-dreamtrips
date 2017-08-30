@@ -71,12 +71,7 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public boolean isCardDetailSupported() {
-      return true;
-   }
-
-   @Override
-   public boolean isCardSyncSupported() {
-      return true;
+   public boolean isSampleCardMode() {
+      return false;
    }
 }

@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.util.ArrayList;
+
 import io.techery.mappery.MapperyContext;
 
 public class PhotoSocializedConverter extends PhotoConverter<PhotoSocialized> {
@@ -24,7 +26,12 @@ public class PhotoSocializedConverter extends PhotoConverter<PhotoSocialized> {
       photo.setLikesCount(apiPhoto.likes());
 
       photo.setCommentsCount(apiPhoto.commentsCount());
-      photo.setComments(mapperyContext.convert(apiPhoto.comments(), Comment.class));
+
+      if (apiPhoto.comments() != null) {
+         photo.setComments(mapperyContext.convert(apiPhoto.comments(), Comment.class));
+      } else {
+         photo.setComments(new ArrayList<>());
+      }
 
       return photo;
    }

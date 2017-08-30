@@ -3,13 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.photos.RemoveUserTagsFromPhotoHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;

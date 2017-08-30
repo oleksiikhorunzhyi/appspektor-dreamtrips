@@ -308,7 +308,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
          case BUCKET_LIST_ITEM:
             return resources.getString(R.string.feed_bucket);
          case POST:
-            return "Post";
+            return resources.getString(R.string.type_post);
+         case VIDEO:
+            return resources.getString(R.string.type_video);
          case UNDEFINED:
          default:
             return "";

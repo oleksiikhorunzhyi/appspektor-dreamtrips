@@ -239,7 +239,7 @@
    <string name="feed_photo">Foto</string>
    <string name="feed_bucket">Elemento de la lista de pendientes</string>
    <string name="coming_soon">Próximamente</string>
-   <string name="loading">Cargando...</string>
+   <string name="loading">Cargando…</string>
    <string name="filter_video_title_language">Elegir idioma</string>
    <string name="filter_video_title_country">Elegir país</string>
    <string name="comments_title">Comentarios</string>
@@ -312,6 +312,7 @@
    <string name="player_error">Lo sentimos, no pudimos reproducir este video ahora, comprueba si tienes conexión o inténtalo de nuevo</string>
 
    <string name="retry">Volver a intentarlo</string>
+   <string name="cancel">Cancelar</string>
 
    <string name="no_notifications">Todavía no tienes notificaciones</string>
    <string name="notification_message_friend_accepted">%1$s aceptó tu solicitud de amistad</string>
@@ -342,7 +343,7 @@
    <string name="no_feed">Verás la actividad de tu amigo aquí.\n Haz clic en el enlace siguiente para encontrar a tus amigos</string>
    <string name="search_friends">Buscar amigos</string>
 
-   <string name="feed_share_photo_or_idea">Comparte una foto o idea</string>
+   <string name="feed_share_post_button">Comparte una foto, video o idea</string>
    <string name="feed_view_profile_btn">Ver perfil</string>
    <string name="start_searching">Escribe para empezar a buscar</string>
 
@@ -356,6 +357,7 @@
    <string name="terms_and_conditions_reject">No ahora</string>
 
    <string name="camera">Cámara</string>
+   <string name="library">Biblioteca</string>
    <string name="camera_take_a_picture">Toma una foto</string>
    <string name="camera_record_a_video">Graba un video</string>
    <string name="add_from_facebook">Agregar de Facebook</string>
@@ -371,16 +373,18 @@
    <string name="user_mutual_friends">Amigos en común </string>
    <string name="no_mutual_friends">No tenéis ningún amigo mutuo</string>
 
-   <string name="photo_limitation_message">Elige hasta %1$d fotos</string>
-   <string name="picker_erros_photos_and_videos">No se puede seleccionar fotos y videos</string>
-   <string name="picker_video_duration_limit">No se puede subir un video de más de %1$d segundos</string>
-   <string name="pending">Pendiente...</string>
+   <string name="pending">Pendiente…</string>
+   <string name="media_picker_error_contents">Se ha producido un error en la carga de %1$s.</string>
+   <string name="media_picker_gallery_action">galería de multimedia</string>
+   <string name="media_picker_fb_albums_actions">Álbumes de Facebook</string>
+   <string name="media_picker_fb_photos_actions">Fotos de Facebook</string>
+   <string name="media_picker_limit_reached">Sólo se puede elegir hasta %1$s fotos</string>
 
    <string name="back">Volver</string>
    <string name="logout_component">Cerrar sesión</string>
    <string name="start_typing_name">Empezar a escribir nombre</string>
 
-   <string name="multiple_dates">Múltiples fechas, %1$s...</string>
+   <string name="multiple_dates">Múltiples fechas, %1$s…</string>
 
    <string name="tag_photo">te etiquetó en</string>
 
@@ -482,18 +486,20 @@
    <string name="error_fail_to_load_documents">No se pudieron cargar los documentos </string>
    <string name="tag_people">Etiqueta personas</string>
 
-   <string name="uploading_post_status_progress_singular">Subiendo Foto ...</string>
-   <string name="uploading_post_status_progress_plural">Subiendo %1$d fotos ...</string>
+   <string name="uploading_post_status_progress_singular">Subiendo Foto …</string>
+   <string name="uploading_post_status_progress_plural">Subiendo %1$d fotos …</string>
    <string name="uploading_post_status_paused">Carga pausada</string>
    <string name="uploading_post_status_waiting">Esperando</string>
    <string name="uploading_post_status_failed_connection">Conexión perdida</string>
+   <string name="uploading_post_status_upload_video_failed">Este video no se ha cargado</string>
+   <string name="uploading_post_status_transcoding_failed">Este video no puede ser procesado</string>
    <string name="uploading_post_status_uploaded">¡Publicación cargada correctamente!</string>
    <string name="uploading_post_time_left_posting">Publicando…</string>
    <string name="uploading_post_time_time_left">salió</string>
    <string name="uploading_post_time_left_seconds">s</string>
    <string name="uploading_post_time_left_minutes">m</string>
    <string name="uploading_post_time_left_hours">h</string>
-   <string name="uploading_post_time_left_more_than_one_day">Más de 1 día ...</string>
+   <string name="uploading_post_time_left_more_than_one_day">Más de 1 día …</string>
    <string name="uploading_post_cancel_upload_message">¿Cancelar la carga?</string>
    <string name="uploading_post_cancel_upload_positive_button">Sí</string>
    <string name="uploading_post_cancel_upload_negative_button">No</string>
@@ -591,4 +597,20 @@
    <string name="uploading_post_status_progress_video_processing"><b><i>Paso 2 de 2.</i></b> En proceso…</string>
    <string name="uploading_post_status_progress_video_processing_failed">No se pudo procesar. Ocurrió un error con el video</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">Necesitas permiso para leer el almacenamiento para poder sugerirte contenido de multimedia</string>
+
+   <string name="picker_two_media_type_error">Selecciona fotos o un video</string>
+   <string name="picker_photo_limit">Puedes seleccionar hasta %1$d foto</string>
+   <string name="picker_photo_limit_plural">Puedes seleccionar hasta %1$d fotos</string>
+   <string name="picker_video_limit">Puedes seleccionar hasta %1$d video</string>
+   <string name="picker_video_limit_plural">Puedes seleccionar hasta %1$d videos</string>
+   <string name="picker_video_length_limit">No se permite seleccionar videos mas de %1$d de largo</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">Eliminar video</string>
+   <string name="video_deleted">Se ha borrado el video</string>
+   <string name="video_delete_caption">¿Estás seguro de que deseas borrar este video?</string>
+   <string name="error_failed_to_delete_video">Error al borrar el video</string>
+   <string name="type_video">Video</string>
+   <string name="type_post">Publicación</string>
 </resources>

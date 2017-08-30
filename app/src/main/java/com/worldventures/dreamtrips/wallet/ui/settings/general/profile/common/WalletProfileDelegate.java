@@ -23,6 +23,8 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
+import java.util.Locale;
+
 public class WalletProfileDelegate {
 
    private SmartCardUserDataInteractor smartCardUserDataInteractor;

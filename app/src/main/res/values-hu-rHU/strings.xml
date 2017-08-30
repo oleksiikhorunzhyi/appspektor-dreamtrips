@@ -312,6 +312,7 @@
    <string name="player_error">Sajnos nem tudjuk most lejátszani a videót. Ellenőrizze a kapcsolatot, és próbálja újra.</string>
 
    <string name="retry">Újra</string>
+   <string name="cancel">Mégse</string>
 
    <string name="no_notifications">Még nincs értesítése</string>
    <string name="notification_message_friend_accepted">%1$s elfogadta a „barát” kérését</string>
@@ -342,7 +343,7 @@
    <string name="no_feed">Itt fogja látni barátjának tevékenységét.\n Barátok kereséséhez kattintson az alábbi hivatkozásra</string>
    <string name="search_friends">Barátok keresése</string>
 
-   <string name="feed_share_photo_or_idea">Ossz meg egy képet vagy ötletet</string>
+   <string name="feed_share_post_button">Ossz meg egy képet, videót vagy ötletet</string>
    <string name="feed_view_profile_btn">Profil megtekintése</string>
    <string name="start_searching">Kezdje el a beírást a keresés elkezdéséhez</string>
 
@@ -356,6 +357,7 @@
    <string name="terms_and_conditions_reject">Most nem</string>
 
    <string name="camera">Kamera</string>
+   <string name="library">Könyvtár</string>
    <string name="camera_take_a_picture">Készíts képet</string>
    <string name="camera_record_a_video">Vegyél fel egy videót</string>
    <string name="add_from_facebook">Hozzáadás a Facebookból</string>
@@ -371,16 +373,18 @@
    <string name="user_mutual_friends">Közös barátok</string>
    <string name="no_mutual_friends">Nincsenek közös barátai</string>
 
-   <string name="photo_limitation_message">Legfeljebb %1$d fényképet válasszon</string>
-   <string name="picker_erros_photos_and_videos">Nem tudsz képet és videót kiválasztani</string>
-   <string name="picker_video_duration_limit">Nem tudsz feltölteni hosszabb videót, mint %1$d másodperc</string>
-   <string name="pending">Függőben...</string>
+   <string name="pending">Függőben…</string>
+   <string name="media_picker_error_contents">A(z) %1$s betöltése sikertelen.</string>
+   <string name="media_picker_gallery_action">médiagaléria</string>
+   <string name="media_picker_fb_albums_actions">facebook-albumok</string>
+   <string name="media_picker_fb_photos_actions">facebook-képek</string>
+   <string name="media_picker_limit_reached">Max. %1$s képet választhat</string>
 
    <string name="back">Vissza</string>
    <string name="logout_component">Kijelentkezés</string>
    <string name="start_typing_name">Kezdje el beírni a nevet</string>
 
-   <string name="multiple_dates">Több dátumot, %1$s ...</string>
+   <string name="multiple_dates">Több dátumot, %1$s …</string>
 
    <string name="tag_photo">megjelölte Önt itt:</string>
 
@@ -482,18 +486,20 @@
    <string name="error_fail_to_load_documents">Nem sikerült betölteni a dokumentumokat</string>
    <string name="tag_people">Emberek megjelölése</string>
 
-   <string name="uploading_post_status_progress_singular">Fotó feltöltése ...</string>
-   <string name="uploading_post_status_progress_plural">%1$d kép feltöltés ...</string>
+   <string name="uploading_post_status_progress_singular">Fotó feltöltése …</string>
+   <string name="uploading_post_status_progress_plural">%1$d kép feltöltés …</string>
    <string name="uploading_post_status_paused">Feltöltés szünetel</string>
    <string name="uploading_post_status_waiting">Várakozik</string>
    <string name="uploading_post_status_failed_connection">A kapcsolat megszakadt</string>
+   <string name="uploading_post_status_upload_video_failed">A videó feltöltése sikertelen</string>
+   <string name="uploading_post_status_transcoding_failed">A videó nem dolgozható fel</string>
    <string name="uploading_post_status_uploaded">Hozzászólás sikeresen feltöltve!</string>
-   <string name="uploading_post_time_left_posting">Közzététel ...</string>
+   <string name="uploading_post_time_left_posting">Közzététel …</string>
    <string name="uploading_post_time_time_left">elhagyta</string>
    <string name="uploading_post_time_left_seconds">m</string>
    <string name="uploading_post_time_left_minutes">p</string>
    <string name="uploading_post_time_left_hours">ó</string>
-   <string name="uploading_post_time_left_more_than_one_day">Több mint 1 nap ...</string>
+   <string name="uploading_post_time_left_more_than_one_day">Több mint 1 nap …</string>
    <string name="uploading_post_cancel_upload_message">Feltöltés visszavonása?</string>
    <string name="uploading_post_cancel_upload_positive_button">Igen</string>
    <string name="uploading_post_cancel_upload_negative_button">Nem</string>
@@ -591,4 +597,20 @@
    <string name="uploading_post_status_progress_video_processing"><b><i>2. lépés a 2-ből</i></b> Feldolgozás…</string>
    <string name="uploading_post_status_progress_video_processing_failed">Sikertelen feldolgozás. Valami gond van a videóval</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">A tárhely beolvasásához és médiatartalom ajánlásához engedélyre van szükség</string>
+
+   <string name="picker_two_media_type_error">Válasszon ki képeket vagy egy videót</string>
+   <string name="picker_photo_limit">Max. %1$d képet választhat ki</string>
+   <string name="picker_photo_limit_plural">Max. %1$d képet választhat ki</string>
+   <string name="picker_video_limit">Max. %1$d videót választhat ki</string>
+   <string name="picker_video_limit_plural">Max. %1$d videót választhat ki</string>
+   <string name="picker_video_length_limit">Nem választhatsz ki %1$d másodpercnél hosszabb videókat</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">Videó törlése</string>
+   <string name="video_deleted">Videó törölve</string>
+   <string name="video_delete_caption">Biztosan törölni szeretnéd a videót?</string>
+   <string name="error_failed_to_delete_video">A videó törlése sikertelen</string>
+   <string name="type_video">Videó</string>
+   <string name="type_post">Poszt</string>
 </resources>

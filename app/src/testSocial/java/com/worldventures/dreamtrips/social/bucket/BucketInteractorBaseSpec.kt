@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvid
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
 import com.worldventures.dreamtrips.modules.mapping.converter.*
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
+import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService

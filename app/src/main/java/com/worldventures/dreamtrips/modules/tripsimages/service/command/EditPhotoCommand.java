@@ -2,13 +2,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 import com.worldventures.dreamtrips.api.photos.UpdatePhotoHttpAction;
 import com.worldventures.dreamtrips.api.photos.model.PhotoUpdateParams;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;

@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostComma
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 
@@ -67,6 +67,10 @@ public class FeedActionHandlerDelegate {
    public void onFlagItem(String uid, int flagReasonId, String reason, FlagDelegate.View view,
          Action2<Command, Throwable> errorAction) {
       flagDelegate.flagItem(new FlagData(uid, flagReasonId, reason), view, errorAction);
+   }
+
+   public void onFlagItem(FlagData flagData, FlagDelegate.View view, Action2<Command, Throwable> errorAction) {
+      flagDelegate.flagItem(flagData, view, errorAction);
    }
 
    public void onDownloadImage(String url, Observable.Transformer stopper, Action2<Command, Throwable> errorAction) {

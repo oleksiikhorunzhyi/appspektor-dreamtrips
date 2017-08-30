@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.util;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -20,11 +19,14 @@ import static com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.Common
 
 public class CardListStackConverter {
 
-   private WalletRecordUtil utils;
+   private final WalletRecordUtil utils;
+   private final WalletFeatureHelper featureHelper;
+
    private int index = 0;
 
-   public CardListStackConverter() {
-      this.utils = new WalletRecordUtil();
+   public CardListStackConverter(WalletRecordUtil recordUtil, WalletFeatureHelper featureHelper) {
+      this.utils = recordUtil;
+      this.featureHelper = featureHelper;
    }
 
    public ArrayList<BaseViewModel> mapToViewModel(final Context context, List<Record> loadedCards, @Nullable String defaultCardId) {
@@ -74,7 +76,8 @@ public class CardListStackConverter {
             WalletRecordUtil.fetchFullName(loadedCard),
             utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
             utils.goodThrough(context, loadedCard.expDate()),
-            getCardBackGroundResId()
+            getCardBackGroundResId(),
+            featureHelper.isSampleCardMode()
       );
    }
 

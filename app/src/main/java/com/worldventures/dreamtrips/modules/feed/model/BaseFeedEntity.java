@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -99,6 +100,11 @@ public abstract class BaseFeedEntity implements FeedEntity {
       return language;
    }
 
+   @Override
+   public Date getCreatedAt() {
+      return null;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Translate staff
    ///////////////////////////////////////////////////////////////////////////
@@ -136,7 +142,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Helpers
    ///////////////////////////////////////////////////////////////////////////
 
-   private String firstLikerName;
+   protected String firstLikerName;
 
    @Override
    public String getFirstLikerName() {

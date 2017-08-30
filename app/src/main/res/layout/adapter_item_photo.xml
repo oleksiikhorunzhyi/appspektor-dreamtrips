@@ -7,7 +7,7 @@
       custom:side_priority="width"
       >
 
-   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+   <com.facebook.drawee.view.SimpleDraweeView
          android:id="@+id/imageViewPhoto"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
@@ -18,14 +18,15 @@
          fresco:placeholderImageScaleType="fitXY"
          />
 
-   <TextView android:id="@+id/photoTimestamp"
+   <TextView
+         android:id="@+id/photoTimestamp"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_gravity="bottom"
-         android:padding="@dimen/spacing_small"
          android:background="@drawable/background_timestamp_trip_images"
-         android:textSize="12sp"
+         android:padding="@dimen/spacing_small"
          android:textColor="@color/white"
+         android:textSize="12sp"
          android:textStyle="bold"
          android:visibility="gone"
          />

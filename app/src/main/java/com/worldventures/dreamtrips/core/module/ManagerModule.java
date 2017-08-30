@@ -31,7 +31,9 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvid
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
+import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
@@ -50,6 +52,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
@@ -61,14 +64,14 @@ import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimeline
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.delegate.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MemberImagesRefresher;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
+import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MediaRefresher;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
 import javax.inject.Singleton;
@@ -313,6 +316,11 @@ public class ManagerModule {
    }
 
    @Provides
+   CapturedRowMediaHelper provideCapturedRowMediaHelper(MediaInteractor mediaInteractor, DrawableUtil drawableUtil) {
+      return new CapturedRowMediaHelper(mediaInteractor, drawableUtil);
+   }
+
+   @Provides
    @Singleton
    PostsInteractor providePostsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new PostsInteractor(sessionActionPipeCreator);
@@ -387,8 +395,13 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   MemberImagesRefresher provideMemberImagesRefresher(TripImagesInteractor tripImagesInteractor) {
-      return new MemberImagesRefresher(tripImagesInteractor);
+   MediaRefresher provideMemberImagesRefresher(TripImagesInteractor tripImagesInteractor, TripImagesCommandFactory tripImagesCommandFactory) {
+      return new MediaRefresher(tripImagesInteractor, tripImagesCommandFactory);
+   }
+
+   @Provides
+   TripImagesCommandFactory provideTripImagesCommandFactory() {
+      return new TripImagesCommandFactory();
    }
 
    @Provides

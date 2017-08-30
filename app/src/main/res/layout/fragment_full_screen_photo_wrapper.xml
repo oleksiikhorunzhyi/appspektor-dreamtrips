@@ -1,12 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      android:id="@id/content_layout"
+<RelativeLayout android:id="@id/content_layout"
+      xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      tools:context="com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenPhotoActivity"
       >
 
-   <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+   <android.support.v4.view.ViewPager
          android:id="@+id/pager"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
@@ -22,11 +20,11 @@
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar_actionbar"
          style="@style/ToolBarStyle"
+         android:layout_width="wrap_content"
          android:layout_alignParentLeft="true"
          android:layout_alignParentTop="true"
          android:layout_marginLeft="4dp"
          android:layout_marginTop="4dp"
-         android:layout_width="wrap_content"
          />
 
 </RelativeLayout>

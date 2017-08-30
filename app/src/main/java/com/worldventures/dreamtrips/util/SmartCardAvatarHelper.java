@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 import java.io.IOException;
 

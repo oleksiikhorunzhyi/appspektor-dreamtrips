@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -18,7 +17,7 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      translationDelegate.onTakeView(view, feedItem);
+      translationDelegate.onTakeView(view, feedItem, bindView());
    }
 
    @Override
@@ -34,7 +33,7 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
 
    @Override
    public void onTranslateFeedEntity(FeedEntity translatableItem) {
-      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
+      translationDelegate.translate(translatableItem);
    }
 
    @Override

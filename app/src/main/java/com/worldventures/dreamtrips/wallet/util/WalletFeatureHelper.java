@@ -28,6 +28,5 @@ public interface WalletFeatureHelper {
    Observable<Void> onUserAssigned(SmartCardUser user);
    void onUserFetchedFromServer(SmartCardUser user);
    void navigateFromSetupUserScreen(Navigator navigator);
-   boolean isCardDetailSupported();
-   boolean isCardSyncSupported();
+   boolean isSampleCardMode();
 }

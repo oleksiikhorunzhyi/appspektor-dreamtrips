@@ -30,6 +30,7 @@ public class PhotoCreationItem implements Parcelable {
    private List<PhotoTag> suggestions = new ArrayList<>();
    private int width;
    private int height;
+   private int rotation;
 
    //analytics related
    private MediaAttachment.Source source;
@@ -172,6 +173,7 @@ public class PhotoCreationItem implements Parcelable {
       dest.writeString(location);
       dest.writeParcelable(locationFromExif, flags);
       dest.writeInt(source != null ? source.ordinal() : MediaAttachment.Source.UNKNOWN.ordinal());
+      dest.writeInt(rotation);
    }
 
    protected PhotoCreationItem(Parcel in) {
@@ -188,6 +190,7 @@ public class PhotoCreationItem implements Parcelable {
       this.location = in.readString();
       this.locationFromExif = in.readParcelable(Location.class.getClassLoader());
       this.source = MediaAttachment.Source.values()[in.readInt()];
+      this.rotation = in.readInt();
    }
 
    public static final Creator<PhotoCreationItem> CREATOR = new Creator<PhotoCreationItem>() {
@@ -210,11 +213,19 @@ public class PhotoCreationItem implements Parcelable {
       this.height = height;
    }
 
+   public void setRotation(int rotation) {
+      this.rotation = rotation;
+   }
+
    public int getWidth() {
       return width;
    }
 
    public int getHeight() {
       return height;
+   }
+
+   public int getRotation() {
+      return rotation;
    }
 }

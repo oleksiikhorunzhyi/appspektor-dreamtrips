@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import com.techery.spares.adapter.ListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +46,13 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
 
    private Fragment getFragment(int i) {
       try {
-         Fragment value = fragmentItems.get(i).route.getClazz().newInstance();
-         setArgs(i, value);
-         return value;
+         FragmentItem fragmentItem = fragmentItems.get(i);
+         Fragment fragment = fragmentItem.route.getClazz().newInstance();
+         if (fragment instanceof BaseFragmentWithArgs) {
+            ((BaseFragmentWithArgs) fragment).setArgs(fragmentItem.getArgs());
+         }
+         setArgs(i, fragment);
+         return fragment;
       } catch (Exception e) {
          Timber.e(e, "");
       }
@@ -80,10 +85,5 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
    @Override
    public int getCount() {
       return fragmentItems.size();
-   }
-
-   @Override
-   public void notifyDataSetChanged() {
-      super.notifyDataSetChanged();
    }
 }

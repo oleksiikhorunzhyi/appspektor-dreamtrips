@@ -16,8 +16,8 @@ class LayoutManagerSingle extends LayoutManager {
 
    @Override
    public List<View> getLocatedViews(int holderSide, CollageView.ItemClickListener itemClickListener) {
-      int originalWidth = (int) ViewUtils.pxFromDp(context, items.get(0).width);
-      int originalHeight = (int) ViewUtils.pxFromDp(context, items.get(0).height);
+      int originalWidth = (int) ViewUtils.pxFromDp(context, items.get(0).width());
+      int originalHeight = (int) ViewUtils.pxFromDp(context, items.get(0).height());
 
       //in case of server response width = 0, height = 0;
       if (originalWidth == 0 || originalHeight == 0) {

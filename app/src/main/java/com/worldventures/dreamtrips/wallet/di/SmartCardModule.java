@@ -3,9 +3,11 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
@@ -57,5 +59,11 @@ public class SmartCardModule {
    WalletFeatureHelper featureHelper(@Named(JanetModule.JANET_WALLET)Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
       return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
 //      return new WalletFeatureHelperFull();
+   }
+
+   @Provides
+   @Singleton
+   public NxtSessionHolder provideNxtSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
+      return new NxtSessionHolder(simpleKeyValueStorage);
    }
 }

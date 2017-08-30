@@ -20,12 +20,10 @@ public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardSc
    private final InputBarcodeDelegate inputBarcodeDelegate;
 
    public WizardScanBarcodePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor,
-         PermissionDispatcher permissionDispatcher) {
+         WalletNetworkService networkService, PermissionDispatcher permissionDispatcher, InputBarcodeDelegate inputBarcodeDelegate) {
       super(navigator, smartCardInteractor, networkService);
       this.permissionDispatcher = permissionDispatcher;
-      this.inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
-            InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor));
+      this.inputBarcodeDelegate = inputBarcodeDelegate;
    }
 
    @Override

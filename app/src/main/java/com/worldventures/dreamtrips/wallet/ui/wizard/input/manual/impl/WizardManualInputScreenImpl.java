@@ -11,6 +11,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -34,6 +35,7 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
    @InjectView(R.id.wallet_wizard_manual_input_next_btn) View nextButton;
 
    @Inject WizardManualInputPresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -91,7 +93,7 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
                         command -> getPresenter().retry(command.barcode), c -> { /*nothing*/ })
                   ).build()
       );

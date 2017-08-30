@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl;
 
-
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -18,17 +16,13 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualIn
 public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardManualInputScreen> implements WizardManualInputPresenter {
 
    private final AnalyticsInteractor analyticsInteractor;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
    private final InputBarcodeDelegate inputBarcodeDelegate;
 
    public WizardManualInputPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
-         WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, InputBarcodeDelegate inputBarcodeDelegate) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
-      this.inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
-            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor));
+      this.inputBarcodeDelegate = inputBarcodeDelegate;
    }
 
    @Override
@@ -60,10 +54,5 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
    @Override
    public void retry(String barcode) {
       inputBarcodeDelegate.retry(barcode);
-   }
-
-   @Override
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
    }
 }

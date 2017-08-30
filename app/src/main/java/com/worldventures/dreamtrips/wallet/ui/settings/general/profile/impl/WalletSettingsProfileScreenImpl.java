@@ -17,7 +17,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
 import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;

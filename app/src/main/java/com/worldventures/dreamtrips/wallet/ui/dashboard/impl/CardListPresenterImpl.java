@@ -48,6 +48,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDel
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       this.featureHelper = walletFeatureHelper;
       this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.GENERAL);
-      this.cardListStackConverter = new CardListStackConverter();
+      this.cardListStackConverter = new CardListStackConverter(new WalletRecordUtil(), walletFeatureHelper);
 
    }
 
@@ -264,7 +265,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @Override
    public boolean isCardDetailSupported() {
-      return featureHelper.isCardDetailSupported();
+      return !featureHelper.isSampleCardMode();
    }
 
    @Override

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;

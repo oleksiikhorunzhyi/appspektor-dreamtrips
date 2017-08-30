@@ -16,10 +16,10 @@ import com.worldventures.dreamtrips.BR;
 public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
    private final String recordId;
-   private final CharSequence cardName;
+   private CharSequence cardName;
    private final StackType cardType;
    private final String cardTypeName;
-   private final boolean defaultCard;
+   private boolean defaultCard;
    private final CharSequence cardLastDigitsShort;
    private final String cardHolderName;
    private final CharSequence cardLastDigitsLong;

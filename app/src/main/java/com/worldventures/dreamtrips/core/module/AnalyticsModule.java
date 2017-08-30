@@ -11,9 +11,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalAnalyticEventHandler;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
-import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.wallet.util.AnalyticsInteractorProxy;
+import com.worldventures.dreamtrips.core.utils.AnalyticsInteractorProxy;
 
 import javax.inject.Singleton;
 

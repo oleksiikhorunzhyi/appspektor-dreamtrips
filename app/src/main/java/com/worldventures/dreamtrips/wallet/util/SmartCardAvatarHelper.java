@@ -3,10 +3,12 @@ package com.worldventures.dreamtrips.wallet.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.IOException;
 
@@ -19,6 +21,8 @@ import static rx.Observable.fromCallable;
 
 public class SmartCardAvatarHelper {
 
+   private static final int DEFAULT_IMAGE_SIZE = 256;
+
    public final Context context;
 
    @Inject
@@ -27,9 +31,17 @@ public class SmartCardAvatarHelper {
    }
 
    public Observable<byte[]> toSmartCardPhoto(String imageUri) {
-      return getBitmap(context, Uri.parse(imageUri), ImageUtils.DEFAULT_IMAGE_SIZE, ImageUtils.DEFAULT_IMAGE_SIZE)
-            .flatMap(bitmap -> fromCallable(() -> toMonochrome(bitmap, ImageUtils.DEFAULT_IMAGE_SIZE)))
+      return getBitmap(context, Uri.parse(imageUri), DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
+            .flatMap(bitmap -> fromCallable(() -> toMonochrome(bitmap, DEFAULT_IMAGE_SIZE)))
             .map(this::convertBytesForUpload);
+   }
+
+   public static void applyGrayScaleColorFilter(SimpleDraweeView draweeView) {
+      if (draweeView == null) return;
+      ColorMatrix matrix = new ColorMatrix();
+      matrix.setSaturation(0);
+      ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+      draweeView.getHierarchy().setActualImageColorFilter(filter);
    }
 
    private int[][] toMonochrome(Bitmap bitmap, int imageSize) throws IOException {

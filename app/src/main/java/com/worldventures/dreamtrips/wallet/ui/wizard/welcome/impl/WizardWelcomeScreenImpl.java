@@ -14,11 +14,11 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import javax.inject.Inject;
 
@@ -63,7 +63,7 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().backButtonClicked());
       content.setVisibility(INVISIBLE);
-      ImageUtils.applyGrayScaleColorFilter(userPhoto);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(userPhoto);
    }
 
    @Override

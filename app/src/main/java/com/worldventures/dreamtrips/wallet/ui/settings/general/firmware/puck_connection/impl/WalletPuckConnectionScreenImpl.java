@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionScreen;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class WalletPuckConnectionScreenImpl extends WalletBaseController<WalletP
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       userPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0f, .5f));
-      ImageUtils.applyGrayScaleColorFilter(userPhoto);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(userPhoto);
    }
 
    @Override

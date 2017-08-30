@@ -13,7 +13,6 @@ import android.view.animation.Animation;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErro
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingScreen;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import javax.inject.Inject;
 
@@ -49,7 +49,7 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
       super.onFinishInflate(view);
       toolbar.setNavigationOnClickListener(v -> navigateClick());
       userPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0f, .5f));
-      ImageUtils.applyGrayScaleColorFilter(userPhoto);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(userPhoto);
    }
 
    @Override

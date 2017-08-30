@@ -13,9 +13,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
 
@@ -57,7 +57,7 @@ public class SmartCardWidget extends ConstraintLayout {
       LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_smartcard, this);
       if (isInEditMode()) return;
       ButterKnife.inject(this);
-      ImageUtils.applyGrayScaleColorFilter(scAvatar);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(scAvatar);
       setVisibility(INVISIBLE);
    }
 

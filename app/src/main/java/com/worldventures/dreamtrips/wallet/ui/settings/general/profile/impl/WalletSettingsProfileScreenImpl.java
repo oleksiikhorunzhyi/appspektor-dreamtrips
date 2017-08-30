@@ -17,7 +17,6 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
 import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
@@ -30,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Up
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletSuffixSelectingDialog;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.io.File;
 
@@ -88,7 +88,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
       //noinspection all
       cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
-      ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(binding.photoPreview);
       binding.photoPreview.getHierarchy()
             .setPlaceholderImage(R.drawable.ic_wallet_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
       binding.photoPreview.getHierarchy()

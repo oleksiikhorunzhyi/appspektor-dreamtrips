@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
 
@@ -46,7 +46,7 @@ public class DisplayOptionsViewHolder {
    DisplayOptionsViewHolder(View view) {
       ButterKnife.inject(this, view);
       rootView = view;
-      ImageUtils.applyGrayScaleColorFilter(photo);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(photo);
    }
 
    void bindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, @NonNull SmartCardUser user) {

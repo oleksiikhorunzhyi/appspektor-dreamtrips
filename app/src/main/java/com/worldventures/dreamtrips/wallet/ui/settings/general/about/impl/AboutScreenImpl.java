@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl;
 
 
+import android.databinding.DataBindingUtil;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +10,13 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.databinding.ScreenWalletAboutBinding;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.about.model.SmartCardAboutViewModel;
 
 import javax.inject.Inject;
 
@@ -36,6 +39,10 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
 
    @Inject AboutPresenter presenter;
 
+   private SmartCardAboutViewModel aboutViewModel = new SmartCardAboutViewModel();
+
+   private ScreenWalletAboutBinding binding;
+
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
@@ -45,7 +52,9 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
 
    @Override
    public View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup) {
-      return layoutInflater.inflate(R.layout.screen_wallet_about, viewGroup, false);
+      binding = DataBindingUtil.inflate(layoutInflater, R.layout.screen_wallet_about, viewGroup, false);
+      binding.setAboutViewModel(aboutViewModel);
+      return binding.getRoot();
    }
 
    @Override
@@ -59,31 +68,28 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
    }
 
    private void provideAppVersion() {
-      tvDTAppVersion.setText(BuildConfig.VERSION_NAME);
+      aboutViewModel.setAppVersion(BuildConfig.VERSION_NAME);
    }
 
    @Override
    public void onProvidePayCardInfo(final int cardStored, final int cardAvailable) {
-      tvQtyCardStored.setText(String.valueOf(cardStored));
-      tvQtyCardAvailable.setText(String.valueOf(cardAvailable));
+      aboutViewModel.setCardsStored(String.valueOf(cardStored));
+      aboutViewModel.setCardsAvailable(String.valueOf(cardAvailable));
    }
 
    @Override
    public void setSmartCardId(String smartCardId) {
-      tvSmartCardId.setText(smartCardId);
+      aboutViewModel.setSmartCardId(smartCardId);
    }
 
    @Override
    public void setSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
-      tvNordicFWVersion.setText(smartCardFirmware.nordicAppVersion());
-      tvAtmelCardFWVersion.setText(smartCardFirmware.internalAtmelVersion());
-      tvBootLoaderFWVersion.setText(smartCardFirmware.nrfBootloaderVersion());
-      tvAtmelChargerFWVersion.setText(smartCardFirmware.externalAtmelVersion());
+      aboutViewModel.setSmartCardFirmware(smartCardFirmware);
    }
 
    @Override
    public void setSmartCardUser(SmartCardUser smartCardUser) {
-      tvUserName.setText(userFullName(smartCardUser));
+      aboutViewModel.setSmartCardUserFullName(userFullName(smartCardUser));
    }
 
    @Override

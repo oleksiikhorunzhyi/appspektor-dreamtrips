@@ -32,7 +32,6 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
             WalletExternalModule.class,
             WalletServiceModule.class,
             StorageModule.class,
-            StorageModule.class,
             JanetNxtModule.class
       },
       injects = {

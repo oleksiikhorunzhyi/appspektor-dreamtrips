@@ -14,7 +14,9 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SyncRecordsStatusActio
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.WalletPersistentStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
+import com.worldventures.dreamtrips.wallet.domain.storage.AboutSmartCardDataActionStorage;
 
 import dagger.Module;
 import dagger.Provides;
@@ -75,5 +77,10 @@ public class WalletActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage syncRecordsStatusActionStorage(SnappyRepository snappyRepository) {
       return new SyncRecordsStatusActionStorage(snappyRepository);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   ActionStorage aboutSmartCardDataActionStorage(WalletPersistentStorage persistentStorage) {
+      return new AboutSmartCardDataActionStorage(persistentStorage);
    }
 }

@@ -174,6 +174,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl.WizardAssignUse
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -390,8 +392,8 @@ public class WalletActivityModule {
    WizardScanBarcodePresenter provideWizardScanBarcodePresenter(Navigator navigator,
          SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
          AnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
-      return new WizardScanBarcodePresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
-            analyticsInteractor, permissionDispatcher);
+      return new WizardScanBarcodePresenterImpl(navigator, smartCardInteractor, networkService, permissionDispatcher,
+            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor)));
    }
 
    @Provides
@@ -402,11 +404,11 @@ public class WalletActivityModule {
    }
 
    @Provides
-   WizardManualInputPresenter provideWizardManualInputPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
-         WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+   WizardManualInputPresenter provideWizardManualInputPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
+         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
       return new WizardManualInputPresenterImpl(navigator, smartCardInteractor, networkService,
-            analyticsInteractor, wizardInteractor, httpErrorHandlingUtil);
+            analyticsInteractor, new InputBarcodeDelegate(navigator, wizardInteractor,
+            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor)));
    }
 
    @Provides

@@ -136,12 +136,21 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public boolean removeImage(PhotoReviewCreationItem item) {
-      boolean removed = cachedCreationItems.remove(item);
-      if (removed) {
+      try{
+         for(int x=0; x<cachedCreationItems.size(); x++){
+            cachedCreationItems.remove(x);
+         }
+      } catch (Exception e){
+         e.printStackTrace();
+         return false;
+      }
+      return true;
+      /*boolean removed = cachedCreationItems.remove(item);
+      //if (removed) {
          invalidateDynamicViews();
          updatePickerState();
-      }
-      return removed;
+      //}
+      return true;*/
    }
 
    public void attachImages(MediaAttachment mediaAttachment) {

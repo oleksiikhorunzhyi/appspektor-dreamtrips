@@ -100,7 +100,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void onTrackingStateFetched(boolean state) {
-      if (state) {
+      if (state && (!locationService.isEnabled() || !locationService.isPermissionGranted())) {
          requestLocationPermissions(true);
       }
       applyTrackingStatusForUI(state);
@@ -162,7 +162,6 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    public void goBack() {
       getNavigator().goBack();
    }
-
 
    private void checkLocationSettings() {
       locationService.fetchLastKnownLocationSettings()

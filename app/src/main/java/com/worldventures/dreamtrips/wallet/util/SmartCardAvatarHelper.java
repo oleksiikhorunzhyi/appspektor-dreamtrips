@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.util;
+package com.worldventures.dreamtrips.wallet.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;

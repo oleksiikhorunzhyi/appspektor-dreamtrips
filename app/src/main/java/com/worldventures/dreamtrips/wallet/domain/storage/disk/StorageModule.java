@@ -28,4 +28,9 @@ public class StorageModule {
       return new PersistentRecordsStorage(snappyStorage, snappyCrypter);
    }
 
+   @Provides
+   @Singleton
+   public WalletPersistentStorage provideWalletPersistentStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage, SnappyCrypter snappyCrypter) {
+      return new WalletPersistentStorageImpl(snappyStorage, snappyCrypter);
+   }
 }

@@ -5,10 +5,12 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
@@ -56,12 +58,26 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::setSmartCardFirmware);
+            .subscribe(this::restoreCachedFWInfo);
       getSmartCardInteractor().smartCardUserPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setSmartCardUser);
+      getSmartCardInteractor().aboutSmartCardDataCommandPipe()
+            .observeSuccessWithReplay()
+            .map(Command::getResult)
+            .filter(aboutSmartCardData -> aboutSmartCardData != null)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(aboutSmartCardData -> getView().setSmartCardFirmware(aboutSmartCardData.smartCardFirmware()));
+   }
+
+   private void restoreCachedFWInfo(SmartCardFirmware smartCardFirmware) {
+      if (smartCardFirmware.isEmpty()) {
+         getSmartCardInteractor().aboutSmartCardDataCommandPipe().send(AboutSmartCardDataCommand.fetch());
+      } else {
+         getView().setSmartCardFirmware(smartCardFirmware);
+      }
    }
 
    private void observePayCardsInfo() {

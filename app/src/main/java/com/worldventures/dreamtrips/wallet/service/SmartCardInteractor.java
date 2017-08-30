@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
@@ -106,6 +107,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe;
    private final ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe;
    private final ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe;
+   private final ActionPipe<AboutSmartCardDataCommand> aboutSmartCardDataCommandPipe;
 
    public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -177,6 +179,7 @@ public final class SmartCardInteractor {
             .io());
       validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
             .io());
+      aboutSmartCardDataCommandPipe = sessionActionPipeCreator.createPipe(AboutSmartCardDataCommand.class, cacheSchedulerFactory.call());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -357,5 +360,9 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {
       return removeUserPhotoActionPipe;
+   }
+
+   public ActionPipe<AboutSmartCardDataCommand> aboutSmartCardDataCommandPipe() {
+      return aboutSmartCardDataCommandPipe;
    }
 }

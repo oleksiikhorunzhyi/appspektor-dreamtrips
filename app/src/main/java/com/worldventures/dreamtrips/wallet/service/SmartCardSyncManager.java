@@ -3,8 +3,11 @@ package com.worldventures.dreamtrips.wallet.service;
 import android.support.v4.util.Pair;
 
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
+import com.worldventures.dreamtrips.wallet.domain.entity.AboutSmartCardData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
@@ -47,7 +50,8 @@ public class SmartCardSyncManager {
    private volatile boolean syncDisabled = false;
 
    public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor,
-         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor, WalletFeatureHelper featureHelper) {
+         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
+         WalletFeatureHelper featureHelper) {
       this.janet = janet;
       this.interactor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
@@ -157,6 +161,7 @@ public class SmartCardSyncManager {
             .observeSuccess()
             .map(Command::getResult)
             .subscribe(firmware -> {
+                     saveFirmwareDataForAboutScreen(firmware);
                      interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(firmware));
                      firmwareInteractor.fetchFirmwareInfoPipe().send(new FetchFirmwareInfoCommand(firmware));
                   }
@@ -180,6 +185,13 @@ public class SmartCardSyncManager {
                   state -> interactor.deviceStatePipe().send(DeviceStateCommand.lock(state)),
                   throwable -> Timber.d(throwable, "")
             );
+   }
+
+   private void saveFirmwareDataForAboutScreen(SmartCardFirmware firmware) {
+      if (!firmware.isEmpty()) {
+         interactor.aboutSmartCardDataCommandPipe()
+               .send(AboutSmartCardDataCommand.save(AboutSmartCardData.of(firmware)));
+      }
    }
 
    private void setupBatteryObserver() {

@@ -97,7 +97,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe;
    private final ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe;
    private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
-   private final ReadActionPipe<PinStatusEvent> pinStatusEventPipe;
+   private final ActionPipe<PinStatusEvent> pinStatusEventPipe;
    private final ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe;
    private final ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe;
 
@@ -334,7 +334,7 @@ public final class SmartCardInteractor {
       return getOnCardAnalyticsPipe;
    }
 
-   public ReadActionPipe<PinStatusEvent> pinStatusEventPipe() {
+   public ActionPipe<PinStatusEvent> pinStatusEventPipe() {
       return pinStatusEventPipe;
    }
 

@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.modules.background_uploading.VideoMicroserviceModule;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;

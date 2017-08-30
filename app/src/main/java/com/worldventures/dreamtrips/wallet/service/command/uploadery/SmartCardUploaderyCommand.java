@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction;
 import com.worldventures.dreamtrips.core.api.uploadery.BaseUploadImageCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.util.MaltyPartImageBodyCreator;
 

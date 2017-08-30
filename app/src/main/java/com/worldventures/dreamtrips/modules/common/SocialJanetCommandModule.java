@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common;
 
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
@@ -137,7 +136,6 @@ import dagger.Module;
       CopyFileCommand.class,
       UploaderyImageCommand.class,
       SimpleUploaderyCommand.class,
-      SmartCardUploaderyCommand.class,
       BucketListCommand.class,
       DeleteItemPhotoCommand.class,
       FindBucketItemByPhotoCommand.class,

@@ -121,8 +121,11 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       setVideo(video, false);
    }
 
-   public void setVideo(Video video, boolean resizeVideoContainer) {
-      this.video = video;
+   public void setVideo(Video newVideo, boolean resizeVideoContainer) {
+      if (video != null && video.getUploadId().equals(newVideo.getUploadId())
+            && resizeVideoContainer == this.resizeVideoContainer) return;
+
+      this.video = newVideo;
       this.defaultStreamUri = video.getHdUrl();
       this.resizeVideoContainer = resizeVideoContainer;
       this.duration = video.getDuration();

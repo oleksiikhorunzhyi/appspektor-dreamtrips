@@ -21,12 +21,8 @@ public interface GalleryMediaPickerPresenter extends BaseMediaPickerPresenter<Ga
 
    void openCameraForVideo();
 
-   void attachMedia();
-
    void handleCameraClick();
 
-   boolean validateItemPick(GalleryMediaPickerViewModel pickedItem, VideoPickLimitStrategy videoPickLimitStrategy,
-         PhotoPickLimitStrategy photoPickLimitStrategy);
-
-   Observable<List<GalleryMediaPickerViewModel>> capturedMedia();
+   void itemPicked(GalleryMediaPickerViewModel pickedItem, int position,
+         VideoPickLimitStrategy videoPickLimitStrategy, PhotoPickLimitStrategy photoPickLimitStrategy);
 }

@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.wallet.domain.entity.record;
 
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Gson.TypeAdapters
 public abstract class Record {
 
    @Nullable

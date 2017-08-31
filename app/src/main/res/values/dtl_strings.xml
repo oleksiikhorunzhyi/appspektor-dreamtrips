@@ -94,7 +94,7 @@
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filters</string>
    <!-- DtlFilterButton Options Merchants Type strings -->
-   <string name="filter_merchant_food">Food</string>
+   <string name="filter_merchant_food">Dining</string>
    <string name="filter_merchant_entertainment">Entertainment</string>
    <string name="filter_merchant_spa">Spas</string>
    <string name="text_to_filter_by_spa">Spa</string>

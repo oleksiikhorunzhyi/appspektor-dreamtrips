@@ -80,7 +80,7 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
       switch (item.getType()) {
          case POST:
             PostFeedItemCell postFeedItemCell = new PostFeedItemCell(inflater.inflate(R.layout.adapter_item_feed_post_event, null));
-            postFeedItemCell.setMute(true);
+            postFeedItemCell.setDisplayingInList(true);
             return postFeedItemCell;
          case PHOTO:
             return new PhotoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_photo_event, null));
@@ -90,7 +90,7 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
             return new BucketFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_bucket_event, null));
          case VIDEO:
             VideoFeedItemDetailsCell videoFeedItemDetailsCell = new VideoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_video_event, null));
-            videoFeedItemDetailsCell.setMute(true);
+            videoFeedItemDetailsCell.setDisplayingInList(true);
             return videoFeedItemDetailsCell;
          default:
             return new UndefinedFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_undefined_event, null));

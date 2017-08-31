@@ -115,6 +115,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          it("get location") {
             val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
             whenever(mockDb.smartCard).thenReturn(smartCard)
+            whenever(mockDb.walletLocations).thenReturn(mutableListOf<WalletLocation>())
 
             val testSubscriber: TestSubscriber<ActionState<GetLocationCommand>> = TestSubscriber()
             smartCardLocationInteractor.locationPipe
@@ -244,8 +245,9 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       fun mockHttpService(): MockHttpActionService {
          val placesResponse: NearbyResponse = mockPlacesResponse()
          val addressResponse: AddressRestResponse = mock()
+         val scLocations: List<SmartCardLocation> = mutableListOf()
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200)) { request ->
+               .bind(MockHttpActionService.Response(200).body(scLocations)) { request ->
                   Pattern.compile("api/smartcard/provisioning/card_data/[0-9]+/locations").matcher(request.url).find()
                }
                .bind(MockHttpActionService.Response(200)

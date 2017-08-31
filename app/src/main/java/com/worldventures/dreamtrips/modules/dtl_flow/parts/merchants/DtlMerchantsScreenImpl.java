@@ -69,6 +69,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
    LayoutManagerScrollPersister scrollStatePersister = new LayoutManagerScrollPersister();
+   public static String currentSelectedFilter = null;
 
    private int idResource = R.string.dtlt_search_hint;
 
@@ -446,8 +447,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
+      dtlToolbar.removeSearchFieldFocus();
+      setCurrentSearchFilter(stringResource);
       updateFiltersView(stringResource);
       getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);
+   }
+
+   private void setCurrentSearchFilter(int stringResource){
+      currentSelectedFilter = getContext().getString(stringResource);
    }
 }

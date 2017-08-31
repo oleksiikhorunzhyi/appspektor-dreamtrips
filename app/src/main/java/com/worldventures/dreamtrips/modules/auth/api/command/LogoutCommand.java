@@ -9,11 +9,9 @@ import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.util.CrashlyticsTracker;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -32,6 +30,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegates
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
 import java.security.KeyStoreException;
@@ -45,6 +44,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import timber.log.Timber;
+
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class LogoutCommand extends Command<Void> implements InjectableAction {
@@ -64,7 +65,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
-   @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
+   @Inject @Named(JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject NxtSessionHolder nxtSessionHolder;

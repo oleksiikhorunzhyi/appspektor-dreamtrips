@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings.general.display;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
@@ -14,10 +13,12 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.settings.GetHomeDisplayTypeAction;
 import rx.schedulers.Schedulers;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
+
 @CommandAction
 public class GetDisplayTypeCommand extends Command<Integer> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SnappyRepository snappyRepository;
 
    private final boolean skipCache;

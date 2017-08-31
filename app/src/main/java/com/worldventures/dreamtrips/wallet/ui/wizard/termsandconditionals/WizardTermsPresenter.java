@@ -21,7 +21,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 public class WizardTermsPresenter extends WalletPresenter<WizardTermsPresenter.Screen, Parcelable> {
 

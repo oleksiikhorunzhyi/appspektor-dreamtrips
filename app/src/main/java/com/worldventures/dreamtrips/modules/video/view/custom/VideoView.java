@@ -22,6 +22,7 @@ import com.longtailvideo.jwplayer.core.PlayerState;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
 import com.longtailvideo.jwplayer.media.playlists.MediaSource;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
+import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.module.Injector;
 import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
 import com.worldventures.dreamtrips.R;
@@ -226,8 +227,14 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          clear();
          setupVideoPlayer(0);
       });
-      playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> clear());
-      playerView.addOnSetupErrorListener(event -> clear());
+      playerView.addOnErrorListener((VideoPlayerEvents.OnErrorListenerV2) event -> {
+         CrashlyticsTracker.trackError(new JwPlayerException(event.getMessage(), event.getException()));
+         clear();
+      });
+      playerView.addOnSetupErrorListener(event -> {
+         CrashlyticsTracker.trackError(new JwPlayerException(event));
+         clear();
+      });
 
       playerView.addOnTimeListener((currentTime, duration) -> {
          if (playerView == null) return;
@@ -530,6 +537,21 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
       @Override
       public void onStartTrackingTouch(SeekBar seekBar) {
+      }
+   }
+
+   public static class JwPlayerException extends IllegalStateException {
+
+      public JwPlayerException(String s) {
+         super(s);
+      }
+
+      public JwPlayerException(String message, Throwable cause) {
+         super(message, cause);
+      }
+
+      public JwPlayerException(Throwable cause) {
+         super(cause);
       }
    }
 }

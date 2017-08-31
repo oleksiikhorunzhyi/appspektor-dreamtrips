@@ -136,31 +136,6 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public boolean removeImage(PhotoReviewCreationItem item) {
-
-      /** Codigo original
-      /*
-      boolean removed = cachedCreationItems.remove(item);
-      if (removed) {
-         invalidateDynamicViews();
-         updatePickerState();
-      }
-      return true;*/
-
-
-      /** Esto es lo que habiamos hecho que funcionaba luego de la daily.
-      /*
-      try{
-         for(int x=0; x<cachedCreationItems.size(); x++){
-            cachedCreationItems.remove(x);
-         }
-      } catch (Exception e){
-         e.printStackTrace();
-         return false;
-      }
-      return true;
-*/
-
-      /** Esto es lo que yo hice y si borra las fotos sin el workaround. Testea y haz un FWT mañana a primera hora con Legna. **/
       try {
          cachedCreationItems.remove(item);
       } catch (Exception e){

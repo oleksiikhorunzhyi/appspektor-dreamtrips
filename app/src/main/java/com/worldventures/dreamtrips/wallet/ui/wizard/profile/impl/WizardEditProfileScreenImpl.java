@@ -203,7 +203,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      cropImageService.cropImage(photoPath);
+      cropImageService.cropImage(getActivity(), photoPath);
    }
 
    @Override

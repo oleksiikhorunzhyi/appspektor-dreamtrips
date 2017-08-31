@@ -41,7 +41,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    @InjectView(R.id.drawer_layout)  NavigationDrawerViewImpl navDrawer;
    @InjectView(R.id.root_container) FrameLayout rootContainer;
 
-   @Inject WalletCropImageService cropImageDelegate;
+   @Inject WalletCropImageService cropImageService;
    @Inject MediaPickerFacebookService walletPickerFacebookService;
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
@@ -63,7 +63,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
 
    @Override
    public void onDestroy() {
-      cropImageDelegate.destroy();
+      cropImageService.destroy();
       super.onDestroy();
    }
 
@@ -79,7 +79,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    @Override
    public Object getSystemService(@NonNull String name) {
       if (WalletCropImageService.SERVICE_NAME.equals(name)) {
-         return cropImageDelegate;
+         return cropImageService;
       } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
          return locationSettingsService;
       }
@@ -93,7 +93,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+      if (cropImageService.onActivityResult(requestCode, resultCode, data)) return;
       if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) return;
       if (walletPickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
       super.onActivityResult(requestCode, resultCode, data);

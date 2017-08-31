@@ -335,8 +335,8 @@ public class WalletActivityModule {
 
    @Provides
    @Singleton
-   WalletCropImageService provideWalletCropImageDelegate(Activity activity) {
-      return new WalletCropImageServiceImpl(activity);
+   WalletCropImageService provideWalletCropImageDelegate() {
+      return new WalletCropImageServiceImpl();
    }
 
    @Provides

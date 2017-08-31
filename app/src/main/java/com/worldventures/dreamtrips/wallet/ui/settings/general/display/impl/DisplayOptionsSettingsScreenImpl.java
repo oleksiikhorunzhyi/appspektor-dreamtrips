@@ -270,7 +270,7 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      cropImageService.cropImage(photoPath);
+      cropImageService.cropImage(getActivity(), photoPath);
    }
 
    @Override

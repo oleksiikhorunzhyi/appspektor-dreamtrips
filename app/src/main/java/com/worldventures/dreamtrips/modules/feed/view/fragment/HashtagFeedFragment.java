@@ -132,6 +132,16 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       rootView.setFocusableInTouchMode(true);
    }
 
+   @Override
+   public void onPause() {
+      super.onPause();
+      statePaginatedRecyclerViewManager.stopAutoplayVideos();
+   }
+
+   private void startAutoplayVideos() {
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+   }
+
    private void onSuggestionClicked(String suggestion) {
       if (searchText != null) {
          String descriptionText = searchText.getText().toString();
@@ -167,6 +177,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void onResume() {
       super.onResume();
+      startAutoplayVideos();
       releaseSearchFocus(searchView);
 
       HashtagFeedBundle args = getArgs();
@@ -249,6 +260,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void refreshFeedItems(List feedItems) {
       fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+      startAutoplayVideos();
    }
 
    @Override

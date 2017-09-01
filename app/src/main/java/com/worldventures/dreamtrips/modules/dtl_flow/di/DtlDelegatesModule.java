@@ -6,7 +6,7 @@ import android.content.Context;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAdapterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import dagger.Module;
 import dagger.Provides;

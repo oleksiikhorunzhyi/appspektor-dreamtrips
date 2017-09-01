@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.helper2.error;
 
-import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -21,7 +21,7 @@ import rx.Observable;
 import rx.Subscription;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailable;
 
 @CommandAction

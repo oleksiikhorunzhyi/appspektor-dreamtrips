@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvide
 import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorImpl;
 import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorMock;
 import com.worldventures.dreamtrips.wallet.service.impl.WalletBluetoothServiceMock;
+import com.worldventures.dreamtrips.wallet.service.impl.WalletSocialInfoProviderImpl;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;
@@ -42,7 +43,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(
       includes = {
@@ -52,13 +53,6 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
       },
       complete = false, library = true)
 public class WalletServiceModule {
-
-   @Named(JANET_WALLET)
-   @Singleton
-   @Provides
-   SessionActionPipeCreator pipeCreator(@Named(JANET_WALLET) Janet janet) {
-      return new SessionActionPipeCreator(janet);
-   }
 
    @Singleton
    @Provides

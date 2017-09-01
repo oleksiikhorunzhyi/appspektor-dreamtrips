@@ -12,7 +12,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class UpdateSmartCardUserPhotoCommand extends Command<Void> implements InjectableAction {

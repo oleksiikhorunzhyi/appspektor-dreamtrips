@@ -46,16 +46,13 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.modules.tripsimages.service.storage.InspireMeStorage;
 import com.worldventures.dreamtrips.modules.tripsimages.service.storage.TripImageStorage;
 import com.worldventures.dreamtrips.modules.tripsimages.service.storage.YsbhPhotoStorage;
-import com.worldventures.dreamtrips.wallet.di.WalletActionStorageModule;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {
-      WalletActionStorageModule.class
-}, complete = false, library = true)
+@Module(complete = false, library = true)
 public class CacheActionStorageModule {
 
    @Singleton

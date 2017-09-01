@@ -29,7 +29,7 @@ import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class SyncRecordsCommand extends Command<Void> implements InjectableAction {

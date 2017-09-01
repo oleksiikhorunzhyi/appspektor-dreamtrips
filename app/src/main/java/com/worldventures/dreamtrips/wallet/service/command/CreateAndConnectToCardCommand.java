@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -14,10 +13,12 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
+
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<SmartCard> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SystemPropertiesProvider propertiesProvider;
    @Inject SmartCardInteractor interactor;
 

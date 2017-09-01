@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.NxtSessionHolder;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;

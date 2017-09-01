@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.util;
+package com.worldventures.dreamtrips.core.utils;
 
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;

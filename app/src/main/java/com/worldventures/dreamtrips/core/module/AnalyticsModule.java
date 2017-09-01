@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.worldventures.dreamtrips.core.janet.DreamTripsCommandServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.utils.AnalyticsInteractorProxy;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
@@ -11,14 +12,15 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalAnalyticEventHandler;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
-import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.wallet.util.AnalyticsInteractorProxy;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(library = true, complete = false)
 public class AnalyticsModule {
@@ -37,8 +39,8 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides
-   AnalyticsInteractor provideAnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new AnalyticsInteractor(sessionActionPipeCreator);
+   AnalyticsInteractor provideAnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator,  @Named(JANET_WALLET) SessionActionPipeCreator walletActionPipeCreator) {
+      return new AnalyticsInteractor(sessionActionPipeCreator, walletActionPipeCreator);
    }
 
    @Singleton

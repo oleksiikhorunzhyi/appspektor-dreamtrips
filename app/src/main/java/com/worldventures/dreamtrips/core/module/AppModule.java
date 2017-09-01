@@ -67,6 +67,8 @@ import dagger.Provides;
             //
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //
+            SmartCardModule.class,
+            //
             SecurityModule.class, DeviceModule.class,
             BackgroundUploadingModule.class,
             FacebookAppModule.class,

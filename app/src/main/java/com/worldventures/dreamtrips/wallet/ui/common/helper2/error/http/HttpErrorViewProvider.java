@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
 

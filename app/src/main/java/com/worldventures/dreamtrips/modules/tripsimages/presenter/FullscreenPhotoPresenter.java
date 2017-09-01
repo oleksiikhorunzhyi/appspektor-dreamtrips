@@ -176,17 +176,7 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
       if (!photo.equals(updatedFeedEntity)) return;
-      Photo photoFeedEntity = (Photo) updatedFeedEntity;
-      if (photo.getOwner() != null) {
-         photo.syncLikeState(photoFeedEntity);
-         photo.setCommentsCount(photoFeedEntity.getCommentsCount());
-         photo.setComments(photoFeedEntity.getComments());
-         photo.setPhotoTags(photoFeedEntity.getPhotoTags());
-         photo.setPhotoTagsCount(photoFeedEntity.getPhotoTagsCount());
-      } else {
-         photo = photoFeedEntity;
-         view.showContentWrapper();
-      }
+      photo = (Photo) updatedFeedEntity;
       view.setPhoto(photo);
       setupTranslationState();
    }

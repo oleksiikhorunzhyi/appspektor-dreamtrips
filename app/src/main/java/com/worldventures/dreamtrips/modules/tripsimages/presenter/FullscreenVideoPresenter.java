@@ -100,7 +100,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
 
    @Override
    public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
-       // we delete entity in TripImagesViewPagerPresenter
+      // we delete entity in TripImagesViewPagerPresenter
    }
 
    private boolean enableEdit() {

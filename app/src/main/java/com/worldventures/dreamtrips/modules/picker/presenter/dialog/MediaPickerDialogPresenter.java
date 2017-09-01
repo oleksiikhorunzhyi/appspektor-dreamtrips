@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.picker.presenter.dialog;
 
-
 import android.view.KeyEvent;
 
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
@@ -11,8 +10,6 @@ public interface MediaPickerDialogPresenter<V extends MediaPickerDialogView> {
    MediaPickerAttachment providePickerResult();
 
    boolean handleKeyPress(int keyCode, KeyEvent event);
-
-   void performCleanUp();
 
    void attachView(V view);
 

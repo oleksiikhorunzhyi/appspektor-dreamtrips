@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
@@ -15,10 +14,12 @@ import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayActi
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
+
 @CommandAction
 public class FetchCardPropertiesCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {

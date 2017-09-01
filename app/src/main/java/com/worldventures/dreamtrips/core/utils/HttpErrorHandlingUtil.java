@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.util;
+package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
 import android.net.Uri;
@@ -15,8 +15,6 @@ import java.io.IOException;
 import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.http.exception.HttpException;
 import io.techery.janet.http.exception.HttpServiceException;
-
-import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
 public class HttpErrorHandlingUtil {
 
@@ -65,7 +63,7 @@ public class HttpErrorHandlingUtil {
    }
 
    public static boolean isNoInternetConnectionError(Throwable exception) {
-      return getCauseByType(IOException.class, exception.getCause()) != null;
+      return ThrowableUtils.getCauseByType(IOException.class, exception.getCause()) != null;
    }
 
    public static String obtainHttpErrorMessage(Throwable exception) {

@@ -51,8 +51,8 @@ public class TripImagesTabFragment extends BaseFragment<TripImagesTabPresenter> 
                .origin(CreateEntityBundle.Origin.MY_TRIP_IMAGES)
                .build()));
          adapter.add(new FragmentItem(Route.THREE_SIXTY_VIDEOS, getString(R.string.three_sixty)));
-         adapter.add(new FragmentItem(Route.YSBH_IMAGES, getString(R.string.you_should_be_here)));
          adapter.add(new FragmentItem(Route.INSPIRE_ME_IMAGES, getString(R.string.inspire_me)));
+         adapter.add(new FragmentItem(Route.YSBH_IMAGES, getString(R.string.you_should_be_here)));
       }
 
       PageSelectionDetector.listenPageSelection(pager, pageNumber -> {

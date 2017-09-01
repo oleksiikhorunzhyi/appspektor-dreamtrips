@@ -258,5 +258,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       void refreshFeedItems(List<FeedItem> items, User user);
 
       void updateLoadingStatus(boolean loading, boolean noMoreElements);
+
+      void notifyDataSetChanged();
    }
 }

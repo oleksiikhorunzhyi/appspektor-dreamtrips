@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-
 public class MediaPickerContainer extends FrameLayout {
+
    private AnimatorSet navigationAnimatorSet;
    private TreeMap<MediaPickerStep, BaseMediaPickerLayout> screens;
    private MediaPickerStep currentStep;

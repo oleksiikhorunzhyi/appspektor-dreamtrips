@@ -231,7 +231,12 @@ public class UploadingPostCell extends FrameLayout {
 
       mainControlImageView.setImageResource(R.drawable.uploading_control_retry);
       mainControlImageView.setVisibility(VISIBLE);
-      statusTextView.setText(getContext().getString(R.string.uploading_post_status_failed_connection));
+      if (compoundOperationModel.type() == PostBody.Type.PHOTO) {
+         statusTextView.setText(getContext().getString(R.string.uploading_post_status_failed_connection));
+      } else {
+         statusTextView.setText(getContext().getString(R.string.uploading_post_status_upload_video_failed));
+      }
+
       statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_failure));
       timeLeftTextView.setVisibility(View.GONE);
 
@@ -242,7 +247,7 @@ public class UploadingPostCell extends FrameLayout {
    private void updateAccordingToFailedProcessingState() {
       initViewsForGeneralUploadState();
 
-      statusTextView.setText(R.string.uploading_post_status_progress_video_processing_failed);
+      statusTextView.setText(R.string.uploading_post_status_transcoding_failed);
       statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_failure));
       mainControlImageView.setVisibility(View.GONE);
       timeLeftTextView.setVisibility(View.GONE);

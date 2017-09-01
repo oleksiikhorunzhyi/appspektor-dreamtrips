@@ -32,6 +32,8 @@ import rx.functions.Action0;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
+import static rx.Observable.just;
+
 public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImpl<GalleryMediaPickerView, GalleryMediaPickerViewModel> implements GalleryMediaPickerPresenter {
    private final PickImageDelegate pickImageDelegate;
    private final MediaInteractor mediaInteractor;
@@ -203,20 +205,12 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
 
    @Override
    public Observable<List<GalleryMediaPickerViewModel>> capturedMedia() {
-      return capturedMediaPublishSubject.asObservable().startWith(Observable.just(Collections.emptyList()));
+      return capturedMediaPublishSubject.asObservable();
    }
 
    @Override
    public Observable<List<GalleryMediaPickerViewModel>> attachedItems() {
-      return Observable.combineLatest(
-            super.attachedItems(),
-            capturedMedia(),
-            (attachedMedia, capturedMedia) -> {
-               final List<GalleryMediaPickerViewModel> combinedAttachments = new ArrayList<>();
-               combinedAttachments.addAll(attachedMedia);
-               combinedAttachments.addAll(capturedMedia);
-               return Collections.unmodifiableList(combinedAttachments);
-            });
+      return super.attachedItems().mergeWith(capturedMediaPublishSubject);
    }
 
    private void observeGalleryFetch() {

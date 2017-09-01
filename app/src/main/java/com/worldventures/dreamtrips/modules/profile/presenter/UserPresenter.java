@@ -184,6 +184,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                      view.finishLoading();
                      refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
                   .onFail(this::onError));
    }
@@ -203,6 +204,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      view.finishLoading();
                      user.setRelationship(User.Relationship.FRIEND);
                      refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
                   .onFail(this::onError));
    }
@@ -222,6 +224,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      view.finishLoading();
                      user.setRelationship(User.Relationship.REJECTED);
                      refreshFeedItems();
+                     view.notifyDataSetChanged();
                   })
                   .onFail(this::onError));
    }
@@ -238,6 +241,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                if (user.getId() == command.getUserId()) {
                   user.getCircles().add(command.getCircle());
                   refreshFeedItems();
+                  view.notifyDataSetChanged();
                }
             });
       profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
@@ -246,6 +250,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                if (user.getId() == command.getUserId()) {
                   user.getCircles().remove(command.getCircle());
                   refreshFeedItems();
+                  view.notifyDataSetChanged();
                }
             });
    }

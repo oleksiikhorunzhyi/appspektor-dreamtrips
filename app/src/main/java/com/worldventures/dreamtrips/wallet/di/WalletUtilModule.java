@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandlerFactory;
 
 import dagger.Module;

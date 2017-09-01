@@ -20,7 +20,7 @@ import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.janet.smartcard.model.User;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class RevertSmartCardUserUpdatingCommand extends Command<Void> {

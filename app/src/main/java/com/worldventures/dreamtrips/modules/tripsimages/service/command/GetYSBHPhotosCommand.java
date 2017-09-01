@@ -46,6 +46,10 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
       return getYSBHPhotosCommand;
    }
 
+   public boolean isFromCache() {
+      return fromCache;
+   }
+
    public int getPage() {
       return page;
    }

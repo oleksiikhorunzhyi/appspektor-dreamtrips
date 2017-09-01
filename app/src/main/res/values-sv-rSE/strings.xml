@@ -312,6 +312,7 @@
    <string name="player_error">Tyvärr. Vi kunde inte spela upp videon just nu. Kontrollera din anslutning och försök igen.</string>
 
    <string name="retry">Försök igen</string>
+   <string name="cancel">Avbryt</string>
 
    <string name="no_notifications">Du har inga aviseringar än</string>
    <string name="notification_message_friend_accepted">%1$s har accepterat din vänförfrågan</string>
@@ -356,6 +357,7 @@
    <string name="terms_and_conditions_reject">Inte nu</string>
 
    <string name="camera">Kamera</string>
+   <string name="library">Bibliotek</string>
    <string name="camera_take_a_picture">Ta en bild</string>
    <string name="camera_record_a_video">Spela in en video</string>
    <string name="add_from_facebook">Lägg till från Facebook</string>
@@ -372,6 +374,11 @@
    <string name="no_mutual_friends">Ni har inga gemensamma vänner</string>
 
    <string name="pending">Väntar …</string>
+   <string name="media_picker_error_contents">Inläsning av %1$s misslyckades.</string>
+   <string name="media_picker_gallery_action">Media-galleri</string>
+   <string name="media_picker_fb_albums_actions">Facebook-album</string>
+   <string name="media_picker_fb_photos_actions">Facebook-bilder</string>
+   <string name="media_picker_limit_reached">Du kan bara välja upp till %1$s bilder</string>
 
    <string name="back">Tillbaka</string>
    <string name="logout_component">Logga ut</string>
@@ -484,6 +491,8 @@
    <string name="uploading_post_status_paused">Överföring pausad</string>
    <string name="uploading_post_status_waiting">Väntar</string>
    <string name="uploading_post_status_failed_connection"> Anslutning bruten </string>
+   <string name="uploading_post_status_upload_video_failed">Denna video laddades inte upp</string>
+   <string name="uploading_post_status_transcoding_failed">Denna video kan inte behandlas</string>
    <string name="uploading_post_status_uploaded">Inlägget har publicerats!</string>
    <string name="uploading_post_time_left_posting">Publicerar…</string>
    <string name="uploading_post_time_time_left">har lämnat chatten</string>
@@ -588,4 +597,20 @@
    <string name="uploading_post_status_progress_video_processing"><b><i>Steg 2 av 2.</i></b> Bearbetar …</string>
    <string name="uploading_post_status_progress_video_processing_failed">Bearbetningen misslyckades. Något är fel med videon</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">Behöver tillåtelse att läsa av lagret för att föreslå mediainnehåll</string>
+
+   <string name="picker_two_media_type_error">Välj antingen foton eller en video</string>
+   <string name="picker_photo_limit">Du kan välja upp till %1$d foto</string>
+   <string name="picker_photo_limit_plural">Du kan välja upp till %1$d foton</string>
+   <string name="picker_video_limit">Du kan välja upp till %1$d videoklipp</string>
+   <string name="picker_video_limit_plural">Du kan välja upp till %1$d videoklipp</string>
+   <string name="picker_video_length_limit">Du har inte tillåtelse att välja videor och foton som är mer än %1$d sekunder långa</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">Ta bort video</string>
+   <string name="video_deleted">Videon har blivit borttagen</string>
+   <string name="video_delete_caption">Är du säker på att du vill ta bort denna video?</string>
+   <string name="error_failed_to_delete_video">Borttagningen av videon misslyckades.</string>
+   <string name="type_video">Video</string>
+   <string name="type_post">Publicera</string>
 </resources>

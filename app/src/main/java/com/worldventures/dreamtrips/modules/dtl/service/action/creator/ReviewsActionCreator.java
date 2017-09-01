@@ -13,6 +13,6 @@ public class ReviewsActionCreator implements HttpActionCreator<GetReviewsMerchan
 
    @Override
    public GetReviewsMerchantsHttpAction createAction(ReviewsMerchantsActionParams params) {
-      return new GetReviewsMerchantsHttpAction(params.brandId(), params.productId());
+      return new GetReviewsMerchantsHttpAction(params.brandId(), params.productId(), params.indexOf(), params.limit());
    }
 }

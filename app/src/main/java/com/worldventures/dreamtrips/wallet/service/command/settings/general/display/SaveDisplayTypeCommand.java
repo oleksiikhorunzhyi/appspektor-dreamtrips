@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.general.dis
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
@@ -23,6 +22,7 @@ import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY;
@@ -30,7 +30,7 @@ import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeActio
 @CommandAction
 public class SaveDisplayTypeCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SnappyRepository snappyRepository;
 

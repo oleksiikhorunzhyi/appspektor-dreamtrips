@@ -414,7 +414,5 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       void cropImage(SocialCropImageManager socialCropImageManager, String path);
 
       void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user);
-
-      void notifyDataSetChanged();
    }
 }

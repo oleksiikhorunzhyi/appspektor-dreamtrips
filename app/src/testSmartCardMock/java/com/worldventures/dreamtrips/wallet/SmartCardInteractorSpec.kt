@@ -5,7 +5,7 @@ import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.techery.spares.session.NxtSessionHolder
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec

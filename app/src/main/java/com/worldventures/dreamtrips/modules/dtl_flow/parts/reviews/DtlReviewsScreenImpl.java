@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -32,6 +31,25 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    SweetAlertDialog errorDialog;
 
+   OfferWithReviewView.IMyEventListener listener = new OfferWithReviewView.IMyEventListener() {
+      @Override
+      public void onStartFistPageLoading() {
+         mContainerDetail.setVisibility(View.GONE);
+         refreshLayout.setVisibility(View.VISIBLE);
+      }
+
+      @Override
+      public void onFinishFistPageLoading() {
+         refreshLayout.setVisibility(View.GONE);
+         mContainerDetail.setVisibility(View.VISIBLE);
+      }
+
+      @Override
+      public void onEventOccurred(int indexOf) {
+         getPresenter().addMoreReviews(indexOf);
+      }
+   };
+
    public DtlReviewsScreenImpl(Context context) {
       super(context);
    }
@@ -54,6 +72,9 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
          Flow.get(getContext()).goBack();
       });
       showMessage();
+
+      mContainerDetail.setEventListener(listener);
+      mContainerDetail.loadFirstPage();
    }
 
    private void showMessage() {
@@ -71,7 +92,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       bundle.putInt(OfferWithReviewView.COUNT_REVIEW, countReview);
       bundle.putString(OfferWithReviewView.MERCHANT_NAME, getPath().getMerchant().displayName());
       bundle.putBoolean(OfferWithReviewView.IS_FROM_LIST_REVIEW, true);
-      mContainerDetail.addBundle(bundle);
+      mContainerDetail.loadData(bundle);
    }
 
    private void hideRefreshMerchantsError() {
@@ -82,22 +103,17 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
    public void onRefreshSuccess() {
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
-      this.refreshLayout.setVisibility(View.GONE);
       this.mContainerDetail.setVisibility(View.VISIBLE);
    }
 
    @Override
    public void onRefreshProgress() {
-      this.refreshLayout.setVisibility(View.VISIBLE);
-      this.mContainerDetail.setVisibility(View.GONE);
       this.hideRefreshMerchantsError();
       this.showEmpty(false);
    }
 
    @Override
    public void onRefreshError(String error) {
-      this.refreshLayout.setVisibility(View.GONE);
-      this.showEmpty(false);
    }
 
    @Override
@@ -119,6 +135,11 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
       errorDialog.showCancelButton(true);
       errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
       errorDialog.show();
+   }
+
+   @Override
+   public void removeLoadingActions() {
+      mContainerDetail.removeLoadingActions();
    }
 
    @Override

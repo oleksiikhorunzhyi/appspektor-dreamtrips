@@ -239,7 +239,7 @@
    <string name="feed_photo">照片</string>
    <string name="feed_bucket">人生愿望清单项目</string>
    <string name="coming_soon">即将推出</string>
-   <string name="loading">载入中...</string>
+   <string name="loading">载入中…</string>
    <string name="filter_video_title_language">选择语言</string>
    <string name="filter_video_title_country">选择国家</string>
    <string name="comments_title">评论</string>
@@ -312,6 +312,7 @@
    <string name="player_error">很抱歉，我们现在不能播放这段视频，请检查您的连接或再试一次</string>
 
    <string name="retry">重试</string>
+   <string name="cancel">取消</string>
 
    <string name="no_notifications">您还没有任何通知</string>
    <string name="notification_message_friend_accepted">%1$s接受了您的好友请求</string>
@@ -356,6 +357,7 @@
    <string name="terms_and_conditions_reject">现在不行</string>
 
    <string name="camera">相机</string>
+   <string name="library">图书馆</string>
    <string name="camera_take_a_picture">拍摄一张照片</string>
    <string name="camera_record_a_video">录制一个视频</string>
    <string name="add_from_facebook">添加来自Facebook</string>
@@ -371,13 +373,18 @@
    <string name="user_mutual_friends">共同的朋友</string>
    <string name="no_mutual_friends">您没有任何共同的朋友</string>
 
-   <string name="pending">待处理...</string>
+   <string name="pending">待处理…</string>
+   <string name="media_picker_error_contents">加载 %1$s 失败。</string>
+   <string name="media_picker_gallery_action">媒体库</string>
+   <string name="media_picker_fb_albums_actions">facebook 相册</string>
+   <string name="media_picker_fb_photos_actions">facebook 图片</string>
+   <string name="media_picker_limit_reached">您只可以选择 %1$s 张图片</string>
 
    <string name="back">回去</string>
    <string name="logout_component">退出</string>
    <string name="start_typing_name">开始键入名称</string>
 
-   <string name="multiple_dates">多个日期， %1$s ...</string>
+   <string name="multiple_dates">多个日期， %1$s …</string>
 
    <string name="tag_photo">对您进行了标记</string>
 
@@ -479,18 +486,20 @@
    <string name="error_fail_to_load_documents">无法加载文件</string>
    <string name="tag_people">给人加标签</string>
 
-   <string name="uploading_post_status_progress_singular">上传照片...</string>
+   <string name="uploading_post_status_progress_singular">上传照片…</string>
    <string name="uploading_post_status_progress_plural">上传%1$d张照片…</string>
    <string name="uploading_post_status_paused">上传已暂停</string>
    <string name="uploading_post_status_waiting">等候</string>
    <string name="uploading_post_status_failed_connection">失去连接</string>
+   <string name="uploading_post_status_upload_video_failed">本视频无法上传</string>
+   <string name="uploading_post_status_transcoding_failed">无法处理此视频</string>
    <string name="uploading_post_status_uploaded">帖子上传成功！</string>
-   <string name="uploading_post_time_left_posting">正在发布...</string>
+   <string name="uploading_post_time_left_posting">正在发布…</string>
    <string name="uploading_post_time_time_left">离开</string>
    <string name="uploading_post_time_left_seconds">S</string>
    <string name="uploading_post_time_left_minutes">M</string>
    <string name="uploading_post_time_left_hours">h</string>
-   <string name="uploading_post_time_left_more_than_one_day">超过1天...</string>
+   <string name="uploading_post_time_left_more_than_one_day">超过1天…</string>
    <string name="uploading_post_cancel_upload_message">取消上传？</string>
    <string name="uploading_post_cancel_upload_positive_button">是</string>
    <string name="uploading_post_cancel_upload_negative_button">不是</string>
@@ -588,4 +597,20 @@
    <string name="uploading_post_status_progress_video_processing"><b><i>2步中的第2步.</i></b> 处理中…</string>
    <string name="uploading_post_status_progress_video_processing_failed">处理失败视频出错了</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">需要许可读取存储空间，才能建议媒体内容。</string>
+
+   <string name="picker_two_media_type_error">选择照片或者是一个视频</string>
+   <string name="picker_photo_limit">您可以选择最多 %1$d 张照片</string>
+   <string name="picker_photo_limit_plural">您可以选择最多 %1$d 张照片</string>
+   <string name="picker_video_limit">您可以选择最多 %1$d 个视频</string>
+   <string name="picker_video_limit_plural">您可以选择最多 %1$d 个视频</string>
+   <string name="picker_video_length_limit">您无权选择时长超过%1$d的视频</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">删除视频</string>
+   <string name="video_deleted">视频已删除</string>
+   <string name="video_delete_caption">您确定想要删除此视频吗？</string>
+   <string name="error_failed_to_delete_video">删除视频失败</string>
+   <string name="type_video">视频</string>
+   <string name="type_post">帖子</string>
 </resources>

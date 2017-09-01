@@ -92,6 +92,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void onPause() {
       super.onPause();
+      statePaginatedRecyclerViewManager.stopAutoplayVideos();
       setToolbarAlpha(100);
    }
 
@@ -260,6 +261,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
+   }
+
+   @Override
+   public void notifyDataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
    @Override

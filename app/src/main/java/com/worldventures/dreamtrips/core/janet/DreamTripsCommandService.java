@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionServiceWrapper;

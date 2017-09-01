@@ -20,7 +20,7 @@ import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class WipeSmartCardDataCommand extends Command<Void> implements InjectableAction {

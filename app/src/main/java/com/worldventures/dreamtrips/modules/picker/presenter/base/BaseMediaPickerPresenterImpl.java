@@ -10,7 +10,6 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-
 public abstract class BaseMediaPickerPresenterImpl<V extends BaseMediaPickerView, M extends BaseMediaPickerViewModel> extends MvpBasePresenter<V> implements BaseMediaPickerPresenter<V, M> {
 
    private final PublishSubject<List<M>> resultPublishSubject = PublishSubject.create();
@@ -20,8 +19,13 @@ public abstract class BaseMediaPickerPresenterImpl<V extends BaseMediaPickerView
    }
 
    @Override
-   public void loadItems() {
+   public void detachView(boolean retainInstance) {
+      super.detachView(retainInstance);
+      resultPublishSubject.onNext(Collections.emptyList());
+   }
 
+   @Override
+   public void loadItems() {
    }
 
    @Override
@@ -31,7 +35,7 @@ public abstract class BaseMediaPickerPresenterImpl<V extends BaseMediaPickerView
 
    @Override
    public Observable<List<M>> attachedItems() {
-      return resultPublishSubject.asObservable().startWith(Observable.just(Collections.emptyList()));
+      return resultPublishSubject.asObservable();
    }
 
    public PublishSubject<List<M>> getResultPublishSubject() {

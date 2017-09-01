@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;

@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
+import static com.worldventures.dreamtrips.core.utils.ThrowableUtils.getCauseByType;
 
 public class Presenter<VT extends Presenter.View> {
 

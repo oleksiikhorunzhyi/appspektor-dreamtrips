@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.session.acl.FeatureManager
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil
 import de.greenrobot.event.EventBus
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.Spec

@@ -21,7 +21,6 @@ import icepick.State;
 public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPickerDialogView> implements MediaPickerDialogPresenter {
 
    @State ArrayList<BaseMediaPickerViewModel> pickerAttachment;
-   @State MediaPickerAttachment attachment;
 
    public MediaPickerDialogPresenterImpl() {
    }
@@ -30,7 +29,6 @@ public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPicker
    public void attachView(MediaPickerDialogView view) {
       super.attachView(view);
       pickerAttachment = new ArrayList<>();
-      attachment = new MediaPickerAttachment(getView().getRequestId());
       observeAttachedPhotos();
    }
 
@@ -67,6 +65,7 @@ public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPicker
 
    @Override
    public MediaPickerAttachment providePickerResult() {
+      final MediaPickerAttachment attachment = new MediaPickerAttachment(getView().getRequestId());
       for (BaseMediaPickerViewModel model : pickerAttachment) {
          MediaPickerModelImpl mediaPickerModel = null;
          if (model.getType() == MediaPickerModel.Type.VIDEO) {
@@ -92,9 +91,7 @@ public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPicker
       return shouldConsume;
    }
 
-   @Override
-   public void performCleanUp() {
+   private void performCleanUp() {
       pickerAttachment = null;
-      attachment = null;
    }
 }

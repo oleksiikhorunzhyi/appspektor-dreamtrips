@@ -30,7 +30,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
       super.onViewTaken();
       if (randomSeed != 0) randomSeed = Math.random() * 2 - 1;
       if (currentItems == null) currentItems = new ArrayList<>();
-      view.updatePhotos(currentItems);
+      view.updatePhotos(new ArrayList<>(currentItems), true);
       subscribeToNewItems();
       reload();
    }
@@ -38,6 +38,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    void subscribeToNewItems() {
       tripImagesInteractor.inspireMePhotosPipe()
             .observe()
+            .filter(command -> !command.action.isFromCache())
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetInspireMePhotosCommand>()
                   .onStart(command -> {
@@ -52,8 +53,11 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
                      loading = false;
                      lastPageReached = inspireMePhotosCommand.lastPageReached();
                      view.finishLoading();
+
+                     boolean forceUpdate = inspireMePhotosCommand.getPage() == 1;
+                     if (forceUpdate) currentItems.clear();
                      currentItems.addAll(inspireMePhotosCommand.getResult());
-                     view.updatePhotos(currentItems);
+                     view.updatePhotos(new ArrayList<>(currentItems), forceUpdate);
                   }));
    }
 
@@ -63,6 +67,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    }
 
    public void reload() {
+      loading = true;
       refreshImages();
    }
 
@@ -82,6 +87,7 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    }
 
    void loadNext() {
+      loading = true;
       tripImagesInteractor.inspireMePhotosPipe().send(GetInspireMePhotosCommand.forPage(randomSeed,
             (currentItems.size() / GetInspireMePhotosCommand.PER_PAGE) + 1));
    }
@@ -93,6 +99,6 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
 
       void finishLoading();
 
-      void updatePhotos(List<Inspiration> photoList);
+      void updatePhotos(List<Inspiration> photoList, boolean forceUpdate);
    }
 }

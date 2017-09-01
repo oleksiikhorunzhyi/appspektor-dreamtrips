@@ -71,9 +71,7 @@ public class StatePaginatedRecyclerViewManager {
    }
 
    public void startLookingForCompletelyVisibleItem(Observable.Transformer stopper) {
-      if (scrollStateAutoplaySubscription != null && !scrollStateAutoplaySubscription.isUnsubscribed()) {
-         scrollStateAutoplaySubscription.unsubscribe();
-      }
+      stopAutoplayVideos();
       scrollStateAutoplaySubscription = scrollStateSubject
             .startWith(stateRecyclerView.getScrollState())
             .debounce(1, TimeUnit.SECONDS)
@@ -81,6 +79,12 @@ public class StatePaginatedRecyclerViewManager {
             .compose(stopper)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(aVoid -> findFirstCompletelyVisibleItemPosition());
+   }
+
+   public void stopAutoplayVideos() {
+      if (scrollStateAutoplaySubscription != null && !scrollStateAutoplaySubscription.isUnsubscribed()) {
+         scrollStateAutoplaySubscription.unsubscribe();
+      }
    }
    
    public void findFirstCompletelyVisibleItemPosition() {

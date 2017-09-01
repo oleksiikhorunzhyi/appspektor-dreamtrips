@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -33,7 +36,8 @@ import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_video_attchment)
-public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVideoPresenter, Video> implements FullscreenVideoPresenter.View {
+public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVideoPresenter, Video>
+      implements FullscreenVideoPresenter.View {
 
    @Inject Router router;
    @Inject @ForActivity Injector injector;
@@ -42,6 +46,8 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
 
    @InjectView(R.id.videoView) VideoView videoView;
    @InjectView(R.id.flag) FlagView flag;
+
+   private WeakHandler handler = new WeakHandler(Looper.getMainLooper());
 
    @Override
    public void afterCreateView(View rootView) {
@@ -110,6 +116,22 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
    @Override
    public void setVideo(Video video) {
       videoView.setVideo(video);
+   }
+
+   @Override
+   public void setUserVisibleHint(boolean isVisibleToUser) {
+      super.setUserVisibleHint(isVisibleToUser);
+      if (isVisibleToUser) {
+         if (videoView == null) {
+            handler.postDelayed(this::playVideo, 500);
+         } else {
+           playVideo();
+         }
+      }
+   }
+
+   private void playVideo() {
+      videoView.playVideo();
    }
 
    @Override

@@ -22,14 +22,21 @@ public class AnalyticsInteractor {
    private final ActionPipe<WalletFirmwareAnalyticsCommand> walletFirmwareAnalyticsPipe;
    private final ActionPipe<SendOnCardAnalyticsCommand> onCardAnalyticsPipe;
 
+   @Deprecated
+   //this constructor is used in tests
    public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      this(sessionActionPipeCreator, sessionActionPipeCreator);
+   }
+
+   //todo remove wallet commands from this interactor
+   public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator, SessionActionPipeCreator walletActionPipeCreator) {
       analyticsActionPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
       analyticsCommandPipe = sessionActionPipeCreator.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
-      walletAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(WalletAnalyticsCommand.class, Schedulers.io());
-      paycardAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(PaycardAnalyticsCommand.class, Schedulers.io());
-      locateCardAnalyticsCommandActionPipe = sessionActionPipeCreator.createPipe(LocateCardAnalyticsCommand.class, Schedulers.io());
-      walletFirmwareAnalyticsPipe = sessionActionPipeCreator.createPipe(WalletFirmwareAnalyticsCommand.class, Schedulers.io());
-      onCardAnalyticsPipe = sessionActionPipeCreator.createPipe(SendOnCardAnalyticsCommand.class, Schedulers.io());
+      walletAnalyticsCommandPipe = walletActionPipeCreator.createPipe(WalletAnalyticsCommand.class, Schedulers.io());
+      paycardAnalyticsCommandPipe = walletActionPipeCreator.createPipe(PaycardAnalyticsCommand.class, Schedulers.io());
+      locateCardAnalyticsCommandActionPipe = walletActionPipeCreator.createPipe(LocateCardAnalyticsCommand.class, Schedulers.io());
+      walletFirmwareAnalyticsPipe = walletActionPipeCreator.createPipe(WalletFirmwareAnalyticsCommand.class, Schedulers.io());
+      onCardAnalyticsPipe = walletActionPipeCreator.createPipe(SendOnCardAnalyticsCommand.class, Schedulers.io());
    }
 
    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {

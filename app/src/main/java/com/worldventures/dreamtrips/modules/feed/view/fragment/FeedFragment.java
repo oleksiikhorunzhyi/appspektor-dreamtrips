@@ -170,6 +170,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED));
    }
 
+   @Override
+   public void onPause() {
+      super.onPause();
+      recyclerViewManager.stopAutoplayVideos();
+   }
+
    private void startAutoplayVideos() {
       recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }

@@ -1,4 +1,4 @@
-package com.techery.spares.session;
+package com.worldventures.dreamtrips.wallet.domain.session;
 
 import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;

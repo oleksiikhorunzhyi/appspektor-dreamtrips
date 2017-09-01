@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.assign;
 
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupCompleteAction;
@@ -28,11 +28,11 @@ public abstract class WizardAssignDelegate {
 
    protected final WizardInteractor wizardInteractor;
    protected final RecordInteractor recordInteractor;
-   protected final AnalyticsInteractor analyticsInteractor;
+   protected final WalletAnalyticsInteractor analyticsInteractor;
    protected final SmartCardInteractor smartCardInteractor;
    protected final Navigator navigator;
 
-   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -41,7 +41,7 @@ public abstract class WizardAssignDelegate {
    }
 
    public static WizardAssignDelegate create(ProvisioningMode mode, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-         AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+         WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
       if (mode == ProvisioningMode.STANDARD) {
          return new WizardAssignDelegateStandard(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
       } else {
@@ -58,7 +58,7 @@ public abstract class WizardAssignDelegate {
    }
 
    protected final void sendAnalytic(WalletAnalyticsAction action) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(action));
    }
 
@@ -69,7 +69,7 @@ public abstract class WizardAssignDelegate {
    private static final class WizardAssignDelegateStandard extends WizardAssignDelegate {
 
       private WizardAssignDelegateStandard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-            AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+            WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
          super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
       }
 
@@ -83,7 +83,7 @@ public abstract class WizardAssignDelegate {
    private static final class WizardAssignDelegateNewCard extends WizardAssignDelegate {
 
       private WizardAssignDelegateNewCard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-            AnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+            WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
          super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
       }
 

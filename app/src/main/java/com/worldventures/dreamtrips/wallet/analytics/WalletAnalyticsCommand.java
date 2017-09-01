@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.analytics;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
@@ -16,7 +16,7 @@ public class WalletAnalyticsCommand extends Command<Void> implements InjectableA
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SnappyRepository snappyRepository;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
 
    private final WalletAnalyticsAction walletAnalyticsAction;
 

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl;
 
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.ClickDirectionsAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
@@ -29,9 +29,9 @@ import static com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil.toLat
 public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements MapPresenter {
 
    private final SmartCardLocationInteractor smartCardLocationInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public MapPresenterImpl(SmartCardLocationInteractor smartCardLocationInteractor, AnalyticsInteractor analyticsInteractor) {
+   public MapPresenterImpl(SmartCardLocationInteractor smartCardLocationInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       this.smartCardLocationInteractor = smartCardLocationInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -111,7 +111,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
 
    @Override
    public void trackDirectionsClick() {
-      analyticsInteractor.locateCardAnalyticsCommandActionPipe()
+      analyticsInteractor.locateCardAnalyticsPipe()
             .send(new LocateCardAnalyticsCommand(new ClickDirectionsAnalyticsAction()));
    }
 

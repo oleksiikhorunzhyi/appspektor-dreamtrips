@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.TermsAcceptedAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.TermsAction;
@@ -18,11 +18,11 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WizardTermsPresenterImpl extends WalletPresenterImpl<WizardTermsScreen> implements WizardTermsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final Janet janet;
 
    public WizardTermsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor, Janet janet) {
+         WalletAnalyticsInteractor analyticsInteractor, Janet janet) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.janet = janet;
@@ -32,12 +32,12 @@ public class WizardTermsPresenterImpl extends WalletPresenterImpl<WizardTermsScr
    public void attachView(WizardTermsScreen view) {
       super.attachView(view);
       loadTerms();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new TermsAction()));
    }
 
    @Override
    public void acceptTermsPressed() {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAcceptedAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new TermsAcceptedAction()));
       getNavigator().goWizardSplash();
    }
 

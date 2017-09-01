@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
@@ -26,10 +26,10 @@ import rx.functions.Action1;
 public class WalletProfileDelegate {
 
    private SmartCardUserDataInteractor smartCardUserDataInteractor;
-   private AnalyticsInteractor analyticsInteractor;
+   private WalletAnalyticsInteractor analyticsInteractor;
 
    public WalletProfileDelegate(SmartCardUserDataInteractor smartCardUserDataInteractor,
-         AnalyticsInteractor analyticsInteractor) {
+         WalletAnalyticsInteractor analyticsInteractor) {
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -74,7 +74,7 @@ public class WalletProfileDelegate {
 
    public void sendAnalytics(WalletAnalyticsAction action) {
       final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(action);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand);
    }
 
    public void observePickerAndCropper(WalletProfilePhotoView view) {

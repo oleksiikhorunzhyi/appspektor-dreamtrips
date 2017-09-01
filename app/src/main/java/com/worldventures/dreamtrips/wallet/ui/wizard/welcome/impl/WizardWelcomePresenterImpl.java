@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl;
 
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.WelcomeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -19,11 +19,11 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen
 public class WizardWelcomePresenterImpl extends WalletPresenterImpl<WizardWelcomeScreen> implements WizardWelcomePresenter {
 
    private final WalletSocialInfoProvider socialInfoProvider;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final WizardInteractor wizardInteractor;
 
    public WizardWelcomePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WalletSocialInfoProvider socialInfoProvider, AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+         WalletSocialInfoProvider socialInfoProvider, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.socialInfoProvider = socialInfoProvider;
       this.analyticsInteractor = analyticsInteractor;
@@ -34,7 +34,7 @@ public class WizardWelcomePresenterImpl extends WalletPresenterImpl<WizardWelcom
    public void attachView(WizardWelcomeScreen view) {
       super.attachView(view);
       wizardInteractor.provisioningStatePipe().send(ProvisioningModeCommand.saveState(getView().getProvisionMode()));
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new WelcomeAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new WelcomeAction()));
 
       view.userName(socialInfoProvider.fullName());
       loadUserPhoto(socialInfoProvider.photoThumb());

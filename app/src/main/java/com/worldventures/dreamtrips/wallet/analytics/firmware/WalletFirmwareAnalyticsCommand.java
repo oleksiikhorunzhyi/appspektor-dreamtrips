@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.analytics.firmware;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.FirmwareAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
@@ -15,7 +15,7 @@ import io.techery.janet.command.annotations.CommandAction;
 public class WalletFirmwareAnalyticsCommand extends Command<Void> implements InjectableAction {
 
    @Inject FirmwareRepository firmwareRepository;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
 
    private final FirmwareAnalyticsAction action;
 

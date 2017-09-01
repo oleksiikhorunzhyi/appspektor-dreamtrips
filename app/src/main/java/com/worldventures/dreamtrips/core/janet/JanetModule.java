@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.modules.background_uploading.VideoMicroserviceModule;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 
 import java.net.CookieManager;
 import java.util.List;
@@ -63,16 +62,9 @@ public class JanetModule {
       return new AnalyticsService(trackers);
    }
 
-   @Singleton
-   @Provides
-   WalletAnalyticsServiceWrapper provideWalletAnalyticsServiceWrapper(AnalyticsService service) {
-      return new WalletAnalyticsServiceWrapper(service);
-   }
-
-   @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionService provideAnalyticsService(WalletAnalyticsServiceWrapper serviceWrapper) {
-      return serviceWrapper;
+   ActionService provideAnalyticsService(AnalyticsService analyticsService) {
+      return analyticsService;
    }
 
    @Singleton

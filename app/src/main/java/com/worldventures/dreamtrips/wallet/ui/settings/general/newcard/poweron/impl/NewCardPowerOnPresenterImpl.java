@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
@@ -28,7 +28,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    public NewCardPowerOnPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, WalletBluetoothService bluetoothService) {
+         WalletAnalyticsInteractor analyticsInteractor, WalletBluetoothService bluetoothService) {
       super(navigator, smartCardInteractor, networkService);
       this.bluetoothService = bluetoothService;
       this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,

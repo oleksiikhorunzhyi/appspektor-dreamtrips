@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.reset.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -17,7 +17,7 @@ public class FactoryResetPresenterImpl extends WalletPresenterImpl<FactoryResetS
    private final FactoryResetDelegate factoryResetDelegate;
 
    public FactoryResetPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.factoryResetDelegate = FactoryResetDelegate.create(factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.GENERAL);

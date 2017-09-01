@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.power_on.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PowerOnAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -21,10 +21,10 @@ public class WizardPowerOnPresenterImpl extends WalletPresenterImpl<WizardPowerO
 
    private final WizardInteractor wizardInteractor;
    private final WalletBluetoothService bluetoothService;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public WizardPowerOnPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, WalletBluetoothService bluetoothService, AnalyticsInteractor analyticsInteractor) {
+         WizardInteractor wizardInteractor, WalletBluetoothService bluetoothService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.bluetoothService = bluetoothService;
@@ -34,7 +34,7 @@ public class WizardPowerOnPresenterImpl extends WalletPresenterImpl<WizardPowerO
    @Override
    public void attachView(WizardPowerOnScreen view) {
       super.attachView(view);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new PowerOnAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new PowerOnAction()));
 
       observeBluetoothAndNetwork();
       observeChecks();

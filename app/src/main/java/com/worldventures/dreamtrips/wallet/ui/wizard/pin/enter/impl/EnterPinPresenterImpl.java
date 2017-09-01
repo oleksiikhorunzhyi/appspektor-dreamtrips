@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.impl;
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -24,13 +24,13 @@ import rx.android.schedulers.AndroidSchedulers;
 public class EnterPinPresenterImpl extends WalletPresenterImpl<EnterPinScreen> implements EnterPinPresenter {
 
    private final WizardInteractor wizardInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    private EnterPinDelegate enterPinDelegate;
 
    public EnterPinPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor,
-         AnalyticsInteractor analyticsInteractor) {
+         WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;

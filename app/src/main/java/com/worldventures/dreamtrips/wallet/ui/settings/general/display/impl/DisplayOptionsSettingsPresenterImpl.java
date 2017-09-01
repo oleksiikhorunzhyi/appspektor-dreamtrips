@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -46,7 +46,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
 
    public DisplayOptionsSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
+         WalletAnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.socialInfoProvider = socialInfoProvider;

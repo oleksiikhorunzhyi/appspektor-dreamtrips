@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.impl;
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -24,11 +24,11 @@ import timber.log.Timber;
 public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<WizardUploadProfileScreen> implements WizardUploadProfilePresenter {
 
    private final WizardInteractor wizardInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
 
    public WizardUploadProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -74,7 +74,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    }
 
    private void onUserSetupSuccess(SmartCardUser user) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );

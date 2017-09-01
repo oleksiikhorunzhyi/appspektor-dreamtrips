@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -17,7 +17,7 @@ public class EnterPinUnassignPresenterImpl extends WalletPresenterImpl<EnterPinU
    private final FactoryResetDelegate factoryResetDelegate;
 
    public EnterPinUnassignPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FactoryResetInteractor factoryResetInteractor, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, FactoryResetInteractor factoryResetInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.factoryResetDelegate = FactoryResetDelegate.create(factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.NEW_CARD);

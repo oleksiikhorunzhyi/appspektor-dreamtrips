@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
@@ -17,12 +17,12 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsScr
 public class SyncRecordsPresenterImpl extends WalletPresenterImpl<SyncRecordsScreen> implements SyncRecordsPresenter {
 
    private final RecordInteractor recordInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    private SyncRecordDelegate syncRecordDelegate;
 
    public SyncRecordsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor) {
+         RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -48,7 +48,7 @@ public class SyncRecordsPresenterImpl extends WalletPresenterImpl<SyncRecordsScr
    }
 
    private void trackScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(new SyncPaymentCardAction()));
    }
 }

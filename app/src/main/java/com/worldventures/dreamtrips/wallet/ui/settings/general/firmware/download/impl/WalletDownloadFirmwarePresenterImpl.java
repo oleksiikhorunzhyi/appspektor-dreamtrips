@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.downloa
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -18,13 +18,13 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<WalletDownloadFirmwareScreen> implements WalletDownloadFirmwarePresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final FirmwareInteractor firmwareInteractor;
 
    private DownloadFirmwareCommand action;
 
    public WalletDownloadFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.firmwareInteractor = firmwareInteractor;

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.Fac
 
 public class FactoryResetSuccessPresenterImpl extends WalletPresenterImpl<FactoryResetSuccessScreen> implements FactoryResetSuccessPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public FactoryResetSuccessPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -29,7 +29,7 @@ public class FactoryResetSuccessPresenterImpl extends WalletPresenterImpl<Factor
 
    private void trackScreen() {
       final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new FactoryResetAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand);
    }
 
    @Override

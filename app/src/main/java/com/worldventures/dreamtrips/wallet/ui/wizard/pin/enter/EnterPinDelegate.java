@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinAction;
@@ -11,15 +11,15 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 public abstract class EnterPinDelegate {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final Navigator navigator;
 
-   private EnterPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
+   private EnterPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
       this.analyticsInteractor = analyticsInteractor;
       this.navigator = navigator;
    }
 
-   public static EnterPinDelegate create(Action action, AnalyticsInteractor analyticsInteractor, Navigator navigator) {
+   public static EnterPinDelegate create(Action action, WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
       if (action == Action.ADD) {
          return new AddPinDelegate(analyticsInteractor, navigator);
       } else if (action == Action.RESET) {
@@ -30,11 +30,11 @@ public abstract class EnterPinDelegate {
    }
 
    public final void trackScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(trackScreenAnalyticsAction()));
    }
 
-   public AnalyticsInteractor getAnalyticsInteractor() {
+   public WalletAnalyticsInteractor getAnalyticsInteractor() {
       return analyticsInteractor;
    }
 
@@ -50,7 +50,7 @@ public abstract class EnterPinDelegate {
 
    private static class AddPinDelegate extends EnterPinDelegate {
 
-      private AddPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
+      private AddPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
       }
 
@@ -73,7 +73,7 @@ public abstract class EnterPinDelegate {
 
    private static class ResetPinDelegate extends EnterPinDelegate {
 
-      private ResetPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
+      private ResetPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
       }
 
@@ -84,7 +84,7 @@ public abstract class EnterPinDelegate {
 
       @Override
       public void pinEntered() {
-         getAnalyticsInteractor().walletAnalyticsCommandPipe()
+         getAnalyticsInteractor().walletAnalyticsPipe()
                .send(new WalletAnalyticsCommand(new ResetPinSuccessAction()));
 
          getNavigator().goPinSetSuccess(Action.ADD);
@@ -98,7 +98,7 @@ public abstract class EnterPinDelegate {
 
    private static class SetupPinDelegate extends EnterPinDelegate {
 
-      private SetupPinDelegate(AnalyticsInteractor analyticsInteractor, Navigator navigator) {
+      private SetupPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
       }
 

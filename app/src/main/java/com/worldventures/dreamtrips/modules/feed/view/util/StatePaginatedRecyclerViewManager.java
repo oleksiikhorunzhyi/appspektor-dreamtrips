@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Focusable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView;
@@ -88,11 +89,15 @@ public class StatePaginatedRecyclerViewManager {
    }
    
    public void findFirstCompletelyVisibleItemPosition() {
+      Focusable focusableViewHolder = findNearestFocusableViewHolder();
+      if (focusableViewHolder != null) focusableViewHolder.onFocused();
+   }
+
+   private Focusable findNearestFocusableViewHolder() {
       float centerPositionY = stateRecyclerView.getY() + stateRecyclerView.getHeight() / 2;
 
-      Focusable focusableViewHolder = findNearestFocusableViewHolder(centerPositionY,
+      return findNearestFocusableViewHolder(centerPositionY,
             layoutManager.findFirstVisibleItemPosition(), layoutManager.findLastVisibleItemPosition());
-      if (focusableViewHolder != null) focusableViewHolder.onFocused();
    }
 
    private Focusable findNearestFocusableViewHolder(float centerPositionY, int firstItemPosition,
@@ -114,6 +119,16 @@ public class StatePaginatedRecyclerViewManager {
       }
 
       return nearestFocusableViewHolder;
+   }
+
+   public int findFocusedPosition() {
+      Focusable focusableViewHolder = findNearestFocusableViewHolder();
+      if (focusableViewHolder != null) {
+         AbstractCell cell = (AbstractCell) focusableViewHolder;
+         return stateRecyclerView.getChildAdapterPosition(cell.itemView);
+      } else {
+         return -1;
+      }
    }
 
    public boolean isNoMoreElements() {

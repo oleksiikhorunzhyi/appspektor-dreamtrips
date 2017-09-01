@@ -144,7 +144,6 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
             }, throwable -> Timber.e(throwable, "Could not load video"));
    }
 
-   @Override
    public void attachMedia() {
       final List<GalleryMediaPickerViewModel> result = Queryable
             .from(getView().getChosenMedia())
@@ -166,46 +165,52 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
    }
 
    @Override
-   public boolean validateItemPick(GalleryMediaPickerViewModel pickedItem, VideoPickLimitStrategy videoPickLimitStrategy, PhotoPickLimitStrategy photoPickLimitStrategy) {
-      if (pickedItem.isChecked()) return true;
+   public void itemPicked(GalleryMediaPickerViewModel pickedItem, int position,
+         VideoPickLimitStrategy videoPickLimitStrategy, PhotoPickLimitStrategy photoPickLimitStrategy) {
+      if (pickedItem.isChecked()) {
+         getView().updateItem(position);
+         attachMedia();
+      } else {
+         List<GalleryMediaPickerViewModel> pickedItems = getView().getChosenMedia();
+         boolean itemsTypeValid = pickedItems.size() == 0 || pickedItems.get(0).getType().equals(pickedItem.getType());
+         if (!itemsTypeValid) {
+            getView().showWrongType();
+         } else if (pickedItem.getType() == MediaPickerModel.Type.PHOTO) {
+            boolean limitReached = photoPickLimitStrategy.photoPickLimit() > 0
+                  && pickedItems.size() >= photoPickLimitStrategy.photoPickLimit();
 
-      List<GalleryMediaPickerViewModel> pickedItems = getView().getChosenMedia();
-      boolean itemsTypeValid = pickedItems.size() == 0 || pickedItems.get(0).getType().equals(pickedItem.getType());
-      if (!itemsTypeValid) {
-         getView().showWrongType();
-         return false;
+            if (limitReached) {
+               if (photoPickLimitStrategy.photoPickLimit() == 1) {
+                  getView().updateItemWithSwap(position);
+                  attachMedia();
+               } else {
+                  getView().showPhotoLimitReached(photoPickLimitStrategy.photoPickLimit());
+               }
+            } else {
+               getView().updateItem(position);
+               attachMedia();
+            }
+         } else if (pickedItem.getType() == MediaPickerModel.Type.VIDEO) {
+            boolean limitReached = videoPickLimitStrategy.videoPickLimit() > 0
+                  && pickedItems.size() >= videoPickLimitStrategy.videoPickLimit();
+            int videoLengthSeconds = (int) (((GalleryVideoPickerViewModel) pickedItem).getDuration() / 1000);
+            boolean lengthLimitReached = videoLengthSeconds > videoPickLimitStrategy.videoDurationLimit();
+
+            if (limitReached) {
+               if (videoPickLimitStrategy.videoPickLimit() == 1) {
+                  getView().updateItemWithSwap(position);
+                  attachMedia();
+               } else {
+                  getView().showVideoLimitReached(videoPickLimitStrategy.videoPickLimit());
+               }
+            } else if (lengthLimitReached) {
+               getView().showVideoDurationLimitReached(videoPickLimitStrategy.videoDurationLimit());
+            } else {
+               getView().updateItem(position);
+               attachMedia();
+            }
+         }
       }
-
-      if (pickedItem.getType() == MediaPickerModel.Type.PHOTO) {
-         boolean limitReached = photoPickLimitStrategy.photoPickLimit() > 0
-               && pickedItems.size() >= photoPickLimitStrategy.photoPickLimit();
-
-         if (limitReached) {
-            getView().showPhotoLimitReached(photoPickLimitStrategy.photoPickLimit());
-            return false;
-         }
-      } else if (pickedItem.getType() == MediaPickerModel.Type.VIDEO) {
-         boolean limitReached = videoPickLimitStrategy.videoPickLimit() > 0
-               && pickedItems.size() >= videoPickLimitStrategy.videoPickLimit();
-         int videoLengthSeconds = (int) (((GalleryVideoPickerViewModel) pickedItem).getDuration() / 1000);
-         boolean lengthLimitReached = videoLengthSeconds > videoPickLimitStrategy.videoDurationLimit();
-
-         if (limitReached) {
-            getView().showVideoLimitReached(videoPickLimitStrategy.videoPickLimit());
-            return false;
-         }
-         if (lengthLimitReached) {
-            getView().showVideoDurationLimitReached(videoPickLimitStrategy.videoDurationLimit());
-            return false;
-         }
-      }
-
-      return true;
-   }
-
-   @Override
-   public Observable<List<GalleryMediaPickerViewModel>> capturedMedia() {
-      return capturedMediaPublishSubject.asObservable();
    }
 
    @Override

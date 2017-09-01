@@ -74,7 +74,9 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
             ColorStateList.valueOf(ContextCompat.getColor(view.getViewContext(), R.color.wallet_add_cards_inactive_color))
       );
       view.getEmptyCardListView().setText(R.string.wallet_wizard_card_list_add_card_coming_soon_text);
-      view.getCardListFab().setOnClickListener(v -> Toast.makeText(view.getViewContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show());
+      view.getCardListFab()
+            .setOnClickListener(v -> Toast.makeText(view.getViewContext(), R.string.coming_soon, Toast.LENGTH_SHORT)
+                  .show());
    }
 
    @Override
@@ -124,7 +126,7 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    private void invalidateDivider(LinearLayout container) {
-      container.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE|LinearLayout.SHOW_DIVIDER_END);
+      container.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_END);
       container.requestLayout();
    }
 }

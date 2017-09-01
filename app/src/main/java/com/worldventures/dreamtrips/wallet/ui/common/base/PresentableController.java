@@ -30,7 +30,7 @@ public abstract class PresentableController<V extends WalletScreen, P extends Wa
    @Override
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
-      getPresenter().attachView((V)this);
+      getPresenter().attachView((V) this);
    }
 
 

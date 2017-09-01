@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.command.wizard;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
@@ -14,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;

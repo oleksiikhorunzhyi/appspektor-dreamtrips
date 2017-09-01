@@ -102,7 +102,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
 
    @Override
    public void revertChanges() {
-      if(user != null) {
+      if (user != null) {
          getView().setUser(delegate.toViewModel(user));
       }
       goBack();
@@ -175,7 +175,8 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
          final ProfileViewModel profileViewModel = isDataChanged() ? getView().getUser() : null;
          try {
             if (profileViewModel != null) {
-               WalletValidateHelper.validateUserFullNameOrThrow(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastNameWithSuffix());
+               WalletValidateHelper.validateUserFullNameOrThrow(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel
+                     .getLastNameWithSuffix());
             }
             getNavigator().goSettingsDisplayOptions(DisplayOptionsSource.PROFILE, profileViewModel);
          } catch (FormatException e) {

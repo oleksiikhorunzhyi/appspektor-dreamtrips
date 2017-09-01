@@ -30,7 +30,7 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.cardIsCharged;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.chargerRequired;
 
-public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<WalletFirmwareChecksScreen> implements WalletFirmwareChecksPresenter{
+public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<WalletFirmwareChecksScreen> implements WalletFirmwareChecksPresenter {
 
    private final WalletBluetoothService bluetoothService;
    private final FirmwareInteractor firmwareInteractor;
@@ -62,7 +62,9 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
       Observable.combineLatest(
             firmwareInteractor.firmwareInfoCachedPipe().observeSuccessWithReplay(),
             bluetoothService.observeEnablesState().startWith(bluetoothService.isEnable()),
-            getSmartCardInteractor().deviceStatePipe().observeSuccessWithReplay().throttleLast(500L, TimeUnit.MILLISECONDS),
+            getSmartCardInteractor().deviceStatePipe()
+                  .observeSuccessWithReplay()
+                  .throttleLast(500L, TimeUnit.MILLISECONDS),
             getSmartCardInteractor().cardInChargerEventPipe().observeSuccessWithReplay()
                   .startWith(new CardInChargerEvent(false)), // because this event is missing on old firmware versions
 

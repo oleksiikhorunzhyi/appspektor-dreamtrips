@@ -65,7 +65,8 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
    @Override
    protected void onDetach(@NonNull View view) {
       super.onDetach(view);
-      final InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+      final InputMethodManager inputManager = (InputMethodManager) view.getContext()
+            .getSystemService(INPUT_METHOD_SERVICE);
       inputManager.hideSoftInputFromWindow(null, 0);
    }
 

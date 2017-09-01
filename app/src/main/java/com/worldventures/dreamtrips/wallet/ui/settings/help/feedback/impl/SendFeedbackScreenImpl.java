@@ -163,8 +163,8 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
    @Override
    public FeedbackType getFeedbackType() {
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_FEEDBACK_TYPE))
-         ? (FeedbackType) getArgs().getSerializable(KEY_FEEDBACK_TYPE)
-         : null;
+            ? (FeedbackType) getArgs().getSerializable(KEY_FEEDBACK_TYPE)
+            : null;
    }
 
    public void showRetryUploadingUiForAttachment(EntityStateHolder<FeedbackImageAttachment> attachmentHolder) {

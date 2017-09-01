@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl;
 
 
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;

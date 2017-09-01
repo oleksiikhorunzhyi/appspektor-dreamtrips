@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder;
 
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.delegate.WalletVideoCallback;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 
 public abstract class WalletVideoHolderDelegate {
 

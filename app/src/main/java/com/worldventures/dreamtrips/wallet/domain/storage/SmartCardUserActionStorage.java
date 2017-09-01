@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 
-public class SmartCardUserActionStorage implements ActionStorage<SmartCardUser>{
+public class SmartCardUserActionStorage implements ActionStorage<SmartCardUser> {
 
    private final SnappyRepository snappyRepository;
 

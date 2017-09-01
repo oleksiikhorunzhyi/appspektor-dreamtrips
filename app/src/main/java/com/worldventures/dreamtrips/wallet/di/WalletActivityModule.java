@@ -7,6 +7,7 @@ import com.bluelinelabs.conductor.Router;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -234,7 +234,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(
       includes = {

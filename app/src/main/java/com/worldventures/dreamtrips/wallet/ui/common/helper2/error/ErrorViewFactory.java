@@ -97,11 +97,11 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
       }
 
       public void show() {
-         if(errorView != null) errorView.showError(t, throwable);
+         if (errorView != null) errorView.showError(t, throwable);
       }
 
       public void hide() {
-         if(errorView != null) errorView.hideError();
+         if (errorView != null) errorView.hideError();
       }
 
       public boolean isVisible() {

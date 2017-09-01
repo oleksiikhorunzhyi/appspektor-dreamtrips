@@ -22,7 +22,7 @@ public abstract class WalletPresenterImpl<V extends WalletScreen> extends MvpBas
 
    private final PublishSubject<Void> detachStopper = PublishSubject.create();
 
-   public WalletPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,  WalletNetworkService networkService) {
+   public WalletPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
       this.navigator = navigator;
       this.smartCardInteractor = smartCardInteractor;
       this.networkService = networkService;

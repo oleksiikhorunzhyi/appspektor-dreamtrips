@@ -21,7 +21,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import timber.log.Timber;
 
-public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowerOnScreen> implements NewCardPowerOnPresenter{
+public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowerOnScreen> implements NewCardPowerOnPresenter {
 
    private final WalletBluetoothService bluetoothService;
    private final CheckPinDelegate checkPinDelegate;

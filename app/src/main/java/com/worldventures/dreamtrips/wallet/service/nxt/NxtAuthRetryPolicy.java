@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.service.nxt;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiErrorResponse;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
 

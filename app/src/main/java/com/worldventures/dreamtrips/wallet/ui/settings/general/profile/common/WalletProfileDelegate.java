@@ -23,8 +23,6 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import java.util.Locale;
-
 public class WalletProfileDelegate {
 
    private SmartCardUserDataInteractor smartCardUserDataInteractor;
@@ -80,7 +78,7 @@ public class WalletProfileDelegate {
    }
 
    public void observePickerAndCropper(WalletProfilePhotoView view) {
-//      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
+      //      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
    }
 
    @Nullable

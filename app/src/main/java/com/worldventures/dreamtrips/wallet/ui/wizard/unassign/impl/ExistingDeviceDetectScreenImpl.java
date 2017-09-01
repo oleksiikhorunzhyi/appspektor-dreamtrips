@@ -82,7 +82,8 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_existing_device_detect_progress, false),
             ErrorViewFactory.<ReAssignCardCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> getPresenter().retryReAssigning(), command -> { /*nothing*/}))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> getPresenter()
+                        .retryReAssigning(), command -> { /*nothing*/}))
                   .build()
       );
    }

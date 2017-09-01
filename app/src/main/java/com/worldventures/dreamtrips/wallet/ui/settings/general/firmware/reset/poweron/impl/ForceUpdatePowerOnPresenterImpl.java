@@ -15,7 +15,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import timber.log.Timber;
 
-public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUpdatePowerOnScreen> implements ForceUpdatePowerOnPresenter{
+public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUpdatePowerOnScreen> implements ForceUpdatePowerOnPresenter {
 
    private final WizardInteractor wizardInteractor;
    private final WalletBluetoothService bluetoothService;

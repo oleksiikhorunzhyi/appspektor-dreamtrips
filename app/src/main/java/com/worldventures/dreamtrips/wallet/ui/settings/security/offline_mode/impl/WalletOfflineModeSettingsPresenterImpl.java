@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
-public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<WalletOfflineModeSettingsScreen> implements WalletOfflineModeSettingsPresenter{
+public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<WalletOfflineModeSettingsScreen> implements WalletOfflineModeSettingsPresenter {
 
    private final AnalyticsInteractor analyticsInteractor;
 

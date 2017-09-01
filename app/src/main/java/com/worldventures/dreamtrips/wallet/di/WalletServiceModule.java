@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvide
 import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorImpl;
 import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorMock;
 import com.worldventures.dreamtrips.wallet.service.impl.WalletBluetoothServiceMock;
-import com.worldventures.dreamtrips.wallet.service.impl.WalletSocialInfoProviderImpl;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;

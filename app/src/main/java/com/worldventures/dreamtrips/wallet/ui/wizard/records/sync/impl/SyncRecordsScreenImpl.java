@@ -31,7 +31,7 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 import static android.view.View.INVISIBLE;
 
-public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScreen, SyncRecordsPresenter> implements SyncRecordsScreen{
+public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScreen, SyncRecordsPresenter> implements SyncRecordsScreen {
 
    private static final String KEY_SYNC_ACTION = "key_sync_action";
 

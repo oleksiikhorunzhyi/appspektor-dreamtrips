@@ -29,7 +29,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import timber.log.Timber;
 
-public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> extends WalletPresenterImpl<S> implements BaseSendFeedbackPresenter<S>{
+public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> extends WalletPresenterImpl<S> implements BaseSendFeedbackPresenter<S> {
 
    protected static final int MAX_PHOTOS_ATTACHMENT = 5;
 
@@ -68,7 +68,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MediaAttachmentPrepareCommand>()
                   .onSuccess(command -> {
-                     for(Uri attachmentUri : command.getResult()) {
+                     for (Uri attachmentUri : command.getResult()) {
                         uploadImageAttachment(attachmentUri);
                      }
                   })

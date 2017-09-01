@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder;
 import android.view.View;
 
 import com.worldventures.dreamtrips.databinding.AdapterItemLoadMoreFeedBinding;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletLoadMoreModel;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletLoadMoreModel;
 
 public class LoadMoreHolder extends BaseHolder<WalletLoadMoreModel> {
 

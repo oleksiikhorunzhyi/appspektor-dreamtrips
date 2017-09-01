@@ -13,13 +13,13 @@ import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.location.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import javax.inject.Singleton;
 
@@ -70,6 +70,6 @@ public class LostCardModule {
          LostCardManager lostCardManager, SmartCardInteractor smartCardInteractor,
          LoginInteractor loginInteractor, LogoutInteractor logoutInteractor, WalletSocialInfoProvider walletSocialInfoProvider) {
       return new LocationTrackingManager(locationInteractor, lostCardManager,
-            smartCardInteractor, loginInteractor, logoutInteractor,  walletSocialInfoProvider);
+            smartCardInteractor, loginInteractor, logoutInteractor, walletSocialInfoProvider);
    }
 }

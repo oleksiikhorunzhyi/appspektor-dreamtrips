@@ -34,7 +34,8 @@ import rx.functions.Action1;
 
 public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<WalletSecuritySettingsScreen> implements WalletSecuritySettingsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;;
+   private final AnalyticsInteractor analyticsInteractor;
+   ;
    private final WalletFeatureHelper featureHelper;
 
    public WalletSecuritySettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,

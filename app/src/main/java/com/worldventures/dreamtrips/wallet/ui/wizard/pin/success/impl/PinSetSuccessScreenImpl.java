@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessScreen, PinSetSuccessPresenter> implements PinSetSuccessScreen{
+public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessScreen, PinSetSuccessPresenter> implements PinSetSuccessScreen {
 
    private static final String KEY_PIN_ACTION = "key_pin_action";
 

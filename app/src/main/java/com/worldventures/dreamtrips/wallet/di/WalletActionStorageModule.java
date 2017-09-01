@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.storage.AboutSmartCardDataActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.AddressWithPlacesActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DeviceStateActionStorage;
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStora
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.WalletPersistentStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
-import com.worldventures.dreamtrips.wallet.domain.storage.AboutSmartCardDataActionStorage;
 
 import javax.inject.Named;
 

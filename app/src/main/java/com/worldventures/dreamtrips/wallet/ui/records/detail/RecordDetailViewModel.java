@@ -71,6 +71,7 @@ public class RecordDetailViewModel extends BaseObservable {
    public boolean isErrorShown() {
       return nameInputError.length() > 0;
    }
+
    //// TODO: 7/30/17 move to common class
    @BindingAdapter("errorText")
    public static void setErrorMessage(TextInputLayout view, CharSequence errorMessage) {

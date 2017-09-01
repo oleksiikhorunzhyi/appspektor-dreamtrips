@@ -123,8 +123,8 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
 
    @Override
    public void setupMode() {
-//      TODO : resolve this implementation
-//      supportConnectionStatusLabel(false);
+      //      TODO : resolve this implementation
+      //      supportConnectionStatusLabel(false);
    }
 
    @Override
@@ -134,9 +134,11 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
    @Override
    public <T> OperationView<T> operationView() {
       return new ComposableOperationView<>(ErrorViewFactory.<T>builder()
-            .addProvider(new SCConnectionErrorViewProvider<>(getContext(), t -> getPresenter().retry(), t -> getPresenter().goBack()))
+            .addProvider(new SCConnectionErrorViewProvider<>(getContext(), t -> getPresenter().retry(), t -> getPresenter()
+                  .goBack()))
             .addProvider(new SmartCardErrorViewProvider<>(getContext(), t -> getPresenter().goBack()))
-            .defaultErrorView(new SimpleErrorView<>(getContext(), getString(R.string.wallet_wizard_setup_error), t -> getPresenter().goBack()))
+            .defaultErrorView(new SimpleErrorView<>(getContext(), getString(R.string.wallet_wizard_setup_error), t -> getPresenter()
+                  .goBack()))
             .build());
    }
 

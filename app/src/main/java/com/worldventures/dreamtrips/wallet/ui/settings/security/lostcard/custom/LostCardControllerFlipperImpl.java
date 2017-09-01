@@ -10,7 +10,6 @@ import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
 
 public class LostCardControllerFlipperImpl implements LostCardControllerFlipper, ControllerChangeHandler.ControllerChangeListener {

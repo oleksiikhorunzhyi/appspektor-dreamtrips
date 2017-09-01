@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.records.add.impl;
 
 
-import android.text.TextUtils;
-
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
@@ -77,8 +75,8 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
             .subscribe(record -> {
-                     this.record = record;
-                     trackScreen();
+               this.record = record;
+               trackScreen();
             }, Timber::e);
    }
 

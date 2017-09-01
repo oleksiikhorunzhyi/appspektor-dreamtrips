@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen;
 
-public class WizardSplashPresenterImpl extends WalletPresenterImpl<WizardSplashScreen> implements WizardSplashPresenter{
+public class WizardSplashPresenterImpl extends WalletPresenterImpl<WizardSplashScreen> implements WizardSplashPresenter {
 
    private final AnalyticsInteractor analyticsInteractor;
 

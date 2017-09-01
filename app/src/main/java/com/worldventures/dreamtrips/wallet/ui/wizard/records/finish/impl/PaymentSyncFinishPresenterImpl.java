@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishScreen;
 
-public class PaymentSyncFinishPresenterImpl extends WalletPresenterImpl<PaymentSyncFinishScreen> implements PaymentSyncFinishPresenter{
+public class PaymentSyncFinishPresenterImpl extends WalletPresenterImpl<PaymentSyncFinishScreen> implements PaymentSyncFinishPresenter {
 
    private final WizardInteractor wizardInteractor;
    private final AnalyticsInteractor analyticsInteractor;

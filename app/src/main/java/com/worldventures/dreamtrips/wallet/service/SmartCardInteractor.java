@@ -179,7 +179,8 @@ public final class SmartCardInteractor {
             .io());
       validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
             .io());
-      aboutSmartCardDataCommandPipe = sessionActionPipeCreator.createPipe(AboutSmartCardDataCommand.class, cacheSchedulerFactory.call());
+      aboutSmartCardDataCommandPipe = sessionActionPipeCreator.createPipe(AboutSmartCardDataCommand.class, cacheSchedulerFactory
+            .call());
    }
 
    private static Scheduler singleThreadScheduler() {

@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PaymentSyncFinishScreenImpl extends WalletBaseController<PaymentSyncFinishScreen, PaymentSyncFinishPresenter> implements PaymentSyncFinishScreen{
+public class PaymentSyncFinishScreenImpl extends WalletBaseController<PaymentSyncFinishScreen, PaymentSyncFinishPresenter> implements PaymentSyncFinishScreen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 

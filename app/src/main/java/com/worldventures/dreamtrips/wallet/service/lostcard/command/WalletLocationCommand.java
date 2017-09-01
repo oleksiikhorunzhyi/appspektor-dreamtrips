@@ -56,5 +56,5 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
       locationRepository.saveWalletLocations(walletLocations);
       return Observable.just(location);
    }
-   
+
 }

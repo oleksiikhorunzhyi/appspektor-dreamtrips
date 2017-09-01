@@ -54,7 +54,7 @@ public class WizardPowerOnScreenImpl extends WalletBaseController<WizardWelcomeS
    public void setButtonAction(boolean isReadyToContinue) {
       actionBtn.setOnClickListener(isReadyToContinue
             ? button -> getPresenter().openUserAgreement()
-            : button ->  getPresenter().openCheckScreen());
+            : button -> getPresenter().openCheckScreen());
    }
 
    @Override

@@ -24,7 +24,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkStorageAvailability;
 
-public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl<WalletNewFirmwareAvailableScreen> implements WalletNewFirmwareAvailablePresenter{
+public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl<WalletNewFirmwareAvailableScreen> implements WalletNewFirmwareAvailablePresenter {
 
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;

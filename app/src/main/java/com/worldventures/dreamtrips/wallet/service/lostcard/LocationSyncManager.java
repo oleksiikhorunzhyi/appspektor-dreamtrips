@@ -19,7 +19,7 @@ public class LocationSyncManager {
    }
 
    public void scheduleSync() {
-      if(scheduledLocationFuture == null
+      if (scheduledLocationFuture == null
             || scheduledLocationFuture.isCancelled()
             || scheduledLocationFuture.isDone()) {
          scheduledLocationFuture =

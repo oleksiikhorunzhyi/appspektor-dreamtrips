@@ -6,7 +6,6 @@ import android.view.View;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.TransitionModel;
-import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 
 public interface CardListPresenter extends WalletPresenter<CardListScreen> {
 

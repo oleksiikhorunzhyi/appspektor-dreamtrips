@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 
-public class RecordViewModel implements Parcelable{
+public class RecordViewModel implements Parcelable {
 
    private final String id;
    private final int cvvLength;

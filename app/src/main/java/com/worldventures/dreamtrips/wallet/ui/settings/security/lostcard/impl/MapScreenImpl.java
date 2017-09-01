@@ -26,9 +26,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.databinding.WalletIncludeMapPopupInfoBinding;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
@@ -99,7 +99,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       mapView.onResume();
 
       mapView.setMapTouchListener2(motionEvent -> {
-         if(!lastLocationViewModel.hasLastLocation()) return;
+         if (!lastLocationViewModel.hasLastLocation()) return;
          switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                popupInfoViewBinding.setVisible(false);

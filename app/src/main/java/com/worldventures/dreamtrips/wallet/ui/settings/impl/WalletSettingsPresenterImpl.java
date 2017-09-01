@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
-public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSettingsScreen> implements WalletSettingsPresenter{
+public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSettingsScreen> implements WalletSettingsPresenter {
 
    private final FirmwareInteractor firmwareInteractor;
    private final AnalyticsInteractor analyticsInteractor;

@@ -38,7 +38,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
    private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
    @InjectView(R.id.drawer) DrawerLayout drawerLayout;
-   @InjectView(R.id.drawer_layout)  NavigationDrawerViewImpl navDrawer;
+   @InjectView(R.id.drawer_layout) NavigationDrawerViewImpl navDrawer;
    @InjectView(R.id.root_container) FrameLayout rootContainer;
 
    @Inject WalletCropImageService cropImageService;

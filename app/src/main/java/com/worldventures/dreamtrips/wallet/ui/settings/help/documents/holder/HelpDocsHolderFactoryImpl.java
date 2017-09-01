@@ -24,7 +24,7 @@ public class HelpDocsHolderFactoryImpl implements HelpDocsTypeFactory {
          case R.layout.adapter_item_document:
             return new DocumentHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)), documentCallback);
          case R.layout.adapter_item_load_more_feed:
-            return new LoadMoreHolder( bind(from(parent.getContext()).inflate(viewType, parent, false)));
+            return new LoadMoreHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
          default:
             throw new IllegalArgumentException();
       }

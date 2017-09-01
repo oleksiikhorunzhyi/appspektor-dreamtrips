@@ -39,9 +39,9 @@ public class MaltyPartImageBodyCreator {
       source.compress(Bitmap.CompressFormat.JPEG, 100, output);
 
       return new PartBody.Builder()
-                  .setBody(new BytesArrayBody(PHOTO_MIME_TYPE, output.toByteArray()))
-                  .addHeader("filename", createFakeFileName())
-                  .build();
+            .setBody(new BytesArrayBody(PHOTO_MIME_TYPE, output.toByteArray()))
+            .addHeader("filename", createFakeFileName())
+            .build();
    }
 
    private boolean isFile(Uri uri) {

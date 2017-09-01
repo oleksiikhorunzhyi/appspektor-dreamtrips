@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
-
 import java.io.File;
 
 import rx.Observable;

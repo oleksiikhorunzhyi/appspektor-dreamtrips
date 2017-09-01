@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
-public interface LostCardScreen extends WalletScreen{
+public interface LostCardScreen extends WalletScreen {
 
    Observable<Boolean> observeTrackingEnable();
 

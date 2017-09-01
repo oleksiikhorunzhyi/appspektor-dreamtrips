@@ -62,8 +62,8 @@ public class SmartCardModule {
 
    @Singleton
    @Provides
-   WalletFeatureHelper featureHelper(@Named(JANET_WALLET)Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
-//      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
+   WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
+      //      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
       return new WalletFeatureHelperFull();
    }
 

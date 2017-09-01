@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.reset;
 
 
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
@@ -123,8 +122,8 @@ public abstract class FactoryResetDelegate {
       @Override
       protected ResetOptions provideResetOptions() {
          return ResetOptions.builder()
-                     .withEnterPin(true)
-                     .build();
+               .withEnterPin(true)
+               .build();
       }
 
       @Override

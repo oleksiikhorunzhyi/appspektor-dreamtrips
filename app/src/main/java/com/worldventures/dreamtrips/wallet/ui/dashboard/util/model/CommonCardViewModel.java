@@ -8,10 +8,9 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.worldventures.dreamtrips.BR;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
-
-import com.worldventures.dreamtrips.BR;
 
 public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 

@@ -14,6 +14,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class DtlToolbar extends LinearLayout {
    protected FocusedMode focusedMode;
    protected String locationTitle;
    protected String defaultEmptySearchCaption;
+   protected String currentSelectedFilter;
 
    public DtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
@@ -62,7 +65,11 @@ public class DtlToolbar extends LinearLayout {
 
    @CallSuper
    protected void initAttributes(AttributeSet attrs) {
-      defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
+      String selectedMerchantFilter = DtlMerchantsScreenImpl.currentSelectedFilter;
+      if (selectedMerchantFilter == null)
+         defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
+      else
+         defaultEmptySearchCaption = selectedMerchantFilter;
    }
 
    protected void bindSearchQueryPersisting() {

@@ -253,7 +253,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.notifyDataSetChanged(statePaginatedRecyclerViewManager.findFocusedPosition());
    }
 
    @Override

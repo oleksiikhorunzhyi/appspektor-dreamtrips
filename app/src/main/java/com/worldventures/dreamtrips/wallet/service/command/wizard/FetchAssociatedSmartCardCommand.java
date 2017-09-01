@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.GetAssociatedCardsHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -25,11 +24,13 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
+
 @CommandAction
 public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmartCardCommand.AssociatedCard> implements InjectableAction {
 
    @Inject Janet janet;
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janetWallet;
+   @Inject @Named(JANET_WALLET) Janet janetWallet;
 
    @Inject SystemPropertiesProvider propertiesProvider;
    @Inject SnappyRepository snappyRepository;

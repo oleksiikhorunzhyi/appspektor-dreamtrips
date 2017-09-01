@@ -35,7 +35,7 @@ import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implements InjectableAction {

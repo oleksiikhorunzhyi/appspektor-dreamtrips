@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -20,6 +19,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService.GENERIC;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.obtainRecordVersion;
 import static rx.Observable.just;
@@ -28,7 +28,7 @@ import static rx.Observable.just;
 public class AddDummyRecordCommand extends Command<Void> implements InjectableAction {
 
    @Inject RecordInteractor recordInteractor;
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
    private final SmartCardUser user;
    private final boolean onlyToCache;

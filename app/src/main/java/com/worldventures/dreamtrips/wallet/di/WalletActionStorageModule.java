@@ -16,63 +16,80 @@ import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStora
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(complete = false, library = true)
 public class WalletActionStorageModule {
 
+   /* Multiple action storage IS NOT SUPPORTED */
+
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage walletCardListStorage(RecordsStorage bankCardsStorage) {
       return new WalletRecordsDiskStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage defaultBankCardStorage(RecordsStorage bankCardsStorage) {
       return new DefaultRecordIdStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage smartCardActionStorage(SnappyRepository snappyRepository) {
       return new SmartCardActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage smartCardDetailsActionStorage(SnappyRepository snappyRepository) {
       return new SmartCardDetailsActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage termsAndConditionsActionStorage(SnappyRepository snappyRepository) {
       return new TermsAndConditionsActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage addressWithPlacesActionStorage() {
       return new AddressWithPlacesActionStorage();
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage deviceStateActionStorage() {
       return new DeviceStateActionStorage();
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage smartCardFirmwareActionStorage(SnappyRepository snappyRepository) {
       return new SmartCardFirmwareActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage smartCardUserActionStorage(SnappyRepository snappyRepository) {
       return new SmartCardUserActionStorage(snappyRepository);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage firmwareUpdateActionStorage(FirmwareRepository repository) {
       return new FirmwareUpdateActionStorage(repository);
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage syncRecordsStatusActionStorage(SnappyRepository snappyRepository) {
       return new SyncRecordsStatusActionStorage(snappyRepository);
    }

@@ -3,18 +3,15 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.http.CheckVideoProcessingHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
@@ -75,24 +72,15 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Override
    public void onViewTaken() {
       super.onViewTaken();
-      if (currentItems == null) currentItems = new ArrayList<>();
+      initItems();
       updateItemsInView();
-      if (shouldHideCreateFlow()) {
-         view.hideCreateImageButton();
-      } else {
-         subscribeToBackgroundUploadingOperations();
-      }
+      initCreateMediaFlow();
       subscribeToTripImages();
       subscribeToPhotoDeletedEvents();
       subscribeToErrorUpdates();
       subscribeToNewItems();
       refreshImages();
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
-   }
-
-   private boolean shouldHideCreateFlow() {
-      return tripImagesArgs.getRoute() != Route.MEMBERS_IMAGES &&
-            tripImagesArgs.getUserId() != appSessionHolder.get().get().getUser().getId();
    }
 
    public void reload() {
@@ -132,6 +120,22 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
             });
    }
 
+   public void pickedAttachments(MediaPickerAttachment mediaAttachment) {
+      view.openCreatePhoto(mediaAttachment);
+   }
+
+   void initItems() {
+      if (currentItems == null) currentItems = new ArrayList<>();
+   }
+
+   void initCreateMediaFlow() {
+      if (tripImagesArgs.getRoute() != Route.MEMBERS_IMAGES && tripImagesArgs.getUserId() != getAccount().getId()) {
+         view.hideCreateImageButton();
+      } else {
+         subscribeToBackgroundUploadingOperations();
+      }
+   }
+
    void refreshImages() {
       tripImagesInteractor.baseTripImagesCommandActionPipe()
             .send(tripImagesCommandFactory.provideCommand(tripImagesArgs));
@@ -166,7 +170,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       lastPageReached = baseMediaCommand.lastPageReached();
       view.finishLoading();
       if (baseMediaCommand.isReload()) currentItems.clear();
-      currentItems.addAll(baseMediaCommand.getResult());
+      currentItems.addAll(baseMediaCommand.getItems());
       updateItemsInView();
       tripImagesInteractor.checkVideoProcessingStatusPipe().send(new CheckVideoProcessingStatusCommand(currentItems));
    }
@@ -197,13 +201,13 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       postsInteractor.postCreatedPipe()
             .observeSuccess()
             .compose(bindViewToMainComposer())
-            .map(PostCreatedCommand::getFeedItem)
+            .map(PostCreatedCommand::getResult)
             .subscribe(this::onFeedItemAdded);
    }
 
-   void onFeedItemAdded(FeedItem<TextualPost> feedItem) {
-      if (feedItem.getItem().getAttachments().size() > 0) {
-         List<BaseMediaEntity> mediaEntities = Queryable.from(feedItem.getItem().getAttachments())
+   void onFeedItemAdded(TextualPost textualPost) {
+      if (!textualPost.getAttachments().isEmpty() ) {
+         List<BaseMediaEntity> mediaEntities = Queryable.from(textualPost.getAttachments())
                .map(this::fromFeedEntityHolder)
                .filter(item -> item != null)
                .filter(mediaEntity -> !currentItems.contains(mediaEntity))
@@ -221,10 +225,18 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
          tripImagesInteractor.memberImagesAddedCommandPipe()
                .send(new MemberImagesAddedCommand(tripImagesArgs, mediaEntities));
          currentItems.addAll(0, mediaEntities);
-
          updateItemsInView();
          view.scrollToTop();
       }
+   }
+
+   void updateItemsInView() {
+      List items = new ArrayList();
+      if (compoundOperationModels != null && !compoundOperationModels.isEmpty()) {
+         items.add(new UploadingPostsList(compoundOperationModels));
+      }
+      items.addAll(currentItems);
+      view.updateItems(items);
    }
 
    private BaseMediaEntity fromFeedEntityHolder(com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder feedEntityHolder) {
@@ -244,19 +256,6 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
          default:
             return null;
       }
-   }
-
-   public void pickedAttachments(MediaPickerAttachment mediaAttachment) {
-      view.openCreatePhoto(mediaAttachment);
-   }
-
-   void updateItemsInView() {
-      List items = new ArrayList();
-      if (compoundOperationModels != null && !compoundOperationModels.isEmpty()) {
-         items.add(new UploadingPostsList(compoundOperationModels));
-      }
-      items.addAll(currentItems);
-      view.updateItems(items);
    }
 
    ///////////////////////////////////////////////////////////////////////////

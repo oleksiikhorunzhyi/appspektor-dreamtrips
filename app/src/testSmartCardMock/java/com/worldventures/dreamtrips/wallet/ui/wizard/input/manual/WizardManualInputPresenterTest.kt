@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual
 
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand
 import com.worldventures.dreamtrips.wallet.ui.common.BasePresenterTest
 import com.worldventures.dreamtrips.wallet.ui.common.InteractorBuilder
@@ -36,7 +36,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
 
    override fun setup() {
       val smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
-      val analyticsInteractor = interactorBuilder.createInteractor(AnalyticsInteractor::class)
+      val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
 
       screen = mock()
       whenever(screen.scidInput()).thenReturn(inputSubject)

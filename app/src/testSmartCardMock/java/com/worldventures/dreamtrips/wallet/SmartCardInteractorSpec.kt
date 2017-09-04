@@ -5,19 +5,19 @@ import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage
@@ -304,7 +304,7 @@ class SmartCardInteractorSpec : BaseSpec({
    }
 }) {
    private companion object {
-      lateinit var mockDb: SnappyRepository
+      lateinit var mockDb: WalletStorage
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
@@ -348,7 +348,7 @@ class SmartCardInteractorSpec : BaseSpec({
                .build()
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(WalletStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(RecordsStorage::class.java) { cardStorage }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
@@ -363,7 +363,7 @@ class SmartCardInteractorSpec : BaseSpec({
          return janet
       }
 
-      fun createMockDb(): SnappyRepository = spy()
+      fun createMockDb(): WalletStorage = spy()
 
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(Record::class.java).to(io.techery.janet.smartcard.model.Record::class.java, WalletRecordToSmartCardRecordConverter())

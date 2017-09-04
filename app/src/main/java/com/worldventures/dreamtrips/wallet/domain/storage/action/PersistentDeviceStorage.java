@@ -1,6 +1,6 @@
-package com.worldventures.dreamtrips.wallet.domain.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 
 import java.util.List;
 import java.util.Map;
@@ -14,10 +14,10 @@ import io.techery.janet.smartcard.model.User;
 
 public class PersistentDeviceStorage implements DeviceStorage {
 
-   private final SnappyRepository db;
+   private final WalletStorage db;
    private final SimpleDeviceStorage memoryStorage;
 
-   public static PersistentDeviceStorage load(SnappyRepository db) {
+   public static PersistentDeviceStorage load(WalletStorage db) {
       SimpleDeviceStorage memoryDeviceStorage = db.getWalletDeviceStorage();
       if (memoryDeviceStorage == null) {
          memoryDeviceStorage = new SimpleDeviceStorage();
@@ -25,7 +25,7 @@ public class PersistentDeviceStorage implements DeviceStorage {
       return new PersistentDeviceStorage(db, memoryDeviceStorage);
    }
 
-   private PersistentDeviceStorage(SnappyRepository db, SimpleDeviceStorage memoryStorage) {
+   private PersistentDeviceStorage(WalletStorage db, SimpleDeviceStorage memoryStorage) {
       this.db = db;
       this.memoryStorage = memoryStorage;
    }

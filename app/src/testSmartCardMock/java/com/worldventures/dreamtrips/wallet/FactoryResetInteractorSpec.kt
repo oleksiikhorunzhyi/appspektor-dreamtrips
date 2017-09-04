@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.model.TestDisassociateResponseBody
 import com.worldventures.dreamtrips.wallet.model.TestSmartCardUser
@@ -164,7 +164,7 @@ class FactoryResetInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(setOfMultiplyStorage())
-               .bindStorageSet(setOf(WalletRecordsDiskStorage(cardStorage)))
+               .bindStorageSet(setOf(WalletRecordsActionStorage(cardStorage)))
                .wrapDagger()
 
          janet = Janet.Builder()

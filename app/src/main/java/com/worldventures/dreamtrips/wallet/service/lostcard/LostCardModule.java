@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -41,8 +41,8 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   LostCardRepository locationRepository(SnappyRepository snappyRepository, WalletTrackingStatusStorage trackingStatusStorage) {
-      return new DiskLostCardRepository(snappyRepository, trackingStatusStorage);
+   LostCardRepository locationRepository(WalletStorage walletStorage, WalletTrackingStatusStorage trackingStatusStorage) {
+      return new DiskLostCardRepository(walletStorage, trackingStatusStorage);
    }
 
    @Singleton

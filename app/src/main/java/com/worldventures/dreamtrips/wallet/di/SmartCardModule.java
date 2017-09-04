@@ -10,9 +10,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
+import com.worldventures.dreamtrips.wallet.di.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
-import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorageModule;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInitializer;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -37,10 +39,11 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
             WalletExternalModule.class,
             WalletJanetModule.class,
             WalletServiceModule.class,
-            StorageModule.class,
-            JanetNxtModule.class
+            WalletStorageModule.class,
+            JanetNxtModule.class,
       },
       injects = {
+            SnappyStorageManagerInitializer.class,
             SmartCardInitializer.class,
       }, complete = false, library = true
 )
@@ -66,7 +69,7 @@ public class SmartCardModule {
    }
 
    @Provides
-   MockSmartCardClient provideMockSmartCardClient(SnappyRepository db) {
+   MockSmartCardClient provideMockSmartCardClient(WalletStorage db) {
       return new MockSmartCardClient(() -> PersistentDeviceStorage.load(db));
    }
 
@@ -84,8 +87,13 @@ public class SmartCardModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   public AppInitializer provideSmartCardInitializer() {
+   AppInitializer provideSmartCardInitializer() {
       return new SmartCardInitializer();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   AppInitializer provideSnappyStorageManagerInitializer() {
+      return new SnappyStorageManagerInitializer();
    }
 
    @Provides

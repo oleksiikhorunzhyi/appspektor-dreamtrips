@@ -18,9 +18,9 @@ import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.TestRecordsStorage
 import com.worldventures.dreamtrips.wallet.model.TestMultiResponseBody
@@ -338,7 +338,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(setOfMultiplyStorage())
-               .bindStorageSet(setOf(WalletRecordsDiskStorage(cardStorage)))
+               .bindStorageSet(setOf(WalletRecordsActionStorage(cardStorage)))
                .wrapDagger()
 
          janet = Janet.Builder()

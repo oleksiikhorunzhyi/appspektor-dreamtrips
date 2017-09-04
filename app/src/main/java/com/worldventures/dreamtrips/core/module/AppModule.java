@@ -81,7 +81,7 @@ import dagger.Provides;
             //
             SmartCardModule.class,
             //
-            SecurityModule.class, DeviceModule.class,
+            DeviceModule.class,
             BackgroundUploadingModule.class,
             FacebookAppModule.class,
             VersionCheckModule.class,

@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.wallet.domain.storage.disk;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
 import com.worldventures.dreamtrips.wallet.domain.entity.AboutSmartCardData;
+import com.worldventures.dreamtrips.wallet.domain.storage.SnappyCrypter;
 
-public class WalletPersistentStorageImpl extends CryptedModelStorage implements WalletPersistentStorage {
+public final class PersistentFirmwareDataStorage extends CryptedModelStorage implements FirmwareDataStorage {
 
    private final String WALLET_ABOUT_SMART_CARD_DATA = "WALLET_ABOUT_SMART_CARD_DATA";
 
-   public WalletPersistentStorageImpl(SnappyStorage storage, SnappyCrypter snappyCrypter) {
+   public PersistentFirmwareDataStorage(SnappyStorage storage, SnappyCrypter snappyCrypter) {
       super(storage, snappyCrypter);
    }
 

@@ -1,23 +1,23 @@
-package com.worldventures.dreamtrips.wallet.domain.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 
 import javax.inject.Inject;
 
 public class TermsAndConditionsActionStorage implements ActionStorage<TermsAndConditions> {
 
-   private final SnappyRepository snappyRepository;
+   private final WalletStorage walletStorage;
 
    @Inject
-   public TermsAndConditionsActionStorage(SnappyRepository snappyRepository) {
-      this.snappyRepository = snappyRepository;
+   public TermsAndConditionsActionStorage(WalletStorage walletStorage) {
+      this.walletStorage = walletStorage;
    }
 
    @Override
@@ -27,11 +27,11 @@ public class TermsAndConditionsActionStorage implements ActionStorage<TermsAndCo
 
    @Override
    public void save(@Nullable CacheBundle params, TermsAndConditions data) {
-      snappyRepository.saveWalletTermsAndConditions(data);
+      walletStorage.saveWalletTermsAndConditions(data);
    }
 
    @Override
    public TermsAndConditions get(@Nullable CacheBundle action) {
-      return snappyRepository.getWalletTermsAndConditions();
+      return walletStorage.getWalletTermsAndConditions();
    }
 }

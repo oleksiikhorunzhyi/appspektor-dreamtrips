@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.initializer;
+package com.worldventures.dreamtrips.wallet.di.initializer;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;

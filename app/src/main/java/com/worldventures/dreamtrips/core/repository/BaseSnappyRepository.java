@@ -6,35 +6,34 @@ import android.support.annotation.Nullable;
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
-public abstract class BaseSnappyRepository implements SnappyStorage {
+public abstract class BaseSnappyRepository {
 
    protected final Context context;
-
-   private final SnappyCrypter snappyCrypter;
    private final ExecutorService executorService;
 
-   protected BaseSnappyRepository(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService) {
+   protected BaseSnappyRepository(Context context, ExecutorService executorService) {
       this.context = context;
-      this.snappyCrypter = snappyCrypter;
       this.executorService = executorService;
    }
 
-   @Override
-   public void execute(SnappyAction action) {
-      act(action);
+   protected <T> void putList(String key, Collection<T> list) {
+      act(db -> db.put(key, list.toArray()));
    }
 
-   @Override
-   public <T> Optional<T> executeWithResult(SnappyResult<T> action) {
-      return actWithResult(action);
+   protected <T> List<T> readList(String key, Class<T> clazz) {
+      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
+            .or(new ArrayList<>());
    }
 
    protected void act(SnappyAction action) {
@@ -92,15 +91,7 @@ public abstract class BaseSnappyRepository implements SnappyStorage {
    @Nullable
    protected abstract DB openDbInstance(Context context) throws SnappydbException;
 
-   protected void putEncrypted(String key, Object obj) {
-      act(db -> snappyCrypter.putEncrypted(db, key, obj));
-   }
-
-   protected <T> T getEncrypted(String key, Class<T> clazz) {
-      return actWithResult(db -> snappyCrypter.getEncrypted(db, key, clazz)).orNull();
-   }
-
-   protected boolean isNotFound(SnappydbException e) {
+   private boolean isNotFound(SnappydbException e) {
       return e.getMessage().contains("NotFound");
    }
 

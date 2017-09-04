@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.*

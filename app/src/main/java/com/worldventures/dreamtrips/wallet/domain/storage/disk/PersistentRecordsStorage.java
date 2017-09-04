@@ -5,12 +5,12 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.domain.storage.SnappyCrypter;
 
 import java.util.List;
 
-public class PersistentRecordsStorage extends CryptedModelStorage implements RecordsStorage {
+public final class PersistentRecordsStorage extends CryptedModelStorage implements RecordsStorage {
 
    private final String RECORDS_LIST = "WALLET_CARDS_LIST";
    private final String DEFAULT_RECORD_ID = "DEFAULT_WALLET_CARD_ID";

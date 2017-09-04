@@ -17,9 +17,9 @@ import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardRecordToWal
 import com.worldventures.dreamtrips.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.model.*
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
@@ -140,7 +140,7 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var settingsInteractor: SettingsInteractor
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsDiskStorage(recordsStorage))
+         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsActionStorage(recordsStorage))
       }
 
       fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))

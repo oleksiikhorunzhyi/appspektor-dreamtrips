@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.domain.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;

@@ -10,13 +10,13 @@ import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
    @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject DeviceInfoProvider deviceInfoProvider;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
    @Inject MapperyContext mappery;
 
    protected final String description;
@@ -60,9 +60,9 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
    }
 
    protected SmartCardMetadata provideSmartCardMetadata() {
-      SmartCard smartCard = snappyRepository.getSmartCard();
-      SmartCardDetails details = snappyRepository.getSmartCardDetails();
-      SmartCardFirmware firmware = snappyRepository.getSmartCardFirmware();
+      SmartCard smartCard = walletStorage.getSmartCard();
+      SmartCardDetails details = walletStorage.getSmartCardDetails();
+      SmartCardFirmware firmware = walletStorage.getSmartCardFirmware();
       if (smartCard == null || details == null) return null;
 
       return ImmutableSmartCardMetadata.builder()

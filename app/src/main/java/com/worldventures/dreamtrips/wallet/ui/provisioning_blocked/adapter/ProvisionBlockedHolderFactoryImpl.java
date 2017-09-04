@@ -4,6 +4,8 @@ import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseHolder;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.CustomerSupportContactHolder;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.CustomerSupportContactModel;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDevicesListHolder;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDevicesListModel;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.UnsupportedDeviceHolder;
@@ -20,6 +22,8 @@ public class ProvisionBlockedHolderFactoryImpl implements ProvisionBlockedTypeFa
       switch (viewType) {
          case R.layout.item_wallet_unsupported_device_info:
             return new UnsupportedDeviceHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
+         case R.layout.item_wallet_unsupported_device_contact:
+            return new CustomerSupportContactHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
          case R.layout.item_wallet_supported_devices_list:
             return new SupportedDevicesListHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
          default:
@@ -30,6 +34,11 @@ public class ProvisionBlockedHolderFactoryImpl implements ProvisionBlockedTypeFa
    @Override
    public int type(UnsupportedDeviceModel model) {
       return R.layout.item_wallet_unsupported_device_info;
+   }
+
+   @Override
+   public int type(CustomerSupportContactModel model) {
+      return R.layout.item_wallet_unsupported_device_contact;
    }
 
    @Override

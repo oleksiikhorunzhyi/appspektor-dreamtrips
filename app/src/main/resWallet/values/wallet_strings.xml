@@ -360,9 +360,10 @@
    <string name="wallet_image_uploadery_error">Failed to upload image</string>
 
    <!--supported device screen-->
-   <string name="wallet_supported_device_chapter">Support for your device is coming soon.</string>
-   <string name="wallet_supported_device_info">We are currently adding devices weekly and will email you when your device is supported.\n\nIf you have any further questions please contact Customer Support (855) 999&#8211;3593.</string>
-   <string name="wallet_supported_device_list_title">Supported Devices</string>
+   <string name="wallet_supported_device_title">Sorry, but this device is not supported at this time</string>
+   <string name="wallet_supported_device_message">Full feature support for Android is currently in development. In the meantime, limited features are available for the following devices:</string>
+   <string name="wallet_supported_device_contact">If you have any further questions please contact Customer Support (855) 999&#8211;3593.</string>
+
    <string name="wallet_about_label_smart_card_id">Smart Card ID</string>
    <string name="wallet_about_label_qty_pay_cards">Cards Stored</string>
    <string name="wallet_about_label_dt_app">DreamTrips App</string>

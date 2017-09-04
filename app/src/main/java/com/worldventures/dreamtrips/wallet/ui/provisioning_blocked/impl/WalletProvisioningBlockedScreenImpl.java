@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErro
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedScreen;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.adapter.ProvisionBlockedHolderFactoryImpl;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.CustomerSupportContactModel;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.SupportedDevicesListModel;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.UnsupportedDeviceModel;
 
@@ -47,7 +48,8 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
 
       adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new ProvisionBlockedHolderFactoryImpl());
 
-      adapter.addItem(0, new UnsupportedDeviceModel());
+      adapter.addItem(new UnsupportedDeviceModel());
+      adapter.addItem(new CustomerSupportContactModel());
 
       deviceList.setAdapter(adapter);
       LinearLayoutManager layout = new LinearLayoutManager(getContext());
@@ -63,6 +65,7 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
    public void onSupportedDevicesLoaded(SupportedDevicesListModel devicesModel) {
       adapter.clearWithoutFirst();
       adapter.addItem(devicesModel);
+      adapter.addItem(new CustomerSupportContactModel());
    }
 
    @Override

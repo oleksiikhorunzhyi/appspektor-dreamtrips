@@ -94,10 +94,12 @@ ext {
          gson                     : [c: 'com.google.code.gson:gson:2.7'],
          // util
          reactivenetwork          : [c: 'com.github.pwittchen:reactivenetwork:0.5.2'],
-         networkevents            : [c: 'com.github.pwittchen:networkevents:2.1.2'], //deprecated], use reactive network lib above
          // smack / xmpp
          smackAndroid             : [c: "org.igniterealtime.smack:smack-android-extensions:$smackVersion"],
          smackTcp                 : [c: "org.igniterealtime.smack:smack-tcp:$smackVersion"],
+         // beacons
+         altBeacon                : [c: 'org.altbeacon:android-beacon-library:2.12'],
+         slf4                     : [ct: 'com.github.bright:slf4android:0.1.3'],
    ]
    // smartcard
    moduleDependencies.smartcard = [

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service;
+package com.worldventures.dreamtrips.wallet.initializer;
 
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
@@ -6,13 +6,13 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingMana
 
 import javax.inject.Inject;
 
+public class LostCardInitializer implements AppInitializer {
 
-public class SmartCardInitializer implements AppInitializer {
-   @Inject LocationTrackingManager locationTrackingManager;
+   @Inject LocationTrackingManager trackingManager;
 
    @Override
    public void initialize(Injector injector) {
       injector.inject(this);
-      locationTrackingManager.track();
+      trackingManager.track();
    }
 }

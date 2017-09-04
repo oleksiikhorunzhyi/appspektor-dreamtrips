@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNe
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -75,13 +76,15 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private final WalletFeatureHelper featureHelper;
    private final CheckPinDelegate checkPinDelegate;
    private final CardListStackConverter cardListStackConverter;
+   private final LocationTrackingManager locationTrackingManager;
 
    private List<Record> records;
 
    public CardListPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
          AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
-         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper) {
+         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper,
+         LocationTrackingManager locationTrackingManager) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;
       this.firmwareInteractor = firmwareInteractor;
@@ -91,7 +94,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.GENERAL);
       this.cardListStackConverter = new CardListStackConverter(new WalletRecordUtil(), walletFeatureHelper);
-
+      this.locationTrackingManager = locationTrackingManager;
    }
 
    @Override
@@ -109,6 +112,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
       observeSyncRecordsStatus();
       fetchSyncRecordsStatus();
+
+      locationTrackingManager.track();
 
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       recordInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());

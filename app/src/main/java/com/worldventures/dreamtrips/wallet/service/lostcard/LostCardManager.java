@@ -5,35 +5,46 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.beacon.BeaconClient;
+import com.worldventures.dreamtrips.wallet.service.beacon.RegionBundle;
+import com.worldventures.dreamtrips.wallet.service.beacon.WalletBeaconClient;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
-public class LostCardManager {
+class LostCardManager {
+
+   private static final String UUID_MOTION = "92812fda-67b3-4e31-8c65-a3c6aa2bed37";
+   private static final String UUID_PAYMENT = "1ff0917c-61e3-49dc-90c0-3202b6b71ec3";
 
    private final SmartCardInteractor smartCardInteractor;
    private final SmartCardLocationInteractor locationInteractor;
-   private final LocationSyncManager jobScheduler;
+   private final LocationSyncManager locationSyncManager;
    private final WalletNetworkService networkService;
-   private final CompositeSubscription subscriptions;
+   private final BeaconClient beaconClient;
 
-   public LostCardManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         LocationSyncManager jobScheduler, WalletNetworkService networkService) {
+   private final CompositeSubscription subscriptions = new CompositeSubscription();
+
+   LostCardManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
+         LocationSyncManager locationSyncManager, WalletNetworkService networkService, BeaconClient beaconClient) {
       this.smartCardInteractor = smartCardInteractor;
       this.locationInteractor = locationInteractor;
-      this.jobScheduler = jobScheduler;
+      this.locationSyncManager = locationSyncManager;
       this.networkService = networkService;
-      this.subscriptions = new CompositeSubscription();
+      this.beaconClient = beaconClient;
    }
 
    public void connect() {
       if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
          observeNetworkConnection();
          observeConnection();
+         observeBeacon();
       }
       if (networkService.isAvailable()) {
-         jobScheduler.scheduleSync();
+         locationSyncManager.scheduleSync();
       }
    }
 
@@ -44,9 +55,9 @@ public class LostCardManager {
 
    private void handleNetworkConnectivity(boolean isNetworkConnected) {
       if (isNetworkConnected) {
-         jobScheduler.scheduleSync();
+         locationSyncManager.scheduleSync();
       } else {
-         jobScheduler.cancelSync();
+         locationSyncManager.cancelSync();
       }
    }
 
@@ -58,11 +69,31 @@ public class LostCardManager {
 
       subscriptions.add(locationInteractor.connectActionPipe()
             .observeSuccess()
+            .doOnNext(connectAction -> WalletBeaconClient.logBeacon("SmartCard connected"))
             .subscribe(connectAction -> triggerLocation(WalletLocationType.CONNECT)));
 
       subscriptions.add(locationInteractor.disconnectPipe()
             .observeSuccess()
+            .doOnNext(connectAction -> WalletBeaconClient.logBeacon("SmartCard disconnected"))
             .subscribe(disconnectAction -> triggerLocation(WalletLocationType.DISCONNECT)));
+   }
+
+   private void observeBeacon() {
+      subscriptions.add(smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new ActiveSmartCardCommand())
+            .map(command -> command.getResult().smartCardId())
+            .flatMap(activeSmartCardId -> beaconClient.observeEvents()
+                  .filter(beaconEvent -> beaconEvent.getSmartCardId() != null)
+                  .doOnNext(beaconEvent -> WalletBeaconClient.logBeacon("Beacon %s :: SmartCard ID - %s",
+                        beaconEvent.enteredRegion() ? "detected" : "lost", beaconEvent.getSmartCardId()))
+                  .doOnSubscribe(() -> beaconClient.startScan(
+                        new RegionBundle("Motion region", UUID_MOTION, null, activeSmartCardId)))
+                  .doOnUnsubscribe(beaconClient::stopScan))
+
+            .subscribe(beaconEvent -> triggerLocation(beaconEvent.enteredRegion() ?
+                        WalletLocationType.CONNECT : WalletLocationType.DISCONNECT),
+                  throwable -> Timber.e(throwable, "Beacon client :: observeBeacon"))
+      );
    }
 
    private void triggerLocation(WalletLocationType locationType) {
@@ -73,6 +104,6 @@ public class LostCardManager {
       if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
          subscriptions.clear();
       }
-      jobScheduler.cancelSync();
+      locationSyncManager.cancelSync();
    }
 }

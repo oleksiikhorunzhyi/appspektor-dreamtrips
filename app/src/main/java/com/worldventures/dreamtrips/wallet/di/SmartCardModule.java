@@ -43,10 +43,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
             WalletStorageModule.class,
             JanetNxtModule.class,
             WalletLogoutActionModule.class,
-      },
-      injects = {
-            SnappyStorageManagerInitializer.class,
-            SmartCardInitializer.class,
+            WalletInitializerModule.class,
       }, complete = false, library = true
 )
 public class SmartCardModule {
@@ -86,16 +83,6 @@ public class SmartCardModule {
    WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
       //      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
       return new WalletFeatureHelperFull();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   AppInitializer provideSmartCardInitializer() {
-      return new SmartCardInitializer();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   AppInitializer provideSnappyStorageManagerInitializer() {
-      return new SnappyStorageManagerInitializer();
    }
 
    @Provides

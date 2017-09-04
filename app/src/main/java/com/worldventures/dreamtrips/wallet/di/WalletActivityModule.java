@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
+import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -85,6 +86,7 @@ import dagger.Provides;
             MediaPickerModule.class
       },
       injects = {
+            WalletActivity.class,
             WalletActivityPresenter.class,
             WalletStartPresenter.class,
             UnsupportedDeviceInfoCell.class,

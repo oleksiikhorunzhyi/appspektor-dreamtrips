@@ -39,21 +39,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVideoScreen, WalletHelpVideoPresenter> implements WalletHelpVideoScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_video_coming_soon) TextView tvVideosEmpty;
-   @InjectView(R.id.rv_videos) EmptyRecyclerView rvVideos;
-   @InjectView(R.id.refresh_layout) SwipeRefreshLayout refreshLayout;
-
    @Inject WalletHelpVideoPresenter presenter;
    @Inject WalletVideoHolderDelegate videoHolderDelegate;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
+   private EmptyRecyclerView rvVideos;
+   private SwipeRefreshLayout refreshLayout;
    private MultiHolderAdapter<WalletVideoModel> adapter;
    private VideoLocaleAdapter localeAdapter;
    private Spinner videoLocales;
@@ -61,17 +57,21 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final TextView tvVideosEmpty = view.findViewById(R.id.tv_video_coming_soon);
+      rvVideos = view.findViewById(R.id.rv_videos);
       rvVideos.setEmptyView(tvVideosEmpty);
-      initRefreshLayout();
+      initRefreshLayout(view);
       initAdapter();
-      initToolbar();
+      initToolbar(view);
    }
 
-   private void initRefreshLayout() {
+   private void initRefreshLayout(View view) {
+      refreshLayout = view.findViewById(R.id.refresh_layout);
       refreshLayout.setOnRefreshListener(() -> getPresenter().refreshVideos());
    }
 
-   private void initToolbar() {
+   private void initToolbar(View view) {
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       toolbar.inflateMenu(R.menu.wallet_settings_videos);
 

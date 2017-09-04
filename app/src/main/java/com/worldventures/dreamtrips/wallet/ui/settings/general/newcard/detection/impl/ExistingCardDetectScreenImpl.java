@@ -27,8 +27,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -37,22 +35,21 @@ import static android.view.View.VISIBLE;
 
 public class ExistingCardDetectScreenImpl extends WalletBaseController<ExistingCardDetectScreen, ExistingCardDetectPresenter> implements ExistingCardDetectScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_sc_id) TextView tvSmartCardId;
-   @InjectView(R.id.unassign_button) Button unassignButton;
-   @InjectView(R.id.have_card_button) View haveCardButton;
+   private TextView tvSmartCardId;
+   private Button unassignButton;
+   private TextView haveCardButton;
 
    @Inject ExistingCardDetectPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-   }
-
-   @OnClick(R.id.have_card_button)
-   public void onClickHaveCard() {
-      getPresenter().navigateToPowerOn();
+      tvSmartCardId = view.findViewById(R.id.tv_sc_id);
+      unassignButton = view.findViewById(R.id.unassign_button);
+      haveCardButton = view.findViewById(R.id.have_card_button);
+      haveCardButton.setOnClickListener(btnHaveCard -> getPresenter().navigateToPowerOn());
    }
 
    @Override

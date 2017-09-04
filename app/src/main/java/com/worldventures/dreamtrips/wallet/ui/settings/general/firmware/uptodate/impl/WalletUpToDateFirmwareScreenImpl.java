@@ -16,19 +16,18 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 public class WalletUpToDateFirmwareScreenImpl extends WalletBaseController<WalletUpToDateFirmwareScreen, WalletUpToDateFirmwarePresenter> implements WalletUpToDateFirmwareScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.version) TextView versionView;
+   private TextView versionView;
 
    @Inject WalletUpToDateFirmwarePresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      versionView = view.findViewById(R.id.version);
    }
 
    @Override

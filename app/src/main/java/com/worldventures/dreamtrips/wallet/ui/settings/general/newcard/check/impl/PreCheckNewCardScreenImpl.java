@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 import static android.view.View.GONE;
@@ -29,10 +27,9 @@ import static android.view.View.VISIBLE;
 
 public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewCardScreen, PreCheckNewCardPresenter> implements PreCheckNewCardScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.btn_next) Button nextBtn;
-   @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkWidgetBluetooth;
-   @InjectView(R.id.check_widget_connection) WalletCheckWidget checkWidgetConnection;
+   private Button nextBtn;
+   private WalletCheckWidget checkWidgetBluetooth;
+   private WalletCheckWidget checkWidgetConnection;
 
    @Inject PreCheckNewCardPresenter presenter;
 
@@ -41,7 +38,12 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      nextBtn = view.findViewById(R.id.btn_next);
+      nextBtn.setOnClickListener(btnNext -> getPresenter().prepareContinueAddCard());
+      checkWidgetBluetooth = view.findViewById(R.id.check_widget_bluetooth);
+      checkWidgetConnection = view.findViewById(R.id.check_widget_connection);
    }
 
    @Override
@@ -76,11 +78,6 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    @Override
    public void setVisiblePowerSmartCardWidget(boolean visible) {
       checkWidgetConnection.setVisibility(visible ? VISIBLE : GONE);
-   }
-
-   @OnClick(R.id.btn_next)
-   public void onClickNext() {
-      presenter.prepareContinueAddCard();
    }
 
    @Override

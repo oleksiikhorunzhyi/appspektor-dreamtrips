@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
@@ -20,24 +21,26 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class WalletPuckConnectionScreenImpl extends WalletBaseController<WalletPuckConnectionScreen, WalletPuckConnectionPresenter> implements WalletPuckConnectionScreen {
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.smart_card) View smartCard;
-   @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
 
    @Inject WalletPuckConnectionPresenter presenter;
 
    private final ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
 
+   private View smartCard;
+   private SimpleDraweeView userPhoto;
+
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      smartCard = view.findViewById(R.id.smart_card);
+      userPhoto = view.findViewById(R.id.user_photo);
       userPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0f, .5f));
       SmartCardAvatarHelper.applyGrayScaleColorFilter(userPhoto);
+      final Button btnNext = view.findViewById(R.id.next_button);
+      btnNext.setOnClickListener(btn -> getPresenter().goNext());
    }
 
    @Override
@@ -64,12 +67,6 @@ public class WalletPuckConnectionScreenImpl extends WalletBaseController<WalletP
    @Override
    public WalletPuckConnectionPresenter getPresenter() {
       return presenter;
-   }
-
-
-   @OnClick(R.id.next_button)
-   void nextButtonClick() {
-      getPresenter().goNext();
    }
 
    @Override

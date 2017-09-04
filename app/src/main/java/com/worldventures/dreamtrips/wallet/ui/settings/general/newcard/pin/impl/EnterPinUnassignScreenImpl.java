@@ -16,18 +16,16 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class EnterPinUnassignScreenImpl extends WalletBaseController<EnterPinUnassignScreen, EnterPinUnassignPresenter> implements EnterPinUnassignScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject EnterPinUnassignPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 

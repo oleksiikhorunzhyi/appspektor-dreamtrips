@@ -17,10 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 import static android.animation.ObjectAnimator.ofFloat;
-import static butterknife.ButterKnife.apply;
 import static java.util.Arrays.asList;
 
 public class WizardSplashScreenImpl extends WalletBaseController<WizardSplashScreen, WizardSplashPresenter> implements WizardSplashScreen {
@@ -29,23 +26,25 @@ public class WizardSplashScreenImpl extends WalletBaseController<WizardSplashScr
    private static final int CARD_FADE_IN_DELAY = 300;
    private static final int COMMON_FADE_IN_DELAY = 250;
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.wallet_wizard_splash_title) TextView walletWizardSplashTitle;
-   @InjectView(R.id.wallet_wizard_splash_btn) Button actionBtn;
-   @InjectView(R.id.card_container) View cardContainer;
-   @InjectView(R.id.wallet_wizard_smarcard_front) ImageView front;
-   @InjectView(R.id.wallet_wizard_smarcard_back) View back;
-
    @Inject WizardSplashPresenter presenter;
 
+   private TextView walletWizardSplashTitle;
+   private Button actionBtn;
+   private View cardContainer;
+   private ImageView front;
    private FlipAnim flipAnim;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
+      walletWizardSplashTitle = view.findViewById(R.id.wallet_wizard_splash_title);
+      actionBtn = view.findViewById(R.id.wallet_wizard_splash_btn);
+      cardContainer = view.findViewById(R.id.card_container);
+      front = view.findViewById(R.id.wallet_wizard_smarcard_front);
+      final View back = view.findViewById(R.id.wallet_wizard_smarcard_back);
       flipAnim = new FlipAnim.Builder().setCardBackLayout(back).setCardFrontLayout(front).createAnim();
-
       hideAllView();
    }
 
@@ -65,15 +64,16 @@ public class WizardSplashScreenImpl extends WalletBaseController<WizardSplashScr
    }
 
    private void hideAllView() {
-      apply(
-            asList(walletWizardSplashTitle, actionBtn, cardContainer),
-            (view, index) -> view.setAlpha(0)
-      );
+      for (View view : asList(walletWizardSplashTitle, actionBtn, cardContainer)) {
+         view.setAlpha(0);
+      }
    }
 
    @Override
    public void setup() {
-      apply(asList(actionBtn, cardContainer), (view, index) -> view.setAlpha(1));
+      for (View view : asList(actionBtn, cardContainer)) {
+         view.setAlpha(1);
+      }
 
       actionBtn.setText(R.string.wallet_wizard_scan_start_btn);
       actionBtn.setOnClickListener(view -> getPresenter().startScanCard());

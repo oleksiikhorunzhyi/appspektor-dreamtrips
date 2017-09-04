@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
@@ -20,22 +19,9 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.about.model.Smart
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
 
 public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPresenter> implements AboutScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tvUserName) TextView tvUserName;
-   @InjectView(R.id.tvSmartCardId) TextView tvSmartCardId;
-   @InjectView(R.id.tvQtyCardStored) TextView tvQtyCardStored;
-   @InjectView(R.id.tvQtyCardAvailable) TextView tvQtyCardAvailable;
-   @InjectView(R.id.tvDTAppVersion) TextView tvDTAppVersion;
-   @InjectView(R.id.tvNordicFWVersion) TextView tvNordicFWVersion;
-   @InjectView(R.id.tvAtmelCardFWVersion) TextView tvAtmelCardFWVersion;
-   @InjectView(R.id.tvBootLoaderFWVersion) TextView tvBootLoaderFWVersion;
-   @InjectView(R.id.tvAtmelChargerFWVersion) TextView tvAtmelChargerFWVersion;
 
    @Inject AboutPresenter presenter;
 
@@ -46,6 +32,7 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       provideAppVersion();
    }

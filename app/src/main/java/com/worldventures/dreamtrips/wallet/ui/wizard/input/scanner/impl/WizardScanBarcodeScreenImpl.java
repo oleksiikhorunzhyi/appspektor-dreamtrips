@@ -26,18 +26,14 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBar
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter> implements WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.scanner_view) WalletBarCodeScanner scanner;
-   @InjectView(R.id.scanner_view_finder) WalletBarCodeFinder finder;
-   @InjectView(R.id.content) View contentView;
+   private WalletBarCodeScanner scanner;
+   private View contentView;
 
    @Inject WizardScanBarcodePresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -45,9 +41,15 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      contentView = view.findViewById(R.id.content);
+      final WalletBarCodeFinder finder = view.findViewById(R.id.scanner_view_finder);
+      scanner = view.findViewById(R.id.scanner_view);
       scanner.setBarCodeFinder(finder);
       scanner.setResultHandler(this);
+      final View manualInputView = view.findViewById(R.id.wallet_wizard_scan_barcode_manual_input);
+      manualInputView.setOnClickListener(manualInput -> getPresenter().startManualInput());
    }
 
    @Override
@@ -158,10 +160,5 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    @Override
    public void handleResult(Result result) {
       getPresenter().barcodeScanned(result.getText());
-   }
-
-   @OnClick(R.id.wallet_wizard_scan_barcode_manual_input)
-   void onInputManuallyClicked() {
-      getPresenter().startManualInput();
    }
 }

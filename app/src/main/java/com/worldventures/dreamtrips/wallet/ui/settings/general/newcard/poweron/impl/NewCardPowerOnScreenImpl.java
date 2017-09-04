@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,41 +24,33 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerOnScreen, NewCardPowerOnPresenter> implements NewCardPowerOnScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_power_on_title) TextView powerOnLabel;
-   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
-
    @Inject NewCardPowerOnPresenter presenter;
 
+   private TextView powerOnLabel;
    private MaterialDialog dontTurnOnCardDialog = null;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      powerOnLabel = view.findViewById(R.id.tv_power_on_title);
+      final WizardVideoView wizardVideoView = view.findViewById(R.id.wizard_video_view);
       wizardVideoView.setVideoSource(R.raw.wallet_anim_power_on_sc);
+      final Button btnNext = view.findViewById(R.id.btn_next);
+      btnNext.setOnClickListener(nextBtn -> getPresenter().navigateNext());
+      final TextView tvCardNotTurnOn = view.findViewById(R.id.tv_card_not_turn_on);
+      tvCardNotTurnOn.setOnClickListener(cardNotTurnOnTextView ->getPresenter().cantTurnOnSmartCard());
    }
 
    @Override
    public void setTitleWithSmartCardID(String scID) {
       powerOnLabel.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_new_card_power_on, scID)));
-   }
-
-   @OnClick(R.id.btn_next)
-   public void onClickNext() {
-      getPresenter().navigateNext();
-   }
-
-   @OnClick(R.id.tv_card_not_turn_on)
-   public void onClickCardNotTurnOn() {
-      getPresenter().cantTurnOnSmartCard();
    }
 
    @Override

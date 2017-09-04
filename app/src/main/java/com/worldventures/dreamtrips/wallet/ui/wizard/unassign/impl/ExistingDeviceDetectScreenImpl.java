@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,8 +23,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDete
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -31,8 +30,7 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
 
    private static final String KEY_SMARTCARD_ID = "key_smartcard_id";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_sc_id) TextView tvSmartCardId;
+   private TextView tvSmartCardId;
 
    @Inject ExistingDeviceDetectPresenter presenter;
 
@@ -54,7 +52,11 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      final Button btnUnpair = view.findViewById(R.id.button_unpair);
+      btnUnpair.setOnClickListener(unpair -> getPresenter().repair());
+      tvSmartCardId = view.findViewById(R.id.tv_sc_id);
    }
 
    @Override
@@ -70,11 +72,6 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnClick(R.id.button_unpair)
-   public void onClickUnpair() {
-      getPresenter().repair();
    }
 
    @Override

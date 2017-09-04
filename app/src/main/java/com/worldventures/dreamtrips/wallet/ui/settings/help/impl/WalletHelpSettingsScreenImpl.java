@@ -18,12 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsSc
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHelpSettingsScreen, WalletHelpSettingsPresenter> implements WalletHelpSettingsScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject WalletHelpSettingsPresenter presenter;
 
@@ -35,7 +30,16 @@ public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHel
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      final View itemDocumentsView = view.findViewById(R.id.item_documents);
+      itemDocumentsView.setOnClickListener(documents -> getPresenter().openDocumentsScreen());
+      final View itemVideosView = view.findViewById(R.id.item_videos);
+      itemVideosView.setOnClickListener(videos -> getPresenter().openVideoScreen());
+      final View itemSendFeedbackView = view.findViewById(R.id.item_send_feedback);
+      itemSendFeedbackView.setOnClickListener(sendFeedback -> getPresenter().handleVariantFeedback());
+      final View itemCustomerSupportView = view.findViewById(R.id.item_customer_support);
+      itemCustomerSupportView.setOnClickListener(customerSupport -> getPresenter().openCustomerSupportScreen());
    }
 
    @Override
@@ -56,26 +60,6 @@ public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHel
 
    protected void onNavigationClick() {
       getPresenter().goBack();
-   }
-
-   @OnClick(R.id.item_documents)
-   void onClickDocuments() {
-      getPresenter().openDocumentsScreen();
-   }
-
-   @OnClick(R.id.item_videos)
-   void onClickVideos() {
-      getPresenter().openVideoScreen();
-   }
-
-   @OnClick(R.id.item_send_feedback)
-   void onClickSendFeedback() {
-      getPresenter().handleVariantFeedback();
-   }
-
-   @OnClick(R.id.item_customer_support)
-   void onClickCustomerSupport() {
-      getPresenter().openCustomerSupportScreen();
    }
 
    @Override

@@ -13,7 +13,6 @@ import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -37,7 +36,6 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
    }
 
    protected void onFinishInflate(View view) {
-      ButterKnife.inject(this, view);
       //noinspection all
       this.objectGraph = (ObjectGraph) view.getContext().getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
@@ -68,12 +66,6 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
       final InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(INPUT_METHOD_SERVICE);
       inputManager.hideSoftInputFromWindow(null, 0);
-   }
-
-   @Override
-   protected void onDestroyView(@NonNull View view) {
-      super.onDestroyView(view);
-      ButterKnife.reset(this);
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

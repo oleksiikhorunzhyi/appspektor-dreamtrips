@@ -21,16 +21,14 @@ import com.worldventures.dreamtrips.R;
 
 import java.io.IOException;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
 public class WizardVideoView extends PercentFrameLayout implements TextureView.SurfaceTextureListener {
 
    public static final long CROSSFADE_DURATION = 1000;
 
-   @InjectView(R.id.textureView) TextureView textureView;
-   @InjectView(R.id.crossFade) View crossfadeView;
+   private TextureView textureView;
+   private View crossfadeView;
    private MediaPlayer mediaPlayer;
    private Uri videoUri;
 
@@ -44,11 +42,12 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_video, this);
-      ButterKnife.inject(this);
+      final View view = LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_video, this);
+      textureView = view.findViewById(R.id.textureView);
       textureView.setBackgroundColor(Color.WHITE);
       textureView.setSurfaceTextureListener(this);
-      crossfadeView.setOnClickListener(view -> {
+      crossfadeView = view.findViewById(R.id.crossFade);
+      crossfadeView.setOnClickListener(crossFade -> {
          mediaPlayer.seekTo(0);
          mediaPlayer.start();
       });

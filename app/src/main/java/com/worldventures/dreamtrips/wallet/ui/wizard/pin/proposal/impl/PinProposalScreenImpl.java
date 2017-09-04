@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -20,17 +21,14 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.PinProp
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class PinProposalScreenImpl extends WalletBaseController<PinProposalScreen, PinProposalPresenter> implements PinProposalScreen {
 
    private static final String KEY_PIN_PROPOSAL_ACTION = "key_pin_proposal_action";
    private static final String KEY_CARD_NICKNAME = "key_card_nickname";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.not_now_button) TextView btnSkip;
-   @InjectView(R.id.txt_pin_proposal_label) TextView tvLabel;
+   private Toolbar toolbar;
+   private TextView btnSkip;
+   private TextView tvLabel;
 
    @Inject PinProposalPresenter presenter;
 
@@ -55,6 +53,17 @@ public class PinProposalScreenImpl extends WalletBaseController<PinProposalScree
 
    public PinProposalScreenImpl(Bundle args) {
       super(args);
+   }
+
+   @Override
+   protected void onFinishInflate(View view) {
+      super.onFinishInflate(view);
+      toolbar = view.findViewById(R.id.toolbar);
+      tvLabel = view.findViewById(R.id.txt_pin_proposal_label);
+      btnSkip = view.findViewById(R.id.not_now_button);
+      btnSkip.setOnClickListener(skipBtn -> getPresenter().handleSkipPinCreation());
+      final Button btnCreatePin = view.findViewById(R.id.create_pin_button);
+      btnCreatePin.setOnClickListener(createPin -> getPresenter().handleCreatePin());
    }
 
    @Override
@@ -114,16 +123,6 @@ public class PinProposalScreenImpl extends WalletBaseController<PinProposalScree
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_CARD_NICKNAME))
             ? getArgs().getString(KEY_CARD_NICKNAME)
             : null;
-   }
-
-   @OnClick(R.id.create_pin_button)
-   void onCreatePinClick() {
-      getPresenter().handleCreatePin();
-   }
-
-   @OnClick(R.id.not_now_button)
-   void onNotNowClick() {
-      getPresenter().handleSkipPinCreation();
    }
 
    @Override

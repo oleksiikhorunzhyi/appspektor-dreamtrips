@@ -15,22 +15,18 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.InjectViews;
-import butterknife.OnClick;
-
 public class WalletSettingsScreenImpl extends WalletBaseController<WalletSettingsScreen, WalletSettingsPresenter>
       implements WalletSettingsScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.status) TextView status;
-   @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
-   @InjectViews({R.id.item_help, R.id.item_security}) List<View> toggleableItems;
+   private TextView status;
+   private BadgeView badgeFirmwareUpdates;
+   private List<View> toggleableItems;
 
    @Inject WalletSettingsPresenter presenter;
 
@@ -40,8 +36,18 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      status = view.findViewById(R.id.status);
+      badgeFirmwareUpdates = view.findViewById(R.id.badgeFirmwareUpdates);
       badgeFirmwareUpdates.hide();
+      final View itemGeneralView = view.findViewById(R.id.item_general);
+      itemGeneralView.setOnClickListener(general -> getPresenter().openGeneralScreen());
+      final View itemHelpView = view.findViewById(R.id.item_help);
+      itemHelpView.setOnClickListener(help -> getPresenter().openHelpScreen());
+      final View itemSecurityView = view.findViewById(R.id.item_security);
+      itemSecurityView.setOnClickListener(security -> getPresenter().openSecurityScreen());
+      toggleableItems = Arrays.asList(itemHelpView, itemSecurityView);
    }
 
    @Override
@@ -61,21 +67,6 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
 
    protected void onNavigationClick() {
       getPresenter().goBack();
-   }
-
-   @OnClick(R.id.item_general)
-   void onClickGeneral() {
-      getPresenter().openGeneralScreen();
-   }
-
-   @OnClick(R.id.item_security)
-   void onClickSecurity() {
-      getPresenter().openSecurityScreen();
-   }
-
-   @OnClick(R.id.item_help)
-   void onClickHelp() {
-      getPresenter().openHelpScreen();
    }
 
    @Override

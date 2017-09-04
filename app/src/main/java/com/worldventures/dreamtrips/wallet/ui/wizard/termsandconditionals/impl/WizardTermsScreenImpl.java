@@ -26,8 +26,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.Wizard
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -37,22 +35,26 @@ import static android.view.View.VISIBLE;
 
 public class WizardTermsScreenImpl extends WalletBaseController<WizardTermsScreen, WizardTermsPresenter> implements WizardTermsScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.container_layout_agreement) ViewGroup userAgreementViewGroup;
-   @InjectView(R.id.termsView) WebView termsView;
-   @InjectView(R.id.wallet_wizard_terms_and_conditions_agree_btn) Button agreeBtn;
-   @InjectView(R.id.pb) View pb;
 
    @Inject WizardTermsPresenter presenter;
 
+   private WebView termsView;
+   private Button agreeBtn;
+   private View pb;
    private MaterialDialog errorDialog;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
-      agreeBtn.setVisibility(GONE);
-      userAgreementViewGroup.setLayoutTransition(new LayoutTransition());
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
+      final ViewGroup userAgreementViewGroup = view.findViewById(R.id.container_layout_agreement);
+      userAgreementViewGroup.setLayoutTransition(new LayoutTransition());
+      agreeBtn = view.findViewById(R.id.wallet_wizard_terms_and_conditions_agree_btn);
+      agreeBtn.setVisibility(GONE);
+      agreeBtn.setOnClickListener(agree -> getPresenter().acceptTermsPressed());
+      pb = view.findViewById(R.id.pb);
+      termsView = view.findViewById(R.id.termsView);
       termsView.setWebViewClient(new WebViewClient() {
          @Override
          public void onPageFinished(WebView view, String url) {
@@ -144,11 +146,6 @@ public class WizardTermsScreenImpl extends WalletBaseController<WizardTermsScree
             .positiveText(R.string.wallet_retry_label)
             .onPositive(retryAction)
             .show();
-   }
-
-   @OnClick(R.id.wallet_wizard_terms_and_conditions_agree_btn)
-   void onAcceptClicked() {
-      getPresenter().acceptTermsPressed();
    }
 
    @Override

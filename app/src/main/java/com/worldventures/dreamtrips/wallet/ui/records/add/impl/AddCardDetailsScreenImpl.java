@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -35,9 +36,6 @@ import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnEditorAction;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
@@ -48,17 +46,16 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    private static final String KEY_ADD_RECORD = "key_add_record";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.card) BankCardWidget bankCardWidget;
-   @InjectView(R.id.card_cvv) PinEntryEditText etCardCvv;
-   @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
-   @InjectView(R.id.card_name) EditText etCardNickname;
-   @InjectView(R.id.cvv_label) TextView cvvLabel;
-   @InjectView(R.id.set_default_card_switcher) WalletSwitcher defaultPaymentCardSwitcher;
-   @InjectView(R.id.confirm_button) View confirmButton;
-   @InjectView(R.id.cardNameInputLayout) TextInputLayout cardNameInputLayout;
-
    @Inject AddCardDetailsPresenter presenter;
+
+   private BankCardWidget bankCardWidget;
+   private PinEntryEditText etCardCvv;
+   private TextView cardNicknameLabel;
+   private EditText etCardNickname;
+   private TextView cvvLabel;
+   private WalletSwitcher defaultPaymentCardSwitcher;
+   private Button confirmButton;
+   private TextInputLayout cardNameInputLayout;
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
@@ -82,15 +79,36 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
-      setHintsAndLabels();
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher)
-            .doOnNext(value -> bankCardWidget.setAsDefault(value))
-            .skip(1);
+      bankCardWidget = view.findViewById(R.id.card);
+
+      etCardCvv = view.findViewById(R.id.card_cvv);
+      cvvObservable = observableFrom(etCardCvv);
+
+      cardNicknameLabel = view.findViewById(R.id.card_nickname_label);
+      etCardNickname = view.findViewById(R.id.card_name);
+      etCardNickname.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+         if (actionId == EditorInfo.IME_ACTION_DONE) {
+            addRecordWithCurrentData();
+            return true;
+         }
+         return false;
+      });
       cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable()
             .toString()
             .trim()).skip(1);
-      cvvObservable = observableFrom(etCardCvv);
+
+      defaultPaymentCardSwitcher = view.findViewById(R.id.set_default_card_switcher);
+      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher)
+            .doOnNext(value -> bankCardWidget.setAsDefault(value))
+            .skip(1);
+
+      confirmButton = view.findViewById(R.id.confirm_button);
+      confirmButton.setOnClickListener(button -> addRecordWithCurrentData());
+      cardNameInputLayout = view.findViewById(R.id.cardNameInputLayout);
+      cvvLabel = view.findViewById(R.id.cvv_label);
+      setHintsAndLabels();
    }
 
    @Override
@@ -190,20 +208,6 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    protected void navigateButtonClick() {
       getPresenter().goBack();
-   }
-
-   @OnEditorAction(R.id.card_name)
-   boolean onEditorAction(int action) {
-      if (action == EditorInfo.IME_ACTION_DONE) {
-         onConfirmButtonClicked();
-         return true;
-      }
-      return false;
-   }
-
-   @OnClick(R.id.confirm_button)
-   public void onConfirmButtonClicked() {
-      addRecordWithCurrentData();
    }
 
    private void addRecordWithCurrentData() {

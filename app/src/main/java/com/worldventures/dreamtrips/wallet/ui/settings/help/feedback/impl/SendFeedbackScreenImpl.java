@@ -31,8 +31,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
@@ -41,14 +39,13 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
 
    private static final String KEY_FEEDBACK_TYPE = "key_feedback_type";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_description) TextView tvDescription;
-   @InjectView(R.id.et_feedback_message) EditText etFeedbackMessage;
-   @InjectView(R.id.feedback_add_photos) View addPhotosButton;
-   @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView feedbackAttachments;
-
    @Inject SendFeedbackPresenter presenter;
 
+   private Toolbar toolbar;
+   private TextView tvDescription;
+   private EditText etFeedbackMessage;
+   private View addPhotosButton;
+   private AttachmentImagesHorizontalView feedbackAttachments;
    private MenuItem actionSendMenuItem = null;
    private Observable<CharSequence> textMessageObserver;
 
@@ -65,7 +62,13 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationBack());
+      tvDescription = view.findViewById(R.id.tv_description);
+      etFeedbackMessage = view.findViewById(R.id.et_feedback_message);
+      addPhotosButton = view.findViewById(R.id.feedback_add_photos);
+      addPhotosButton.setOnClickListener(btnAddPhotos -> getPresenter().chosenAttachments());
+      feedbackAttachments = view.findViewById(R.id.feedback_attachments);
       //noinspection WrongConstant
       textMessageObserver = RxTextView.textChanges(etFeedbackMessage);
 
@@ -143,11 +146,6 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
       etFeedbackMessage.setFocusableInTouchMode(false);
       etFeedbackMessage.setFocusable(true);
       etFeedbackMessage.setFocusableInTouchMode(true);
-   }
-
-   @OnClick(R.id.feedback_add_photos)
-   public void onAddAttachments() {
-      getPresenter().chosenAttachments();
    }
 
    @Override

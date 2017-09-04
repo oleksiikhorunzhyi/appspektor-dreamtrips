@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -13,19 +14,17 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSet
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class WalletPinIsSetScreenImpl extends WalletBaseController<WalletPinIsSetScreen, WalletPinIsSetPresenter> implements WalletPinIsSetScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject WalletPinIsSetPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      final Button btnNext = view.findViewById(R.id.next_button);
+      btnNext.setOnClickListener(next -> getPresenter().navigateToNextScreen());
    }
 
    @Override
@@ -41,11 +40,6 @@ public class WalletPinIsSetScreenImpl extends WalletBaseController<WalletPinIsSe
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnClick(R.id.next_button)
-   public void nextClick() {
-      getPresenter().navigateToNextScreen();
    }
 
    @Override

@@ -20,14 +20,12 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploa
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WizardUploadProfileScreenImpl extends WalletBaseController<WizardUploadProfileScreen, WizardUploadProfilePresenter> implements WizardUploadProfileScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.progress) WalletProgressWidget progressWidget;
+   private WalletProgressWidget progressWidget;
 
    @Inject WizardUploadProfilePresenter presenter;
 
@@ -36,7 +34,9 @@ public class WizardUploadProfileScreenImpl extends WalletBaseController<WizardUp
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      progressWidget = view.findViewById(R.id.progress);
    }
 
    @Override

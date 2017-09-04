@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,17 +23,14 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualIn
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnEditorAction;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class WizardManualInputScreenImpl extends WalletBaseController<WizardManualInputScreen, WizardManualInputPresenter> implements WizardManualInputScreen {
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.wallet_wizard_manual_input_scid) EditText scidNumberInput;
-   @InjectView(R.id.wallet_wizard_manual_input_next_btn) View nextButton;
+
+   private EditText scidNumberInput;
+   private Button nextButton;
 
    @Inject WizardManualInputPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -40,7 +38,18 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      scidNumberInput = view.findViewById(R.id.wallet_wizard_manual_input_scid);
+      scidNumberInput.setOnEditorActionListener((textView, action, keyEvent) -> {
+         if (action == EditorInfo.IME_ACTION_NEXT) {
+            getPresenter().checkBarcode(scidNumberInput.getText().toString());
+            return true;
+         }
+         return false;
+      });
+      nextButton = view.findViewById(R.id.wallet_wizard_manual_input_next_btn);
+      nextButton.setOnClickListener(nextBtn -> getPresenter().checkBarcode(scidNumberInput.getText().toString()));
    }
 
    @Override
@@ -56,20 +65,6 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnEditorAction(R.id.wallet_wizard_manual_input_scid)
-   boolean actionNext(int action) {
-      if (action == EditorInfo.IME_ACTION_NEXT) {
-         getPresenter().checkBarcode(scidNumberInput.getText().toString());
-         return true;
-      }
-      return false;
-   }
-
-   @OnClick(R.id.wallet_wizard_manual_input_next_btn)
-   void onNextClicked() {
-      getPresenter().checkBarcode(scidNumberInput.getText().toString());
    }
 
    @Override

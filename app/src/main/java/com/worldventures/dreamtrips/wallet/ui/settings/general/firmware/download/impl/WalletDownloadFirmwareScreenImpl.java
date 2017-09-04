@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
@@ -22,14 +23,12 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletDownloadFirmwareScreenImpl extends WalletBaseController<WalletDownloadFirmwareScreen, WalletDownloadFirmwarePresenter> implements WalletDownloadFirmwareScreen {
-   @InjectView(R.id.firmware_download_progress) WalletProgressWidget downloadProgress;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+
+   private WalletProgressWidget downloadProgress;
 
    @Inject WalletDownloadFirmwarePresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -37,7 +36,11 @@ public class WalletDownloadFirmwareScreenImpl extends WalletBaseController<Walle
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      downloadProgress = view.findViewById(R.id.firmware_download_progress);
+      final TextView tvWalletCancelDownload = view.findViewById(R.id.wallet_cancel_download);
+      tvWalletCancelDownload.setOnClickListener(cancelDownload -> getPresenter().cancelDownload());
    }
 
    @Override
@@ -53,11 +56,6 @@ public class WalletDownloadFirmwareScreenImpl extends WalletBaseController<Walle
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnClick(R.id.wallet_cancel_download)
-   void cancelDownload() {
-      getPresenter().cancelDownload();
    }
 
    @Override

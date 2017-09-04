@@ -46,8 +46,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.ObjectGraph;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -58,17 +56,14 @@ import static java.lang.String.format;
 
 public class MapScreenImpl extends RxRestoreViewOnCreateController implements MapScreen, OnMapReadyCallback {
 
-   @InjectView(R.id.map_view) ToucheableMapView mapView;
-   @InjectView(R.id.empty_location_view) View emptyLocationsView;
-   @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
-   @InjectView(R.id.noGoogleContainer) View noGoogleContainer;
-   @InjectView(R.id.ll_popup_info) View popupInfoContainer;
-
    @Inject MapPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
+   private ToucheableMapView mapView;
+   private View emptyLocationsView;
+   private View noGoogleContainer;
    private GoogleMap googleMap;
    private WalletIncludeMapPopupInfoBinding popupInfoViewBinding;
    private PopupLastLocationViewModel lastLocationViewModel = new PopupLastLocationViewModel();
@@ -81,13 +76,16 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       final ObjectGraph objectGraph = (ObjectGraph) view.getContext()
             .getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
-      ButterKnife.inject(this, view);
+      mapView = view.findViewById(R.id.map_view);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
          noGoogleContainer.setVisibility(View.VISIBLE);
       } else {
          mapView.onCreate(bundle);
       }
       mapView.getMapAsync(this);
+      emptyLocationsView = view.findViewById(R.id.empty_location_view);
+      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
+      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
       popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       return view;
    }
@@ -128,7 +126,6 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    protected void onDestroyView(@NonNull View view) {
       super.onDestroyView(view);
       mapView.onDestroy();
-      ButterKnife.reset(this);
    }
 
    @Override

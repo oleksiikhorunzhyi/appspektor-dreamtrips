@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -14,22 +15,23 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingScre
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class WizardCheckingScreenImpl extends WalletBaseController<WizardCheckingScreen, WizardCheckingPresenter> implements WizardCheckingScreen {
 
-   @InjectView(R.id.check_widget_wifi) WalletCheckWidget checkInternet;
-   @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkBluetooth;
-   @InjectView(R.id.next_button) View nextButton;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+   private WalletCheckWidget checkInternet;
+   private WalletCheckWidget checkBluetooth;
+   private Button nextButton;
 
    @Inject WizardCheckingPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      checkInternet = view.findViewById(R.id.check_widget_wifi);
+      checkBluetooth = view.findViewById(R.id.check_widget_bluetooth);
+      nextButton = view.findViewById(R.id.next_button);
+      nextButton.setOnClickListener(nextBtn -> getPresenter().goNext());
    }
 
    @Override
@@ -72,11 +74,6 @@ public class WizardCheckingScreenImpl extends WalletBaseController<WizardCheckin
    @Override
    public void buttonEnable(boolean enable) {
       nextButton.setEnabled(enable);
-   }
-
-   @OnClick(R.id.next_button)
-   protected void onNextClick() {
-      getPresenter().goNext();
    }
 
    @Override

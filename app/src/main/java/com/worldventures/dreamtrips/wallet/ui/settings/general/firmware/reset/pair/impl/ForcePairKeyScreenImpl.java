@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
@@ -21,21 +22,20 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class ForcePairKeyScreenImpl extends WalletBaseController<ForcePairKeyScreen, ForcePairKeyPresenter> implements ForcePairKeyScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject ForcePairKeyPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      final Button btnNext = view.findViewById(R.id.button_next);
+      btnNext.setOnClickListener(btn -> getPresenter().tryToPairAndConnectSmartCard());
    }
 
    @Override
@@ -74,11 +74,6 @@ public class ForcePairKeyScreenImpl extends WalletBaseController<ForcePairKeyScr
                   .addProvider(new SmartCardErrorViewProvider<>(getContext()))
                   .build()
       );
-   }
-
-   @OnClick(R.id.button_next)
-   public void onConnectToSmartCard() {
-      getPresenter().tryToPairAndConnectSmartCard();
    }
 
    @Override

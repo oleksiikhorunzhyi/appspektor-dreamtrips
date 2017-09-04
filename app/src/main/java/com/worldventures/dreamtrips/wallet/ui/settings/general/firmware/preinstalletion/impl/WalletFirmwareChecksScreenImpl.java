@@ -16,38 +16,33 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class WalletFirmwareChecksScreenImpl extends WalletBaseController<WalletFirmwareChecksScreen, WalletFirmwareChecksPresenter> implements WalletFirmwareChecksScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.check_widget_battery) WalletCheckWidget checkWidgetButtery;
-   @InjectView(R.id.check_widget_connection) WalletCheckWidget checkWidgetConnection;
-   @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkWidgetBluetooth;
-   @InjectView(R.id.check_widget_charger) WalletCheckWidget checkWidgetCharger;
-   @InjectView(R.id.install) Button installButton;
-   @InjectView(R.id.install_later) TextView tvInstallLater;
+   private WalletCheckWidget checkWidgetBattery;
+   private WalletCheckWidget checkWidgetConnection;
+   private WalletCheckWidget checkWidgetBluetooth;
+   private WalletCheckWidget checkWidgetCharger;
+   private Button installButton;
+   private TextView tvInstallLater;
 
    @Inject WalletFirmwareChecksPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-   }
-
-   @OnClick(R.id.install_later)
-   protected void installLaterClick() {
-      getPresenter().installLater();
-   }
-
-   @OnClick(R.id.install)
-   protected void installClick() {
-      getPresenter().install();
+      checkWidgetBattery = view.findViewById(R.id.check_widget_battery);
+      checkWidgetConnection = view.findViewById(R.id.check_widget_connection);
+      checkWidgetBluetooth = view.findViewById(R.id.check_widget_bluetooth);
+      checkWidgetCharger = view.findViewById(R.id.check_widget_charger);
+      installButton = view.findViewById(R.id.install);
+      installButton.setOnClickListener(installBtn -> getPresenter().install());
+      tvInstallLater = view.findViewById(R.id.install_later);
+      tvInstallLater.setOnClickListener(installLaterBtn -> getPresenter().installLater());
    }
 
    @Override
@@ -62,7 +57,7 @@ public class WalletFirmwareChecksScreenImpl extends WalletBaseController<WalletF
 
    @Override
    public void cardCharged(boolean charged) {
-      checkWidgetButtery.setChecked(charged);
+      checkWidgetBattery.setChecked(charged);
    }
 
    @Override
@@ -72,7 +67,7 @@ public class WalletFirmwareChecksScreenImpl extends WalletBaseController<WalletF
 
    @Override
    public void chargedStatusVisible(boolean isVisible) {
-      checkWidgetButtery.setVisibility(isVisible ? VISIBLE : GONE);
+      checkWidgetBattery.setVisibility(isVisible ? VISIBLE : GONE);
    }
 
    @Override

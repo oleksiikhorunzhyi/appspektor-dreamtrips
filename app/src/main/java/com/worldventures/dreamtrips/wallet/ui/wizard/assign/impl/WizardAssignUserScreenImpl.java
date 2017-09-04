@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserScre
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -30,8 +29,7 @@ public class WizardAssignUserScreenImpl extends WalletBaseController<WizardAssig
 
    private static final String KEY_PROVISION_MODE = "key_provision_mode";
 
-   @InjectView(R.id.assign_progress) WalletProgressWidget assignProgress;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+   private WalletProgressWidget assignProgress;
 
    @Inject WizardAssignUserPresenter presenter;
 
@@ -52,7 +50,9 @@ public class WizardAssignUserScreenImpl extends WalletBaseController<WizardAssig
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      assignProgress = view.findViewById(R.id.assign_progress);
    }
 
    @Override

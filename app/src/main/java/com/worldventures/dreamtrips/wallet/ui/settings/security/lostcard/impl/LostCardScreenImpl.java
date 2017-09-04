@@ -25,16 +25,13 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletSwitcher;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
 public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, LostCardPresenter> implements LostCardScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tracking_enable_switcher) WalletSwitcher trackingEnableSwitcher;
-   @InjectView(R.id.map_container) FrameLayout mapContainer;
+   private WalletSwitcher trackingEnableSwitcher;
 
    @Inject LostCardPresenter presenter;
 
@@ -49,8 +46,11 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      trackingEnableSwitcher = view.findViewById(R.id.tracking_enable_switcher);
       enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher).skip(1);
+      final FrameLayout mapContainer = view.findViewById(R.id.map_container);
       controllerFlipper.init(getChildRouter(mapContainer), new ControllerFlipListener() {
          @Override
          public void onFlipStarted() {

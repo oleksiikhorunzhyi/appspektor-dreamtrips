@@ -16,16 +16,11 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessSc
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessScreen, PinSetSuccessPresenter> implements PinSetSuccessScreen {
 
    private static final String KEY_PIN_ACTION = "key_pin_action";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.next_button) TextView nextButton;
-   @InjectView(R.id.success_label_text_view) TextView successText;
+   private TextView nextButton;
 
    @Inject PinSetSuccessPresenter presenter;
 
@@ -46,7 +41,10 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goToBack());
+      nextButton = view.findViewById(R.id.next_button);
+      nextButton.setOnClickListener(next -> getPresenter().goToNext());
    }
 
    @Override
@@ -62,11 +60,6 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnClick(R.id.next_button)
-   public void nextClick() {
-      getPresenter().goToNext();
    }
 
    @Override

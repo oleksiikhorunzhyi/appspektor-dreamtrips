@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.action.PersistentDevic
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInitializer;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.logout.WalletLogoutActionModule;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull;
 
@@ -41,6 +42,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
             WalletServiceModule.class,
             WalletStorageModule.class,
             JanetNxtModule.class,
+            WalletLogoutActionModule.class,
       },
       injects = {
             SnappyStorageManagerInitializer.class,

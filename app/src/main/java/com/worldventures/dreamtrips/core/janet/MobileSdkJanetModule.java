@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapterFactory;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthRefresher;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthStorage;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsCredentialsProvider;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.mobilesdk.AuthProviders;
 import com.worldventures.dreamtrips.mobilesdk.AuthRefresher;
 import com.worldventures.dreamtrips.mobilesdk.ConfigProviders;
@@ -27,12 +29,10 @@ import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
 import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
 import com.worldventures.dreamtrips.mobilesdk.util.HttpErrorReasonParser;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersAddressRestResponse;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
 
 import java.net.CookieManager;
 import java.util.Date;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -82,22 +82,21 @@ public class MobileSdkJanetModule {
 
    @Provides
    @Named(NON_API_QUALIFIER)
-   HttpActionService provideNonApiService(@Named(API_QUALIFIER) HttpLoggingInterceptor loggingInterceptor) {
+   HttpActionService provideNonApiService(@Named(API_QUALIFIER) HttpLoggingInterceptor loggingInterceptor, Set<TypeAdapterFactory> adapterFactories) {
+      final GsonBuilder gsonBuilder = new GsonBuilder()
+            .setExclusionStrategies(new SerializedNameExclusionStrategy())
+            //
+            .registerTypeAdapterFactory(new SmartEnumTypeAdapterFactory("unknown"))
+            .registerTypeAdapter(Date.class, new DateTimeSerializer())
+            .registerTypeAdapter(Date.class, new DateTimeDeserializer());
+      for (TypeAdapterFactory factory : adapterFactories) {
+         gsonBuilder.registerTypeAdapterFactory(factory);
+      }
       return new HttpActionService("http://dreamtrips-nonexisting-api.com",
             new OkClient(new OkHttpClient.Builder()
                   .addNetworkInterceptor(loggingInterceptor)
                   .build()
-            ),
-            new GsonConverter(new GsonBuilder()
-                  .setExclusionStrategies(new SerializedNameExclusionStrategy())
-                  //
-                  .registerTypeAdapterFactory(new SmartEnumTypeAdapterFactory("unknown"))
-                  .registerTypeAdapter(Date.class, new DateTimeSerializer())
-                  .registerTypeAdapter(Date.class, new DateTimeDeserializer())
-                  //
-                  .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
-                  .registerTypeAdapterFactory(new GsonAdaptersAddressRestResponse())
-                  .create())
+            ), new GsonConverter(gsonBuilder.create())
       );
    }
 

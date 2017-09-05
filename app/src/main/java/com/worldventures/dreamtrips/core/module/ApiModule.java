@@ -5,9 +5,7 @@ import android.content.Context;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -29,7 +27,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.GsonAdaptersReco
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,17 +58,6 @@ public class ApiModule {
    @Provides
    CookieManager provideCookieManager(Context context) {
       return new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
-   }
-
-   @Provides
-   OkHttpClient provideOkHttpClient(CookieManager cookieManager) {
-      OkHttpClient okHttpClient = new OkHttpClient();
-      okHttpClient.setCookieHandler(cookieManager);
-      //Currently `api/{uid}/likes` (10k+ms)
-      okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      return okHttpClient;
    }
 
    @Provides

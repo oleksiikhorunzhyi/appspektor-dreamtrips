@@ -37,17 +37,14 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import dagger.ObjectGraph;
 import rx.Observable;
 
 public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerDialogView {
 
-   @InjectView(R.id.tv_selected_count) TextView selectedCount;
-   @InjectView(R.id.picker_container) MediaPickerContainer mediaPickerContainer;
-   @InjectView(R.id.flipper_picker_navigation) ViewFlipper pickerNavigationViewFlipper;
+   private TextView selectedCount;
+   private MediaPickerContainer mediaPickerContainer;
+   private ViewFlipper pickerNavigationViewFlipper;
 
    @Inject MediaPickerDialogPresenter presenter;
 
@@ -90,7 +87,7 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    }
 
    private void onShow() {
-      ButterKnife.inject(this);
+      initUIWithListeners();
       mediaPickerContainer.setup(providePickerPages());
       mediaPickerContainer.setPickerOnPageChangedListener(this::flipNavigationButton);
       presenter.attachView(this);
@@ -99,7 +96,6 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    private void onDismiss() {
       presenter.detachView(true);
       mediaPickerContainer.reset();
-      ButterKnife.reset(this);
    }
 
    private void flipNavigationButton(boolean canGoBack) {
@@ -108,6 +104,15 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
       if (viewIndexFlipTo != pickerNavigationViewFlipper.getDisplayedChild()) {
          pickerNavigationViewFlipper.setDisplayedChild(viewIndexFlipTo);
       }
+   }
+
+   private void initUIWithListeners() {
+      selectedCount = (TextView) findViewById(R.id.tv_selected_count);
+      mediaPickerContainer = (MediaPickerContainer) findViewById(R.id.picker_container);
+      pickerNavigationViewFlipper = (ViewFlipper) findViewById(R.id.flipper_picker_navigation);
+
+      findViewById(R.id.btn_done).setOnClickListener(view -> onDone());
+      findViewById(R.id.btn_cancel).setOnClickListener(view -> dismiss());
    }
 
    private TreeMap<MediaPickerStep, BaseMediaPickerLayout> providePickerPages() {
@@ -140,16 +145,10 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    }
 
    @Override
-   @OnClick(R.id.btn_done)
    public void onDone() {
       if (onDoneListener != null) {
          onDoneListener.onDone(presenter.providePickerResult());
       }
-      dismiss();
-   }
-
-   @OnClick(R.id.btn_cancel)
-   public void onCancel() {
       dismiss();
    }
 

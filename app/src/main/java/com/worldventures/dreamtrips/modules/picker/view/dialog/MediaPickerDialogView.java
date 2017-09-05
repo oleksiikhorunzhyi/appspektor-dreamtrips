@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.picker.view.dialog;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 import rx.Observable;
 
 
-public interface MediaPickerDialogView extends MvpView, RxLifecycleView {
+public interface MediaPickerDialogView extends MvpView {
 
    void onDone();
 
@@ -24,4 +23,6 @@ public interface MediaPickerDialogView extends MvpView, RxLifecycleView {
    int getPickLimit();
 
    int getRequestId();
+
+   <T> Observable.Transformer<T, T> lifecycle();
 }

@@ -57,17 +57,17 @@ import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
-import com.worldventures.dreamtrips.modules.tripsimages.TripImageModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
+import com.worldventures.dreamtrips.modules.tripsimages.TripImageModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
-import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +79,9 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
+      includes = {
+            MediaPickerModule.class
+      },
       injects = {
             ActivityPresenter.class,
             LaunchActivityPresenter.class,
@@ -108,7 +111,6 @@ import dagger.Provides;
             ProgressDialogFragment.class,
             MessageDialogFragment.class,
             PhotoPickerLayout.class,
-            WalletActivity.class,
             DialogFragmentNavigator.NavigationDialogFragment.class,
             BaseImageFragment.class,
             BaseImagePresenter.class,

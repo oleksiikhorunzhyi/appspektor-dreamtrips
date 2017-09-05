@@ -27,8 +27,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {},
-        injects = {
+@Module(
+      injects = {
             MediaPickerDialog.class,
             GalleryMediaPickerLayout.class,
             FacebookAlbumsPickerLayout.class,

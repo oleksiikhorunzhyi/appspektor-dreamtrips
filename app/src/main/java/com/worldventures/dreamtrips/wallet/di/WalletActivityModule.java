@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
+import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -243,6 +244,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
             MediaPickerModule.class
       },
       injects = {
+            WalletActivity.class,
             WalletActivityPresenter.class,
             WalletStartScreenImpl.class,
             WalletProvisioningBlockedScreenImpl.class,

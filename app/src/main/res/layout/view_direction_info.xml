@@ -23,6 +23,5 @@
          android:layout_height="34dp"
          android:layout_marginTop="@dimen/spacing_tiny"
          android:scaleType="fitCenter"
-         tools:src="@drawable/dream_trips_logo"
          />
 </LinearLayout>

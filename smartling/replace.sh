@@ -9,19 +9,28 @@
 
 # ATTENTION! strings (1).xml would be replaced too. Just delete it
 
-readonly socialFile="strings.xml"
+readonly commonFile="strings.xml"
+readonly socialFile="social_strings.xml"
 readonly dtlFile="dtl_strings.xml"
 readonly messengerFile="messenger_strings.xml"
+readonly sessionFile="session_strings.xml"
 readonly walletFile="wallet_strings.xml"
 
+readonly commonExclude=" --exclude=$commonFile"
 readonly socialExclude=" --exclude=$socialFile"
 readonly dtlExclude=" --exclude=$dtlFile"
 readonly messengerExclude=" --exclude=$messengerFile"
+readonly sessionExclude=" --exclude=$sessionFile"
 readonly walletExclude=" --exclude=$walletFile"
 
-readonly fullExcludeParams=" $socialExclude $dtlExclude $messengerExclude $walletExclude"
+readonly fullExcludeParams=" $commonExclude $socialExclude $dtlExclude $messengerExclude $sessionExclude $walletExclude"
 
-excludeParams=" $socialExclude $dtlExclude $messengerExclude"
+excludeParams=" $commonExclude $socialExclude $dtlExclude $messengerExclude $sessionExclude"
+
+if [[ $* == *" common"* ]];
+then
+    excludeParams=${excludeParams/$commonExclude/""}
+fi
 
 if [[ $* == *" social"* ]];
 then
@@ -38,6 +47,11 @@ then
     excludeParams=${excludeParams/$messengerExclude/""}
 fi
 
+if [[ $* == *" session"* ]]
+then
+    excludeParams=${excludeParams/$sessionExclude/""}
+fi
+
 if [[ $* == *" wallet"* ]]
 then
     excludeParams=${excludeParams/$walletExclude/""}
@@ -46,7 +60,7 @@ fi
 if [ "$fullExcludeParams" == "$excludeParams" ];
 then
     excludeParams=""
-    printf $*"\nThere are no inputted suitable params. Available params are: social, dtl, messenger, wallet. All translations would be replaced.\n\n"
+    printf $*"\nThere are no inputted suitable params. Available params are: social, dtl, messenger, session, wallet. All translations would be replaced.\n\n"
 fi
 
 echo "Start replacing translations:"

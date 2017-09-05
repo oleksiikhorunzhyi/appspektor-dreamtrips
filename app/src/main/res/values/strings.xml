@@ -1,64 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="membership">Membership</string>
-   <string name="trip_images">Trip Images</string>
-   <string name="bucket_list">Bucket List</string>
-   <string name="my_profile">My Profile</string>
-   <string name="action_quick_input">Quick Add</string>
-   <string name="action_popular_string">Add From Popular</string>
    <string name="action_done">Done</string>
    <string name="action_cancel">Cancel</string>
    <string name="action_filter">Filter</string>
-   <string name="action_map">Map</string>
    <string name="action_like">Like</string>
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menu Opened</string>
    <string name="drawer_close">Menu Closed</string>
    <string name="empty" translatable="false"></string>
-   <string name="logout_dialog_title">Logout</string>
-   <string name="logout_dialog_message">Are you sure you want to Log Out?</string>
-   <string name="logout_dialog_positive_btn">Logout</string>
-   <string name="logout_dialog_negative_btn">Cancel</string>
-   <string name="member_images">Member Images</string>
-   <string name="my_images">My Images</string>
-   <string name="you_should_be_here">You Should Be Here</string>
-   <string name="duration">%d Nights</string>
    <string name="smth_went_wrong">Something went wrong =(</string>
-   <string name="inspire_me">Inspire Me</string>
-   <string name="three_sixty">360 Experience</string>
-   <string name="member_images_new_item">%s New Item</string>
-   <string name="member_images_new_items">%s New Items</string>
-   <string name="member_images_new_items_plus">%s+ New Items</string>
-   <string name="book_it">Book It!</string>
-   <string name="reload_trip_details">Reload Trip Details</string>
-   <string name="user_id_hint">WV Member Id</string>
-   <string name="user_password_hint">WV Member Password</string>
    <string name="type_your_reason">Type your reason</string>
-   <string name="filter_region_header">REGION</string>
-   <string name="filter_duration_header">DURATION (NIGHTS)</string>
-   <string name="filter_price_header">PRICE ($)</string>
-   <string name="filter_select_all">SELECT ALL</string>
-   <string name="filter_show_sold_out">SHOW SOLD OUT TRIPS</string>
-   <string name="filter_theme_header">THEME</string>
-   <string name="filter_no_results">Sorry, there were no results matching your criteria</string>
    <string name="filter_apply_all">APPLY FILTERS</string>
    <string name="filter_reset_all">RESET ALL</string>
-   <string name="filter_reset">Reset Filters</string>
-   <string name="trip_details">Trip Details</string>
-   <string name="trip_featured">FEATURED TRIP</string>
-   <string name="profile_from_hint">From</string>
-   <string name="profile_enroll_hint">Enroll Date</string>
-   <string name="profile_birth_hint">Date of Birth</string>
-   <string name="profile_user_id_hint">User ID</string>
-   <string name="bucket_locations">Locations</string>
-   <string name="bucket_activities">Activities</string>
-   <string name="bucket_restaurants">Dining</string>
-   <string name="photo_deleted">Photo has been Deleted</string>
-   <string name="delete_photo_title">Delete Photo</string>
-   <string name="delete_photo_text">Are you sure you want to delete this photo?</string>
-   <string name="delete_photo_positiove">Delete</string>
-   <string name="delete_photo_negative">Cancel</string>
    <string name="flag_photo_second">. Do you want to continue?</string>
    <string name="flag_photo_title">Confirm</string>
    <string name="flag_photo_positive">Send</string>
@@ -66,7 +20,6 @@
    <string name="flag_description_title">Flag</string>
    <string name="flag_description_positive">Accept</string>
    <string name="flag_description_negative">Cancel</string>
-   <string name="log_in">Log in</string>
    <string name="facebook_error_loading_albums">Could not load albums</string>
    <string name="facebook_error_loading_photos">Could not load photos</string>
    <string name="facebook_login_error">Could not login to Facebook</string>
@@ -86,56 +39,9 @@
    <string name="username_not_valid">Username is not valid</string>
    <string name="password_empty">Password is empty</string>
    <string name="password_not_valid">Password is not valid</string>
-   <string name="bucket_list_location_popular">Popular Bucket Lists</string>
-   <string name="bucket_list_edit_header">Edit Bucket List Item</string>
-   <string name="bucket_list_add">Add %s to your bucket list</string>
-   <string name="bucket_list_create_message">Currently you have no Bucket List items. You can choose from popular Bucket List items or create your own goals</string>
-   <string name="bucket_list_choose">Choose From Popular Items</string>
-   <string name="bucket_list_create_new">Create My Own List</string>
-   <string name="bucket_list_action_create_error">Could not add Bucket List item</string>
-   <string name="bucket_list_action_change_order_error">Could not change Bucket List item order</string>
-   <string name="bucket_list_action_delete_error">Could not delete Bucket List item</string>
-   <string name="bucket_hint_title">Title</string>
-   <string name="bucket_hint_description">Description</string>
-   <string name="bucket_hint_description_text">Type your description here</string>
-   <string name="bucket_hint_time">Time</string>
-   <string name="bucket_hint_time_text">When would you like to accomplish this goal?</string>
-   <string name="bucket_hint_people">People</string>
-   <string name="bucket_hint_people_text">Add people with whom you want to accomplish this goal</string>
-   <string name="bucket_hint_tags">Tags</string>
-   <string name="bucket_hint_tags_text">Add tags that describe your bucket list item</string>
-   <string name="category">Category</string>
-   <string name="bucket_added">%s is added to your bucket list</string>
-   <string name="trip_liked">%s added to your Favorites</string>
-   <string name="trip_unliked">%s removed from your Favorites</string>
-   <string name="congrats">Congrats!</string>
-   <string name="show_all">Show all</string>
-   <string name="show_completed">Show completed</string>
-   <string name="show_to_do">Show TO-DO</string>
-   <string name="rep_tools">Rep Tools</string>
-   <string name="success_stories">Success stories</string>
    <string name="action_share">Share</string>
-   <string name="recent_header">Recent Added 360 Experience</string>
-   <string name="recently_added">Recently Added</string>
-   <string name="featured_header">Featured 360 Experience</string>
-   <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>
-   <string name="ss_has_been_removed_from_favorites">Success story has been removed from favorites</string>
-   <string name="ss_filter_show_favorites">Show Favorites</string>
-   <string name="other_travel">Book Travel</string>
-   <string name="training_videos">Training Videos</string>
-   <string name="like">%d Like</string>
-   <string name="likes">%d Likes</string>
-   <string name="comment_single">%d Comment</string>
-   <string name="comments">%d Comments</string>
-   <string name="someday">Someday</string>
-   <string name="who">Who: </string>
-   <string name="tags">Tags: </string>
    <string name="today">Today</string>
-   <string name="rep_enrollment">Rep Enrollment</string>
    <string name="no_connection">No Internet Connection</string>
-   <string name="popular_add">ADD</string>
-   <string name="popular_done">DONE</string>
-   <string name="see_more">See more</string>
    <string name="alert">Alert</string>
    <string name="OK">OK</string>
    <string name="share_error">Can\'t share file</string>
@@ -152,105 +58,13 @@
       <item>Someday</item>
    </string-array>
    <string name="choose_gallery">Choose a Photo</string>
-   <string name="uploading_photo">Uploading photo</string>
-   <string name="bucket_photo_cover">Set as cover</string>
-   <string name="bucket_photo_delete">Delete</string>
-   <string name="add_pictures">Add pictures</string>
-   <string name="bucket_photo_dialog">Bucket photo</string>
-   <string name="delete_cached_video_title">Video</string>
-   <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
-   <string name="fail">Failure</string>
-   <string name="cancel_cached_video_title">Video</string>
-   <string name="cancel_cached_video_text">Are you sure you want to cancel file download?</string>
-   <string name="cancel_photo_positiove">Yes</string>
-   <string name="cancel_photo_negative">No</string>
-   <string name="presentations">Videos</string>
-   <string name="enroll_member">Enroll Member</string>
-   <string name="invite_and_share">Invite &amp; Share</string>
-   <string name="add_contact">Add contact</string>
-   <string name="add">Add</string>
-   <string name="invite_add_name">Name</string>
-   <string name="invite_email">Email</string>
-   <string name="invite_phone">Phone</string>
-   <string name="invite_add_message">Add Personal Message</string>
-   <string name="action_send">Send</string>
-   <string name="action_preview">Preview</string>
-   <string name="title_edit_template">Edit template</string>
-   <string name="invitation_continue">Continue</string>
-   <string name="invitation_select_contacts">Select contacts</string>
-   <string name="invitation_select_template">Select invitation template</string>
-   <string name="invitation_select">Select</string>
-   <string name="invitation_from">From:</string>
-   <string name="invitation_to">To:</string>
-   <string name="invitation_subject">Subject:</string>
 
-   <string name="selected">%d selected</string>
    <string name="email_is_not_valid">Email is not valid</string>
-   <string name="invitation_deselect_all">Deselect All</string>
-   <string name="invitation_text_template"><![CDATA[ Hi %1$s, %2$s <br/>Check it out here. <br/>%3$s]]></string>
-   <string name="invite_add_photo">Add Photo</string>
-   <string name="invite_select_first">Select contacts at first</string>
-   <string name="filters_show_favorite">SHOW FAVORITE TRIPS</string>
-   <string name="filter_recently_added">RECENTLY ADDED</string>
-   <string name="bucketlist_share">On my Bucket-List: %s</string>
-   <string name="last_sent">Last Sent</string>
-   <string name="search_trips">Search Trips</string>
-   <string name="search">Search</string>
 
-   <string name="profile_zero_trip_images">Trip Images</string>
-   <string name="profile_zero_bucket_list">Bucket List Items</string>
-   <string name="profile_trip_images">%d Trip Images</string>
-   <string name="profile_bucket_list">%d Bucket List Items</string>
-   <string name="profile_friends">Friends</string>
-   <string name="profile_platinum">Platinum member</string>
-   <string name="profile_golden">Gold member</string>
-   <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
-   <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
-
-   <string name="action_add_to_bucket">Add to Bucket list</string>
-   <string name="profile_add_friend">Add Friend</string>
-   <string name="profile_friend_request">%1$s sent you friend request</string>
-   <string name="profile_respond">Respond</string>
-   <string name="profile_waiting">Waiting</string>
-   <string name="social_my_friends">My friends</string>
-   <string name="social_requests">Requests</string>
    <string name="social_add_friend_yes">Yes</string>
    <string name="social_add_friend_no">No</string>
-   <string name="social_postfix_mutual_friends_one">%d mutual friend</string>
-   <string name="social_postfix_mutual_friends">%d mutual friends</string>
-   <string name="social_user_wrapper_cell_actions">Actions</string>
-   <string name="social_remove_friend_title">Unfriend</string>
-   <string name="friend_search_placeholder">Search names, groups</string>
-   <string name="friend_reject">Reject</string>
-   <string name="friend_accept">Accept</string>
-   <string name="friend_hide">Hide</string>
-   <string name="friend_cancel">Cancel</string>
-   <string name="friend_global_search">Search all members</string>
-   <string name="friend_add_to">Add to:</string>
-   <string name="bucket_current_cover">Current cover</string>
-   <string name="bucket_item_edit_completed">Mark as done!</string>
-   <string name="reload_feed">Reload feed</string>
-   <string name="feed_header">&lt;b>%1$s%2$s&lt;/b> %3$s &lt;b>%4$s&lt;/b></string>
-   <string name="added">added a</string>
-   <string name="booked">booked a</string>
-   <string name="shared">shared a</string>
-   <string name="updated">updated a</string>
-   <string name="liked">liked your</string>
-   <string name="feed_trip">Trip</string>
-   <string name="feed_photo">Photo</string>
-   <string name="feed_bucket">Bucket List Item</string>
    <string name="coming_soon">Coming Soon</string>
    <string name="loading">Loading…</string>
-   <string name="filter_video_title_language">Choose language</string>
-   <string name="filter_video_title_country">Choose country</string>
-   <string name="comments_title">Comments</string>
-   <string name="comment_add_hint">Add a comment</string>
-   <string name="comment_post_btn_title">Post</string>
-   <string name="comment_view_more">View more comments</string>
-   <string name="save">Save</string>
-   <string name="comment_delete">Delete comment</string>
-   <string name="comment_delete_caption">Are you sure you want to delete this comment?</string>
-   <string name="comment_delete_confirm">Yes, delete it!</string>
    <string name="post_visibility_public">Public</string>
    <string name="post">Post</string>
 
@@ -268,16 +82,7 @@
    <string name="last_year">Last year</string>
    <string name="yesterday">Yesterday</string>
 
-   <string name="social_friend_preference_title">Edit friend preferences</string>
-   <string name="friend_pref_create_new_list">Create new list</string>
-   <string name="friend_pref_lists_title">Lists</string>
-   <string name="friend_pref_lists_header">Friend Preferences</string>
-   <string name="social_unfriend_confirmation_title">Are you sure you want to delete user from friends?</string>
-   <string name="social_unfriend_confiramation_accept">Yes</string>
-   <string name="social_unfriend_confiramation_cancel">No</string>
-   <string name="feed_title">Activity Feed</string>
    <string name="post_cancel_message">Are you sure you want to discard changes?</string>
-   <string name="bucket_list_foreign_message">Currently this user has no Bucket List items.</string>
 
    <string name="user_name">&lt;b>%1$s&lt;/b></string>
    <string name="user_name_with_company">&lt;b>%1$s&lt;/b>, %2$s</string>
@@ -288,74 +93,13 @@
    <string name="users_who_liked_with_first_single" formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
 
-   <string name="users_who_liked_title">People who liked</string>
-   <string name="notifications_title">Notifications</string>
-   <string name="accept_request">accepted your request</string>
-   <string name="reject_request">rejected your request</string>
-   <string name="comment">commented on your</string>
-   <string name="send_request">send you friend request</string>
-
-   <string name="post_delete">Delete post</string>
-   <string name="post_delete_caption">Are you sure you want to delete this post?</string>
-   <string name="post_delete_confirm">Yes, delete it!</string>
-
-   <string name="photo_delete">Delete photo</string>
-   <string name="photo_delete_caption">Are you sure you want to delete this photo?</string>
-   <string name="photo_edit_error">Could not edit photo</string>
-
-   <string name="bucket_delete">Delete bucket item</string>
-   <string name="bucket_delete_caption">Are you sure you want to delete this bucket item?</string>
-
-   <string name="feed_header_two">&lt;b>%1$s%2$s&lt;/b> and &lt;b>%3$s%4$s&lt;/b> %5$s &lt;b>%6$s&lt;/b></string>
-   <string name="feed_header_many">&lt;b>%1$s%2$s&lt;/b> and &lt;b>%3$s of your friends&lt;/b> %4$s &lt;b>%5$s&lt;/b></string>
-
-   <string name="player_error_header">Playback error</string>
-   <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
-
    <string name="retry">Retry</string>
    <string name="cancel">Cancel</string>
-
-   <string name="no_notifications">You have no notifications yet</string>
-   <string name="notification_message_friend_accepted">%s accepted your friend request</string>
-   <string name="notification_message_friend_request">%s sent you friend request</string>
-   <string name="notification_message_tagged_on_photo">%s tagged you on photo</string>
 
    <string name="error_webview_no_internet">There is no internet connection. Please, fix the problem and reload page.</string>
    <string name="error_webview_default">There is a connection problem. Try to reload page.</string>
 
-   <string name="notifaction_new">New</string>
-   <string name="notifaction_older">Older</string>
-
-   <string name="all">All</string>
-   <string name="you">You</string>
-
-   <string name="likes_count_one">%d like</string>
-   <string name="likes_count_other">%d likes</string>
-
-   <string name="comments_count_one">%d comment</string>
-   <string name="comments_count_other">%d comments</string>
-
-   <string name="feed_edit_item">Edit</string>
-   <string name="feed_delete_item">Delete</string>
-
-   <string name="liked_foreign">liked a</string>
-   <string name="comment_foreign">commented a</string>
-
-   <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
-   <string name="search_friends">Search Friends</string>
-
    <string name="feed_share_post_button">Share a photo, video or idea</string>
-   <string name="feed_view_profile_btn">View Profile</string>
-   <string name="start_searching">Type to start searching</string>
-
-   <string name="people_liked_one">%s liked</string>
-   <string name="people_liked_other">%s people liked</string>
-
-   <string name="terms_and_conditions_title">Terms and Condition</string>
-   <string name="terms_and_conditions_subtitle">Please read and accept the terms and condition below to continue</string>
-   <string name="terms_and_conditions_checkbox">Click here to accept terms and conditions</string>
-   <string name="terms_and_conditions_accept">Opt In</string>
-   <string name="terms_and_conditions_reject">Not Now</string>
 
    <string name="camera">Camera</string>
    <string name="library">Library</string>
@@ -365,16 +109,6 @@
 
    <string name="photos_selected">%d selected</string>
 
-   <string name="no_friends">You have no friends in this list yet</string>
-   <string name="feed_add_friends">Add friends</string>
-   <string name="all_friends">All friends</string>
-   <string name="accept_all">Accept all</string>
-   <string name="request_count_desc">You have %d incoming Friend requests</string>
-
-   <string name="user_mutual_friends">Mutual friends</string>
-   <string name="no_mutual_friends">You don\'t have any mutual friends</string>
-
-   <string name="pending">Pending…</string>
    <string name="media_picker_error_contents">Loading of %s failed.</string>
    <string name="media_picker_gallery_action">gallery media</string>
    <string name="media_picker_fb_albums_actions">facebook albums</string>
@@ -383,168 +117,29 @@
 
    <string name="back">Back</string>
    <string name="logout_component">Logout</string>
-   <string name="start_typing_name">Start typing name</string>
-
-   <string name="multiple_dates">Multiple Dates, %s…</string>
-
-   <string name="tag_photo">tagged you on</string>
-
-   <string name="photo_tag_title">Tap anywhere to tag people</string>
-   <string name="profile_friend_formatter">%d Friend</string>
-   <string name="profile_friends_formatter">%d Friends</string>
-
-   <string name="send_feedback">Send Feedback</string>
-   <string name="working_hard">We\'re working hard to make DreamTrips better. Please help us to improve.</string>
-   <string name="feedback_message_hint">Please, type your message here</string>
-   <string name="message_can_not_be_empty">Message can\'t be empty</string>
-   <string name="feedback_has_been_sent">Your feedback is sent. Thank you</string>
-   <string name="feedback_send_btn">Send</string>
-   <string name="feedback_select_category">Choose Category</string>
-   <string name="feedback_add_photos">Add Photos</string>
-   <string name="feedback_could_not_load_attachment">Could not load attachment</string>
-   <string name="feedback_attachment_failed_item_retry">Retry</string>
-   <string name="feedback_attachment_failed_item_remove">Remove</string>
-   <string name="feedback_fullscreen_attachments_format">%1$d of %2$d</string>
-   <string name="feedback_fullscreen_attachments_remove">Remove</string>
 
    <string name="years_ago">%d years ago</string>
-   <string name="invitation_template">Select template</string>
 
    <string name="settings">Settings</string>
-   <string name="notifications">Notifications</string>
-   <string name="general">General</string>
 
-   <string name="what_notifications_get">What notifications you get</string>
-
-   <string name="settings_distance_units">Distance Units</string>
-   <string name="settings_friend_requests">Friend Requests</string>
-   <string name="settings_new_message">New Message</string>
-   <string name="settings_photo_tagging">Photo Tagging</string>
-
-   <string name="abbreviated_miles">mi</string>
-   <string name="abbreviated_kilometers">km</string>
-   <string name="show_distance_in">Show distance in:</string>
-   <string name="settings_kilometers">Kilometers</string>
-   <string name="settings_miles">Miles</string>
-
-   <string name="save_changes_before_proceed">Do you want to save changes before you proceed?</string>
-   <string name="discard">Discard</string>
-
-   <string name="error_fail_to_load_success_stories">Failed to load success stories</string>
-   <string name="error_fail_to_like_success_story">Failed to like success story</string>
-   <string name="error_fail_to_unlike_success_story">Failed to unlike success story</string>
-   <string name="error_fail_to_update_settings">Failed to update settings</string>
-   <string name="error_fail_to_load_categories">Failed to load categories</string>
-   <string name="error_fail_to_load_suggestions">Failed to load suggestions</string>
-   <string name="error_fail_to_load_popular_bl">Failed to load popular Bucket List Items</string>
-   <string name="error_fail_to_load_circles">Failed to load circles</string>
-   <string name="error_fail_to_load_feed">Failed to load feed</string>
-   <string name="error_fail_to_load_item_details">Failed to load item details</string>
    <string name="error_fail_to_create_post">Failed to create post</string>
    <string name="error_fail_to_update_post">Failed to update post</string>
    <string name="error_fail_to_delete_post">Failed to delete post</string>
-   <string name="error_fail_to_load_comments">Failed to load comments</string>
-   <string name="error_fail_to_post_comment">Failed to post comment</string>
-   <string name="error_fail_to_delete_comment">Failed to delete comment</string>
-   <string name="error_fail_to_edit_comment">Failed to edit comment</string>
    <string name="error_fail_to_load_flag_reason">Failed to load flag reasons</string>
    <string name="error_fail_to_flag_item">Failed to flag item</string>
-   <string name="error_fail_to_accept_friend_request">Failed to accept friend request</string>
-   <string name="error_fail_to_reject_friend_request">Failed to reject friend request</string>
-   <string name="error_fail_to_hide_friend_request">Failed hide friend request</string>
-   <string name="error_fail_to_cancel_friend_request">Failed to cancel friend request</string>
-   <string name="error_failed_to_send_friend_request">Failed to send friend request</string>
-   <string name="error_failed_to_load_friend_requests">Failed to load friend requests</string>
-   <string name="error_failed_to_load_friends">Failed to load friends</string>
-   <string name="error_failed_to_unfriend_user">Failed to unfriend user</string>
-   <string name="error_failed_to_add_user_to_circle">Failed to add user to circle</string>
-   <string name="error_failed_to_remove_user_from_circle">Failed to remove user from circle</string>
-   <string name="error_failed_to_load_people_who_liked">Failed to load people who liked</string>
-   <string name="error_failed_to_load_mutual_friends">Failed to load mutual friends</string>
-   <string name="error_failed_to_load_notifications">Failed to load notifications</string>
-   <string name="error_failed_to_accept_terms_and_conditions">Failed to accept terms and conditions</string>
-   <string name="error_failed_to_load_member_images">Failed to load member images</string>
-   <string name="error_failed_to_load_inspire_images">Failed to load inspire me images</string>
-   <string name="error_failed_to_delete_image">Failed to delete image</string>
-   <string name="string_failed_to_load_trips">Failed to load trips</string>
-   <string name="error_failed_to_load_activities">Failed to load activities</string>
-   <string name="error_failed_to_load_users">Failed to load users</string>
-   <string name="error_fail_to_delete_tag">Failed to delete tag</string>
-   <string name="error_fail_to_load_feedback_reasons">Failed to load feedback reasons</string>
-   <string name="error_fail_to_send_feedback">Failed to send feedback</string>
-   <string name="error_fail_to_load_timeline">Failed to load timeline</string>
-   <string name="error_fail_to_get_invitations">Failed to get invitations</string>
-   <string name="error_fail_to_invitation_templates">Failed to get invitation templates</string>
-   <string name="error_fail_to_get_preview_for_template">Failed to get preview for template</string>
-   <string name="error_fail_to_locales">Failed to get locales</string>
-   <string name="error_fail_to_login">Failed to login</string>
-   <string name="error_fail_to_load_profile_info">Failed to load profile info</string>
-   <string name="error_fail_to_update_avatar">Failed to update avatar</string>
-   <string name="error_fail_to_update_cover_photo">Failed to update cover photo</string>
-   <string name="error_fail_to_load_videos">Failed to load videos</string>
-   <string name="error_fail_to_like_item">Failed to like item</string>
-   <string name="error_fail_to_unlike_item">Failed to unlike item</string>
-   <string name="error_fail_to_load_documents">Failed to load documents</string>
-   <string name="tag_people">Tag people</string>
 
-   <string name="uploading_post_status_progress_singular">Uploading photo…</string>
-   <string name="uploading_post_status_progress_plural">Uploading %d photos…</string>
-   <string name="uploading_post_status_paused">Upload paused</string>
-   <string name="uploading_post_status_waiting">Waiting</string>
-   <string name="uploading_post_status_failed_connection">Connection lost</string>
-   <string name="uploading_post_status_upload_video_failed">This video did not upload</string>
-   <string name="uploading_post_status_transcoding_failed">This video cannot be processed</string>
-   <string name="uploading_post_status_uploaded">Post successfully uploaded!</string>
-   <string name="uploading_post_time_left_posting">Posting…</string>
-   <string name="uploading_post_time_time_left">left</string>
-   <string name="uploading_post_time_left_seconds">s</string>
-   <string name="uploading_post_time_left_minutes">m</string>
-   <string name="uploading_post_time_left_hours">h</string>
-   <string name="uploading_post_time_left_more_than_one_day">More than 1 day…</string>
-   <string name="uploading_post_cancel_upload_message">Cancel upload?</string>
-   <string name="uploading_post_cancel_upload_positive_button">Yes</string>
-   <string name="uploading_post_cancel_upload_negative_button">No</string>
-
-   <string name="update">Update</string>
    <string name="add_location">Add location</string>
    <string name="find_your_location">Find your location</string>
 
    <string name="who_is_this">Who is this?</string>
-   <string name="dream_trips_points">DreamTrip points:</string>
-   <string name="rovia_bucks">Rovia Bucks:</string>
-
-   <string name="suggested_photo">You have new photos</string>
-   <string name="suggested_photo_selected_one">%d photo selected</string>
-   <string name="suggested_photo_selected_multiple">%d photos selected</string>
-   <string name="share_recent_photos">Share photos</string>
-
-   <string name="legal_terms">Legal Terms</string>
 
    <string name="location_picker_title">Pick location</string>
    <string name="location_picker_no_play_services">Sorry, but to see the map you should have Google Play services installed on your device.</string>
    <string name="location_picker_could_not_get_location">Could not get current location</string>
 
-   <string name="request_incoming_long">Incoming Requests</string>
-   <string name="request_outgoing_long">Outgoing Requests</string>
-
-   <string name="add_title">Add a title</string>
    <string name="flag_sent_success_msg">Content has been flagged</string>
 
    <string name="location_name_length_message">The location name may not be greater than 255 characters.</string>
-
-   <string name="featured_trip">Featured Trip</string>
-   <string name="sold_out_trip">Sold Out</string>
-
-   <string name="podcasts">Podcasts</string>
-   <string name="delete_cached_podcast_title">Podcast</string>
-   <string name="delete_cached_podcast_text">Are you sure you want delete podcast from local cache?</string>
-   <string name="cancel_cached_podcast_title">Podcast</string>
-   <string name="cancel_cached_podcast_text">Are you sure you want to cancel file download?</string>
-   <string name="audio_app_not_found_exception">Application to play audio not found</string>
-   <string name="error_fail_to_load_podcast">Failed to load podcast</string>
-   <string name="podcasts_button_resume">Resume</string>
-   <string name="podcasts_button_pause">Pause</string>
-   <string name="podcasts_button_stop">Stop</string>
 
    <string name="app_update_alert_title">Update Available</string>
    <string name="app_update_alert_neutral_button">Not now</string>
@@ -552,28 +147,11 @@
    <string name="app_update_alert_optional_update_message">Software updates are ready for the DreamTrips app. For an improved experience update before %s.</string>
    <string name="app_update_alert_force_update_message">Software updates are ready for the DreamTrips app. The update will only take few minutes to install.</string>
 
-   <string name="min">min</string>
    <string name="post_hint_with_hashtag">Say something, add #hashtags</string>
    <string name="add_text">Add text</string>
-   <string name="action_search_by_hashtag">Search by hashtag</string>
-   <string name="error_fail_to_load_feeds_by_hashtag">Failed to load feeds by hashtag</string>
-   <string name="no_feed_by_hashtag">No posts found</string>
-
-   <string name="friends_loading_info_text">Loading your Friends</string>
-
-   <string name="hashtag_one_post">%d post</string>
-   <string name="hashtag_multiple_posts">%d posts</string>
 
    <string name="error_webview_secure_connection">We\'re sorry but DreamTrips app can not establish secure connection.\nWe\'ve been notified about this issue and we\'ll take a look at it shortly.\n\nPlease contact customer support for faster resolution.</string>
 
-   <string name="translate">Translate</string>
-   <string name="translated_from">Translated from %s</string>
-
-   <string name="error_fail_to_translate_text">Failed to translate text</string>
-
-   <string name="book_it_disabled">You must be a DreamTrips Member to book a trip</string>
-
-   <string name="error_fail_to_load_filters">Sorry, failed to load filters</string>
    <string name="flag_content_message">WorldVentures personnel will be notified to review this content for </string>
    <string name="try_again">Try again</string>
 
@@ -585,21 +163,6 @@
 
    <string name="beta_label">Beta</string>
 
-   <string name="documents">Documents</string>
-   <string name="documents_empty_text">Documents could not be loaded at this time.</string>
-
-   <string name="show_original">Show original</string>
-   <string name="error_fail_to_translate_bucket_item">Failed to translate bucket item</string>
-
-   <string name="n_friends_accepted">%d friends accepted</string>
-   <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
-
-   <string name="uploading_post_status_progress_video"><b><i>Step 1 of 2.</i></b> Uploading…</string>
-   <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
-   <string name="uploading_post_status_progress_video_processing_failed">Failed to process. Something wrong with video</string>
-
-   <string name="photo_strip_read_storage_permission_explanation">Need permission to read storage to suggest you media content</string>
-
    <string name="picker_two_media_type_error">Select either photos or a video</string>
    <string name="picker_photo_limit">You can select up to %d photo</string>
    <string name="picker_photo_limit_plural">You can select up to %d photos</string>
@@ -607,11 +170,5 @@
    <string name="picker_video_limit_plural">You can select up to %d videos</string>
    <string name="picker_video_length_limit">You are not allowed to select videos more that %d sec length</string>
 
-   <string name="wv_advantage">WVA</string>
-   <string name="video_delete">Delete video</string>
-   <string name="video_deleted">Video has been Deleted</string>
-   <string name="video_delete_caption">Are you sure you want to delete this video?</string>
-   <string name="error_failed_to_delete_video">Failed to delete video</string>
-   <string name="type_video">Video</string>
-   <string name="type_post">Post</string>
+   <string name="photo_strip_read_storage_permission_explanation">Need permission to read storage to suggest you media content</string>
 </resources>

@@ -37,6 +37,7 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 
+import butterknife.OnClick;
 import dagger.ObjectGraph;
 import rx.Observable;
 

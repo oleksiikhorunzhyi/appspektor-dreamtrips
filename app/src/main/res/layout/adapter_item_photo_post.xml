@@ -19,7 +19,6 @@
             android:id="@+id/attached_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:background="@drawable/background_login"
             />
 
       <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder

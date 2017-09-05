@@ -100,12 +100,6 @@
 
    <string name="feed_share_post_button">Dela ett foto, en video eller en idé</string>
 
-   <string name="terms_and_conditions_title">Användarvillkor</string>
-   <string name="terms_and_conditions_subtitle">Läs och godkänn användarvillkoren nedan för att fortsätta</string>
-   <string name="terms_and_conditions_checkbox">Klicka här för att godkänna användarvillkoren</string>
-   <string name="terms_and_conditions_accept">Registrera dig</string>
-   <string name="terms_and_conditions_reject">Inte nu</string>
-
    <string name="camera">Kamera</string>
    <string name="library">Bibliotek</string>
    <string name="camera_take_a_picture">Ta en bild</string>
@@ -132,7 +126,6 @@
    <string name="error_fail_to_delete_post">Det gick inte att ta bort inlägg</string>
    <string name="error_fail_to_load_flag_reason">Det gick inte att ladda flaggorsaker</string>
    <string name="error_fail_to_flag_item">Det gick inte att flagga objekt</string>
-   <string name="error_failed_to_accept_terms_and_conditions">Det gick inte att godkänna villkor</string>
 
    <string name="add_location">Lägg till plats</string>
    <string name="find_your_location">Hitta din plats</string>
@@ -169,12 +162,12 @@
 
    <string name="beta_label">Beta</string>
 
-   <string name="photo_strip_read_storage_permission_explanation">Behöver tillåtelse att läsa av lagret för att föreslå mediainnehåll</string>
-
    <string name="picker_two_media_type_error">Välj antingen foton eller en video</string>
    <string name="picker_photo_limit">Du kan välja upp till %1$d foto</string>
    <string name="picker_photo_limit_plural">Du kan välja upp till %1$d foton</string>
    <string name="picker_video_limit">Du kan välja upp till %1$d videoklipp</string>
    <string name="picker_video_limit_plural">Du kan välja upp till %1$d videoklipp</string>
    <string name="picker_video_length_limit">Du har inte tillåtelse att välja videor och foton som är mer än %1$d sekunder långa</string>
+
+   <string name="photo_strip_read_storage_permission_explanation">Behöver tillåtelse att läsa av lagret för att föreslå mediainnehåll</string>
 </resources>

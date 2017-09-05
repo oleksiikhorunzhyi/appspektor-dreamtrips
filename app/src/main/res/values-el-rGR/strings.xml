@@ -100,12 +100,6 @@
 
    <string name="feed_share_post_button">Μοιραστείτε φωτό, βίντεο ή σκέψεις</string>
 
-   <string name="terms_and_conditions_title">Όροι και Προϋποθέσεις</string>
-   <string name="terms_and_conditions_subtitle">Διαβάστε και αποδεχτείτε τους παρακάτω όρους και τις προϋποθέσεις για να συνεχίσετε</string>
-   <string name="terms_and_conditions_checkbox">Κάντε κλικ εδώ για να αποδεχτείτε τους όρους και τις προϋποθέσεις</string>
-   <string name="terms_and_conditions_accept">Συγκατάθεση</string>
-   <string name="terms_and_conditions_reject">Όχι τώρα</string>
-
    <string name="camera">Κάμερα</string>
    <string name="library">Βιβλιοθήκη</string>
    <string name="camera_take_a_picture">Τραβήξτε μια φωτογραφία</string>
@@ -132,7 +126,6 @@
    <string name="error_fail_to_delete_post">Αποτυχία διαγραφής δημοσίευσης</string>
    <string name="error_fail_to_load_flag_reason">Αποτυχία φόρτωσης λόγων επισήμανσης</string>
    <string name="error_fail_to_flag_item">Αποτυχία επισήμανσης αντικειμένου</string>
-   <string name="error_failed_to_accept_terms_and_conditions">Αποτυχία αποδοχής όρων και προϋποθέσεων</string>
 
    <string name="add_location">Προσθέστε τοποθεσία</string>
    <string name="find_your_location">Βρείτε την τοποθεσία σας</string>
@@ -169,8 +162,6 @@
 
    <string name="beta_label">Beta</string>
 
-   <string name="photo_strip_read_storage_permission_explanation">Χρειάζεται άδεια για ανάγνωση χώρου αποθήκευσης για να σας προτείνουμε περιεχόμενο πολυμέσων</string>
-
    <string name="picker_two_media_type_error">Επιλέξτε ένα βίντεο ή φωτογραφίες</string>
    <string name="picker_photo_limit">Μπορείτε να επιλέξετε έως %1$d φωτογραφία</string>
    <string name="picker_photo_limit_plural">Μπορείτε να επιλέξετε έως %1$d φωτογραφίες</string>
@@ -178,4 +169,5 @@
    <string name="picker_video_limit_plural">Μπορείτε να επιλέξετε έως %1$d βίντεο</string>
    <string name="picker_video_length_limit">Δεν επιτρέπεται να επιλέξετε βίντεο με διάρκεια περισσότερη από %1$d δευτερόλεπτα</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">Χρειάζεται άδεια για ανάγνωση χώρου αποθήκευσης για να σας προτείνουμε περιεχόμενο πολυμέσων</string>
 </resources>

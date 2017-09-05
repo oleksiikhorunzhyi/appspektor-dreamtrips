@@ -101,12 +101,6 @@
 
    <string name="feed_share_post_button">Share a photo, video or idea</string>
 
-   <string name="terms_and_conditions_title">Terms and Condition</string>
-   <string name="terms_and_conditions_subtitle">Please read and accept the terms and condition below to continue</string>
-   <string name="terms_and_conditions_checkbox">Click here to accept terms and conditions</string>
-   <string name="terms_and_conditions_accept">Opt In</string>
-   <string name="terms_and_conditions_reject">Not Now</string>
-
    <string name="camera">Camera</string>
    <string name="library">Library</string>
    <string name="camera_take_a_picture">Take a picture</string>
@@ -133,7 +127,6 @@
    <string name="error_fail_to_delete_post">Failed to delete post</string>
    <string name="error_fail_to_load_flag_reason">Failed to load flag reasons</string>
    <string name="error_fail_to_flag_item">Failed to flag item</string>
-   <string name="error_failed_to_accept_terms_and_conditions">Failed to accept terms and conditions</string>
 
    <string name="add_location">Add location</string>
    <string name="find_your_location">Find your location</string>

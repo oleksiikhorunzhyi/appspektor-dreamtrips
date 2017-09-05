@@ -100,12 +100,6 @@
 
    <string name="feed_share_post_button">Ossz meg egy képet, videót vagy ötletet</string>
 
-   <string name="terms_and_conditions_title">Használati feltételek</string>
-   <string name="terms_and_conditions_subtitle">A folytatáshoz olvassa el és fogadja el az alábbi feltételeket</string>
-   <string name="terms_and_conditions_checkbox">Kattintson ide a feltételek elfogadásához</string>
-   <string name="terms_and_conditions_accept">Feliratkozás</string>
-   <string name="terms_and_conditions_reject">Most nem</string>
-
    <string name="camera">Kamera</string>
    <string name="library">Könyvtár</string>
    <string name="camera_take_a_picture">Készíts képet</string>
@@ -132,7 +126,6 @@
    <string name="error_fail_to_delete_post">poszt törlés sikertelen</string>
    <string name="error_fail_to_load_flag_reason">Megjelölt okok betöltése sikertelen</string>
    <string name="error_fail_to_flag_item">Tétel megjelölés sikertelen</string>
-   <string name="error_failed_to_accept_terms_and_conditions">Szerződési feltételek elfogadása sikertelen</string>
 
    <string name="add_location">Hely hozzáadás</string>
    <string name="find_your_location">Helyzet megtalálása</string>
@@ -169,12 +162,12 @@
 
    <string name="beta_label">Béta</string>
 
-   <string name="photo_strip_read_storage_permission_explanation">A tárhely beolvasásához és médiatartalom ajánlásához engedélyre van szükség</string>
-
    <string name="picker_two_media_type_error">Válasszon ki képeket vagy egy videót</string>
    <string name="picker_photo_limit">Max. %1$d képet választhat ki</string>
    <string name="picker_photo_limit_plural">Max. %1$d képet választhat ki</string>
    <string name="picker_video_limit">Max. %1$d videót választhat ki</string>
    <string name="picker_video_limit_plural">Max. %1$d videót választhat ki</string>
    <string name="picker_video_length_limit">Nem választhatsz ki %1$d másodpercnél hosszabb videókat</string>
+
+   <string name="photo_strip_read_storage_permission_explanation">A tárhely beolvasásához és médiatartalom ajánlásához engedélyre van szükség</string>
 </resources>

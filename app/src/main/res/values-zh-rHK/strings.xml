@@ -63,7 +63,7 @@
    <string name="social_add_friend_yes">是</string>
    <string name="social_add_friend_no">不是</string>
    <string name="coming_soon">即將推出</string>
-   <string name="loading">載入中…</string>
+   <string name="loading">載入中...</string>
    <string name="post_visibility_public">公開</string>
    <string name="post">帖子</string>
 
@@ -100,12 +100,6 @@
 
    <string name="feed_share_post_button">分享一張照片，一個視頻或者想法</string>
 
-   <string name="terms_and_conditions_title">條款和條件</string>
-   <string name="terms_and_conditions_subtitle">請閱讀並接受以下的條款和條件，然後繼續</string>
-   <string name="terms_and_conditions_checkbox">點擊這裡接受條款和條件</string>
-   <string name="terms_and_conditions_accept">選擇參加</string>
-   <string name="terms_and_conditions_reject">現在不行</string>
-
    <string name="camera">相機</string>
    <string name="library">圖書館</string>
    <string name="camera_take_a_picture">拍攝一張照片</string>
@@ -132,7 +126,6 @@
    <string name="error_fail_to_delete_post">無法刪除帖子</string>
    <string name="error_fail_to_load_flag_reason">無法加載檢舉原因</string>
    <string name="error_fail_to_flag_item">無法檢舉項目</string>
-   <string name="error_failed_to_accept_terms_and_conditions">無法接受條款和條件</string>
 
    <string name="add_location">添加位置</string>
    <string name="find_your_location">找到您的位置</string>
@@ -169,12 +162,12 @@
 
    <string name="beta_label">Beta版</string>
 
-   <string name="photo_strip_read_storage_permission_explanation">需要許可讀取存儲空間，才能建議媒體內容</string>
-
    <string name="picker_two_media_type_error">選擇照片或者是一個視頻</string>
    <string name="picker_photo_limit">您可以選擇最多 %1$d 張照片</string>
    <string name="picker_photo_limit_plural">您可以選擇最多 %1$d 張照片</string>
    <string name="picker_video_limit">您可以選擇最多 %1$d 個視頻</string>
    <string name="picker_video_limit_plural">您可以選擇最多 %1$d 個視頻</string>
    <string name="picker_video_length_limit">您無權選擇時長超過%1$d秒的視頻</string>
+
+   <string name="photo_strip_read_storage_permission_explanation">需要許可讀取存儲空間，才能建議媒體內容</string>
 </resources>

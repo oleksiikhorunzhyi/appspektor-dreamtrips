@@ -25,21 +25,18 @@ import com.worldventures.dreamtrips.modules.picker.view.custom.PickerGridRecycle
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.ProgressView;
 import rx.Observable;
 
-
 public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, M extends BaseMediaPickerViewModel> extends FrameLayout
       implements BaseMediaPickerView<M>, ProgressView, ErrorView {
 
-   @InjectView(R.id.picker_progress) ProgressBar progressBar;
-   @InjectView(R.id.picker_error_view) FrameLayout pickerErrorLayout;
-   @InjectView(R.id.tv_picker_error) TextView tvPickerError;
-   @InjectView(R.id.picker_recycler_view) protected PickerGridRecyclerView pickerRecyclerView;
+   private ProgressBar progressBar;
+   private FrameLayout pickerErrorLayout;
+   private TextView tvPickerError;
+   protected PickerGridRecyclerView pickerRecyclerView;
+
    private MediaPickerAdapter<M> adapter;
    private GridAutofitLayoutManager layoutManager;
    private OnNextClickListener onNextClickListener;
@@ -57,7 +54,8 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    protected void initView() {
       LayoutInflater.from(getContext()).inflate(R.layout.picker_layout, this);
-      ButterKnife.inject(this);
+      initUI();
+      initListeners();
       tvPickerError.setText(getContext().getString(R.string.media_picker_error_contents, getFailedActionText()));
       adapter = new MediaPickerAdapter<>(new ArrayList<>(), new MediaPickerHolderFactoryImpl());
       layoutManager = new GridAutofitLayoutManager(getContext(), getContext().getResources()
@@ -68,9 +66,15 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
             (view, position) -> handleItemClick(position)));
    }
 
-   @OnClick(R.id.btn_picker_retry)
-   public void onRetryClick() {
-      getPresenter().loadItems();
+   private void initUI() {
+      progressBar = (ProgressBar) findViewById(R.id.picker_progress);
+      pickerErrorLayout = (FrameLayout) findViewById(R.id.picker_error_view);
+      tvPickerError = (TextView) findViewById(R.id.tv_picker_error);
+      pickerRecyclerView = (PickerGridRecyclerView) findViewById(R.id.picker_recycler_view);
+   }
+
+   private void initListeners() {
+      findViewById(R.id.btn_picker_retry).setOnClickListener(view -> getPresenter().loadItems());
    }
 
    public MediaPickerAdapter<M> getAdapter() {

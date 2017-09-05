@@ -36,16 +36,13 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import dagger.ObjectGraph;
 import rx.Observable;
 
 public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerDialogView {
 
-   @InjectView(R.id.tv_selected_count) TextView selectedCount;
-   @InjectView(R.id.picker_container) MediaPickerContainer mediaPickerContainer;
+   private TextView selectedCount;
+   private MediaPickerContainer mediaPickerContainer;
 
    @Inject MediaPickerDialogPresenter presenter;
 
@@ -83,16 +80,23 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
       super.onCreate(savedInstanceState);
       objectGraph.inject(this);
       setOnShowListener(dialog -> {
-         ButterKnife.inject(this);
+         initUIWithListeners();
          mediaPickerContainer.setup(providePickerPages());
          presenter.attachView(this);
       });
       setOnDismissListener(dialog -> {
          presenter.detachView(true);
          mediaPickerContainer.reset();
-         ButterKnife.reset(this);
       });
       setOnKeyListener((dialog, keyCode, event) -> presenter.handleKeyPress(keyCode, event));
+   }
+
+   private void initUIWithListeners() {
+      selectedCount = (TextView) findViewById(R.id.tv_selected_count);
+      mediaPickerContainer = (MediaPickerContainer) findViewById(R.id.picker_container);
+
+      findViewById(R.id.btn_done).setOnClickListener(view -> onDone());
+      findViewById(R.id.btn_cancel).setOnClickListener(view -> dismiss());
    }
 
    private TreeMap<MediaPickerStep, BaseMediaPickerLayout> providePickerPages() {
@@ -125,16 +129,10 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    }
 
    @Override
-   @OnClick(R.id.btn_done)
    public void onDone() {
       if (onDoneListener != null) {
          onDoneListener.onDone(presenter.providePickerResult());
       }
-      dismiss();
-   }
-
-   @OnClick(R.id.btn_cancel)
-   public void onCancel() {
       dismiss();
    }
 

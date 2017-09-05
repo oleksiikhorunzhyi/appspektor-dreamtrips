@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper.CommandInjector;
+import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
 import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
@@ -27,7 +28,8 @@ import io.techery.janet.SmartCardActionService;
 import io.techery.janet.smartcard.client.SmartCardClient;
 
 @Module(includes = {
-      WalletActionStorageModule.class
+      WalletActionStorageModule.class,
+      WalletApiTypeAdapterModule.class,
 }, library = true, complete = false)
 public class WalletJanetModule {
 
@@ -71,6 +73,12 @@ public class WalletJanetModule {
       return service;
    }
 
+
+   @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
+   ActionService provideApiService(DreamtripsApiProvider provider) {
+      return provider.createApiService();
+   }
 
    @Singleton
    @Provides

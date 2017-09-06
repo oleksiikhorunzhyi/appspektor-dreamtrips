@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,7 +22,7 @@ import icepick.Icepick;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends BaseActivity implements ActivityPresenter.View {
+public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends LegacyBaseActivity implements ActivityPresenter.View {
 
    private PM presenter;
    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
@@ -145,11 +144,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
          getPresentationModel().dropView();
       }
       super.onDestroy();
-   }
-
-   @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
    }
 
    @Override

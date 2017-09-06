@@ -4,31 +4,29 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.bluelinelabs.conductor.Router;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
-import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
-import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -37,7 +35,9 @@ import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocation
 import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorImpl;
@@ -241,11 +241,9 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
 @Module(
       includes = {
             WalletExternalActivityModule.class,
-            MediaPickerModule.class
       },
       injects = {
             WalletActivity.class,
-            WalletActivityPresenter.class,
             WalletStartScreenImpl.class,
             WalletProvisioningBlockedScreenImpl.class,
             WizardSplashScreenImpl.class,
@@ -327,6 +325,14 @@ public class WalletActivityModule {
    @Singleton
    WalletCropImageService provideWalletCropImageDelegate() {
       return new WalletCropImageServiceImpl();
+   }
+
+   @Provides
+   WalletActivityPresenter provideWalletActivityPresenter(SmartCardSyncManager smartCardSyncManager,
+         SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler, SmartCardInteractor interactor,
+         WalletBluetoothService bluetoothService, LogoutInteractor logoutInteractor) {
+      return new WalletActivityPresenterImpl(smartCardSyncManager, smartCardAnalyticErrorHandler,
+            interactor, bluetoothService, logoutInteractor);
    }
 
    @Provides
@@ -481,11 +487,11 @@ public class WalletActivityModule {
    CardListPresenter provideCardListPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
          WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
-         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper,
+         WalletNavigationDelegate navigationDelegate, WalletFeatureHelper walletFeatureHelper,
          LocationTrackingManager locationTrackingManager) {
       return new CardListPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor,
             firmwareInteractor, analyticsInteractor, factoryResetInteractor,
-            navigationDrawerPresenter, walletFeatureHelper, locationTrackingManager);
+            navigationDelegate, walletFeatureHelper, locationTrackingManager);
    }
 
    @Provides

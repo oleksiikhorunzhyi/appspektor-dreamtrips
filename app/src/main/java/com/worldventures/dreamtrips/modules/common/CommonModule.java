@@ -49,6 +49,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDi
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
@@ -70,7 +71,8 @@ import dagger.Provides;
 
 @Module(
       includes = {
-            MediaPickerModule.class
+            MediaPickerModule.class,
+            FacebookModule.class,
       },
       injects = {
             ActivityPresenter.class,

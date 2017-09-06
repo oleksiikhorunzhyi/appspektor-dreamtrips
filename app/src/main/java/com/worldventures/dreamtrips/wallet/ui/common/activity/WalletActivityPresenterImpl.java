@@ -1,8 +1,8 @@
-package com.worldventures.dreamtrips.wallet.ui.common.base;
+package com.worldventures.dreamtrips.wallet.ui.common.activity;
 
-import android.os.Bundle;
-
-import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
@@ -11,28 +11,36 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
-import javax.inject.Inject;
-
 import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
+import rx.Observable;
 import timber.log.Timber;
 
-public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPresenter.View> {
+public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivityView> implements WalletActivityPresenter {
 
-   // Initialization
-   @Inject SmartCardSyncManager smartCardSyncManager;
-   @Inject SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler;
-   //
+   // Initialization begin
+   @SuppressWarnings("all") private final SmartCardSyncManager smartCardSyncManager;
+   @SuppressWarnings("all") private final SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler;
+   //  Initialization end
 
-   @Inject SmartCardInteractor interactor;
-   @Inject WalletBluetoothService bluetoothService;
+   private final SmartCardInteractor interactor;
+   private final WalletBluetoothService bluetoothService;
+   private final LogoutInteractor logoutInteractor;
+
+   public WalletActivityPresenterImpl(SmartCardSyncManager smartCardSyncManager, SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler,
+         SmartCardInteractor interactor, WalletBluetoothService bluetoothService, LogoutInteractor logoutInteractor) {
+      this.smartCardSyncManager = smartCardSyncManager;
+      this.smartCardAnalyticErrorHandler = smartCardAnalyticErrorHandler;
+      this.interactor = interactor;
+      this.bluetoothService = bluetoothService;
+      this.logoutInteractor = logoutInteractor;
+   }
 
    @Override
-   public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
+   public void attachView(WalletActivityView view) {
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
-            .compose(bindView())
+            .compose(view.lifecycle())
             .map(Command::getResult)
             .filter(smartCard -> smartCard.cardStatus().isActive())
             .flatMap(smartCard -> interactor.connectActionPipe()
@@ -41,28 +49,25 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
                   throwable -> Timber.e(throwable, "Connect to Smart Card on Wallet enter"));
    }
 
-   @Override
-   public void onStart() {
-      super.onStart();
-      startBluetoothTracking();
-   }
-
-   private void startBluetoothTracking() {
+   public void bindToBluetooth(Observable<Void> terminateObservable) {
       bluetoothService.observeEnablesState()
             .startWith(bluetoothService.isEnable())
-            .compose(bindUntilStop())
+            .takeUntil(terminateObservable)
             .distinctUntilChanged()
             .subscribe(this::onBluetoothStateChanged);
    }
 
-   private void onBluetoothStateChanged(boolean state) {
-      if (!state && view != null) view.openBluetoothSettings();
+   public void logout() {
+      logoutInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    @Override
-   public void dropView() {
-      super.dropView();
+   public void detachView(boolean retainInstance) {
       auxiliaryDisconnectSmartCard();
+   }
+
+   private void onBluetoothStateChanged(boolean state) {
+      if (!state && getView() != null) getView().openBluetoothSettings();
    }
 
    private void auxiliaryDisconnectSmartCard() {
@@ -71,10 +76,5 @@ public class WalletActivityPresenter extends ActivityPresenter<WalletActivityPre
             .filter(smartCardStatus -> smartCardStatus.connectionStatus().isConnected())
             .subscribe(smartCardStatus -> interactor.disconnectPipe().send(new DisconnectAction()),
                   throwable -> Timber.e(throwable, "Disconnect on Wallet exit"));
-   }
-
-   public interface View extends ActivityPresenter.View {
-
-      void openBluetoothSettings();
    }
 }

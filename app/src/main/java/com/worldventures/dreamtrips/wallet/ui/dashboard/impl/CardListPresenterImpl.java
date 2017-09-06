@@ -6,8 +6,6 @@ import android.view.View;
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
@@ -24,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
@@ -38,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStat
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
+import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -72,7 +72,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private final RecordInteractor recordInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   private final NavigationDrawerPresenter navigationDrawerPresenter;
+   private final WalletNavigationDelegate navigationDelegate;
    private final WalletFeatureHelper featureHelper;
    private final CheckPinDelegate checkPinDelegate;
    private final CardListStackConverter cardListStackConverter;
@@ -83,13 +83,13 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    public CardListPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
          WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
-         NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper,
+         WalletNavigationDelegate navigationDelegate, WalletFeatureHelper walletFeatureHelper,
          LocationTrackingManager locationTrackingManager) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.navigationDrawerPresenter = navigationDrawerPresenter;
+      this.navigationDelegate = navigationDelegate;
       this.featureHelper = walletFeatureHelper;
       this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.GENERAL);
@@ -275,7 +275,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @Override
    public void navigationClick() {
-      navigationDrawerPresenter.openDrawer();
+      navigationDelegate.openDrawer();
    }
 
    @Override

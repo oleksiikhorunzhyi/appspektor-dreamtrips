@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
@@ -44,5 +45,10 @@ class CoreNavigatorImpl implements CoreNavigator {
             .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, launchComponent)
             .putExtra(PlayerActivity.EXTRA_LANGUAGE, videoLanguage);
       activity.startActivity(intent);
+   }
+
+   @Override
+   public void openLoginActivity() {
+      new ActivityRouter(activity).openLaunch();
    }
 }

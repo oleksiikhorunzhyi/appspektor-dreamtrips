@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
-import com.worldventures.dreamtrips.modules.feed.storage.command.AccountTimelineStorageCommand;
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
@@ -47,10 +46,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
-public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User>
+public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
       implements UploadingListenerPresenter {
 
    private static final int AVATAR_MEDIA_REQUEST_ID = 155322;
@@ -75,15 +75,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @State boolean shouldReload;
    @State int mediaRequestId;
 
-   private List<PostCompoundOperationModel> postUploads;
+   List<PostCompoundOperationModel> postUploads;
 
    public AccountPresenter() {
       super();
    }
 
    @Override
-   public void takeView(View view) {
-      super.takeView(view);
+   public void onViewTaken() {
       socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
       TrackingHelper.profile(getAccountUserId());
       subscribeNotificationsBadgeUpdates();
@@ -112,13 +111,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       user = getAccount();
    }
 
-   private void subscribeNotificationsBadgeUpdates() {
+   void subscribeNotificationsBadgeUpdates() {
       notificationCountEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
             .subscribe(o -> view.updateBadgeCount(db.getFriendsRequestsCount()));
    }
 
-   private void subscribeToAvatarUpdates() {
+   void subscribeToAvatarUpdates() {
       profileInteractor.uploadAvatarPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
@@ -133,7 +132,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             );
    }
 
-   private void subscribeToBackgroundUpdates() {
+   void subscribeToBackgroundUpdates() {
       profileInteractor.uploadBackgroundPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
@@ -148,7 +147,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             );
    }
 
-   private void subscribeToMediaPicker() {
+   void subscribeToMediaPicker() {
       mediaPickerEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
             .subscribe(mediaAttachment -> {
@@ -157,38 +156,37 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             }, error -> Timber.e(error, ""));
    }
 
-   private void subscribeRefreshFeeds() {
+   void subscribeRefreshFeeds() {
       feedInteractor.getRefreshAccountTimelinePipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.Refresh>()
-                  .onFail(this::refreshFeedError)
-                  .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+                  .onSuccess(action -> refreshFeedSucceed(action.getResult()))
+                  .onFail(this::refreshFeedError));
    }
 
-   private void subscribeToStorage() {
-      accountTimelineStorageDelegate.startUpdatingStorage()
+   void subscribeToStorage() {
+      accountTimelineStorageDelegate.observeStorageCommand()
             .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<AccountTimelineStorageCommand>()
-                  .onSuccess(storageCommand -> timeLineUpdated(storageCommand.getResult()))
-                  .onFail(this::handleError));
+            .map(Command::getResult)
+            .subscribe(this::timeLineUpdated, this::handleError);
    }
 
-   private void timeLineUpdated(List<FeedItem> items) {
+   void timeLineUpdated(List<FeedItem> items) {
       assetStatusInteractor.feedItemsVideoProcessingPipe().send(new FeedItemsVideoProcessingStatusCommand(items));
       onItemsChanged(items);
    }
 
-   private void subscribeLoadNextFeeds() {
+   void subscribeLoadNextFeeds() {
       feedInteractor.getLoadNextAccountTimelinePipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.LoadNext>()
-                  .onFail(this::loadMoreItemsError)
-                  .onSuccess(action -> addFeedItems(action.getResult())));
+                  .onSuccess(action -> addFeedItems(action.getResult()))
+                  .onFail(this::loadMoreItemsError));
    }
 
-   private void subscribeToBackgroundUploadingOperations() {
+   void subscribeToBackgroundUploadingOperations() {
       compoundOperationsInteractor.compoundOperationsPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
@@ -219,7 +217,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onFail(this::handleError));
    }
 
-   private void onAvatarUploadSuccess() {
+   void onAvatarUploadSuccess() {
       TrackingHelper.profileUploadFinish(getAccountUserId());
       UserSession userSession = appSessionHolder.get().get();
       User currentUser = userSession.getUser();
@@ -231,7 +229,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
    }
 
-   private void onCoverUploadSuccess() {
+   void onCoverUploadSuccess() {
       TrackingHelper.profileUploadFinish(getAccountUserId());
       UserSession userSession = appSessionHolder.get().get();
       User currentUser = userSession.getUser();
@@ -247,7 +245,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       logoutInteractor.logoutPipe().send(new LogoutCommand());
    }
 
-   private void connectToCroppedImageStream() {
+   void connectToCroppedImageStream() {
       socialCropImageManager.getCroppedImagesStream()
             .compose(bindViewToMainComposer())
             .subscribe(fileNotification -> {

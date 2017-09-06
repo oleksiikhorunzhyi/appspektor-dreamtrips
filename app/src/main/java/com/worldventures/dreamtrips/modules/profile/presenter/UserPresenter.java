@@ -33,11 +33,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
+public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
@@ -65,8 +66,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    }
 
    @Override
-   public void takeView(View view) {
-      super.takeView(view);
+   public void onViewTaken() {
+      super.onViewTaken();
       subscribeToStorage();
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
@@ -85,26 +86,29 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       }
    }
 
-   private void subscribeToStorage() {
+   void subscribeToStorage() {
       userTimelineStorageDelegate.setUserId(user.getId());
-      userTimelineStorageDelegate.startUpdatingStorage()
+      userTimelineStorageDelegate.observeStorageCommand()
             .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<UserTimelineStorageCommand>()
-                  .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
-                  .onFail(this::handleError));
+            .map(Command::getResult)
+            .subscribe(this::onItemsChanged, this::handleError);
    }
 
-   private void subscribeRefreshFeeds() {
-      view.bindUntilDropView(feedInteractor.getRefreshUserTimelinePipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.Refresh>().onFail(this::refreshFeedError)
-                  .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+   void subscribeRefreshFeeds() {
+      feedInteractor.getRefreshUserTimelinePipe()
+            .observe().compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.Refresh>()
+                  .onSuccess(action -> refreshFeedSucceed(action.getResult()))
+                  .onFail(this::refreshFeedError));
+
    }
 
-
-   private void subscribeLoadNextFeeds() {
-      view.bindUntilDropView(feedInteractor.getLoadNextUserTimelinePipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.LoadNext>().onFail(this::loadMoreItemsError)
-                  .onSuccess(action -> addFeedItems(action.getResult())));
+   void subscribeLoadNextFeeds() {
+      feedInteractor.getLoadNextUserTimelinePipe()
+            .observe().compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.LoadNext>()
+                  .onSuccess(action -> addFeedItems(action.getResult()))
+                  .onFail(this::loadMoreItemsError));
    }
 
    @Override
@@ -234,7 +238,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       handleError(commandWithError, throwable);
    }
 
-   private void subscribeToChangingCircles() {
+   void subscribeToChangingCircles() {
       profileInteractor.addFriendToCirclesPipe().observeSuccess()
             .compose(bindViewToMainComposer())
             .subscribe(command -> {

@@ -151,7 +151,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
 
    @Override
    public void cropImage(SocialCropImageManager socialCropImageManager, String path) {
-      socialCropImageManager.cropImage(this, path);
+      socialCropImageManager.cropImage(getActivity(), this, path);
    }
 
    @Override

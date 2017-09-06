@@ -197,8 +197,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context) {
-      return new SocialCropImageManager(context);
+   SocialCropImageManager provideGlobalConfigManager() {
+      return new SocialCropImageManager();
    }
 
    @Provides

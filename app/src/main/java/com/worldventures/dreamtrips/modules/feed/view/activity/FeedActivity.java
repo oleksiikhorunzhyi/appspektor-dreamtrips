@@ -12,11 +12,10 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.SocialAppModule;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
-import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 
 import butterknife.InjectView;
 
@@ -35,7 +34,7 @@ public class FeedActivity extends SocialDrawerActivity<ActivityPresenter> {
       if (feedActivityBundle != null) {
          itemSelected(rootComponentsProvider.getComponentByKey(feedActivityBundle.componentDescriptionKey));
       } else {
-         itemSelected(rootComponentsProvider.getComponentByKey(FeedModule.FEED));
+         itemSelected(rootComponentsProvider.getComponentByKey(SocialAppModule.FEED));
       }
    }
 
@@ -77,8 +76,8 @@ public class FeedActivity extends SocialDrawerActivity<ActivityPresenter> {
    @Override
    protected void itemSelected(ComponentDescription component) {
       switch (component.getKey()) {
-         case FeedModule.FEED:
-         case ProfileModule.ACCOUNT_PROFILE:
+         case SocialAppModule.FEED:
+         case SocialAppModule.ACCOUNT_PROFILE:
             currentComponent = component;
             makeActionBarGone(component.skipGeneralToolbar());
             updateActionBar(component);

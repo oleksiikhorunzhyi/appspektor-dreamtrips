@@ -3,9 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.messenger.ui.fragment.PhotoAttachmentPagerFragment;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
@@ -105,19 +102,7 @@ import dagger.Provides;
       },
       complete = false,
       library = true)
-public class TripImageModule {
-   public static final String TRIP_IMAGES = Route.TRIP_TAB_IMAGES.name();
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTripImagesComponent() {
-      return new ComponentDescription.Builder()
-            .key(TRIP_IMAGES)
-            .navMenuTitle(R.string.trip_images)
-            .toolbarTitle(R.string.trip_images)
-            .icon(R.drawable.ic_trip_images)
-            .fragmentClass(TripImagesTabFragment.class)
-            .build();
-   }
+public class TripImagesModule {
 
    @Provides
    @Singleton

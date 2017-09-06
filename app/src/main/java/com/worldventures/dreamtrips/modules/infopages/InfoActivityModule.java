@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresenter;
@@ -37,7 +34,6 @@ import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
       injects = {OtaFragment.class,
@@ -77,42 +73,5 @@ import dagger.Provides;
             HelpDocumentListPresenter.class},
       complete = false,
       library = true)
-public class InfoModule {
-
-   public static final String HELP = Route.HELP.name();
-   public static final String TERMS = Route.LEGAL_TERMS.name();
-   public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTermsOfServiceComponent() {
-      return new ComponentDescription.Builder()
-            .key(TERMS)
-            .navMenuTitle(R.string.legal_terms)
-            .toolbarTitle(R.string.legal_terms)
-            .icon(R.drawable.ic_termsconditions)
-            .fragmentClass(LegalTermsFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideHelpComponent() {
-      return new ComponentDescription.Builder()
-            .key(HELP)
-            .navMenuTitle(R.string.help)
-            .toolbarTitle(R.string.help)
-            .icon(R.drawable.ic_help)
-            .fragmentClass(HelpFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideFeedbackComponent() {
-      return new ComponentDescription.Builder()
-            .key(SEND_FEEDBACK)
-            .navMenuTitle(R.string.send_feedback)
-            .toolbarTitle(R.string.send_feedback)
-            .icon(R.drawable.ic_send_feedback)
-            .fragmentClass(SendFeedbackFragment.class)
-            .build();
-   }
+public class InfoActivityModule {
 }

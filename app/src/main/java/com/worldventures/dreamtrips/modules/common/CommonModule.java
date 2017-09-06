@@ -57,7 +57,7 @@ import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
-import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
+import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +125,7 @@ public class CommonModule {
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.FEED));
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(SocialAppModule.TRIPS));
       if (!ViewUtils.isTablet(context)) {
-         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletAppModule.WALLET));
+         featureManager.with(Feature.WALLET, () -> activeComponents.add(SmartCardModule.WALLET));
       }
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerModule.MESSENGER));

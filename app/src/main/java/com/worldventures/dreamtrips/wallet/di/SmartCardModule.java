@@ -6,6 +6,8 @@ import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
@@ -43,6 +45,20 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
       }, complete = false, library = true
 )
 public class SmartCardModule {
+
+   public static final String WALLET = "Wallet";
+
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideWalletComponent() {
+      return new ComponentDescription.Builder()
+            .key(WALLET)
+            .navMenuTitle(R.string.wallet)
+            .toolbarTitle(R.string.wallet)
+            .icon(R.drawable.ic_wallet)
+            .skipGeneralToolbar(true)
+            .shouldFinishMainActivity(true)
+            .build();
+   }
 
    @Provides
    NxtSmartCardClient provideNxtSmartCardClient(@ForApplication Context context) {

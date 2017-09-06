@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.repository;
+package com.worldventures.dreamtrips.wallet.domain.storage;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -20,7 +20,7 @@ public class SnappyCrypter {
    private final Kryo kryo;
    private final HybridAndroidCrypter crypter;
 
-   public SnappyCrypter(Kryo kryo, HybridAndroidCrypter crypter) {
+   SnappyCrypter(Kryo kryo, HybridAndroidCrypter crypter) {
       this.kryo = kryo;
       this.crypter = crypter;
    }

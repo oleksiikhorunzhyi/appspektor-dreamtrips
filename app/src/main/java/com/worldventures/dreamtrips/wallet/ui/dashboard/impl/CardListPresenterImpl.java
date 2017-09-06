@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -71,7 +71,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    private final RecordInteractor recordInteractor;
    private final FirmwareInteractor firmwareInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final NavigationDrawerPresenter navigationDrawerPresenter;
    private final WalletFeatureHelper featureHelper;
    private final CheckPinDelegate checkPinDelegate;
@@ -82,7 +82,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    public CardListPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
          NavigationDrawerPresenter navigationDrawerPresenter, WalletFeatureHelper walletFeatureHelper,
          LocationTrackingManager locationTrackingManager) {
       super(navigator, smartCardInteractor, networkService);
@@ -239,7 +239,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .subscribe(
                   cards -> {
                      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new WalletHomeAction(cards));
-                     analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+                     analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand);
                   }, throwable -> Timber.e(throwable, "")
             );
    }
@@ -325,7 +325,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    private void trackAddCard() {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
    }
 
    private void observeRecordsChanges() {

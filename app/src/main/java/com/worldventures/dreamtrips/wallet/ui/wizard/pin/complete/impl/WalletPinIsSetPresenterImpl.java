@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -17,11 +17,11 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIsSetScreen> implements WalletPinIsSetPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final WizardInteractor wizardInteractor;
 
    public WalletPinIsSetPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         AnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.wizardInteractor = wizardInteractor;
@@ -30,7 +30,7 @@ public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIs
    @Override
    public void attachView(WalletPinIsSetScreen view) {
       super.attachView(view);
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(new PinWasSetAction()));
    }
 

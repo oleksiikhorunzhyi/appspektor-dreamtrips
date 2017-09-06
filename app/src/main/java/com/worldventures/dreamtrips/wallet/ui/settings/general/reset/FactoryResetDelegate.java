@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.reset;
 
 
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignAction;
@@ -17,12 +17,12 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class FactoryResetDelegate {
    private final FactoryResetInteractor factoryResetInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final PinMode pinMode;
    protected final Navigator navigator;
 
    private FactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
+         WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
       this.factoryResetInteractor = factoryResetInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.navigator = navigator;
@@ -30,12 +30,12 @@ public abstract class FactoryResetDelegate {
    }
 
    public static FactoryResetDelegate create(FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action) {
+         WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action) {
       return FactoryResetDelegate.create(factoryResetInteractor, analyticsInteractor, navigator, action, PinMode.ENABLED);
    }
 
    public static FactoryResetDelegate create(FactoryResetInteractor factoryResetInteractor,
-         AnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action, PinMode pinMode) {
+         WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, FactoryResetAction action, PinMode pinMode) {
       if (action == FactoryResetAction.GENERAL) {
          return new GeneralFactoryResetDelegate(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
       } else {
@@ -44,7 +44,7 @@ public abstract class FactoryResetDelegate {
    }
 
    protected final void trackScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(trackScreenAnalyticsAction()));
    }
 
@@ -95,7 +95,7 @@ public abstract class FactoryResetDelegate {
    private static class GeneralFactoryResetDelegate extends FactoryResetDelegate {
 
       private GeneralFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
-            AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
+            WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
          super(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
       }
 
@@ -135,7 +135,7 @@ public abstract class FactoryResetDelegate {
    private static class NewCardFactoryResetDelegate extends FactoryResetDelegate {
 
       private NewCardFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
-            AnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
+            WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
          super(factoryResetInteractor, analyticsInteractor, navigator, pinMode);
       }
 

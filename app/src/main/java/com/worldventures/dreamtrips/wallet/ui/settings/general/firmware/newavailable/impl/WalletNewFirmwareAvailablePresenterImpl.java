@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavai
 
 
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkUpdateAction;
@@ -27,10 +27,10 @@ import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkSto
 public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl<WalletNewFirmwareAvailableScreen> implements WalletNewFirmwareAvailablePresenter {
 
    private final FirmwareInteractor firmwareInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public WalletNewFirmwareAvailablePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;

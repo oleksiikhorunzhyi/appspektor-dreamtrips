@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkVersionAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
@@ -14,10 +14,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate
 
 public class WalletUpToDateFirmwarePresenterImpl extends WalletPresenterImpl<WalletUpToDateFirmwareScreen> implements WalletUpToDateFirmwarePresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public WalletUpToDateFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
    }

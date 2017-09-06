@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.im
 
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.BluetoothDisabledAction;
@@ -31,11 +31,11 @@ import timber.log.Timber;
 public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNewCardScreen> implements PreCheckNewCardPresenter {
 
    private final WalletBluetoothService bluetoothService;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final CheckPinDelegate checkPinDelegate;
 
    public PreCheckNewCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
          FactoryResetInteractor factoryResetInteractor, WalletBluetoothService bluetoothService) {
       super(navigator, smartCardInteractor, networkService);
       this.bluetoothService = bluetoothService;
@@ -99,7 +99,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
 
    private void sendAnalyticAction(WalletAnalyticsAction action) {
       analyticsInteractor
-            .walletAnalyticsCommandPipe()
+            .walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(action));
    }
 

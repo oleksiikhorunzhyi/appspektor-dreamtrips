@@ -12,12 +12,12 @@ import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoord
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.*
@@ -151,7 +151,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 }) {
    companion object {
       lateinit var janet: Janet
-      lateinit var mockDb: SnappyRepository
+      lateinit var mockDb: WalletStorage
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
       lateinit var walletDetectLocationService: WalletDetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
@@ -186,7 +186,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                .build()
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(WalletStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { createMappery() }
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
@@ -272,7 +272,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          return mockedSmartCard
       }
 
-      fun createMockDb(): SnappyRepository = spy()
+      fun createMockDb(): WalletStorage = spy()
 
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 

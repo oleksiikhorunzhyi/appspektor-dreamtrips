@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
-
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;

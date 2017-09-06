@@ -4,7 +4,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayLocateCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayMapAnalyticsAction;
@@ -32,13 +32,13 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    private final PermissionDispatcher permissionDispatcher;
    private final SmartCardLocationInteractor smartCardLocationInteractor;
    private final WalletDetectLocationService locationService;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final LocationScreenComponent locationScreenComponent;
 
    public LostCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, PermissionDispatcher permissionDispatcher,
          SmartCardLocationInteractor smartCardLocationInteractor, WalletDetectLocationService walletDetectLocationService,
-         LocationScreenComponent locationScreenComponent, AnalyticsInteractor analyticsInteractor) {
+         LocationScreenComponent locationScreenComponent, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.permissionDispatcher = permissionDispatcher;
       this.smartCardLocationInteractor = smartCardLocationInteractor;
@@ -194,13 +194,13 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void sendTrackScreenAction(boolean trackingEnabled) {
-      analyticsInteractor.locateCardAnalyticsCommandActionPipe()
+      analyticsInteractor.locateCardAnalyticsPipe()
             .send(new LocateCardAnalyticsCommand(
                   trackingEnabled ? new DisplayMapAnalyticsAction() : new DisplayLocateCardAnalyticsAction()));
    }
 
    private void trackSwitchStateChanged(boolean enableTracking) {
-      analyticsInteractor.locateCardAnalyticsCommandActionPipe()
+      analyticsInteractor.locateCardAnalyticsPipe()
             .send(new LocateCardAnalyticsCommand(enableTracking
                   ? new LocateEnabledAnalyticsAction() : new LocateDisabledAnalyticsAction()));
    }

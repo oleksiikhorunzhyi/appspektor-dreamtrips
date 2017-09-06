@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.AutoClearAction;
@@ -20,11 +20,11 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<WalletAutoClearCardsScreen> implements WalletAutoClearCardsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final AutoClearSmartCardItemProvider itemProvider;
 
    public WalletAutoClearCardsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider autoClearSmartCardItemProvider) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider autoClearSmartCardItemProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.itemProvider = autoClearSmartCardItemProvider;
@@ -89,6 +89,6 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
    }
 
    private void trackAutoClear(WalletAnalyticsAction autoClearAction) {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(autoClearAction));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(autoClearAction));
    }
 }

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.DisableDefaultAction;
@@ -20,11 +20,11 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<WalletDisableDefaultCardScreen> implements WalletDisableDefaultCardPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final DisableDefaultCardItemProvider itemProvider;
 
    public WalletDisableDefaultCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.itemProvider = itemProvider;
@@ -90,7 +90,7 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
    }
 
    private void trackDisableDelay(WalletAnalyticsAction disableCardDelayAction) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(disableCardDelayAction));
    }
 }

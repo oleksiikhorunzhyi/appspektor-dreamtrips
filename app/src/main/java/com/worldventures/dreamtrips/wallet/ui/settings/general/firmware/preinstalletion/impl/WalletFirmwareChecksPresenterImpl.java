@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateChecksVisitAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateInstallAction;
@@ -34,11 +34,11 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
 
    private final WalletBluetoothService bluetoothService;
    private final FirmwareInteractor firmwareInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public WalletFirmwareChecksPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WalletBluetoothService bluetoothService, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor) {
+         WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.bluetoothService = bluetoothService;
       this.firmwareInteractor = firmwareInteractor;

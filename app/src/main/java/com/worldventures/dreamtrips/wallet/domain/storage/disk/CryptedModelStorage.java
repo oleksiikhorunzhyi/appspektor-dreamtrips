@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.storage.disk;
 
-import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
+import com.worldventures.dreamtrips.wallet.domain.storage.SnappyCrypter;
 
 import java.util.Collections;
 import java.util.List;

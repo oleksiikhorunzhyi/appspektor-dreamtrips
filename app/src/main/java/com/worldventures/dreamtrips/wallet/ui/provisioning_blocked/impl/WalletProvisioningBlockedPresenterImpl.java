@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.SupportDeviceAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -21,10 +21,10 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<WalletProvisioningBlockedScreen> implements WalletProvisioningBlockedPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public WalletProvisioningBlockedPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -32,7 +32,7 @@ public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<
    @Override
    public void attachView(WalletProvisioningBlockedScreen view) {
       super.attachView(view);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new SupportDeviceAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new SupportDeviceAction()));
 
       observeSupportedDevices();
       askAllSupportedDevices();

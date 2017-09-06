@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.domain.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import android.support.annotation.Nullable;
 
@@ -6,14 +6,14 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.AboutSmartCardData;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.WalletPersistentStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.FirmwareDataStorage;
 import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 
 public class AboutSmartCardDataActionStorage implements ActionStorage<AboutSmartCardData> {
 
-   private WalletPersistentStorage persistentStorage;
+   private FirmwareDataStorage persistentStorage;
 
-   public AboutSmartCardDataActionStorage(WalletPersistentStorage persistentStorage) {
+   public AboutSmartCardDataActionStorage(FirmwareDataStorage persistentStorage) {
       this.persistentStorage = persistentStorage;
    }
 

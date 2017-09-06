@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl;
 
 
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -20,14 +20,14 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
 
    private final WizardInteractor wizardInteractor;
    private final RecordInteractor recordInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private WizardAssignDelegate wizardAssignDelegate;
 
    public WizardAssignUserPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-         AnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;

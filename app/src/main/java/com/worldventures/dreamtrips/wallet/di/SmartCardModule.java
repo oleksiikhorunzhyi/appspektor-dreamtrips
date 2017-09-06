@@ -10,12 +10,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
+import com.worldventures.dreamtrips.wallet.di.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
-import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorageModule;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInitializer;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.logout.WalletLogoutActionModule;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull;
 
@@ -37,11 +40,10 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
             WalletExternalModule.class,
             WalletJanetModule.class,
             WalletServiceModule.class,
-            StorageModule.class,
-            JanetNxtModule.class
-      },
-      injects = {
-            SmartCardInitializer.class,
+            WalletStorageModule.class,
+            JanetNxtModule.class,
+            WalletLogoutActionModule.class,
+            WalletInitializerModule.class,
       }, complete = false, library = true
 )
 public class SmartCardModule {
@@ -66,7 +68,7 @@ public class SmartCardModule {
    }
 
    @Provides
-   MockSmartCardClient provideMockSmartCardClient(SnappyRepository db) {
+   MockSmartCardClient provideMockSmartCardClient(WalletStorage db) {
       return new MockSmartCardClient(() -> PersistentDeviceStorage.load(db));
    }
 
@@ -81,11 +83,6 @@ public class SmartCardModule {
    WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
       //      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
       return new WalletFeatureHelperFull();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   public AppInitializer provideSmartCardInitializer() {
-      return new SmartCardInitializer();
    }
 
    @Provides

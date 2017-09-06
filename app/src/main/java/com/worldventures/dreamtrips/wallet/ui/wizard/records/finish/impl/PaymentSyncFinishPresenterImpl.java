@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupCompleteAction;
@@ -18,10 +18,10 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncF
 public class PaymentSyncFinishPresenterImpl extends WalletPresenterImpl<PaymentSyncFinishScreen> implements PaymentSyncFinishPresenter {
 
    private final WizardInteractor wizardInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public PaymentSyncFinishPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor) {
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -45,6 +45,6 @@ public class PaymentSyncFinishPresenterImpl extends WalletPresenterImpl<PaymentS
    }
 
    private void sendAnalytic(WalletAnalyticsAction action) {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(action));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(action));
    }
 }

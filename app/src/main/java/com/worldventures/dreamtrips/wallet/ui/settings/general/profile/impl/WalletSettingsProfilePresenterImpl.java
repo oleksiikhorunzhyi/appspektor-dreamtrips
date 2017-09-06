@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -41,7 +41,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    private SmartCardUser user;
 
    public WalletSettingsProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, WalletSocialInfoProvider socialInfoProvider) {
       super(navigator, smartCardInteractor, networkService);
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;

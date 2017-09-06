@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -43,12 +43,12 @@ import static com.worldventures.dreamtrips.wallet.util.WalletRecordUtil.findReco
 public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScreen> implements CardDetailsPresenter {
 
    private final RecordInteractor recordInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    private RecordDetailViewModel recordDetailViewModel;
 
    public CardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -98,7 +98,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void trackScreen() {
-      fetchRecord(recordDetailViewModel.getRecordId(), record -> analyticsInteractor.paycardAnalyticsCommandPipe()
+      fetchRecord(recordDetailViewModel.getRecordId(), record -> analyticsInteractor.paycardAnalyticsPipe()
             .send(new PaycardAnalyticsCommand(new CardDetailsAction(record.nickName()), record)));
    }
 
@@ -227,7 +227,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void trackSetAsDefault() {
       fetchRecord(recordDetailViewModel.getRecordId(),
-            record -> analyticsInteractor.walletAnalyticsCommandPipe()
+            record -> analyticsInteractor.walletAnalyticsPipe()
                   .send(new WalletAnalyticsCommand(forBankCard(record))));
    }
 

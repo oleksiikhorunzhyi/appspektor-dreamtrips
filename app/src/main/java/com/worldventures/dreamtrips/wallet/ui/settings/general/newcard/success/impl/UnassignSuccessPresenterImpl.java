@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.impl;
 
-
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardSuccessAction;
@@ -16,10 +15,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.U
 
 public class UnassignSuccessPresenterImpl extends WalletPresenterImpl<UnassignSuccessScreen> implements UnassignSuccessPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public UnassignSuccessPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -43,7 +42,7 @@ public class UnassignSuccessPresenterImpl extends WalletPresenterImpl<UnassignSu
 
    private void sendAnalyticAction(WalletAnalyticsAction action) {
       analyticsInteractor
-            .walletAnalyticsCommandPipe()
+            .walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(action));
    }
 }

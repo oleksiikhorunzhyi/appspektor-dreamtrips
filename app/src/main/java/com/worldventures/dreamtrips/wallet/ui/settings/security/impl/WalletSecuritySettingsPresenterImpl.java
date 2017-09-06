@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardLockAction;
@@ -34,12 +34,12 @@ import rx.functions.Action1;
 
 public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<WalletSecuritySettingsScreen> implements WalletSecuritySettingsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    ;
    private final WalletFeatureHelper featureHelper;
 
    public WalletSecuritySettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor,
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
          WalletFeatureHelper walletFeatureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
@@ -125,14 +125,14 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
 
    private void trackSmartCardStealthMode(boolean stealthModeEnabled) {
       final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new StealthModeAction(stealthModeEnabled));
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand);
    }
 
    private void trackSmartCardLock(boolean lock) {
       final WalletAnalyticsAction smartCardLockAction = lock
             ? new SmartCardLockAction()
             : new SmartCardUnlockAction();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(smartCardLockAction));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(smartCardLockAction));
    }
 
    private void stealthModeFailed() {

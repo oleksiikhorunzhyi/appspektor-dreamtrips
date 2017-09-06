@@ -1,23 +1,23 @@
-package com.worldventures.dreamtrips.wallet.domain.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 
 import javax.inject.Inject;
 
 public class SmartCardDetailsActionStorage implements ActionStorage<SmartCardDetails> {
 
-   private final SnappyRepository snappyRepository;
+   private final WalletStorage walletStorage;
 
    @Inject
-   public SmartCardDetailsActionStorage(SnappyRepository snappyRepository) {
-      this.snappyRepository = snappyRepository;
+   public SmartCardDetailsActionStorage(WalletStorage walletStorage) {
+      this.walletStorage = walletStorage;
    }
 
    @Override
@@ -27,12 +27,12 @@ public class SmartCardDetailsActionStorage implements ActionStorage<SmartCardDet
 
    @Override
    public void save(@Nullable CacheBundle params, SmartCardDetails data) {
-      snappyRepository.saveSmartCardDetails(data);
+      walletStorage.saveSmartCardDetails(data);
    }
 
    @Override
    public SmartCardDetails get(@Nullable CacheBundle params) {
-      return snappyRepository.getSmartCardDetails();
+      return walletStorage.getSmartCardDetails();
    }
 }
 

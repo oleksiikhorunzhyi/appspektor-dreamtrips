@@ -1,30 +1,30 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 
 import java.util.List;
 
 public class DiskLostCardRepository implements LostCardRepository {
 
-   private final SnappyRepository snappyRepository;
+   private final WalletStorage walletStorage;
    private final WalletTrackingStatusStorage trackingStatusStorage;
 
-   public DiskLostCardRepository(SnappyRepository snappyRepository, WalletTrackingStatusStorage trackingStatusStorage) {
-      this.snappyRepository = snappyRepository;
+   public DiskLostCardRepository(WalletStorage walletStorage, WalletTrackingStatusStorage trackingStatusStorage) {
+      this.walletStorage = walletStorage;
       this.trackingStatusStorage = trackingStatusStorage;
    }
 
    @Override
    public List<WalletLocation> getWalletLocations() {
-      return snappyRepository.getWalletLocations();
+      return walletStorage.getWalletLocations();
    }
 
    @Override
    public void saveWalletLocations(List<WalletLocation> walletLocations) {
-      snappyRepository.saveWalletLocations(walletLocations);
+      walletStorage.saveWalletLocations(walletLocations);
    }
 
    @Override
@@ -39,6 +39,6 @@ public class DiskLostCardRepository implements LostCardRepository {
 
    @Override
    public void clear() {
-      snappyRepository.deleteWalletLocations();
+      walletStorage.deleteWalletLocations();
    }
 }

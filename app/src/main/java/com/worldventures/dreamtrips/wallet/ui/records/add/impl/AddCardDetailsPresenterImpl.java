@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.add.impl;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
@@ -37,7 +37,7 @@ import timber.log.Timber;
 
 public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDetailsScreen> implements AddCardDetailsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final RecordInteractor recordInteractor;
    private final WizardInteractor wizardInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -46,7 +46,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    private Record record;
 
    public AddCardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
          WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
@@ -213,18 +213,18 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .take(1)
             .map(Command::getResult)
             .map(SmartCardStatus::connectionStatus)
-            .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsCommandPipe()
+            .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsPipe()
                   .send(new WalletAnalyticsCommand(AddCardDetailsAction
                         .forBankCard(record, connectionStatus.isConnected()))));
    }
 
    private void trackSetAsDefault(Record record) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(record)));
    }
 
    private void trackAddedCard(Record record, boolean setAsDefault) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
    }
 

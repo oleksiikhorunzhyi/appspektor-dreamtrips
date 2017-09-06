@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.domain.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import android.support.annotation.Nullable;
 
@@ -11,11 +11,11 @@ import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 
 import java.util.List;
 
-public class WalletRecordsDiskStorage implements ActionStorage<List<Record>> {
+public class WalletRecordsActionStorage implements ActionStorage<List<Record>> {
 
    private final RecordsStorage persistentRecordsStorage;
 
-   public WalletRecordsDiskStorage(RecordsStorage persistentRecordsStorage) {
+   public WalletRecordsActionStorage(RecordsStorage persistentRecordsStorage) {
       this.persistentRecordsStorage = persistentRecordsStorage;
    }
 

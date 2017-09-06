@@ -5,9 +5,9 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.nxtid.mobile.NxtMobileResp
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand
 import com.worldventures.dreamtrips.wallet.ui.common.BasePresenterTest
@@ -24,7 +24,6 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import org.junit.Test
 import org.mockito.Mockito
 import rx.lang.kotlin.PublishSubject
-
 
 class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySettingsScreen, WalletSecuritySettingsPresenter>() {
 
@@ -52,7 +51,7 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
 
    override fun setup() {
       smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
-      val analyticsInteractor = interactorBuilder.createInteractor(AnalyticsInteractor::class)
+      val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
       deviceStateCommandContract.result(ImmutableSmartCardStatus.builder().build())
       walletFeatureHelper = WalletFeatureHelperFull()
       screen = mock()

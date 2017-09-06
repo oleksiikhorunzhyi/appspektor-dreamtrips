@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ScanCardAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen;
 
 public class WizardSplashPresenterImpl extends WalletPresenterImpl<WizardSplashScreen> implements WizardSplashPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    public WizardSplashPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -29,7 +29,7 @@ public class WizardSplashPresenterImpl extends WalletPresenterImpl<WizardSplashS
    }
 
    private void trackScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ScanCardAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new ScanCardAction()));
    }
 
    public void startScanCard() {

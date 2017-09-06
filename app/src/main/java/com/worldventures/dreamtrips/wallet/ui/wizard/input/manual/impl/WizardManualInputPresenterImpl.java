@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -13,11 +13,11 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualIn
 
 public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardManualInputScreen> implements WizardManualInputPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final InputBarcodeDelegate inputBarcodeDelegate;
 
    public WizardManualInputPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor, InputBarcodeDelegate inputBarcodeDelegate) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, InputBarcodeDelegate inputBarcodeDelegate) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
       this.inputBarcodeDelegate = inputBarcodeDelegate;
@@ -27,7 +27,7 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
    public void attachView(WizardManualInputScreen view) {
       super.attachView(view);
       inputBarcodeDelegate.init(view);
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(new ManualCardInputAction()));
       observeScidInput();
    }

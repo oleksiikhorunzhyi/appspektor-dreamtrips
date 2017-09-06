@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl;
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CardConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CheckFrontAction;
@@ -21,12 +21,12 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> implements PairKeyPresenter {
 
    private final WizardInteractor wizardInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    private PairDelegate pairDelegate;
 
    public PairKeyPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor) {
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -37,7 +37,7 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
       super.attachView(view);
       this.pairDelegate = PairDelegate.create(getView().getProvisionMode(), getNavigator(), getSmartCardInteractor());
       pairDelegate.prepareView(getView());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new CheckFrontAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new CheckFrontAction()));
       observeCreateAndConnectSmartCard();
    }
 
@@ -54,7 +54,7 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
 
    private void smartCardConnected() {
       pairDelegate.navigateOnNextScreen(getView());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new CardConnectedAction()));
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new CardConnectedAction()));
    }
 
    @Override

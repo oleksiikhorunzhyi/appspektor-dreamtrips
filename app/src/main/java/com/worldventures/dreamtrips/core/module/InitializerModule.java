@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
-import com.worldventures.dreamtrips.core.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
@@ -23,7 +22,6 @@ import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInter
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.Initializable;
-import com.worldventures.dreamtrips.wallet.di.WalletInitializerModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,12 +37,10 @@ import dagger.Provides;
             BadgeCountObserverInitializer.class,
             JodaTimeInitializer.class,
             AnalyticsInitializer.class,
-            SnappyStorageManagerInitializer.class,
             FacebookInitializer.class,
       },
       includes = {
             MessengerInitializerModule.class,
-            WalletInitializerModule.class,
       },
       library = true, complete = false)
 public class InitializerModule {
@@ -69,11 +65,6 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    AppInitializer provideSoftInputInitializer() {
       return new SoftInputInitializer();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   AppInitializer provideSnappyStorageManagerInitializer() {
-      return new SnappyStorageManagerInitializer();
    }
 
    @Provides(type = Provides.Type.SET)

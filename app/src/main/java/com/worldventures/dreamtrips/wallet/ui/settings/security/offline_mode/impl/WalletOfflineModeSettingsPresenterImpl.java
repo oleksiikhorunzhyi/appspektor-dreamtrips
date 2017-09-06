@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsOfflineModeScreenAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsOfflineModeStateChangeAction;
@@ -21,12 +21,12 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<WalletOfflineModeSettingsScreen> implements WalletOfflineModeSettingsPresenter {
 
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
 
    private boolean waitingForNetwork = false;
 
    public WalletOfflineModeSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, AnalyticsInteractor analyticsInteractor) {
+         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, smartCardInteractor, networkService);
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -110,7 +110,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
    }
 
    private void trackStateChange(boolean isOfflineModeEnabled) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(new SettingsOfflineModeStateChangeAction(isOfflineModeEnabled)));
    }
 
@@ -119,7 +119,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
             .observeSuccess()
             .take(1)
             .map(Command::getResult)
-            .subscribe(isOfflineModeEnabled -> analyticsInteractor.walletAnalyticsCommandPipe()
+            .subscribe(isOfflineModeEnabled -> analyticsInteractor.walletAnalyticsPipe()
                   .send(new WalletAnalyticsCommand(new SettingsOfflineModeScreenAction(isOfflineModeEnabled))));
    }
 }

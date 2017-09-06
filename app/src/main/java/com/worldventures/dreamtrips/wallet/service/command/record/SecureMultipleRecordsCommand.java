@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
@@ -33,7 +33,7 @@ import rx.functions.Action1;
 public class SecureMultipleRecordsCommand extends Command<List<Record>> implements InjectableAction {
 
    @Inject NxtInteractor nxtInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
    @Inject WalletFeatureHelper featureHelper;
 
@@ -99,7 +99,7 @@ public class SecureMultipleRecordsCommand extends Command<List<Record>> implemen
    private void sendTokenizationAnalytics(List<Record> records, boolean success) {
       if (actionType == null || records.isEmpty()) return;
 
-      Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsCommandPipe()
+      Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsPipe()
             .send(new TokenizationAnalyticsLocationCommand(
                   TokenizationCardAction.from(recordWithError, success, actionType, secureForLocalStorage)
             )));

@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.impl;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
@@ -28,12 +28,12 @@ import rx.Observable;
 public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSettingsScreen> implements WalletSettingsPresenter {
 
    private final FirmwareInteractor firmwareInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
 
    public WalletSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
          WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
-         AnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
+         WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -74,7 +74,7 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
    }
 
    private void trackScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(new SettingsAction()));
    }
 

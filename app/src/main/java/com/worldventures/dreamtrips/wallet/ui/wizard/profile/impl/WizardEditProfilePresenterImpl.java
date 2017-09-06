@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl;
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
@@ -30,14 +30,14 @@ import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
 public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEditProfileScreen> implements WizardEditProfilePresenter {
 
    private final WizardInteractor wizardInteractor;
-   private final AnalyticsInteractor analyticsInteractor;
+   private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletFeatureHelper featureHelper;
 
    private final WalletProfileDelegate delegate;
 
    public WizardEditProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WizardInteractor wizardInteractor, AnalyticsInteractor analyticsInteractor,
+         WalletNetworkService networkService, WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor, WalletFeatureHelper featureHelper) {
       super(navigator, smartCardInteractor, networkService);
       this.wizardInteractor = wizardInteractor;
@@ -70,7 +70,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    }
 
    private void onUserSetupSuccess(SmartCardUser user) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
+      analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );

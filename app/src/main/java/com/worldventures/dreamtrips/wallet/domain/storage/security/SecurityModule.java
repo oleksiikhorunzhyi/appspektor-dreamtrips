@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.module;
+package com.worldventures.dreamtrips.wallet.domain.storage.security;
 
 
 import android.content.Context;
@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter.*;
+import static com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter.SymmetricKeyParams;
 
 @Module(library = true, complete = false)
 public class SecurityModule {

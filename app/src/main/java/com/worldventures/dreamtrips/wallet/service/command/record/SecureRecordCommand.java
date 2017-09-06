@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
@@ -26,7 +26,7 @@ import rx.functions.Action1;
 public class SecureRecordCommand extends Command<Record> implements InjectableAction {
 
    @Inject NxtInteractor nxtInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
    @Inject WalletFeatureHelper featureHelper;
 
@@ -88,7 +88,7 @@ public class SecureRecordCommand extends Command<Record> implements InjectableAc
    private void sendTokenizationAnalytics(Record record, boolean success) {
       if (actionType == null) return;
 
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new TokenizationAnalyticsLocationCommand(
+      analyticsInteractor.walletAnalyticsPipe().send(new TokenizationAnalyticsLocationCommand(
             TokenizationCardAction.from(record, success, actionType, secureForLocalStorage)
       ));
    }

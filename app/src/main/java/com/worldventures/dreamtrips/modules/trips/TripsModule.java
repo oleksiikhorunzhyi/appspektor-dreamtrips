@@ -1,13 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips;
 
-import android.support.annotation.DrawableRes;
-
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
@@ -32,7 +24,6 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragm
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripViewPagerFragment;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
       injects = {TripListPresenter.class, FiltersPresenter.class, TripDetailsFragment.class, TripDetailsPresenter.class, FiltersFragment.class, TripListFragment.class,
@@ -47,53 +38,4 @@ import dagger.Provides;
       complete = false,
       library = true)
 public class TripsModule {
-
-   public static final String TRIPS = Route.TRIPLIST.name();
-   public static final String MAP_TRIPS = Route.MAP.name();
-   public static final String OTA = Route.OTA.name();
-   public static final String MALAYSIYA_COUNTRY_CODE = "my";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTripsComponent(SessionHolder<UserSession> sessionHolder) {
-      return new ComponentDescription.Builder()
-            .key(TRIPS)
-            .toolbarLogo(getLogo(sessionHolder))
-            .navMenuTitle(R.string.trips)
-            .icon(R.drawable.ic_dreamtrips)
-            .fragmentClass(TripListFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMapTripsComponent(SessionHolder<UserSession> sessionHolder) {
-      return new ComponentDescription.Builder()
-            .key(MAP_TRIPS)
-            .toolbarLogo(getLogo(sessionHolder))
-            .navMenuTitle(R.string.trips)
-            .icon(R.drawable.ic_dreamtrips)
-            .ignored(true)
-            .skipGeneralToolbar(true)
-            .fragmentClass(TripMapFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideOTAComponent() {
-      return new ComponentDescription.Builder()
-            .key(OTA)
-            .toolbarTitle(R.string.other_travel)
-            .navMenuTitle(R.string.other_travel)
-            .icon(R.drawable.ic_other_travel)
-            .fragmentClass(OtaFragment.class)
-            .build();
-   }
-
-   private @DrawableRes
-   int getLogo(SessionHolder<UserSession> sessionHolder) {
-      String countryCode = sessionHolder.get().get().getUser().getCountryCode();
-      if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
-         return R.drawable.dt_action_bar_logo_skyzone;
-      }
-      return R.drawable.dt_action_bar_logo;
-   }
 }

@@ -55,19 +55,6 @@ import dagger.Provides;
             ConversationListScreenPresenterImpl.class, EditChatMembersScreenPresenterImpl.class, FlaggingPresenterImpl.class,},
       complete = false, library = true)
 public class MessengerActivityModule {
-   public static final String MESSENGER = "Messenger";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMessengerComponent() {
-      return new ComponentDescription.Builder()
-            .key(MESSENGER)
-            .navMenuTitle(R.string.messenger)
-            .toolbarTitle(R.string.messenger)
-            .icon(R.drawable.ic_messenger)
-            .skipGeneralToolbar(true)
-            .shouldFinishMainActivity(true)
-            .build();
-   }
 
    @Provides
    DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {

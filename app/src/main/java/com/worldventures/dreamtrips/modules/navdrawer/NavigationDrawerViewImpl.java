@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
+import com.worldventures.dreamtrips.modules.common.SocialAppModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.NpaLinearLayoutManager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
@@ -115,7 +116,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    @Override
    public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
-      if (newComponent.getKey().equals(CommonModule.LOGOUT)) {
+      if (newComponent.getKey().equals(SocialAppModule.LOGOUT)) {
          navigationDrawerPresenter.onLogout();
          return;
       }

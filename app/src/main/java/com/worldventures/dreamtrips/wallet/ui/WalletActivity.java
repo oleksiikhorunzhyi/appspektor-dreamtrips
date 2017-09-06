@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPre
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
-import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
@@ -58,7 +58,7 @@ public class WalletActivity extends ActivityWithPresenter<WalletActivityPresente
          router.setRoot(RouterTransaction.with(new WalletStartScreenImpl()));
       }
       initNavDrawer();
-      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletAppModule.WALLET));
    }
 
    @Override

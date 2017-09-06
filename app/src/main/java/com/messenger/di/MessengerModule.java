@@ -14,6 +14,8 @@ import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHold
 import com.messenger.util.ChatFacadeManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
@@ -35,6 +37,19 @@ import dagger.Provides;
       complete = false, library = true)
 public class MessengerModule {
 
+   public static final String MESSENGER = "Messenger";
+
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideMessengerComponent() {
+      return new ComponentDescription.Builder()
+            .key(MESSENGER)
+            .navMenuTitle(R.string.messenger)
+            .toolbarTitle(R.string.messenger)
+            .icon(R.drawable.ic_messenger)
+            .skipGeneralToolbar(true)
+            .shouldFinishMainActivity(true)
+            .build();
+   }
 
    @Provides
    @Singleton

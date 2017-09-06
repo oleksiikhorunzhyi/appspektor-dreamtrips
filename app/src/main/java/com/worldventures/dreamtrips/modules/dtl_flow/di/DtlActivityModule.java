@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
@@ -65,7 +63,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenI
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
       injects = {
@@ -133,18 +130,4 @@ import dagger.Provides;
       },
       complete = false, library = true)
 public class DtlActivityModule {
-
-   public static final String DTL = "DTL";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideDtlComponent() {
-      return new ComponentDescription.Builder()
-            .key(DTL)
-            .navMenuTitle(R.string.dtl_local)
-            .toolbarTitle(R.string.dtl_local)
-            .icon(R.drawable.ic_dtl)
-            .skipGeneralToolbar(true)
-            .shouldFinishMainActivity(true)
-            .build();
-   }
 }

@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.settings;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialog;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsFlagCell;
@@ -15,28 +13,24 @@ import com.worldventures.dreamtrips.modules.settings.view.presenter.SettingsGrou
 import com.worldventures.dreamtrips.modules.settings.view.presenter.SettingsPresenter;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
-      injects = {SettingsGroupPresenter.class, SettingsGroupFragment.class, NotificationsSettingsFragment.class, GeneralSettingsFragment.class, SettingsPresenter.class, SettingsFragment.class,
-
-            SettingsGroupCell.class, SettingsFlagCell.class, SettingsSelectCell.class,
-
-            SelectDialog.class},
+      injects = {
+            SettingsGroupPresenter.class,
+            SettingsGroupFragment.class,
+            NotificationsSettingsFragment.class,
+            GeneralSettingsFragment.class,
+            SettingsPresenter.class,
+            SettingsFragment.class,
+            SettingsGroupCell.class,
+            SettingsFlagCell.class,
+            SettingsSelectCell.class,
+            SelectDialog.class
+      },
       complete = false,
       library = true)
 public class SettingsModule {
 
    public static final String SETTINGS = Route.SETTINGS.name();
 
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideSettingsComponent() {
-      return new ComponentDescription.Builder()
-            .key(SETTINGS)
-            .navMenuTitle(R.string.settings)
-            .toolbarTitle(R.string.settings)
-            .icon(R.drawable.ic_settings_menu)
-            .fragmentClass(SettingsGroupFragment.class)
-            .build();
-   }
 }

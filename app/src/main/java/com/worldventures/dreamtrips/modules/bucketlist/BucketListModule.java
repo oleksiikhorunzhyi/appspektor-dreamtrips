@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist;
 
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketListPresenter;
@@ -34,10 +31,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
-      injects = {BucketItemEditPresenter.class,
+      injects = {
+            BucketItemEditPresenter.class,
             BucketPopularTabsPresenter.class,
             BucketItemEditFragment.class,
             BucketTabsPresenter.class,
@@ -70,20 +67,4 @@ import dagger.Provides;
       complete = false,
       library = true)
 public class BucketListModule {
-
-   public static final String ANALYTICS_DINING = "dining";
-   public static final String ANALYTICS_ACTIVITIES = "activities";
-   public static final String ANALYTICS_LOCATIONS = "locations";
-   public static final String BUCKETLIST = Route.BUCKET_TABS.name();
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideBucketListComponent() {
-      return new ComponentDescription.Builder()
-            .key(BUCKETLIST)
-            .navMenuTitle(R.string.bucket_list)
-            .toolbarTitle(R.string.bucket_list)
-            .icon(R.drawable.ic_bucket_lists)
-            .fragmentClass(BucketTabsFragment.class)
-            .build();
-   }
 }

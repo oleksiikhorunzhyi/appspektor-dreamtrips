@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
-import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
@@ -21,8 +21,6 @@ import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
 import javax.inject.Inject;
 
 import flow.History;
-
-import static com.worldventures.dreamtrips.wallet.di.WalletActivityModule.WALLET;
 
 @Layout(R.layout.activity_wallet)
 public class WalletActivity extends FlowActivity<WalletActivityPresenter> implements WalletActivityPresenter.View {
@@ -38,7 +36,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletAppModule.WALLET));
    }
 
    @Override
@@ -49,7 +47,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
 
    @Override
    protected ComponentDescription getCurrentComponent() {
-      return rootComponentsProvider.getComponentByKey(WALLET);
+      return rootComponentsProvider.getComponentByKey(WalletAppModule.WALLET);
    }
 
    @Override

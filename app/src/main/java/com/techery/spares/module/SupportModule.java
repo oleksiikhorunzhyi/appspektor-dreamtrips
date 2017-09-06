@@ -27,6 +27,7 @@ public class SupportModule {
             .apiUrl(BuildConfig.DreamTripsApi)
             .backofficeUrl(BuildConfig.BACKOFFICE_URL)
             .uploaderyUrl(BuildConfig.UPLOADERY_API_URL)
+            .forgotPasswordUrl(BuildConfig.FORGOT_PASSWORD_URL)
             .build();
    }
 }

@@ -387,5 +387,7 @@
    <string name="error_failed_to_delete_video">Failed to delete video</string>
    <string name="type_video">Video</string>
    <string name="type_post">Post</string>
+   <string name="forgot_member_id">Forgot Member ID?</string>
+   <string name="forgot_password">Forgot Password?</string>
 </resources>
 

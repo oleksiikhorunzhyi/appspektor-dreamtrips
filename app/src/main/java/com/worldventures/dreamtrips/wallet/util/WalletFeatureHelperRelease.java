@@ -20,7 +20,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 
-import butterknife.ButterKnife;
+import java.util.List;
+
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -42,13 +43,13 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
 
    @Override
    public void prepareSettingsScreen(WalletSettingsScreen view) {
-      ButterKnife.apply(view.getToggleableItems(), (item, i) -> item.setVisibility(View.GONE));
+      hideDesiredViews(view.getToggleableItems());
       invalidateDivider((LinearLayout) view.getToggleableItems().get(0).getParent());
    }
 
    @Override
    public void prepareSettingsGeneralScreen(WalletGeneralSettingsScreen view) {
-      ButterKnife.apply(view.getToggleableItems(), (item, i) -> item.setVisibility(View.GONE));
+      hideDesiredViews(view.getToggleableItems());
       invalidateDivider((LinearLayout) view.getToggleableItems().get(0).getParent());
    }
 
@@ -59,7 +60,7 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
 
    @Override
    public void prepareSettingsSecurityScreen(WalletSecuritySettingsScreen view) {
-      ButterKnife.apply(view.getToggleableItems(), (item, i) -> item.setVisibility(View.GONE));
+      hideDesiredViews(view.getToggleableItems());
       invalidateDivider((LinearLayout) view.getToggleableItems().get(0).getParent());
    }
 
@@ -128,5 +129,11 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    private void invalidateDivider(LinearLayout container) {
       container.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_END);
       container.requestLayout();
+   }
+
+   private void hideDesiredViews(List<View> views) {
+      for (View view : views) {
+         view.setVisibility(View.GONE);
+      }
    }
 }

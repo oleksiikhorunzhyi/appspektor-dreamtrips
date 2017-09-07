@@ -21,8 +21,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.Wall
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -31,9 +29,9 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
 
    private static final String KEY_HELP_DOCUMENT = "key_help_document";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.document_view) WebView webView;
-   @InjectView(R.id.pb) View pb;
+   private Toolbar toolbar;
+   private WebView webView;
+   private View pb;
 
    @Inject HelpDocumentDetailPresenter presenter;
 
@@ -50,7 +48,7 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
-      setUpView();
+      setUpView(view);
    }
 
    @Override
@@ -68,8 +66,11 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
       return true;
    }
 
-   private void setUpView() {
+   private void setUpView(View view) {
+      toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      pb = view.findViewById(R.id.pb);
+      webView = view.findViewById(R.id.document_view);
       webView.setWebViewClient(new WebViewClient() {
          @Override
          public void onPageFinished(WebView view, String url) {

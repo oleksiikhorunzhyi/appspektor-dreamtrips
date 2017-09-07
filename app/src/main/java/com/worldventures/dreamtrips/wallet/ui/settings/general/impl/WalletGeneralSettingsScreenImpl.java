@@ -23,25 +23,21 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSett
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.InjectViews;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletGeneralSettingsScreenImpl extends WalletBaseController<WalletGeneralSettingsScreen, WalletGeneralSettingsPresenter> implements WalletGeneralSettingsScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.profile_name) TextView profileName;
-   @InjectView(R.id.profile_photo) SimpleDraweeView profilePhoto;
-   @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
-   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc, R.id.item_display_options}) List<View> toggleableItems;
-
    @Inject WalletGeneralSettingsPresenter presenter;
 
+   private TextView profileName;
+   private SimpleDraweeView profilePhoto;
+   private BadgeView badgeFirmwareUpdates;
+   private List<View> toggleableItems;
    private MaterialDialog confirmFactoryResetDialog = null;
    private MaterialDialog noConnectionDialog = null;
    private MaterialDialog confirmRestartSmartCardDialog = null;
@@ -67,47 +63,31 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      profileName = view.findViewById(R.id.profile_name);
+      profilePhoto = view.findViewById(R.id.profile_photo);
+      badgeFirmwareUpdates = view.findViewById(R.id.badgeFirmwareUpdates);
       badgeFirmwareUpdates.hide();
+      final View smartCardProfile = view.findViewById(R.id.item_smartcard_profile);
+      smartCardProfile.setOnClickListener(btnSmartCardProfile -> getPresenter().openProfileScreen());
+      final View aboutView = view.findViewById(R.id.item_about);
+      aboutView.setOnClickListener(btnAbout -> getPresenter().openAboutScreen());
+      final View firmwareUpdatesView = view.findViewById(R.id.item_firmware_updates);
+      firmwareUpdatesView.setOnClickListener(btnFirmwareUpdates -> getPresenter().openSoftwareUpdateScreen());
+      final View factoryResetView = view.findViewById(R.id.item_factory_reset);
+      factoryResetView.setOnClickListener(btnFactoryReset -> getPresenter().onClickFactoryResetSmartCard());
+      final View setupNewScView = view.findViewById(R.id.item_setup_new_sc);
+      setupNewScView.setOnClickListener(btnSetupNewSc -> getPresenter().openSetupNewSmartCardScreen());
+      final View restartScView = view.findViewById(R.id.item_restart_sc);
+      restartScView.setOnClickListener(btnRestartSc -> getPresenter().onClickRestartSmartCard());
+      final View displayOptionsView = view.findViewById(R.id.item_display_options);
+      displayOptionsView.setOnClickListener(btnDisplayOptions -> getPresenter().openDisplayOptionsScreen());
+      toggleableItems = Arrays.asList(setupNewScView, restartScView, displayOptionsView);
    }
 
    protected void onNavigationClick() {
       getPresenter().goBack();
-   }
-
-   @OnClick(R.id.item_smartcard_profile)
-   void onClickProfile() {
-      getPresenter().openProfileScreen();
-   }
-
-   @OnClick(R.id.item_about)
-   void onClickAbout() {
-      getPresenter().openAboutScreen();
-   }
-
-   @OnClick(R.id.item_firmware_updates)
-   void onClickSoftwareUpdate() {
-      getPresenter().openSoftwareUpdateScreen();
-   }
-
-   @OnClick(R.id.item_display_options)
-   void onClickDisplayOptions() {
-      getPresenter().openDisplayOptionsScreen();
-   }
-
-   @OnClick(R.id.item_factory_reset)
-   void onClickReset() {
-      getPresenter().onClickFactoryResetSmartCard();
-   }
-
-   @OnClick(R.id.item_setup_new_sc)
-   void onClickSetupNewSmartCard() {
-      getPresenter().openSetupNewSmartCardScreen();
-   }
-
-   @OnClick(R.id.item_restart_sc)
-   void onClickRestart() {
-      getPresenter().onClickRestartSmartCard();
    }
 
    @Override

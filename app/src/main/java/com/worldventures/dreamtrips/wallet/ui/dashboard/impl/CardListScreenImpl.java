@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -57,8 +58,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.exception.WaitingResponseException;
@@ -71,12 +70,11 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
    private static final double VISIBLE_SCALE = 0.64;
 
-   @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
-   @InjectView(R.id.empty_card_view) TextView emptyCardListView;
-   @InjectView(R.id.fab_button) FloatingActionButton fabButton;
-   @InjectView(R.id.firmware_available) View firmwareAvailableView;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
+   private RecyclerView bankCardList;
+   private TextView emptyCardListView;
+   private FloatingActionButton fabButton;
+   private Button btnFirmwareAvailable;
+   private SmartCardWidget smartCardWidget;
    private BadgeView badgeView;
 
    @Inject CardListPresenter presenter;
@@ -102,12 +100,19 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.inflateMenu(R.menu.wallet_dashboard);
+      toolbar.setNavigationOnClickListener(it -> getPresenter().navigationClick());
       final View actionSettingsView = toolbar.getMenu().findItem(R.id.item_settings).getActionView();
       actionSettingsView.setOnClickListener(v -> getPresenter().onSettingsChosen()); // because onMenuItemClickListener isn't called
-      badgeView = (BadgeView) actionSettingsView.findViewById(R.id.badge_view);
+      badgeView = actionSettingsView.findViewById(R.id.badge_view);
       badgeView.hide(); // because BadgeView is piece of shit.
-      toolbar.setNavigationOnClickListener(it -> getPresenter().navigationClick());
+      bankCardList = view.findViewById(R.id.bank_card_list);
+      emptyCardListView = view.findViewById(R.id.empty_card_view);
+      fabButton = view.findViewById(R.id.fab_button);
+      btnFirmwareAvailable = view.findViewById(R.id.firmware_available);
+      btnFirmwareAvailable.setOnClickListener(btn -> getPresenter().navigateToFirmwareUpdate());
+      smartCardWidget = view.findViewById(R.id.widget_dashboard_smart_card);
       binding = DataBindingUtil.bind(view);
       setupCardStackList();
    }
@@ -214,14 +219,14 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
 
    @Override
    public void hideFirmwareUpdateBtn() {
-      firmwareAvailableView.setVisibility(GONE);
+      btnFirmwareAvailable.setVisibility(GONE);
       badgeView.hide();
    }
 
    @Override
    public void showFirmwareUpdateBtn() {
-      if (firmwareAvailableView.getVisibility() == VISIBLE) return;
-      firmwareAvailableView.setVisibility(VISIBLE);
+      if (btnFirmwareAvailable.getVisibility() == VISIBLE) return;
+      btnFirmwareAvailable.setVisibility(VISIBLE);
       badgeView.show();
    }
 
@@ -278,7 +283,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
 
    @Override
    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-      outState.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
+      outState.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, btnFirmwareAvailable.getVisibility());
       super.onSaveViewState(view, outState);
    }
 
@@ -287,7 +292,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
       super.onRestoreViewState(view, savedViewState);
       int visibility = savedViewState.getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE);
-      firmwareAvailableView.setVisibility(visibility);
+      btnFirmwareAvailable.setVisibility(visibility);
       if (visibility == VISIBLE) {
          badgeView.show();
       }
@@ -362,11 +367,6 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
       view.getLocationOnScreen(coords);
       view.setTranslationX(0);
       view.setTranslationY(params.getTop() - coords[1]);
-   }
-
-   @OnClick(R.id.firmware_available)
-   void firmwareAvailableBtnClick() {
-      getPresenter().navigateToFirmwareUpdate();
    }
 
    @Override

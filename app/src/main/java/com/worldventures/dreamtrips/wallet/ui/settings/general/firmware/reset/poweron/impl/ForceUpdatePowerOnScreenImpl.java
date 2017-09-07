@@ -17,13 +17,11 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.po
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WizardVideoView;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 import static android.animation.ObjectAnimator.ofFloat;
-import static butterknife.ButterKnife.apply;
-import static java.util.Arrays.asList;
 
 public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpdatePowerOnScreen, ForceUpdatePowerOnPresenter> implements ForceUpdatePowerOnScreen {
 
@@ -31,17 +29,20 @@ public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpda
    private static final int CARD_FADE_IN_DELAY = 300;
    private static final int COMMON_FADE_IN_DELAY = 250;
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.wallet_wizard_power_on_title) TextView walletWizardSplashTitle;
-   @InjectView(R.id.wallet_wizard_power_on_btn) Button actionBtn;
-   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
+   private TextView walletWizardSplashTitle;
+   private Button actionBtn;
+   private WizardVideoView wizardVideoView;
 
    @Inject ForceUpdatePowerOnPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
+      walletWizardSplashTitle = view.findViewById(R.id.wallet_wizard_power_on_title);
+      actionBtn = view.findViewById(R.id.wallet_wizard_power_on_btn);
+      wizardVideoView = view.findViewById(R.id.wizard_video_view);
       hideAllView();
       wizardVideoView.setVideoSource(R.raw.wallet_anim_power_on_sc);
    }
@@ -73,10 +74,9 @@ public class ForceUpdatePowerOnScreenImpl extends WalletBaseController<ForceUpda
    }
 
    private void hideAllView() {
-      apply(
-            asList(actionBtn, walletWizardSplashTitle, wizardVideoView),
-            (view, index) -> view.setAlpha(0)
-      );
+      for (View view : Arrays.asList(actionBtn, walletWizardSplashTitle, wizardVideoView)) {
+         view.setAlpha(0);
+      }
    }
 
    private void startSoarAnimation() {

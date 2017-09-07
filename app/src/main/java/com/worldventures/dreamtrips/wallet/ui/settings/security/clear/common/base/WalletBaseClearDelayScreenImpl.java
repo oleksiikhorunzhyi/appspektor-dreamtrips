@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.ite
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -29,10 +28,7 @@ public abstract class WalletBaseClearDelayScreenImpl<S extends WalletBaseClearDe
 
    private static final String KEY_DELAY_CHANGED = "key_delay_changed";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_header) TextView header;
-   @InjectView(R.id.delay_selection_view) WalletDelayRadioGroup selectionView;
-
+   private WalletDelayRadioGroup selectionView;
    private boolean delayWasChanged;
 
    @StringRes
@@ -47,9 +43,12 @@ public abstract class WalletBaseClearDelayScreenImpl<S extends WalletBaseClearDe
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setTitle(getTitle());
+      final TextView header = view.findViewById(R.id.tv_header);
       header.setText(getHeader());
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      selectionView = view.findViewById(R.id.delay_selection_view);
       selectionView.setOnChosenListener(radioModel -> getPresenter().onTimeSelected(radioModel.getValue()));
    }
 

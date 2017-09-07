@@ -30,7 +30,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -40,13 +39,10 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
 
    private static final String ITEMS_KEY = "WalletHelpDocumentsScreenImpl#ITEMS_KEY";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.recyclerView) RecyclerView rvDocuments;
-   @InjectView(R.id.empty_view) TextView errorTv;
-
    @Inject WalletHelpDocumentsPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
+   private TextView errorTv;
    private MultiHolderAdapter adapter;
    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
    private ArrayList<WalletDocumentModel> documents;
@@ -54,7 +50,9 @@ public class WalletHelpDocumentsScreenImpl extends WalletBaseController<WalletHe
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      errorTv = view.findViewById(R.id.empty_view);
    }
 
    @Override

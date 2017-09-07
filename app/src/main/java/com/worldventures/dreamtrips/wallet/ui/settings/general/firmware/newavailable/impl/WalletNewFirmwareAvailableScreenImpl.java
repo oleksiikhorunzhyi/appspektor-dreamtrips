@@ -28,8 +28,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavail
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.functions.Action1;
@@ -40,16 +38,15 @@ import static android.view.View.VISIBLE;
 
 public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<WalletNewFirmwareAvailableScreen, WalletNewFirmwareAvailablePresenter> implements WalletNewFirmwareAvailableScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.container) View container;
-   @InjectView(R.id.new_dt_app_required) View newDtAppRequired;
-   @InjectView(R.id.update_dt_app) View updateDtApp;
-   @InjectView(R.id.available_version) TextView availableVersion;
-   @InjectView(R.id.available_version_size) TextView availableVersionSize;
-   @InjectView(R.id.latest_version) TextView latestVersion;
-   @InjectView(R.id.current_version) TextView currentVersion;
-   @InjectView(R.id.new_version_description) TextView newVersionDescription;
-   @InjectView(R.id.download_install_btn) Button downloadVersion;
+   private View container;
+   private View newDtAppRequired;
+   private TextView updateDtApp;
+   private TextView availableVersion;
+   private TextView availableVersionSize;
+   private TextView latestVersion;
+   private TextView currentVersion;
+   private TextView newVersionDescription;
+   private Button downloadVersion;
 
    @Inject WalletNewFirmwareAvailablePresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -58,8 +55,20 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      container = view.findViewById(R.id.container);
       container.setVisibility(INVISIBLE);
+      newDtAppRequired = view.findViewById(R.id.new_dt_app_required);
+      updateDtApp = view.findViewById(R.id.update_dt_app);
+      updateDtApp.setOnClickListener(updateDtApp -> getPresenter().openMarket());
+      availableVersion = view.findViewById(R.id.available_version);
+      availableVersionSize = view.findViewById(R.id.available_version_size);
+      latestVersion = view.findViewById(R.id.latest_version);
+      currentVersion = view.findViewById(R.id.current_version);
+      newVersionDescription = view.findViewById(R.id.new_version_description);
+      downloadVersion = view.findViewById(R.id.download_install_btn);
+      downloadVersion.setOnClickListener(downloadBtn -> getPresenter().downloadButtonClicked());
    }
 
    @Override
@@ -75,16 +84,6 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnClick(R.id.update_dt_app)
-   protected void updateDtApp() {
-      getPresenter().openMarket();
-   }
-
-   @OnClick(R.id.download_install_btn)
-   protected void onAttachmentButtonClicked() {
-      getPresenter().downloadButtonClicked();
    }
 
    @Override

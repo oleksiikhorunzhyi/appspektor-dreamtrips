@@ -37,7 +37,6 @@ import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import javax.inject.Inject;
 
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -70,7 +69,8 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       setupToolbar();
-
+      binding.deleteButton.setOnClickListener(deleteBtn -> getPresenter().onDeleteCardClick());
+      binding.payThisCardButton.setOnClickListener(payThisCardBtn -> getPresenter().payThisCard());
       bindSpannableStringToTarget(binding.cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, false, false);
    }
@@ -117,16 +117,6 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
                return false;
          }
       });
-   }
-
-   @OnClick(R.id.delete_button)
-   public void onDeleteCardClicked() {
-      getPresenter().onDeleteCardClick();
-   }
-
-   @OnClick(R.id.pay_this_card_button)
-   public void onPayThisCardClicked() {
-      getPresenter().payThisCard();
    }
 
    @Override

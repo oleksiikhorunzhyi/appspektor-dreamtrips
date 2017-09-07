@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.start.impl;
 
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +16,23 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletStartScreenImpl extends WalletBaseController<WalletStartScreen, WalletStartPresenter>
       implements WalletStartScreen {
 
-   @InjectView(R.id.progress) WalletProgressWidget progressView;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+   private WalletProgressWidget progressView;
 
    @Inject WalletStartPresenter presenter;
 
    public WalletStartScreenImpl() {
+   }
+
+   @Override
+   protected void onFinishInflate(View view) {
+      super.onFinishInflate(view);
+      progressView = view.findViewById(R.id.progress);
    }
 
    @Override

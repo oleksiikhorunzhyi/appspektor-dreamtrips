@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -17,22 +16,20 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 public class WizardPowerOnScreenImpl extends WalletBaseController<WizardWelcomeScreen, WizardPowerOnPresenter> implements WizardPowerOnScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.wallet_wizard_power_on_title) TextView walletWizardSplashTitle;
-   @InjectView(R.id.wallet_wizard_power_on_btn) Button actionBtn;
-   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
+   private Button actionBtn;
 
    @Inject WizardPowerOnPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
+      final WizardVideoView wizardVideoView = view.findViewById(R.id.wizard_video_view);
       wizardVideoView.setVideoSource(R.raw.wallet_anim_power_on_sc);
+      actionBtn = view.findViewById(R.id.wallet_wizard_power_on_btn);
    }
 
    @Override

@@ -13,17 +13,14 @@ import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.Connection
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-
 public class ConnectionErrorScreenImpl extends WalletBaseController<ConnectionErrorScreen, ConnectionErrorPresenter> implements ConnectionErrorScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject ConnectionErrorPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 

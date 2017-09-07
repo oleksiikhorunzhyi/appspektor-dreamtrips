@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustom
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -29,10 +27,9 @@ import static android.view.View.GONE;
 
 public class WalletCustomerSupportSettingsScreenImpl extends WalletBaseController<WalletCustomerSupportSettingsScreen, WalletCustomerSupportSettingsPresenter> implements WalletCustomerSupportSettingsScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.container_cutomer_care_contacts) View containerContacts;
-   @InjectView(R.id.tv_us_customer_care) TextView tvUsCustomerCare;
-   @InjectView(R.id.tv_international_collect) TextView tvInternationalCollect;
+   private View containerContacts;
+   private TextView tvUsCustomerCare;
+   private TextView tvInternationalCollect;
 
    @Inject WalletCustomerSupportSettingsPresenter presenter;
 
@@ -40,27 +37,24 @@ public class WalletCustomerSupportSettingsScreenImpl extends WalletBaseControlle
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       ((ViewGroup) view).setLayoutTransition(null);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      tvUsCustomerCare = view.findViewById(R.id.tv_us_customer_care);
+      tvInternationalCollect = view.findViewById(R.id.tv_international_collect);
+      containerContacts = view.findViewById(R.id.container_cutomer_care_contacts);
       containerContacts.setVisibility(GONE);
+      final View itemUsCustomerCare = view.findViewById(R.id.item_us_customer_care);
+      itemUsCustomerCare.setOnClickListener(customerCare
+            -> getPresenter().dialPhoneNumber(String.valueOf(tvUsCustomerCare.getText())));
+      final View itemInternationalCollect = view.findViewById(R.id.item_international_collect);
+      itemInternationalCollect.setOnClickListener(internationalCollect
+            -> getPresenter().dialPhoneNumber(String.valueOf(tvInternationalCollect.getText())));
+      final View itemEmailUs = view.findViewById(R.id.item_email_us);
+      itemEmailUs.setOnClickListener(emailUs -> getPresenter().openCustomerSupportFeedbackScreen());
    }
 
    protected void onNavigationClick() {
       getPresenter().goBack();
-   }
-
-   @OnClick(R.id.item_us_customer_care)
-   void onClickUsCustomerCare() {
-      getPresenter().dialPhoneNumber(String.valueOf(tvUsCustomerCare.getText()));
-   }
-
-   @OnClick(R.id.item_international_collect)
-   void onClickInternationalCollect() {
-      getPresenter().dialPhoneNumber(String.valueOf(tvInternationalCollect.getText()));
-   }
-
-   @OnClick(R.id.item_email_us)
-   void onClickEmailUs() {
-      getPresenter().openCustomerSupportFeedbackScreen();
    }
 
    @Override

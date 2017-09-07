@@ -21,15 +21,13 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.functions.Action1;
 
 public class StartFirmwareInstallScreenImpl extends WalletBaseController<StartFirmwareInstallScreen, StartFirmwareInstallPresenter> implements StartFirmwareInstallScreen {
 
-   @InjectView(R.id.progress) WalletProgressWidget progressView;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+   private WalletProgressWidget progressView;
 
    @Inject StartFirmwareInstallPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
@@ -52,7 +50,9 @@ public class StartFirmwareInstallScreenImpl extends WalletBaseController<StartFi
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      progressView = view.findViewById(R.id.progress);
    }
 
    @Override

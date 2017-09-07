@@ -27,25 +27,27 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<WalletProvisioningBlockedScreen, WalletProvisioningBlockedPresenter> implements WalletProvisioningBlockedScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.recycler_view) RecyclerView deviceList;
-
    @Inject WalletProvisioningBlockedPresenter presenter;
 
+   private RecyclerView deviceList;
    private SimpleMultiHolderAdapter adapter;
+
+   @Override
+   protected void onFinishInflate(View view) {
+      super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
+      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      deviceList = view.findViewById(R.id.recycler_view);
+   }
 
    @Override
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
-
-      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-
       adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new ProvisionBlockedHolderFactoryImpl());
 
       adapter.addItem(new UnsupportedDeviceModel());

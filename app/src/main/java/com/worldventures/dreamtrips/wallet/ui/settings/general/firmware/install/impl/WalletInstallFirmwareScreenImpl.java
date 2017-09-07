@@ -34,7 +34,6 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.functions.Action1;
@@ -43,22 +42,24 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
 
    private static final String KEY_INSTALL_STARTED = "key_install_started";
 
-   @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
-   @InjectView(R.id.progressStatusLabel) TextView progressStatusLabel;
-   @InjectView(R.id.install_step) TextView installStep;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-
    @Inject WalletInstallFirmwarePresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   private boolean started;
+   private WalletProgressWidget installProgress;
+   private TextView progressStatusLabel;
+   private TextView installStep;
    private MaterialDialog errorDialog;
+   private boolean started;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      installProgress = view.findViewById(R.id.firmware_install_progress);
       installProgress.start();
+      progressStatusLabel = view.findViewById(R.id.progressStatusLabel);
+      installStep = view.findViewById(R.id.install_step);
       setupCustomErrorDialog();
    }
 

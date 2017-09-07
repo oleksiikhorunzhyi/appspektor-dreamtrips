@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -35,9 +34,7 @@ import rx.Observable;
 
 public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<WalletOfflineModeSettingsScreen, WalletOfflineModeSettingsPresenter> implements WalletOfflineModeSettingsScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.offline_mode_switcher) WalletSwitcher offlineModeSwitcher;
-   @InjectView(R.id.offline_mode_please_note_label) TextView tvPleaseNoteMessage;
+   private WalletSwitcher offlineModeSwitcher;
 
    @Inject WalletOfflineModeSettingsPresenter presenter;
 
@@ -46,8 +43,11 @@ public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<Wa
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      final TextView tvPleaseNoteMessage = view.findViewById(R.id.offline_mode_please_note_label);
       tvPleaseNoteMessage.setText(ProjectTextUtils.fromHtml(getString(R.string.wallet_offline_mode_please_note_message)));
+      offlineModeSwitcher = view.findViewById(R.id.offline_mode_switcher);
       enableOfflineModeObservable = RxCompoundButton.checkedChanges(offlineModeSwitcher).skip(1);
    }
 

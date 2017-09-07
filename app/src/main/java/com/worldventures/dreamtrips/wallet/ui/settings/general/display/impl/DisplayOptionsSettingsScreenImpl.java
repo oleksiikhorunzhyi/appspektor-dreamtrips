@@ -54,7 +54,6 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -70,10 +69,9 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    public static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
    public static String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.wrapper_pager) ViewGroup wrapperPager;
-   @InjectView(R.id.pager) ViewPager viewPager;
-   @InjectView(R.id.indicator) CircleIndicator indicator;
+   private ViewGroup wrapperPager;
+   private ViewPager viewPager;
+   private CircleIndicator indicator;
 
    @Inject DisplayOptionsSettingsPresenter presenter;
 
@@ -120,14 +118,15 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
-      setupToolbar();
-      setupViewPager();
+      setupToolbar(view);
+      initViewPager(view);
 
       //noinspection all
       cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
    }
 
-   private void setupToolbar() {
+   private void setupToolbar(View view) {
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       toolbar.inflateMenu(R.menu.wallet_settings_display_options);
       toolbar.setOnMenuItemClickListener(item -> {
@@ -139,7 +138,10 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
       });
    }
 
-   private void setupViewPager() {
+   private void initViewPager(View view) {
+      viewPager = view.findViewById(R.id.pager);
+      wrapperPager = view.findViewById(R.id.wrapper_pager);
+      indicator = view.findViewById(R.id.indicator);
       Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
       final Point screenSize = new Point();
       display.getSize(screenSize);

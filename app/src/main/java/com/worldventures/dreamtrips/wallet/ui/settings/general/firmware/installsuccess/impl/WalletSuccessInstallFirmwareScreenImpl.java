@@ -20,14 +20,11 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwareScreen;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 import static android.animation.ObjectAnimator.ofFloat;
-import static butterknife.ButterKnife.apply;
-import static java.util.Arrays.asList;
 
 public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController<WalletSuccessInstallFirmwareScreen, WalletSuccessInstallFirmwarePresenter> implements WalletSuccessInstallFirmwareScreen {
 
@@ -39,12 +36,11 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
    private static final int ANIM_DURATION_DONE_BTN = 500;
    private static final int ANIM_DELAY = 700;
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.success_firmware_install_image) ImageView image;
-   @InjectView(R.id.success_firmware_install_sub_image) ImageView subImage;
-   @InjectView(R.id.success_firmware_install_title) TextView title;
-   @InjectView(R.id.success_firmware_install_sub_title) TextView subTitle;
-   @InjectView(R.id.success_firmware_install_done) Button done;
+   private ImageView image;
+   private ImageView subImage;
+   private TextView title;
+   private TextView subTitle;
+   private Button done;
 
    @Inject WalletSuccessInstallFirmwarePresenter presenter;
 
@@ -65,7 +61,14 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      image = view.findViewById(R.id.success_firmware_install_image);
+      subImage = view.findViewById(R.id.success_firmware_install_sub_image);
+      title = view.findViewById(R.id.success_firmware_install_title);
+      subTitle = view.findViewById(R.id.success_firmware_install_sub_title);
+      done = view.findViewById(R.id.success_firmware_install_done);
+      done.setOnClickListener(btnDone -> getPresenter().finishUpdateFlow());
       hideAllView();
    }
 
@@ -91,10 +94,9 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
    }
 
    private void hideAllView() {
-      apply(
-            asList(image, subTitle, title, subImage, done),
-            (view, index) -> view.setAlpha(0)
-      );
+      for (View view : Arrays.asList(image, subTitle, title, subImage, done)) {
+         view.setAlpha(0);
+      }
    }
 
    @Override
@@ -108,12 +110,6 @@ public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController
             ? (FirmwareUpdateData) getArgs().getSerializable(KEY_FIRMWARE_UPDATE_DATA)
             : null;
    }
-
-   @OnClick(R.id.success_firmware_install_done)
-   void onDoneClick() {
-      getPresenter().finishUpdateFlow();
-   }
-
 
    private void startAnim() {
       AnimatorSet mainAnimation = new AnimatorSet();

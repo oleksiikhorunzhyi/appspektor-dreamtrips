@@ -23,17 +23,12 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinScreen;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, EnterPinPresenter> implements EnterPinScreen {
 
    private static final String KEY_PIN_ACTION = "key_pin_action";
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.header_text_view) TextView headerTextView;
-   @InjectView(R.id.wizard_video_view) WizardVideoView wizardVideoView;
 
    @Inject EnterPinPresenter presenter;
 
@@ -56,9 +51,10 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
-      toolbar.setNavigationOnClickListener(v -> onBackClick());
-      setupMenuItem();
+      setupToolbar(view);
+      final TextView headerTextView = view.findViewById(R.id.header_text_view);
       headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
+      final WizardVideoView wizardVideoView = view.findViewById(R.id.wizard_video_view);
       wizardVideoView.setVideoSource(R.raw.wallet_anim_pin_entry);
    }
 
@@ -77,7 +73,9 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
       return false;
    }
 
-   private void setupMenuItem() {
+   private void setupToolbar(View view) {
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
+      toolbar.setNavigationOnClickListener(v -> onBackClick());
       toolbar.inflateMenu(R.menu.wallet_pin_setup);
       toolbar.setOnMenuItemClickListener(item -> handleActionItemsClick(item.getItemId()));
    }

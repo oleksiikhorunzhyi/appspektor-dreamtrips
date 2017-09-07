@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -13,19 +14,17 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.U
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
 public class UnassignSuccessScreenImpl extends WalletBaseController<UnassignSuccessScreen, UnassignSuccessPresenter> implements UnassignSuccessScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject UnassignSuccessPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      final Button btnGetStarted = view.findViewById(R.id.get_started_button);
+      btnGetStarted.setOnClickListener(getStartedBtn -> getPresenter().navigateToWizard());
    }
 
    @Override
@@ -41,11 +40,6 @@ public class UnassignSuccessScreenImpl extends WalletBaseController<UnassignSucc
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
-   }
-
-   @OnClick(R.id.get_started_button)
-   public void onGetStarted() {
-      getPresenter().navigateToWizard();
    }
 
    @Override

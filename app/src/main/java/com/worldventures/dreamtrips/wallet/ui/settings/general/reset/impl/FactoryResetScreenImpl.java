@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
@@ -18,26 +19,20 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class FactoryResetScreenImpl extends WalletBaseController<FactoryResetScreen, FactoryResetPresenter> implements FactoryResetScreen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @Inject FactoryResetPresenter presenter;
 
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-   }
-
-   @OnClick(R.id.btn_cancel)
-   public void onClickCancel() {
-      getPresenter().goBack();
+      final TextView btnCancel = view.findViewById(R.id.btn_cancel);
+      btnCancel.setOnClickListener(cancelBtn -> getPresenter().goBack());
    }
 
    @Override

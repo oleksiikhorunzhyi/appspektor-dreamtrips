@@ -19,9 +19,6 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
@@ -31,18 +28,17 @@ public class SmartCardWidget extends ConstraintLayout {
 
    private static final float WIDGET_SIZE_RATIO = 195 / 320f;
 
-   @InjectView(R.id.photo_container) View photoContainer;
-   @InjectView(R.id.cardListSCAvatar) SimpleDraweeView scAvatar;
-   @InjectView(R.id.tv_photo_full_name) TextView tvPhotoFullName;
-   @InjectView(R.id.tv_photo_first_name) TextView tvPhotoFirstName;
-   @InjectView(R.id.tv_full_name) TextView tvFullName;
-   @InjectView(R.id.tv_cards_loaded) TextView tvCardsLoaded;
-   @InjectView(R.id.battery_indicator) BatteryView batteryView;
-   @InjectView(R.id.battery_indicator_text) TextView tvBatteryLevel;
-
-   @InjectView(R.id.stealth_indicator) View stealthIndicator;
-   @InjectView(R.id.lock_indicator) ImageView lockIndicator;
-   @InjectView(R.id.link_indicator) ImageView linkIndicator;
+   private View photoContainer;
+   private SimpleDraweeView scAvatar;
+   private TextView tvPhotoFullName;
+   private TextView tvPhotoFirstName;
+   private TextView tvFullName;
+   private TextView tvCardsLoaded;
+   private BatteryView batteryView;
+   private TextView tvBatteryLevel;
+   private View stealthIndicator;
+   private ImageView lockIndicator;
+   private ImageView linkIndicator;
 
    public SmartCardWidget(Context context) {
       this(context, null);
@@ -54,10 +50,20 @@ public class SmartCardWidget extends ConstraintLayout {
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_smartcard, this);
+      final View view = LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_smartcard, this);
       if (isInEditMode()) return;
-      ButterKnife.inject(this);
+      photoContainer = view.findViewById(R.id.photo_container);
+      scAvatar = view.findViewById(R.id.cardListSCAvatar);
       SmartCardAvatarHelper.applyGrayScaleColorFilter(scAvatar);
+      tvPhotoFullName = view.findViewById(R.id.tv_photo_full_name);
+      tvPhotoFirstName = view.findViewById(R.id.tv_photo_first_name);
+      tvFullName = view.findViewById(R.id.tv_full_name);
+      tvCardsLoaded = view.findViewById(R.id.tv_cards_loaded);
+      batteryView = view.findViewById(R.id.battery_indicator);
+      tvBatteryLevel = view.findViewById(R.id.battery_indicator_text);
+      stealthIndicator = view.findViewById(R.id.stealth_indicator);
+      lockIndicator = view.findViewById(R.id.lock_indicator);
+      linkIndicator = view.findViewById(R.id.link_indicator);
       setVisibility(INVISIBLE);
    }
 

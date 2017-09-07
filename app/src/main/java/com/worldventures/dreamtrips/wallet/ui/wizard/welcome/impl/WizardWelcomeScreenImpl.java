@@ -22,8 +22,6 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.smartcard.model.User;
 
 import static android.view.View.INVISIBLE;
@@ -36,11 +34,10 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
    private static final long GREETING_ANIMATION_DELAY = 1000;
    private static final long ANIMATION_DELAY = 3000;
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.greeting_label) TextView greeting;
-   @InjectView(R.id.content_label) TextView content;
-   @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
-   @InjectView(R.id.setup_button) Button setupButton;
+   private TextView greeting;
+   private TextView content;
+   private SimpleDraweeView userPhoto;
+   private Button setupButton;
 
    @Inject WizardWelcomePresenter presenter;
 
@@ -61,9 +58,16 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().backButtonClicked());
-      content.setVisibility(INVISIBLE);
+      userPhoto = view.findViewById(R.id.user_photo);
       SmartCardAvatarHelper.applyGrayScaleColorFilter(userPhoto);
+      greeting = view.findViewById(R.id.greeting_label);
+      content = view.findViewById(R.id.content_label);
+      content.setVisibility(INVISIBLE);
+      setupButton = view.findViewById(R.id.setup_button);
+      setupButton.setOnClickListener(setupBtn -> getPresenter().setupCardClicked());
+
    }
 
    @Override
@@ -129,11 +133,6 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
          }
       });
       animator.start();
-   }
-
-   @OnClick(R.id.setup_button)
-   public void onSetSetupButtonClicked() {
-      getPresenter().setupCardClicked();
    }
 
    @Override

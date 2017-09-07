@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
@@ -35,10 +34,9 @@ public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScree
 
    private static final String KEY_SYNC_ACTION = "key_sync_action";
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.tv_progress_count_cards_sync) TextView progressCountCardsSync;
-   @InjectView(R.id.tv_progress_status) TextView progressPercentageLabel;
-   @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
+   private TextView progressCountCardsSync;
+   private TextView progressPercentageLabel;
+   private WalletProgressWidget installProgress;
 
    @Inject SyncRecordsPresenter presenter;
 
@@ -61,7 +59,11 @@ public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScree
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
+      final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+      progressCountCardsSync = view.findViewById(R.id.tv_progress_count_cards_sync);
+      progressPercentageLabel = view.findViewById(R.id.tv_progress_status);
+      installProgress = view.findViewById(R.id.firmware_install_progress);
    }
 
    @Override

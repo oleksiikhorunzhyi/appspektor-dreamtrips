@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.im
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -12,15 +13,15 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.Fac
 
 import javax.inject.Inject;
 
-import butterknife.OnClick;
-
 public class FactoryResetSuccessScreenImpl extends WalletBaseController<FactoryResetSuccessScreen, FactoryResetSuccessPresenter> implements FactoryResetSuccessScreen {
 
    @Inject FactoryResetSuccessPresenter presenter;
 
-   @OnClick(R.id.btn_done)
-   public void onClickDone() {
-      getPresenter().navigateNext();
+   @Override
+   protected void onFinishInflate(View view) {
+      super.onFinishInflate(view);
+      final Button btnDone = view.findViewById(R.id.btn_done);
+      btnDone.setOnClickListener(doneBtn -> getPresenter().navigateNext());
    }
 
    @Override

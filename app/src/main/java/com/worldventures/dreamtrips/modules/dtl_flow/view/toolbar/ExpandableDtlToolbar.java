@@ -177,9 +177,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
          if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
          } else {
-            if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
-               searchQueryTitle = defaultEmptySearchCaption;
-            }
             merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
          }
       } else {

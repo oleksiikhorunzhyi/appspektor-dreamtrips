@@ -222,7 +222,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                idResource = R.string.filter_merchant_entertainment;
             } else if (type.get(0).equals(FilterData.SPAS)) {
                filterSpa.setSelected(true);
-               idResource = R.string.filter_merchant_spa;
+               idResource = R.string.filter_merchant_spas;
             }
          } else {
             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {

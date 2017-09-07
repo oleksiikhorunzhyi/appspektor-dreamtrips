@@ -14,7 +14,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class DtlToolbar extends LinearLayout {
       if (TextUtils.isEmpty(searchQuery)) {
          merchantSearchInput.setHint(defaultEmptySearchCaption);
       } else {
-         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
+         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_dining))) {
             searchQuery = defaultEmptySearchCaption;
          }
          merchantSearchInput.setHint(searchQuery);

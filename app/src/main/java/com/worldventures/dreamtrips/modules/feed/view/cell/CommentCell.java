@@ -55,7 +55,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
    @InjectView(R.id.comment_translate_view) TranslateView viewWithTranslation;
    @InjectView(R.id.translation_dot_separator) View translationDotSeparator;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject Router router;

@@ -51,7 +51,7 @@ public class SocialAppModule {
    public static final String MALAYSIYA_COUNTRY_CODE = "my";
 
    @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTripsComponent(SessionHolder<UserSession> sessionHolder) {
+   ComponentDescription provideTripsComponent(SessionHolder sessionHolder) {
       return new ComponentDescription.Builder()
             .key(TRIPS)
             .toolbarLogo(getLogo(sessionHolder))
@@ -116,7 +116,7 @@ public class SocialAppModule {
             .build();
    }
    @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMapTripsComponent(SessionHolder<UserSession> sessionHolder) {
+   ComponentDescription provideMapTripsComponent(SessionHolder sessionHolder) {
       return new ComponentDescription.Builder()
             .key(MAP_TRIPS)
             .toolbarLogo(getLogo(sessionHolder))
@@ -216,7 +216,7 @@ public class SocialAppModule {
    }
 
    @DrawableRes
-   private int getLogo(SessionHolder<UserSession> sessionHolder) {
+   private int getLogo(SessionHolder sessionHolder) {
       String countryCode = sessionHolder.get().get().getUser().getCountryCode();
       if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
          return R.drawable.dt_action_bar_logo_skyzone;

@@ -276,7 +276,7 @@ public class ManagerModule {
    @Provides
    @Singleton
    ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         SessionHolder<UserSession> sessionHolder) {
+         SessionHolder sessionHolder) {
       return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
    }
 

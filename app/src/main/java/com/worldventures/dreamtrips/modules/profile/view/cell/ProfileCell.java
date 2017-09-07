@@ -82,7 +82,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    @InjectView(R.id.fl_friends_container) View friendsContainer;
    @InjectView(R.id.divider1) View divider1;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject SnappyRepository snapper;
    @Inject FeatureManager featureManager;
    @Inject @ForActivity Provider<Injector> injectorProvider;

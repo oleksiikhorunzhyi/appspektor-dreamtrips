@@ -73,7 +73,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;

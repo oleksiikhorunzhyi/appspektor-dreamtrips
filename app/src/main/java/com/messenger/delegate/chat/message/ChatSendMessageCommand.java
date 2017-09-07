@@ -14,7 +14,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class ChatSendMessageCommand extends BaseChatCommand<Message> {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject MessageBodyCreator messageBodyCreator;
 
    private String messageText;

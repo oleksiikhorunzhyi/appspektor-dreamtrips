@@ -8,10 +8,10 @@ import rx.Observable;
 
 public class DreamTripsCredentialsProvider implements CredentialsProvider {
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final Observable<Device> deviceSource;
 
-   public DreamTripsCredentialsProvider(SessionHolder<UserSession> sessionHolder, Observable<Device> deviceSource) {
+   public DreamTripsCredentialsProvider(SessionHolder sessionHolder, Observable<Device> deviceSource) {
       this.sessionHolder = sessionHolder;
       this.deviceSource = deviceSource;
    }

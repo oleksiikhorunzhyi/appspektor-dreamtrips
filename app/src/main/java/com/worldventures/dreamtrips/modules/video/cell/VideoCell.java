@@ -31,7 +31,7 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
    @InjectView(R.id.download_progress) protected PinProgressButton downloadProgress;
 
    @Inject @ForActivity protected Context context;
-   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected SessionHolder appSessionHolder;
    @Inject CachedModelHelper cachedModelHelper;
 
    protected ProgressVideoCellHelper progressVideoCellHelper;

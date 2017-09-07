@@ -31,7 +31,7 @@ public class TripImagesTabFragment extends BaseFragment<TripImagesTabPresenter> 
    @InjectView(R.id.tabs) protected BadgedTabLayout tabs;
    @InjectView(R.id.pager) protected ViewPager pager;
 
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    private BasePagerAdapter adapter;
 

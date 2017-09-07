@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
 public class LoginCommand extends CommandWithError<UserSession> implements InjectableAction {
 
    @Inject Janet janet;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject MapperyContext mapperyContext;
    @Inject AuthInteractor authInteractor;
    @Inject SnappyRepository db;

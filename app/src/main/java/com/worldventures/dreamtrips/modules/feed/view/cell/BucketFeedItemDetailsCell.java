@@ -26,7 +26,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_feed_bucket_event)
 public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem, BaseFeedCell.FeedCellDelegate<BucketFeedItem>> {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @ForActivity @Inject Context context;
 
    private BucketItemViewInjector bucketItemViewInjector;

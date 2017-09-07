@@ -76,7 +76,7 @@ import dagger.Provides;
 public class MessengerActivityModule {
 
    @Provides
-   DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
+   DataUser provideUser(SessionHolder appSessionHolder) {
       return new DataUser(appSessionHolder.get().get().getUser().getUsername());
    }
 

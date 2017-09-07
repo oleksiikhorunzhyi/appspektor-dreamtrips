@@ -16,7 +16,7 @@ public class LocaleModule {
 
    @Provides
    @Singleton
-   LocaleSwitcher provideLocaleSwitcher(Context context, SessionHolder<UserSession> sessionHolder) {
+   LocaleSwitcher provideLocaleSwitcher(Context context, SessionHolder sessionHolder) {
       return new LocaleSwitcher(context, sessionHolder);
    }
 }

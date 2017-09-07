@@ -161,8 +161,8 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
          return bunchStatus
       }
 
-      fun mockSessionHolder(): SessionHolder<UserSession> {
-         val sessionHolder: SessionHolder<UserSession> = mock()
+      fun mockSessionHolder(): SessionHolder {
+         val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          return sessionHolder

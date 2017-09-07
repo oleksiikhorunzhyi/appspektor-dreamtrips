@@ -37,7 +37,7 @@ import butterknife.InjectView;
 public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
 
    @Inject Presenter.TabletAnalytic tabletAnalytic;
-   @Inject protected SessionHolder<UserSession> sessionHolder;
+   @Inject protected SessionHolder sessionHolder;
    @Inject protected FragmentManager fragmentManager;
    @Inject protected Router router;
 

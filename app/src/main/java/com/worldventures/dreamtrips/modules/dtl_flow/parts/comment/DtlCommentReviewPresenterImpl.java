@@ -34,7 +34,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     @Inject
     MerchantsInteractor merchantInteractor;
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    SessionHolder appSessionHolder;
 
     private final Merchant merchant;
     private static final String BRAND_ID = "1";

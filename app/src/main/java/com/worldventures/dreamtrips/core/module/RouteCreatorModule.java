@@ -24,13 +24,13 @@ public class RouteCreatorModule {
 
    @Provides
    @Named(PROFILE)
-   RouteCreator<Integer> provideProfileRouteCreator(SessionHolder<UserSession> appSessionHolder) {
+   RouteCreator<Integer> provideProfileRouteCreator(SessionHolder appSessionHolder) {
       return new ProfileRouteCreator(appSessionHolder);
    }
 
    @Provides
    @Named(BUCKET_DETAILS)
-   RouteCreator<Integer> provideBucketDetailsRouteCreator(SessionHolder<UserSession> appSessionHolder) {
+   RouteCreator<Integer> provideBucketDetailsRouteCreator(SessionHolder appSessionHolder) {
       return new BucketDetailsRouteCreator(appSessionHolder);
    }
 

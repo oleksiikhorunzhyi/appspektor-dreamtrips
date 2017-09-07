@@ -38,7 +38,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
    private static final int DEGREE_PER_ONE_ROTATION = 90;
 
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject SessionHolder userSessionHolder;
 
    @InjectView(R.id.photo_container) View photoContainer;
    @InjectView(R.id.attached_photo) SimpleDraweeView attachedPhoto;

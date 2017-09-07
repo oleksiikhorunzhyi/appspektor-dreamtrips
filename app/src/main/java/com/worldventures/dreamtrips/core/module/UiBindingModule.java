@@ -29,7 +29,7 @@ public class UiBindingModule {
 
    @Singleton
    @Provides
-   ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder<UserSession> sessionHolder) {
+   ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder sessionHolder) {
       return new ActivityWatcher(context, sessionHolder);
    }
 

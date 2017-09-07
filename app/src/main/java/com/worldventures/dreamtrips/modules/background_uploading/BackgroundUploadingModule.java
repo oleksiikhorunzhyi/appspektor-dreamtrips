@@ -69,7 +69,7 @@ public class BackgroundUploadingModule {
    }
 
    @Provides
-   PostCompoundOperationMutator providePostCompoundOperationMutator(SessionHolder<UserSession> sessionHolder) {
+   PostCompoundOperationMutator providePostCompoundOperationMutator(SessionHolder sessionHolder) {
       return new PostCompoundOperationMutator(sessionHolder);
    }
 

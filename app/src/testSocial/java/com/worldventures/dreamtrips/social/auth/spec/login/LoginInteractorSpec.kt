@@ -87,7 +87,7 @@ class LoginInteractorSpec : BaseSpec({
       val USERNAME: String = "username"
       val PASSWORD: String = "password"
 
-      val sessionHolderMock: SessionHolder<UserSession> = mock()
+      val sessionHolderMock: SessionHolder = mock()
       val userSessionMock: UserSession = mock()
       val apiSession: com.worldventures.dreamtrips.api.session.model.Session = mock()
       val mapperyContext: MapperyContext = mock()

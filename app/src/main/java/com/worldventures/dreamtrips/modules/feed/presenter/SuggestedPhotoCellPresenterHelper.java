@@ -33,7 +33,7 @@ public class SuggestedPhotoCellPresenterHelper {
    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
    private MediaInteractor mediaInteractor;
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
 
    @State ArrayList<PhotoPickerModel> suggestionItems;
    @State ArrayList<String> selectedPhotosPaths;
@@ -42,7 +42,7 @@ public class SuggestedPhotoCellPresenterHelper {
    private View view;
    private Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper;
 
-   public SuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
+   public SuggestedPhotoCellPresenterHelper(SessionHolder appSessionHolder,
          MediaInteractor mediaInteractor) {
       this.appSessionHolder = appSessionHolder;
       this.mediaInteractor = mediaInteractor;

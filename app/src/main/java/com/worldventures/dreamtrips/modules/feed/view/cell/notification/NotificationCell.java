@@ -54,7 +54,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    @Optional @InjectView(R.id.notification_header_image) SimpleDraweeView notificationImage;
 
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> profileRouteCreator;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject Router router;
 

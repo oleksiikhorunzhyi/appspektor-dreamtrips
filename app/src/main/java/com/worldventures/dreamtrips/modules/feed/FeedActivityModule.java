@@ -147,7 +147,7 @@ import dagger.Provides;
 public class FeedActivityModule {
 
    @Provides
-   FeedEntityContentFragmentFactory provideFeedEntityContentFragmentFactory(SessionHolder<UserSession> sessionHolder) {
+   FeedEntityContentFragmentFactory provideFeedEntityContentFragmentFactory(SessionHolder sessionHolder) {
       return new FeedEntityContentFragmentFactory(sessionHolder);
    }
 
@@ -193,7 +193,7 @@ public class FeedActivityModule {
    }
 
    @Provides
-   SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(SessionHolder<UserSession> appSessionHolder,
+   SuggestedPhotoCellPresenterHelper provideSuggestedPhotoCellPresenterHelper(SessionHolder appSessionHolder,
          MediaInteractor mediaInteractor) {
       return new SuggestedPhotoCellPresenterHelper(appSessionHolder, mediaInteractor);
    }

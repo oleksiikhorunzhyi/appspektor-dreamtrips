@@ -105,7 +105,7 @@ class StaticPageProviderSpec: BaseSpec({
       val LOCALE = "en-us"
       val MERCHANT_ID = "10191"
 
-      val mockSessionHolder: SessionHolder<UserSession> = mock()
+      val mockSessionHolder: SessionHolder = mock()
       val deviceInfoProvider: DeviceInfoProvider = mock()
       val staticPageProviderConfig: StaticPageProviderConfig =
             ImmutableStaticPageProviderConfig.builder()

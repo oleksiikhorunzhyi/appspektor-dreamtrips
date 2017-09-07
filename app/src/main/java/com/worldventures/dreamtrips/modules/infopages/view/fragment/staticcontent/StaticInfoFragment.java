@@ -73,7 +73,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
    @Inject OfflineErrorInteractor offlineErrorInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;

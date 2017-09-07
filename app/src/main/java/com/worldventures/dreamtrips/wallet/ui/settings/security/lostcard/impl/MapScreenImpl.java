@@ -138,7 +138,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       clearMapAndAttachMarker(pinData.position());
       lastLocationViewModel.setPlace(obtainPlace(pinData.places()));
       lastLocationViewModel.setAddress(obtainAddress(pinData.address()));
-      popupInfoViewBinding.getRoot().setVisibility(VISIBLE);
+      setVisibleMsgEmptyLastLocation(false);
 
       popupInfoViewBinding.setLastLocation(lastLocationViewModel);
       popupInfoViewBinding.setDirectionClick(view -> {

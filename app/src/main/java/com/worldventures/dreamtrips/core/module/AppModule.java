@@ -49,8 +49,6 @@ import dagger.Provides;
             ApiModule.class,
             AmazonModule.class,
             //
-            UiBindingModule.class,
-            //
             RouteCreatorModule.class,
             //
             CacheActionStorageModule.class,

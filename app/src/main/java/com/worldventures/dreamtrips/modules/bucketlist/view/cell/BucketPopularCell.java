@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
-import android.content.Context;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,8 +11,6 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,8 +25,6 @@ public class BucketPopularCell extends AbstractDelegateCell<PopularBucketItem, B
    @InjectView(R.id.buttonDone) protected TextView buttonFlatDone;
    @InjectView(R.id.progressBar) protected ProgressBar progressBar;
 
-   @Inject protected Context context;
-
    public BucketPopularCell(View view) {
       super(view);
    }
@@ -39,7 +34,7 @@ public class BucketPopularCell extends AbstractDelegateCell<PopularBucketItem, B
       textViewDescription.setText(getModelObject().getDescription());
       textViewName.setText(getModelObject().getName());
 
-      int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
+      int width = getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
 
       imageViewImage.setImageURI(Uri.parse(getModelObject().getCoverPhotoUrl(width, width)));
 
@@ -73,6 +68,11 @@ public class BucketPopularCell extends AbstractDelegateCell<PopularBucketItem, B
       buttonFlatAdd.setVisibility(View.VISIBLE);
       buttonFlatDone.setVisibility(View.VISIBLE);
       progressBar.setVisibility(View.INVISIBLE);
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 
    @Override

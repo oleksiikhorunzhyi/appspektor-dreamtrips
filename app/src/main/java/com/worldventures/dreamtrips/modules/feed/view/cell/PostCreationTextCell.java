@@ -32,6 +32,11 @@ public class PostCreationTextCell extends AbstractDelegateCell<PostDescription, 
       post.setOnFocusChangeListener(null);
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<PostDescription> {
 
    }

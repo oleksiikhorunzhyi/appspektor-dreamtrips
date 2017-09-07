@@ -31,4 +31,9 @@ public class InviteTemplateCell extends AbstractDelegateCell<InviteTemplate, Cel
    public void onSelectAction() {
       cellDelegate.onCellClicked(getModelObject());
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

@@ -24,6 +24,11 @@ public class SoldOutCell extends BoolCell<FilterSoldOutModel, SoldOutCell.Delega
       cellDelegate.onFilterShowSoldOutEvent(b);
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<FilterSoldOutModel> {
       void onFilterShowSoldOutEvent(boolean enabled);
    }

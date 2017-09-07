@@ -43,6 +43,11 @@ public class SuccessStoryCell extends AbstractDelegateCell<SuccessStory, Success
       cellDelegate.onCellClicked(getModelObject(), getPosition());
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public static abstract class Delegate implements CellDelegate<SuccessStory> {
       @Override
       public void onCellClicked(SuccessStory model) {}

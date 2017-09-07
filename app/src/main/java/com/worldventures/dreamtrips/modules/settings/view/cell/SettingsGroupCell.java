@@ -30,4 +30,9 @@ public class SettingsGroupCell extends AbstractDelegateCell<SettingsGroup, CellD
    void onSettingsClicked() {
       cellDelegate.onCellClicked(getModelObject());
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

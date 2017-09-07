@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.facebook.view.cell;
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -42,5 +41,10 @@ public class FacebookPhotoCell extends AbstractDelegateCell<FacebookPhoto, CellD
       } else {
          pick.setImageResource(R.drawable.add_photo_icon);
       }
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 }

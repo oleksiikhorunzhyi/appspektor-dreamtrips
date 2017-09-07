@@ -32,4 +32,9 @@ public class ReloadFeedCell extends AbstractDelegateCell<ReloadFeedModel, CellDe
       itemView.setVisibility(View.GONE);
       if (cellDelegate != null) cellDelegate.onCellClicked(getModelObject());
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

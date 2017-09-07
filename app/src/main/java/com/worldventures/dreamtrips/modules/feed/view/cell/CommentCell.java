@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -57,6 +58,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject Router router;
 
    private CommentCellHelper commentCellHelper;
 

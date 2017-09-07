@@ -36,4 +36,9 @@ public class FriendPrefGroupCell extends AbstractDelegateCell<FriendGroupRelatio
          cellDelegate.onRelationChanged(getModelObject(), state);
       });
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

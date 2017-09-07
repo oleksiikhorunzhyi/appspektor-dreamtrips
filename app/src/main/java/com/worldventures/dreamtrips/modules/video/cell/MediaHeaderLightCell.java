@@ -18,4 +18,8 @@ public class MediaHeaderLightCell extends MediaHeaderCell {
       header.setTextColor(itemView.getResources().getColor(R.color.theme_main_darker));
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

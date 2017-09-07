@@ -6,9 +6,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -18,7 +15,6 @@ import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
-import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
@@ -42,35 +38,23 @@ import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPre
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripButtonCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripPhotoCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoStripVideoCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.SubPhotoAttachmentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestionPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.VideoFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.VideoPostCreationCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
@@ -90,13 +74,10 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragm
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedAspectRatioHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
-import com.worldventures.dreamtrips.modules.media_picker.view.cell.PhotoPickerModelCell;
-import com.worldventures.dreamtrips.modules.media_picker.view.cell.VideoPickerModelCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
@@ -106,19 +87,18 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {TripFeedItemDetailsCell.class,
+      injects = {
+            FeedActivity.class,
+            TripFeedItemDetailsCell.class,
             FeedPresenter.class,
             SuggestedPhotoCellPresenterHelper.class,
             FeedFragment.class,
             BucketFeedItemDetailsCell.class,
-            LoadMoreCell.class,
             PhotoFeedItemDetailsCell.class,
             PostFeedItemCell.class,
             UndefinedFeedItemDetailsCell.class,
             HashtagFeedFragment.class,
             HashtagFeedPresenter.class,
-            PickerIrregularPhotoCell.class,
-            PhotoPickerModelCell.class,
             EditCommentPresenter.class,
             CommentableFragment.class,
             ComponentPresenter.class,
@@ -133,10 +113,7 @@ import dagger.Provides;
             NotificationFragment.class,
             NotificationPresenter.class,
             NotificationCell.class,
-            NotificationFragment.NotificationAdapter.class,
-            FeedItemDetailsCell.class,
             FeedItemCell.class,
-            BaseFeedCell.class,
             FeedEntityDetailsCell.class,
             BucketFeedEntityDetailsCell.class,
             TripFeedItemDetailsCell.class,
@@ -148,19 +125,13 @@ import dagger.Provides;
             EditCommentPresenter.class,
             DtGalleryFragment.class,
             GalleryPresenter.class,
-            ActionEntityFragment.class,
-            ActionEntityPresenter.class,
             CreateFeedPostFragment.class,
             CreateEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,
             LocationPresenter.class,
             SuggestedPhotosCell.class,
-            SuggestionPhotoCell.class,
             PhotoPostCreationCell.class,
-            VideoPostCreationCell.class,
-            PostCreationTextCell.class,
-            SubPhotoAttachmentCell.class,
             PostFeedItemDetailsCell.class,
             EditPostFragment.class,
             EditPostPresenter.class,
@@ -168,14 +139,8 @@ import dagger.Provides;
             EditPhotoPresenter.class,
             DescriptionCreatorFragment.class,
             DescriptionCreatorPresenter.class,
-            HashtagSuggestionCell.class,
-            StatePaginatedRecyclerViewManager.class,
             UploadingPostsSectionCell.class,
-            VideoPickerModelCell.class,
-            PhotoStripPhotoCell.class,
-            PhotoStripVideoCell.class,
-            PhotoStripButtonCell.class,
-            VideoFeedItemDetailsCell.class
+            VideoFeedItemDetailsCell.class,
       },
       complete = false,
       library = true)

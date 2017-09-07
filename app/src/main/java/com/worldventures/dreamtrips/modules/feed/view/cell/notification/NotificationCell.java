@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -55,6 +56,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> profileRouteCreator;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject Router router;
 
    public NotificationCell(View view) {
       super(view);

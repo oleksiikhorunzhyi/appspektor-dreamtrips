@@ -36,4 +36,9 @@ public class SettingsFlagCell extends AbstractDelegateCell<FlagSetting, CellDele
       flag.setChecked(getModelObject().getValue());
       cellDelegate.onCellClicked(getModelObject());
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

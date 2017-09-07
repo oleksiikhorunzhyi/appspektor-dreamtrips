@@ -35,12 +35,18 @@ public class HashtagSuggestionCell extends AbstractDelegateCell<HashtagSuggestio
       itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
    }
 
-   public interface Delegate extends CellDelegate<HashtagSuggestion> {
-
-   }
-
    private String getSuggestionsCountString(int suggestionsCount) {
       return itemView.getResources()
             .getString(QuantityHelper.chooseResource(suggestionsCount, R.string.hashtag_one_post, R.string.hashtag_multiple_posts));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
+   public interface Delegate extends CellDelegate<HashtagSuggestion> {
+
+   }
+
 }

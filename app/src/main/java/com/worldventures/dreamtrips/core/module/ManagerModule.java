@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
@@ -37,7 +37,6 @@ import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
-import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
@@ -68,8 +67,8 @@ import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHe
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.delegate.EditPhotoTagsCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MediaRefresher;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
@@ -80,11 +79,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
 
-@Module(
-      injects = {
-            PhotoUploadingManagerS3.class,
-      },
-      library = true, complete = false)
+@Module(library = true, complete = false)
 public class ManagerModule {
 
    @Singleton
@@ -106,8 +101,8 @@ public class ManagerModule {
    }
 
    @Provides
-   public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Injector injector) {
-      return new PhotoUploadingManagerS3(injector);
+   public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Context context, TransferUtility transferUtility) {
+      return new PhotoUploadingManagerS3(context, transferUtility);
    }
 
    @Singleton
@@ -180,12 +175,6 @@ public class ManagerModule {
    @Provides
    LocationDelegate provideLocationDelegate(@ForApplication Context context) {
       return new LocationDelegateImpl(context);
-   }
-
-   @Provides
-   @Singleton
-   PhotoPickerDelegate providePhotoPickerDelegate() {
-      return new PhotoPickerDelegate();
    }
 
    @Provides

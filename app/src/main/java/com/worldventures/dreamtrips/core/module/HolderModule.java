@@ -16,7 +16,7 @@ public class HolderModule {
    @Provides
    @Singleton
    public SessionHolder<UserSession> provideSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
-      return new SessionHolder<UserSession>(simpleKeyValueStorage);
+      return new SessionHolder<>(simpleKeyValueStorage);
    }
 
    @Provides

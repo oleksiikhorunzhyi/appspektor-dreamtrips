@@ -31,4 +31,9 @@ public class VideoLocaleCell extends AbstractDelegateCell<VideoLocale, CellDeleg
       countryName.setText(getModelObject().getTitle());
       itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

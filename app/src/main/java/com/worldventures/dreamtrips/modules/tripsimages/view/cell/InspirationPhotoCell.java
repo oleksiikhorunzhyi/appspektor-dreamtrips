@@ -39,4 +39,9 @@ public class InspirationPhotoCell extends AbstractDelegateCell<Inspiration, Cell
    public void prepareForReuse() {
       this.draweeView.setImageURI(Uri.EMPTY);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

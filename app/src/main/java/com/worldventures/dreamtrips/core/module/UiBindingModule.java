@@ -18,9 +18,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {
-            BaseArrayListAdapter.class,
-            BaseDelegateAdapter.class},
+      injects = {},
       library = true, complete = false)
 public class UiBindingModule {
 

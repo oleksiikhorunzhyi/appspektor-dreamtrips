@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
+import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresenter;
@@ -36,21 +38,15 @@ import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 import dagger.Module;
 
 @Module(
-      injects = {OtaFragment.class,
+      injects = {
             AuthorizedStaticInfoFragment.class,
             AuthorizedStaticInfoPresenter.class,
-            PresentationVideosPresenter.class,
             StaticInfoFragment.class,
             StaticInfoFragment.BookItFragment.class,
             StaticInfoFragment.BundleUrlFragment.class,
-            EnrollRepFragment.class,
             StaticInfoFragment.EnrollUpgradeFragment.class,
+            EnrollRepFragment.class,
             DocumentFragment.class,
-            VideoCell.class,
-            MediaHeaderLightCell.class,
-            MediaHeaderCell.class,
-            ThreeSixtyVideosFragment.class,
-            ThreeSixtyVideosPresenter.class,
             HelpVideosFragment.class,
             HelpVideosPresenter.class,
             HelpFragment.class,
@@ -60,17 +56,17 @@ import dagger.Module;
             WebViewFragmentPresenter.class,
             SendFeedbackFragment.class,
             SendFeedbackPresenter.class,
-            AttachmentImagesHorizontalView.class,
             FeedbackImageAttachmentsPresenter.class,
             FeedbackImageAttachmentFullscreenFragment.class,
             FeedbackImageAttachmentsFragment.class,
             DocumentListFragment.class,
             DocumentListPresenter.class,
             DocumentPresenter.class,
-            OtaPresenter.class,
-            DocumentCell.class,
             HelpDocumentListFragment.class,
-            HelpDocumentListPresenter.class},
+            HelpDocumentListPresenter.class,
+            TermsConditionsDialogPresenter.class,
+            TermsConditionsDialog.class,
+      },
       complete = false,
       library = true)
 public class InfoActivityModule {

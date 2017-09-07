@@ -51,9 +51,9 @@ public class ConversationsDAO extends BaseDAO {
    public static final String RECIPIENT_FIRST_NAME_COLUMN = "recipientFirstName";
    public static final String RECIPIENT_LAST_NAME_COLUMN = "recipientLastName";
 
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
 
-   public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder<UserSession> appSessionHolder) {
+   public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder appSessionHolder) {
       super(context, rxContentResolver);
       this.appSessionHolder = appSessionHolder;
    }

@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
-import com.worldventures.dreamtrips.modules.media_picker.MediaPickerModule;
+import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
 import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
@@ -87,7 +87,7 @@ import dagger.Provides;
             FacebookAppModule.class,
             VersionCheckModule.class,
             FeedAppModule.class,
-            MediaPickerModule.class,
+            OldMediaPickerModule.class,
             SocialAppModule.class,
             WalletAppModule.class,
       },

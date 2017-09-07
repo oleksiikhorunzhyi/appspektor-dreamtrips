@@ -24,11 +24,11 @@ import timber.log.Timber;
 public class MessageTranslationDelegate {
 
    private TranslationsDAO translationsDAO;
-   private SessionHolder<UserSession> sessionHolder;
+   private SessionHolder sessionHolder;
    private TranslationInteractor translationInteractor;
 
    @Inject
-   public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO, SessionHolder<UserSession> sessionHolder) {
+   public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO, SessionHolder sessionHolder) {
       this.translationInteractor = translationInteractor;
       this.translationsDAO = translationsDAO;
       this.sessionHolder = sessionHolder;

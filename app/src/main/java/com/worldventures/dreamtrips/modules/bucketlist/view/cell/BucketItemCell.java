@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
 
-import android.content.Context;
 import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -19,8 +18,6 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -38,9 +35,7 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
    @InjectView(R.id.swipeLayout) protected SwipeLayout swipeLayout;
    @InjectView(R.id.imageViewStatusDone) protected ImageView imageViewStatusDone;
    @InjectView(R.id.imageViewStatusClose) protected ImageView imageViewStatusClose;
-
-   @Inject protected Context context;
-
+   
    private int mDragStateFlags;
    private boolean afterSwipe = false;
    private int swipeVelocityTrigger;
@@ -89,9 +84,9 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
    private void renderData() {
       if (getModelObject().isDone()) {
-         tvName.setTextColor(context.getResources().getColor(R.color.grey));
+         tvName.setTextColor(getResources().getColor(R.color.grey));
       } else {
-         tvName.setTextColor(context.getResources().getColor(R.color.black));
+         tvName.setTextColor(getResources().getColor(R.color.black));
       }
    }
 
@@ -190,12 +185,12 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
          case ACTION_NONE:
             imageViewStatusDone.setVisibility(View.VISIBLE);
             imageViewStatusClose.setVisibility(View.INVISIBLE);
-            swipeLayout.setBackgroundColor(context.getResources().getColor(R.color.bucket_green));
+            swipeLayout.setBackgroundColor(getResources().getColor(R.color.bucket_green));
             break;
          case ACTION_SETTLING:
             imageViewStatusDone.setVisibility(View.INVISIBLE);
             imageViewStatusClose.setVisibility(View.INVISIBLE);
-            swipeLayout.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+            swipeLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             break;
       }
    }
@@ -217,7 +212,12 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
    }
 
    private boolean isFling(float velocity) {
-      return dpFromPx(context, velocity) > swipeVelocityTrigger;
+      return dpFromPx(getResources(), velocity) > swipeVelocityTrigger;
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 
    @IntDef({ACTION_DONE, ACTION_SETTLING, ACTION_NONE})

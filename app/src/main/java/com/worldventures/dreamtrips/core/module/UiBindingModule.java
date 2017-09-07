@@ -18,9 +18,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {
-            BaseArrayListAdapter.class,
-            BaseDelegateAdapter.class},
+      injects = {},
       library = true, complete = false)
 public class UiBindingModule {
 
@@ -31,7 +29,7 @@ public class UiBindingModule {
 
    @Singleton
    @Provides
-   ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder<UserSession> sessionHolder) {
+   ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder sessionHolder) {
       return new ActivityWatcher(context, sessionHolder);
    }
 

@@ -37,7 +37,7 @@ abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSp
       val MOCK_USER_ID = 1
       val TEST_IMAGE_PATH = TemporaryFolder().createFileAndGetPath("TestPhoto.jpeg")
 
-      val mockSessionHolder: SessionHolder<UserSession> = mock()
+      val mockSessionHolder: SessionHolder = mock()
       val userSession: UserSession = mock()
       val staticPageProvider: StaticPageProvider = mock()
 

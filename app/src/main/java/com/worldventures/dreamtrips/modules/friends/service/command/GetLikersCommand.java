@@ -22,7 +22,7 @@ public class GetLikersCommand extends GetUsersCommand {
    private int page;
    private int perPage;
 
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    public GetLikersCommand(FeedEntity feedEntity, int page, int perPage) {
       this.feedEntity = feedEntity;

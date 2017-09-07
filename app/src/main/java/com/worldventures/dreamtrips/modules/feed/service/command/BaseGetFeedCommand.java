@@ -24,7 +24,7 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
 
    @Inject protected Janet janet;
    @Inject protected MapperyContext mappery;
-   @Inject protected SessionHolder<UserSession> userSessionHolder;
+   @Inject protected SessionHolder userSessionHolder;
 
    protected Date before;
 

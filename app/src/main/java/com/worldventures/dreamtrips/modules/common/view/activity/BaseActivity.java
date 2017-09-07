@@ -32,10 +32,10 @@ import com.worldventures.dreamtrips.modules.infopages.InfoActivityModule;
 import com.worldventures.dreamtrips.modules.membership.MembershipModule;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
-import com.worldventures.dreamtrips.modules.player.PodcastModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileActivityModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsActivityModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
+import com.worldventures.dreamtrips.modules.social_common.SocialCommonActivityModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripImagesModule;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
@@ -186,9 +186,9 @@ public abstract class BaseActivity extends InjectingActivity {
       modules.add(new MessengerActivityModule());
       modules.add(new DtlActivityModule());
       modules.add(new LocationPickerModule());
-      modules.add(new PodcastModule());
       modules.add(new WalletActivityModule());
       modules.add(new VersionCheckActivityModule());
+      modules.add(new SocialCommonActivityModule());
       return modules;
    }
 

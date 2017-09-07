@@ -39,7 +39,7 @@ import butterknife.OnClick;
 public class PhotoReviewPostCreationCell extends AbstractDelegateCell<PhotoReviewCreationItem, PhotoReviewPostCreationDelegate> {
 
    @Inject @ForActivity Injector injector;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject SessionHolder userSessionHolder;
 
    @InjectView(R.id.photo_container) View photoContainer;
    @InjectView(R.id.attached_photo) SimpleDraweeView attachedPhoto;

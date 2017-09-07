@@ -19,7 +19,7 @@ public class FeedEntityContentFragmentFactory {
 
    private final RouteCreator bucketRouteCreator;
 
-   public FeedEntityContentFragmentFactory(SessionHolder<UserSession> sessionHolder) {
+   public FeedEntityContentFragmentFactory(SessionHolder sessionHolder) {
       this.bucketRouteCreator = new BucketDetailsRouteCreator(sessionHolder);
    }
 

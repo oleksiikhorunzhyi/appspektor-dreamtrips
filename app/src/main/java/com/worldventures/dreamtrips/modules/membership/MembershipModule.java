@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership;
 
+import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
@@ -11,8 +13,6 @@ import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PodcastsPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
-import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
-import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.PodcastCell;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -21,13 +21,13 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipF
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PodcastsFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
+import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
+import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
+import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenterImpl;
+import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
-import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLanguageCell;
-import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
-import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
-import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
@@ -40,6 +40,8 @@ import dagger.Module;
 
 @Module(
       injects = {
+            PodcastPlayerActivity.class,
+            PodcastPlayerPresenter.class,
             MembershipPresenter.class,
             MembershipFragment.class,
             EnrollMemberFragment.class,
@@ -50,10 +52,9 @@ import dagger.Module;
             PodcastsFragment.class,
             PodcastsPresenter.class,
             PodcastCell.class,
-            MemberCell.class,
+            VideoCell.class,
             SelectTemplateFragment.class,
             SelectTemplatePresenter.class,
-            InviteTemplateCell.class,
             EditTemplateFragment.class,
             EditTemplatePresenter.class,
             EnrollMemberPresenter.class,
@@ -61,13 +62,8 @@ import dagger.Module;
             PreviewTemplateFragment.class,
             FilterLanguageDialogFragment.class,
             WVAdvantageFragment.class,
-            VideoCell.class,
-            MediaHeaderLightCell.class,
             Video360Cell.class,
             Video360SmallCell.class,
-            MediaHeaderCell.class,
-            VideoLocaleCell.class,
-            VideoLanguageCell.class,
             ThreeSixtyVideosFragment.class,
             ThreeSixtyVideosPresenter.class,
             VideoPlayerPresenter.class,
@@ -75,6 +71,10 @@ import dagger.Module;
             TrainingVideosPresenter.class,
             PresentationVideosPresenter.class,
             PresentationVideosFragment.class,
+            PlayerActivity.class,
+            PlayerPresenter.class,
+            PodcastPresenterImpl.class,
+            PodcastPlayerScreenImpl.class
       },
       complete = false,
       library = true)

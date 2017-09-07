@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragm
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
@@ -66,6 +67,7 @@ import dagger.Module;
 
 @Module(
       injects = {
+            DtlActivity.class,
             DtlLocationsSearchScreenImpl.class,
             DtlLocationsSearchPresenterImpl.class,
             DtlLocationsScreenImpl.class,

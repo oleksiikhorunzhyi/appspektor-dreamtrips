@@ -54,7 +54,7 @@ public class MessengerModule {
    @Provides
    @Singleton
    MessengerConnector messengerConnector(@ForApplication Context context, ActivityWatcher activityWatcher,
-         SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
+         SessionHolder appSessionHolder, MessengerServerFacade messengerServerFacade,
          MessengerSyncDelegate messengerSyncDelegate) {
       return new MessengerConnector(context, activityWatcher, appSessionHolder, messengerServerFacade, messengerSyncDelegate);
    }

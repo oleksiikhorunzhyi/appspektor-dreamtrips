@@ -13,12 +13,12 @@ import java.util.Locale;
 public class LocaleSwitcher {
 
    private final Context context;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
    private Locale defaultSystemLocale;
    private Locale currentLocale;
 
-   public LocaleSwitcher(Context context, SessionHolder<UserSession> sessionHolder) {
+   public LocaleSwitcher(Context context, SessionHolder sessionHolder) {
       this.context = context;
       this.sessionHolder = sessionHolder;
       this.defaultSystemLocale = Locale.getDefault();

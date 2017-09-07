@@ -59,7 +59,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.perk_divider) View perkDivider;
    @InjectView(R.id.rating_header) LinearLayout ratingHeader;
 
-   @Inject protected SessionHolder<UserSession> sessionHolder;
+   @Inject protected SessionHolder sessionHolder;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<String, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();

@@ -23,4 +23,9 @@ public class VideoPickerModelCell extends MediaPickerModelCell<VideoPickerModel>
       super.syncUIStateWithModel();
       durationTextView.setText(VideoDurationFormatter.getFormattedDuration(getModelObject().getDuration()));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

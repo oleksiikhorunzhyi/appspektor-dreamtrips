@@ -52,4 +52,8 @@ public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHead
       if (cellDelegate != null) cellDelegate.onLanguageClicked();
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

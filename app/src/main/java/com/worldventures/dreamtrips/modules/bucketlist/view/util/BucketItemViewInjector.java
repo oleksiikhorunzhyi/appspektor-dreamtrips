@@ -29,7 +29,7 @@ public class BucketItemViewInjector {
    private Context context;
    private TranslateBucketItemViewInjector translateBucketItemViewInjector;
 
-   public BucketItemViewInjector(View rootView, Context context, SessionHolder<UserSession> appSessionHolder) {
+   public BucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder) {
       this.context = context;
       translateBucketItemViewInjector = new TranslateBucketItemViewInjector(rootView, context, appSessionHolder);
       ButterKnife.inject(this, rootView);

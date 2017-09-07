@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DreamTripsAuthStorage extends AuthStorage<Session> {
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
-   public DreamTripsAuthStorage(SessionHolder<UserSession> sessionHolder) {
+   public DreamTripsAuthStorage(SessionHolder sessionHolder) {
       super(Session.class);
       this.sessionHolder = sessionHolder;
    }

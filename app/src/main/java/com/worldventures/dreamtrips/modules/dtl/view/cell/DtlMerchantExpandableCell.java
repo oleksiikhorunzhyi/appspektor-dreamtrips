@@ -73,7 +73,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private DistanceType distanceType;
    private boolean expanded;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);

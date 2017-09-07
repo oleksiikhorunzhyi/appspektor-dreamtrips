@@ -39,7 +39,6 @@ public class StatefulHorizontalPhotosView<T extends ImagePathHolder, D extends C
 
    public void init(Injector injector) {
       if (isInEditMode()) return;
-      injector.inject(this);
       if (imagesAdapter != null) return;
 
       imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);

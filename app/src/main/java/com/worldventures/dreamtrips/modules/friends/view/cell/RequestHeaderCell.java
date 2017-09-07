@@ -39,4 +39,9 @@ public class RequestHeaderCell extends AbstractDelegateCell<RequestHeaderModel, 
    void onAcceptAll() {
       cellDelegate.acceptAllRequests();
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

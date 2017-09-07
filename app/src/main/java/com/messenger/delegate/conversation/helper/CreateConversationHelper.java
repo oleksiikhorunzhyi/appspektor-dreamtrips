@@ -24,11 +24,11 @@ import rx.Observable;
 
 public class CreateConversationHelper {
 
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
    private final MessengerServerFacade messengerServerFacade;
 
    @Inject
-   CreateConversationHelper(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
+   CreateConversationHelper(SessionHolder appSessionHolder, MessengerServerFacade messengerServerFacade) {
       this.appSessionHolder = appSessionHolder;
       this.messengerServerFacade = messengerServerFacade;
    }

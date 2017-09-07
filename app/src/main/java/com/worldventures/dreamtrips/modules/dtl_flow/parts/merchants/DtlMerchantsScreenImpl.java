@@ -447,7 +447,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
-      dtlToolbar.removeSearchFieldFocus();
+      if (null != dtlToolbar) {
+         dtlToolbar.removeSearchFieldFocus();
+      }
       setCurrentSearchFilter(stringResource);
       updateFiltersView(stringResource);
       getPresenter().setMerchantType(merchantType);

@@ -39,4 +39,9 @@ public class YsbhPhotoCell extends AbstractDelegateCell<YSBHPhoto, CellDelegate<
    public void prepareForReuse() {
       this.draweeView.setImageURI(Uri.EMPTY);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

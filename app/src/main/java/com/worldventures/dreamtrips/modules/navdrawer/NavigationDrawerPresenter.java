@@ -27,7 +27,7 @@ import rx.subjects.PublishSubject;
 
 public class NavigationDrawerPresenter {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject SnappyRepository db;
    @Inject UnreadConversationObservable unreadObservable;
    @Inject AuthInteractor authInteractor;

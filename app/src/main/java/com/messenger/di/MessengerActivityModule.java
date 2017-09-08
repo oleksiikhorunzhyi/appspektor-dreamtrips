@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 import com.messenger.entities.DataUser;
+import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.holder.chat.ChatHolderModule;
 import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
@@ -16,6 +17,7 @@ import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
+import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.settings.SingleChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.settings.TripChatScreenPresenterImpl;
@@ -43,34 +45,38 @@ import dagger.Provides;
 
 @Module(
       includes = {ChatHolderModule.class,},
-      injects = {ConversationListScreenImpl.class, EditChatMembersScreenImpl.class, ChatScreenImpl.class, MessengerPhotoPickerLayout.class, GroupChatSettingsScreenImpl.class, TripChatSettingsScreenImpl.class,
+      injects = {
+            MessengerActivity.class,
 
-            ChatGroupCommandsInteractor.class, ChatAdapter.class, ChatTimestampInflater.class,
+            ConversationListScreenImpl.class,
+            EditChatMembersScreenImpl.class,
+            ChatScreenImpl.class,
+            MessengerPhotoPickerLayout.class,
+            GroupChatSettingsScreenImpl.class,
+            TripChatSettingsScreenImpl.class,
+            ChatGroupCommandsInteractor.class,
+            ChatAdapter.class,
+            ChatTimestampInflater.class,
 
             //presenters
-            MessengerActivityPresenter.class, ChatScreenPresenterImpl.class, ChatMembersScreenPresenterImpl.class, NewChatScreenPresenterImpl.class, AddChatMembersScreenPresenterImpl.class,
-
-            SingleChatSettingsScreenPresenterImpl.class, GroupChatSettingsScreenPresenterImpl.class, TripChatScreenPresenterImpl.class,
-
-            ConversationListScreenPresenterImpl.class, EditChatMembersScreenPresenterImpl.class, FlaggingPresenterImpl.class,},
+            MessengerActivityPresenter.class,
+            ChatScreenPresenterImpl.class,
+            ChatMembersScreenPresenterImpl.class,
+            NewChatScreenPresenterImpl.class,
+            AddChatMembersScreenPresenterImpl.class,
+            SingleChatSettingsScreenPresenterImpl.class,
+            GroupChatSettingsScreenPresenterImpl.class,
+            TripChatScreenPresenterImpl.class,
+            ConversationListScreenPresenterImpl.class,
+            EditChatMembersScreenPresenterImpl.class,
+            FlaggingPresenterImpl.class,
+            ToolbarPresenter.class,
+      },
       complete = false, library = true)
 public class MessengerActivityModule {
-   public static final String MESSENGER = "Messenger";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMessengerComponent() {
-      return new ComponentDescription.Builder()
-            .key(MESSENGER)
-            .navMenuTitle(R.string.messenger)
-            .toolbarTitle(R.string.messenger)
-            .icon(R.drawable.ic_messenger)
-            .skipGeneralToolbar(true)
-            .shouldFinishMainActivity(true)
-            .build();
-   }
 
    @Provides
-   DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
+   DataUser provideUser(SessionHolder appSessionHolder) {
       return new DataUser(appSessionHolder.get().get().getUser().getUsername());
    }
 

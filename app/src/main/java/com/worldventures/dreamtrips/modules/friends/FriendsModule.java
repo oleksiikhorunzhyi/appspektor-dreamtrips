@@ -10,12 +10,10 @@ import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresent
 import com.worldventures.dreamtrips.modules.friends.presenter.MutualFriendsPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.UsersLikedItemPresenter;
-import com.worldventures.dreamtrips.modules.friends.view.cell.AcceptanceHeaderCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.MutualFriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
-import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
@@ -30,18 +28,24 @@ import dagger.Provides;
 
 @Module(
       injects = {
-            FriendSearchFragment.class, FriendSearchPresenter.class, FriendsMainPresenter.class,
-            FriendListFragment.class, FriendsMainFragment.class, FriendListPresenter.class,
-            FriendCell.class, UserCell.class, FeedFriendCell.class, MutualFriendCell.class,
-
-            UsersLikedItemPresenter.class, UsersLikedItemFragment.class,
-
-            MutualFriendsFragment.class, MutualFriendsPresenter.class,
-
-            RequestsFragment.class, RequestsPresenter.class,
-
-            RequestCell.class, RequestHeaderCell.class, AcceptanceHeaderCell.class, UserSearchCell.class,
-
+            FriendSearchFragment.class,
+            FriendSearchPresenter.class,
+            FriendsMainPresenter.class,
+            FriendListFragment.class,
+            FriendsMainFragment.class,
+            FriendListPresenter.class,
+            FriendCell.class,
+            UserCell.class,
+            FeedFriendCell.class,
+            MutualFriendCell.class,
+            UsersLikedItemPresenter.class,
+            UsersLikedItemFragment.class,
+            MutualFriendsFragment.class,
+            MutualFriendsPresenter.class,
+            RequestsFragment.class,
+            RequestsPresenter.class,
+            RequestCell.class,
+            UserSearchCell.class,
             SmartAvatarView.class},
       complete = false,
       library = true)

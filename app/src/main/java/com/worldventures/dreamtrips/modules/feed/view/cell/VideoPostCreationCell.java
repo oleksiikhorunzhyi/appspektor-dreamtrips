@@ -102,4 +102,9 @@ public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationMod
          cellDelegate.onRemoveClicked(getModelObject());
       }
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

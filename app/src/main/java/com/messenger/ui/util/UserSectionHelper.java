@@ -33,9 +33,9 @@ public class UserSectionHelper {
    public static final String HOST_TYPE = "Host";
 
    private final Context context;
-   private final SessionHolder<UserSession> userSessionHolder;
+   private final SessionHolder userSessionHolder;
 
-   public UserSectionHelper(Context context, SessionHolder<UserSession> userSessionHolder) {
+   public UserSectionHelper(Context context, SessionHolder userSessionHolder) {
       this.context = context;
       this.userSessionHolder = userSessionHolder;
    }

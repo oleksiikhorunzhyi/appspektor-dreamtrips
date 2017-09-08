@@ -45,6 +45,11 @@ public class HeaderRegionCell extends AbstractDelegateCell<RegionHeaderModel, He
       cellDelegate.toggleVisibility();
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<RegionHeaderModel> {
 
       void onCheckBoxAllRegionsPressedEvent(boolean isChecked);

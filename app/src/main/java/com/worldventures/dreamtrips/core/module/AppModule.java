@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyModule;
 import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
+import com.worldventures.dreamtrips.modules.common.SocialAppModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookAppModule;
 import com.worldventures.dreamtrips.modules.feed.FeedAppModule;
@@ -24,10 +25,11 @@ import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
-import com.worldventures.dreamtrips.modules.media_picker.MediaPickerModule;
+import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
 import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,25 +49,34 @@ import dagger.Provides;
             ApiModule.class,
             AmazonModule.class,
             //
-            UiBindingModule.class,
-            //
             RouteCreatorModule.class,
             //
-            CacheActionStorageModule.class, LocalCacheModule.class,
+            CacheActionStorageModule.class,
+            LocalCacheModule.class,
             //
-            GcmModule.class, ActionReceiverModule.class,
+            GcmModule.class,
+            ActionReceiverModule.class,
             //
-            ResponseSnifferModule.class, BadgeCountObserverModule.class,
+            ResponseSnifferModule.class,
+            BadgeCountObserverModule.class,
             //
             NavigationModule.class,
             //
-            LocaleModule.class, AppVersionNameModule.class,
+            LocaleModule.class,
+            AppVersionNameModule.class,
             //
-            MessengerModule.class, FlagsModule.class, DtlModule.class,
+            MessengerModule.class,
+            FlagsModule.class,
+            DtlModule.class,
             //
-            JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
+            JanetModule.class,
+            JanetUploaderyModule.class,
+            AnalyticsModule.class,
+            SessionProcessingModule.class,
             //
-            FlagsModule.class, PodcastAppModule.class, MappingModule.class,
+            FlagsModule.class,
+            PodcastAppModule.class,
+            MappingModule.class,
             //
             SmartCardModule.class,
             //
@@ -74,7 +85,9 @@ import dagger.Provides;
             FacebookAppModule.class,
             VersionCheckModule.class,
             FeedAppModule.class,
-            MediaPickerModule.class
+            OldMediaPickerModule.class,
+            SocialAppModule.class,
+            WalletAppModule.class,
       },
       library = true,
       complete = false,

@@ -2,7 +2,7 @@ ext {
    pluginDependencies = [:]
    pluginDependencies.languages = [
          java  : '1.8',
-         kotlin: '1.1.1'
+         kotlin: '1.1.4-3'
    ]
    pluginDependencies.repos = [
          { o -> o.jcenter() },

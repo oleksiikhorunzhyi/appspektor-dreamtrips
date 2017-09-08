@@ -43,4 +43,9 @@ public class AddPhotoCell extends AbstractDelegateCell<AddPhotoModel, CellDelega
    public void onClick() {
       cellDelegate.onCellClicked(getModelObject());
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

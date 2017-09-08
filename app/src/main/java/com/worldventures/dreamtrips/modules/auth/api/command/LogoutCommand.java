@@ -53,7 +53,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject Janet janet;
    @Inject @ForApplication Context context;
    @Inject SnappyRepository snappyRepository;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject LocaleSwitcher localeSwitcher;
    @Inject NotificationDelegate notificationDelegate;
    @Inject BadgeUpdater badgeUpdater;

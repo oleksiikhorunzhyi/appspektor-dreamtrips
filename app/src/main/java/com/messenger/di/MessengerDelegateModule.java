@@ -33,7 +33,7 @@ public class MessengerDelegateModule {
    }
 
    @Provides
-   UserSectionHelper provideUserSectionHelper(@ForApplication Context context, SessionHolder<UserSession> appSessionHolder) {
+   UserSectionHelper provideUserSectionHelper(@ForApplication Context context, SessionHolder appSessionHolder) {
       return new UserSectionHelper(context, appSessionHolder);
    }
 

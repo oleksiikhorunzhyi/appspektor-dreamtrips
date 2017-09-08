@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.media_picker;
 
 import android.content.Context;
 
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.service.delegate.PhotosProvider;
 import com.worldventures.dreamtrips.modules.media_picker.service.delegate.PhotosProviderImpl;
 import com.worldventures.dreamtrips.modules.media_picker.service.delegate.VideosProvider;
@@ -15,7 +16,7 @@ import dagger.Provides;
 @Module(injects = {
 
 }, library = true, complete = false)
-public class MediaPickerModule {
+public class OldMediaPickerModule {
 
    @Singleton
    @Provides
@@ -28,4 +29,11 @@ public class MediaPickerModule {
    VideosProvider provideVideosProvider(Context context) {
       return new VideosProviderImpl(context);
    }
+
+   @Provides
+   @Singleton
+   PhotoPickerDelegate providePhotoPickerDelegate() {
+      return new PhotoPickerDelegate();
+   }
+
 }

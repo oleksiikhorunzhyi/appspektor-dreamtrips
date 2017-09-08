@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.messenger.ui.fragment.PhotoAttachmentPagerFragment;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
@@ -44,6 +42,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.inspire_me
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ysbh.FullscreenYsbhFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ysbh.YouShouldBeHereFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.ysbh.YsbhViewPagerFragment;
+import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
 
 import javax.inject.Singleton;
@@ -53,6 +53,10 @@ import dagger.Provides;
 
 @Module(
       injects = {
+            Player360Activity.class,
+            ThreeSixtyVideosFragment.class,
+            ThreeSixtyVideosPresenter.class,
+
             TripImagesTabFragment.class,
             TripImagesTabPresenter.class,
             TripImagesFragment.class,
@@ -80,13 +84,6 @@ import dagger.Provides;
             FullscreenYsbhFragment.class,
             FullscreenYsbhPresenter.class,
 
-            TripImageCell.class,
-            YsbhPhotoCell.class,
-            VideoMediaCell.class,
-            VideoMediaTimestampCell.class,
-            InspirationPhotoCell.class,
-            TripImageTimestampCell.class,
-
             TripImagePagerPresenter.class,
             TripImagePagerFragment.class,
 
@@ -101,23 +98,11 @@ import dagger.Provides;
             EditPhotoTagsPresenter.class,
             EditPhotoTagsFragment.class,
 
-            VideoView.class
+            VideoView.class,
       },
       complete = false,
       library = true)
-public class TripImageModule {
-   public static final String TRIP_IMAGES = Route.TRIP_TAB_IMAGES.name();
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTripImagesComponent() {
-      return new ComponentDescription.Builder()
-            .key(TRIP_IMAGES)
-            .navMenuTitle(R.string.trip_images)
-            .toolbarTitle(R.string.trip_images)
-            .icon(R.drawable.ic_trip_images)
-            .fragmentClass(TripImagesTabFragment.class)
-            .build();
-   }
+public class TripImagesModule {
 
    @Provides
    @Singleton

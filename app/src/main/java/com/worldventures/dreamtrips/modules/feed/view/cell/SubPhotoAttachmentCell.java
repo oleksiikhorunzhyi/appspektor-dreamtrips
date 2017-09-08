@@ -51,4 +51,9 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
       draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController()));
       draweeView.setTag(uri);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

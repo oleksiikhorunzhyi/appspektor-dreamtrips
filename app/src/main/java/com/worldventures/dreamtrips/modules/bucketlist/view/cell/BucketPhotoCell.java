@@ -57,4 +57,9 @@ public class BucketPhotoCell extends StatefulPhotoCell<BucketPhoto, BucketPhotoU
             .onNegative((materialDialog, dialogAction) -> materialDialog.dismiss())
             .show();
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 public class AcceptTermsCommand extends CommandWithError implements InjectableAction {
 
    @Inject Janet janet;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private String text;
 

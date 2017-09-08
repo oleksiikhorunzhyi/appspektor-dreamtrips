@@ -37,7 +37,7 @@ public class StaticPageProvider {
    private static final String MASK_USER_NAME = "%username%";
    private static final String MASK_TRIP_ID = "%trip_id%";
 
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
    private DeviceInfoProvider deviceInfoProvider;
 
    private String apiUrl;

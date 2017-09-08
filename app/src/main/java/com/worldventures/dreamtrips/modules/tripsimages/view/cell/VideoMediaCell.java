@@ -39,4 +39,9 @@ public class VideoMediaCell extends AbstractDelegateCell<VideoMediaEntity, CellD
    public void prepareForReuse() {
       this.videoThumbnail.setImageURI(Uri.EMPTY);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

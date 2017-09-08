@@ -157,7 +157,7 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   WalletSocialInfoProvider walletSocialInfoProvider(SessionHolder<UserSession> sessionHolder) {
+   WalletSocialInfoProvider walletSocialInfoProvider(SessionHolder sessionHolder) {
       return new WalletSocialInfoProviderImpl(sessionHolder);
    }
 }

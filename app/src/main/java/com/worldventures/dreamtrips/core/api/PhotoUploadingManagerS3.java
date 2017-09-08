@@ -29,8 +29,9 @@ public class PhotoUploadingManagerS3 {
    @Inject Context context;
    @Inject TransferUtility transferUtility;
 
-   public PhotoUploadingManagerS3(Injector injector) {
-      injector.inject(this);
+   public PhotoUploadingManagerS3(Context context, TransferUtility transferUtility) {
+      this.context = context;
+      this.transferUtility = transferUtility;
    }
 
    public void cancelUploading(UploadTask uploadTask) {

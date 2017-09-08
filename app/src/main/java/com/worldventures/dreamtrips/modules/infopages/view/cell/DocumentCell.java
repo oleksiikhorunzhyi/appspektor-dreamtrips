@@ -26,4 +26,9 @@ public class DocumentCell extends AbstractDelegateCell<Document, CellDelegate<Do
 
       itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

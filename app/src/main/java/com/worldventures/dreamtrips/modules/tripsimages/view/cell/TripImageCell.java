@@ -39,4 +39,9 @@ public class TripImageCell extends AbstractDelegateCell<PhotoMediaEntity, CellDe
    public void prepareForReuse() {
       this.draweeView.setImageURI(Uri.EMPTY);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

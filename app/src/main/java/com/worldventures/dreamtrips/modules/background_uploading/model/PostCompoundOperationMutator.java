@@ -17,9 +17,9 @@ public class PostCompoundOperationMutator {
    private static final int PROGRESS_MEDIA_CREATED = 95;
    private static final int PROGRESS_POST_CREATED = 100;
 
-   private SessionHolder<UserSession> sessionSessionHolder;
+   private SessionHolder sessionSessionHolder;
 
-   public PostCompoundOperationMutator(SessionHolder<UserSession> sessionSessionHolder) {
+   public PostCompoundOperationMutator(SessionHolder sessionSessionHolder) {
       this.sessionSessionHolder = sessionSessionHolder;
    }
 

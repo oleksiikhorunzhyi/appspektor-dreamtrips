@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.messenger.di.MessengerActivityModule;
+import com.messenger.di.MessengerModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.annotations.Layout;
@@ -11,18 +11,17 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
+import com.worldventures.dreamtrips.modules.common.SocialAppModule;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.ComponentDescriptionException;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
-import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
-import com.worldventures.dreamtrips.modules.feed.FeedModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.activity.SocialDrawerActivity;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
-import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
 import butterknife.InjectView;
@@ -105,17 +104,17 @@ public class MainActivity extends SocialDrawerActivity<MainActivityPresenter> im
    @Override
    protected void itemSelected(ComponentDescription component) {
       switch (component.getKey()) {
-         case MessengerActivityModule.MESSENGER:
+         case MessengerModule.MESSENGER:
             MessengerActivity.startMessenger(this);
             break;
-         case DtlActivityModule.DTL:
+         case DtlModule.DTL:
             DtlActivity.startDtl(this);
             break;
-         case WalletActivityModule.WALLET:
+         case WalletAppModule.WALLET:
             WalletActivity.startWallet(this);
             break;
-         case FeedModule.FEED:
-         case ProfileModule.ACCOUNT_PROFILE:
+         case SocialAppModule.FEED:
+         case SocialAppModule.ACCOUNT_PROFILE:
             FeedActivity.startFeed(this, component);
             break;
          default:

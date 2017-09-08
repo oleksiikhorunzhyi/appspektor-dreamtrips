@@ -25,7 +25,6 @@ public class RootComponentsProvider {
    }
 
    private List<ComponentDescription> buildActiveComponents(Set<ComponentDescription> descriptions, ComponentsConfig componentConfig) {
-
       Map<String, ComponentDescription> componentsMap = new HashMap<>();
 
       Queryable.from(descriptions).forEachR(cd -> {
@@ -35,7 +34,8 @@ public class RootComponentsProvider {
          componentsMap.put(cd.getKey(), cd);
       });
 
-      return Queryable.from(componentConfig.getActiveComponents()).map(componentsMap::get).toList();
+      return Queryable.from(componentConfig.getActiveComponents())
+            .filter(componentsMap::containsKey).map(componentsMap::get).toList();
    }
 
    public List<ComponentDescription> getActiveComponents() {

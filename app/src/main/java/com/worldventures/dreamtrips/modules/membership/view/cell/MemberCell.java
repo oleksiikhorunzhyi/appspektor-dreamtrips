@@ -65,4 +65,9 @@ public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member
          cellDelegate.onCellClicked(getModelObject());
       }
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

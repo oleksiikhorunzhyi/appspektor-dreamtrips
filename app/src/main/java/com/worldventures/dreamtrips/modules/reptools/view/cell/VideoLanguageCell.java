@@ -24,4 +24,9 @@ public class VideoLanguageCell extends AbstractDelegateCell<VideoLanguage, CellD
       text.setText(getModelObject().getTitle());
       itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

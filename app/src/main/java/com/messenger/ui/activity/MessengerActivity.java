@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.messenger.delegate.CropImageDelegate;
-import com.messenger.di.MessengerActivityModule;
+import com.messenger.di.MessengerModule;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -49,7 +49,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
       //
       initPickerLayout();
       //
-      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(MessengerActivityModule.MESSENGER));
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(MessengerModule.MESSENGER));
    }
 
    @Override
@@ -61,7 +61,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
    @Override
    protected ComponentDescription getCurrentComponent() {
-      return rootComponentsProvider.getComponentByKey(MessengerActivityModule.MESSENGER);
+      return rootComponentsProvider.getComponentByKey(MessengerModule.MESSENGER);
    }
 
    //TODO photo picker should be fully reworked to fit UI needs

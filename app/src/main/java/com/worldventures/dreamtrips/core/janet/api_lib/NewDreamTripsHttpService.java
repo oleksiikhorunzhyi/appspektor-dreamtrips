@@ -36,7 +36,7 @@ import timber.log.Timber;
 
 public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject MapperyContext mapperyContext;
    @Inject ReLoginInteractor reLoginInteractor;

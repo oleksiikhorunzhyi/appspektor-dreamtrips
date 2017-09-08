@@ -49,7 +49,7 @@ public class MessengerStorageModule {
 
    @Provides
    @Singleton
-   ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, SessionHolder<UserSession> appSessionHolder) {
+   ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, SessionHolder appSessionHolder) {
       return new ConversationsDAO(context, rxContentResolver, appSessionHolder);
    }
 

@@ -6,9 +6,9 @@ import com.worldventures.dreamtrips.mobilesdk.authentication.AuthDataProvider;
 
 public class MonolithAuthDataProvider implements AuthDataProvider<MonolithAuthData> {
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
-   public MonolithAuthDataProvider(SessionHolder<UserSession> sessionHolder) {
+   public MonolithAuthDataProvider(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
    }
 

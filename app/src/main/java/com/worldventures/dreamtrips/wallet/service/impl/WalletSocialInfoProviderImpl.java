@@ -9,9 +9,9 @@ import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 
 public class WalletSocialInfoProviderImpl implements WalletSocialInfoProvider {
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
-   public WalletSocialInfoProviderImpl(SessionHolder<UserSession> sessionHolder) {
+   public WalletSocialInfoProviderImpl(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
    }
 

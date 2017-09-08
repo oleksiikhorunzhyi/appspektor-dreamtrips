@@ -27,4 +27,8 @@ public class AcceptanceHeaderCell extends AbstractDelegateCell<AcceptanceHeaderM
       acceptedTextView.setText(header);
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

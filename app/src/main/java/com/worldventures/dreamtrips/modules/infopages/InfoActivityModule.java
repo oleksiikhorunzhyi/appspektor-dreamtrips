@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentPresenter;
@@ -37,24 +36,17 @@ import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
-      injects = {OtaFragment.class,
+      injects = {
             AuthorizedStaticInfoFragment.class,
             AuthorizedStaticInfoPresenter.class,
-            PresentationVideosPresenter.class,
             StaticInfoFragment.class,
             StaticInfoFragment.BookItFragment.class,
             StaticInfoFragment.BundleUrlFragment.class,
-            EnrollRepFragment.class,
             StaticInfoFragment.EnrollUpgradeFragment.class,
+            EnrollRepFragment.class,
             DocumentFragment.class,
-            VideoCell.class,
-            MediaHeaderLightCell.class,
-            MediaHeaderCell.class,
-            ThreeSixtyVideosFragment.class,
-            ThreeSixtyVideosPresenter.class,
             HelpVideosFragment.class,
             HelpVideosPresenter.class,
             HelpFragment.class,
@@ -64,55 +56,18 @@ import dagger.Provides;
             WebViewFragmentPresenter.class,
             SendFeedbackFragment.class,
             SendFeedbackPresenter.class,
-            AttachmentImagesHorizontalView.class,
             FeedbackImageAttachmentsPresenter.class,
             FeedbackImageAttachmentFullscreenFragment.class,
             FeedbackImageAttachmentsFragment.class,
             DocumentListFragment.class,
             DocumentListPresenter.class,
             DocumentPresenter.class,
-            OtaPresenter.class,
-            DocumentCell.class,
             HelpDocumentListFragment.class,
-            HelpDocumentListPresenter.class},
+            HelpDocumentListPresenter.class,
+            TermsConditionsDialogPresenter.class,
+            TermsConditionsDialog.class,
+      },
       complete = false,
       library = true)
-public class InfoModule {
-
-   public static final String HELP = Route.HELP.name();
-   public static final String TERMS = Route.LEGAL_TERMS.name();
-   public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTermsOfServiceComponent() {
-      return new ComponentDescription.Builder()
-            .key(TERMS)
-            .navMenuTitle(R.string.legal_terms)
-            .toolbarTitle(R.string.legal_terms)
-            .icon(R.drawable.ic_termsconditions)
-            .fragmentClass(LegalTermsFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideHelpComponent() {
-      return new ComponentDescription.Builder()
-            .key(HELP)
-            .navMenuTitle(R.string.help)
-            .toolbarTitle(R.string.help)
-            .icon(R.drawable.ic_help)
-            .fragmentClass(HelpFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideFeedbackComponent() {
-      return new ComponentDescription.Builder()
-            .key(SEND_FEEDBACK)
-            .navMenuTitle(R.string.send_feedback)
-            .toolbarTitle(R.string.send_feedback)
-            .icon(R.drawable.ic_send_feedback)
-            .fragmentClass(SendFeedbackFragment.class)
-            .build();
-   }
+public class InfoActivityModule {
 }

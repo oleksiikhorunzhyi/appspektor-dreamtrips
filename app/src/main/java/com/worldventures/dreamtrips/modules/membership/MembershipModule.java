@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
@@ -14,8 +13,6 @@ import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PodcastsPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
-import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
-import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.PodcastCell;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -24,12 +21,27 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipF
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PodcastsFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
+import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
+import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
+import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenterImpl;
+import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl;
+import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
+import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
+import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
+import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
+import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
       injects = {
+            PodcastPlayerActivity.class,
+            PodcastPlayerPresenter.class,
             MembershipPresenter.class,
             MembershipFragment.class,
             EnrollMemberFragment.class,
@@ -40,10 +52,9 @@ import dagger.Provides;
             PodcastsFragment.class,
             PodcastsPresenter.class,
             PodcastCell.class,
-            MemberCell.class,
+            VideoCell.class,
             SelectTemplateFragment.class,
             SelectTemplatePresenter.class,
-            InviteTemplateCell.class,
             EditTemplateFragment.class,
             EditTemplatePresenter.class,
             EnrollMemberPresenter.class,
@@ -51,19 +62,21 @@ import dagger.Provides;
             PreviewTemplateFragment.class,
             FilterLanguageDialogFragment.class,
             WVAdvantageFragment.class,
+            Video360Cell.class,
+            Video360SmallCell.class,
+            ThreeSixtyVideosFragment.class,
+            ThreeSixtyVideosPresenter.class,
+            VideoPlayerPresenter.class,
+            TrainingVideosFragment.class,
+            TrainingVideosPresenter.class,
+            PresentationVideosPresenter.class,
+            PresentationVideosFragment.class,
+            PlayerActivity.class,
+            PlayerPresenter.class,
+            PodcastPresenterImpl.class,
+            PodcastPlayerScreenImpl.class
       },
       complete = false,
       library = true)
 public class MembershipModule {
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMembershipComponent() {
-      return new ComponentDescription.Builder()
-            .key(Route.MEMBERSHIP.name())
-            .navMenuTitle(R.string.membership)
-            .toolbarTitle(R.string.membership)
-            .icon(R.drawable.ic_membership)
-            .fragmentClass(MembershipFragment.class)
-            .build();
-   }
 }

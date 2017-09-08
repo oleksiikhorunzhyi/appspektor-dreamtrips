@@ -98,7 +98,7 @@ ext {
          service: [c: 'io.techery.janet:smartcard:0.21.3-SNAPSHOT'],
    ]
    // services
-   def googleServicesVersion = '11.0.2'
+   def googleServicesVersion = '11.2.0'
    moduleDependencies.services = [
          // amazon
          amazonCore    : [c: 'com.amazonaws:aws-android-sdk-core:2.2.6'],
@@ -136,7 +136,7 @@ ext {
          picasso       : [c: 'com.squareup.picasso:picasso:2.5.2'],
    ]
    // ui (views/layouts/widgets)
-   def googleLibrariesVersion = '25.2.0'
+   def googleLibrariesVersion = '26.0.2'
    moduleDependencies.ui = [
          googleAppcompat7      : [c: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
          googleDesign          : [c: "com.android.support:design:${googleLibrariesVersion}"],

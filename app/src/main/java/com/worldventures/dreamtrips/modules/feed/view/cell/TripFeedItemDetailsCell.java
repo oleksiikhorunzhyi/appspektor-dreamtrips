@@ -24,7 +24,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_feed_trip_event)
 public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, BaseFeedCell.FeedCellDelegate<TripFeedItem>> {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private TripFeedViewInjector tripFeedViewInjector;
 

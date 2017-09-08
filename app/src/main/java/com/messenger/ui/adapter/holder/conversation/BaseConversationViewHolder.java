@@ -28,7 +28,7 @@ import butterknife.InjectView;
 public abstract class BaseConversationViewHolder extends BaseViewHolder
       implements View.OnClickListener {
 
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
    protected DataUser currentUser;
    protected DataConversation conversation;
    protected DataMessage message;

@@ -2,11 +2,10 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.app.Activity;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
+import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -58,8 +57,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.Wall
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPresenter;
@@ -85,6 +84,7 @@ import dagger.Provides;
             MediaPickerModule.class
       },
       injects = {
+            WalletActivity.class,
             WalletActivityPresenter.class,
             WalletStartPresenter.class,
             UnsupportedDeviceInfoCell.class,
@@ -154,19 +154,6 @@ import dagger.Provides;
       complete = false, library = true
 )
 public class WalletActivityModule {
-   public static final String WALLET = "Wallet";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideWalletComponent() {
-      return new ComponentDescription.Builder()
-            .key(WALLET)
-            .navMenuTitle(R.string.wallet)
-            .toolbarTitle(R.string.wallet)
-            .icon(R.drawable.ic_wallet)
-            .skipGeneralToolbar(true)
-            .shouldFinishMainActivity(true)
-            .build();
-   }
 
    @Singleton
    @Provides

@@ -30,7 +30,7 @@ public class GroupChatEventDelegate {
    @Inject ConversationsDAO conversationsDAO;
    @Inject ParticipantsDAO participantsDAO;
    @Inject UsersDAO usersDAO;
-   @Inject SessionHolder<UserSession> currentUserSession;
+   @Inject SessionHolder currentUserSession;
    @Inject LoadConversationDelegate loadConversationDelegate;
    @Inject TypingManager typingManager;
 

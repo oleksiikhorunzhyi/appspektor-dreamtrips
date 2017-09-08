@@ -20,14 +20,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
    private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 
    private final AdapterHelper adapterHelper;
-   private final Injector injector;
+   protected final Injector injector;
    protected List<BaseItemClass> items = new ArrayList<>();
 
    protected List<Class> viewTypes = new ArrayList<>();
 
    public BaseArrayListAdapter(Context context, Injector injector) {
       this.injector = injector;
-      this.injector.inject(this);
       this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
    }
 

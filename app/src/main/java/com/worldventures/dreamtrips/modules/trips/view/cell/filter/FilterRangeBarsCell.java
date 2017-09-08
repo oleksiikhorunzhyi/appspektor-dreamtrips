@@ -48,6 +48,11 @@ public class FilterRangeBarsCell extends AbstractDelegateCell<FilterModel, Filte
       this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<FilterModel> {
 
       void rangeBarDurationEvent(int minNights, int maxNights);

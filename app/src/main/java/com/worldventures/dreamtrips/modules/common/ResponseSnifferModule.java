@@ -16,11 +16,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.Janet;
 
-@Module(
-      injects = {
-            ApiModule.class,
-      },
-      complete = false, library = true)
+@Module(complete = false, library = true)
 public class ResponseSnifferModule {
 
    @Provides(type = Provides.Type.SET)

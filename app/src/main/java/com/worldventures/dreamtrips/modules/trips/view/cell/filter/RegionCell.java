@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -12,8 +11,6 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -24,8 +21,6 @@ public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Del
    @InjectView(R.id.checkBox) CheckBox checkBox;
    @InjectView(R.id.cell) LinearLayout cell;
 
-   @Inject Context context;
-
    public RegionCell(View view) {
       super(view);
    }
@@ -33,8 +28,8 @@ public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Del
    @Override
    protected void syncUIStateWithModel() {
       textViewName.setText(getModelObject().getName());
-      textViewName.setTextColor(getModelObject().isChecked() ? context.getResources()
-            .getColor(R.color.black) : context.getResources().getColor(R.color.grey));
+      textViewName.setTextColor(getModelObject().isChecked() ? getResources()
+            .getColor(R.color.black) : getResources().getColor(R.color.grey));
       checkBox.setChecked(getModelObject().isChecked());
    }
 
@@ -54,6 +49,11 @@ public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Del
    @Override
    public void prepareForReuse() {
       textViewName.setText("");
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 
    public interface Delegate extends CellDelegate<RegionModel> {

@@ -12,4 +12,9 @@ public class PhotoPickerModelCell extends MediaPickerModelCell<PhotoPickerModel>
    public PhotoPickerModelCell(View view) {
       super(view);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

@@ -33,6 +33,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter {
 
    public ThinMerchantsAdapter(Context context, Injector injector) {
       super(context, injector);
+      this.injector.inject(this);
       this.distanceType = FilterHelper.provideDistanceFromSettings(db);
    }
 

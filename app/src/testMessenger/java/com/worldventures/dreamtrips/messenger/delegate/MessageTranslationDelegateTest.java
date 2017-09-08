@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    TranslationsDAO translationsDAO;
-   SessionHolder<UserSession> userSessionHolder;
+   SessionHolder userSessionHolder;
    Janet janet;
 
    DataMessage testMessage;
@@ -246,7 +246,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    //////// Mock Objects
    //////////////////////////////////////////////////////////////////////////////////////////////
 
-   private SessionHolder<UserSession> obtainMockUserSession() {
+   private SessionHolder obtainMockUserSession() {
       UserSession userSession = mock(UserSession.class);
       doReturn("en-us").when(userSession).getLocale();
 
@@ -254,7 +254,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
       doReturn(true).when(optionalMock).isPresent();
       doReturn(userSession).when(optionalMock).get();
 
-      SessionHolder<UserSession> userHolderMock = mock(SessionHolder.class);
+      SessionHolder userHolderMock = mock(SessionHolder.class);
       doReturn(optionalMock).when(userHolderMock).get();
 
       return userHolderMock;

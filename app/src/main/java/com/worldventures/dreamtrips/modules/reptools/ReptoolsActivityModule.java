@@ -13,7 +13,6 @@ import dagger.Module;
 @Module(
       injects = {
             SuccessStoryDetailsFragment.class,
-            SuccessStoryCell.class,
             SuccessStoryListFragment.class,
             SuccessStoryListPresenter.class,
             SuccessStoryDetailsPresenter.class,

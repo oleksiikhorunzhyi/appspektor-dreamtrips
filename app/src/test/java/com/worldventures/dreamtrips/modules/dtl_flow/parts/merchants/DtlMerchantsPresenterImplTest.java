@@ -40,7 +40,7 @@ public class DtlMerchantsPresenterImplTest {
    @Mock DtlLocationInteractor locationInteractor;
    @Mock FullMerchantInteractor fullMerchantInteractor;
    @Mock PresentationInteractor presentationInteractor;
-   @Mock SessionHolder<UserSession> appSessionHolder;
+   @Mock SessionHolder appSessionHolder;
    @Mock AttributesInteractor attributesInteractor;
 
    @Mock MerchantsAction action;

@@ -10,14 +10,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPrese
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketListPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketTabPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -28,7 +20,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
-import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
 
 import dagger.Module;
 
@@ -44,22 +35,13 @@ import dagger.Module;
             BucketTabsFragment.class,
             BucketPopularTabsFragment.class,
             BucketListFragment.class,
-            BucketItemCell.class,
-            BucketPopularCell.class,
             BucketDetailsFragment.class,
             BucketItemDetailsPresenter.class,
-            AutoCompleteAdapter.class,
-            BucketItemAdapter.class,
-            IgnoreFirstItemAdapter.class,
-            AddPhotoCell.class,
-            BucketPhotoCell.class,
-            BucketHorizontalPhotosView.class,
             ForeignBucketItemDetailsPresenter.class,
             ForeignBucketDetailsFragment.class,
             ForeignBucketTabsFragment.class,
             ForeignBucketTabPresenter.class,
             ForeignBucketListFragment.class,
-            BucketItemStaticCell.class,
             ForeignBucketListPresenter.class,
             BucketPhotoViewPagerFragment.class,
             BucketPhotoViewPagerFragment.Presenter.class,

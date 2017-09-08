@@ -27,4 +27,9 @@ public class LoadMoreCell extends AbstractDelegateCell<LoadMore, CellDelegate<Lo
       caption.setText(getModelObject().isLoading() ? R.string.loading : R.string.comment_view_more);
       caption.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

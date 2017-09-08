@@ -20,13 +20,13 @@ public class UnreadMessagesDelegate {
 
    private final MessageDAO messageDAO;
    private final ConversationsDAO conversationsDAO;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final CreateChatHelper createChatHelper;
    private Observable<DataConversation> conversationObservable;
    private Observable<Chat> chatObservable;
 
    @Inject
-   UnreadMessagesDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder) {
+   UnreadMessagesDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder sessionHolder) {
       this.createChatHelper = createChatHelper;
       this.messageDAO = messageDAO;
       this.conversationsDAO = conversationsDAO;

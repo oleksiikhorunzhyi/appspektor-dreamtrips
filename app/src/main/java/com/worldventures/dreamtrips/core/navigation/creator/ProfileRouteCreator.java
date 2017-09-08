@@ -7,9 +7,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 public class ProfileRouteCreator implements RouteCreator<Integer> {
 
-   SessionHolder<UserSession> appSessionHolder;
+   SessionHolder appSessionHolder;
 
-   public ProfileRouteCreator(SessionHolder<UserSession> appSessionHolder) {
+   public ProfileRouteCreator(SessionHolder appSessionHolder) {
       this.appSessionHolder = appSessionHolder;
    }
 

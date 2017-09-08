@@ -145,13 +145,13 @@ public class MobileSdkJanetModule {
 
    @Singleton
    @Provides
-   AuthStorage provideDreamTripsAuthStorage(SessionHolder<UserSession> sessionHolder) {
+   AuthStorage provideDreamTripsAuthStorage(SessionHolder sessionHolder) {
       return new DreamTripsAuthStorage(sessionHolder);
    }
 
    @Singleton
    @Provides
-   CredentialsProvider provideDreamTripsCredentialsProvider(SessionHolder<UserSession> sessionHolder, Observable<Device> deviceSource) {
+   CredentialsProvider provideDreamTripsCredentialsProvider(SessionHolder sessionHolder, Observable<Device> deviceSource) {
       return new DreamTripsCredentialsProvider(sessionHolder, deviceSource);
    }
 

@@ -75,7 +75,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
 
    @Inject ImagePresenterClickEventDelegate imagePresenterClickEventDelegate;
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    private int checkedPosition;
    private boolean viewPagerIndicatorInitialized;

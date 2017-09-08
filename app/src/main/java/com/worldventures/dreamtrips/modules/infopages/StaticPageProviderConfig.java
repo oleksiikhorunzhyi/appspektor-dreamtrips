@@ -9,7 +9,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface StaticPageProviderConfig {
 
-   SessionHolder<UserSession> appSessionHolder();
+   SessionHolder appSessionHolder();
    DeviceInfoProvider deviceInfoProvider();
    String apiUrl();
    String backofficeUrl();

@@ -16,7 +16,7 @@ import timber.log.Timber;
 public class MarkMessageAsReadCommand extends BaseChatCommand<Boolean> {
 
    @Inject MessageDAO messageDAO;
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    private DataMessage lastSeenMessage;
 

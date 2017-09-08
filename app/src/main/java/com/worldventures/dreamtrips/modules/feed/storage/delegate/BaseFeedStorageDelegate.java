@@ -58,7 +58,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
    @Inject FriendsInteractor friendsInteractor;
    @Inject CommentsInteractor commentsInteractor;
 
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    public BaseFeedStorageDelegate(FeedItemsStorageBaseInteractor<? extends COMMAND> feedStorageInteractor, Injector injector) {
       this.feedStorageInteractor = feedStorageInteractor;

@@ -30,4 +30,9 @@ public class PickerIrregularPhotoCell extends AbstractDelegateCell<PickerIrregul
       title.setTextColor(ContextCompat.getColor(itemView.getContext(), getModelObject().getColorRes()));
       itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

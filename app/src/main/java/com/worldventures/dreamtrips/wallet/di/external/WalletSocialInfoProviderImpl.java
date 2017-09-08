@@ -3,15 +3,14 @@ package com.worldventures.dreamtrips.wallet.di.external;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 
 class WalletSocialInfoProviderImpl implements WalletSocialInfoProvider {
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
-   WalletSocialInfoProviderImpl(SessionHolder<UserSession> sessionHolder) {
+   WalletSocialInfoProviderImpl(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
    }
 

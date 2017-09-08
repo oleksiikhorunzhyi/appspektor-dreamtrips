@@ -20,9 +20,7 @@ import dagger.Module;
             AccountPresenter.class,
             FriendPreferenceFragment.class,
             FriendPreferencesPresenter.class,
-            FriendPrefGroupCell.class,
             ProfileCell.class,
-            ReloadFeedCell.class,
       },
       complete = false,
       library = true)

@@ -20,11 +20,11 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
    private final Handler handler = new Handler();
    private final List<OnStartStopAppListener> listeners = new CopyOnWriteArrayList<>();
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
    private int visibleActivityCount;
 
-   public ActivityWatcher(Context context, SessionHolder<UserSession> sessionHolder) {
+   public ActivityWatcher(Context context, SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
       ((Application) context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
    }

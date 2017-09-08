@@ -15,15 +15,16 @@ import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
+import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.FeedActivityModule;
 import com.worldventures.dreamtrips.modules.friends.FriendsModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoActivityModule;
 import com.worldventures.dreamtrips.modules.membership.MembershipModule;
 import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
-import com.worldventures.dreamtrips.modules.player.PodcastModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileActivityModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsActivityModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
+import com.worldventures.dreamtrips.modules.social_common.SocialCommonActivityModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripImagesModule;
 
@@ -31,7 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class LegacyBaseActivity extends BaseActivity {
+public abstract class LegacyBaseActivity extends BaseActivity {
 
    @Inject protected ActivityResultDelegate activityResultDelegate;
    @Inject protected BackStackDelegate backStackDelegate;
@@ -48,6 +49,7 @@ public class LegacyBaseActivity extends BaseActivity {
    protected List<Object> getModules() {
       List<Object> modules = super.getModules();
       modules.add(new BucketListModule());
+      modules.add(new FacebookModule()); // legacy picker
       modules.add(new InfoActivityModule());
       modules.add(new ProfileActivityModule());
       modules.add(new ReptoolsActivityModule());
@@ -60,8 +62,8 @@ public class LegacyBaseActivity extends BaseActivity {
       modules.add(new MessengerActivityModule());
       modules.add(new DtlActivityModule());
       modules.add(new LocationPickerModule());
-      modules.add(new PodcastModule());
       modules.add(new VersionCheckActivityModule());
+      modules.add(new SocialCommonActivityModule());
       return modules;
    }
 

@@ -45,4 +45,9 @@ public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoPickerModel, 
       draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));
       draweeView.setTag(uri);
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

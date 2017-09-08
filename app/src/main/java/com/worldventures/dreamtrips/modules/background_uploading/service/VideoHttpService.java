@@ -34,7 +34,7 @@ import timber.log.Timber;
 
 public class VideoHttpService extends ActionServiceWrapper {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject MapperyContext mapperyContext;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject ReLoginInteractor reLoginInteractor;

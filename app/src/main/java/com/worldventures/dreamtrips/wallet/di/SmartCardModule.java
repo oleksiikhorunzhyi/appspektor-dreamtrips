@@ -2,21 +2,17 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
-import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
-import com.worldventures.dreamtrips.wallet.di.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorageModule;
 import com.worldventures.dreamtrips.wallet.domain.storage.action.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInitializer;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.logout.WalletLogoutActionModule;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;

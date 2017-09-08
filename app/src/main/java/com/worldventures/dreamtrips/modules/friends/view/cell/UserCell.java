@@ -22,7 +22,7 @@ public class UserCell extends BaseUserCell<UserCellDelegate> {
 
    @InjectView(R.id.iv_status) ImageView ivStatus;
 
-   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected SessionHolder appSessionHolder;
    @Inject protected DrawableUtil drawableUtil;
 
    public UserCell(View view) {

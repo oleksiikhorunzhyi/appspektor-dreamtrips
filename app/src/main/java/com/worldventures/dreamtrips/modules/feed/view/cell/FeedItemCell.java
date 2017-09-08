@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -40,6 +41,7 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
    @InjectView(R.id.cell_container) ViewGroup cellContainer;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject Router router;
 
    private CommentCellHelper commentCellHelper;
    private FeedItemDetailsCell feedItemDetailsCell;

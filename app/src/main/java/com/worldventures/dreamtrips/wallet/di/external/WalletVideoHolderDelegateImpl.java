@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.cell.ProgressVideoCellHelper;
@@ -12,10 +11,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVi
 
 class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
 
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final SessionHolder appSessionHolder;
    private final CachedModelHelper cachedModelHelper;
 
-   WalletVideoHolderDelegateImpl(SessionHolder<UserSession> appSessionHolder, CachedModelHelper cachedModelHelper) {
+   WalletVideoHolderDelegateImpl(SessionHolder appSessionHolder, CachedModelHelper cachedModelHelper) {
       this.appSessionHolder = appSessionHolder;
       this.cachedModelHelper = cachedModelHelper;
    }

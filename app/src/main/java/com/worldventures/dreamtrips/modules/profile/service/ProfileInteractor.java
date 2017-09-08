@@ -23,9 +23,9 @@ public class ProfileInteractor {
    private ActionPipe<AddFriendToCircleCommand> addFriendToCirclePipe;
    private ActionPipe<RemoveFriendFromCircleCommand> removeFriendFromCirclePipe;
 
-   private SessionHolder<UserSession> sessionHolder;
+   private SessionHolder sessionHolder;
 
-   public ProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator, SessionHolder<UserSession> sessionHolder) {
+   public ProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator, SessionHolder sessionHolder) {
       privateProfilePipe = sessionActionPipeCreator.createPipe(GetPrivateProfileCommand.class, Schedulers.io());
       publicProfilePipe = sessionActionPipeCreator.createPipe(GetPublicProfileCommand.class, Schedulers.io());
       uploadAvatarPipe = sessionActionPipeCreator.createPipe(UploadAvatarCommand.class, Schedulers.io());

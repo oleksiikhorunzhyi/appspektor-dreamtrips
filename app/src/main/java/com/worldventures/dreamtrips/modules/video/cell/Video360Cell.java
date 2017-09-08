@@ -37,7 +37,7 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
 
    @Inject Context context;
    @Inject ActivityRouter activityRouter;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject CachedModelHelper cachedModelHelper;
 
    private ProgressVideoCellHelper progressVideoCellHelper;

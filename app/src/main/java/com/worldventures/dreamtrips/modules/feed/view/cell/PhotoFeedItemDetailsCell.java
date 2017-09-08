@@ -46,7 +46,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
    @InjectView(R.id.translate_view) TranslateView viewWithTranslation;
    @InjectView(R.id.translate) View translateButton;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    public PhotoFeedItemDetailsCell(View view) {
       super(view);

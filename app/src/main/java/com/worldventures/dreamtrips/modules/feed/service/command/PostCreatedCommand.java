@@ -14,7 +14,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class PostCreatedCommand extends ValueCommandAction<TextualPost> implements InjectableAction {
 
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    public PostCreatedCommand(TextualPost value) {
       super(value);

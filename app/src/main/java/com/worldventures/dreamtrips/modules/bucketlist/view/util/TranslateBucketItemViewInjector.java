@@ -27,9 +27,9 @@ public class TranslateBucketItemViewInjector {
    @Optional @InjectView(R.id.textViewDescription) TextView textViewDescription;
 
    private Context context;
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
 
-   public TranslateBucketItemViewInjector(View rootView, Context context, SessionHolder<UserSession> appSessionHolder) {
+   public TranslateBucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder) {
       this.context = context;
       this.appSessionHolder = appSessionHolder;
       ButterKnife.inject(this, rootView);

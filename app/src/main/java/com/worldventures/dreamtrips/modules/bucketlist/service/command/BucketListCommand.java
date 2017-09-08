@@ -39,7 +39,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.service.storage.Bu
 public class BucketListCommand extends Command<List<BucketItem>> implements InjectableAction, CachedAction<List<BucketItem>> {
 
    @Inject BucketInteractor bucketInteractor;
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
    @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
 

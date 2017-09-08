@@ -1,19 +1,14 @@
 package com.techery.spares.ui.view.cell;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.worldventures.dreamtrips.core.navigation.router.Router;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
 public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements BaseCell<T> {
 
    private T modelObject;
-
-   @Inject protected Router router;
 
    public AbstractCell(View view) {
       super(view);
@@ -29,6 +24,10 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
             clearResources();
          }
       });
+   }
+
+   protected Resources getResources() {
+      return itemView.getResources();
    }
 
    protected void onAttachedToWindow(View v) { }

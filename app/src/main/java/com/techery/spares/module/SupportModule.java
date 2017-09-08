@@ -20,7 +20,7 @@ public class SupportModule {
    }
 
    @Provides
-   StaticPageProviderConfig provideConfig(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider) {
+   StaticPageProviderConfig provideConfig(SessionHolder appSessionHolder, DeviceInfoProvider deviceInfoProvider) {
       return ImmutableStaticPageProviderConfig.builder()
             .appSessionHolder(appSessionHolder)
             .deviceInfoProvider(deviceInfoProvider)

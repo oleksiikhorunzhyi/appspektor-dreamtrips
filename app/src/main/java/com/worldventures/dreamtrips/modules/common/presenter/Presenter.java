@@ -41,7 +41,7 @@ public class Presenter<VT extends Presenter.View> {
 
    @Inject protected Context context;
    @Inject protected ActivityRouter activityRouter;
-   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected SessionHolder appSessionHolder;
    @Inject protected AnalyticsInteractor analyticsInteractor;
    @Inject protected FeatureManager featureManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;

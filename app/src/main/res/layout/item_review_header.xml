@@ -12,7 +12,6 @@
          android:layout_marginLeft="@dimen/dtl_item_review_images_comment_margin"
          android:layout_marginTop="@dimen/dtl_all_reviews_margin_small"
          android:ellipsize="end"
-         android:maxLength="200"
          android:textColor="@color/rating_normal"
          android:textSize="@dimen/dtl_all_reviews_text" />
 

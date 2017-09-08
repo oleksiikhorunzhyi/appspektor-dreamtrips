@@ -176,6 +176,7 @@ public class VideoViewFullscreenHandler {
    private boolean onBackPressed() {
       if (videoPlayerHolder.playerExists()) {
          backStackDelegate.setListener(null);
+         isFullscreen = false;
          onFullscreenExitRequested();
          return true;
       }

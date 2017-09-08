@@ -94,10 +94,7 @@ import io.techery.mappery.Mappery;
 import io.techery.mappery.MapperyContext;
 import timber.log.Timber;
 
-@Module(
-      includes = {
-            SmartCardConverterModule.class
-      }, library = true, complete = false)
+@Module(library = true, complete = false)
 public class MappingModule {
 
    @Provides

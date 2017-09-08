@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardConverterModule;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorageModule;
@@ -38,6 +39,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
             WalletServiceModule.class,
             WalletStorageModule.class,
             JanetNxtModule.class,
+            SmartCardConverterModule.class,
             WalletLogoutActionModule.class,
             WalletInitializerModule.class,
       }, complete = false, library = true

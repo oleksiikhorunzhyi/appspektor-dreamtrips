@@ -166,6 +166,10 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       }
    }
 
+   public void removeSearchFieldFocus(){
+      merchantSearchInput.clearFocus();
+   }
+
    @Override
    protected void updateToolbarCaptions() {
       if (collapsed) {
@@ -173,16 +177,15 @@ public class ExpandableDtlToolbar extends DtlToolbar {
          if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
          } else {
-            if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
-               searchQueryTitle = defaultEmptySearchCaption;
-            }
             merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
          }
       } else {
          if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(defaultEmptySearchCaption);
          }
-         if (!merchantSearchInput.hasFocus()) merchantSearchInput.setText(searchQuery);
+         if (!merchantSearchInput.hasFocus() || merchantSearchInput.getText().toString().isEmpty()) {
+            merchantSearchInput.setText(searchQuery);
+         }
          locationSearchInput.setText(locationTitle);
          locationSearchInput.selectAll();
       }

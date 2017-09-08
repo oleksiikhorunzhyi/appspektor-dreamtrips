@@ -136,12 +136,15 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public boolean removeImage(PhotoReviewCreationItem item) {
-      boolean removed = cachedCreationItems.remove(item);
-      if (removed) {
-         invalidateDynamicViews();
-         updatePickerState();
+      try {
+         cachedCreationItems.remove(item);
+      } catch (Exception e){
+         e.printStackTrace();
+         return false;
       }
-      return removed;
+      return true;
+
+
    }
 
    public void attachImages(MediaAttachment mediaAttachment) {

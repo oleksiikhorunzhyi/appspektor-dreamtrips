@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
@@ -69,13 +70,25 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
    public void handleItemClick(int position) {
       if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_photo_gallery
             || getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_video_gallery) {
-         if (getPresenter().validateItemPick(getAdapter().getItem(position), videoPickLimitStrategy, photoPickLimitStrategy)) {
-            getAdapter().updateItem(position);
-            presenter.attachMedia();
-         }
+         getPresenter().itemPicked(getAdapter().getItem(position), position, videoPickLimitStrategy, photoPickLimitStrategy);
       } else if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_static) {
          handleAlternateSourcesClick(position);
       }
+   }
+
+   @Override
+   public void updateItem(int position) {
+      getAdapter().updateItem(position);
+   }
+
+   @Override
+   public void updateItemWithSwap(int position) {
+      getAdapter().updateItem(position);
+      GalleryMediaPickerViewModel modelToRevert =
+            Queryable.from(getChosenMedia())
+                  .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
+      int modelToRevertPosition = getAdapter().getPositionFromItem(modelToRevert);
+      getAdapter().updateItem(modelToRevertPosition);
    }
 
    private void handleAlternateSourcesClick(int position) {

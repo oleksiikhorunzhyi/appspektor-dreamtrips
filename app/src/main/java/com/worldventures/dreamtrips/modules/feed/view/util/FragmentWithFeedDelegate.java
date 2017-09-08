@@ -138,6 +138,19 @@ public class FragmentWithFeedDelegate {
       adapter.notifyItemChanged(index);
    }
 
+   public void notifyDataSetChanged(int focusedItemIndex) {
+      if (focusedItemIndex != -1) {
+         int firstBunchSize = focusedItemIndex;
+         int lastBunchSize = adapter.getCount() - focusedItemIndex - 1;
+
+         if (firstBunchSize != 0) adapter.notifyItemRangeChanged(0, firstBunchSize);
+         adapter.notifyItemChanged(focusedItemIndex);
+         if (lastBunchSize != 0) adapter.notifyItemRangeChanged(focusedItemIndex + 1, lastBunchSize);
+      } else {
+         notifyDataSetChanged();
+      }
+   }
+
    public void notifyItemChanged(FeedItem feedItem) {
       if (feedItem == null) return;
       int size = adapter.getItems().size();

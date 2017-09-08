@@ -310,7 +310,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.notifyDataSetChanged(recyclerViewManager.findFocusedPosition());
    }
 
    private void processSuggestedPhotosItems(boolean shouldShowSuggestions, List feedModels) {

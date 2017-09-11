@@ -112,7 +112,6 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
             verify(view, VerificationModeFactory.times(1)).informUser(ArgumentMatchers.anyInt())
          }
-
       }
 
       describe("Circles") {

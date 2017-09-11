@@ -34,10 +34,10 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
+public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends Presenter<T>
       implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
-   @State protected U user;
+   @State protected User user;
    @State ArrayList<FeedItem> feedItems;
 
    @Inject FeedInteractor feedInteractor;
@@ -47,7 +47,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    public ProfilePresenter() {
    }
 
-   public ProfilePresenter(U user) {
+   public ProfilePresenter(User user) {
       this.user = user;
    }
 
@@ -64,15 +64,17 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    @Override
-   public void takeView(T view) {
-      super.takeView(view);
-      if (feedItems.size() != 0) {
-         refreshFeedItems();
-      }
+   public void onViewTaken() {
+      super.onViewTaken();
+      restoreItemsInView();
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       attachUserToView(user);
       loadProfile();
       translationDelegate.onTakeView(view, feedItems, bindView());
+   }
+
+   void restoreItemsInView() {
+      if (!feedItems.isEmpty()) refreshFeedItems();
    }
 
    @Override
@@ -81,12 +83,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       super.dropView();
    }
 
-   protected void onProfileLoaded(U user) {
+   protected void onProfileLoaded(User user) {
       attachUserToView(user);
       view.finishLoading();
    }
 
-   private void attachUserToView(U user) {
+   private void attachUserToView(User user) {
       this.user = user;
       refreshFeedItems();
    }
@@ -168,31 +170,29 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    public abstract void loadNext(Date date);
 
-   protected void refreshFeedSucceed(List<FeedItem> freshItems) {
+   void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreElements = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
       view.finishLoading();
    }
 
-   protected void addFeedItems(List<FeedItem> olderItems) {
+   void addFeedItems(List<FeedItem> olderItems) {
       // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreElements = olderItems == null || olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
    }
 
-   protected void refreshFeedError(CommandWithError action, Throwable throwable) {
+   void refreshFeedError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
-      view.finishLoading();
    }
 
-   protected void loadMoreItemsError(CommandWithError action, Throwable throwable) {
+   void loadMoreItemsError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
       view.updateLoadingStatus(false, true);
-      view.finishLoading();
    }
 
-   protected void onItemsChanged(List<FeedItem> newFeedItems) {
+   void onItemsChanged(List<FeedItem> newFeedItems) {
       feedItems.clear();
       feedItems.addAll(newFeedItems);
       refreshFeedItems();

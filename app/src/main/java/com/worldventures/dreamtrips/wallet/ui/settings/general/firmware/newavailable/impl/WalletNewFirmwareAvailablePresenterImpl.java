@@ -2,16 +2,15 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavai
 
 
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkUpdateAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
@@ -29,9 +28,9 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WalletNewFirmwareAvailablePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletNewFirmwareAvailablePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }

@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.wallet.analytics.oncard;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardPaymentAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardUserAction;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 
 import java.util.List;

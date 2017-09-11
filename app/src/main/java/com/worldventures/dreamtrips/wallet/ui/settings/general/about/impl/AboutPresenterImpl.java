@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.AboutAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
@@ -9,11 +8,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
@@ -25,12 +25,15 @@ import io.techery.janet.Command;
 
 public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> implements AboutPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final RecordInteractor recordInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public AboutPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public AboutPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, 
+         WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -41,30 +44,30 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
       observeSmartCard();
       observePayCardsInfo();
 
-      getSmartCardInteractor().activeSmartCardPipe().send(new ActiveSmartCardCommand());
-      getSmartCardInteractor().smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
 
       trackScreen();
    }
 
    private void observeSmartCard() {
-      getSmartCardInteractor().activeSmartCardPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(smartCard -> getView().setSmartCardId(smartCard.smartCardId()));
-      getSmartCardInteractor().smartCardFirmwarePipe()
+      smartCardInteractor.smartCardFirmwarePipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(this::restoreCachedFWInfo);
-      getSmartCardInteractor().smartCardUserPipe()
+      smartCardInteractor.smartCardUserPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setSmartCardUser);
-      getSmartCardInteractor().aboutSmartCardDataCommandPipe()
+      smartCardInteractor.aboutSmartCardDataCommandPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .filter(aboutSmartCardData -> aboutSmartCardData != null)
@@ -74,7 +77,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
 
    private void restoreCachedFWInfo(SmartCardFirmware smartCardFirmware) {
       if (smartCardFirmware.isEmpty()) {
-         getSmartCardInteractor().aboutSmartCardDataCommandPipe().send(AboutSmartCardDataCommand.fetch());
+         smartCardInteractor.aboutSmartCardDataCommandPipe().send(AboutSmartCardDataCommand.fetch());
       } else {
          getView().setSmartCardFirmware(smartCardFirmware);
       }

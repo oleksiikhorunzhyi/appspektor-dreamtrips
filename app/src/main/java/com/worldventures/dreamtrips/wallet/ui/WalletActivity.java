@@ -135,7 +135,7 @@ public class WalletActivity extends BaseActivity implements WalletActivityView {
    }
 
    @Override
-   public <T> Observable.Transformer<T, T> lifecycle() {
+   public <T> Observable.Transformer<T, T> bindToLifecycle() {
       return tObservable -> tObservable.takeUntil(onDetachSubject.asObservable());
    }
 

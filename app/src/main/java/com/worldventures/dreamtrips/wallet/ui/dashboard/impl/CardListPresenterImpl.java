@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
@@ -39,6 +38,8 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfo
 import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
@@ -69,6 +70,8 @@ import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppro
 
 public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> implements CardListPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
+   private final WalletNetworkDelegate networkDelegate;
    private final RecordInteractor recordInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
@@ -80,12 +83,14 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    private List<Record> records;
 
-   public CardListPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
-         WalletNavigationDelegate navigationDelegate, WalletFeatureHelper walletFeatureHelper,
-         LocationTrackingManager locationTrackingManager) {
-      super(navigator, smartCardInteractor, networkService);
+   public CardListPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor,
+         FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         FactoryResetInteractor factoryResetInteractor, WalletNavigationDelegate navigationDelegate,
+         WalletFeatureHelper walletFeatureHelper, LocationTrackingManager locationTrackingManager) {
+      super(navigator, deviceConnectionDelegate);
+      this.networkDelegate = networkDelegate;
+      this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -100,6 +105,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    @Override
    public void attachView(CardListScreen view) {
       super.attachView(view);
+      networkDelegate.setup(getView());
       featureHelper.prepareDashboardScreen(getView());
       getView().setDefaultSmartCard();
       checkPinDelegate.observePinStatus(getView());
@@ -154,28 +160,28 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    private void observeSmartCard() {
-      getSmartCardInteractor().deviceStatePipe().observeSuccessWithReplay()
+      smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .throttleLast(300, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
             .subscribe(this::handleSmartCardStatus, throwable -> Timber.e(throwable, ""));
 
-      getSmartCardInteractor().smartCardUserPipe().observeSuccessWithReplay()
+      smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(this::handleSmartCardUser, throwable -> Timber.e(throwable, ""));
 
-      getSmartCardInteractor().smartCardUserPipe().send(SmartCardUserCommand.fetch());
-      getSmartCardInteractor().activeSmartCardPipe().send(new ActiveSmartCardCommand());
-      getSmartCardInteractor().deviceStatePipe().send(DeviceStateCommand.fetch());
+      smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
    }
 
    private void observeDisplayType() {
-      getSmartCardInteractor().getDisplayTypePipe().observeSuccessWithReplay()
+      smartCardInteractor.getDisplayTypePipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setDisplayType, throwable -> Timber.e(throwable, ""));
-      getSmartCardInteractor().getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
+      smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
    }
 
    private void handleSmartCardStatus(SmartCardStatus cardStatus) {
@@ -189,7 +195,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    private void observeConnectionStatus() {
-      getSmartCardInteractor().deviceStatePipe().observeSuccessWithReplay()
+      smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
@@ -206,7 +212,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private void observeFirmwareInfo() {
       Observable.combineLatest(
             firmwareInteractor.firmwareInfoCachedPipe().observeSuccess().map(Command::getResult),
-            getSmartCardInteractor().smartCardFirmwarePipe().observeSuccess().map(Command::getResult),
+            smartCardInteractor.smartCardFirmwarePipe().observeSuccess().map(Command::getResult),
             (firmwareUpdate, scFirmware) -> {
                if (!ProjectTextUtils.isEmpty(scFirmware.nordicAppVersion()) || scFirmware.firmwareBundleVersion() != null) {
                   return firmwareUpdate;
@@ -218,7 +224,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .compose(bindViewIoToMainComposer())
             .subscribe(this::firmwareLoaded, throwable -> Timber.e(throwable, ""));
 
-      getSmartCardInteractor().smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
 
@@ -304,10 +310,10 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       }
 
       Observable.zip(
-            getSmartCardInteractor().offlineModeStatusPipe().createObservableResult(OfflineModeStatusCommand.fetch()),
-            getSmartCardInteractor().deviceStatePipe().createObservableResult(DeviceStateCommand.fetch()),
+            smartCardInteractor.offlineModeStatusPipe().createObservableResult(OfflineModeStatusCommand.fetch()),
+            smartCardInteractor.deviceStatePipe().createObservableResult(DeviceStateCommand.fetch()),
             (offlineModeState, smartCardModifier) -> {
-               boolean needNetworkConnection = offlineModeState.getResult() || getNetworkService().isAvailable();
+               boolean needNetworkConnection = offlineModeState.getResult() || networkDelegate.isAvailable();
                boolean needSmartCardConnection = smartCardModifier.getResult().connectionStatus().isConnected();
                return new Pair<>(needNetworkConnection, needSmartCardConnection);
             })
@@ -357,9 +363,9 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    @SuppressWarnings("ConstantConditions")
    private void observeSmartCardSync() {
       final OperationView<SyncSmartCardCommand> operationView = getView().provideOperationSyncSmartCard();
-      getSmartCardInteractor().smartCardSyncPipe()
+      smartCardInteractor.smartCardSyncPipe()
             .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(getSmartCardInteractor().smartCardSyncPipe()))
+            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.smartCardSyncPipe()))
             .compose(bindViewIoToMainComposer())
             .doOnCompleted(() -> {
                if (operationView.isProgressVisible()) operationView.hideProgress();
@@ -386,7 +392,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @SuppressWarnings("ConstantConditions")
    private void assertSmartCardConnected(Action0 onConnected) {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.helper;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidScannedAction;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 
 public abstract class InputAnalyticsDelegate {
 

@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.DisableDefaultAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.DisableDefaultChangedAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.DisableDefaultCardItemProvider;
@@ -20,12 +20,14 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<WalletDisableDefaultCardScreen> implements WalletDisableDefaultCardPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final DisableDefaultCardItemProvider itemProvider;
 
-   public WalletDisableDefaultCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletDisableDefaultCardPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.itemProvider = itemProvider;
    }
@@ -48,11 +50,11 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
     */
    @Override
    public void onTimeSelected(long delayMinutes) {
-      getSmartCardInteractor().disableDefaultCardDelayPipe().send(new SetDisableDefaultCardDelayCommand(delayMinutes));
+      smartCardInteractor.disableDefaultCardDelayPipe().send(new SetDisableDefaultCardDelayCommand(delayMinutes));
    }
 
    private void fetchSmartCard() {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
@@ -62,7 +64,7 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
    }
 
    private void observeDelayChange() {
-      getSmartCardInteractor().disableDefaultCardDelayPipe()
+      smartCardInteractor.disableDefaultCardDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SetDisableDefaultCardDelayCommand>provideOperationView())

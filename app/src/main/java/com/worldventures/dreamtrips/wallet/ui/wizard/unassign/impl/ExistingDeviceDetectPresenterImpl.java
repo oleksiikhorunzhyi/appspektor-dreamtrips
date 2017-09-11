@@ -3,11 +3,10 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl;
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectPresenter;
@@ -22,9 +21,9 @@ public class ExistingDeviceDetectPresenterImpl extends WalletPresenterImpl<Exist
 
    private String smartCardId;
 
-   public ExistingDeviceDetectPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      super(navigator, smartCardInteractor, networkService);
+   public ExistingDeviceDetectPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      super(navigator, deviceConnectionDelegate);
       this.wizardInteractor = wizardInteractor;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
    }

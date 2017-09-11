@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.AutoClearAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.AutoClearChangedAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
@@ -20,12 +20,15 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<WalletAutoClearCardsScreen> implements WalletAutoClearCardsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final AutoClearSmartCardItemProvider itemProvider;
 
-   public WalletAutoClearCardsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider autoClearSmartCardItemProvider) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletAutoClearCardsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         AutoClearSmartCardItemProvider autoClearSmartCardItemProvider) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.itemProvider = autoClearSmartCardItemProvider;
    }
@@ -48,11 +51,11 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
     */
    @Override
    public void onTimeSelected(long delayMinutes) {
-      getSmartCardInteractor().autoClearDelayPipe().send(new SetAutoClearSmartCardDelayCommand(delayMinutes));
+      smartCardInteractor.autoClearDelayPipe().send(new SetAutoClearSmartCardDelayCommand(delayMinutes));
    }
 
    private void observeSmartCard() {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(deviceStateCommand -> {
@@ -62,7 +65,7 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
    }
 
    private void observeDelayChange() {
-      getSmartCardInteractor().autoClearDelayPipe()
+      smartCardInteractor.autoClearDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SetAutoClearSmartCardDelayCommand>provideOperationView())

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.analytics.firmware;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.FirmwareAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import javax.inject.Inject;

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateChecksVisitAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.UpdateInstallAction;
@@ -10,12 +9,13 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.FirmwareChecksState;
@@ -32,14 +32,16 @@ import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.chargerRe
 
 public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<WalletFirmwareChecksScreen> implements WalletFirmwareChecksPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletBluetoothService bluetoothService;
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WalletFirmwareChecksPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletBluetoothService bluetoothService, FirmwareInteractor firmwareInteractor,
+   public WalletFirmwareChecksPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletBluetoothService bluetoothService, FirmwareInteractor firmwareInteractor,
          WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.bluetoothService = bluetoothService;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -62,10 +64,10 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
       Observable.combineLatest(
             firmwareInteractor.firmwareInfoCachedPipe().observeSuccessWithReplay(),
             bluetoothService.observeEnablesState().startWith(bluetoothService.isEnable()),
-            getSmartCardInteractor().deviceStatePipe()
+            smartCardInteractor.deviceStatePipe()
                   .observeSuccessWithReplay()
                   .throttleLast(500L, TimeUnit.MILLISECONDS),
-            getSmartCardInteractor().cardInChargerEventPipe().observeSuccessWithReplay()
+            smartCardInteractor.cardInChargerEventPipe().observeSuccessWithReplay()
                   .startWith(new CardInChargerEvent(false)), // because this event is missing on old firmware versions
 
             (firmwareInfoCommand, bluetoothEnabled, deviceStateCommand, cardInChargerEvent) ->
@@ -78,12 +80,12 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
             .subscribe(this::updateViewStates);
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
-      getSmartCardInteractor().deviceStatePipe().send(DeviceStateCommand.fetch());
-      getSmartCardInteractor().fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+      smartCardInteractor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand());
    }
 
    private void observeConnection() {
-      getSmartCardInteractor().connectionActionPipe()
+      smartCardInteractor.connectionActionPipe()
             .observeSuccess()
             .throttleLast(500L, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
@@ -91,14 +93,14 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
    }
 
    private void cardConnected() {
-      getSmartCardInteractor().fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand());
+      smartCardInteractor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand());
    }
 
    private FirmwareChecksState processResults(FirmwareUpdateData data, ConnectionStatus connectionStatus,
          int batteryLevel, boolean bluetoothEnabled, boolean cardInCharger) {
 
       if (bluetoothEnabled && connectionStatus == ConnectionStatus.DISCONNECTED) {
-         getSmartCardInteractor().connectActionPipe().send(new ConnectSmartCardCommand(data.smartCardId()));
+         smartCardInteractor.connectActionPipe().send(new ConnectSmartCardCommand(data.smartCardId()));
       }
 
       return new FirmwareChecksState(bluetoothEnabled, connectionStatus.isConnected(),

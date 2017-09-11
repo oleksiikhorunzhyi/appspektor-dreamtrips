@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ResetPinSuccessAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetPinAction;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 

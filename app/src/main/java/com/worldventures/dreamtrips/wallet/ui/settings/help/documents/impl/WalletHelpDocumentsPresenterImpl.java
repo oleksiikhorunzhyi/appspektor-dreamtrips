@@ -5,8 +5,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
@@ -24,9 +23,9 @@ public class WalletHelpDocumentsPresenterImpl extends WalletPresenterImpl<Wallet
 
    private final DocumentsInteractor documentsInteractor;
 
-   public WalletHelpDocumentsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, DocumentsInteractor documentsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletHelpDocumentsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         DocumentsInteractor documentsInteractor) {
+      super(navigator, deviceConnectionDelegate);
       this.documentsInteractor = documentsInteractor;
    }
 

@@ -3,12 +3,13 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand
 import com.worldventures.dreamtrips.wallet.ui.common.BasePresenterTest
 import com.worldventures.dreamtrips.wallet.ui.common.InteractorBuilder
+import com.worldventures.dreamtrips.wallet.ui.common.MockDeviceConnectionDelegate
 import com.worldventures.dreamtrips.wallet.ui.common.ViewPresenterBinder
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputPresenterImpl
 import io.techery.janet.command.test.Contract
@@ -35,7 +36,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
          ViewPresenterBinder(screen, presenter)
 
    override fun setup() {
-      val smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
+      val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
 
       screen = mock()
@@ -43,7 +44,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
       whenever(screen.scIdLength).thenReturn(5)
 
       inputBarcodeDelegate = mock()
-      presenter = WizardManualInputPresenterImpl(navigator, smartCardInteractor, walletNetworkService, analyticsInteractor, inputBarcodeDelegate)
+      presenter = WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, inputBarcodeDelegate)
    }
 
    @Test

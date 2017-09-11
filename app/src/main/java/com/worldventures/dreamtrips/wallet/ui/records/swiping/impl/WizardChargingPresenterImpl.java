@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.wallet.ui.records.swiping.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
@@ -25,12 +25,15 @@ import io.techery.janet.smartcard.event.CardSwipedEvent;
 // TODO: 5/30/17 Create task and refactor both screen and presenter, it's ugly and error handling is a joke
 public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardChargingScreen> implements WizardChargingPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final RecordInteractor recordInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WizardChargingPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WizardChargingPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -49,7 +52,7 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    }
 
    private void fetchUserPhoto() {
-      getSmartCardInteractor().smartCardUserPipe()
+      smartCardInteractor.smartCardUserPipe()
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
@@ -58,12 +61,12 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    }
 
    private void observeCharger() {
-      getSmartCardInteractor().startCardRecordingPipe()
+      smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationStartCardRecording()).create());
 
-      getSmartCardInteractor().cardSwipedEventPipe()
+      smartCardInteractor.cardSwipedEventPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
             .subscribe(event -> {
@@ -74,7 +77,7 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
                }
             });
 
-      getSmartCardInteractor().chargedEventPipe()
+      smartCardInteractor.chargedEventPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
             .take(1)
@@ -103,7 +106,7 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    @Override
    public void detachView(boolean retainInstance) {
       super.detachView(retainInstance);
-      getSmartCardInteractor().stopCardRecordingPipe().send(new StopCardRecordingAction());
+      smartCardInteractor.stopCardRecordingPipe().send(new StopCardRecordingAction());
    }
 
    @Override

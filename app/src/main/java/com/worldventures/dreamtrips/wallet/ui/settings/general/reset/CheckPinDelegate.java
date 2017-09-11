@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.reset;
 
 
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;

@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ManualCardInputAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
@@ -16,9 +15,9 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final InputBarcodeDelegate inputBarcodeDelegate;
 
-   public WizardManualInputPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, InputBarcodeDelegate inputBarcodeDelegate) {
-      super(navigator, smartCardInteractor, networkService);
+   public WizardManualInputPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, InputBarcodeDelegate inputBarcodeDelegate) {
+      super(navigator, deviceConnectionDelegate);
       this.analyticsInteractor = analyticsInteractor;
       this.inputBarcodeDelegate = inputBarcodeDelegate;
    }

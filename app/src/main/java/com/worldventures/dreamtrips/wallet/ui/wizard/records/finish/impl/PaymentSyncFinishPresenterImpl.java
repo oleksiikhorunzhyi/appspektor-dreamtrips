@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.NewCardSetupCompleteAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPresenter;
@@ -20,9 +19,9 @@ public class PaymentSyncFinishPresenterImpl extends WalletPresenterImpl<PaymentS
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public PaymentSyncFinishPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public PaymentSyncFinishPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }

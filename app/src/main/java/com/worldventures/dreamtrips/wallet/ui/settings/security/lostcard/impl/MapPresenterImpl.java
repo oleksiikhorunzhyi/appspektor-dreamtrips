@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl;
 
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.ClickDirectionsAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
@@ -10,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordina
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapPresenter;

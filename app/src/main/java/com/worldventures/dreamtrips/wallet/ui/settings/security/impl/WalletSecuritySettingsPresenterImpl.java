@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardLockAction;
@@ -10,11 +9,12 @@ import com.worldventures.dreamtrips.wallet.analytics.settings.StealthModeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
@@ -34,14 +34,15 @@ import rx.functions.Action1;
 
 public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<WalletSecuritySettingsScreen> implements WalletSecuritySettingsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   ;
    private final WalletFeatureHelper featureHelper;
 
-   public WalletSecuritySettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
+   public WalletSecuritySettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          WalletFeatureHelper walletFeatureHelper) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.featureHelper = walletFeatureHelper;
    }
@@ -54,16 +55,16 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
 
       observeStealthModeController(getView());
       observeLockController(getView());
-      getSmartCardInteractor().checkPinStatusActionPipe().send(new CheckPinStatusAction());
+      smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
    }
 
    private void observeSmartCardChanges() {
-      getSmartCardInteractor().deviceStatePipe().observeSuccessWithReplay()
+      smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
             .subscribe(this::bindSmartCard);
 
-      getSmartCardInteractor().stealthModePipe()
+      smartCardInteractor.stealthModePipe()
             .observe()
             .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
@@ -73,7 +74,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
                   .create()
             );
 
-      getSmartCardInteractor().lockPipe()
+      smartCardInteractor.lockPipe()
             .observe()
             .throttleLast(1, TimeUnit.SECONDS)
             .compose(bindViewIoToMainComposer())
@@ -82,10 +83,10 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
                   .create());
 
       Observable.merge(
-            getSmartCardInteractor().pinStatusEventPipe()
+            smartCardInteractor.pinStatusEventPipe()
                   .observeSuccess()
                   .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED),
-            getSmartCardInteractor().setPinEnabledCommandActionPipe()
+            smartCardInteractor.setPinEnabledCommandActionPipe()
                   .observeSuccess()
                   .map(Command::getResult))
             .startWith(true)
@@ -109,7 +110,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    public void removePin() {
       fetchConnectionStatus(connectionStatus -> {
          if (connectionStatus.isConnected()) {
-            getSmartCardInteractor().setPinEnabledCommandActionPipe().send(new SetPinEnabledCommand(false));
+            smartCardInteractor.setPinEnabledCommandActionPipe().send(new SetPinEnabledCommand(false));
          } else {
             //noinspection ConstantConditions
             getView().showSCNonConnectionDialog();
@@ -137,7 +138,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
 
    private void stealthModeFailed() {
       //noinspection ConstantConditions
-      getSmartCardInteractor().deviceStatePipe().createObservable(DeviceStateCommand.fetch())
+      smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> getView().stealthModeStatus(command.getResult().stealthMode())));
@@ -146,7 +147,7 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    @Override
    public void lockStatusFailed() {
       //noinspection ConstantConditions
-      getSmartCardInteractor().deviceStatePipe().createObservable(DeviceStateCommand.fetch())
+      smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> getView().lockStatus(command.getResult().lock())));
@@ -202,15 +203,15 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    }
 
    private void stealthModeChanged(boolean isEnabled) {
-      getSmartCardInteractor().stealthModePipe().send(new SetStealthModeCommand(isEnabled));
+      smartCardInteractor.stealthModePipe().send(new SetStealthModeCommand(isEnabled));
    }
 
    private void lockStatusChanged(boolean lock) {
-      getSmartCardInteractor().lockPipe().send(new SetLockStateCommand(lock));
+      smartCardInteractor.lockPipe().send(new SetLockStateCommand(lock));
    }
 
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()

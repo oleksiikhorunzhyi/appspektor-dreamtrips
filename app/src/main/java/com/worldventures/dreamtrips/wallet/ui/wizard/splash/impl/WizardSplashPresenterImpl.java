@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ScanCardAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
@@ -15,9 +14,9 @@ public class WizardSplashPresenterImpl extends WalletPresenterImpl<WizardSplashS
 
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WizardSplashPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WizardSplashPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
       this.analyticsInteractor = analyticsInteractor;
    }
 

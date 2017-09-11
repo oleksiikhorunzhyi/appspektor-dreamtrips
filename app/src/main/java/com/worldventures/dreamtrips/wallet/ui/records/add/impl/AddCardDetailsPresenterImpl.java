@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.add.impl;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
@@ -12,12 +11,13 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.PinOptionalCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
@@ -37,6 +37,7 @@ import timber.log.Timber;
 
 public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDetailsScreen> implements AddCardDetailsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final RecordInteractor recordInteractor;
    private final WizardInteractor wizardInteractor;
@@ -45,10 +46,11 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    private String cardNickname;
    private Record record;
 
-   public AddCardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
+   public AddCardDetailsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
          WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.recordInteractor = recordInteractor;
       this.wizardInteractor = wizardInteractor;
@@ -82,7 +84,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private void observePinOptions() {
       Observable.combineLatest(
-            getSmartCardInteractor().pinStatusEventPipe()
+            smartCardInteractor.pinStatusEventPipe()
                   .observeSuccess()
                   .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED),
             wizardInteractor.pinOptionalActionPipe()
@@ -119,7 +121,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    private void onCardAdd(AddRecordCommand command) {
       if (command.setAsDefaultRecord()) trackSetAsDefault(command.getResult());
       trackAddedCard(record, command.setAsDefaultRecord());
-      getSmartCardInteractor().checkPinStatusActionPipe().send(new CheckPinStatusAction());
+      smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
       wizardInteractor.pinOptionalActionPipe().send(PinOptionalCommand.fetch());
    }
 
@@ -208,7 +210,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    }
 
    private void trackScreen() {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .take(1)
             .map(Command::getResult)

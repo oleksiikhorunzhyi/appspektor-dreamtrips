@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.i
 
 
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareUpdateType;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPresenter;
@@ -17,9 +16,9 @@ public class StartFirmwareInstallPresenterImpl extends WalletPresenterImpl<Start
 
    private final FirmwareInteractor firmwareInteractor;
 
-   public StartFirmwareInstallPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public StartFirmwareInstallPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor) {
+      super(navigator, deviceConnectionDelegate);
       this.firmwareInteractor = firmwareInteractor;
    }
 

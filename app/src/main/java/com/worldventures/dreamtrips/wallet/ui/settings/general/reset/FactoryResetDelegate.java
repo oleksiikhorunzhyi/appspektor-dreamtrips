@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.reset;
 
 
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignAction;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.EnterPinUnAssignEnteredAction;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;

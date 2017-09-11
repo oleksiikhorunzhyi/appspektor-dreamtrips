@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
@@ -10,9 +9,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsSc
 
 public class WalletHelpSettingsPresenterImpl extends WalletPresenterImpl<WalletHelpSettingsScreen> implements WalletHelpSettingsPresenter {
 
-   public WalletHelpSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletHelpSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      super(navigator, deviceConnectionDelegate);
    }
 
    @Override

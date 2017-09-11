@@ -5,12 +5,12 @@ import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.BaseMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;

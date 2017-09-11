@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.SupportDeviceAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
@@ -21,11 +21,13 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<WalletProvisioningBlockedScreen> implements WalletProvisioningBlockedPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WalletProvisioningBlockedPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletProvisioningBlockedPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
 
@@ -39,7 +41,7 @@ public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<
    }
 
    private void observeSupportedDevices() {
-      getSmartCardInteractor().compatibleDevicesActionPipe()
+      smartCardInteractor.compatibleDevicesActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetCompatibleDevices())
@@ -56,7 +58,7 @@ public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<
    }
 
    private void askAllSupportedDevices() {
-      getSmartCardInteractor().compatibleDevicesActionPipe().send(new GetCompatibleDevicesCommand());
+      smartCardInteractor.compatibleDevicesActionPipe().send(new GetCompatibleDevicesCommand());
    }
 
    @Override

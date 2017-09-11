@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl;
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CardConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CheckFrontAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairDelegate;
@@ -20,14 +20,17 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> implements PairKeyPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
    private PairDelegate pairDelegate;
 
-   public PairKeyPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public PairKeyPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -35,7 +38,7 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
    @Override
    public void attachView(PairKeyScreen view) {
       super.attachView(view);
-      this.pairDelegate = PairDelegate.create(getView().getProvisionMode(), getNavigator(), getSmartCardInteractor());
+      this.pairDelegate = PairDelegate.create(getView().getProvisionMode(), getNavigator(), smartCardInteractor);
       pairDelegate.prepareView(getView());
       analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new CheckFrontAction()));
       observeCreateAndConnectSmartCard();

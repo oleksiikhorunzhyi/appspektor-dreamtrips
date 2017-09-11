@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -13,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -22,6 +21,8 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineM
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.DeleteRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
@@ -42,14 +43,19 @@ import static com.worldventures.dreamtrips.wallet.util.WalletRecordUtil.findReco
 
 public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScreen> implements CardDetailsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
+   private final WalletNetworkDelegate networkDelegate;
    private final RecordInteractor recordInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
    private RecordDetailViewModel recordDetailViewModel;
 
-   public CardDetailsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public CardDetailsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletNetworkDelegate walletNetworkDelegate,
+         RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
+      this.networkDelegate = walletNetworkDelegate;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -57,6 +63,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    @Override
    public void attachView(CardDetailsScreen view) {
       super.attachView(view);
+      networkDelegate.setup(view);
       recordDetailViewModel = view.getDetailViewModel();
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
@@ -76,7 +83,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    @Override
    public void updateNickName() {
       fetchOfflineModeState(offlineModeEnabled -> {
-         if (offlineModeEnabled || getNetworkService().isAvailable()) {
+         if (offlineModeEnabled || networkDelegate.isAvailable()) {
             if (!recordDetailViewModel.isErrorShown() && recordDetailViewModel.isChanged()) {
                nicknameUpdated(recordDetailViewModel.getRecordName().trim());
             } else {
@@ -89,7 +96,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void fetchOfflineModeState(Action1<Boolean> action) {
-      getSmartCardInteractor().offlineModeStatusPipe()
+      smartCardInteractor.offlineModeStatusPipe()
             .createObservable(OfflineModeStatusCommand.fetch())
             .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
             .map(actionState -> actionState.action.getResult())
@@ -249,7 +256,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    }
 
    private void fetchConnectionStats(Action1<ConnectionStatus> action) {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())

@@ -2,15 +2,15 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.impl;
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
@@ -23,13 +23,16 @@ import timber.log.Timber;
 
 public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<WizardUploadProfileScreen> implements WizardUploadProfilePresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
 
-   public WizardUploadProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
-      super(navigator, smartCardInteractor, networkService);
+   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.featureHelper = featureHelper;
@@ -57,7 +60,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    }
 
    private void fetchSmartCardUserData() {
-      getSmartCardInteractor().smartCardUserPipe()
+      smartCardInteractor.smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)

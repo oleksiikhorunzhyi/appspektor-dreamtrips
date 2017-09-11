@@ -4,19 +4,18 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayLocateCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.DisplayMapAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.LocateDisabledAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.locatecard.action.LocateEnabledAnalyticsAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
@@ -35,11 +34,11 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final LocationScreenComponent locationScreenComponent;
 
-   public LostCardPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, PermissionDispatcher permissionDispatcher,
+   public LostCardPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         PermissionDispatcher permissionDispatcher,
          SmartCardLocationInteractor smartCardLocationInteractor, WalletDetectLocationService walletDetectLocationService,
          LocationScreenComponent locationScreenComponent, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
       this.permissionDispatcher = permissionDispatcher;
       this.smartCardLocationInteractor = smartCardLocationInteractor;
       this.locationService = walletDetectLocationService;

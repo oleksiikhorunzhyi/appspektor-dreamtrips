@@ -13,5 +13,6 @@ public interface StaticPageProviderConfig {
    DeviceInfoProvider deviceInfoProvider();
    String apiUrl();
    String backofficeUrl();
+   String forgotPasswordUrl();
    String uploaderyUrl();
 }

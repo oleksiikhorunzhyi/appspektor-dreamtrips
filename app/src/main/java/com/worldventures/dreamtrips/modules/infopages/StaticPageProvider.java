@@ -42,6 +42,7 @@ public class StaticPageProvider {
 
    private String apiUrl;
    private String backofficeUrl;
+   private String forgotPasswordUrl;
    private String uploaderyUrl;
 
    public StaticPageProvider(StaticPageProviderConfig config) {
@@ -50,6 +51,7 @@ public class StaticPageProvider {
       this.apiUrl = config.apiUrl();
       this.backofficeUrl = config.backofficeUrl();
       this.uploaderyUrl = config.uploaderyUrl();
+      this.forgotPasswordUrl = config.forgotPasswordUrl();
    }
 
    public String getEnrollMemberUrl() {
@@ -128,6 +130,14 @@ public class StaticPageProvider {
       } catch (UnsupportedEncodingException e) {
          return "about:blank";
       }
+   }
+
+   public String getForgotPasswordUrl() {
+      return forgotPasswordUrl + "?dreamtrips";
+   }
+
+   public String getForgotMemberIdUrl() {
+      return forgotPasswordUrl + "/forgotLoginId?dreamtrips";
    }
 
    private String getUsername() {

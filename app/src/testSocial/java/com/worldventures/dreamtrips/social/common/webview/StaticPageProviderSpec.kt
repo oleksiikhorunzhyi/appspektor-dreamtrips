@@ -90,12 +90,23 @@ class StaticPageProviderSpec: BaseSpec({
          val expectedUrl = "$BACKOFFICE_URL/Account/Dispatch?url=$encodedPart"
          assertEquals(expectedUrl, provider.wvAdvantageUrl)
       }
+
+      it ("should provide correct forgot password url") {
+         val expectedUrl = "$FORGOT_PASSWORD_URL?dreamtrips"
+         assertEquals(expectedUrl, provider.forgotPasswordUrl)
+      }
+
+      it ("should provide correct forgot member id url") {
+         val expectedUrl = "$FORGOT_PASSWORD_URL/forgotLoginId?dreamtrips"
+         assertEquals(expectedUrl, provider.forgotMemberIdUrl)
+      }
    }
 
 }) {
    companion object {
       val API_URL = "http://some-api.io/"
       val BACKOFFICE_URL = "http://backoffice.io/"
+      val FORGOT_PASSWORD_URL = "http://forgot-password.io/"
       val UPLOADERY_URL = "http://some-uploadery-api.io"
 
       val USERNAME = "515661"
@@ -114,6 +125,7 @@ class StaticPageProviderSpec: BaseSpec({
                   .apiUrl(API_URL)
                   .backofficeUrl(BACKOFFICE_URL)
                   .uploaderyUrl(UPLOADERY_URL)
+                  .forgotPasswordUrl(FORGOT_PASSWORD_URL)
                   .build()
       val provider = StaticPageProvider(staticPageProviderConfig)
       val userSession: UserSession = mock()

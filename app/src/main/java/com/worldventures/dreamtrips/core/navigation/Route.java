@@ -103,14 +103,12 @@ import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragmen
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 public enum Route {
-   WEB_STATIC(StaticInfoFragment.class),
    DETAILED_TRIP(TripDetailsFragment.class),
    PICK_FB_ALBUM(FacebookAlbumFragment.class),
    PICK_FB_PHOTO(FacebookPhotoFragment.class),
    MAP_INFO(TripMapListFragment.class),
    BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.book_it),
    SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
-   BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
 
    BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_edit_header),
    POPULAR_BUCKET(BucketListPopularFragment.class),

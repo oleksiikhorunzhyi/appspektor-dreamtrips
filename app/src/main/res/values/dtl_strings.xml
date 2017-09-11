@@ -69,6 +69,7 @@
    <string name="perks_terms">Terms &amp; Condition</string>
    <string name="perks_formatted">%1$d Perks</string>
    <string name="dtl_show_offers_only">Offers only</string>
+   <string name="dtl_show_transaction">TRANSACTIONS</string>
    <string name="dtl_earn_points">Earn DreamTrips points</string>
    <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
    <string name="distance_caption_format" translatable="false">%1$.1f %2$s</string>

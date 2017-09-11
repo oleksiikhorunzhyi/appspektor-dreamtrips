@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.common.Injector
 import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter
-import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
@@ -28,7 +27,7 @@ abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
          AndroidRxJavaSchedulerInitializer.init()
       }
 
-      fun prepareInjector(sessionHolder: SessionHolder<UserSession> = mock()): Injector {
+      fun prepareInjector(sessionHolder: SessionHolder = mock()): Injector {
          return Injector().apply {
             registerProvider(Context::class.java, { mock() })
             registerProvider(ActivityRouter::class.java, { mock() })

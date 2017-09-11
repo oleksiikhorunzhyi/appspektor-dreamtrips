@@ -74,7 +74,6 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
                   verify(presenter).subscribeLoadNextFeeds()
                   verify(presenter).subscribeRefreshFeeds()
                   verify(presenter).connectToCroppedImageStream()
-                  verify(presenter).subscribeToMediaPicker()
                   verify(presenter).subscribeToBackgroundUploadingOperations()
                }
 

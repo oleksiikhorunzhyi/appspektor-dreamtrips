@@ -9,7 +9,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -18,7 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
 import java.util.ArrayList;
@@ -130,21 +129,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
-   public void showMediaPicker(int requestId) {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .data(new PickerBundle.Builder().setRequestId(requestId).build())
-            .build());
-   }
-
-   @Override
-   public void hideMediaPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .build());
+   public void showMediaPicker() {
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(pickerAttachment -> getPresenter().imageSelected(pickerAttachment));
+      mediaPickerDialog.show(1);
    }
 
    @Override

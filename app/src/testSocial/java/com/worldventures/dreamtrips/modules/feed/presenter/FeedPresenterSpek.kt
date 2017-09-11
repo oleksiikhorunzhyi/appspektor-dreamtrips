@@ -15,8 +15,6 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.command
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem
@@ -380,7 +378,6 @@ class FeedPresenterSpek : PresenterBaseSpec({
       val feedStorageDelegate: FeedStorageDelegate = mock()
       val translationDelegate: TranslationDelegate = mock()
       val suggestedPhotoCellHelper: SuggestedPhotoCellPresenterHelper = mock()
-      val mediaPickerEventDelegate: MediaPickerEventDelegate = mock()
       val unreadConversationObservable: UnreadConversationObservable = mock()
       val notificationCountEventDelegate: NotificationCountEventDelegate = mock()
       val uploadingPresenterDelegate: UploadingPresenterDelegate = mock()
@@ -420,7 +417,6 @@ class FeedPresenterSpek : PresenterBaseSpec({
             registerProvider(FeedActionHandlerDelegate::class.java, { feedActionHandlerDelegate })
             registerProvider(TranslationDelegate::class.java, { translationDelegate })
             registerProvider(SuggestedPhotoCellPresenterHelper::class.java, { suggestedPhotoCellHelper })
-            registerProvider(MediaPickerEventDelegate::class.java, { mediaPickerEventDelegate })
             registerProvider(UnreadConversationObservable::class.java, { unreadConversationObservable })
             registerProvider(NotificationCountEventDelegate::class.java, { notificationCountEventDelegate })
             registerProvider(UploadingPresenterDelegate::class.java, { uploadingPresenterDelegate })

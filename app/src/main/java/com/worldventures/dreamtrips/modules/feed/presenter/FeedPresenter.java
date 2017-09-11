@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -63,7 +62,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       FeedEditEntityPresenter, UploadingListenerPresenter {
 
    @Inject SnappyRepository db;
-   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject TranslationDelegate translationDelegate;
    @Inject UnreadConversationObservable unreadConversationObservable;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;

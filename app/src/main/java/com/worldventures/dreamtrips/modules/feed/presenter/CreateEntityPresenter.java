@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Backgro
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -49,7 +48,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private CreateEntityBundle.Origin origin;
 
    @Inject AppConfigurationInteractor appConfigurationInteractor;
-   @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
@@ -57,7 +55,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    @State int postInProgressId;
 
-   private boolean mediaPickerProcessingImages;
    private int locallyProcessingImagesCount;
    private int videoLengthLimit;
 
@@ -99,12 +96,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                            .send(SharePostAction.createPostAction(command.getResult()));
                      closeView();
                   }));
-      mediaPickerImagesProcessedEventDelegate.getReplayObservable()
-            .compose(bindViewToMainComposer())
-            .subscribe(mediaPickerProcessingImages -> {
-               this.mediaPickerProcessingImages = mediaPickerProcessingImages;
-               invalidateDynamicViews();
-            });
    }
 
    public void initialPhotoStripDelegate() {
@@ -117,9 +108,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private void mediaPickerModelChanged(MediaPickerModel model) {
       if (model.isChecked()) {
          MediaPickerAttachment mediaAttachment;
-            mediaAttachment = model.getType() == MediaPickerModel.Type.PHOTO?
-                  new MediaPickerAttachment(Collections.singletonList((PhotoPickerModel) model), -1) :
-                  new MediaPickerAttachment((VideoPickerModel) model, -1);
+         mediaAttachment = model.getType() == MediaPickerModel.Type.PHOTO ?
+               new MediaPickerAttachment(Collections.singletonList((PhotoPickerModel) model), -1) :
+               new MediaPickerAttachment((VideoPickerModel) model, -1);
 
          attachMedia(mediaAttachment);
       } else {
@@ -161,15 +152,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    @Override
    protected boolean isChanged() {
-      boolean imageAreProcessing = mediaPickerProcessingImages || locallyProcessingImagesCount > 0;
       boolean videoSelected = selectedVideoPathUri != null;
-      return !imageAreProcessing && (!isCachedTextEmpty() || cachedCreationItems.size() > 0 || videoSelected);
+      return !isCachedTextEmpty() || cachedCreationItems.size() > 0 || videoSelected;
    }
 
    @Override
    public void post() {
-      postsInteractor
-            .processAttachmentsAndPostPipe()
+      postsInteractor.processAttachmentsAndPostPipe()
             .send(new ProcessAttachmentsAndPost(cachedText, cachedCreationItems, selectedVideoPathUri, location, origin));
    }
 
@@ -232,7 +221,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       view.attachPhotos(newImages);
       recognizeFaces(newImages);
       invalidateDynamicViews();
-      if (!mediaPickerProcessingImages) updatePickerAndStripState();
+      updatePickerAndStripState();
    }
 
    private void recognizeFaces(List<PhotoCreationItem> newImages) {

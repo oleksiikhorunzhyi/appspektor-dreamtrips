@@ -9,11 +9,10 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.modules.infopages.service.analytics.SendFeed
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import java.util.List;
 
@@ -35,14 +35,12 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View> {
 
-   private static final int PICKER_REQUEST_ID = SendFeedbackPresenter.class.getSimpleName().hashCode();
    private static final int PICKER_MAX_IMAGES = 5;
 
-   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
-   @Inject SnappyRepository db;
    @Inject FeedbackInteractor feedbackInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Router router;
+
    private FeedbackAttachmentsManager attachmentsManager = new FeedbackAttachmentsManager();
 
    @Override
@@ -50,7 +48,6 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
       super.takeView(view);
       getFeedbackReasons(view);
       subscribeToFormValidation();
-      subscribeToMediaPicker();
       subscribeToAttachments();
    }
 
@@ -152,14 +149,13 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    ///////////////////////////////////////////////////////////////////////////
 
    public void onShowMediaPicker() {
-      view.showMediaPicker(PICKER_REQUEST_ID, PICKER_MAX_IMAGES - attachmentsManager.getAttachments().size());
+      view.showMediaPicker(PICKER_MAX_IMAGES - attachmentsManager.getAttachments().size());
    }
 
-   private void subscribeToMediaPicker() {
-      mediaPickerEventDelegate.getObservable()
-            .filter(attachment -> attachment.requestId == PICKER_REQUEST_ID)
-            .compose(bindView())
-            .subscribe(mediaAttachment -> uploadImageAttachment(mediaAttachment.chosenImage.getUri().toString()));
+   public void imagesPicked(MediaPickerAttachment mediaPickerAttachment) {
+      Queryable.from(mediaPickerAttachment.getChosenImages())
+            .map(pickerModel -> WalletFilesUtils.convertPickedPhotoToUri(pickerModel).toString())
+            .forEachR(this::uploadImageAttachment);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -268,7 +264,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
 
       void hideProgressBar();
 
-      void showMediaPicker(int requestId, int maxPhotos);
+      void showMediaPicker(int maxPhotos);
 
       void setAttachments(List<EntityStateHolder<FeedbackImageAttachment>> attachments);
 

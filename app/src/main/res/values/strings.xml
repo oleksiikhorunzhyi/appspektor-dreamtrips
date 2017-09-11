@@ -115,7 +115,8 @@
    <string name="media_picker_fb_photos_actions">facebook photos</string>
    <string name="media_picker_limit_reached">You can choose only up to %s photos</string>
 
-   <string name="back">Back</string>
+   <string name="nav_back">Back</string>
+
    <string name="logout_component">Logout</string>
 
    <string name="years_ago">%d years ago</string>

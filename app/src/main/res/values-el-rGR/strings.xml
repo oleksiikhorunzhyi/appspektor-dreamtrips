@@ -114,7 +114,6 @@
    <string name="media_picker_fb_photos_actions">φωτογραφίες facebook</string>
    <string name="media_picker_limit_reached">Μπορείτε να επιλέξετε μόνο μέχρι %1$s φωτογραφίες</string>
 
-   <string name="back">Πίσω</string>
    <string name="logout_component">Αποσύνδεση</string>
 
    <string name="years_ago">πριν από %1$d έτη</string>

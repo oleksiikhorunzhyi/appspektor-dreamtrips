@@ -114,7 +114,6 @@
    <string name="media_picker_fb_photos_actions">Fotos de Facebook</string>
    <string name="media_picker_limit_reached">Sólo se puede elegir hasta %1$s fotos</string>
 
-   <string name="back">Volver</string>
    <string name="logout_component">Cerrar sesión</string>
 
    <string name="years_ago">%1$d años atrás</string>

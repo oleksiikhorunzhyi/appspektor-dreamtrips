@@ -102,7 +102,7 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
       toolbar.inflateMenu(R.menu.menu_add_location_screen);
       toolbar.setTitle(R.string.add_location);
       toolbar.setOnMenuItemClickListener(this::onToolBarMenuItemClicked);
-      toolbar.setNavigationContentDescription(R.string.back);
+      toolbar.setNavigationContentDescription(R.string.nav_back);
       toolbar.setNavigationIcon(R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(v -> cancelClicked());
       setToolbarAlpha(255);

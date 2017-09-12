@@ -151,4 +151,9 @@
    <string name="input_major_limit">Your review has reached our limit. It has been shortened to fit.</string>
 
    <string name="text_add_photos_and_videos">Add photos</string>
+
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Sub Total amount: $</string>
+   <string name="dtl_transaction_screen_earned_points_text">Earned Points:&#160;</string>
+
 </resources>

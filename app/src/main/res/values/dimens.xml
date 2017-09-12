@@ -340,4 +340,13 @@
    <dimen name="dtl_item_review_images_margin">10dp</dimen>
    <dimen name="dtl_item_review_images_separation">6dp</dimen>
 
+   <!-- DTL Transaction Screen dimens-->
+   <dimen name="dtl_transaction_screen_item_title_text_size">15sp</dimen>
+   <dimen name="dtl_transaction_screen_item_items_text_size">13sp</dimen>
+   <dimen name="dtl_transaction_screen_item_margin">12dp</dimen>
+   <dimen name="dtl_transaction_screen_item_title_margin_top">8dp</dimen>
+   <dimen name="dtl_transaction_screen_item_line_separator_height">1dp</dimen>
+   <dimen name="dtl_transaction_screen_item_earned_points_checker_margin_left">4dp</dimen>
+   <dimen name="dtl_transaction_screen_item_transaction_status_icon_margin">4dp</dimen>
+
 </resources>

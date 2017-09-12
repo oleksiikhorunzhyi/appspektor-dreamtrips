@@ -155,4 +155,7 @@
    <string name="text_add_photos_and_videos">Add photos</string>
 
    <string name="dtl_no_transaction_message">You do not have any transaction so far.</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Sub Total amount: $</string>
+   <string name="dtl_transaction_screen_earned_points_text">Earned Points:&#160;</string>
 </resources>

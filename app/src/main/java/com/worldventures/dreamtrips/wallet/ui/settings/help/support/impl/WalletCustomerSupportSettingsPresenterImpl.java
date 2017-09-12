@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl;
 
 
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
@@ -20,9 +19,9 @@ public class WalletCustomerSupportSettingsPresenterImpl extends WalletPresenterI
    private final WalletSettingsInteractor walletSettingsInteractor;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   public WalletCustomerSupportSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletSettingsInteractor walletSettingsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletCustomerSupportSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletSettingsInteractor walletSettingsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      super(navigator, deviceConnectionDelegate);
       this.walletSettingsInteractor = walletSettingsInteractor;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
    }

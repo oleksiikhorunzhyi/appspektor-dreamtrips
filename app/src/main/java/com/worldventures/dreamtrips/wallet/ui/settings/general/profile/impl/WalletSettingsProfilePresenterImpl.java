@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSource;
@@ -34,16 +34,18 @@ import static com.worldventures.dreamtrips.wallet.ui.settings.general.profile.co
 
 public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<WalletSettingsProfileScreen> implements WalletSettingsProfilePresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final SmartCardUserDataInteractor smartCardUserDataInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletProfileDelegate delegate;
 
    private SmartCardUser user;
 
-   public WalletSettingsProfilePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
+   public WalletSettingsProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, WalletSocialInfoProvider socialInfoProvider) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.socialInfoProvider = socialInfoProvider;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
@@ -70,7 +72,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    }
 
    private void fetchProfile() {
-      getSmartCardInteractor().smartCardUserPipe()
+      smartCardInteractor.smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> setUser(command.getResult()), throwable -> Timber.e(throwable, ""));
@@ -187,7 +189,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
 
    @SuppressWarnings("ConstantConditions")
    private void assertSmartCardConnected(Action0 onConnected) {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()

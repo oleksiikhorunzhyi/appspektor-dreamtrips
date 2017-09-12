@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
@@ -11,9 +10,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessSc
 
 public class PinSetSuccessPresenterImpl extends WalletPresenterImpl<PinSetSuccessScreen> implements PinSetSuccessPresenter {
 
-   public PinSetSuccessPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService) {
-      super(navigator, smartCardInteractor, networkService);
+   public PinSetSuccessPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      super(navigator, deviceConnectionDelegate);
    }
 
    @Override

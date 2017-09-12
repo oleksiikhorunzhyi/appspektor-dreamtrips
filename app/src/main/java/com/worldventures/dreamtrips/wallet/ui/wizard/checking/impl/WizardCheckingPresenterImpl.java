@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
@@ -16,12 +16,14 @@ import rx.Observable;
 
 public class WizardCheckingPresenterImpl extends WalletPresenterImpl<WizardCheckingScreen> implements WizardCheckingPresenter {
 
+   private final WalletNetworkDelegate networkDelegate;
    private final WizardInteractor wizardInteractor;
    private final WalletBluetoothService bluetoothService;
 
-   public WizardCheckingPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WizardInteractor wizardInteractor, WalletBluetoothService bluetoothService) {
-      super(navigator, smartCardInteractor, networkService);
+   public WizardCheckingPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor, WalletBluetoothService bluetoothService) {
+      super(navigator, deviceConnectionDelegate);
+      this.networkDelegate = networkDelegate;
       this.wizardInteractor = wizardInteractor;
       this.bluetoothService = bluetoothService;
    }
@@ -29,6 +31,7 @@ public class WizardCheckingPresenterImpl extends WalletPresenterImpl<WizardCheck
    @Override
    public void attachView(WizardCheckingScreen view) {
       super.attachView(view);
+      networkDelegate.setup(view);
       observeBluetoothAndNetwork();
       observeChecks();
       wizardInteractor.checksPipe().send(new WizardCheckCommand());
@@ -45,7 +48,7 @@ public class WizardCheckingPresenterImpl extends WalletPresenterImpl<WizardCheck
    }
 
    private void observeBluetoothAndNetwork() {
-      Observable.merge(bluetoothService.observeEnablesState(), getNetworkService().observeConnectedState())
+      Observable.merge(bluetoothService.observeEnablesState(), networkDelegate.observeConnectedState())
             .compose(bindViewIoToMainComposer())
             .subscribe(b -> wizardInteractor.checksPipe().send(new WizardCheckCommand()));
    }

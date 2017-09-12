@@ -38,6 +38,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegateImpl;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegateImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorImpl;
@@ -328,6 +332,16 @@ public class WalletActivityModule {
    }
 
    @Provides
+   WalletNetworkDelegate provideWalletNetworkDelegate(WalletNetworkService walletNetworkService) {
+      return new WalletNetworkDelegateImpl(walletNetworkService);
+   }
+
+   @Provides
+   WalletDeviceConnectionDelegate provideDeviceConnectionDelegate(SmartCardInteractor smartCardInteractor) {
+      return new WalletDeviceConnectionDelegateImpl(smartCardInteractor);
+   }
+
+   @Provides
    WalletActivityPresenter provideWalletActivityPresenter(SmartCardSyncManager smartCardSyncManager,
          SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler, SmartCardInteractor interactor,
          WalletBluetoothService bluetoothService, LogoutInteractor logoutInteractor) {
@@ -336,283 +350,283 @@ public class WalletActivityModule {
    }
 
    @Provides
-   WalletStartPresenter provideWalletStartPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator,
+   WalletStartPresenter provideWalletStartPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator,
          HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new WalletStartPresenterImpl(navigator, smartCardInteractor, networkService, firmwareInteractor,
+      return new WalletStartPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, firmwareInteractor,
             walletAccessValidator, httpErrorHandlingUtil);
    }
 
    @Provides
    WalletProvisioningBlockedPresenter provideWalletProvisioningBlockedPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletProvisioningBlockedPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletProvisioningBlockedPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor);
    }
 
    @Provides
-   WizardWelcomePresenter provideWizardWelcomePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletSocialInfoProvider socialInfoProvider,
+   WizardWelcomePresenter provideWizardWelcomePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletSocialInfoProvider socialInfoProvider,
          WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
-      return new WizardWelcomePresenterImpl(navigator, smartCardInteractor, networkService, socialInfoProvider,
+      return new WizardWelcomePresenterImpl(navigator, deviceConnectionDelegate, socialInfoProvider,
             analyticsInteractor, wizardInteractor);
    }
 
    @Provides
-   WizardPowerOnPresenter provideWizardPowerOnPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
+   WizardPowerOnPresenter provideWizardPowerOnPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor,
          WalletBluetoothService walletBluetoothService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WizardPowerOnPresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
+      return new WizardPowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor,
             walletBluetoothService, analyticsInteractor);
    }
 
    @Provides
-   WizardTermsPresenter provideWizardTermsPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, @Named(JANET_WALLET) Janet janet) {
-      return new WizardTermsPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor, janet);
+   WizardTermsPresenter provideWizardTermsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, @Named(JANET_WALLET) Janet janet) {
+      return new WizardTermsPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, janet);
    }
 
    @Provides
-   WizardCheckingPresenter providesWizardCheckingPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
+   WizardCheckingPresenter providesWizardCheckingPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor,
          WalletBluetoothService walletBluetoothService) {
-      return new WizardCheckingPresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor, walletBluetoothService);
+      return new WizardCheckingPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor, walletBluetoothService);
    }
 
    @Provides
-   WizardSplashPresenter provideWizardSplashPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WizardSplashPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor);
+   WizardSplashPresenter provideWizardSplashPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WizardSplashPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor);
    }
 
    @Provides
-   WizardScanBarcodePresenter provideWizardScanBarcodePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
+   WizardScanBarcodePresenter provideWizardScanBarcodePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
-      return new WizardScanBarcodePresenterImpl(navigator, smartCardInteractor, networkService, permissionDispatcher,
+      return new WizardScanBarcodePresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
             new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor)));
    }
 
    @Provides
-   PairKeyPresenter providePairKeyPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
+   PairKeyPresenter providePairKeyPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor,
          WalletAnalyticsInteractor analyticsInteractor) {
-      return new PairKeyPresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor, analyticsInteractor);
+      return new PairKeyPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor, analyticsInteractor);
    }
 
    @Provides
-   WizardManualInputPresenter provideWizardManualInputPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
-      return new WizardManualInputPresenterImpl(navigator, smartCardInteractor, networkService,
+   WizardManualInputPresenter provideWizardManualInputPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate,
             analyticsInteractor, new InputBarcodeDelegate(navigator, wizardInteractor,
             InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor)));
    }
 
    @Provides
-   ExistingDeviceDetectPresenter provideExistingDeviceDetectPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   ExistingDeviceDetectPresenter provideExistingDeviceDetectPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new ExistingDeviceDetectPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new ExistingDeviceDetectPresenterImpl(navigator, deviceConnectionDelegate,
             wizardInteractor, httpErrorHandlingUtil);
    }
 
    @Provides
-   WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
+   WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
          WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
          WalletFeatureHelper walletFeatureHelper) {
-      return new WizardEditProfilePresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
+      return new WizardEditProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
             analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor, walletFeatureHelper);
    }
 
    @Provides
-   WizardUploadProfilePresenter provideWizardUploadProfilePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor, WalletFeatureHelper walletFeatureHelper) {
-      return new WizardUploadProfilePresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
+   WizardUploadProfilePresenter provideWizardUploadProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         WizardInteractor wizardInteractor, WalletFeatureHelper walletFeatureHelper) {
+      return new WizardUploadProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
             analyticsInteractor, walletFeatureHelper);
    }
 
    @Provides
-   WizardAssignUserPresenter provideWizardAssignUserPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
+   WizardAssignUserPresenter provideWizardAssignUserPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
          WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new WizardAssignUserPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WizardAssignUserPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
             wizardInteractor, recordInteractor, analyticsInteractor, httpErrorHandlingUtil);
    }
 
    @Provides
-   WalletPinIsSetPresenter provideWalletPinIsSetPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   WalletPinIsSetPresenter provideWalletPinIsSetPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
-      return new WalletPinIsSetPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletPinIsSetPresenterImpl(navigator, deviceConnectionDelegate,
             analyticsInteractor, wizardInteractor);
    }
 
    @Provides
-   PinProposalPresenter providesPinProposalPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor) {
-      return new PinProposalPresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor);
+   PinProposalPresenter providesPinProposalPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor) {
+      return new PinProposalPresenterImpl(navigator, deviceConnectionDelegate, wizardInteractor);
    }
 
    @Provides
-   EnterPinPresenter provideEnterPinPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   EnterPinPresenter provideEnterPinPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new EnterPinPresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor, analyticsInteractor);
+      return new EnterPinPresenterImpl(navigator, deviceConnectionDelegate, wizardInteractor, analyticsInteractor);
    }
 
    @Provides
-   PinSetSuccessPresenter providePinSetSuccessPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
-      return new PinSetSuccessPresenterImpl(navigator, smartCardInteractor, networkService);
+   PinSetSuccessPresenter providePinSetSuccessPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      return new PinSetSuccessPresenterImpl(navigator, deviceConnectionDelegate);
    }
 
    @Provides
-   SyncRecordsPresenter provideSyncRecordsPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new SyncRecordsPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor, analyticsInteractor);
+   SyncRecordsPresenter provideSyncRecordsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new SyncRecordsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, recordInteractor, analyticsInteractor);
    }
 
    @Provides
-   PaymentSyncFinishPresenter providePaymentSyncFinishPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   PaymentSyncFinishPresenter providePaymentSyncFinishPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new PaymentSyncFinishPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new PaymentSyncFinishPresenterImpl(navigator, deviceConnectionDelegate,
             wizardInteractor, analyticsInteractor);
    }
 
    @Provides
-   CardListPresenter provideCardListPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
+   CardListPresenter provideCardListPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, SmartCardInteractor smartCardInteractor,
+         RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
          WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
          WalletNavigationDelegate navigationDelegate, WalletFeatureHelper walletFeatureHelper,
          LocationTrackingManager locationTrackingManager) {
-      return new CardListPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor,
+      return new CardListPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate,
+            smartCardInteractor, recordInteractor,
             firmwareInteractor, analyticsInteractor, factoryResetInteractor,
             navigationDelegate, walletFeatureHelper, locationTrackingManager);
    }
 
    @Provides
-   WalletSettingsPresenter provideWalletSettingsPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
+   WalletSettingsPresenter provideWalletSettingsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
-      return new WalletSettingsPresenterImpl(navigator, smartCardInteractor, networkService, firmwareInteractor,
+      return new WalletSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, firmwareInteractor,
             analyticsInteractor, walletFeatureHelper);
    }
 
    @Provides
-   WalletGeneralSettingsPresenter providesWalletGeneralSettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
+   WalletGeneralSettingsPresenter providesWalletGeneralSettingsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor,
          FactoryResetInteractor factoryResetInteractor, WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
-      return new WalletGeneralSettingsPresenterImpl(navigator, smartCardInteractor, networkService, firmwareInteractor,
+      return new WalletGeneralSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, firmwareInteractor,
             factoryResetInteractor, analyticsInteractor, walletFeatureHelper);
    }
 
    @Provides
-   FactoryResetPresenter provideFactoryResetPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
+   FactoryResetPresenter provideFactoryResetPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor,
          FactoryResetInteractor factoryResetInteractor) {
-      return new FactoryResetPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor, factoryResetInteractor);
+      return new FactoryResetPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, factoryResetInteractor);
    }
 
    @Provides
-   FactoryResetSuccessPresenter provideFactoryResetSuccessPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new FactoryResetSuccessPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor);
+   FactoryResetSuccessPresenter provideFactoryResetSuccessPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new FactoryResetSuccessPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor);
    }
 
    @Provides
-   NewCardPowerOnPresenter provideNewCardPowerOnPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, FactoryResetInteractor factoryResetInteractor,
+   NewCardPowerOnPresenter provideNewCardPowerOnPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FactoryResetInteractor factoryResetInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletBluetoothService walletBluetoothService) {
-      return new NewCardPowerOnPresenterImpl(navigator, smartCardInteractor, networkService, factoryResetInteractor,
-            analyticsInteractor, walletBluetoothService);
+      return new NewCardPowerOnPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            factoryResetInteractor, analyticsInteractor, walletBluetoothService);
    }
 
    @Provides
-   PreCheckNewCardPresenter providePreCheckNewCardPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
+   PreCheckNewCardPresenter providePreCheckNewCardPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          FactoryResetInteractor factoryResetInteractor, WalletBluetoothService walletBluetoothService) {
-      return new PreCheckNewCardPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor,
+      return new PreCheckNewCardPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
             factoryResetInteractor, walletBluetoothService);
    }
 
    @Provides
    ExistingCardDetectPresenter provideExistingCardDetectPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
-         FactoryResetInteractor factoryResetInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new ExistingCardDetectPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
+         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new ExistingCardDetectPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
             factoryResetInteractor, httpErrorHandlingUtil);
    }
 
    @Provides
    EnterPinUnassignPresenter provideEnterPinUnassignPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor,
          FactoryResetInteractor factoryResetInteractor) {
-      return new EnterPinUnassignPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new EnterPinUnassignPresenterImpl(navigator, deviceConnectionDelegate,
             factoryResetInteractor, analyticsInteractor);
    }
 
    @Provides
    UnassignSuccessPresenter provideUnassignSuccessPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new UnassignSuccessPresenterImpl(navigator, smartCardInteractor, networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new UnassignSuccessPresenterImpl(navigator, deviceConnectionDelegate,
             analyticsInteractor);
    }
 
    @Provides
-   AboutPresenter provideAboutPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, RecordInteractor recordInteractor,
+   AboutPresenter provideAboutPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor,
          WalletAnalyticsInteractor analyticsInteractor) {
-      return new AboutPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor, analyticsInteractor);
+      return new AboutPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            recordInteractor, analyticsInteractor);
    }
 
    @Provides
    WalletSecuritySettingsPresenter provideWalletSecuritySettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
-      return new WalletSecuritySettingsPresenterImpl(navigator, smartCardInteractor,
-            networkService, analyticsInteractor, walletFeatureHelper);
+      return new WalletSecuritySettingsPresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor, walletFeatureHelper);
    }
 
    @Provides
    WalletHelpSettingsPresenter provideWalletHelpSettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
-      return new WalletHelpSettingsPresenterImpl(navigator, smartCardInteractor, networkService);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      return new WalletHelpSettingsPresenterImpl(navigator, deviceConnectionDelegate);
    }
 
    @Provides
    WalletSettingsProfilePresenter provideWalletSettingsProfilePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
          WalletSocialInfoProvider socialInfoProvider) {
-      return new WalletSettingsProfilePresenterImpl(navigator, smartCardInteractor, networkService,
-            analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
+      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
    }
 
    @Provides
    WalletCustomerSupportSettingsPresenter provideWalletCustomerSupportSettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WalletSettingsInteractor walletSettingsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new WalletCustomerSupportSettingsPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletCustomerSupportSettingsPresenterImpl(navigator, deviceConnectionDelegate,
             walletSettingsInteractor, httpErrorHandlingUtil);
    }
 
    @Provides
-   LostCardPresenter provideLostCardPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   LostCardPresenter provideLostCardPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          PermissionDispatcher permissionDispatcher, SmartCardLocationInteractor smartCardLocationInteractor,
          WalletDetectLocationService walletDetectLocationService, Activity activity, WalletAnalyticsInteractor analyticsInteractor) {
       //noinspection all
-      return new LostCardPresenterImpl(navigator, smartCardInteractor, networkService, permissionDispatcher,
+      return new LostCardPresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
             smartCardLocationInteractor, walletDetectLocationService,
             (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor);
    }
 
    @Provides
-   MapPresenter provideMapPresenter(SmartCardLocationInteractor smartCardLocationInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+   MapPresenter provideMapPresenter(SmartCardLocationInteractor smartCardLocationInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
       return new MapPresenterImpl(smartCardLocationInteractor, analyticsInteractor);
    }
 
@@ -628,174 +642,183 @@ public class WalletActivityModule {
 
    @Provides
    WalletAutoClearCardsPresenter provideWalletAutoClearCardsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider itemProvider) {
-      return new WalletAutoClearCardsPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletAutoClearCardsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
             analyticsInteractor, itemProvider);
    }
 
    @Provides
    WalletDisableDefaultCardPresenter provideWalletDisableDefaultCardPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
-      return new WalletDisableDefaultCardPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletDisableDefaultCardPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
             analyticsInteractor, itemProvider);
    }
 
    @Provides
    WalletOfflineModeSettingsPresenter provideWalletOfflineModeSettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletOfflineModeSettingsPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletNetworkDelegate networkDelegate, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletOfflineModeSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            networkDelegate, analyticsInteractor);
    }
 
    @Provides
    DisplayOptionsSettingsPresenter provideDisplayOptionsSettingsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
-      return new DisplayOptionsSettingsPresenterImpl(navigator, smartCardInteractor, smartCardUserDataInteractor,
-            networkService, analyticsInteractor, socialInfoProvider);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         SmartCardUserDataInteractor smartCardUserDataInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         WalletSocialInfoProvider socialInfoProvider) {
+      return new DisplayOptionsSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            smartCardUserDataInteractor, analyticsInteractor, socialInfoProvider);
    }
 
    @Provides
    WalletNewFirmwareAvailablePresenter provideWalletNewFirmwareAvailablePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletNewFirmwareAvailablePresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletNewFirmwareAvailablePresenterImpl(navigator, deviceConnectionDelegate,
             firmwareInteractor, analyticsInteractor);
    }
 
    @Provides
    WalletPuckConnectionPresenter provideWalletPuckConnectionPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
-      return new WalletPuckConnectionPresenterImpl(navigator, smartCardInteractor, networkService);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor) {
+      return new WalletPuckConnectionPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor);
    }
 
    @Provides
    WalletDownloadFirmwarePresenter provideWalletDownloadFirmwarePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WalletAnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
-      return new WalletDownloadFirmwarePresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletDownloadFirmwarePresenterImpl(navigator, deviceConnectionDelegate,
             analyticsInteractor, firmwareInteractor);
    }
 
    @Provides
    WalletFirmwareChecksPresenter provideWalletFirmwareChecksPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletBluetoothService walletBluetoothService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletBluetoothService walletBluetoothService,
          FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletFirmwareChecksPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletFirmwareChecksPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
             walletBluetoothService, firmwareInteractor, analyticsInteractor);
    }
 
    @Provides
    WalletInstallFirmwarePresenter provideWalletInstallFirmwarePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletInstallFirmwarePresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WalletInstallFirmwarePresenterImpl(navigator, deviceConnectionDelegate,
             firmwareInteractor, analyticsInteractor);
    }
 
    @Provides
    WalletSuccessInstallFirmwarePresenter provideWalletSuccessInstallFirmwarePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletSuccessInstallFirmwarePresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletSuccessInstallFirmwarePresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor);
    }
 
    @Provides
    ForceUpdatePowerOnPresenter provideForceUpdatePowerOnPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, WizardInteractor wizardInteractor,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, WalletNetworkDelegate networkDelegate,
+         WizardInteractor wizardInteractor,
          WalletBluetoothService walletBluetoothService) {
-      return new ForceUpdatePowerOnPresenterImpl(navigator, smartCardInteractor, networkService, wizardInteractor,
+      return new ForceUpdatePowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor,
             walletBluetoothService);
    }
 
    @Provides
-   ForcePairKeyPresenter provideForcePairKeyPresenter(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor) {
-      return new ForcePairKeyPresenterImpl(navigator, smartCardInteractor, networkService, firmwareInteractor);
+   ForcePairKeyPresenter provideForcePairKeyPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor) {
+      return new ForcePairKeyPresenterImpl(navigator, deviceConnectionDelegate, firmwareInteractor);
    }
 
    @Provides
    StartFirmwareInstallPresenter provideStartFirmwareInstallPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FirmwareInteractor firmwareInteractor) {
-      return new StartFirmwareInstallPresenterImpl(navigator, smartCardInteractor,
-            networkService, firmwareInteractor);
+      return new StartFirmwareInstallPresenterImpl(navigator, deviceConnectionDelegate,
+            firmwareInteractor);
    }
 
    @Provides
    WalletUpToDateFirmwarePresenter providesWalletUpToDateFirmwarePresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor) {
-      return new WalletUpToDateFirmwarePresenterImpl(navigator, smartCardInteractor, networkService,
-            analyticsInteractor);
+      return new WalletUpToDateFirmwarePresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor);
    }
 
    @Provides
    WalletHelpVideoPresenter provideWalletHelpVideoPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         MemberVideosInteractor memberVideosInteractor,
          CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, Context context) {
-      return new WalletHelpVideoPresenterImpl(navigator, smartCardInteractor, networkService, memberVideosInteractor,
+      return new WalletHelpVideoPresenterImpl(navigator, deviceConnectionDelegate, memberVideosInteractor,
             cachedEntityInteractor, cachedEntityDelegate, new WalletHelpVideoDelegate(context));
    }
 
    @Provides
    WalletHelpDocumentsPresenter provideWalletHelpDocumentsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          DocumentsInteractor documentsInteractor) {
-      return new WalletHelpDocumentsPresenterImpl(navigator, smartCardInteractor, networkService, documentsInteractor);
+      return new WalletHelpDocumentsPresenterImpl(navigator, deviceConnectionDelegate, documentsInteractor);
    }
 
    @Provides
    HelpDocumentDetailPresenter provideHelpDocumentDetailPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
-      return new HelpDocumentDetailPresenterImpl(navigator, smartCardInteractor, networkService);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      return new HelpDocumentDetailPresenterImpl(navigator, deviceConnectionDelegate);
    }
 
    @Provides
    SendFeedbackPresenter providesSendFeedbackPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
          MediaInteractor mediaInteractor) {
-      return new SendFeedbackPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new SendFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
             feedbackInteractor, walletSettingsInteractor, mediaInteractor);
    }
 
    @Provides
    PaymentFeedbackPresenter providePaymentFeedbackPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
          MediaInteractor mediaInteractor) {
-      return new PaymentFeedbackPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new PaymentFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
             feedbackInteractor, walletSettingsInteractor, mediaInteractor);
    }
 
    @Provides
    WizardChargingPresenter providesWizardChargingPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WizardChargingPresenterImpl(navigator, smartCardInteractor, networkService,
+      return new WizardChargingPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
             recordInteractor, analyticsInteractor);
    }
 
    @Provides
    ConnectionErrorPresenter provideConnectionErrorPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService) {
-      return new ConnectionErrorPresenterImpl(navigator, smartCardInteractor, networkService);
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor) {
+      return new ConnectionErrorPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor);
    }
 
    @Provides
    AddCardDetailsPresenter provideAddCardDetailsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor, WizardInteractor wizardInteractor,
          HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      return new AddCardDetailsPresenterImpl(navigator, smartCardInteractor, networkService, analyticsInteractor,
+      return new AddCardDetailsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
             recordInteractor, wizardInteractor, httpErrorHandlingUtil);
    }
 
    @Provides
-   CardDetailsPresenter provideCardDetailsPresenter(Navigator navigator,
-         SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   CardDetailsPresenter provideCardDetailsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor) {
-      return new CardDetailsPresenterImpl(navigator, smartCardInteractor, networkService, recordInteractor, analyticsInteractor);
+      return new CardDetailsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            networkDelegate, recordInteractor, analyticsInteractor);
    }
 }

@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.impl;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
@@ -12,9 +11,10 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
@@ -27,14 +27,16 @@ import rx.Observable;
 
 public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSettingsScreen> implements WalletSettingsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
 
-   public WalletSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor,
+   public WalletSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.featureHelper = featureHelper;
@@ -49,7 +51,7 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
       observeSmartCardChanges();
       observeFirmwareUpdates();
 
-      getSmartCardInteractor().smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
 
@@ -80,8 +82,8 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
 
    private void observeSmartCardChanges() {
       Observable.combineLatest(
-            getSmartCardInteractor().smartCardFirmwarePipe().observeSuccessWithReplay(),
-            getSmartCardInteractor().deviceStatePipe().observeSuccessWithReplay(),
+            smartCardInteractor.smartCardFirmwarePipe().observeSuccessWithReplay(),
+            smartCardInteractor.deviceStatePipe().observeSuccessWithReplay(),
             Pair::new)
             .throttleLast(200, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())

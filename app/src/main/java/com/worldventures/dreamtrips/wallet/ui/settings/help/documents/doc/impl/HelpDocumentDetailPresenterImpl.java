@@ -3,8 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailPresenter;
@@ -13,9 +12,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.Wall
 
 public class HelpDocumentDetailPresenterImpl extends WalletPresenterImpl<HelpDocumentDetailScreen> implements HelpDocumentDetailPresenter {
 
-   public HelpDocumentDetailPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService) {
-      super(navigator, smartCardInteractor, networkService);
+   public HelpDocumentDetailPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      super(navigator, deviceConnectionDelegate);
    }
 
    @Override

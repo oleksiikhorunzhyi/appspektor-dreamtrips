@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.power_on.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PowerOnAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
@@ -19,13 +19,15 @@ import rx.Observable;
 
 public class WizardPowerOnPresenterImpl extends WalletPresenterImpl<WizardPowerOnScreen> implements WizardPowerOnPresenter {
 
+   private final WalletNetworkDelegate networkDelegate;
    private final WizardInteractor wizardInteractor;
    private final WalletBluetoothService bluetoothService;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WizardPowerOnPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public WizardPowerOnPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate, WalletNetworkDelegate networkDelegate,
          WizardInteractor wizardInteractor, WalletBluetoothService bluetoothService, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.networkDelegate = networkDelegate;
       this.wizardInteractor = wizardInteractor;
       this.bluetoothService = bluetoothService;
       this.analyticsInteractor = analyticsInteractor;
@@ -34,6 +36,8 @@ public class WizardPowerOnPresenterImpl extends WalletPresenterImpl<WizardPowerO
    @Override
    public void attachView(WizardPowerOnScreen view) {
       super.attachView(view);
+      networkDelegate.setup(view);
+
       analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(new PowerOnAction()));
 
       observeBluetoothAndNetwork();
@@ -41,7 +45,7 @@ public class WizardPowerOnPresenterImpl extends WalletPresenterImpl<WizardPowerO
    }
 
    private void observeBluetoothAndNetwork() {
-      Observable.merge(bluetoothService.observeEnablesState(), getNetworkService().observeConnectedState())
+      Observable.merge(bluetoothService.observeEnablesState(), networkDelegate.observeConnectedState())
             .compose(bindViewIoToMainComposer())
             .subscribe(b -> wizardInteractor.checksPipe().send(new WizardCheckCommand()));
    }

@@ -4,9 +4,9 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 
 import javax.inject.Inject;
 

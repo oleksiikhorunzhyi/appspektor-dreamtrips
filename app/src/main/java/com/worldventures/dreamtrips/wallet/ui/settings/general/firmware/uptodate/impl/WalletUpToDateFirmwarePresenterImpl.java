@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.ViewSdkVersionAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePresenter;
@@ -14,11 +14,13 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate
 
 public class WalletUpToDateFirmwarePresenterImpl extends WalletPresenterImpl<WalletUpToDateFirmwareScreen> implements WalletUpToDateFirmwarePresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WalletUpToDateFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletUpToDateFirmwarePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
 
@@ -30,7 +32,7 @@ public class WalletUpToDateFirmwarePresenterImpl extends WalletPresenterImpl<Wal
    }
 
    private void observeSmartCard() {
-      getSmartCardInteractor().smartCardFirmwarePipe()
+      smartCardInteractor.smartCardFirmwarePipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bindSmartCardFirmware(command.getResult()));

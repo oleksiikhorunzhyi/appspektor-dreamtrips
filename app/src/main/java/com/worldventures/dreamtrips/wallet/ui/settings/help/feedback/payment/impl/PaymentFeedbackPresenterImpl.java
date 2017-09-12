@@ -4,11 +4,10 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.im
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl.BaseFeedbackPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackDelegate;
@@ -21,10 +20,10 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
 
    private final PaymentFeedbackDelegate paymentFeedbackDelegate;
 
-   public PaymentFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
+   public PaymentFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FeedbackInteractor feedbackInteractor,
          WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
-      super(navigator, smartCardInteractor, networkService, feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+      super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor, mediaInteractor);
       this.paymentFeedbackDelegate = new PaymentFeedbackDelegate();
    }
 

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.records.connectionerror.impl;
 
 
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
@@ -13,9 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<ConnectionErrorScreen> implements ConnectionErrorPresenter {
 
-   public ConnectionErrorPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService) {
-      super(navigator, smartCardInteractor, networkService);
+   private final SmartCardInteractor smartCardInteractor;
+
+   public ConnectionErrorPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
    }
 
    @Override
@@ -25,7 +28,7 @@ public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<Connection
    }
 
    private void observeConnection() {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
             .map(command -> command.getResult().connectionStatus())
@@ -35,7 +38,7 @@ public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<Connection
                if (connectionStatus.isConnected()) getNavigator().goWizardCharging();
             });
 
-      getSmartCardInteractor().activeSmartCardPipe().send(new ActiveSmartCardCommand());
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
    }
 
    @Override

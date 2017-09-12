@@ -1,14 +1,15 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsOfflineModeScreenAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsOfflineModeStateChangeAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
@@ -21,13 +22,17 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<WalletOfflineModeSettingsScreen> implements WalletOfflineModeSettingsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
+   private final WalletNetworkDelegate networkDelegate;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
    private boolean waitingForNetwork = false;
 
-   public WalletOfflineModeSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletOfflineModeSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletNetworkDelegate networkDelegate, WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
+      this.networkDelegate = networkDelegate;
       this.analyticsInteractor = analyticsInteractor;
    }
 
@@ -35,6 +40,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
    public void attachView(WalletOfflineModeSettingsScreen view) {
       super.attachView(view);
       trackScreen();
+      networkDelegate.setup(view);
 
       observeOfflineModeState();
       observeOfflineModeSwitcher();
@@ -50,12 +56,12 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
 
    @Override
    public void fetchOfflineModeState() {
-      getSmartCardInteractor().offlineModeStatusPipe().send(OfflineModeStatusCommand.fetch());
+      smartCardInteractor.offlineModeStatusPipe().send(OfflineModeStatusCommand.fetch());
    }
 
    @Override
    public void switchOfflineMode() {
-      getSmartCardInteractor().switchOfflineModePipe().send(new SwitchOfflineModeCommand());
+      smartCardInteractor.switchOfflineModePipe().send(new SwitchOfflineModeCommand());
    }
 
    @Override
@@ -70,13 +76,13 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
    }
 
    private void observeOfflineModeState() {
-      getSmartCardInteractor().offlineModeStatusPipe()
+      smartCardInteractor.offlineModeStatusPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
             .subscribe(isOfflineModeEnabled -> getView().setOfflineModeState(isOfflineModeEnabled));
 
-      getSmartCardInteractor().switchOfflineModePipe()
+      smartCardInteractor.switchOfflineModePipe()
             .observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
@@ -99,7 +105,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
    }
 
    private void observeNetworkState() {
-      getNetworkService().observeConnectedState()
+      networkDelegate.observeConnectedState()
             .compose(bindView())
             .filter(networkAvailable -> networkAvailable && waitingForNetwork)
             .subscribe(networkAvailable -> switchOfflineMode());
@@ -115,7 +121,7 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
    }
 
    private void trackScreen() {
-      getSmartCardInteractor().offlineModeStatusPipe()
+      smartCardInteractor.offlineModeStatusPipe()
             .observeSuccess()
             .take(1)
             .map(Command::getResult)

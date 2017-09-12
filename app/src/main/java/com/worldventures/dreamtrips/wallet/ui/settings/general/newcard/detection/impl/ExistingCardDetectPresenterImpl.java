@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detectio
 
 
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardAction;
@@ -14,11 +13,12 @@ import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.UnAssignCardC
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
@@ -32,14 +32,16 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<ExistingCardDetectScreen> implements ExistingCardDetectPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final CheckPinDelegate checkPinDelegate;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   public ExistingCardDetectPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor,
+   public ExistingCardDetectPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          FactoryResetInteractor factoryResetInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
@@ -55,7 +57,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    }
 
    private void fetchSmartCardId() {
-      getSmartCardInteractor().activeSmartCardPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
@@ -68,7 +70,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    }
 
    private void observerSmartCardConnectedStatus() {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
@@ -94,7 +96,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
 
    @Override
    public void prepareUnassignCard() {
-      getSmartCardInteractor().activeSmartCardPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
@@ -104,7 +106,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
 
    @Override
    public void prepareUnassignCardOnBackend() {
-      getSmartCardInteractor().activeSmartCardPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
@@ -117,7 +119,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
 
    @Override
    public void unassignCardOnBackend() {
-      getSmartCardInteractor().wipeSmartCardDataPipe()
+      smartCardInteractor.wipeSmartCardDataPipe()
             .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)

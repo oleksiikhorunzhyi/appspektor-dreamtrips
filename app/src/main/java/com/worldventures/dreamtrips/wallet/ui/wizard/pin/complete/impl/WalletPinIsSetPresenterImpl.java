@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PinWasSetAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
@@ -20,9 +19,9 @@ public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIs
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WizardInteractor wizardInteractor;
 
-   public WalletPinIsSetPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public WalletPinIsSetPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
       this.analyticsInteractor = analyticsInteractor;
       this.wizardInteractor = wizardInteractor;
    }

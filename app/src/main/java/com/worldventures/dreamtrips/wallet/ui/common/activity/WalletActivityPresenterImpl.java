@@ -40,7 +40,7 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    public void attachView(WalletActivityView view) {
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
-            .compose(view.lifecycle())
+            .compose(view.bindToLifecycle())
             .map(Command::getResult)
             .filter(smartCard -> smartCard.cardStatus().isActive())
             .flatMap(smartCard -> interactor.connectActionPipe()

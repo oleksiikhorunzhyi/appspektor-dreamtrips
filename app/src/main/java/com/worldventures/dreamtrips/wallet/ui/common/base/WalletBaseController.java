@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import dagger.ObjectGraph;
+import rx.Observable;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 

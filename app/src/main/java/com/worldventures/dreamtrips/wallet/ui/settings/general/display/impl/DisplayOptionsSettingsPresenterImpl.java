@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -11,7 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ChangedFields;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChan
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
@@ -37,6 +37,7 @@ import timber.log.Timber;
 
 public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<DisplayOptionsSettingsScreen> implements DisplayOptionsSettingsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final SmartCardUserDataInteractor smartCardUserDataInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletProfileDelegate delegate;
@@ -44,10 +45,11 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    private boolean mustSaveUserProfile;
    private SmartCardUser user;
 
-   public DisplayOptionsSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         SmartCardUserDataInteractor smartCardUserDataInteractor, WalletNetworkService networkService,
+   public DisplayOptionsSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.socialInfoProvider = socialInfoProvider;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
@@ -72,7 +74,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    private void observeHomeDisplay() {
       Observable.combineLatest(
             getUserObservable(),
-            getSmartCardInteractor().getDisplayTypePipe().observeSuccess()
+            smartCardInteractor.getDisplayTypePipe().observeSuccess()
                   .map(Command::getResult),
             Pair::new)
             .compose(bindViewIoToMainComposer())
@@ -83,13 +85,13 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
       final OperationView<GetDisplayTypeCommand> getDisplayTypeOperationView =
             getView().<GetDisplayTypeCommand>provideGetDisplayTypeOperationView();
       getDisplayTypeOperationView.showProgress(null);
-      getSmartCardInteractor().getDisplayTypePipe().observe()
+      smartCardInteractor.getDisplayTypePipe().observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getDisplayTypeOperationView)
                   .create()
             );
-      getSmartCardInteractor().saveDisplayTypePipe().observe()
+      smartCardInteractor.saveDisplayTypePipe().observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().<SetHomeDisplayTypeAction>provideSaveDisplayTypeOperationView())
@@ -110,13 +112,13 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
 
    @NonNull
    private Observable<SmartCardUser> getUserObservable() {
-      return user != null ? Observable.just(user) : getSmartCardInteractor().smartCardUserPipe()
+      return user != null ? Observable.just(user) : smartCardInteractor.smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.fetch())
             .map(Command::getResult).doOnNext(smartCardUser -> user = smartCardUser);
    }
 
    @Override
-   public void fetchDisplayType() {getSmartCardInteractor().getDisplayTypePipe().send(new GetDisplayTypeCommand(true));}
+   public void fetchDisplayType() {smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));}
 
    @Override
    public void savePhoneNumber(ProfileViewModel profile) {
@@ -159,7 +161,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
       if (mustSaveUserProfile) {
          updateProfileAndSaveDisplayType(saveDisplayType);
       } else {
-         getSmartCardInteractor().saveDisplayTypePipe().send(saveDisplayType);
+         smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType);
       }
    }
 
@@ -174,7 +176,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
 
       smartCardUserDataInteractor.updateSmartCardUserPipe()
             .createObservableResult(new UpdateSmartCardUserCommand(changedFields, true))
-            .doOnNext(command -> getSmartCardInteractor().saveDisplayTypePipe().send(saveDisplayType))
+            .doOnNext(command -> smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType))
             .subscribe(command -> {
             }, throwable -> Timber.e(throwable, ""));
    }

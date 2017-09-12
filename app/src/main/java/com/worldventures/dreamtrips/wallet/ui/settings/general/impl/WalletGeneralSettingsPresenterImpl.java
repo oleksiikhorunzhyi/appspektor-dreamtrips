@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.impl;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.RestartSmartCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SettingsGeneralAction;
@@ -13,11 +12,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
@@ -35,6 +35,7 @@ import timber.log.Timber;
 
 public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<WalletGeneralSettingsScreen> implements WalletGeneralSettingsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
@@ -42,10 +43,11 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
    private Action0 firmwareUpdateNavigatorAction = () -> getNavigator().goFirmwareUpToDate();
 
-   public WalletGeneralSettingsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FirmwareInteractor firmwareInteractor, FactoryResetInteractor factoryResetInteractor,
+   public WalletGeneralSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, FactoryResetInteractor factoryResetInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor  = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.featureHelper = walletFeatureHelper;
@@ -64,7 +66,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
       checkPinDelegate.observePinStatus(getView());
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
-      getSmartCardInteractor().smartCardUserPipe().send(SmartCardUserCommand.fetch());
+      smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
    }
 
    @Override
@@ -144,13 +146,13 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
    @Override
    public void onConfirmedRestartSmartCard() {
-      getSmartCardInteractor().restartSmartCardPipe()
+      smartCardInteractor.restartSmartCardPipe()
             .send(new RestartSmartCardCommand());
       trackSmartCardRestart();
    }
 
    private void observeSmartCardUserChanges() {
-      getSmartCardInteractor().smartCardUserPipe()
+      smartCardInteractor.smartCardUserPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
@@ -182,7 +184,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    }
 
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()

@@ -3,14 +3,13 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl;
 
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.WelcomeAction;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
@@ -22,9 +21,9 @@ public class WizardWelcomePresenterImpl extends WalletPresenterImpl<WizardWelcom
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WizardInteractor wizardInteractor;
 
-   public WizardWelcomePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
+   public WizardWelcomePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WalletSocialInfoProvider socialInfoProvider, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
       this.socialInfoProvider = socialInfoProvider;
       this.analyticsInteractor = analyticsInteractor;
       this.wizardInteractor = wizardInteractor;

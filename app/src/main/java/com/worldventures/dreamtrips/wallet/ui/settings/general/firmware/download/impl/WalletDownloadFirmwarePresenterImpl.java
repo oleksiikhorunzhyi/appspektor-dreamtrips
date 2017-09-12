@@ -2,13 +2,12 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.downloa
 
 
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
@@ -23,9 +22,9 @@ public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<Wal
 
    private DownloadFirmwareCommand action;
 
-   public WalletDownloadFirmwarePresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WalletAnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletDownloadFirmwarePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
+      super(navigator, deviceConnectionDelegate);
       this.analyticsInteractor = analyticsInteractor;
       this.firmwareInteractor = firmwareInteractor;
    }

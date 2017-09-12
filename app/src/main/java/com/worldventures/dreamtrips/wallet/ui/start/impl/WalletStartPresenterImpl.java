@@ -6,10 +6,10 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
@@ -20,14 +20,17 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScreen> implements WalletStartPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAccessValidator walletAccessValidator;
    private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
 
-   public WalletStartPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      super(navigator, smartCardInteractor, networkService);
+   public WalletStartPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator, 
+         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.walletAccessValidator = walletAccessValidator;
       this.httpErrorHandlingUtil = httpErrorHandlingUtil;
@@ -48,7 +51,7 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
 
    @Override
    public void retryFetchingCard() {
-      getSmartCardInteractor().fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
+      smartCardInteractor.fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
    }
 
    @Override
@@ -57,16 +60,16 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
    }
 
    private void onWalletAvailable() {
-      getSmartCardInteractor().fetchAssociatedSmartCard()
+      smartCardInteractor.fetchAssociatedSmartCard()
             .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(getSmartCardInteractor().fetchAssociatedSmartCard()))
+            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.fetchAssociatedSmartCard()))
             .compose(bindViewIoToMainComposer())
             .subscribe(
                   OperationActionSubscriber.forView(getView().provideOperationView())
                         .onSuccess(command -> handleResult(command.getResult()))
                         .create()
             );
-      getSmartCardInteractor().fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
+      smartCardInteractor.fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
    }
 
    private void handleResult(FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {

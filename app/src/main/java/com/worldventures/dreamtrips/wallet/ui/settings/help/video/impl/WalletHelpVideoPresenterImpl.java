@@ -14,8 +14,7 @@ import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
@@ -37,10 +36,10 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
 
    private final WalletHelpVideoDelegate helpVideoDelegate;
 
-   public WalletHelpVideoPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, MemberVideosInteractor memberVideosInteractor,
+   public WalletHelpVideoPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         MemberVideosInteractor memberVideosInteractor,
          CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, WalletHelpVideoDelegate helpVideoDelegate) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
       this.memberVideosInteractor = memberVideosInteractor;
       this.cachedEntityInteractor = cachedEntityInteractor;
       this.cachedEntityDelegate = cachedEntityDelegate;

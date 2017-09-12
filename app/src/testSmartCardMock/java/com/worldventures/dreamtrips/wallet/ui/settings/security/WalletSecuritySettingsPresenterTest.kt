@@ -10,10 +10,8 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand
-import com.worldventures.dreamtrips.wallet.ui.common.BasePresenterTest
-import com.worldventures.dreamtrips.wallet.ui.common.InteractorBuilder
-import com.worldventures.dreamtrips.wallet.ui.common.ViewPresenterBinder
-import com.worldventures.dreamtrips.wallet.ui.common.connectToSmartCard
+import com.worldventures.dreamtrips.wallet.ui.common.*
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsPresenterImpl
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull
@@ -28,6 +26,7 @@ import rx.lang.kotlin.PublishSubject
 class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySettingsScreen, WalletSecuritySettingsPresenter>() {
 
    lateinit var smartCardInteractor : SmartCardInteractor
+   lateinit var deviceConnectionDelegate: WalletDeviceConnectionDelegate
    lateinit var walletFeatureHelper : WalletFeatureHelper
    lateinit var screen : WalletSecuritySettingsScreen
    lateinit var presenter : WalletSecuritySettingsPresenter
@@ -51,23 +50,16 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
 
    override fun setup() {
       smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
+      deviceConnectionDelegate = MockDeviceConnectionDelegate()
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
       deviceStateCommandContract.result(ImmutableSmartCardStatus.builder().build())
       walletFeatureHelper = WalletFeatureHelperFull()
       screen = mock()
       whenever(screen.stealthModeStatus()).thenReturn(stealthToggleSubject.asObservable())
       whenever(screen.lockStatus()).thenReturn(lockToggleSubject.asObservable())
-      presenter = WalletSecuritySettingsPresenterImpl(navigator, smartCardInteractor, walletNetworkService,
-            analyticsInteractor, walletFeatureHelper)
+      presenter = WalletSecuritySettingsPresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor, walletFeatureHelper)
       interactorBuilder.janet.connectToSmartCard()
-   }
-
-   @Test
-   fun testfetchSmartCardChanges() {
-      verify(screen, times(1)).lockStatus(Mockito.anyBoolean())
-      verify(screen, times(1)).stealthModeStatus(Mockito.anyBoolean())
-      verify(screen, times(1)).disableDefaultPaymentValue(Mockito.anyLong())
-      verify(screen, times(1)).autoClearSmartCardValue(Mockito.anyLong())
    }
 
    @Test

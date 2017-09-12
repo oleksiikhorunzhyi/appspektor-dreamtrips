@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
+
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
 import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;

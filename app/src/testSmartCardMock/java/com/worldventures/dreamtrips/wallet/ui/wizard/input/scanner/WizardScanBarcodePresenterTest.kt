@@ -6,10 +6,11 @@ import com.worldventures.dreamtrips.core.permission.PermissionsResult
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand
-import com.worldventures.dreamtrips.wallet.service.impl.MockWalletNetworkService
 import com.worldventures.dreamtrips.wallet.ui.common.BasePresenterTest
 import com.worldventures.dreamtrips.wallet.ui.common.InteractorBuilder
+import com.worldventures.dreamtrips.wallet.ui.common.MockDeviceConnectionDelegate
 import com.worldventures.dreamtrips.wallet.ui.common.ViewPresenterBinder
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodePresenterImpl
 import io.techery.janet.command.test.Contract
@@ -35,11 +36,11 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    override fun setup() {
       screen = mock()
-      val smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
+      val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       permissionDispatcher = mock()
       inputBarcodeDelegate = mock()
 
-      presenter = WizardScanBarcodePresenterImpl(navigator, smartCardInteractor, MockWalletNetworkService(), permissionDispatcher, inputBarcodeDelegate)
+      presenter = WizardScanBarcodePresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher, inputBarcodeDelegate)
    }
 
    @Test

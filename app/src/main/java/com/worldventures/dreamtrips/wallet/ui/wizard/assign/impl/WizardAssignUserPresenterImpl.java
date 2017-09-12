@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl;
 
 
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignDelegate;
@@ -18,6 +18,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
 public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAssignUserScreen> implements WizardAssignUserPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WizardInteractor wizardInteractor;
    private final RecordInteractor recordInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
@@ -25,10 +26,11 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
 
    private WizardAssignDelegate wizardAssignDelegate;
 
-   public WizardAssignUserPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
+   public WizardAssignUserPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
          WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
@@ -39,7 +41,7 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
    public void attachView(WizardAssignUserScreen view) {
       super.attachView(view);
       this.wizardAssignDelegate = WizardAssignDelegate.create(getView().getProvisionMode(), wizardInteractor,
-            recordInteractor, analyticsInteractor, getSmartCardInteractor(), getNavigator());
+            recordInteractor, analyticsInteractor, smartCardInteractor, getNavigator());
       observeComplete();
       onWizardComplete();
    }

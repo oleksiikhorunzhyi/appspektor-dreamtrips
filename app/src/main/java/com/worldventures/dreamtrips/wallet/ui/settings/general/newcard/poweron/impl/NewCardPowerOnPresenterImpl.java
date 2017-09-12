@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
@@ -23,13 +23,15 @@ import timber.log.Timber;
 
 public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowerOnScreen> implements NewCardPowerOnPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final WalletBluetoothService bluetoothService;
    private final CheckPinDelegate checkPinDelegate;
 
-   public NewCardPowerOnPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FactoryResetInteractor factoryResetInteractor,
+   public NewCardPowerOnPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FactoryResetInteractor factoryResetInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletBluetoothService bluetoothService) {
-      super(navigator, smartCardInteractor, networkService);
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.bluetoothService = bluetoothService;
       this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.NEW_CARD);
@@ -43,7 +45,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
    }
 
    private void fetchSmartCardId() {
-      getSmartCardInteractor().activeSmartCardPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
@@ -54,7 +56,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    @Override
    public void cantTurnOnSmartCard() {
-      getSmartCardInteractor().activeSmartCardPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
@@ -65,7 +67,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    @Override
    public void unassignCardOnBackend() {
-      getSmartCardInteractor().wipeSmartCardDataPipe()
+      smartCardInteractor.wipeSmartCardDataPipe()
             .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)
@@ -79,7 +81,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    @Override
    public void navigateNext() {
-      getSmartCardInteractor().deviceStatePipe()
+      smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()

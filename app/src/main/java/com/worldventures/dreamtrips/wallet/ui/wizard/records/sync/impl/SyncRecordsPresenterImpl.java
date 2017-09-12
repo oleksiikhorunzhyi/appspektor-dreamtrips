@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.impl;
 
 
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.SyncPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
@@ -16,14 +16,16 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsScr
 
 public class SyncRecordsPresenterImpl extends WalletPresenterImpl<SyncRecordsScreen> implements SyncRecordsPresenter {
 
+   private final SmartCardInteractor smartCardInteractor;
    private final RecordInteractor recordInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
    private SyncRecordDelegate syncRecordDelegate;
 
-   public SyncRecordsPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor, WalletNetworkService networkService,
-         RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public SyncRecordsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -33,7 +35,7 @@ public class SyncRecordsPresenterImpl extends WalletPresenterImpl<SyncRecordsScr
       super.attachView(view);
       trackScreen();
       final SyncAction syncAction = getView().getSyncAction();
-      syncRecordDelegate = SyncRecordDelegate.create(syncAction, getSmartCardInteractor(), recordInteractor, getNavigator());
+      syncRecordDelegate = SyncRecordDelegate.create(syncAction, smartCardInteractor, recordInteractor, getNavigator());
       syncRecordDelegate.bindView(getView());
    }
 

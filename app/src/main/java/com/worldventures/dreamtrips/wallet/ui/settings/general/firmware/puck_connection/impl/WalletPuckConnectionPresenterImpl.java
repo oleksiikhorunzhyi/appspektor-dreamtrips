@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_co
 
 
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPresenter;
@@ -13,9 +13,12 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<WalletPuckConnectionScreen> implements WalletPuckConnectionPresenter {
 
-   public WalletPuckConnectionPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService) {
-      super(navigator, smartCardInteractor, networkService);
+   private final SmartCardInteractor smartCardInteractor;
+   
+   public WalletPuckConnectionPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor) {
+      super(navigator, deviceConnectionDelegate);
+      this.smartCardInteractor = smartCardInteractor;
    }
 
    @Override
@@ -25,7 +28,7 @@ public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<Walle
    }
 
    private void fetchUserPhoto() {
-      getSmartCardInteractor().smartCardUserPipe()
+      smartCardInteractor.smartCardUserPipe()
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()

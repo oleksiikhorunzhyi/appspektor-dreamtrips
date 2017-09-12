@@ -13,10 +13,9 @@ import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.BaseFeedbackScreen;
@@ -40,10 +39,9 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    private int attachmentsCount;
 
-   public BaseFeedbackPresenterImpl(Navigator navigator, SmartCardInteractor smartCardInteractor,
-         WalletNetworkService networkService, FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
-      super(navigator, smartCardInteractor, networkService);
+   public BaseFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
+      super(navigator, deviceConnectionDelegate);
       this.feedbackInteractor = feedbackInteractor;
       this.settingsInteractor = walletSettingsInteractor;
       this.mediaInteractor = mediaInteractor;

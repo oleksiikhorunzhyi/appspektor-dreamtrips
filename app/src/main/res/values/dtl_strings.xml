@@ -70,6 +70,7 @@
    <string name="perks_formatted">%1$d Perks</string>
    <string name="dtl_show_offers_only">Offers only</string>
    <string name="dtl_show_transaction">TRANSACTIONS</string>
+   <string name="dtl_show_transaction_toolbar">MY TRANSACTIONS</string>
    <string name="dtl_earn_points">Earn DreamTrips points</string>
    <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
    <string name="distance_caption_format" translatable="false">%1$.1f %2$s</string>
@@ -152,4 +153,6 @@
    <string name="input_major_limit">Your review has reached our limit. It has been shortened to fit.</string>
 
    <string name="text_add_photos_and_videos">Add photos</string>
+
+   <string name="dtl_no_transaction_message">You do not have any transaction so far.</string>
 </resources>

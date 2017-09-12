@@ -32,7 +32,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransactionListScreen, ViewState.EMPTY> implements DtlTransactionListPresenter {
 
-   public DtlTransactionListPresenterImpl(Context context, Injector injector, Merchant merchant) {
+   public DtlTransactionListPresenterImpl(Context context, Injector injector) {
       super(context);
       injector.inject(this);
    }

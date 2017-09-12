@@ -32,8 +32,6 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
 
-   SweetAlertDialog errorDialog;
-
    public DtlTransactionListScreenImpl(Context context) {
       super(context);
    }
@@ -44,7 +42,7 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
 
    @Override
    public DtlTransactionListPresenter createPresenter() {
-      return new DtlTransactionListPresenterImpl(getContext(), injector, getPath().getMerchant());
+      return new DtlTransactionListPresenterImpl(getContext(), injector);
    }
 
    @Override
@@ -53,13 +51,11 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
       if (ViewUtils.isTabletLandscape(getContext())) {
          toolbar.setBackgroundColor(Color.WHITE);
          tvTitle.setVisibility(View.VISIBLE);
-         tvTitle.setText(getContext().getResources().getString(R.string.reviews_text));
-      } else
-         toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
-
-      toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
-      toolbar.setNavigationOnClickListener(view -> {
-         Flow.get(getContext()).goBack();
-      });
+         tvTitle.setText(getContext().getResources().getString(R.string.dtl_show_transaction_toolbar));
+      } else {
+         toolbar.setTitle(getContext().getResources().getString(R.string.dtl_show_transaction_toolbar));
+         toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
+         toolbar.setNavigationOnClickListener(view -> {Flow.get(getContext()).goBack();});
+      }
    }
 }

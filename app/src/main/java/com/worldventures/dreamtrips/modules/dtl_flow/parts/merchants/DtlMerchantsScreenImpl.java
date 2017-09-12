@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,7 +13,6 @@ import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.Merchant;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -37,7 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPer
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_list.DtlTransactionListPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
@@ -490,5 +487,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void goToTransactionPage() {
+      Path path = new DtlTransactionListPath(FlowUtil.currentMaster(getContext()));
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      historyBuilder.push(path);
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
    }
 }

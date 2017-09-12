@@ -88,6 +88,7 @@
                   android:textColor="@color/black"/>
 
             <ImageView
+                  android:id="@+id/earned_points_icon"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginStart="@dimen/dtl_transaction_screen_item_earned_points_checker_margin_left"

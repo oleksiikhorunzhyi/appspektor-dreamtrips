@@ -48,6 +48,7 @@ public class TransactionsPath extends Activity {
       transactionModel.setEarnedPoints("1");
       transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
       transactionModel.setTransactionSuccess(true);
+      transactionModel.setRewardStatus(true);
       tempTransactionList.add(0, transactionModel);
 
       TransactionModel transactionModel1 = new TransactionModel();
@@ -56,6 +57,7 @@ public class TransactionsPath extends Activity {
       transactionModel1.setEarnedPoints("2");
       transactionModel1.setTransactionDate("2017-09-12T14:00:00.000Z UTC");
       transactionModel1.setTransactionSuccess(false);
+      transactionModel.setRewardStatus(true);
       tempTransactionList.add(1, transactionModel1);
 
       TransactionModel transactionModel2 = new TransactionModel();
@@ -64,6 +66,7 @@ public class TransactionsPath extends Activity {
       transactionModel2.setEarnedPoints("3");
       transactionModel2.setTransactionDate("2017-09-11T22:30:00.000Z UTC");
       transactionModel2.setTransactionSuccess(true);
+      transactionModel.setRewardStatus(false);
       tempTransactionList.add(2, transactionModel2);
 
       TransactionModel transactionModel3 = new TransactionModel();
@@ -72,6 +75,7 @@ public class TransactionsPath extends Activity {
       transactionModel3.setEarnedPoints("3");
       transactionModel3.setTransactionDate("2017-09-07T16:30:00.000Z UTC");
       transactionModel3.setTransactionSuccess(false);
+      transactionModel.setRewardStatus(false);
       tempTransactionList.add(3, transactionModel3);
 
       TransactionModel transactionModel4 = new TransactionModel();
@@ -80,6 +84,7 @@ public class TransactionsPath extends Activity {
       transactionModel4.setEarnedPoints("3");
       transactionModel4.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
       transactionModel4.setTransactionSuccess(true);
+      transactionModel.setRewardStatus(true);
       tempTransactionList.add(4, transactionModel4);
 
       TransactionModel transactionModel5 = new TransactionModel();
@@ -88,6 +93,7 @@ public class TransactionsPath extends Activity {
       transactionModel5.setEarnedPoints("3");
       transactionModel5.setTransactionDate("2017-09-12T14:00:00.000Z UTC");
       transactionModel5.setTransactionSuccess(true);
+      transactionModel.setRewardStatus(false);
       tempTransactionList.add(5, transactionModel5);
 
       TransactionModel transactionModel6 = new TransactionModel();
@@ -96,6 +102,7 @@ public class TransactionsPath extends Activity {
       transactionModel6.setEarnedPoints("3");
       transactionModel6.setTransactionDate("2017-09-11T22:30:00.000Z UTC");
       transactionModel6.setTransactionSuccess(false);
+      transactionModel.setRewardStatus(true);
       tempTransactionList.add(6, transactionModel6);
 
       TransactionModel transactionModel7 = new TransactionModel();
@@ -105,6 +112,7 @@ public class TransactionsPath extends Activity {
       transactionModel7.setTransactionDate("Whatever heather");
       transactionModel7.setTransactionDate("2017-09-07T16:30:00.000Z UTC");
       transactionModel7.setTransactionSuccess(false);
+      transactionModel.setRewardStatus(false);
       tempTransactionList.add(7, transactionModel7);
 
       return tempTransactionList;

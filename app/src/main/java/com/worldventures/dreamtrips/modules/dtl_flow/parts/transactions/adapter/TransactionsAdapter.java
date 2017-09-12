@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -33,11 +35,31 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+      drawView(holder, position);
+   }
+
+   @Override
+   public int getItemCount() {
+      return transactionsList.size();
+   }
+
+   private void drawView(RecyclerView.ViewHolder holder, int position){
       ViewHolder viewHolder = (ViewHolder) holder;
       viewHolder.merchantName.setText(transactionsList.get(position).getMerchantName());
       viewHolder.subtotalAmount.setText(transactionsList.get(position).getSubTotalAmount());
       viewHolder.earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
-      viewHolder.transactionDate.setText(transactionsList.get(position).getTransactionDate());
+
+      if(transactionsList.get(position).getRewardStatus()){
+         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.ic_other_travel);
+      } else {
+         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.ic_other_travel);
+      }
+
+      try {
+         viewHolder.transactionDate.setText(DateTimeUtils.convertDateToUTCString(new Date(transactionsList.get(position).getTransactionDate())));
+      } catch (Exception ex){
+         ex.printStackTrace();
+      }
 
       try {
          CSTConverter converter = new CSTConverter();
@@ -48,21 +70,17 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       }
 
       if(transactionsList.get(position).isTransactionSuccess()){
-         viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_other_travel);
+         viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_ok);
       } else {
-         viewHolder.transactionSuccess.setBackgroundResource(R.drawable.__leak_canary_icon);
+         viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_failed);
       }
-   }
-
-   @Override
-   public int getItemCount() {
-      return transactionsList.size();
    }
 
    public class ViewHolder extends RecyclerView.ViewHolder {
       public TextView merchantName;
       public TextView subtotalAmount;
       public TextView earnedPoints;
+      public ImageView earnedPointsIcon;
       public TextView transactionDate;
       public TextView transactionTime;
       public ImageView transactionSuccess;
@@ -72,6 +90,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          merchantName = (TextView) itemView.findViewById(R.id.merchant_name);
          subtotalAmount = (TextView) itemView.findViewById(R.id.subtotal_amount);
          earnedPoints = (TextView) itemView.findViewById(R.id.earned_points);
+         earnedPointsIcon = (ImageView) itemView.findViewById(R.id.earned_points_icon);
          transactionDate = (TextView) itemView.findViewById(R.id.transaction_date);
          transactionTime = (TextView) itemView.findViewById(R.id.transaction_time);
          transactionSuccess = (ImageView) itemView.findViewById(R.id.transaction_status_icon);

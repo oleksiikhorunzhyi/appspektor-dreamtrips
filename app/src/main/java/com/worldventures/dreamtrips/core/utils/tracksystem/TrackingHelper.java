@@ -56,10 +56,6 @@ public class TrackingHelper {
    public static final String ACTION_BUCKET_PHOTO_UPLOAD_START = "bl_photo_upload_start";
    public static final String ACTION_BL_ITEM_VIEW = "bl_item_view";
 
-   public static final String ACTION_PROFILE = "profile";
-   public static final String ACTION_PROFILE_PHOTO_UPLOAD_START = "profile_photo_upload_start";
-   public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "profile_photo_upload_finish";
-
    public static final String ACTION_MEMBERSHIP_VIDEOS = "membership:videos";
    public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play";
    public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
@@ -220,10 +216,6 @@ public class TrackingHelper {
       trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
    }
 
-   public static void profile(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE);
-   }
-
    public static void memberVideos(String memberId) {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
       trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
@@ -294,14 +286,6 @@ public class TrackingHelper {
       trackMemberAction(ACTION_BL_ITEM_VIEW, null, data);
    }
 
-   public static void profileUploadStart(String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE, ACTION_PROFILE_PHOTO_UPLOAD_START, null);
-   }
-
-   public static void profileUploadFinish(String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE, ACTION_PROFILE_PHOTO_UPLOAD_FINISH, null);
-   }
-
    ///////////////////////////////////////////////////////////////////////////
    // Adobe tracking
    ///////////////////////////////////////////////////////////////////////////
@@ -337,9 +321,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_OPEN_FRIENDS = "open_friends";
    public static final String ATTRIBUTE_ADD_FRIENDS = "add_friends";
    public static final String ATTRIBUTE_SEARCH_FRIENDS = "search_friends";
-   public static final String ATTRIBUTE_UNFRIEND = "unfriend";
-   public static final String ATTRIBUTE_REJECT_FRIEND_REQUEST = "reject_friend_request";
-   public static final String ATTRIBUTE_CANCEL_FRIEND_REQUEST = "cancel_friend_request";
    public static final String ATTRIBUTE_SEARCH = "search";
    public static final String ATTRIBUTE_FILTER = "filter";
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
@@ -354,10 +335,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_COMPLETE = "complete";
    public static final String ATTRIBUTE_FAVORITE = "favorite";
    public static final String ATTRIBUTE_VIEW_PHOTO = "view_photo";
-   public static final String ATTRIBUTE_SHOW_TRIPS = "show_trips";
-   public static final String ATTRIBUTE_SHOW_BUCKETLIST = "show_bucketlist";
-   public static final String ATTRIBUTE_NEW_POST = "new_post";
-   public static final String ATTRIBUTE_SHOW_FRIENDS = "show_friends";
    public static final String ATTRIBUTE_SHOW_ALL = "show_all";
    public static final String ATTRIBUTE_FACEBOOK = "facebook";
    public static final String ATTRIBUTE_TWITTER = "twitter";
@@ -494,10 +471,6 @@ public class TrackingHelper {
       sendSimpleAttributetoAdobeTracker(ACTION_FRIENDS_ACTIVITY, buttonAttribute);
    }
 
-   public static void tapMyFriendsButtonFeed(String action) {
-      sendSimpleAttributetoAdobeTracker(ACTION_FRIENDS_ACTIVITY, action);
-   }
-
    public static void filterMyFriendsFeed(String filterType) {
       Map data = new HashMap<>();
       data.put("friends_filter_" + filterType, "1");
@@ -628,16 +601,6 @@ public class TrackingHelper {
       data.put("bucket_list_id", bucketItemId);
       data.put(eventType, "1");
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_BUCKET_LIST, data);
-   }
-
-   // ---------------- My Profile
-
-   public static void viewMyProfileScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, ATTRIBUTE_VIEW);
-   }
-
-   public static void tapMyProfileButton(String buttonType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, buttonType);
    }
 
    public static void clearHeaderData() {

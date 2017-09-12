@@ -23,17 +23,17 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.TapMyProfileAnalyticAction;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
@@ -86,6 +86,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    @Inject SnappyRepository snapper;
    @Inject FeatureManager featureManager;
    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private Context context;
    private DecimalFormat df = new DecimalFormat("#0.00");
@@ -320,27 +321,27 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    @OnClick(R.id.bucket_list)
    protected void onBucketListClicked() {
       cellDelegate.onBucketListClicked();
-      sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_BUCKETLIST);
+      sendAnalyticIfNeed(TapMyProfileAnalyticAction.tapOnBucketList());
    }
 
    @OnClick(R.id.trip_images)
    protected void onTripImageClicked() {
       cellDelegate.onTripImagesClicked();
-      sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_TRIPS);
+      sendAnalyticIfNeed(TapMyProfileAnalyticAction.tapOnTrips());
    }
 
    @OnClick(R.id.friends)
    protected void onFriendsClick() {
       if (isAccount()) {
          cellDelegate.onFriendsClicked();
-         sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_FRIENDS);
+         sendAnalyticIfNeed(TapMyProfileAnalyticAction.tapOnFriends());
       }
    }
 
    @OnClick(R.id.post)
    protected void onPostClick() {
       cellDelegate.onCreatePostClicked();
-      sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_NEW_POST);
+      sendAnalyticIfNeed(TapMyProfileAnalyticAction.tapOnPost());
    }
 
    @OnClick(R.id.user_photo)
@@ -381,9 +382,9 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
       }
    }
 
-   private void sendAnalyticIfNeed(String tapedButtonActionAttribute) {
+   private void sendAnalyticIfNeed(TapMyProfileAnalyticAction analyticAction) {
       if (isAccount()) {
-         TrackingHelper.tapMyProfileButton(tapedButtonActionAttribute);
+         analyticsInteractor.analyticsActionPipe().send(analyticAction);
       }
    }
 }

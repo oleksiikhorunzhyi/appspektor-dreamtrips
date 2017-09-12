@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.lang.ref.WeakReference;
@@ -67,10 +66,7 @@ public class FriendActionDialogDelegate {
    private void processUserChoice(User user, int actionCode) {
       switch (actionCode) {
          case 0:
-            showConfirmationDialog((dialog, which) -> {
-               onUnfriendAction.call(user);
-               TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_UNFRIEND);
-            });
+            showConfirmationDialog((dialog, which) -> onUnfriendAction.call(user));
             break;
          case 1:
             onFriendPrefsAction.call(user);

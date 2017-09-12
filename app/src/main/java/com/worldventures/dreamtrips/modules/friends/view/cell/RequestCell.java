@@ -6,8 +6,11 @@ import android.widget.FrameLayout;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestCellDelegate;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.FriendRelationshipAnalyticAction;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -24,6 +27,8 @@ public class RequestCell extends BaseUserCell<RequestCellDelegate> {
    @InjectView(R.id.reject) View btnReject;
    @InjectView(R.id.accept) View btnAccept;
    @InjectView(R.id.buttonContainer) ViewGroup container;
+
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public RequestCell(View view) {
       super(view);
@@ -67,7 +72,7 @@ public class RequestCell extends BaseUserCell<RequestCellDelegate> {
    void onReject() {
       btnReject.setEnabled(false);
       cellDelegate.rejectRequest(getModelObject());
-      TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_REJECT_FRIEND_REQUEST);
+      analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.rejectRequest());
    }
 
    @OnClick(R.id.hide)
@@ -80,7 +85,7 @@ public class RequestCell extends BaseUserCell<RequestCellDelegate> {
    void onCancel() {
       btnCancel.setEnabled(false);
       cellDelegate.cancelRequest(getModelObject());
-      TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_CANCEL_FRIEND_REQUEST);
+      analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.cancelRequest());
    }
 
    private void enableButtons() {

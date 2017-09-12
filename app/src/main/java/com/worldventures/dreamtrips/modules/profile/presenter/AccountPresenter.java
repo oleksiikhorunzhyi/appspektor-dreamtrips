@@ -6,7 +6,6 @@ import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
@@ -31,6 +30,9 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimel
 import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.ProfileUploadingAnalyticAction;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.ViewMyProfileAdobeAnalyticAction;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.ViewMyProfileApptentiveAnalyticAction;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
@@ -84,7 +86,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
    @Override
    public void onViewTaken() {
       socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
-      TrackingHelper.profile(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ViewMyProfileApptentiveAnalyticAction());
       subscribeNotificationsBadgeUpdates();
       subscribeToAvatarUpdates();
       subscribeToBackgroundUpdates();
@@ -103,6 +105,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
          shouldReload = false;
          loadProfile();
       }
+      analyticsInteractor.analyticsActionPipe().send(new ViewMyProfileAdobeAnalyticAction());
    }
 
    @Override
@@ -218,7 +221,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
    }
 
    void onAvatarUploadSuccess() {
-      TrackingHelper.profileUploadFinish(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       UserSession userSession = appSessionHolder.get().get();
       User currentUser = userSession.getUser();
 
@@ -230,7 +233,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
    }
 
    void onCoverUploadSuccess() {
-      TrackingHelper.profileUploadFinish(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       UserSession userSession = appSessionHolder.get().get();
       User currentUser = userSession.getUser();
 
@@ -283,7 +286,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
    }
 
    private void uploadAvatar(String fileThumbnail) {
-      TrackingHelper.profileUploadStart(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       profileInteractor.uploadAvatarPipe().send(new UploadAvatarCommand(fileThumbnail));
       user.setAvatarUploadInProgress(true);
       refreshFeedItems();
@@ -292,7 +295,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
 
    private void onCoverCropped(File croppedFile, String errorMsg) {
       if (croppedFile != null) {
-         TrackingHelper.profileUploadStart(getAccountUserId());
+         analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
          profileInteractor.uploadBackgroundPipe().send(new UploadBackgroundCommand(croppedFile.getPath()));
          user.setCoverUploadInProgress(true);
          refreshFeedItems();

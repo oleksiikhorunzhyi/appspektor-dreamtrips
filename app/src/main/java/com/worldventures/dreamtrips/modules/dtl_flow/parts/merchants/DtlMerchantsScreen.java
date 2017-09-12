@@ -64,4 +64,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void loadMerchantsAndAmenities(List<String> merchantType , int stringResource);
 
+   int getTransactionNumber();
+
 }

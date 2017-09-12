@@ -72,6 +72,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    private int idResource = R.string.dtlt_search_hint;
 
+   private int transactionCounter = 0;
+
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
@@ -450,4 +452,15 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);
    }
+
+   @Override
+   public int getTransactionNumber() {
+      if (transactionCounter == 0) {
+         transactionCounter++;
+         return 0;
+      }
+      return transactionCounter;
+   }
+
+
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+   private Context context;
    private List<TransactionModel> transactionsList;
 
-   public TransactionsAdapter(List<TransactionModel> transactionsList){
+   public TransactionsAdapter(Context context, List<TransactionModel> transactionsList){
+      this.context = context;
       this.transactionsList = transactionsList;
    }
 
@@ -33,7 +38,14 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       viewHolder.subtotalAmount.setText(transactionsList.get(position).getSubTotalAmount());
       viewHolder.earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
       viewHolder.transactionDate.setText(transactionsList.get(position).getTransactionDate());
-      viewHolder.transactionTime.setText(transactionsList.get(position).getTransactionTime());
+
+      try {
+         CSTConverter converter = new CSTConverter();
+         String convertedTime = converter.getCorrectTimeWrote(context, transactionsList.get(position).getTransactionDate());
+         viewHolder.transactionTime.setText(convertedTime);
+      }catch (ParseException e){
+         e.printStackTrace();
+      }
 
       if(transactionsList.get(position).isTransactionSuccess()){
          viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_other_travel);

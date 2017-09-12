@@ -9,7 +9,6 @@ public class TransactionModel implements Parcelable {
    private String subTotalAmount;
    private String earnedPoints;
    private String transactionDate;
-   private String transactionTime;
    private boolean transactionSuccess;
 
    public TransactionModel() {
@@ -47,14 +46,6 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
-   public String getTransactionTime() {
-      return transactionTime;
-   }
-
-   public void setTransactionTime(String transactionTime) {
-      this.transactionTime = transactionTime;
-   }
-
    public boolean isTransactionSuccess() {
       return transactionSuccess;
    }
@@ -68,7 +59,6 @@ public class TransactionModel implements Parcelable {
       subTotalAmount = in.readString();
       earnedPoints = in.readString();
       transactionDate = in.readString();
-      transactionTime = in.readString();
       transactionSuccess = in.readByte() != 0;
    }
 
@@ -78,7 +68,6 @@ public class TransactionModel implements Parcelable {
       dest.writeString(subTotalAmount);
       dest.writeString(earnedPoints);
       dest.writeString(transactionDate);
-      dest.writeString(transactionTime);
       dest.writeByte((byte) (transactionSuccess ? 1 : 0));
    }
 

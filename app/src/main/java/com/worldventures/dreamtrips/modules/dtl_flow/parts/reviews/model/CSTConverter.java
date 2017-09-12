@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;

@@ -139,6 +139,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          FullscreenMuteStrategy fullscreenMuteStrategy) {
       this.fullscreenContainer = fullscreenContainer;
       this.windowedContainer = windowedContainer;
+      windowedContainer.setVisibility(VISIBLE);
       if (fullscreenHandler == null) {
          fullscreenHandler = new VideoViewFullscreenHandler(activity, backStackDelegate, videoPlayerHolder, this);
          fullscreenHandler.initUi();
@@ -343,8 +344,16 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       ViewUtils.runTaskAfterMeasure(this, () -> setVideoThumbnailInternal(getWidth()));
    }
 
-   private void setVideoThumbnailInternal(int width) {
-      int height = (int) (width / video.getAspectRatio());
+   private void setVideoThumbnailInternal(int viewWidth) {
+      int width;
+      int height;
+      if (viewWidth > 0) {
+         width = viewWidth;
+         height = (int) (width / video.getAspectRatio());
+      } else {
+         height = getResources().getDimensionPixelSize(R.dimen.default_video_height);
+         width = (int) (height * video.getAspectRatio());
+      }
       ViewGroup.LayoutParams params = videoThumbnailContainer.getLayoutParams();
       params.height = height;
       videoThumbnailContainer.setLayoutParams(params);
@@ -457,6 +466,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void hide() {
+      if (windowedContainer != null) windowedContainer.setVisibility(GONE);
       setVisibility(GONE);
    }
 

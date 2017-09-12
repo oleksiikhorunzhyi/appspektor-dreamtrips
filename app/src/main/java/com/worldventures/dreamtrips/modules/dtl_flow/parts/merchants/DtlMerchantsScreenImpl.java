@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Merchant;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -33,6 +36,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionMana
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
@@ -46,6 +51,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
       implements DtlMerchantsScreen, MerchantCellDelegate {
@@ -194,6 +202,13 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
       }
+   }
+
+   @Optional
+   @OnClick(R.id.transaction_container)
+   @Override
+   public void onClickTransaction() {
+      getPresenter().onTransactionClick();
    }
 
    @OnClick(R.id.btn_filter_merchant_entertainment)
@@ -462,5 +477,18 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       return transactionCounter;
    }
 
+   @Override
+   public void showNoTransactionMessage() {
+      SweetAlertDialog errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.dtl_no_transaction_message));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
 
+   @Override
+   public void goToTransactionPage() {
+   }
 }

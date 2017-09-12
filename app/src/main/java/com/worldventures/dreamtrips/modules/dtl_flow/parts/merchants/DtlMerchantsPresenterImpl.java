@@ -257,6 +257,15 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onTransactionClick() {
+      if (getView().getTransactionNumber() == 0){
+         getView().showNoTransactionMessage();
+      } else {
+         getView().goToTransactionPage();
+      }
+   }
+
+   @Override
    public void mapClicked() {
       navigateToPath(new DtlMapPath(FlowUtil.currentMaster(getContext())));
    }

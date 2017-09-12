@@ -161,6 +161,7 @@
             />
 
       <LinearLayout
+            android:id="@+id/transaction_container"
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_gravity="center"
@@ -173,7 +174,7 @@
                android:layout_width="24dp"
                android:layout_height="24dp"
                android:layout_gravity="center"
-               android:src="@drawable/city_icon"
+               android:src="@drawable/transaction_icon"
                />
 
          <TextView

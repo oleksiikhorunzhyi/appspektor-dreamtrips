@@ -53,7 +53,8 @@ public class EnterPinPresenterImpl extends WalletPresenterImpl<EnterPinScreen> i
       wizardInteractor.pinSetupFinishedPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.pinSetupFinishedPipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .delay(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()) //delay for execute save PIN data at SC
             .subscribe(new ActionStateSubscriber<PinSetupFinishedEvent>()
                   .onSuccess(event -> enterPinDelegate.pinEntered()));
@@ -61,7 +62,8 @@ public class EnterPinPresenterImpl extends WalletPresenterImpl<EnterPinScreen> i
       wizardInteractor.startPinSetupPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.startPinSetupPipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<StartPinSetupAction>operationView()).create());
    }
 

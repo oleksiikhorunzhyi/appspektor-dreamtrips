@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.holder.Suppor
 import java.util.List;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<WalletProvisioningBlockedScreen> implements WalletProvisioningBlockedPresenter {
 
@@ -43,7 +44,8 @@ public class WalletProvisioningBlockedPresenterImpl extends WalletPresenterImpl<
    private void observeSupportedDevices() {
       smartCardInteractor.compatibleDevicesActionPipe()
             .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetCompatibleDevices())
                   .onSuccess(action -> {
                      List<Device> response = action.getResult();

@@ -11,5 +11,5 @@ public interface InputDelegateView {
 
    void showErrorCardIsAssignedDialog();
 
-   <T> Observable.Transformer<T, T> bindToLifecycle();
+   <T> Observable.Transformer<T, T> bindUntilDetach();
 }

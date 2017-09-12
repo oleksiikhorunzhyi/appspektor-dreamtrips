@@ -296,7 +296,7 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    private void observeNewAvatar() {
       observeCropper()
-            .compose(bindToLifecycle())
+            .compose(bindUntilDetach())
             .subscribe(file -> getPresenter().saveAvatar(Uri.fromFile(file).toString()));
    }
 

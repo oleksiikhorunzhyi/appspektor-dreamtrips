@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner
 
 import com.nhaarman.mockito_kotlin.*
+import com.trello.rxlifecycle.RxLifecycle
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher
 import com.worldventures.dreamtrips.core.permission.PermissionsResult
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl.WizardSc
 import io.techery.janet.command.test.Contract
 import org.junit.Test
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import kotlin.test.todo
 
 class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen, WizardScanBarcodePresenter>() {
@@ -36,6 +38,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    override fun setup() {
       screen = mock()
+      whenever(screen.bindUntilDetach<Any>()).thenReturn(RxLifecycle.bind(BehaviorSubject.create<Any>()))
       val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       permissionDispatcher = mock()
       inputBarcodeDelegate = mock()

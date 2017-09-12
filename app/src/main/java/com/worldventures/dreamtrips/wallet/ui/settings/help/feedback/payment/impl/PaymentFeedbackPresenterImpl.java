@@ -38,7 +38,7 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
 
    private void observeUpdateStateAttachments() {
       getAttachmentsManager().getAttachmentsObservable()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(holder -> {
                final int attachmentsCount = getAttachmentsManager().getAttachments().size();
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
@@ -60,7 +60,7 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
                   .startWith(true),
             (isMerchantNameValid, isAttachmentsUploadFinished)
                   -> isMerchantNameValid && isAttachmentsUploadFinished)
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(enable -> getView().changeActionSendMenuItemEnabled(enable));
    }
 

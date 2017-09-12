@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.po
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUpdatePowerOnScreen> implements ForceUpdatePowerOnPresenter {
@@ -39,7 +40,8 @@ public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUp
 
    private void observeBluetoothAndNetwork() {
       Observable.merge(bluetoothService.observeEnablesState(), networkDelegate.observeConnectedState())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(b -> wizardInteractor.checksPipe()
                   .send(new WizardCheckCommand()), throwable -> Timber.e(throwable, ""));
    }
@@ -47,7 +49,8 @@ public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUp
    private void observeChecks() {
       wizardInteractor.checksPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<WizardCheckCommand>()
                   .onSuccess(command -> bindResult(command.getResult()))
             );

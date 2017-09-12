@@ -22,7 +22,7 @@ public class WalletNetworkDelegateImpl implements WalletNetworkDelegate {
       networkService.observeConnectedState()
             .throttleLast(1, TimeUnit.SECONDS)
             .distinctUntilChanged()
-            .compose(view.bindToLifecycle())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::showHttpConnectionStatus);
    }

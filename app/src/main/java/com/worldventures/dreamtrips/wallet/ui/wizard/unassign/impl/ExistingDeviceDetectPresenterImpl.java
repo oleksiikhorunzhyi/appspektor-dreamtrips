@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDete
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ExistingDeviceDetectPresenterImpl extends WalletPresenterImpl<ExistingDeviceDetectScreen> implements ExistingDeviceDetectPresenter {
 
@@ -66,7 +67,8 @@ public class ExistingDeviceDetectPresenterImpl extends WalletPresenterImpl<Exist
       wizardInteractor.reAssignCardPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.reAssignCardPipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<ReAssignCardCommand>provideOperationView())
                   .onSuccess(command -> reAssignSuccess())
                   .create());

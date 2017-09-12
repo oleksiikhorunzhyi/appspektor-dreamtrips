@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand.DocumentType.SMARTCARD;
 
@@ -49,7 +50,8 @@ public class WalletHelpDocumentsPresenterImpl extends WalletPresenterImpl<Wallet
    private void observeDocumentsChanges() {
       documentsInteractor.getDocumentsActionPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationGetDocuments())
                   .onSuccess(documentResponse -> getView().onDocumentsLoaded(convert(documentResponse.getResult())))
                   .onFail((command, error) -> getView().onError(command.getErrorMessage()))

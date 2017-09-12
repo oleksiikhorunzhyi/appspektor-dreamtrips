@@ -192,7 +192,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
    private void observeNewAvatar() {
       observeCropper()
-            .compose(bindToLifecycle())
+            .compose(bindUntilDetach())
             .subscribe(file -> profileViewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
    }
 

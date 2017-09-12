@@ -63,6 +63,7 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import timber.log.Timber;
 
@@ -134,18 +135,21 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private void observeSyncRecordsStatus() {
       recordInteractor.syncRecordStatusPipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> handleSyncRecordStatus(command.getResult()));
 
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
                   .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
             );
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideReSyncOperationView()).create());
    }
 
@@ -163,12 +167,14 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .throttleLast(300, TimeUnit.MILLISECONDS)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleSmartCardStatus, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleSmartCardUser, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
@@ -179,7 +185,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private void observeDisplayType() {
       smartCardInteractor.getDisplayTypePipe().observeSuccessWithReplay()
             .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getView()::setDisplayType, throwable -> Timber.e(throwable, ""));
       smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
    }
@@ -198,7 +205,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
             .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(connectionStatus -> {
                if (connectionStatus == ConnectionStatus.DFU) {
                   File firmwareFile = getAppropriateFirmwareFile(getView().getViewContext());
@@ -221,7 +229,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             })
             .filter(firmwareUpdateData -> firmwareUpdateData != null)
             .distinct()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::firmwareLoaded, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
@@ -317,7 +326,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
                boolean needSmartCardConnection = smartCardModifier.getResult().connectionStatus().isConnected();
                return new Pair<>(needNetworkConnection, needSmartCardConnection);
             })
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(connectionStatusPair -> {
                if (!connectionStatusPair.first) {
                   getView().showAddCardErrorDialog(CardListScreen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
@@ -350,7 +360,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
                return cardListStackConverter.mapToViewModel(getView().getViewContext(), loadedRecords.first, loadedRecords.second);
             })
             .distinctUntilChanged()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::cardsLoaded, throwable -> Timber.e(throwable, ""));
    }
 
@@ -366,7 +377,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       smartCardInteractor.smartCardSyncPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.smartCardSyncPipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnCompleted(() -> {
                if (operationView.isProgressVisible()) operationView.hideProgress();
             })
@@ -394,7 +406,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private void assertSmartCardConnected(Action0 onConnected) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> {
                      if (command.getResult().connectionStatus().isConnected()) onConnected.call();
@@ -413,7 +426,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       // TODO: 3/6/17 can be better
       firmwareInteractor.firmwareInfoCachedPipe()
             .createObservable(FirmwareInfoCachedCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
                   .onSuccess(command -> {
                      if (command.getResult().factoryResetRequired()) {

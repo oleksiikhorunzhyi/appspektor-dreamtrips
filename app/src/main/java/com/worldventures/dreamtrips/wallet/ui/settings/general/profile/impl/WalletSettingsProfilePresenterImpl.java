@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import timber.log.Timber;
 
@@ -67,14 +68,16 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    private void observeChangeFields(WalletSettingsProfileScreen view) {
       view.setDoneButtonEnabled(isDataChanged());
       view.observeChangesProfileFields()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(changed -> view.setDoneButtonEnabled(isDataChanged()));
    }
 
    private void fetchProfile() {
       smartCardInteractor.smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> setUser(command.getResult()), throwable -> Timber.e(throwable, ""));
    }
 
@@ -191,7 +194,8 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    private void assertSmartCardConnected(Action0 onConnected) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> {
                      if (command.getResult().connectionStatus().isConnected()) onConnected.call();

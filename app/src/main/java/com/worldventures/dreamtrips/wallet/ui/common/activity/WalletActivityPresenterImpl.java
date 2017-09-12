@@ -40,7 +40,7 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    public void attachView(WalletActivityView view) {
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
-            .compose(view.bindToLifecycle())
+            .compose(view.bindUntilDetach())
             .map(Command::getResult)
             .filter(smartCard -> smartCard.cardStatus().isActive())
             .flatMap(smartCard -> interactor.connectActionPipe()
@@ -62,7 +62,7 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    }
 
    @Override
-   public void detachView(boolean retainInstance) {
+   public void detachView() {
       auxiliaryDisconnectSmartCard();
    }
 

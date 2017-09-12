@@ -66,6 +66,7 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
       latestVersion = view.findViewById(R.id.latest_version);
       currentVersion = view.findViewById(R.id.current_version);
       newVersionDescription = view.findViewById(R.id.new_version_description);
+      newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       downloadVersion = view.findViewById(R.id.download_install_btn);
       downloadVersion.setOnClickListener(downloadBtn -> getPresenter().downloadButtonClicked());
       newVersionDescription.setMovementMethod(new ScrollingMovementMethod());

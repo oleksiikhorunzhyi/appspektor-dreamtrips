@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.start.WalletStartScreen;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScreen> implements WalletStartPresenter {
 
@@ -63,7 +64,8 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
       smartCardInteractor.fetchAssociatedSmartCard()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.fetchAssociatedSmartCard()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                   OperationActionSubscriber.forView(getView().provideOperationView())
                         .onSuccess(command -> handleResult(command.getResult()))
@@ -83,7 +85,8 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
    private void fetchFirmwareUpdateData() {
       firmwareInteractor.fetchFirmwareUpdateDataPipe()
             .createObservable(new FetchFirmwareUpdateData())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<FetchFirmwareUpdateData>()
                   .onSuccess(command -> checkFirmwareUpdateData(command.getResult()))
                   .onFail((command, throwable) -> navigateToWizard())

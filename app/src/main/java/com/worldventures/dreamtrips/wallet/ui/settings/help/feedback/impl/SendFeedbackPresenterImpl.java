@@ -33,7 +33,7 @@ public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFee
 
    private void observeFormValidation() {
       getView().getTextFeedbackMessage().map(this::validForm)
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(enable -> getView().changeActionSendMenuItemEnabled(enable));
    }
 

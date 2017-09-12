@@ -13,7 +13,6 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
 import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
@@ -79,7 +78,7 @@ public class WalletActivity extends BaseActivity implements WalletActivityView {
    @Override
    public void onDestroy() {
       onDetachSubject.onNext(null);
-      presenter.detachView(false);
+      presenter.detachView();
       cropImageService.destroy();
       super.onDestroy();
    }
@@ -135,17 +134,7 @@ public class WalletActivity extends BaseActivity implements WalletActivityView {
    }
 
    @Override
-   public <T> Observable.Transformer<T, T> bindToLifecycle() {
+   public <T> Observable.Transformer<T, T> bindUntilDetach() {
       return tObservable -> tObservable.takeUntil(onDetachSubject.asObservable());
-   }
-
-   @Override
-   public void showConnectionStatus(ConnectionStatus connectionStatus) {
-      // nothing
-   }
-
-   @Override
-   public void showHttpConnectionStatus(boolean connected) {
-      // nothing
    }
 }

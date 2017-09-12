@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCar
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> implements LostCardPresenter {
@@ -58,7 +59,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    private void observeUpdateTrackingStatus() {
       smartCardLocationInteractor.updateTrackingStatusPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationUpdateTrackingStatus())
                   .onSuccess(cmd -> onTrackingStateFetched(cmd.getResult()))
                   .onFail((cmd, throwable) -> getView().revertTrackingSwitch())
@@ -67,7 +69,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private void observeLocationSettings() {
       locationService.observeLocationSettingState()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleLocationSettingsStatus,
                   throwable -> Timber.e(throwable, ""));
    }
@@ -76,7 +79,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       smartCardLocationInteractor.fetchTrackingStatusPipe()
             .observeSuccess()
             .distinctUntilChanged(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> onTrackingStateFetched(command.getResult()));
    }
 
@@ -92,7 +96,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       if (!isEnabled) {
          smartCardLocationInteractor.fetchTrackingStatusPipe()
                .createObservable(new FetchTrackingStatusCommand())
-               .compose(bindViewIoToMainComposer())
+               .compose(getView().bindUntilDetach())
+               .observeOn(AndroidSchedulers.mainThread())
                .subscribe(new ActionStateSubscriber<FetchTrackingStatusCommand>()
                      .onSuccess(command -> onTrackingStateFetched(command.getResult())));
       }
@@ -107,7 +112,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private void observeCheckingSwitcher() {
       getView().observeTrackingEnable()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(this::onTrackingSwitcherChanged);
    }
 
@@ -123,7 +128,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private void requestLocationPermissions(boolean showRationale) {
       permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS, showRationale)
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(new PermissionSubscriber()
                   .onPermissionGrantedAction(this::checkLocationSettings)
                   .onPermissionRationaleAction(() -> {
@@ -164,13 +169,14 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private void checkLocationSettings() {
       locationService.fetchLastKnownLocationSettings()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::checkLocationServiceResult, throwable -> Timber.d(throwable, ""));
    }
 
    private void checkLocationServiceResult(LocationSettingsResult result) {
       locationScreenComponent.checkSettingsResult(result)
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(this::onLocationSettingsResult);
    }
 
@@ -186,7 +192,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    private void trackScreen() {
       smartCardLocationInteractor.fetchTrackingStatusPipe()
             .createObservable(new FetchTrackingStatusCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<FetchTrackingStatusCommand>()
                   .onSuccess(command -> sendTrackScreenAction(command.getResult()))
             );

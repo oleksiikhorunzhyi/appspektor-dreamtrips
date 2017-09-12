@@ -54,7 +54,6 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
-      newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       final Toolbar toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
       container = view.findViewById(R.id.container);
@@ -69,6 +68,7 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
       newVersionDescription = view.findViewById(R.id.new_version_description);
       downloadVersion = view.findViewById(R.id.download_install_btn);
       downloadVersion.setOnClickListener(downloadBtn -> getPresenter().downloadButtonClicked());
+      newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
    }
 
    @Override

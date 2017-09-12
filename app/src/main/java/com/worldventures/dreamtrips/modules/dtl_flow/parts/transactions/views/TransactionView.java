@@ -1,10 +1,13 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.TransactionsAdapter;
@@ -13,28 +16,35 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.Tr
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionsPath extends Activity {
+public class TransactionView extends LinearLayout {
 
-   private Context context;
-   private RecyclerView recyclerViewTransactions;
+   private RecyclerView recyclerView;
    private TransactionsAdapter transactionsAdapter;
    private LinearLayoutManager layoutManager;
+   private Context context;
 
-   @Override
-   public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_transactions);
+   public TransactionView(Context context) {
+      this(context, null);
+      this.context = context;
+   }
 
-      context = getApplicationContext();
-      recyclerViewTransactions = (RecyclerView) findViewById(R.id.recycler_view);
-      layoutManager = new LinearLayoutManager(this);
-      recyclerViewTransactions.setLayoutManager(layoutManager);
-      recyclerViewTransactions.setHasFixedSize(true);
+   public TransactionView(Context context, @Nullable AttributeSet attrs) {
+      super(context, attrs);
+      this.context = context;
+      init();
+   }
+
+   private void init() {
+      final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_transaction_list, this, true);
+      recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
+      layoutManager = new LinearLayoutManager(getContext());
+      recyclerView.setLayoutManager(layoutManager);
+      recyclerView.setHasFixedSize(true);
 
       List<TransactionModel> transactionList = generateMockedTransactionList(); //Mocked data
 
       transactionsAdapter = new TransactionsAdapter(context, transactionList);
-      recyclerViewTransactions.setAdapter(transactionsAdapter);
+      recyclerView.setAdapter(transactionsAdapter);
    }
 
    /** Only for mocking purposes **/
@@ -117,5 +127,4 @@ public class TransactionsPath extends Activity {
 
       return tempTransactionList;
    }
-
 }

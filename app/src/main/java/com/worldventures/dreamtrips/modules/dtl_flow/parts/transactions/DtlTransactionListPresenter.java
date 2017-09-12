@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_list;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;

@@ -1,27 +1,17 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_list;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.InjectView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
 
 public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListScreen, DtlTransactionListPresenter, DtlTransactionListPath>

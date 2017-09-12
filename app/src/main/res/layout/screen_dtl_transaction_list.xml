@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_list.DtlTransactionListScreenImpl android:id="@+id/root_reviews_view"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListScreenImpl android:id="@+id/root_reviews_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -36,6 +36,12 @@
          android:layout_height="wrap_content"
          android:layout_gravity="center"
          android:visibility="gone"
+         />
+
+   <com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView
+         android:id="@+id/container_transaction_list"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
          />
 
    <LinearLayout
@@ -89,4 +95,4 @@
 
    </LinearLayout>
 
-</com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_list.DtlTransactionListScreenImpl>
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListScreenImpl>

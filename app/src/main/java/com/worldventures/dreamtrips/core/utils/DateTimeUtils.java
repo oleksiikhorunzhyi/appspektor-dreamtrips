@@ -363,7 +363,7 @@ public class DateTimeUtils {
       }
    }
 
-   public static String getStringDateFromUTC(String utcString){
+   public static String getStringDateFromStringUTC(String utcString){
       try {
          SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
          utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));

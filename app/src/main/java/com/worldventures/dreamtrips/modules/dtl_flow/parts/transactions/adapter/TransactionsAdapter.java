@@ -55,7 +55,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          viewHolder.earnedPointsIcon.setVisibility(View.INVISIBLE);
       }
 
-      viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromUTC(transactionsList.get(position).getTransactionDate()));
+      viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
 
       try {
          CSTConverter converter = new CSTConverter();

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView;
 
 import butterknife.InjectView;
 import flow.Flow;
@@ -22,6 +23,7 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    @InjectView(R.id.tv_title) TextView tvTitle;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
+   @InjectView(R.id.container_transaction_list) TransactionView transactionsView;
    @InjectView(R.id.dtlToolbarMerchantSearchInput) SearchView searchView;
 
    public DtlTransactionListScreenImpl(Context context) {
@@ -47,13 +49,34 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
       } else {
          toolbar.setTitle(getContext().getResources().getString(R.string.dtl_show_transaction_toolbar));
          toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
-         toolbar.setNavigationOnClickListener(view -> {Flow.get(getContext()).goBack();});
+         toolbar.setNavigationOnClickListener(view -> {
+            Flow.get(getContext()).goBack();
+         });
       }
       setupSearch();
    }
 
-   private void setupSearch(){
+   private void setupSearch() {
       searchView.setIconifiedByDefault(false);
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+         @Override
+         public boolean onQueryTextSubmit(String query) {
+            searchQuery(query);
+            return true;
+         }
 
+         @Override
+         public boolean onQueryTextChange(String newText) {
+            searchQuery(newText);
+            return true;
+         }
+      });
+   }
+
+   private void searchQuery(String query) {
+      if(query.length() > 2)
+         transactionsView.filterByMerchantName(query);
+      else
+         transactionsView.clearSearch();
    }
 }

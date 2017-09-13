@@ -127,4 +127,19 @@ public class TransactionView extends LinearLayout {
 
       return tempTransactionList;
    }
+
+   public void filterByMerchantName(String searchString){
+      transactionsAdapter.getFilter().filter(searchString);
+   }
+
+   public void clearSearch(){
+      transactionsAdapter.getFilter().filter("");
+   }
+
+   private void setActiveScrollListener(boolean active){
+
+   }
+
+
+   /** Only for mocking purposes **/
 }

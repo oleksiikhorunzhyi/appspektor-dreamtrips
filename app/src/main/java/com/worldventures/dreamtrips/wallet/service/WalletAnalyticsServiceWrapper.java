@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.ActionHolder;
+import io.techery.janet.ActionService;
 import io.techery.janet.ActionServiceWrapper;
 import io.techery.janet.JanetException;
 import timber.log.Timber;
@@ -16,7 +17,7 @@ public class WalletAnalyticsServiceWrapper extends ActionServiceWrapper {
 
    private final List<NavigationStateListener> listeners = new ArrayList<>();
 
-   public WalletAnalyticsServiceWrapper(AnalyticsService analyticsService) {
+   public WalletAnalyticsServiceWrapper(ActionService analyticsService) {
       super(analyticsService);
    }
 

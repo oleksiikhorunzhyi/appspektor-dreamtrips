@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings.general.display;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 
@@ -21,7 +21,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
 public class ValidateDisplayTypeDataCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
 
    private final boolean hasPhoto;
    private final boolean hasPhone;
@@ -38,7 +38,7 @@ public class ValidateDisplayTypeDataCommand extends Command<Void> implements Inj
       if (resetToDefault()) {
          janet.createPipe(SetHomeDisplayTypeAction.class, Schedulers.io())
                .createObservableResult(new SetHomeDisplayTypeAction(WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE))
-               .doOnNext(action -> snappyRepository.setSmartCardDisplayType(action.getType()))
+               .doOnNext(action -> walletStorage.setSmartCardDisplayType(action.getType()))
                .map(action -> (Void) null)
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
@@ -47,7 +47,7 @@ public class ValidateDisplayTypeDataCommand extends Command<Void> implements Inj
    }
 
    private boolean resetToDefault() {
-      final int currentDisplayType = snappyRepository.getSmartCardDisplayType(-1);
+      final int currentDisplayType = walletStorage.getSmartCardDisplayType(-1);
       switch (currentDisplayType) {
          case SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME:
          case SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY:

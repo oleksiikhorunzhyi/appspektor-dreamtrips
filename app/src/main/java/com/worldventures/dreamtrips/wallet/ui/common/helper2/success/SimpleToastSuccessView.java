@@ -12,6 +12,7 @@ public class SimpleToastSuccessView<T> extends ToastSuccessView<T> {
       this.context = context;
       this.resIdMessage = resIdMessage;
    }
+
    @Override
    public Toast createToast(T t) {
       return Toast.makeText(context, resIdMessage, Toast.LENGTH_SHORT);

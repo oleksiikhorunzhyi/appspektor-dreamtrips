@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.general.dis
 import android.support.annotation.NonNull;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
@@ -32,7 +32,7 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
 
    @SetHomeDisplayTypeAction.HomeDisplayType
    private final int displayType;
@@ -67,7 +67,7 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
             })
             .flatMap(smartCardUser -> janet.createPipe(SetHomeDisplayTypeAction.class, Schedulers.io())
                   .createObservableResult(new SetHomeDisplayTypeAction(displayType)))
-            .doOnNext(action -> snappyRepository.setSmartCardDisplayType(action.getType()))
+            .doOnNext(action -> walletStorage.setSmartCardDisplayType(action.getType()))
             .map(action -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);
    }

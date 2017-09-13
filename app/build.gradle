@@ -145,7 +145,6 @@ android {
    }
    dexOptions {
       javaMaxHeapSize "4g"
-      keepRuntimeAnnotatedClasses false
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
@@ -173,6 +172,7 @@ android {
       social {
          test.java.srcDirs += 'src/testSocial/java'
       }
+      main.res.srcDirs += 'src/main/resWallet'
    }
 
 }

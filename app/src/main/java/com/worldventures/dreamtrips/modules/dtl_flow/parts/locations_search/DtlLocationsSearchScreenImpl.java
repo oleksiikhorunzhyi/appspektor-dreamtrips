@@ -18,6 +18,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
@@ -77,7 +78,7 @@ public class DtlLocationsSearchScreenImpl extends DtlLayout<DtlLocationsSearchSc
          searchView.setQuery("", false);
          RxSearchView.queryTextChanges(searchView)
                .skip(1) // binding sends initial value on subscribe
-               .compose(RxLifecycle.bindView(this))
+               .compose(RxLifecycleAndroid.bindView(this))
                .flatMap(charSequence -> Observable.just(charSequence.toString()))
                .subscribe(getPresenter()::search);
          //

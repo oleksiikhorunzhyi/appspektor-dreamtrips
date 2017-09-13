@@ -30,7 +30,6 @@ public class DownloadFirmwareCommand extends Command<Void> implements Injectable
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
       if (firmwareInfo == null) throw new IllegalStateException("Firmware is not available");

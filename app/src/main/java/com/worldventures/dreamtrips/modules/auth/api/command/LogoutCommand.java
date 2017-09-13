@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.auth.service.analytics.LogoutAction;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CancelAllCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
@@ -30,22 +29,17 @@ import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegates
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
-import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
-import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
-import java.security.KeyStoreException;
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import timber.log.Timber;
-
-import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class LogoutCommand extends Command<Void> implements InjectableAction {
@@ -65,10 +59,9 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
-   @Inject @Named(JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
-   @Inject HybridAndroidCrypter crypter;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject NxtSessionHolder nxtSessionHolder;
+
+   @Inject Set<LogoutAction> logoutActions;
 
    private boolean userDataCleared;
 
@@ -88,18 +81,23 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private void logoutComplete(CommandCallback<Void> callback) {
-      analyticsInteractor.analyticsActionPipe().send(new LogoutAction());
+      analyticsInteractor.analyticsActionPipe().send(new com.worldventures.dreamtrips.modules.auth.service.analytics.LogoutAction());
       callback.onSuccess(null);
    }
 
    private Iterable<Observable<Void>> clearSessionDependants() {
-      return Arrays.asList(clearWallet(), clearMessenger());
+      return Arrays.asList(executeLogoutActions(), clearMessenger());
    }
 
-   private Observable clearWallet() {
+   private Observable executeLogoutActions() {
       return Observable.create(subscriber -> {
-         sessionWalletActionPipeCreator.clearReplays();
-         nxtSessionHolder.destroy();
+         for (LogoutAction action : logoutActions) {
+            try {
+               action.call();
+            } catch (Exception e) {
+               Timber.e(e, "%s was failed", action);
+            }
+         }
          subscriber.onNext(null);
          subscriber.onCompleted();
       });
@@ -152,11 +150,6 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          snappyRepository.clearAll();
          clearFrescoCaches();
 
-         try {
-            crypter.deleteKeys();
-         } catch (KeyStoreException e) {
-            Timber.w(e, "Crypter keys are not cleared");
-         }
          subscriber.onNext(null);
          subscriber.onCompleted();
       });

@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
 import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
-import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -80,14 +79,13 @@ import dagger.Provides;
             //
             SmartCardModule.class,
             //
-            SecurityModule.class, DeviceModule.class,
+            DeviceModule.class,
             BackgroundUploadingModule.class,
             FacebookAppModule.class,
             VersionCheckModule.class,
             FeedAppModule.class,
             OldMediaPickerModule.class,
             SocialAppModule.class,
-            WalletAppModule.class,
       },
       library = true,
       complete = false,

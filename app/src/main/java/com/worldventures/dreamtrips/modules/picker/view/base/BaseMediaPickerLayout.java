@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
@@ -133,7 +134,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    @Override
    public <T> Observable.Transformer<T, T> lifecycle() {
-      return RxLifecycle.bindView(this);
+      return RxLifecycleAndroid.bindView(this);
    }
 
    @Override

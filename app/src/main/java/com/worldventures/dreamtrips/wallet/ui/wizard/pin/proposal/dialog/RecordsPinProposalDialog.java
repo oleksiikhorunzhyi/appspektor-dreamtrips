@@ -21,7 +21,7 @@ public class RecordsPinProposalDialog extends PinProposalDialog {
 
       ViewDataBinding viewDataBinding = DataBindingUtil.inflate(
             LayoutInflater.from(context),
-            R.layout.wallet_pin_proposal_bottom_sheet_dialog,
+            R.layout.dialog_wallet_pin_proposal_bottom_sheet,
             null,
             false
       );

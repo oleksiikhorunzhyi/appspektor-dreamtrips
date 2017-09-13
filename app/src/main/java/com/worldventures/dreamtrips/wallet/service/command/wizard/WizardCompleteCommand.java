@@ -3,17 +3,17 @@ package com.worldventures.dreamtrips.wallet.service.command.wizard;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
@@ -33,13 +33,13 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject SmartCardInteractor interactor;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
    @Inject MapperyContext mapperyContext;
    @Inject WalletFeatureHelper featureHelper;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      SmartCard smartCard = snappyRepository.getSmartCard();
+      SmartCard smartCard = walletStorage.getSmartCard();
 
       uploadUserPhoto(smartCard.smartCardId())
             .flatMap(user ->

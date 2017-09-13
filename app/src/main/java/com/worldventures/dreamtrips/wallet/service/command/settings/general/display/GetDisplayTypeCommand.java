@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings.general.display;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,7 +19,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
 public class GetDisplayTypeCommand extends Command<Integer> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
 
    private final boolean skipCache;
 
@@ -33,10 +33,10 @@ public class GetDisplayTypeCommand extends Command<Integer> implements Injectabl
          janet.createPipe(GetHomeDisplayTypeAction.class, Schedulers.io())
                .createObservableResult(new GetHomeDisplayTypeAction())
                .map(action -> action.type)
-               .doOnNext(displayType -> snappyRepository.setSmartCardDisplayType(displayType))
+               .doOnNext(displayType -> walletStorage.setSmartCardDisplayType(displayType))
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
-         callback.onSuccess(snappyRepository.getSmartCardDisplayType(WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE));
+         callback.onSuccess(walletStorage.getSmartCardDisplayType(WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE));
       }
    }
 }

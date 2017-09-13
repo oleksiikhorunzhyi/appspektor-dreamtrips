@@ -4,16 +4,17 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 public class DirectionInfoView extends LinearLayout {
+
+   private TextView tvTitle;
+   private ImageView ivImage;
 
    public DirectionInfoView(Context context) {
       super(context);
@@ -30,13 +31,11 @@ public class DirectionInfoView extends LinearLayout {
       init(context, attrs);
    }
 
-   @InjectView(R.id.tv_title) TextView tvTitle;
-   @InjectView(R.id.iv_image) ImageView ivImage;
-
    private void init(Context context, AttributeSet attrs) {
-      inflate(context, R.layout.view_direction_info, this);
+      final View view = inflate(context, R.layout.wallet_custom_view_guesture_info, this);
       if (isInEditMode()) return;
-      ButterKnife.inject(this);
+      tvTitle = view.findViewById(R.id.tv_title);
+      ivImage = view.findViewById(R.id.iv_image);
       if (attrs != null) {
          TypedArray a = context.getTheme().obtainStyledAttributes(
                attrs,

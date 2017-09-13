@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.feed.view.activity.SocialDrawerActivity;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
-import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
+import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
 import butterknife.InjectView;
@@ -110,7 +110,7 @@ public class MainActivity extends SocialDrawerActivity<MainActivityPresenter> im
          case DtlModule.DTL:
             DtlActivity.startDtl(this);
             break;
-         case WalletAppModule.WALLET:
+         case SmartCardModule.WALLET:
             WalletActivity.startWallet(this);
             break;
          case SocialAppModule.FEED:

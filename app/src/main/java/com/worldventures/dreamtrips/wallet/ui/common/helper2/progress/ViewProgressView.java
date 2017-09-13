@@ -26,4 +26,7 @@ public class ViewProgressView<T> implements ProgressView<T> {
    public void hideProgress() {
       progressView.setVisibility(View.GONE);
    }
+
+   @Override
+   public void onProgressChanged(int i) { /* nothing */ }
 }

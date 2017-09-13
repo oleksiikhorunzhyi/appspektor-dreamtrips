@@ -1,0 +1,63 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      >
+
+   <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:gravity="center_horizontal"
+         android:orientation="vertical"
+         >
+
+      <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            >
+
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/wallet_flye_front_unsupported"
+               tools:ignore="ContentDescription"
+               />
+
+         <ImageView
+               android:layout_gravity="end|bottom"
+               android:layout_marginBottom="42dp"
+               android:layout_marginEnd="10dp"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/wallet_flye_display_unsupported"
+               tools:ignore="ContentDescription"
+               />
+      </FrameLayout>
+
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:text="@string/wallet_supported_device_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:autoLink="phone"
+            android:gravity="center_horizontal"
+            android:text="@string/wallet_supported_device_message"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/wallet_support_device_message_color"
+            />
+
+   </LinearLayout>
+</layout>

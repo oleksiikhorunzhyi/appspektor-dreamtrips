@@ -79,4 +79,9 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
    void onProgressClicked() {
       cellDelegate.onCellClicked(getModelObject());
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

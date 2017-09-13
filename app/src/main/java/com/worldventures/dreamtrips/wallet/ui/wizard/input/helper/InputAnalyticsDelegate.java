@@ -1,23 +1,23 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.helper;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.ScidScannedAction;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 
 public abstract class InputAnalyticsDelegate {
 
-   protected final AnalyticsInteractor analyticsInteractor;
+   protected final WalletAnalyticsInteractor analyticsInteractor;
 
-   private InputAnalyticsDelegate(AnalyticsInteractor analyticsInteractor) {
+   private InputAnalyticsDelegate(WalletAnalyticsInteractor analyticsInteractor) {
       this.analyticsInteractor = analyticsInteractor;
    }
 
-   public static InputAnalyticsDelegate createForScannerScreen(AnalyticsInteractor analyticsInteractor) {
+   public static InputAnalyticsDelegate createForScannerScreen(WalletAnalyticsInteractor analyticsInteractor) {
       return new ScannerDelegate(analyticsInteractor);
    }
 
-   public static InputAnalyticsDelegate createForManualInputScreen(AnalyticsInteractor analyticsInteractor) {
+   public static InputAnalyticsDelegate createForManualInputScreen(WalletAnalyticsInteractor analyticsInteractor) {
       return new ManualInputDelegate(analyticsInteractor);
    }
 
@@ -25,26 +25,26 @@ public abstract class InputAnalyticsDelegate {
 
    private static class ScannerDelegate extends InputAnalyticsDelegate {
 
-      private ScannerDelegate(AnalyticsInteractor analyticsInteractor) {
+      private ScannerDelegate(WalletAnalyticsInteractor analyticsInteractor) {
          super(analyticsInteractor);
       }
 
       @Override
       public void scannedSuccessfully(String smartCardId) {
-         analyticsInteractor.walletAnalyticsCommandPipe()
+         analyticsInteractor.walletAnalyticsPipe()
                .send(new WalletAnalyticsCommand(new ScidScannedAction(smartCardId)));
       }
    }
 
    private static class ManualInputDelegate extends InputAnalyticsDelegate {
 
-      private ManualInputDelegate(AnalyticsInteractor analyticsInteractor) {
+      private ManualInputDelegate(WalletAnalyticsInteractor analyticsInteractor) {
          super(analyticsInteractor);
       }
 
       @Override
       public void scannedSuccessfully(String smartCardId) {
-         analyticsInteractor.walletAnalyticsCommandPipe()
+         analyticsInteractor.walletAnalyticsPipe()
                .send(new WalletAnalyticsCommand(new ScidEnteredAction(smartCardId)));
       }
    }

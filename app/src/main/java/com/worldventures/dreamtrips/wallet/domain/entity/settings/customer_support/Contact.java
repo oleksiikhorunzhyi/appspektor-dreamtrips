@@ -2,11 +2,13 @@ package com.worldventures.dreamtrips.wallet.domain.entity.settings.customer_supp
 
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
+import org.jetbrains.annotations.Nullable;
 
 @Gson.TypeAdapters
 @Value.Immutable
 public abstract class Contact {
 
+   @Nullable
    @Value.Default
    public String contactAddress() {
       return "";
@@ -17,6 +19,7 @@ public abstract class Contact {
       return "";
    }
 
+   @Nullable
    @Value.Default
    public String formattedAddress() {
       return "";

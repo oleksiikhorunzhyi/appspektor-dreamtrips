@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This layout is used on Clear Records and Disable Default Card screen-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_settings_clear_flye_card_title"
+         />
+
+   <android.support.v4.widget.NestedScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.WalletDelayRadioGroup
+            android:id="@+id/delay_selection_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/wallet_divider_horizontal_settings"
+            android:showDividers="middle|end"
+            >
+
+         <TextView
+               android:id="@+id/tv_header"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/wallet_color_settings_section_divider"
+               android:gravity="center"
+               android:paddingBottom="@dimen/spacing_normal"
+               android:paddingEnd="36dp"
+               android:paddingStart="36dp"
+               android:paddingTop="@dimen/spacing_normal"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               tools:text="@string/wallet_card_settings_auto_clear_sc_after"
+               />
+      </com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.WalletDelayRadioGroup>
+   </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

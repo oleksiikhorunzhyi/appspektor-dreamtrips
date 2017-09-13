@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey;
 
 import android.view.View;
 
-interface PairView {
+public interface PairView {
 
    void showBackButton();
 

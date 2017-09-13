@@ -17,7 +17,8 @@ public class SCConnectionErrorViewProvider<T> implements ErrorViewProvider<T> {
    private final Action1<T> negAction;
 
    public SCConnectionErrorViewProvider(Context context) {
-      this(context, null, t -> {});
+      this(context, null, t -> {
+      });
    }
 
    public SCConnectionErrorViewProvider(Context context, @Nullable Action1<T> posAction, @NonNull Action1<T> negAction) {

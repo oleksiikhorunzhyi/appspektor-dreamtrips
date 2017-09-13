@@ -14,13 +14,10 @@ import com.worldventures.dreamtrips.modules.common.delegate.GlobalAnalyticEventH
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
-import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(library = true, complete = false)
 public class AnalyticsModule {
@@ -39,8 +36,8 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides
-   AnalyticsInteractor provideAnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator,  @Named(JANET_WALLET) SessionActionPipeCreator walletActionPipeCreator) {
-      return new AnalyticsInteractor(sessionActionPipeCreator, walletActionPipeCreator);
+   AnalyticsInteractor provideAnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new AnalyticsInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

@@ -3,6 +3,7 @@ package com.messenger.ui.module;
 import android.content.Context;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
 import rx.Observable;
 
@@ -15,7 +16,7 @@ public abstract class ModulePresenterImpl<V extends ModuleView> implements Modul
    }
 
    protected <T> Observable.Transformer<T, T> bindView() {
-      return input -> input.compose(RxLifecycle.bindView(view.getParentView()));
+      return input -> input.compose(RxLifecycleAndroid.bindView(view.getParentView()));
    }
 
    @Override

@@ -3,12 +3,9 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -20,10 +17,10 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
-import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
@@ -33,7 +30,6 @@ import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvide
 import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorImpl;
 import com.worldventures.dreamtrips.wallet.service.impl.WalletAccessValidatorMock;
 import com.worldventures.dreamtrips.wallet.service.impl.WalletBluetoothServiceMock;
-import com.worldventures.dreamtrips.wallet.service.impl.WalletSocialInfoProviderImpl;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardModule;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModule;
@@ -138,7 +134,8 @@ public class WalletServiceModule {
    @Singleton
    @Provides
    SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor,
-         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor, WalletFeatureHelper featureHelper) {
+         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
+         WalletFeatureHelper featureHelper) {
       return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper);
    }
 
@@ -150,14 +147,14 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardAnalyticErrorHandler smartCardErrorAnalyticEventHandler(SmartCardErrorServiceWrapper errorServiceWrapper,
-         WalletAnalyticsServiceWrapper analyticsServiceWrapper, AnalyticsInteractor analyticsInteractor) {
-      return new SmartCardAnalyticErrorHandler(errorServiceWrapper, analyticsServiceWrapper, analyticsInteractor);
+   WalletAnalyticsInteractor analyticsInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new WalletAnalyticsInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   WalletSocialInfoProvider walletSocialInfoProvider(SessionHolder sessionHolder) {
-      return new WalletSocialInfoProviderImpl(sessionHolder);
+   SmartCardAnalyticErrorHandler smartCardErrorAnalyticEventHandler(SmartCardErrorServiceWrapper errorServiceWrapper,
+         WalletAnalyticsServiceWrapper analyticsServiceWrapper, WalletAnalyticsInteractor analyticsInteractor) {
+      return new SmartCardAnalyticErrorHandler(errorServiceWrapper, analyticsServiceWrapper, analyticsInteractor);
    }
 }

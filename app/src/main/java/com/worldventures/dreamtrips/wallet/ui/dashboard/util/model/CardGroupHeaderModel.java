@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
 public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {

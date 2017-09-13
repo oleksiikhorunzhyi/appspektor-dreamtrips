@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.service.command.record;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -30,7 +30,7 @@ public class AddRecordCommand extends Command<Record> implements InjectableActio
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
    @Inject RecordInteractor recordInteractor;
 
    private final Record record;

@@ -22,7 +22,7 @@ public class VideoLocaleAdapter extends ArrayAdapter<VideoLocale> {
    private final List<VideoLocale> data;
 
    public VideoLocaleAdapter(@NonNull Context context, List<VideoLocale> data) {
-      super(context, R.layout.adapter_item_video_locale_wallet, data);
+      super(context, R.layout.item_wallet_video_locale, data);
       layoutInflater = LayoutInflater.from(context);
       this.data = data;
    }
@@ -31,7 +31,7 @@ public class VideoLocaleAdapter extends ArrayAdapter<VideoLocale> {
    public View getDropDownView(int position, @Nullable View view, @NonNull ViewGroup parent) {
       ViewHolder holder;
       if (view == null) {
-         view = layoutInflater.inflate(R.layout.adapter_item_video_locale_wallet, null);
+         view = layoutInflater.inflate(R.layout.item_wallet_video_locale, parent, false);
 
          holder = new ViewHolder();
          holder.tvName = (TextView) view.findViewById(R.id.tv_name);

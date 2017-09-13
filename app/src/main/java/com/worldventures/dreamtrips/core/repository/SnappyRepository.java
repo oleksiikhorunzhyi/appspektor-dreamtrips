@@ -19,19 +19,9 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 
 import java.util.Collection;
 import java.util.List;
-
-import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 
 public interface SnappyRepository {
 
@@ -78,19 +68,6 @@ public interface SnappyRepository {
    String POST_FEED_ITEM = "post";
    String TRIP_FEED_ITEM = "trip";
    String BUCKET_FEED_ITEM = "bucket";
-
-   String WALLET_SMART_CARD = "WALLET_SMART_CARD";
-   String WALLET_SMART_CARD_USER = "WALLET_SMART_CARD_USER";
-   String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
-   String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
-   String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
-   String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
-   String WALLET_FIRMWARE = "WALLET_FIRMWARE";
-   String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
-   String WALLET_LOST_SMART_CARD_ENABLE_TRAKING = "WALLET_LOST_SMART_CARD_ENABLE_TRAKING";
-   String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
-   String WALLET_OPTIONAL_PIN = "WALLET_OPTIONAL_PIN";
-   String WALLET_SMART_CARD_DISPLAY_TYPE = "WALLET_SMART_CARD_DISPLAY_TYPE";
 
    void clearAll();
 
@@ -176,8 +153,10 @@ public interface SnappyRepository {
 
    void setGcmRegToken(String token);
 
+   @Deprecated
    void saveSocialViewPagerState(SocialViewPagerState state);
 
+   @Deprecated
    SocialViewPagerState getSocialViewPagerState();
 
    List<FeedbackType> getFeedbackTypes();
@@ -241,70 +220,4 @@ public interface SnappyRepository {
    List<TripModel> getTripsDetailsForUids(List<String> uids);
 
    TripModel getTripDetail(String uid);
-
-   SimpleDeviceStorage getWalletDeviceStorage();
-
-   void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
-
-   void saveSmartCard(SmartCard smartCard);
-
-   SmartCard getSmartCard();
-
-   void deleteSmartCard();
-
-   void saveSmartCardUser(SmartCardUser smartCardUser);
-
-   SmartCardUser getSmartCardUser();
-
-   void deleteSmartCardUser();
-
-   void saveWalletTermsAndConditions(TermsAndConditions data);
-
-   TermsAndConditions getWalletTermsAndConditions();
-
-   void deleteTermsAndConditions();
-
-   void saveSmartCardDetails(SmartCardDetails details);
-
-   SmartCardDetails getSmartCardDetails();
-
-   void deleteSmartCardDetails();
-
-   void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware);
-
-   SmartCardFirmware getSmartCardFirmware();
-
-   void deleteSmartCardFirmware();
-
-   void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
-
-   FirmwareUpdateData getFirmwareUpdateData();
-
-   void deleteFirmwareUpdateData();
-
-   void saveWalletLocations(List<WalletLocation> walletLocations);
-
-   List<WalletLocation> getWalletLocations();
-
-   void deleteWalletLocations();
-
-   void saveEnabledTracking(boolean enable);
-
-   boolean isEnableTracking();
-
-   void saveSyncRecordsStatus(SyncRecordsStatus data);
-
-   SyncRecordsStatus getSyncRecordsStatus();
-
-   void saveShouldAskForPin(boolean shouldAsk);
-
-   boolean shouldAskForPin();
-
-   void deletePinOptionChoice();
-
-   int getSmartCardDisplayType(int defaultValue);
-
-   void setSmartCardDisplayType(int displayType);
-
-   void deleteSmartCardDisplayType();
 }

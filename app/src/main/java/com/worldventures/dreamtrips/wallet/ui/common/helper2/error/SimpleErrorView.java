@@ -18,11 +18,6 @@ public class SimpleErrorView<T> extends DialogErrorView<T> {
    @StringRes private final int negText;
    private final String message;
 
-   @Deprecated
-   public SimpleErrorView(Context context, @NonNull Action1<T> action, String message) {
-      this(context, message, action);
-   }
-
    public SimpleErrorView(Context context, String message, @NonNull Action1<T> action) {
       this(context, message, action, R.string.ok);
    }

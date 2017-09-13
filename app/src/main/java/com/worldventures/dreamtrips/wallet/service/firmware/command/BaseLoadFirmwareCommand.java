@@ -23,8 +23,6 @@ public abstract class BaseLoadFirmwareCommand extends Command<Void> implements I
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      callback.onProgress(0);
-
       Subscription subscription = provideProgress().subscribe(callback::onProgress);
 
       loadFile()

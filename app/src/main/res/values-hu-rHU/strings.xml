@@ -114,7 +114,6 @@
    <string name="media_picker_fb_photos_actions">facebook-képek</string>
    <string name="media_picker_limit_reached">Max. %1$s képet választhat</string>
 
-   <string name="back">Vissza</string>
    <string name="logout_component">Kijelentkezés</string>
 
    <string name="years_ago">%1$d évvel ezelőtt</string>

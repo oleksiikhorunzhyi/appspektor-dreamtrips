@@ -114,7 +114,6 @@
    <string name="media_picker_fb_photos_actions">Foto Facebook</string>
    <string name="media_picker_limit_reached">Anda hanya boleh memilih sehingga %1$s foto</string>
 
-   <string name="back">กลับไป</string>
    <string name="logout_component">Log keluar</string>
 
    <string name="years_ago">%1$d tahun lalu</string>

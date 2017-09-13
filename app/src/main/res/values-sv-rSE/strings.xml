@@ -114,7 +114,6 @@
    <string name="media_picker_fb_photos_actions">Facebook-bilder</string>
    <string name="media_picker_limit_reached">Du kan bara välja upp till %1$s bilder</string>
 
-   <string name="back">Tillbaka</string>
    <string name="logout_component">Logga ut</string>
 
    <string name="years_ago">%1$d år sedan</string>

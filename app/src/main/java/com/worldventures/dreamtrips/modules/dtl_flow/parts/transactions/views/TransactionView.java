@@ -117,7 +117,7 @@ public class TransactionView extends LinearLayout {
 
       TransactionModel transactionModel7 = new TransactionModel();
       transactionModel7.setMerchantName("Merchant 8");
-      transactionModel7.setSubTotalAmount("3000");
+      transactionModel7.setSubTotalAmount("8000");
       transactionModel7.setEarnedPoints("3");
       transactionModel7.setTransactionDate("Whatever heather");
       transactionModel7.setTransactionDate("2017-09-07T16:30:00.000Z UTC");

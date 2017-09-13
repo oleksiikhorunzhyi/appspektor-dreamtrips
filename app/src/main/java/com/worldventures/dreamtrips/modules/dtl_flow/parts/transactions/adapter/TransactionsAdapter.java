@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConv
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -56,11 +55,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          viewHolder.earnedPointsIcon.setVisibility(View.INVISIBLE);
       }
 
-      try {
-         viewHolder.transactionDate.setText(DateTimeUtils.convertDateToUTCString(new Date(transactionsList.get(position).getTransactionDate())));
-      } catch (Exception ex){
-         ex.printStackTrace();
-      }
+      viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromUTC(transactionsList.get(position).getTransactionDate()));
 
       try {
          CSTConverter converter = new CSTConverter();
